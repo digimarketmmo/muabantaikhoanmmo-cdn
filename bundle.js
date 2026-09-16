@@ -6273,7 +6273,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     // =========================================================================
     // [CLOUDFLARE WORKER API CLIENT - KIẾN TRÚC 3 TẦNG BẢO MẬT & SSOT TURSO]
     // =========================================================================
-    window.MMO_WORKER_API = {
+    var MMO_WORKER_API = window.MMO_WORKER_API = {
       DEFAULT_API_URL: "https://mmo-shop-api.manhdongvtc.workers.dev",
 
       getApiUrl: function() {
@@ -6548,7 +6548,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       }
     };
 
-    window.TURSO_CLIENT = {
+    var TURSO_CLIENT = window.TURSO_CLIENT = {
       getConfig: function() {
         return {
           url: MMO_WORKER_API.getApiUrl(),
