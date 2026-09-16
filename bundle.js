@@ -1917,14 +1917,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
             return {
               ...po,
               isPreOrderTask: true,
-              taskTypeBadge: '<span style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-weight:800; padding:2px 7px; border-radius:4px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px;"><i class=\"fa-solid fa-hourglass-half\"></i> ĐẶT TRƯỚC</span>'
+              taskTypeBadge: '<span style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-weight:800; padding:2px 8px; border-radius:4px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;"><i class=\"fa-solid fa-hourglass-half\"></i> ĐẶT TRƯỚC</span>'
             };
           }),
           ...pendingWarrantyOrders.map(function(wo) {
             return {
               ...wo,
               isPreOrderTask: false,
-              taskTypeBadge: '<span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-weight:800; padding:2px 7px; border-radius:4px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px;"><i class=\"fa-solid fa-shield-halved\"></i> KHIẾU NẠI</span>'
+              taskTypeBadge: '<span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-weight:800; padding:2px 8px; border-radius:4px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;"><i class=\"fa-solid fa-shield-halved\"></i> KHIẾU NẠI</span>'
             };
           })
         ];
@@ -2001,35 +2001,49 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
             const startIdx = (curPage - 1) * pageSize;
             const pageOrders = pendingOrders.slice(startIdx, startIdx + pageSize);
 
-            let tableHtml = '<div style="overflow-x:auto;"><table class="admin-table" style="width:100%; font-size:0.8rem;">' +
-              '<thead><tr><th>Loại / Mã Đơn</th><th>Khách Hàng</th><th>Sản Phẩm</th><th>Số Tiền</th><th>Trạng Thái</th><th style="text-align:right;">Thao Tác</th></tr></thead><tbody>';
+            let tableHtml = '<div style="overflow-x:auto;"><table class="admin-table" style="width:100%; font-size:0.8rem; min-width:760px; border-collapse:collapse;">' +
+              '<thead><tr style="background:#070d18; border-bottom:1px solid #1e293b;">' +
+                '<th style="white-space:nowrap; min-width:120px; padding:10px 12px;">Loại / Mã Đơn</th>' +
+                '<th style="white-space:nowrap; min-width:130px; padding:10px 12px;">Khách Hàng</th>' +
+                '<th style="min-width:200px; padding:10px 12px;">Sản Phẩm</th>' +
+                '<th style="white-space:nowrap; min-width:90px; padding:10px 12px;">Số Tiền</th>' +
+                '<th style="white-space:nowrap; min-width:120px; text-align:center; padding:10px 12px;">Trạng Thái</th>' +
+                '<th style="white-space:nowrap; min-width:130px; text-align:right; padding:10px 12px;">Thao Tác</th>' +
+              '</tr></thead><tbody>';
             pageOrders.forEach(function(item) {
               const orderId = item.orderCode || item.orderId || item.id || "DH";
               const userStr = item.buyerUsername || item.buyerEmail || item.userEmail || item.buyer || item.customer || "Khách hàng";
               const prodName = item.productName || item.prodName || item.name || "Sản phẩm";
               const amtStr = (typeof formatVND === "function") ? formatVND(item.total || item.totalPrice || item.price || 0) : ((item.total || 0) + " đ");
-              const badge = item.taskTypeBadge || '<span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:4px;">Khiếu nại</span>';
+              const badge = item.taskTypeBadge || '<span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:0.7rem; font-weight:700; padding:2px 8px; border-radius:4px; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-shield-halved"></i> Khiếu nại</span>';
 
               let actionBtns = '';
               if (item.isPreOrderTask) {
-                actionBtns = '<div style="display:inline-flex; gap:4px; justify-content:flex-end;">' +
-                  (item.status === 'WAITING_CONFIRM' ? '<button type="button" onclick="adminConfirmPreOrder(\'' + escapeHtml(orderId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.72rem; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Duyệt đơn"><i class="fa-solid fa-check"></i> Duyệt</button>' : '') +
-                  '<button type="button" onclick="openAdminFulfillModal(\'' + escapeHtml(orderId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.72rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Giao hàng cho khách"><i class="fa-solid fa-key"></i> Giao</button>' +
-                  '<button type="button" onclick="openPreOrderDetailView(\'' + escapeHtml(orderId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.72rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết đơn"><i class="fa-solid fa-eye"></i></button>' +
+                const st = String(item.status || "").toUpperCase();
+                const isWaiting = st === "WAITING_CONFIRM" || st === "PENDING" || String(item.statusText || "").toLowerCase().includes("chờ");
+                actionBtns = '<div style="display:inline-flex; gap:5px; justify-content:flex-end; align-items:center; white-space:nowrap;">' +
+                  (isWaiting ? '<button type="button" onclick="adminConfirmPreOrder('' + escapeHtml(orderId) + '')" class="btn-action-copy" style="padding:4px 9px; font-size:0.74rem; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" title="Duyệt đơn"><i class="fa-solid fa-check"></i> Duyệt</button>' : '') +
+                  '<button type="button" onclick="openAdminFulfillModal('' + escapeHtml(orderId) + '')" class="btn-action-copy" style="padding:4px 9px; font-size:0.74rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" title="Giao hàng cho khách"><i class="fa-solid fa-key"></i> Giao</button>' +
+                  '<button type="button" onclick="openPreOrderDetailView('' + escapeHtml(orderId) + '')" class="btn-action-copy" style="padding:4px 8px; font-size:0.74rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; white-space:nowrap;" title="Xem chi tiết đơn"><i class="fa-solid fa-eye"></i></button>' +
                 '</div>';
               } else {
-                actionBtns = '<button class="btn-copy-small" onclick=\'openAdminOrderResolveModal("' + escapeHtml(orderId) + '")\' style="background:#0284c7; color:#fff; padding:3px 8px; font-size:0.72rem;" title="Mở đổi trả 1-đổi-1 hoặc hoàn tiền">' +
+                actionBtns = '<div style="display:inline-flex; gap:5px; justify-content:flex-end; align-items:center; white-space:nowrap;"><button class="btn-copy-small" onclick='openAdminOrderResolveModal("' + escapeHtml(orderId) + '")' style="background:#0284c7; color:#fff; padding:4px 9px; font-size:0.74rem; border:none; border-radius:4px; cursor:pointer; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" title="Mở đổi trả 1-đổi-1 hoặc hoàn tiền">' +
                   '<i class="fa-solid fa-arrows-rotate"></i> Đổi Trả' +
-                '</button>';
+                '</button></div>';
               }
 
+              const statusTxt = escapeHtml(item.statusText || item.status || "Chờ xử lý");
+              const stStyle = item.isPreOrderTask 
+                ? "background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3);" 
+                : "background:rgba(239,68,68,0.15); color:#f87171; border:1px solid rgba(239,68,68,0.3);";
+
               tableHtml += '<tr>' +
-                '<td>' + badge + '<br/><strong style="color:#38bdf8; font-size:0.78rem;">#' + escapeHtml(orderId) + '</strong></td>' +
-                '<td><b>' + escapeHtml(userStr) + '</b></td>' +
-                '<td><div style="font-weight:600; color:#fff;">' + escapeHtml(prodName) + '</div>' + (item.qty ? ('<span style="font-size:0.7rem; color:#94a3b8;">SL: ' + item.qty + '</span>') : '') + '</td>' +
-                '<td style="color:#10b981; font-weight:700;">' + amtStr + '</td>' +
-                '<td><span style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:4px;">' + escapeHtml(item.statusText || item.status || "Chờ xử lý") + '</span></td>' +
-                '<td style="text-align:right;">' + actionBtns + '</td>' +
+                '<td style="padding:10px 12px; white-space:nowrap;"><div style="display:flex; flex-direction:column; gap:3px; align-items:flex-start;">' + badge + '<strong style="color:#38bdf8; font-size:0.8rem; font-family:monospace; white-space:nowrap;">#' + escapeHtml(orderId) + '</strong></div></td>' +
+                '<td style="padding:10px 12px; white-space:nowrap;"><b style="color:#fff; font-size:0.82rem;">' + escapeHtml(userStr) + '</b></td>' +
+                '<td style="padding:10px 12px;"><div style="font-weight:600; color:#fff; line-height:1.35;">' + escapeHtml(prodName) + '</div>' + (item.qty ? ('<span style="font-size:0.7rem; color:#94a3b8;">Số lượng: ' + item.qty + '</span>') : '') + '</td>' +
+                '<td style="padding:10px 12px; color:#10b981; font-weight:700; white-space:nowrap; font-size:0.82rem;">' + amtStr + '</td>' +
+                '<td style="padding:10px 12px; text-align:center; white-space:nowrap;"><span style="' + stStyle + ' font-size:0.72rem; font-weight:800; padding:3px 9px; border-radius:4px; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-clock"></i> ' + statusTxt + '</span></td>' +
+                '<td style="padding:10px 12px; text-align:right; white-space:nowrap;">' + actionBtns + '</td>' +
               '</tr>';
             });
             tableHtml += '</tbody></table></div>';
