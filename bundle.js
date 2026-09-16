@@ -19316,6 +19316,20 @@ function injectAllProductsSchema() {
     }
     window.isStrictPreOrder = isStrictPreOrder;
 
+    // Tự động dọn dẹp các đơn mua ngay bị lọt nhầm vào kho đơn đặt trước
+    try {
+      const rawPo = localStorage.getItem("mmo_pre_orders");
+      if (rawPo) {
+        const parsedPo = JSON.parse(rawPo);
+        if (Array.isArray(parsedPo)) {
+          const cleanedPo = parsedPo.filter(isStrictPreOrder);
+          if (cleanedPo.length !== parsedPo.length) {
+            localStorage.setItem("mmo_pre_orders", JSON.stringify(cleanedPo));
+          }
+        }
+      }
+    } catch(e) {}
+
     function checkAndAutoCancelExpiredPreOrders(preOrdersList) {
       try {
         if (!Array.isArray(preOrdersList) || preOrdersList.length === 0) return false;
