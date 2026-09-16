@@ -20238,6 +20238,8 @@ function injectAllProductsSchema() {
       const tbody = document.getElementById("admPreOrdersTableBody");
       if (!tbody) return;
 
+      _cachedPreOrdersList = null;
+      _lastPreOrdersFetchTime = 0;
       const preOrders = getPreOrders(true);
       const countBadge = document.getElementById("admPreOrdersCountBadge");
       if (countBadge) countBadge.innerText = preOrders.length;
@@ -20597,7 +20599,9 @@ function injectAllProductsSchema() {
 
     function updateAdminPreOrdersBadge() {
       try {
-        const preOrders = (typeof getPreOrders === "function") ? getPreOrders() : [];
+        _cachedPreOrdersList = null;
+        _lastPreOrdersFetchTime = 0;
+        const preOrders = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
         const waitingCount = preOrders.filter(o => o.status === "WAITING_CONFIRM" || o.status === "PROCESSING").length;
         const countBadge = document.getElementById("admPreOrdersCountBadge");
         if (countBadge) {
