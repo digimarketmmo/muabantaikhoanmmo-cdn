@@ -15904,26 +15904,21 @@ function syncAllOpenViewsStock(changedProdId) {
             const localBal = (uIdx !== -1 && allUsers[uIdx].balance !== undefined) ? Number(allUsers[uIdx].balance) : 0;
 
             const lastChangeTime = Number(localStorage.getItem("mmo_last_balance_change_time") || 0);
-            const isRecentLocalChange = (Date.now() - lastChangeTime) < 60000;
+            const isRecentLocalChange = (Date.now() - lastChangeTime) < 120000;
 
-            let compBal = localBal;
-            if (typeof getUserComprehensiveTransactions === "function") {
-              const comp = getUserComprehensiveTransactions(cleanEmail);
-              if (comp && comp.currentBalance !== undefined && !isNaN(Number(comp.currentBalance))) {
-                compBal = Number(comp.currentBalance);
+            let finalBal = localBal;
+            if (isRecentLocalChange) {
+              finalBal = localBal;
+              if (cloudBal !== localBal && typeof callGasApi === "function") {
+                callGasApi("adminUpdateBalance", {
+                  adminEmail: cleanEmail,
+                  targetEmail: cleanEmail,
+                  amount: (localBal - cloudBal),
+                  reason: "Đồng bộ số dư sau giao dịch mới"
+                }).catch(() => {});
               }
-            }
-
-            let finalBal = Math.max(localBal, compBal);
-            if (cloudBal > finalBal) {
+            } else {
               finalBal = cloudBal;
-            } else if (finalBal > cloudBal && typeof callGasApi === "function") {
-              callGasApi("adminUpdateBalance", {
-                adminEmail: cleanEmail,
-                targetEmail: cleanEmail,
-                amount: (finalBal - cloudBal),
-                reason: "Đồng bộ số dư ví tự động"
-              }).catch(() => {});
             }
 
             if (currentUser.balance !== finalBal) {
