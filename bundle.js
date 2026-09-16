@@ -5170,18 +5170,27 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       if (document.body) document.body.scrollTop = 0;
 
       function enforceHeaderVisible() {
-        const topHeader = document.querySelector(".header");
-        if (topHeader) {
-          topHeader.style.setProperty("display", "block", "important");
-          topHeader.style.setProperty("visibility", "visible", "important");
-          topHeader.style.setProperty("opacity", "1", "important");
-          topHeader.style.setProperty("position", "fixed", "important");
-          topHeader.style.setProperty("top", "0", "important");
-          topHeader.style.setProperty("left", "0", "important");
-          topHeader.style.setProperty("right", "0", "important");
-          topHeader.style.setProperty("width", "100%", "important");
-          topHeader.style.setProperty("z-index", "99999", "important");
-        }
+        try {
+          const topHeader = document.querySelector(".header");
+          if (topHeader && topHeader.style) {
+            if (typeof topHeader.style.setProperty === "function") {
+              topHeader.style.setProperty("display", "block", "important");
+              topHeader.style.setProperty("visibility", "visible", "important");
+              topHeader.style.setProperty("opacity", "1", "important");
+              topHeader.style.setProperty("position", "fixed", "important");
+              topHeader.style.setProperty("top", "0", "important");
+              topHeader.style.setProperty("left", "0", "important");
+              topHeader.style.setProperty("right", "0", "important");
+              topHeader.style.setProperty("width", "100%", "important");
+              topHeader.style.setProperty("z-index", "99999", "important");
+            } else {
+              topHeader.style.display = "block";
+              topHeader.style.position = "fixed";
+              topHeader.style.top = "0";
+              topHeader.style.zIndex = "99999";
+            }
+          }
+        } catch(e) {}
       }
       enforceHeaderVisible();
 
@@ -5232,18 +5241,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       document.querySelectorAll(".nav-link").forEach(function(l) { l.classList.remove("active"); });
       if (typeof updateMobileBottomNav === "function") updateMobileBottomNav(viewId);
 
-      // 3. Render thông minh theo nhu cầu (Chỉ render 1 lần duy nhất hoặc khi có dữ liệu mới)
+      // 3. Render thông minh theo nhu cầu
       if (viewId === "viewStore") {
         document.getElementById("navStore")?.classList.add("active");
-        if (!_viewRendered["viewStore"] || _viewDirty["viewStore"]) {
-          _viewRendered["viewStore"] = true;
-          _viewDirty["viewStore"] = false;
-          if (typeof renderProductGrid === "function") renderProductGrid();
-          if (typeof renderBestSellers === "function") renderBestSellers();
-          if (typeof renderRecommended === "function") renderRecommended();
-          if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
-          if (typeof syncMarqueeNotice === "function") syncMarqueeNotice();
-        }
+        _viewRendered["viewStore"] = true;
+        _viewDirty["viewStore"] = false;
+        if (typeof renderCategories === "function") renderCategories();
+        if (typeof renderProductGrid === "function") renderProductGrid();
+        if (typeof renderBestSellers === "function") renderBestSellers();
+        if (typeof renderRecommended === "function") renderRecommended();
+        if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
+        if (typeof syncMarqueeNotice === "function") syncMarqueeNotice();
       }
 
       if (viewId === "viewAllProducts") {
@@ -17431,20 +17439,23 @@ function syncAllOpenViewsStock(changedProdId) {
     window.updateLiveRealTimeClock = updateLiveRealTimeClock;
     updateLiveRealTimeClock();
 
-    document.addEventListener("DOMContentLoaded", function() {
-      const gBtn = document.getElementById("btnGoogleCustom");
-      if (gBtn) {
-        gBtn.addEventListener("click", function(e) {
-          e.preventDefault();
-          triggerGoogleSignIn();
-        });
-      }
-      if (typeof loadStoredUser === "function") loadStoredUser();
-      if (typeof applyBrandCustomizations === "function") applyBrandCustomizations();
-      if (typeof syncZaloLinks === "function") syncZaloLinks();
-      if (typeof syncTelegramLinks === "function") syncTelegramLinks();
-      if (typeof syncMarqueeNotice === "function") syncMarqueeNotice();
-      if (typeof loadGeneralSettingsUI === "function") loadGeneralSettingsUI();
+        function initMMOApplication() {
+      try {
+        const gBtn = document.getElementById("btnGoogleCustom");
+        if (gBtn) {
+          gBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            triggerGoogleSignIn();
+          });
+        }
+      } catch(e) {}
+
+      try { if (typeof loadStoredUser === "function") loadStoredUser(); } catch(e) {}
+      try { if (typeof applyBrandCustomizations === "function") applyBrandCustomizations(); } catch(e) {}
+      try { if (typeof syncZaloLinks === "function") syncZaloLinks(); } catch(e) {}
+      try { if (typeof syncTelegramLinks === "function") syncTelegramLinks(); } catch(e) {}
+      try { if (typeof syncMarqueeNotice === "function") syncMarqueeNotice(); } catch(e) {}
+      try { if (typeof loadGeneralSettingsUI === "function") loadGeneralSettingsUI(); } catch(e) {}
 
       // Đăng ký nhận sự kiện cập nhật cấu hình tức thì từ các tab khác
       try {
@@ -17462,33 +17473,40 @@ function syncAllOpenViewsStock(changedProdId) {
           };
         }
       } catch(e) {}
-      if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
-      if (typeof renderCategories === "function") renderCategories();
-      if (typeof renderBestSellers === "function") renderBestSellers();
-      if (typeof renderRecommended === "function") renderRecommended();
-      if (typeof renderProductGrid === "function") renderProductGrid();
-      if (typeof renderSidebarBlogs === "function") renderSidebarBlogs();
-      if (typeof _viewRendered !== "undefined") _viewRendered["viewStore"] = true;
-      if (typeof updateLiveRealTimeClock === "function") updateLiveRealTimeClock();
-      if (typeof initGoogleAuth === "function") initGoogleAuth();
-      if (typeof initTursoUI === "function") initTursoUI();
-      if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
-        syncTursoProductsToLocalUI().then(() => {
-          return syncTursoStockToLocalUI();
-        }).catch(e => console.error("Turso init sync error:", e));
-      }
-      // Tự động tải sản phẩm mới nhất từ máy chủ để mọi người xem được ngay
-      const _urlHasProd = window.location.search && (window.location.search.includes("prod=") || window.location.search.includes("product=") || window.location.search.includes("view=viewProductDetail"));
-      setTimeout(function() {
-        if (typeof syncProductsFromBackend === "function") {
-          syncProductsFromBackend();
-        }
-        if (typeof syncAdminEmailsFromCloud === "function") {
-          syncAdminEmailsFromCloud();
-        }
-      }, _urlHasProd ? 50 : 300);
 
-      // RESTORE CURRENT ACTIVE VIEW AND SUB-TABS ON F5 REFRESH
+      // Hiển thị ngay lập tức toàn bộ danh mục và các hộp sản phẩm
+      try { if (typeof renderCategories === "function") renderCategories(); } catch(e) {}
+      try { if (typeof renderBestSellers === "function") renderBestSellers(); } catch(e) {}
+      try { if (typeof renderRecommended === "function") renderRecommended(); } catch(e) {}
+      try { if (typeof renderProductGrid === "function") renderProductGrid(); } catch(e) {}
+      try { if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts(); } catch(e) {}
+      try { if (typeof renderSidebarBlogs === "function") renderSidebarBlogs(); } catch(e) {}
+      try { if (typeof updateLiveRealTimeClock === "function") updateLiveRealTimeClock(); } catch(e) {}
+      try { if (typeof initGoogleAuth === "function") initGoogleAuth(); } catch(e) {}
+      try { if (typeof initTursoUI === "function") initTursoUI(); } catch(e) {}
+
+      try {
+        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
+          syncTursoProductsToLocalUI().then(() => {
+            return syncTursoStockToLocalUI();
+          }).catch(e => console.error("Turso init sync error:", e));
+        }
+      } catch(e) {}
+
+      // Tự động tải sản phẩm mới nhất từ máy chủ
+      try {
+        const _urlHasProd = window.location.search && (window.location.search.includes("prod=") || window.location.search.includes("product=") || window.location.search.includes("view=viewProductDetail"));
+        setTimeout(function() {
+          if (typeof syncProductsFromBackend === "function") {
+            syncProductsFromBackend();
+          }
+          if (typeof syncAdminEmailsFromCloud === "function") {
+            syncAdminEmailsFromCloud();
+          }
+        }, _urlHasProd ? 50 : 300);
+      } catch(e) {}
+
+      // Khôi phục view hiện tại
       try {
         let targetView = "viewStore";
         const hash = (window.location.hash || "").replace("#", "").trim();
@@ -17522,7 +17540,7 @@ function syncAllOpenViewsStock(changedProdId) {
         } else {
           switchView("viewStore");
         }
-        updateUserUI();
+        if (typeof updateUserUI === "function") updateUserUI();
 
         if (targetView === "viewAdmin") {
           const savedAdminTab = localStorage.getItem("mmo_admin_tab") || "tabAdmDashboard";
@@ -17530,16 +17548,23 @@ function syncAllOpenViewsStock(changedProdId) {
             switchAdminTab(savedAdminTab);
           }
         } else if (targetView === "viewProfile") {
-        if (typeof loadUserWalletFromCloud === "function") loadUserWalletFromCloud();
+          if (typeof loadUserWalletFromCloud === "function") loadUserWalletFromCloud();
           const savedProfTab = localStorage.getItem("mmo_profile_tab");
           if (savedProfTab && typeof switchProfileTab === "function") {
             switchProfileTab(savedProfTab);
           }
         }
       } catch(e) {}
-    });
+    }
+    window.initMMOApplication = initMMOApplication;
 
-    if (typeof window !== "undefined") {
+    // Kích hoạt ngay lập tức nếu DOM đã sẵn sàng hoặc gắn listener nếu đang tải
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initMMOApplication);
+    } else {
+      initMMOApplication();
+    }
+if (typeof window !== "undefined") {
       window.addEventListener("resize", function() {
         clearTimeout(window._mobileGridResizeTimer);
         window._mobileGridResizeTimer = setTimeout(function() {
@@ -20125,8 +20150,18 @@ function injectAllProductsSchema() {
     window.openPreOrderDetailView = openPreOrderDetailView;
 
     // Khách hàng bấm Hủy đơn (khi đang chờ xác nhận) - Hoàn tiền 100% vào ví
-    function customerCancelPreOrder() {
-      const order = window._currentViewingPreOrder;
+    function customerCancelPreOrder(orderIdOrOrder) {
+      let order = null;
+      if (orderIdOrOrder && typeof orderIdOrOrder === "object") {
+        order = orderIdOrOrder;
+      } else if (orderIdOrOrder && typeof orderIdOrOrder === "string") {
+        const list = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
+        const cleanId = String(orderIdOrOrder).replace("#", "").trim().toLowerCase();
+        order = list.find(o => String(o.id || o.orderCode || "").replace("#", "").trim().toLowerCase() === cleanId);
+      }
+      if (!order) {
+        order = window._currentViewingPreOrder;
+      }
       if (!order) {
         if (typeof showToast === "function") showToast("Không tìm thấy thông tin đơn hàng!", "error");
         return;
