@@ -19817,15 +19817,17 @@ function injectAllProductsSchema() {
       }
 
       // 1. Trừ tiền ví khách hàng chuẩn hóa đa nguồn
-      user.balance = userBalance - finalTotal;
+      const cleanEmail = (user.email || (currentUser ? currentUser.email : "") || "").toLowerCase().trim();
+      const newBal = Math.max(0, userBalance - finalTotal);
+      user.balance = newBal;
       currentUser = user;
       try {
-        localStorage.setItem("mmo_user", JSON.stringify(user));
-        const cleanU制定 = (user.email || "").toLowerCase().trim();
-        const allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : JSON.parse(localStorage.getItem("mmo_registered_users") || "[]");
-        const uIdx = allUsers.findIndex(function(u) { return (u.id && u.id === user.id) || ((u.email || "").toLowerCase().trim() === cleanU制定); });
+        localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        localStorage.setItem("mmo_last_balance_change_time", String(Date.now()));
+        let allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : JSON.parse(localStorage.getItem("mmo_registered_users") || "[]");
+        const uIdx = allUsers.findIndex(function(u) { return (u.id && u.id === user.id) || ((u.email || "").toLowerCase().trim() === cleanEmail); });
         if (uIdx !== -1) {
-          allUsers[uIdx].balance = user.balance;
+          allUsers[uIdx].balance = newBal;
           if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allUsers);
           else localStorage.setItem("mmo_registered_users", JSON.stringify(allUsers));
         }
@@ -20144,6 +20146,11 @@ function injectAllProductsSchema() {
       const order = window._currentViewingPreOrder;
       if (!order || (order.status !== "WAITING_CONFIRM" && order.status !== "PENDING")) {
         if (typeof showToast === "function") showToast("Đơn hàng này không thể hủy!", "warning");
+        return;
+      }
+
+      if (order.isRefunded || order.status === "CANCELLED" || order.isCancelled) {
+        if (typeof showToast === "function") showToast("Đơn hàng này đã được hủy và hoàn tiền trước đó!", "warning");
         return;
       }
 
@@ -20491,6 +20498,11 @@ function injectAllProductsSchema() {
       const preOrders = getPreOrders(true);
       const order = preOrders.find(function(o) { return String(o.id || o.orderCode).replace("#", "").trim() === cleanId; });
       if (!order) return;
+
+      if (order.isRefunded || order.status === "CANCELLED" || order.isCancelled) {
+        if (typeof showToast === "function") showToast("Đơn hàng này đã được hủy và hoàn tiền trước đó!", "warning");
+        return;
+      }
 
       const refundAmount = Number(order.total || order.totalPrice || 0);
       if (!confirm("Bạn có chắc chắn muốn HỦY đơn #" + (order.orderCode || order.id) + " và hoàn trả " + (typeof formatVND === "function" ? formatVND(refundAmount) : refundAmount.toLocaleString("vi-VN") + " đ") + " vào ví khách hàng?")) {
