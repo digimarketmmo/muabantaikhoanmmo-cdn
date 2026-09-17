@@ -41,6 +41,43 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       
       products: [
   {
+    "id": "PROD_MU5PWT7PP7",
+    "name": "TÀI KHOẢN KLING AI 65 CREDIT",
+    "category": "AI & Video",
+    "price": 8000,
+    "stock": 299,
+    "sold": 42,
+    "buffSold": 42,
+    "rating": 5,
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/kling_ai.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/kling_ai.png",
+    "commission": "10% (~800 đ)",
+    "warranty": "BH Đăng Nhập",
+    "description": "Tài khoản Kling AI chính hãng bản quyền 65 Credit, tạo video bằng trí tuệ nhân tạo mượt mà sắc nét. Bảo hành đăng nhập thành công 100%. Giao tự động 24/7 tức thì.",
+    "deliveryType": "api",
+    "variants": [
+      {
+        "name": "kling ai",
+        "price": 8000,
+        "stock": 299
+      }
+    ],
+    "apiMapping": {
+      "enabled": true,
+      "provider": "nguyenlieummo",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+      "sourceProdId": "119284",
+      "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
+      "sourcePrice": 3220,
+      "sourceStock": 299,
+      "targetProdId": "PROD_MU5PWT7PP7",
+      "targetProdName": "TÀI KHOẢN KLING AI 65 CREDIT"
+    },
+    "title": "TÀI KHOẢN KLING AI 65 CREDIT",
+    "isDeleted": false
+  },
+  {
     "id": "SP_CHATGPT",
     "name": "Tài khoản Chat GPT plush không giới hạn",
     "category": "AI & Video",
@@ -7024,13 +7061,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       const prod = (typeof prodOrId === "object") ? prodOrId : findShopProduct(prodOrId);
       if (!prod) return 0;
 
-      // Nếu sản phẩm cấu hình API on-demand
-      if (typeof getApiProductMapping === "function") {
-        const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
-        const varIdxNum = (vIdx !== null && vIdx !== undefined && vIdx !== "ALL" && vIdx !== "") ? Number(vIdx) : 0;
-        const vName = (hasVars && prod.variants[varIdxNum]) ? prod.variants[varIdxNum].name : "";
+      const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
+      const varIdxNum = (vIdx !== null && vIdx !== undefined && vIdx !== "ALL" && vIdx !== "") ? Number(vIdx) : 0;
+      const curVar = (hasVars && prod.variants[varIdxNum]) ? prod.variants[varIdxNum] : null;
+      const vName = curVar ? (curVar.name || "") : "";
 
-        // Ưu tiên tra cứu: 1. Theo tên biến thể (nếu có) -> 2. Theo ID sản phẩm -> 3. Theo apiMapping gắn trên object
+      // Nếu sản phẩm hoặc biến thể cấu hình API on-demand (nguyenlieummo, mail72h, sellmmo...)
+      const isApi = (prod.deliveryType === "api") || (prod.delivery_type === "api") || (prod.apiMapping && prod.apiMapping.enabled) || ((typeof isProductApi === "function") && isProductApi(prod));
+      if (isApi || typeof getApiProductMapping === "function") {
         let apiMap = null;
         if (vName) apiMap = getApiProductMapping(vName);
         if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
@@ -7038,7 +7076,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         }
 
         if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
-          return (apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) ? Math.max(0, Number(apiMap.sourceStock)) : 0;
+          let stk = (apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) ? Number(apiMap.sourceStock) : 0;
+          if (stk <= 0 && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+            const inSrc = cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId));
+            if (inSrc && typeof inSrc.amount === "number" && inSrc.amount > 0) {
+              stk = inSrc.amount;
+              apiMap.sourceStock = stk;
+            }
+          }
+          if (stk <= 0 && typeof prod.stock === "number" && prod.stock > 0) {
+            stk = prod.stock;
+          }
+          if (stk <= 0 && curVar && typeof curVar.stock === "number" && curVar.stock > 0) {
+            stk = curVar.stock;
+          }
+          if (stk > 0) return stk;
         }
       }
 
@@ -7048,7 +7100,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         return typeof prod.stock === "number" ? prod.stock : 0;
       }
 
-      const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
       if (!hasVars) {
         if (Array.isArray(prod.accounts) && prod.accounts.length > 0) return prod.accounts.length;
         if (typeof prod.stock === "number" && prod.stock > 0) return prod.stock;
@@ -7072,8 +7123,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       if (!v) return (typeof prod.stock === "number") ? prod.stock : 0;
       if (Array.isArray(v.accounts) && v.accounts.length > 0) return v.accounts.length;
       if (typeof v.stock === "number" && v.stock > 0) return v.stock;
-      // Fallback: nếu variant không có stock riêng nhưng prod.stock > 0,
-      // dùng prod.stock (tránh mất tồn kho khi variant chưa được gán stock)
       if (typeof prod.stock === "number" && prod.stock > 0) return prod.stock;
       if (Array.isArray(v.accounts)) return v.accounts.length;
       return typeof v.stock === "number" ? v.stock : (typeof prod.stock === "number" ? prod.stock : 0);
@@ -8808,6 +8857,31 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       }
 
+      // 6b. Tự động liên kết đặc biệt nguồn nguyenlieummo cho Kling AI và các sản phẩm API tương ứng
+      const normCheck = normName || (typeof normApiText === "function" ? normApiText(prodId) : String(prodId || '').toLowerCase());
+      if (normCheck.includes("kling") || prodId === "119284" || prodId === "PROD_MU5PWT7PP7" || prodId === "PROD_HLISPWTTFP7") {
+        let kStock = 299;
+        if (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+          const inKling = cachedSourceProducts.find(s => s && (String(s.id) === "119284" || (s.name && s.name.toLowerCase().includes("kling") && s.name.toLowerCase().includes("65"))));
+          if (inKling && typeof inKling.amount === "number" && inKling.amount > 0) kStock = inKling.amount;
+        }
+        if (maps["PROD_MU5PWT7PP7"] && typeof maps["PROD_MU5PWT7PP7"].sourceStock === "number" && maps["PROD_MU5PWT7PP7"].sourceStock > 0) {
+          kStock = Math.max(kStock, maps["PROD_MU5PWT7PP7"].sourceStock);
+        }
+        return enrichMapping({
+          enabled: true,
+          provider: "nguyenlieummo",
+          baseUrl: "https://nguyenlieummo.com.vn",
+          apiKey: "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+          sourceProdId: "119284",
+          sourceProdName: "TÀI KHOẢN KLING AI 65 CREDIT",
+          sourcePrice: 3220,
+          sourceStock: kStock,
+          targetProdId: "PROD_MU5PWT7PP7",
+          targetProdName: "TÀI KHOẢN KLING AI 65 CREDIT"
+        });
+      }
+
       // 7. Tra cứu trực tiếp trong cachedSourceProducts nếu có sản phẩm trùng khớp
       if (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts) && cachedSourceProducts.length > 0) {
         if (normName.includes("capcut")) {
@@ -9750,17 +9824,10 @@ function syncAllOpenViewsStock(changedProdId) {
 
           const targetStock = map.sourceStock || 0;
 
-          if (sourceBal < minPriceNeeded) {
-            // Balance thấp: hiển thị hết hàng nhưng GIỮ NGUYÊN sourceStock trong map
-            p.stock = 0;
-            if (Array.isArray(p.variants)) {
-              p.variants.forEach(v => { if (v) v.stock = 0; });
-            }
-          } else {
-            p.stock = targetStock;
-            if (Array.isArray(p.variants)) {
-              p.variants.forEach(v => { if (v) v.stock = targetStock; });
-            }
+          // Không zero-out kho của sản phẩm khi số dư ví admin thấp
+          p.stock = targetStock;
+          if (Array.isArray(p.variants)) {
+            p.variants.forEach(v => { if (v) v.stock = targetStock; });
           }
           p.apiMapping = map;
           p.deliveryType = "api";
@@ -12308,7 +12375,8 @@ function syncAllOpenViewsStock(changedProdId) {
             apiMap.sourceStock = freshAmount;
             curP.stock = freshAmount;
             curP.deliveryType = "api";
-            if (curP.apiMapping) curP.apiMapping.sourceStock = freshAmount;
+            if (!curP.apiMapping) curP.apiMapping = Object.assign({}, apiMap);
+            curP.apiMapping.sourceStock = freshAmount;
             if (Array.isArray(curP.variants)) {
               curP.variants.forEach(v => { if (v) v.stock = freshAmount; });
             }
@@ -12319,13 +12387,13 @@ function syncAllOpenViewsStock(changedProdId) {
               if (Array.isArray(curP.variants)) {
                 curP.variants.forEach(v => {
                   if (v && v.name) {
-                    if (!maps[v.name]) maps[v.name] = Object.assign({}, maps[curP.id], { targetProdName: v.name });
-                    maps[v.name].sourceStock = freshAmount;
+                    maps[v.name] = Object.assign({}, maps[curP.id], { targetProdName: v.name, sourceStock: freshAmount });
                   }
                 });
               }
               if (typeof saveApiProductMappings === "function") saveApiProductMappings(maps);
             } catch(e) {}
+            if (typeof saveProductsToStorage === "function") saveProductsToStorage();
           }
         } else {
           const realStock = typeof getProductStockCount === "function" ? getProductStockCount(curP) : (curP.stock || 0);
@@ -12575,12 +12643,22 @@ function syncAllOpenViewsStock(changedProdId) {
       const dtlCategory = document.getElementById("dtlCategory");
       if (dtlCategory) dtlCategory.innerText = (p.category || "").replace(/&amp;/g, '&');
 
-      // Cập nhật loại giao hàng và nguồn cung trên trang chi tiết
-      const isProdApi = (p.deliveryType === "api") || ((typeof isProductApi === "function") ? isProductApi(p) : false);
-      const apiMapInfo = isProdApi ? ((p && p.apiMapping) || getApiProductMapping(p)) : null;
-      if (isProdApi && apiMapInfo) {
+      // Cập nhật loại giao hàng và nguồn cung trên trang chi tiết (nguyenlieummo, mail72h, sellmmo)
+      const isProdApi = (p.deliveryType === "api") || (p.delivery_type === "api") || ((typeof isProductApi === "function") ? isProductApi(p) : false);
+      let apiMapInfo = isProdApi ? ((p && p.apiMapping) || getApiProductMapping(p) || getApiProductMapping(p.id) || getApiProductMapping(p.name)) : null;
+      if (isProdApi) {
         p.deliveryType = "api";
-        p.apiMapping = apiMapInfo;
+        if (apiMapInfo) {
+          p.apiMapping = apiMapInfo;
+          if (apiMapInfo.sourceStock > 0) {
+            p.stock = Math.max(p.stock || 0, apiMapInfo.sourceStock);
+            if (Array.isArray(p.variants)) {
+              p.variants.forEach(v => {
+                if (v && (!v.stock || v.stock === 0)) v.stock = apiMapInfo.sourceStock;
+              });
+            }
+          }
+        }
       }
             const dtlDeliveryType = document.getElementById("dtlDeliveryType") || document.querySelector(".dtl-delivery-type");
       if (dtlDeliveryType) {
@@ -12603,6 +12681,15 @@ function syncAllOpenViewsStock(changedProdId) {
       let initialVariantStock = getShopVariantStock(p, currentSelectedVariantIndex);
       syncDetailStockUI(initialVariantStock);
       refreshAllShopStockUI(p.id);
+
+      // TỰ ĐỘNG ĐỒNG BỘ TỒN KHO NGUỒN LIVE NGAY LẬP TỨC CHO SẢN PHẨM API (nguyenlieummo, mail72h, sellmmo)
+      if (isProdApi || (apiMapInfo && apiMapInfo.enabled && apiMapInfo.sourceProdId)) {
+        setTimeout(function() {
+          if (typeof triggerLiveDetailStockSync === "function") {
+            triggerLiveDetailStockSync(null);
+          }
+        }, 50);
+      }
       if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
         MMO_WORKER_API.fetchProduct(p.id).then(res => {
           if (res && res.success && res.product) {
