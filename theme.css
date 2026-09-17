@@ -4015,6 +4015,11 @@ html, body { overflow-x: clip !important; max-width: 100vw !important; }
   scrollbar-color: #1e293b transparent !important;
 }
 
+/* ẨN HOÀN TOÀN NÚT ĐĂNG NHẬP ẨN DANH TRONG MODAL */
+.btn-guest-login, #btnGuestLoginCustom {
+  display: none !important;
+}
+
 /* ==========================================================================
    VIEW 2: THU HẸP THANH GIỮA & PHÓNG TO 2 THANH BÊN ĐỂ HIỂN THỊ ĐẦY ĐỦ THÔNG TIN
    ========================================================================== */
