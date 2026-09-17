@@ -919,7 +919,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     "name": "TikTok US Chuẩn Bật Kiếm Tiền Beta",
     "category": "TikTok",
     "price": 5000,
-    "stock": 0,
+    "stock": 20,
     "sold": 56,
     "rating": 5,
     "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
@@ -934,7 +934,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       {
         "name": "tiktok us 2024-2025",
         "price": 15000,
-        "stock": 0
+        "stock": 20
       }
     ],
     "description": "TK TikTok US Chuẩn Bật Kiếm Tiền Beta 2024-2025",
@@ -2358,6 +2358,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       const tbody = document.getElementById("admTxTableBody");
       if (!tbody) return;
       const history = getTransactionHistory();
+      const txBadgeEl = document.getElementById("admTxCountBadge");
+      if (txBadgeEl) txBadgeEl.innerText = history.length;
 
       if (history.length === 0) {
         tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:24px; color:#64748b;">Chưa có lịch sử giao dịch nào được ghi lại.</td></tr>';
@@ -12812,6 +12814,34 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.openLiveSupport = openLiveSupport;
 
+    function handleGuestLogin() {
+      const guestId = "GUEST_" + Math.floor(100000 + Math.random() * 900000);
+      const guestEmail = "khach_andanh_" + Math.floor(1000 + Math.random() * 9000) + "@gmail.com";
+      currentUser = {
+        userId: guestId,
+        name: "Khách Ẩn Danh",
+        email: guestEmail,
+        role: "Thành Viên",
+        balance: 1000000,
+        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(guestEmail),
+        isGuest: true
+      };
+      try {
+        localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        let users = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+        if (!users.some(u => u.email === guestEmail)) {
+          users.unshift(currentUser);
+          if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(users);
+        }
+      } catch(e) {}
+      if (typeof updateUserUI === "function") updateUserUI();
+      if (typeof updateWalletUI === "function") updateWalletUI();
+      if (typeof closeModal === "function") closeModal("authModal");
+      if (typeof showToast === "function") showToast("🎉 Đã kích hoạt tài khoản Ẩn Danh (Số dư ví: 1.000.000 đ)!", "success");
+    }
+    window.handleGuestLogin = handleGuestLogin;
+
+
 
 
     // ==========================================
@@ -21783,6 +21813,14 @@ function injectAllProductsSchema() {
       const warrantyBadge = document.getElementById("admWarrantyCountBadge");
       if (warrantyBadge) warrantyBadge.innerText = warrantyCount;
 
+      const txBadge = document.getElementById("admTxCountBadge");
+      if (txBadge) {
+        try {
+          const txHist = JSON.parse(localStorage.getItem("mmo_transaction_history") || "[]");
+          txBadge.innerText = txHist.length;
+        } catch(e) {}
+      }
+
       let orders = allOrders;
 
       if (adminOrdersActiveSubTab === "warranty") {
@@ -22096,6 +22134,68 @@ function injectAllProductsSchema() {
             _cachedPreOrdersList = null;
             _lastPreOrdersFetchTime = 0;
 
+            // D. Đồng bộ vào Lịch Sử Giao Dịch Toàn Sàn & Biến Động Số Dư Ví (mmo_transaction_history & mmo_balance_logs)
+            let txHistory = [];
+            try { txHistory = JSON.parse(localStorage.getItem("mmo_transaction_history") || "[]"); } catch(e) {}
+            let bLogs = [];
+            try { bLogs = JSON.parse(localStorage.getItem("mmo_balance_logs") || "[]"); } catch(e) {}
+
+            data.orders.forEach(function(cloudOrd) {
+              const rawId = String(cloudOrd.orderId || cloudOrd.id || "").replace(/#/g, "").trim();
+              const cIdLower = rawId.toLowerCase();
+              const isPre = rawId.startsWith("PRE") || (cloudOrd.type === "PRE_ORDER") || String(cloudOrd.productName || "").toLowerCase().includes("đặt trước");
+              const ordAmt = Number(cloudOrd.total || cloudOrd.totalPrice || cloudOrd.amount) || 0;
+              const ordDate = cloudOrd.createdAt || cloudOrd.date || new Date().toLocaleString("vi-VN");
+
+              const existsInTx = txHistory.some(function(t) {
+                return String(t.orderId || t.txId || t.id || "").replace(/#/g, "").trim().toLowerCase() === cIdLower;
+              });
+              if (!existsInTx) {
+                txHistory.push({
+                  txId: "TX_" + rawId,
+                  id: "TX_" + rawId,
+                  orderId: rawId,
+                  userEmail: cloudOrd.email || "khach@gmail.com",
+                  userName: cloudOrd.userName || "Khách Hàng",
+                  type: isPre ? "Thanh toán đặt hàng trước" : "Mua hàng thành công",
+                  amount: -ordAmt,
+                  balanceAfter: 0,
+                  date: ordDate,
+                  time: ordDate,
+                  timestamp: (typeof getOrderTimestamp === "function") ? getOrderTimestamp(cloudOrd) : Date.now(),
+                  note: (isPre ? "Đặt trước " : "Đơn hàng ") + (cloudOrd.productName || "") + " #" + rawId
+                });
+              }
+
+              const existsInBLog = bLogs.some(function(b) {
+                return String(b.orderId || b.id || "").replace(/#/g, "").trim().toLowerCase() === cIdLower;
+              });
+              if (!existsInBLog) {
+                bLogs.push({
+                  id: "TX_LOG_" + rawId,
+                  orderId: rawId,
+                  userId: cloudOrd.email || "guest",
+                  userEmail: cloudOrd.email || "",
+                  username: cloudOrd.userName || "Khách Hàng",
+                  type: "PAYMENT",
+                  typeText: isPre ? "Thanh toán đặt hàng trước" : "Thanh toán đơn hàng",
+                  amount: -ordAmt,
+                  balanceAfter: 0,
+                  time: ordDate,
+                  timestamp: (typeof getOrderTimestamp === "function") ? getOrderTimestamp(cloudOrd) : Date.now(),
+                  note: (isPre ? "Đặt trước " : "Đơn hàng ") + (cloudOrd.productName || "") + " #" + rawId
+                });
+              }
+            });
+
+            try { localStorage.setItem("mmo_transaction_history", JSON.stringify(txHistory)); } catch(e) {}
+            try { localStorage.setItem("mmo_balance_logs", JSON.stringify(bLogs)); } catch(e) {}
+
+            const txBadge = document.getElementById("admTxCountBadge");
+            if (txBadge) txBadge.innerText = txHistory.length;
+            const ordBadge = document.getElementById("admOrdersCountBadge");
+            if (ordBadge) ordBadge.innerText = localOrders.length;
+
             syncSuccess = true;
             syncCount = data.orders.length;
             if (!isSilent && typeof showToast === "function") {
@@ -22110,6 +22210,7 @@ function injectAllProductsSchema() {
       if (syncSuccess) {
         if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
         if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
+        if (typeof renderAdminTxTable === "function") renderAdminTxTable();
         if (typeof renderSystemOverview === "function") renderSystemOverview();
         if (typeof renderProfileOrders === "function") renderProfileOrders();
         try { window.dispatchEvent(new CustomEvent("mmo_preorders_changed")); } catch(e) {}
