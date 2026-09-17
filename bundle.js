@@ -3134,21 +3134,100 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     }
     window.toggleAdmProductSourceFields = toggleAdmProductSourceFields;
 
-    function handleAdmModalProviderChange() {
+    function filterAdmModalSourceProducts(keyword) {
       const pSel = document.getElementById("admProdApiProvider");
       const sSel = document.getElementById("admProdApiSourceSelect");
-      if (!pSel || !sSel) return;
-      const provider = pSel.value || "mail72h";
-      const prods = (typeof cachedSourceProducts !== "undefined") ? cachedSourceProducts : [];
-      const filtered = prods.filter(s => !s.provider || s.provider === provider);
+      const countSpan = document.getElementById("admSourceSearchCount");
+      const clearBtn = document.getElementById("btnAdmClearSourceSearch");
+      if (!sSel) return;
 
-      sSel.innerHTML = '<option value="">-- Chọn sản phẩm nguồn --</option>' + filtered.map(s => {
-        return '<option value="' + s.id + '" data-price="' + s.price + '" data-stock="' + s.amount + '">' +
-          '[' + escapeHtml(s.category || provider) + '] ' + escapeHtml(s.name) + ' - ' + formatVND(s.price) + ' (Tồn: ' + (s.amount || 0).toLocaleString() + ')' +
+      const kw = (keyword || "").trim().toLowerCase();
+      if (clearBtn) clearBtn.style.display = kw ? "inline-block" : "none";
+
+      const provider = pSel ? (pSel.value || "mail72h") : "mail72h";
+      const prods = (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : [];
+      let filtered = prods.filter(s => !s.provider || s.provider === provider);
+      const totalInProvider = filtered.length;
+
+      if (kw) {
+        const removeAccents = function(str) {
+          return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+        };
+        const normKw = removeAccents(kw);
+        const words = normKw.split(/\s+/).filter(Boolean);
+
+        filtered = filtered.filter(s => {
+          const rawText = ((s.category || "") + " " + (s.name || "") + " " + (s.id || "")).toLowerCase();
+          const normText = removeAccents(rawText);
+          return words.every(w => normText.includes(w) || rawText.includes(w));
+        });
+      }
+
+      if (countSpan) {
+        if (kw) {
+          countSpan.innerHTML = '<span style="color:#10b981;"><i class="fa-solid fa-check"></i> ' + filtered.length + '/' + totalInProvider + ' SP</span>';
+        } else {
+          countSpan.innerHTML = '<span style="color:#94a3b8;">' + totalInProvider + ' SP</span>';
+        }
+      }
+
+      const currentVal = sSel.value;
+      let optionsHtml = '<option value="">-- ' + (kw ? ('Tìm thấy ' + filtered.length + ' SP (Bấm để chọn)') : ('Chọn sản phẩm nguồn (' + filtered.length + ' SP)')) + ' --</option>';
+
+      optionsHtml += filtered.map(s => {
+        const isSelected = String(s.id) === String(currentVal) ? ' selected' : '';
+        const pPrice = Number(s.price || 0);
+        const pStock = Number(s.amount || 0);
+        const priceStr = (typeof formatVND === "function") ? formatVND(pPrice) : (pPrice.toLocaleString("vi-VN") + " đ");
+        return '<option value="' + s.id + '" data-price="' + pPrice + '" data-stock="' + pStock + '"' + isSelected + '>' +
+          '[' + escapeHtml(s.category || provider) + '] ' + escapeHtml(s.name) + ' - ' + priceStr + ' (Tồn: ' + pStock.toLocaleString() + ')' +
         '</option>';
       }).join("");
 
+      sSel.innerHTML = optionsHtml;
+
+      if (kw && filtered.length === 1 && !sSel.value) {
+        sSel.value = String(filtered[0].id);
+      }
       handleAdmModalSourceChange();
+    }
+    window.filterAdmModalSourceProducts = filterAdmModalSourceProducts;
+
+    function clearAdmModalSourceSearch() {
+      const searchInput = document.getElementById("admProdApiSourceSearch");
+      if (searchInput) {
+        searchInput.value = "";
+        searchInput.focus();
+      }
+      filterAdmModalSourceProducts("");
+    }
+    window.clearAdmModalSourceSearch = clearAdmModalSourceSearch;
+
+    function autoFillSourceSearchFromName() {
+      const nameInput = document.getElementById("admProdName");
+      const searchInput = document.getElementById("admProdApiSourceSearch");
+      if (!nameInput || !searchInput) return;
+      let val = nameInput.value.trim();
+      if (!val) {
+        if (typeof showToast === "function") showToast("Vui lòng nhập Tên Sản Phẩm ở trên trước!", "warning");
+        nameInput.focus();
+        return;
+      }
+      let clean = val.replace(/^(tài\s*khoản|tai\s*khoan|acc|tk|chuyên\s*cung\s*cấp)\s+/i, '').trim();
+      const parts = clean.split(/\s+/).slice(0, 2).join(' ');
+      searchInput.value = parts || clean;
+      searchInput.focus();
+      filterAdmModalSourceProducts(searchInput.value);
+      if (typeof showToast === "function") showToast("Đã lọc nguồn theo: " + (parts || clean), "info");
+    }
+    window.autoFillSourceSearchFromName = autoFillSourceSearchFromName;
+
+    function handleAdmModalProviderChange() {
+      const searchInput = document.getElementById("admProdApiSourceSearch");
+      if (searchInput) searchInput.value = "";
+      const clearBtn = document.getElementById("btnAdmClearSourceSearch");
+      if (clearBtn) clearBtn.style.display = "none";
+      filterAdmModalSourceProducts("");
     }
     window.handleAdmModalProviderChange = handleAdmModalProviderChange;
 
