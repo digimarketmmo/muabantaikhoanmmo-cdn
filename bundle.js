@@ -11370,15 +11370,11 @@ function syncAllOpenViewsStock(changedProdId) {
     function getBackendApiUrl() {
       try {
         const sys = typeof getGeneralSettings === "function" ? getGeneralSettings() : {};
-        if (sys && sys.gasUrl && sys.gasUrl.trim()) {
-          if (sys.gasUrl.includes("AKfycbxNVgZI") || sys.gasUrl.includes("AKfycbx0dSYQOt6") || sys.gasUrl.includes("AKfycbx5PNa") || sys.gasUrl.includes("AKfycbxX7")) return "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
+        if (sys && sys.gasUrl && sys.gasUrl.trim() && sys.gasUrl.includes("AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW")) {
           return sys.gasUrl.trim();
         }
       } catch(e) {}
-      if (typeof API_URL !== "undefined" && API_URL && !API_URL.includes("PLACEHOLDER")) {
-        return API_URL.trim();
-      }
-      return "";
+      return "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
     }
     window.getBackendApiUrl = getBackendApiUrl;
 
