@@ -8292,12 +8292,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         if (effectiveStock > 0) {
           btnBuy.disabled = false;
           btnBuy.classList.remove("btn-pre-order");
-          btnBuy.innerHTML = '<i class="fa-solid fa-bolt"></i> MUA NGAY';
+          btnBuy.innerHTML = '<i class="fa-solid fa-bolt" style="font-size:1.05rem;"></i> <span style="font-weight:700; letter-spacing:0.5px;">MUA NGAY</span>';
           btnBuy.style.background = "linear-gradient(135deg, #10b981, #059669)";
-          btnBuy.style.color = "#fff";
+          btnBuy.style.color = "#ffffff";
+          btnBuy.style.fontWeight = "700";
+          btnBuy.style.letterSpacing = "0.5px";
+          btnBuy.style.display = "inline-flex";
+          btnBuy.style.alignItems = "center";
+          btnBuy.style.justifyContent = "center";
+          btnBuy.style.gap = "8px";
           btnBuy.style.opacity = "1";
           btnBuy.style.cursor = "pointer";
           btnBuy.style.boxShadow = "0 4px 15px rgba(16,185,129,0.35)";
+          btnBuy.style.textShadow = "0 1px 2px rgba(0, 0, 0, 0.2)";
+          btnBuy.style.border = "1px solid rgba(255, 255, 255, 0.15)";
           btnBuy.onclick = function() {
             if (typeof executeBuyCurrentProduct === "function") executeBuyCurrentProduct();
             else if (typeof handleDetailBuyAction === "function") handleDetailBuyAction();
@@ -8305,13 +8313,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         } else {
           btnBuy.disabled = false;
           btnBuy.classList.add("btn-pre-order");
-          btnBuy.innerHTML = '<i class="fa-solid fa-calendar-check"></i> ĐẶT TRƯỚC';
-          btnBuy.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
-          btnBuy.style.color = "#000";
-          btnBuy.style.fontWeight = "800";
+          btnBuy.innerHTML = '<i class="fa-solid fa-calendar-check" style="font-size:1.05rem;"></i> <span style="font-weight:700; letter-spacing:0.5px;">ĐẶT TRƯỚC</span>';
+          btnBuy.style.background = "linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)";
+          btnBuy.style.color = "#ffffff";
+          btnBuy.style.fontWeight = "700";
+          btnBuy.style.letterSpacing = "0.5px";
+          btnBuy.style.display = "inline-flex";
+          btnBuy.style.alignItems = "center";
+          btnBuy.style.justifyContent = "center";
+          btnBuy.style.gap = "8px";
           btnBuy.style.opacity = "1";
           btnBuy.style.cursor = "pointer";
-          btnBuy.style.boxShadow = "0 4px 15px rgba(245,158,11,0.35)";
+          btnBuy.style.boxShadow = "0 4px 16px rgba(234, 88, 12, 0.4)";
+          btnBuy.style.textShadow = "0 1px 2px rgba(0, 0, 0, 0.25)";
+          btnBuy.style.border = "1px solid rgba(255, 255, 255, 0.25)";
           btnBuy.onclick = function() {
             if (typeof openPreOrderModal === "function") openPreOrderModal();
           };
