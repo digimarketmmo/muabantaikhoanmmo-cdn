@@ -1,1349 +1,1360 @@
+// GLOBAL CORE CONSTANTS
+    var ITEMS_PER_PAGE = 10;
+    window.ITEMS_PER_PAGE = 10;
+    var adminOrdersActiveSubTab = "orders";
+    window.adminOrdersActiveSubTab = "orders";
+    var adminOrdersSearchQuery = "";
+    window.adminOrdersSearchQuery = "";
+    var adminOrdersStatusFilter = "ALL";
+    window.adminOrdersStatusFilter = "ALL";
+  
+
 const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyHkIlfSpwQXrtVz65Z-k0dwSyAaWbr6NW32-xPB8s8pgi_gw/exec";
 
     const MOCK_DATA = {
       categories: ["Tất cả","AI & Video","Facebook","Gmail","Rom & Tools","TikTok","HOT MAIL","Intagram","Chatgpt","Phone Farm","VPN Proxy","Capcut","Canva","Khác","YOUTUBE"],
       blogCategories: ["Tất cả","Kiếm Tiền MMO","TikTok & Affiliate","Gmail & Tools"],
       blogs: [
-      {
-            "id": "BLOG_REAL_1",
-            "title": "Cách tạo gmail không cần số điện thoại mới  nhất",
-            "url": "https://www.muabantaikhoanmmo.com/2026/09/cach-tao-gmail-khong-can-so-ien-thoai.html",
-            "date": "2026-09-14",
-            "category": "Kiếm Tiền MMO",
-            "views": "1.2k",
-            "image": "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&auto=format&fit=crop&q=80",
-            "excerpt": "Cách tạo Gmail không cần số điện thoại là giải pháp được nhiều người tìm kiếm khi muốn đăng ký tài khoản nhanh mà vẫn đảm bảo quyền riêng tư. Nếu bạn chưa biết cách tạo mail mới đơ...",
-            "content": "Cách tạo Gmail không cần số điện thoại là giải pháp được nhiều người tìm kiếm khi muốn đăng ký tài khoản nhanh mà vẫn đảm bảo quyền riêng tư. Nếu bạn chưa biết cách tạo mail mới đơn giản và hiệu quả, đừng lo. Cùng khám phá ngay hướng dẫn chi tiết trong bài viết dưới đây để thực hiện chỉ trong vài phút nhé!<br /><h2 style=\"text-align: left;\">Điều kiện để đăng ký Gmail không cần số điện thoại thành công</h2>Google không bắt buộc mọi tài khoản phải có số điện thoại, nhưng hệ thống chỉ hiển thị tùy chọn bỏ qua khi thiết bị và mạng của bạn được đánh giá là an toàn. Nắm rõ các điều kiện dưới đây sẽ giúp tạo Gmail không cần số điện thoại suôn sẻ hơn.Trường số điện thoại hiển thị chữ “Không bắt buộc” hoặc “Tùy chọn”, khi đó bạn có thể để trống và tiếp tục.<br />Thiết bị và địa chỉ IP chưa tạo quá nhiều tài khoản trong thời gian ngắn, tránh bị hệ thống nghi ngờ.<br />Ưu tiên dùng trình duyệt ẩn danh hoặc đổi mạng khác nếu lần trước bị yêu cầu nhập số điện thoại.<br />Điền đầy đủ họ tên, ngày sinh và đặt mật khẩu mạnh để giảm khả năng bị đánh dấu là bot.<br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-1.jpg\" />Tối ưu thiết bị và mạng an toàn giúp tạo Gmail không cần OTP<br /><br /><br /><h2 style=\"text-align: left;\">Cách tạo Gmail không cần số điện thoại trên điện thoại</h2><br />Bạn có thể tạo Gmail không cần số điện thoại trực tiếp trên thiết bị mà không cần cài thêm ứng dụng. Cách tạo Gmail trên điện thoại áp dụng được cho cả Android và iOS, thao tác nhanh gọn trong vài phút.<br />Đăng ký Gmail không cần số điện thoại trên Android<br /><br />Với máy Samsung, Xiaomi hay OPPO, cách lập Gmail trên điện thoại có thể thực hiện trực tiếp trong phần cài đặt hệ thống.<br /><br />1. Truy cập trình quản lý tài khoản trên thiết bị Vào mục Cài đặt trên thiết bị.<br />Tìm và nhấn vào Tài khoản và sao lưu.<br />Truy cập mục Quản lý tài khoản để tiếp tục.<br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-2.jpg\" /><br /><br />2. Thêm tài khoản GoogleKéo xuống cuối màn hình và chọn Thêm tài khoản.<br />Chọn biểu tượng Google trong danh sách hiện ra và xác minh danh tính.<br />Nhấn mục Tạo tài khoản (mục đích cá nhân hoặc mục đích công việc).<br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-3.jpg\" /><br /><br />3. Hoàn tất thông tin cá nhânNhập Họ và tên người sử dụng và nhấn Tiếp theo.<br />Cung cấp Ngày, tháng, năm sinh và Giới tính và chọn Tiếp theo.<br />Chọn địa chỉ Gmail được đề xuất hoặc tạo tên Gmail theo ý muốn, rồi nhấn Tiếp theo.<br /><br /> <br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-4.jpg\" />Điền thông tin cơ bản và chọn địa chỉ Gmail mong muốn <br /><br />4. Tạo mật khẩu và xác nhận điều khoản GoogleTạo Mật khẩu và nhấn vào mục Tiếp theo.<br />Kéo xuống và nhấn Tôi đồng ý với các điều khoản dịch vụ của Google để hoàn tất.<br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-5.jpg\" /><br /><br />Lưu ý: Giao diện hoặc vị trí menu có thể thay đổi theo phiên bản.<br />Đăng ký Gmail không cần số điện thoại trên iOS<br /><br />Để tạo Gmail không cần số điện thoại trên điện thoại, bạn có thể làm theo hướng dẫn nhanh sau đây: Mở Gmail &gt; Nhấn ảnh đại diện &gt; Chọn Thêm tài khoản &gt; Google &gt; Nhấn Tạo tài khoản &gt; Điền thông tin và bỏ qua bước nhập số điện thoại (Skip) nếu được &gt; Xác nhận và hoàn tất đăng ký. Cùng xem ngay cách làm chi tiết nhé!Bước 1: Vào Email, ấn vào biểu tượng tài khoản gmail ở góc phải trên cùng và chọn Thêm tài khoản khác.<br />Bước 2: Tại cửa sổ thiết lập email, bạn chọn vào Google.<br />Bước 3: Tại đây bạn chọn tiếp vào mục Dành cho mục đích cá nhân của tôi và ấn Tiếp theo. <br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-3.jpg\" />Bước 4: Chọn tên gmail gợi ý hoặc vào Tạo địa chỉ Gmail của riêng bạn để tự điền tên tài khoản theo ý muốn và bấm Tiếp theo.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-4.jpg\" />Bước 5: Nhập mật khẩu bạn muốn đặt và chọn vào Tiếp theo.<br />Bước 6: Tại mục thêm số điện thoại xác minh, bạn ấn vào Bỏ qua để hoàn tất việc tạo tài khoản.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-5.jpg\" /><br /><h2 style=\"text-align: left;\">Cách tạo gmail không cần số điện thoại trên máy tính</h2><br />Để tạo Gmail không cần số điện thoại trên máy tính, bạn có thể làm theo hướng dẫn nhanh sau đây: Truy cập accounts.google.com &gt; Chọn Tạo tài khoản &gt; Điền thông tin cá nhân &gt; Ở bước số điện thoại chọn Bỏ qua (Skip) nếu hệ thống cho phép &gt; Xác nhận email và hoàn tất đăng ký.<br /><br />Nếu hướng dẫn trên quá nhanh và bạn không theo kịp thì có thể thực hiện cách tạo gmail miễn phí không cần số điện thoại qua các bước chi tiết sau:Bước 1: Vào biểu tượng Google, sau đó nhấn tổ hợp 3 phím Ctrl + Shift + N cùng 1 lúc để mở trình ẩn danh.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-7.jpg\" />Bước 2: Tại thanh tìm kiếm, bạn nhập “https://accounts.google.com/signup” để dẫn vào giao diện tạo tài khoản mới và nhập Họ tên.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-8.jpg\" />Bước 3: Điền tiếp tục các thông tin Ngày/tháng/năm và Giới tính rồi chọn vào Tiếp theo.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-9.jpg\" />Bước 4: Chọn gmail đề xuất hoặc bấm vào Tạo địa chỉ gmail của riêng bạn để nhập tên theo ý muốn bản thân và ấn Tiếp theo.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-10.jpg\" />Bước 5: Điền mật khẩu và xác nhận lại và bấm vào Tiếp theo.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-11.jpg\" />Bước 6: Khi hoàn tất 5 bước trên, trình duyệt sẽ dẫn bạn đến mục Xem lại thông tin tài khoản, tại đây bạn chọn Tiếp theo để hoàn tất.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-12.jpg\" /><br /><br />Chỉ với 6 bước đơn giản và nhanh chóng, bạn đã tạo được một gmail để sử dụng không cần SDT trên máy tính rất nhanh chóng và đơn giản. Nếu có khó khăn trong việc tạo gmail hãy để lại bình luận bên dưới để được Sforum giải đáp nhé!<br />Các lỗi thường gặp khi đăng ký Gmail không cần số điện thoại<br /><br />Trong quá trình tạo tài khoản Gmail không cần số điện thoại, bạn có thể gặp một số tình huống không thể bỏ qua bước xác minh. Dưới đây là một số cách xử lý bạn có thể áp dụng để khắc phục lỗi:Hệ thống bắt buộc nhập số điện thoại: Thường do IP đã tạo nhiều tài khoản hoặc bị nghi ngờ là bot. Bạn hãy đổi sang mạng 4G, WiFi khác hoặc thử lập Gmail không cần số điện thoại sau 24 giờ.<br />Không thấy nút Bỏ qua: Thử mở lại bằng trình duyệt ẩn danh hoặc chuyển sang thiết bị khác để hệ thống bớt nghi ngờ.<br />Tài khoản bị khóa ngay sau khi tạo: Xảy ra khi dùng để gửi thư rác hoặc vi phạm chính sách, vì tài khoản thiếu thông tin xác thực nên dễ bị quét hơn.<br />Không nhận được đề xuất tên Gmail: Kiểm tra lại kết nối mạng và nhập tên người dùng khác nếu tên đã có người sử dụng.<br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-6.jpg\" /><br />Ưu nhược điểm khi tạo gmail không cần số điện thoại<br /><br />Việc tạo gmail không cần số điện thoại luôn mang đến nhiều tiện ích trong công việc khi sử dụng. Tuy nhiên, cách cách lập email này cũng ẩn chứa không ít rủi ro làm ảnh hưởng đến các thông tin mà bạn cần bảo mật. Sau đây là một số ưu và nhược điểm mà bạn nên đọc kỹ trước khi quyết định lập tài khoản gmail không xác minh số điện thoại.<br /><br />Ưu điểm:Giúp bạn tạo được nhiều tài khoản phụ cho game, tiktok, facebook,... để seeding hoặc tặng quà cho tài khoản chính.<br />Phục vụ khi xử lý công việc nhóm hay nhiều người dùng chung một tài khoản mà không phải mất thời gian cho bước xác minh.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-1.jpg\" /><br /><br />Nhược điểm:Khi tạo Gmail trên điện thoại mà không liên kết số điện thoại, mức độ bảo mật có thể giảm do thiếu phương thức xác minh quyền sở hữu khi cần. Nếu tài khoản không được bảo vệ tốt, các dịch vụ liên kết cũng dễ bị ảnh hưởng.<br />Ngoài ra, việc khôi phục tài khoản sẽ khó khăn hơn khi gặp sự cố, vì xác minh bằng số điện thoại vẫn là cách nhanh và hiệu quả nhất để lấy lại quyền truy cập.<br />Cách xóa số điện thoại đã đăng ký tạo email<br /><br />Nếu gmail của bạn trước đây có cài số điện thoại nhưng giờ muốn xóa bỏ thì có thể làm theo các bước sau:Bước 1: Vào biểu tượng hình 3 gạch ngang rồi vô Cài đặt và nhấn vào Tên tài khoản.<br />Bước 2: Tiếp theo hãy chọn vào Thông tin, quyền riêng tư và bảo mật của bạn.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-13.jpg\" />Bước 3: Vào Thông tin cá nhân vào chọn vào Số điện thoại đăng ký, sau đó chọn tiếp số điện thoại ở giao mới và bấm vào biểu tượng Thùng rác để xóa.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-14.jpg\" /><br /><br />Hy vọng qua bài viết, bạn đã nắm rõ cách tạo Gmail không cần số điện thoại trên máy tính và điện thoại để đăng ký nhanh chóng và bảo mật hơn. Khi hiểu thêm cách tạo địa chỉ email, bạn sẽ dễ dàng sử dụng cho công việc, học tập và liên lạc hằng ngày. Hãy thử áp dụng ngay để sở hữu tài khoản email của riêng bạn nhé!"
-      },
-      {
-            "id": "BLOG_REAL_2",
-            "title": "Topp 15 Cách kiếm tiền trên TikTok hiệu quả ",
-            "url": "https://www.muabantaikhoanmmo.com/2026/09/topp-15-cach-kiem-tien-tren-tiktok-hieu.html",
-            "date": "2026-09-14",
-            "category": "Kiếm Tiền MMO",
-            "views": "1.2k",
-            "image": "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&auto=format&fit=crop&q=80",
-            "excerpt": "&nbsp;Ngày nay, trào lưu kiếm tiền trên Tiktok đã mang lại siêu lợi nhuận cho rất nhiều shop, nhà bán hàng và cá nhân sáng tạo. Với hơn một tỷ người dùng, TikTok đã trở thành một v...",
-            "content": "<p>&nbsp;<span style=\"background-color: white; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; font-weight: bolder; text-align: justify;\">Ngày nay, trào lưu kiếm tiền trên Tiktok đã mang lại siêu lợi nhuận cho rất nhiều shop, nhà bán hàng và cá nhân sáng tạo. Với hơn một tỷ người dùng, TikTok đã trở thành một vùng đất màu mỡ cho mọi người muốn kiếm tiền bất kỳ đâu tại nhà. Trong bài viết này, Sforum sẽ hướng dẫn các cách bật kiếm tiền trên TikTok Shop, TikTok cá nhân bằng tiếp thị liên kết Affiliate nhé!</span></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"15 Cách kiếm tiền trên TikTok hiệu quả nhanh chóng nhất \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-1.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"15 Cách kiếm tiền trên TikTok hiệu quả nhanh chóng nhất \" width=\"960\" /></p><h2 id=\"ban-hang-truc-tiep-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Bán hàng trực tiếp trên TikTok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bán hàng trực tiếp là một cách kiếm tiền trên Tiktok Shop tuyệt vời nhất để tận dụng sức mạnh của nền tảng này và kết nối trực tiếp với khách hàng tiềm năng. TikTok không chỉ là nơi để chia sẻ video vui nhộn, mà còn là một thị trường trực tiếp cho các doanh nhân và nhà kinh doanh.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Bán hàng là cách kiếm tiền trên TikTok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-2.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Bán hàng là cách kiếm tiền trên TikTok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Để thành công trong việc bán hàng trên TikTok, bạn cần xây dựng một chiến lược, tạo nội dung hấp dẫn, và tận dụng tính năng livestream để tương tác trực tiếp với khách hàng của mình. Nói chung, TikTok không chỉ là nơi để giới thiệu sản phẩm, mà còn là cơ hội để xây dựng mối quan hệ với khách hàng và thúc đẩy doanh số bán hàng.</p><h2 id=\"lam-kol-pr-san-pham---cach-kiem-tien-tren-tiktok-hieu-qua-nhat\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Làm KOL PR sản phẩm - Cách kiếm tiền trên Tiktok hiệu quả nhất</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Trở thành KOL để quảng bá sản phẩm là một trong các cách bật kiếm tiền trên TikTok hấp dẫn nhất. Khi các thương hiệu sẵn sàng chi trả số tiền đáng kể để hợp tác với bạn. Mức thù lao này có thể lên đến hàng chục triệu đồng, phụ thuộc vào số lượng người theo dõi của bạn và khả năng tiếp cận khách hàng thông qua các video quảng cáo trên TikTok của bạn.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Hướng dẫn cách kiếm tiền trên TikTok - Bằng việc trở thành KOLs\" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-3.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Hướng dẫn cách kiếm tiền trên TikTok - Bằng việc trở thành KOLs\" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Đây là cơ hội tuyệt vời để tận dụng sự nổi tiếng của mình và kiếm tiền từ việc quảng cáo sản phẩm cho các thương hiệu lớn.</p><h2 id=\"nhan-donate-tu-livestream-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Nhận Donate từ livestream trên TikTok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Thu nhận Donate từ các buổi livestream trên TikTok là một cách kiếm tiền trên TikTok tiềm năng để kiếm tiền trên nền tảng này. Trong suốt quá trình livestream, bạn có thể tạo sự hài lòng cho khán giả và họ có thể tặng cho bạn các vật phẩm ảo mua từ TikTok thông qua việc nạp tiền.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Nhận Donate từ livestream - Cách kiếm tiền trên TikTok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-4.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Nhận Donate từ livestream - Cách kiếm tiền trên TikTok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Sau đó, bạn có thể quy đổi các vật phẩm này thành tiền và chuyển chúng vào tài khoản ngân hàng của mình. Điều này đã trở thành một cách bật kiếm tiền phổ biến trên TikTok, đặc biệt là trong các quốc gia ngoài kia. Thậm chí, một số TikToker có thể thu về hàng ngàn đô la mỗi tháng từ việc này.</p><h2 id=\"cach-kiem-tien-tren-tiktok-bang-tiep-thi-lien-ket-affiliate\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách kiếm tiền trên TikTok bằng tiếp thị liên kết Affiliate</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Cách bật kiếm tiền trên TikTok bằng tiếp thị liên kết Affiliate là một cách tuyệt vời để tận dụng sức mạnh của nền tảng này. Đơn giản, bạn có thể đặt các liên kết sản phẩm trên trang cá nhân của mình trên TikTok.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok bằng tiếp thị liên kết (Affiliate)\" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-5.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok bằng tiếp thị liên kết (Affiliate)\" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Mỗi lần người xem nhấp vào liên kết và thực hiện giao dịch mua hàng, bạn sẽ nhận được tiền hoa hồng tương ứng. Điều này biến sự sáng tạo của bạn trên TikTok thành một nguồn thu nhập tiềm năng đáng kể, phụ thuộc vào khả năng tiếp cận và thú hút của bạn đối với khán giả.</p><h2 id=\"cach-bat-kiem-tien-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách bật kiếm tiền trên TikTok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Để có thể thực hiện cách bật kiếm tiền trên Tiktok, các nhà sáng tạo nội dung cần tuân thủ những yêu cầu cụ thể sau đây:</p><ul style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; list-style: outside disc; margin: 10px 0px; padding: 0px 0px 0px 40px; text-align: justify;\"><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Địa chỉ IP của tài khoản TikTok: Phải thuộc về các quốc gia như Anh, Đức, Mỹ, Pháp, Tây Ban Nha hoặc Ý.</li><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Độ tuổi người dùng tài khoản TikTok: Phải từ 18 tuổi trở lên.</li><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Số lượng Follower trên kênh TikTok: Cần ít nhất 10.000 người theo dõi.</li><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Số lượt xem video: Phải có ít nhất 100.000 lượt xem video trong vòng 30 ngày gần đây.</li></ul><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Bật cách kiếm tiền trên TikTok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-6.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Bật cách kiếm tiền trên TikTok \" width=\"960\" /></p><h2 id=\"lien-ket-tai-khoan-tiktok-toi-cac-mang-xa-hoi-khac\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Liên kết tài khoản TikTok tới các mạng xã hội khác</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Kết nối tài khoản TikTok với các mạng xã hội khác là một cách kiếm tiền trên TikTok thông minh để tận dụng sự nổi tiếng của bạn. Dù việc chèn quảng cáo vào video trên TikTok khó khăn do giới hạn thời gian, có nhiều cách khác để kiếm tiền từ sự phát triển của mình trên nền tảng này.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Chẳng hạn, bạn có thể sử dụng mạng xã hội khác như <a href=\"https://cellphones.com.vn/sforum/tag/thu-thuat-youtube\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; color: #3b82f6; text-decoration: none;\" target=\"_blank\">YouTube</a> để tạo ra nội dung dài hơn và kiếm tiền từ quảng cáo. Nếu bạn đã có một lượng người hâm mộ trung thành trên TikTok, đây có thể trở thành một nguồn thu nhập ấn tượng.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok bằng việc liên kết tài khoản với các mạng xã hội khác \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-7.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok bằng việc liên kết tài khoản với các mạng xã hội khác \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Hơn nữa, bạn cũng có thể tham gia vào các nền tảng livestream, nơi bạn có thể chơi <a href=\"https://cellphones.com.vn/sforum/s-games\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; color: #3b82f6; text-decoration: none;\" target=\"_blank\">game</a>, biểu diễn ca hát, tương tác với người hâm mộ và kiếm tiền thông qua các khoản donate ủng hộ từ khán giả. Điều này không chỉ tăng tương tác mà còn gia tăng thu nhập của bạn.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Dù bạn chọn con đường nào, việc liên kết tài khoản TikTok với các mạng xã hội khác sẽ mở ra nhiều cơ hội kiếm tiền và tương tác hơn với cộng đồng của bạn.</p><h2 id=\"review-nhan-tien-tu-cac-san-pham-so\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Review nhận tiền từ các sản phẩm số</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Kiếm tiền từ các sản phẩm số trên TikTok có thể thực hiện theo mô hình tương tự như cách kiếm tiền trên TikTok bằng tiếp thị liên kết (Affiliate Marketing). Thông qua các video đánh giá và review, bạn có thể chia sẻ các liên kết đến các sản phẩm số. Các đối tác sẽ thanh toán cho bạn dựa trên số lượt nhấp vào liên kết hoặc số người đăng ký tùy thuộc vào yêu cầu của họ.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok từ việc nhận tiền từ các sản phẩm số \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-8.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok từ việc nhận tiền từ các sản phẩm số \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Các sản phẩm số mà bạn có thể giới thiệu có thể bao gồm game, <a href=\"https://cellphones.com.vn/sforum/thu-thuat/ung-dung\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; color: #3b82f6; text-decoration: none;\" target=\"_blank\">ứng dụng</a>, trang web tìm kiếm, sàn giao dịch, khóa học trực tuyến, và nhiều lựa chọn khác. Đây là một cách tuyệt vời để biến nội dung sáng tạo của bạn trên TikTok thành nguồn thu nhập bằng cách hợp tác với các đối tác có sản phẩm số phù hợp.</p><h2 id=\"quang-cao-cho-thuong-hieu-cua-ban\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Quảng cáo cho thương hiệu của bạn</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Tận dụng TikTok để quảng cáo thương hiệu của bạn là một trong các cách kiếm tiền trên TikTok hiệu quả để tiếp cận một lượng lớn người dùng trẻ. Cách này có thể tạo ra nguồn thu chính từ việc bán sản phẩm trực tiếp.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Có hai cách để bạn có thể thực hiện quảng cáo trên TikTok. Thứ nhất, bạn có thể tự giới thiệu sản phẩm của mình qua video sáng tạo và tự nhiên, thu hút sự chú ý của khán giả. Tuy nhiên, việc đạt được đúng khách hàng mục tiêu có thể gặp khó khăn.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Quảng cáo cho thương hiệu của bạn cũng là cách kiếm tiền trên Tiktok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-9.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Quảng cáo cho thương hiệu của bạn cũng là cách kiếm tiền trên Tiktok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Thứ hai, bạn có thể trở thành đối tác của TikTok Ads. Khi bạn là đối tác, sản phẩm của bạn sẽ xuất hiện tại đúng nơi và thời điểm phù hợp hơn nhờ vào hệ thống phân tích của TikTok. Tuy nhiên, việc này có thể tốn kém, và bạn cần cân nhắc giữa đầu tư công sức và nguồn tài chính vào chiến dịch quảng cáo của mình.</p><h2 id=\"huong-dan-cach-kiem-tien-tren-tiktok-voi-dropshipping\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Hướng dẫn cách kiếm tiền trên TikTok với Dropshipping</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bán hàng qua mô hình Dropshipping trên TikTok là một trong những cách kiếm tiền trên Tiktok Shop phổ biến và hiệu quả hiện nay. Điểm đặc biệt của nó là bạn không cần phải sở hữu hoặc lưu trữ sản phẩm trong kho của mình. Thay vào đó, bạn tìm nguồn cung cấp đáng tin cậy và sản phẩm chất lượng với giá thấp.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Hướng dẫn cách kiếm tiền trên TikTok với Dropshipping \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-11.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Hướng dẫn cách kiếm tiền trên TikTok với Dropshipping \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Sau khi đã thiết lập mối quan hệ với nhà cung cấp, bạn có thể tạo các video trên TikTok để quảng cáo và bán sản phẩm. Khi có đơn hàng từ khách hàng, bạn chỉ cần đặt hàng từ nhà cung cấp và yêu cầu họ giao trực tiếp đến địa chỉ của khách hàng. Trong quá trình này, bạn có thể thu lợi nhuận từ sự chênh lệch giá mua và giá bán mà không cần thực sự nắm giữ sản phẩm. Đây là một cách linh hoạt và tiết kiệm thời gian để kinh doanh trực tuyến trên TikTok.</p><h2 id=\"cung-cap-dich-vu-tang-follow-view-va-tim-video\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cung cấp dịch vụ tăng Follow, View và Tim video</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Cách kiếm tiền trên Tiktok bằng việc cung cấp dịch vụ tăng số lượng người theo dõi, lượt xem và tim (like) cho video trên TikTok đòi hỏi bạn phải có một chút am hiểu công nghệ. Đây là một trong các cách thu hút sự quan tâm của những người dùng quan trọng trên nền tảng này, đặc biệt là những người muốn nâng cao sức ảnh hưởng của họ.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cung cấp dịch vụ tăng Follow, View và Tim video để thực hiện cách kiếm tiền trên Tiktok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-12.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cung cấp dịch vụ tăng Follow, View và Tim video để thực hiện cách kiếm tiền trên Tiktok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bằng việc cung cấp dịch vụ này với mức giá hợp lý, bạn có thể kiếm được một lượng tiền ổn định hàng tháng. Tuy nhiên, điều quan trọng là người cung cấp dịch vụ phải có kiến thức và kỹ năng chuyên môn để đảm bảo hiệu suất và chất lượng.</p><h2 id=\"cach-kiem-tien-tren-tiktok-ads\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách kiếm tiền trên TikTok Ads</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Kiếm tiền từ TikTok Ads là một cách kiếm tiền trên Tiktok Shop khá lợi nhuận, và TikTok là nền tảng cho phép các nhà quảng cáo chạy các chiến dịch quảng cáo.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Điều này đồng nghĩa bạn có thể tận dụng TikTok để kiếm tiền thông qua việc quảng cáo cho các thương hiệu đang tìm kiếm sự tiếp cận đối tượng mục tiêu.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok Ads\" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-14.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok Ads\" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><h2 id=\"dang-video-sang-tao---lam-freelancer-kiem-tien-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Đăng video sáng tạo - Làm freelancer kiếm tiền trên Tiktok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Trở thành freelancer cho vị trí làm Video Creator trên Tik Tok không chỉ đem lại cơ hội sáng tạo mà còn mở ra cánh cửa cho nguồn khách hàng đa dạng. TikTok không chỉ là nền tảng mạng xã hội video mà còn là một trường chơi cho những người đam mê và có kỹ năng trong việc quay và tạo video sáng tạo.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Làm Freelancer cho vị trí Video Creator - Cách kiếm tiền trên Tiktok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-13.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Làm Freelancer cho vị trí Video Creator - Cách kiếm tiền trên Tiktok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Nhu cầu về video trên TikTok ngày càng gia tăng, điều này đồng nghĩa với việc làm freelancer cho vị trí Video Creator trở nên hấp dẫn và tiềm năng. Thu nhập của TikTok Video Creator có thể khá cao và phụ thuộc vào khả năng, kỹ năng và sự hài lòng của khách hàng. Điều này tạo cơ hội cho mối hợp tác lâu dài và sự phát triển sáng tạo không giới hạn trên nền tảng này.</p><h2 id=\"timebucks---cach-kiem-tien-tren-tiktok-don-gian\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">TimeBucks - </span><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách kiếm tiền trên TikTok đơn giản</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Hướng dẫn cách kiếm tiền trên Tik Tok với TimeBucks là một cách ẩn mình khá hấp dẫn và ít được biết đến. TimeBucks, dù ít người biết đến, là một nền tảng phát triển trong lĩnh vực MMO (Make Money Online). Đặc biệt, TimeBucks cung cấp cơ hội cho bạn kiếm tiền trực tuyến bằng cách thực hiện các nhiệm vụ nhằm hỗ trợ quảng cáo của các doanh nghiệp.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok với TimeBucks \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-15.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok với TimeBucks \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Nền tảng này cung cấp nhiều hình thức kiếm tiền trực tuyến khác nhau, trong đó có một phương thức độc đáo là kiếm tiền thông qua ứng dụng TikTok. Điều này có nghĩa là bạn có thể tạo các video theo yêu cầu từ nhà quảng cáo và đăng chúng lên TikTok để nhận phí. Đây là một cơ hội tiềm năng cho những người có tài khoản TikTok có lượng người theo dõi lớn.</p><h2 id=\"tro-thanh-nhan-vien-sang-tao-tiktok-cua-1-cong-ty\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Trở thành nhân viên sáng tạo Tiktok của 1 công ty</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bằng cách kết hợp sự sáng tạo nội dung video và kiến thức về TikTok, bạn hoàn toàn có thể trở thành một nhân viên của một công ty hoạt động trực tuyến hoặc có liên quan đến TikTok. Nền tảng TikTok không chỉ giúp bạn tìm kiếm cơ hội việc làm thông qua các bài đăng tuyển dụng, mà còn mở ra các cơ hội nghề nghiệp liên quan đến ứng dụng này, chẳng hạn như viết kịch bản cho các video TikTok hoặc trở thành Video Creator như đã được giới thiệu. Điều đặc biệt là bạn có thể thực hiện các công việc này từ xa, tại nhà, đặc biệt hữu ích trong bối cảnh dịch bệnh hiện tại.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên Tiktok bằng việc Trở thành nhân viên của 1 công ty online \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-16.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên Tiktok bằng việc Trở thành nhân viên của 1 công ty online \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Qua bài viết các cách kiếm tiền trên TikTok hiệu quả và nhanh chóng ở trên, bạn sẽ có nhiều cơ hội kiếm tiền để bạn khám phá và tận dụng sự phổ biến của nền tảng này. Hãy nhớ rằng thành công trên TikTok đòi hỏi sự sáng tạo, kiên nhẫn và khả năng tạo nội dung hấp dẫn. Bất kỳ ai cũng có thể bắt đầu và thử nghiệm các phương pháp kiếm tiền này. Hãy chắc chắn làm theo đam mê của bạn và luôn duy trì sự sáng tạo để thu được lợi ích tối đa từ nền tảng này. Chúc bạn thành công trong thực hiện cách bật kiếm tiền trên Tiktok qua những hướng dẫn trên nhé!</p>"
-      }
+  {
+    "id": "BLOG_REAL_1",
+    "title": "Cách tạo gmail không cần số điện thoại mới  nhất",
+    "url": "https://www.muabantaikhoanmmo.com/2026/09/cach-tao-gmail-khong-can-so-ien-thoai.html",
+    "date": "2026-09-14",
+    "category": "Kiếm Tiền MMO",
+    "views": "1.2k",
+    "image": "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&auto=format&fit=crop&q=80",
+    "excerpt": "Cách tạo Gmail không cần số điện thoại là giải pháp được nhiều người tìm kiếm khi muốn đăng ký tài khoản nhanh mà vẫn đảm bảo quyền riêng tư. Nếu bạn chưa biết cách tạo mail mới đơ...",
+    "content": "Cách tạo Gmail không cần số điện thoại là giải pháp được nhiều người tìm kiếm khi muốn đăng ký tài khoản nhanh mà vẫn đảm bảo quyền riêng tư. Nếu bạn chưa biết cách tạo mail mới đơn giản và hiệu quả, đừng lo. Cùng khám phá ngay hướng dẫn chi tiết trong bài viết dưới đây để thực hiện chỉ trong vài phút nhé!<br /><h2 style=\"text-align: left;\">Điều kiện để đăng ký Gmail không cần số điện thoại thành công</h2>Google không bắt buộc mọi tài khoản phải có số điện thoại, nhưng hệ thống chỉ hiển thị tùy chọn bỏ qua khi thiết bị và mạng của bạn được đánh giá là an toàn. Nắm rõ các điều kiện dưới đây sẽ giúp tạo Gmail không cần số điện thoại suôn sẻ hơn.Trường số điện thoại hiển thị chữ “Không bắt buộc” hoặc “Tùy chọn”, khi đó bạn có thể để trống và tiếp tục.<br />Thiết bị và địa chỉ IP chưa tạo quá nhiều tài khoản trong thời gian ngắn, tránh bị hệ thống nghi ngờ.<br />Ưu tiên dùng trình duyệt ẩn danh hoặc đổi mạng khác nếu lần trước bị yêu cầu nhập số điện thoại.<br />Điền đầy đủ họ tên, ngày sinh và đặt mật khẩu mạnh để giảm khả năng bị đánh dấu là bot.<br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-1.jpg\" />Tối ưu thiết bị và mạng an toàn giúp tạo Gmail không cần OTP<br /><br /><br /><h2 style=\"text-align: left;\">Cách tạo Gmail không cần số điện thoại trên điện thoại</h2><br />Bạn có thể tạo Gmail không cần số điện thoại trực tiếp trên thiết bị mà không cần cài thêm ứng dụng. Cách tạo Gmail trên điện thoại áp dụng được cho cả Android và iOS, thao tác nhanh gọn trong vài phút.<br />Đăng ký Gmail không cần số điện thoại trên Android<br /><br />Với máy Samsung, Xiaomi hay OPPO, cách lập Gmail trên điện thoại có thể thực hiện trực tiếp trong phần cài đặt hệ thống.<br /><br />1. Truy cập trình quản lý tài khoản trên thiết bị Vào mục Cài đặt trên thiết bị.<br />Tìm và nhấn vào Tài khoản và sao lưu.<br />Truy cập mục Quản lý tài khoản để tiếp tục.<br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-2.jpg\" /><br /><br />2. Thêm tài khoản GoogleKéo xuống cuối màn hình và chọn Thêm tài khoản.<br />Chọn biểu tượng Google trong danh sách hiện ra và xác minh danh tính.<br />Nhấn mục Tạo tài khoản (mục đích cá nhân hoặc mục đích công việc).<br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-3.jpg\" /><br /><br />3. Hoàn tất thông tin cá nhânNhập Họ và tên người sử dụng và nhấn Tiếp theo.<br />Cung cấp Ngày, tháng, năm sinh và Giới tính và chọn Tiếp theo.<br />Chọn địa chỉ Gmail được đề xuất hoặc tạo tên Gmail theo ý muốn, rồi nhấn Tiếp theo.<br /><br /> <br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-4.jpg\" />Điền thông tin cơ bản và chọn địa chỉ Gmail mong muốn <br /><br />4. Tạo mật khẩu và xác nhận điều khoản GoogleTạo Mật khẩu và nhấn vào mục Tiếp theo.<br />Kéo xuống và nhấn Tôi đồng ý với các điều khoản dịch vụ của Google để hoàn tất.<br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-5.jpg\" /><br /><br />Lưu ý: Giao diện hoặc vị trí menu có thể thay đổi theo phiên bản.<br />Đăng ký Gmail không cần số điện thoại trên iOS<br /><br />Để tạo Gmail không cần số điện thoại trên điện thoại, bạn có thể làm theo hướng dẫn nhanh sau đây: Mở Gmail &gt; Nhấn ảnh đại diện &gt; Chọn Thêm tài khoản &gt; Google &gt; Nhấn Tạo tài khoản &gt; Điền thông tin và bỏ qua bước nhập số điện thoại (Skip) nếu được &gt; Xác nhận và hoàn tất đăng ký. Cùng xem ngay cách làm chi tiết nhé!Bước 1: Vào Email, ấn vào biểu tượng tài khoản gmail ở góc phải trên cùng và chọn Thêm tài khoản khác.<br />Bước 2: Tại cửa sổ thiết lập email, bạn chọn vào Google.<br />Bước 3: Tại đây bạn chọn tiếp vào mục Dành cho mục đích cá nhân của tôi và ấn Tiếp theo. <br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-3.jpg\" />Bước 4: Chọn tên gmail gợi ý hoặc vào Tạo địa chỉ Gmail của riêng bạn để tự điền tên tài khoản theo ý muốn và bấm Tiếp theo.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-4.jpg\" />Bước 5: Nhập mật khẩu bạn muốn đặt và chọn vào Tiếp theo.<br />Bước 6: Tại mục thêm số điện thoại xác minh, bạn ấn vào Bỏ qua để hoàn tất việc tạo tài khoản.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-5.jpg\" /><br /><h2 style=\"text-align: left;\">Cách tạo gmail không cần số điện thoại trên máy tính</h2><br />Để tạo Gmail không cần số điện thoại trên máy tính, bạn có thể làm theo hướng dẫn nhanh sau đây: Truy cập accounts.google.com &gt; Chọn Tạo tài khoản &gt; Điền thông tin cá nhân &gt; Ở bước số điện thoại chọn Bỏ qua (Skip) nếu hệ thống cho phép &gt; Xác nhận email và hoàn tất đăng ký.<br /><br />Nếu hướng dẫn trên quá nhanh và bạn không theo kịp thì có thể thực hiện cách tạo gmail miễn phí không cần số điện thoại qua các bước chi tiết sau:Bước 1: Vào biểu tượng Google, sau đó nhấn tổ hợp 3 phím Ctrl + Shift + N cùng 1 lúc để mở trình ẩn danh.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-7.jpg\" />Bước 2: Tại thanh tìm kiếm, bạn nhập “https://accounts.google.com/signup” để dẫn vào giao diện tạo tài khoản mới và nhập Họ tên.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-8.jpg\" />Bước 3: Điền tiếp tục các thông tin Ngày/tháng/năm và Giới tính rồi chọn vào Tiếp theo.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-9.jpg\" />Bước 4: Chọn gmail đề xuất hoặc bấm vào Tạo địa chỉ gmail của riêng bạn để nhập tên theo ý muốn bản thân và ấn Tiếp theo.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-10.jpg\" />Bước 5: Điền mật khẩu và xác nhận lại và bấm vào Tiếp theo.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-11.jpg\" />Bước 6: Khi hoàn tất 5 bước trên, trình duyệt sẽ dẫn bạn đến mục Xem lại thông tin tài khoản, tại đây bạn chọn Tiếp theo để hoàn tất.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-12.jpg\" /><br /><br />Chỉ với 6 bước đơn giản và nhanh chóng, bạn đã tạo được một gmail để sử dụng không cần SDT trên máy tính rất nhanh chóng và đơn giản. Nếu có khó khăn trong việc tạo gmail hãy để lại bình luận bên dưới để được Sforum giải đáp nhé!<br />Các lỗi thường gặp khi đăng ký Gmail không cần số điện thoại<br /><br />Trong quá trình tạo tài khoản Gmail không cần số điện thoại, bạn có thể gặp một số tình huống không thể bỏ qua bước xác minh. Dưới đây là một số cách xử lý bạn có thể áp dụng để khắc phục lỗi:Hệ thống bắt buộc nhập số điện thoại: Thường do IP đã tạo nhiều tài khoản hoặc bị nghi ngờ là bot. Bạn hãy đổi sang mạng 4G, WiFi khác hoặc thử lập Gmail không cần số điện thoại sau 24 giờ.<br />Không thấy nút Bỏ qua: Thử mở lại bằng trình duyệt ẩn danh hoặc chuyển sang thiết bị khác để hệ thống bớt nghi ngờ.<br />Tài khoản bị khóa ngay sau khi tạo: Xảy ra khi dùng để gửi thư rác hoặc vi phạm chính sách, vì tài khoản thiếu thông tin xác thực nên dễ bị quét hơn.<br />Không nhận được đề xuất tên Gmail: Kiểm tra lại kết nối mạng và nhập tên người dùng khác nếu tên đã có người sử dụng.<br /><img src=\"https://cdn-media.sforum.vn/storage/app/media/ctv_seo8/ctv_phung/tao-gmail-khong-can-so-dien-thoai/tao-gmail-khong-can-so-dien-thoai-6.jpg\" /><br />Ưu nhược điểm khi tạo gmail không cần số điện thoại<br /><br />Việc tạo gmail không cần số điện thoại luôn mang đến nhiều tiện ích trong công việc khi sử dụng. Tuy nhiên, cách cách lập email này cũng ẩn chứa không ít rủi ro làm ảnh hưởng đến các thông tin mà bạn cần bảo mật. Sau đây là một số ưu và nhược điểm mà bạn nên đọc kỹ trước khi quyết định lập tài khoản gmail không xác minh số điện thoại.<br /><br />Ưu điểm:Giúp bạn tạo được nhiều tài khoản phụ cho game, tiktok, facebook,... để seeding hoặc tặng quà cho tài khoản chính.<br />Phục vụ khi xử lý công việc nhóm hay nhiều người dùng chung một tài khoản mà không phải mất thời gian cho bước xác minh.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-1.jpg\" /><br /><br />Nhược điểm:Khi tạo Gmail trên điện thoại mà không liên kết số điện thoại, mức độ bảo mật có thể giảm do thiếu phương thức xác minh quyền sở hữu khi cần. Nếu tài khoản không được bảo vệ tốt, các dịch vụ liên kết cũng dễ bị ảnh hưởng.<br />Ngoài ra, việc khôi phục tài khoản sẽ khó khăn hơn khi gặp sự cố, vì xác minh bằng số điện thoại vẫn là cách nhanh và hiệu quả nhất để lấy lại quyền truy cập.<br />Cách xóa số điện thoại đã đăng ký tạo email<br /><br />Nếu gmail của bạn trước đây có cài số điện thoại nhưng giờ muốn xóa bỏ thì có thể làm theo các bước sau:Bước 1: Vào biểu tượng hình 3 gạch ngang rồi vô Cài đặt và nhấn vào Tên tài khoản.<br />Bước 2: Tiếp theo hãy chọn vào Thông tin, quyền riêng tư và bảo mật của bạn.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-13.jpg\" />Bước 3: Vào Thông tin cá nhân vào chọn vào Số điện thoại đăng ký, sau đó chọn tiếp số điện thoại ở giao mới và bấm vào biểu tượng Thùng rác để xóa.<br /><br /><img src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/cach-tao-email-khong-can-so-dien-thoai-14.jpg\" /><br /><br />Hy vọng qua bài viết, bạn đã nắm rõ cách tạo Gmail không cần số điện thoại trên máy tính và điện thoại để đăng ký nhanh chóng và bảo mật hơn. Khi hiểu thêm cách tạo địa chỉ email, bạn sẽ dễ dàng sử dụng cho công việc, học tập và liên lạc hằng ngày. Hãy thử áp dụng ngay để sở hữu tài khoản email của riêng bạn nhé!"
+  },
+  {
+    "id": "BLOG_REAL_2",
+    "title": "Topp 15 Cách kiếm tiền trên TikTok hiệu quả ",
+    "url": "https://www.muabantaikhoanmmo.com/2026/09/topp-15-cach-kiem-tien-tren-tiktok-hieu.html",
+    "date": "2026-09-14",
+    "category": "Kiếm Tiền MMO",
+    "views": "1.2k",
+    "image": "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&auto=format&fit=crop&q=80",
+    "excerpt": "&nbsp;Ngày nay, trào lưu kiếm tiền trên Tiktok đã mang lại siêu lợi nhuận cho rất nhiều shop, nhà bán hàng và cá nhân sáng tạo. Với hơn một tỷ người dùng, TikTok đã trở thành một v...",
+    "content": "<p>&nbsp;<span style=\"background-color: white; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; font-weight: bolder; text-align: justify;\">Ngày nay, trào lưu kiếm tiền trên Tiktok đã mang lại siêu lợi nhuận cho rất nhiều shop, nhà bán hàng và cá nhân sáng tạo. Với hơn một tỷ người dùng, TikTok đã trở thành một vùng đất màu mỡ cho mọi người muốn kiếm tiền bất kỳ đâu tại nhà. Trong bài viết này, Sforum sẽ hướng dẫn các cách bật kiếm tiền trên TikTok Shop, TikTok cá nhân bằng tiếp thị liên kết Affiliate nhé!</span></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"15 Cách kiếm tiền trên TikTok hiệu quả nhanh chóng nhất \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-1.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"15 Cách kiếm tiền trên TikTok hiệu quả nhanh chóng nhất \" width=\"960\" /></p><h2 id=\"ban-hang-truc-tiep-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Bán hàng trực tiếp trên TikTok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bán hàng trực tiếp là một cách kiếm tiền trên Tiktok Shop tuyệt vời nhất để tận dụng sức mạnh của nền tảng này và kết nối trực tiếp với khách hàng tiềm năng. TikTok không chỉ là nơi để chia sẻ video vui nhộn, mà còn là một thị trường trực tiếp cho các doanh nhân và nhà kinh doanh.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Bán hàng là cách kiếm tiền trên TikTok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-2.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Bán hàng là cách kiếm tiền trên TikTok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Để thành công trong việc bán hàng trên TikTok, bạn cần xây dựng một chiến lược, tạo nội dung hấp dẫn, và tận dụng tính năng livestream để tương tác trực tiếp với khách hàng của mình. Nói chung, TikTok không chỉ là nơi để giới thiệu sản phẩm, mà còn là cơ hội để xây dựng mối quan hệ với khách hàng và thúc đẩy doanh số bán hàng.</p><h2 id=\"lam-kol-pr-san-pham---cach-kiem-tien-tren-tiktok-hieu-qua-nhat\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Làm KOL PR sản phẩm - Cách kiếm tiền trên Tiktok hiệu quả nhất</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Trở thành KOL để quảng bá sản phẩm là một trong các cách bật kiếm tiền trên TikTok hấp dẫn nhất. Khi các thương hiệu sẵn sàng chi trả số tiền đáng kể để hợp tác với bạn. Mức thù lao này có thể lên đến hàng chục triệu đồng, phụ thuộc vào số lượng người theo dõi của bạn và khả năng tiếp cận khách hàng thông qua các video quảng cáo trên TikTok của bạn.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Hướng dẫn cách kiếm tiền trên TikTok - Bằng việc trở thành KOLs\" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-3.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Hướng dẫn cách kiếm tiền trên TikTok - Bằng việc trở thành KOLs\" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Đây là cơ hội tuyệt vời để tận dụng sự nổi tiếng của mình và kiếm tiền từ việc quảng cáo sản phẩm cho các thương hiệu lớn.</p><h2 id=\"nhan-donate-tu-livestream-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Nhận Donate từ livestream trên TikTok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Thu nhận Donate từ các buổi livestream trên TikTok là một cách kiếm tiền trên TikTok tiềm năng để kiếm tiền trên nền tảng này. Trong suốt quá trình livestream, bạn có thể tạo sự hài lòng cho khán giả và họ có thể tặng cho bạn các vật phẩm ảo mua từ TikTok thông qua việc nạp tiền.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Nhận Donate từ livestream - Cách kiếm tiền trên TikTok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-4.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Nhận Donate từ livestream - Cách kiếm tiền trên TikTok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Sau đó, bạn có thể quy đổi các vật phẩm này thành tiền và chuyển chúng vào tài khoản ngân hàng của mình. Điều này đã trở thành một cách bật kiếm tiền phổ biến trên TikTok, đặc biệt là trong các quốc gia ngoài kia. Thậm chí, một số TikToker có thể thu về hàng ngàn đô la mỗi tháng từ việc này.</p><h2 id=\"cach-kiem-tien-tren-tiktok-bang-tiep-thi-lien-ket-affiliate\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách kiếm tiền trên TikTok bằng tiếp thị liên kết Affiliate</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Cách bật kiếm tiền trên TikTok bằng tiếp thị liên kết Affiliate là một cách tuyệt vời để tận dụng sức mạnh của nền tảng này. Đơn giản, bạn có thể đặt các liên kết sản phẩm trên trang cá nhân của mình trên TikTok.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok bằng tiếp thị liên kết (Affiliate)\" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-5.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok bằng tiếp thị liên kết (Affiliate)\" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Mỗi lần người xem nhấp vào liên kết và thực hiện giao dịch mua hàng, bạn sẽ nhận được tiền hoa hồng tương ứng. Điều này biến sự sáng tạo của bạn trên TikTok thành một nguồn thu nhập tiềm năng đáng kể, phụ thuộc vào khả năng tiếp cận và thú hút của bạn đối với khán giả.</p><h2 id=\"cach-bat-kiem-tien-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách bật kiếm tiền trên TikTok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Để có thể thực hiện cách bật kiếm tiền trên Tiktok, các nhà sáng tạo nội dung cần tuân thủ những yêu cầu cụ thể sau đây:</p><ul style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; list-style: outside disc; margin: 10px 0px; padding: 0px 0px 0px 40px; text-align: justify;\"><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Địa chỉ IP của tài khoản TikTok: Phải thuộc về các quốc gia như Anh, Đức, Mỹ, Pháp, Tây Ban Nha hoặc Ý.</li><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Độ tuổi người dùng tài khoản TikTok: Phải từ 18 tuổi trở lên.</li><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Số lượng Follower trên kênh TikTok: Cần ít nhất 10.000 người theo dõi.</li><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Số lượt xem video: Phải có ít nhất 100.000 lượt xem video trong vòng 30 ngày gần đây.</li></ul><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Bật cách kiếm tiền trên TikTok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-6.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Bật cách kiếm tiền trên TikTok \" width=\"960\" /></p><h2 id=\"lien-ket-tai-khoan-tiktok-toi-cac-mang-xa-hoi-khac\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Liên kết tài khoản TikTok tới các mạng xã hội khác</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Kết nối tài khoản TikTok với các mạng xã hội khác là một cách kiếm tiền trên TikTok thông minh để tận dụng sự nổi tiếng của bạn. Dù việc chèn quảng cáo vào video trên TikTok khó khăn do giới hạn thời gian, có nhiều cách khác để kiếm tiền từ sự phát triển của mình trên nền tảng này.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Chẳng hạn, bạn có thể sử dụng mạng xã hội khác như <a href=\"https://cellphones.com.vn/sforum/tag/thu-thuat-youtube\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; color: #3b82f6; text-decoration: none;\" target=\"_blank\">YouTube</a> để tạo ra nội dung dài hơn và kiếm tiền từ quảng cáo. Nếu bạn đã có một lượng người hâm mộ trung thành trên TikTok, đây có thể trở thành một nguồn thu nhập ấn tượng.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok bằng việc liên kết tài khoản với các mạng xã hội khác \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-7.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok bằng việc liên kết tài khoản với các mạng xã hội khác \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Hơn nữa, bạn cũng có thể tham gia vào các nền tảng livestream, nơi bạn có thể chơi <a href=\"https://cellphones.com.vn/sforum/s-games\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; color: #3b82f6; text-decoration: none;\" target=\"_blank\">game</a>, biểu diễn ca hát, tương tác với người hâm mộ và kiếm tiền thông qua các khoản donate ủng hộ từ khán giả. Điều này không chỉ tăng tương tác mà còn gia tăng thu nhập của bạn.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Dù bạn chọn con đường nào, việc liên kết tài khoản TikTok với các mạng xã hội khác sẽ mở ra nhiều cơ hội kiếm tiền và tương tác hơn với cộng đồng của bạn.</p><h2 id=\"review-nhan-tien-tu-cac-san-pham-so\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Review nhận tiền từ các sản phẩm số</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Kiếm tiền từ các sản phẩm số trên TikTok có thể thực hiện theo mô hình tương tự như cách kiếm tiền trên TikTok bằng tiếp thị liên kết (Affiliate Marketing). Thông qua các video đánh giá và review, bạn có thể chia sẻ các liên kết đến các sản phẩm số. Các đối tác sẽ thanh toán cho bạn dựa trên số lượt nhấp vào liên kết hoặc số người đăng ký tùy thuộc vào yêu cầu của họ.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok từ việc nhận tiền từ các sản phẩm số \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-8.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok từ việc nhận tiền từ các sản phẩm số \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Các sản phẩm số mà bạn có thể giới thiệu có thể bao gồm game, <a href=\"https://cellphones.com.vn/sforum/thu-thuat/ung-dung\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; color: #3b82f6; text-decoration: none;\" target=\"_blank\">ứng dụng</a>, trang web tìm kiếm, sàn giao dịch, khóa học trực tuyến, và nhiều lựa chọn khác. Đây là một cách tuyệt vời để biến nội dung sáng tạo của bạn trên TikTok thành nguồn thu nhập bằng cách hợp tác với các đối tác có sản phẩm số phù hợp.</p><h2 id=\"quang-cao-cho-thuong-hieu-cua-ban\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Quảng cáo cho thương hiệu của bạn</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Tận dụng TikTok để quảng cáo thương hiệu của bạn là một trong các cách kiếm tiền trên TikTok hiệu quả để tiếp cận một lượng lớn người dùng trẻ. Cách này có thể tạo ra nguồn thu chính từ việc bán sản phẩm trực tiếp.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Có hai cách để bạn có thể thực hiện quảng cáo trên TikTok. Thứ nhất, bạn có thể tự giới thiệu sản phẩm của mình qua video sáng tạo và tự nhiên, thu hút sự chú ý của khán giả. Tuy nhiên, việc đạt được đúng khách hàng mục tiêu có thể gặp khó khăn.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Quảng cáo cho thương hiệu của bạn cũng là cách kiếm tiền trên Tiktok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-9.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Quảng cáo cho thương hiệu của bạn cũng là cách kiếm tiền trên Tiktok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Thứ hai, bạn có thể trở thành đối tác của TikTok Ads. Khi bạn là đối tác, sản phẩm của bạn sẽ xuất hiện tại đúng nơi và thời điểm phù hợp hơn nhờ vào hệ thống phân tích của TikTok. Tuy nhiên, việc này có thể tốn kém, và bạn cần cân nhắc giữa đầu tư công sức và nguồn tài chính vào chiến dịch quảng cáo của mình.</p><h2 id=\"huong-dan-cach-kiem-tien-tren-tiktok-voi-dropshipping\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Hướng dẫn cách kiếm tiền trên TikTok với Dropshipping</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bán hàng qua mô hình Dropshipping trên TikTok là một trong những cách kiếm tiền trên Tiktok Shop phổ biến và hiệu quả hiện nay. Điểm đặc biệt của nó là bạn không cần phải sở hữu hoặc lưu trữ sản phẩm trong kho của mình. Thay vào đó, bạn tìm nguồn cung cấp đáng tin cậy và sản phẩm chất lượng với giá thấp.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Hướng dẫn cách kiếm tiền trên TikTok với Dropshipping \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-11.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Hướng dẫn cách kiếm tiền trên TikTok với Dropshipping \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Sau khi đã thiết lập mối quan hệ với nhà cung cấp, bạn có thể tạo các video trên TikTok để quảng cáo và bán sản phẩm. Khi có đơn hàng từ khách hàng, bạn chỉ cần đặt hàng từ nhà cung cấp và yêu cầu họ giao trực tiếp đến địa chỉ của khách hàng. Trong quá trình này, bạn có thể thu lợi nhuận từ sự chênh lệch giá mua và giá bán mà không cần thực sự nắm giữ sản phẩm. Đây là một cách linh hoạt và tiết kiệm thời gian để kinh doanh trực tuyến trên TikTok.</p><h2 id=\"cung-cap-dich-vu-tang-follow-view-va-tim-video\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cung cấp dịch vụ tăng Follow, View và Tim video</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Cách kiếm tiền trên Tiktok bằng việc cung cấp dịch vụ tăng số lượng người theo dõi, lượt xem và tim (like) cho video trên TikTok đòi hỏi bạn phải có một chút am hiểu công nghệ. Đây là một trong các cách thu hút sự quan tâm của những người dùng quan trọng trên nền tảng này, đặc biệt là những người muốn nâng cao sức ảnh hưởng của họ.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cung cấp dịch vụ tăng Follow, View và Tim video để thực hiện cách kiếm tiền trên Tiktok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-12.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cung cấp dịch vụ tăng Follow, View và Tim video để thực hiện cách kiếm tiền trên Tiktok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bằng việc cung cấp dịch vụ này với mức giá hợp lý, bạn có thể kiếm được một lượng tiền ổn định hàng tháng. Tuy nhiên, điều quan trọng là người cung cấp dịch vụ phải có kiến thức và kỹ năng chuyên môn để đảm bảo hiệu suất và chất lượng.</p><h2 id=\"cach-kiem-tien-tren-tiktok-ads\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách kiếm tiền trên TikTok Ads</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Kiếm tiền từ TikTok Ads là một cách kiếm tiền trên Tiktok Shop khá lợi nhuận, và TikTok là nền tảng cho phép các nhà quảng cáo chạy các chiến dịch quảng cáo.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Điều này đồng nghĩa bạn có thể tận dụng TikTok để kiếm tiền thông qua việc quảng cáo cho các thương hiệu đang tìm kiếm sự tiếp cận đối tượng mục tiêu.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok Ads\" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-14.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok Ads\" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><h2 id=\"dang-video-sang-tao---lam-freelancer-kiem-tien-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Đăng video sáng tạo - Làm freelancer kiếm tiền trên Tiktok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Trở thành freelancer cho vị trí làm Video Creator trên Tik Tok không chỉ đem lại cơ hội sáng tạo mà còn mở ra cánh cửa cho nguồn khách hàng đa dạng. TikTok không chỉ là nền tảng mạng xã hội video mà còn là một trường chơi cho những người đam mê và có kỹ năng trong việc quay và tạo video sáng tạo.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Làm Freelancer cho vị trí Video Creator - Cách kiếm tiền trên Tiktok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-13.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Làm Freelancer cho vị trí Video Creator - Cách kiếm tiền trên Tiktok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Nhu cầu về video trên TikTok ngày càng gia tăng, điều này đồng nghĩa với việc làm freelancer cho vị trí Video Creator trở nên hấp dẫn và tiềm năng. Thu nhập của TikTok Video Creator có thể khá cao và phụ thuộc vào khả năng, kỹ năng và sự hài lòng của khách hàng. Điều này tạo cơ hội cho mối hợp tác lâu dài và sự phát triển sáng tạo không giới hạn trên nền tảng này.</p><h2 id=\"timebucks---cach-kiem-tien-tren-tiktok-don-gian\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">TimeBucks - </span><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách kiếm tiền trên TikTok đơn giản</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Hướng dẫn cách kiếm tiền trên Tik Tok với TimeBucks là một cách ẩn mình khá hấp dẫn và ít được biết đến. TimeBucks, dù ít người biết đến, là một nền tảng phát triển trong lĩnh vực MMO (Make Money Online). Đặc biệt, TimeBucks cung cấp cơ hội cho bạn kiếm tiền trực tuyến bằng cách thực hiện các nhiệm vụ nhằm hỗ trợ quảng cáo của các doanh nghiệp.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok với TimeBucks \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-15.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok với TimeBucks \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Nền tảng này cung cấp nhiều hình thức kiếm tiền trực tuyến khác nhau, trong đó có một phương thức độc đáo là kiếm tiền thông qua ứng dụng TikTok. Điều này có nghĩa là bạn có thể tạo các video theo yêu cầu từ nhà quảng cáo và đăng chúng lên TikTok để nhận phí. Đây là một cơ hội tiềm năng cho những người có tài khoản TikTok có lượng người theo dõi lớn.</p><h2 id=\"tro-thanh-nhan-vien-sang-tao-tiktok-cua-1-cong-ty\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Trở thành nhân viên sáng tạo Tiktok của 1 công ty</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bằng cách kết hợp sự sáng tạo nội dung video và kiến thức về TikTok, bạn hoàn toàn có thể trở thành một nhân viên của một công ty hoạt động trực tuyến hoặc có liên quan đến TikTok. Nền tảng TikTok không chỉ giúp bạn tìm kiếm cơ hội việc làm thông qua các bài đăng tuyển dụng, mà còn mở ra các cơ hội nghề nghiệp liên quan đến ứng dụng này, chẳng hạn như viết kịch bản cho các video TikTok hoặc trở thành Video Creator như đã được giới thiệu. Điều đặc biệt là bạn có thể thực hiện các công việc này từ xa, tại nhà, đặc biệt hữu ích trong bối cảnh dịch bệnh hiện tại.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên Tiktok bằng việc Trở thành nhân viên của 1 công ty online \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-16.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên Tiktok bằng việc Trở thành nhân viên của 1 công ty online \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Qua bài viết các cách kiếm tiền trên TikTok hiệu quả và nhanh chóng ở trên, bạn sẽ có nhiều cơ hội kiếm tiền để bạn khám phá và tận dụng sự phổ biến của nền tảng này. Hãy nhớ rằng thành công trên TikTok đòi hỏi sự sáng tạo, kiên nhẫn và khả năng tạo nội dung hấp dẫn. Bất kỳ ai cũng có thể bắt đầu và thử nghiệm các phương pháp kiếm tiền này. Hãy chắc chắn làm theo đam mê của bạn và luôn duy trì sự sáng tạo để thu được lợi ích tối đa từ nền tảng này. Chúc bạn thành công trong thực hiện cách bật kiếm tiền trên Tiktok qua những hướng dẫn trên nhé!</p>"
+  }
 ],
       
       products: [
+  {
+    "id": "SP_CHATGPT",
+    "name": "Tài khoản Chat GPT plush không giới hạn",
+    "category": "AI & Video",
+    "price": 50000,
+    "stock": 0,
+    "sold": 12,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Ngày",
+    "variants": [
       {
-            "id": "SP_CHATGPT",
-            "name": "Tài khoản Chat GPT plush không giới hạn",
-            "category": "AI & Video",
-            "price": 50000,
-            "stock": 0,
-            "sold": 12,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Ngày",
-            "variants": [
-                  {
-                        "name": "Tài khoản Chat GPT 1 Tháng",
-                        "price": 50000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Tài khoản Chat GPT 6 tháng",
-                        "price": 80000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Tài khoản Chat GPT 1 Năm",
-                        "price": 150000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Tài khoản ChatGPT Plus OpenAI bản quyền chính hãng. Hỗ trợ GPT-4o không giới hạn truy cập. Đổi mới 1:1 nếu có sự cố.",
-            "title": "Tài khoản Chat GPT plush không giới hạn",
-            "isDeleted": false,
-            "buffSold": 12
+        "name": "Tài khoản Chat GPT 1 Tháng",
+        "price": 50000,
+        "stock": 0
       },
       {
-            "id": "SP_FANPAGE",
-            "name": "CHUYÊN CUNG CẤP FANPAGE FACEBOOK CỔ 2019-2020",
-            "category": "Facebook",
-            "price": 99000,
-            "stock": 62,
-            "sold": 26,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành Kháng",
-            "variants": [
-                  {
-                        "name": "Fanpage Cổ Không Vi Phạm",
-                        "price": 99000,
-                        "stock": 62
-                  }
-            ],
-            "description": "Fanpage Facebook tạo từ năm 2019-2020, chất lượng cao, dễ lên đề xuất và chạy quảng cáo mượt mà.",
-            "title": "CHUYÊN CUNG CẤP FANPAGE FACEBOOK CỔ 2019-2020",
-            "isDeleted": false,
-            "buffSold": 26
+        "name": "Tài khoản Chat GPT 6 tháng",
+        "price": 80000,
+        "stock": 0
       },
       {
-            "id": "SP_GEMINI",
-            "name": "NÂNG CẤP TÀI KHOẢN GOOGLE AI PRO GEMINI ADVANCED",
-            "category": "AI & Video",
-            "price": 99000,
-            "stock": 0,
-            "sold": 35,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành Trọn Gói",
-            "variants": [
-                  {
-                        "name": "Gói Gemini Pro 1 Tháng",
-                        "price": 99000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Gói Gemini Pro 1 Năm",
-                        "price": 490000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Nâng cấp chính chủ tài khoản Google của bạn lên gói 2TB Google One tích hợp Gemini Advanced 1.5 Pro.",
-            "title": "NÂNG CẤP TÀI KHOẢN GOOGLE AI PRO GEMINI ADVANCED",
-            "isDeleted": false,
-            "buffSold": 35
-      },
-      {
-            "id": "SP_GMAIL_DOMAIN",
-            "name": "GMAIL DOMAIN CHO THUÊ 24H TIỀN VIỆT",
-            "category": "Gmail",
-            "price": 300,
-            "stock": 0,
-            "sold": 34,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành Nhận OTP",
-            "variants": [
-                  {
-                        "name": "Thuê Gmail Domain 24h",
-                        "price": 300,
-                        "stock": 0
-                  }
-            ],
-            "description": "Dịch vụ thuê Gmail Domain nhận mã OTP đăng ký mọi dịch vụ trực tuyến.",
-            "title": "GMAIL DOMAIN CHO THUÊ 24H TIỀN VIỆT",
-            "isDeleted": false,
-            "buffSold": 34
-      },
-      {
-            "id": "SP_HOTMAIL",
-            "name": "HOTMAIL VIỆT NAM ĐÃ NGÂM CỰC LÂU GIÁ CỰC RẺ",
-            "category": "Gmail",
-            "price": 1000,
-            "stock": 0,
-            "sold": 25,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành Login",
-            "variants": [
-                  {
-                        "name": "Hotmail Outlook Live 100%",
-                        "price": 1000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Tài khoản Hotmail/Outlook live 100%, ngâm cực lâu, độ trust cao, dùng đăng ký tài khoản các mạng xã hội.",
-            "title": "HOTMAIL VIỆT NAM ĐÃ NGÂM CỰC LÂU GIÁ CỰC RẺ",
-            "isDeleted": false,
-            "buffSold": 25
-      },
-      {
-            "id": "SP_J7",
-            "name": "ROM GỐC SAMSUNG J7 PLUSH ANDROI 8.1 MOD ADB",
-            "category": "Rom & Tools",
-            "price": 100000,
-            "stock": 0,
-            "sold": 49,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành Vĩnh Viễn",
-            "variants": [
-                  {
-                        "name": "ROM J7 Plus Mod Farm",
-                        "price": 100000,
-                        "stock": 0
-                  }
-            ],
-            "description": "ROM nhẹ mượt dành riêng cho cày view, tương thích 100% các công cụ điều khiển hàng loạt.",
-            "title": "ROM GỐC SAMSUNG J7 PLUSH ANDROI 8.1 MOD ADB",
-            "isDeleted": false,
-            "buffSold": 49
-      },
-      {
-            "id": "SP_J7_PRO",
-            "name": "ROM SAMSUNG GALAXY J7 PRO ANDROI 12 ẨN ADB",
-            "category": "Rom & Tools",
-            "price": 300000,
-            "stock": 0,
-            "sold": 37,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Bản ROM J7 Pro Android 12 Ẩn ADB",
-                        "price": 300000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Bản ROM mod ẩn hoàn toàn ADB chống phát hiện, mượt mà chạy tool MMO tự động.",
-            "title": "ROM SAMSUNG GALAXY J7 PRO ANDROI 12 ẨN ADB",
-            "isDeleted": false,
-            "buffSold": 37
-      },
-      {
-            "id": "SP_S10",
-            "name": "ROM GỐC SAMSUNG GALAXY S10 ANDROI 12 MOD ADB",
-            "category": "Rom & Tools",
-            "price": 900000,
-            "stock": 0,
-            "sold": 27,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Hỗ Trợ Cài Đặt 24/7",
-            "variants": [
-                  {
-                        "name": "Bản ROM S10 Chuẩn ADB",
-                        "price": 900000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Bản ROM mod tối ưu cho Box Phone Farm, tự động bypass xác thực ADB, tối ưu hóa pin và nhiệt độ hoạt động liên tục.",
-            "title": "ROM GỐC SAMSUNG GALAXY S10 ANDROI 12 MOD ADB",
-            "isDeleted": false,
-            "buffSold": 27
-      },
-      {
-            "id": "SP_TIKTOK_US",
-            "name": "TK TikTok US Chuẩn Bật Kiếm Tiền Beta 2024-2025",
-            "category": "TikTok",
-            "price": 8000,
-            "stock": 20,
-            "sold": 26,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành Login Lần Đầu",
-            "variants": [
-                  {
-                        "name": "TikTok US Đã Ngâm 30 Ngày",
-                        "price": 8000,
-                        "stock": 20
-                  },
-                  {
-                        "name": "TikTok US Đã Bật Sẵn Beta",
-                        "price": 25000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Tài khoản TikTok chuẩn IP US/Brazil ngâm sâu trên thiết bị sạch. Đầy đủ cookies và token đăng nhập an toàn.",
-            "title": "TK TikTok US Chuẩn Bật Kiếm Tiền Beta 2024-2025",
-            "isDeleted": false,
-            "buffSold": 26
-      },
-      {
-            "id": "PROD_MU2YQ1J3PY",
-            "name": "Hotmail Trusted - OAuth2 [Graph] Live",
-            "category": "HOT MAIL",
-            "price": 600,
-            "stock": 0,
-            "sold": 14,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành Login",
-            "variants": [
-                  {
-                        "name": "Hotmail",
-                        "price": 600,
-                        "stock": 0
-                  }
-            ],
-            "description": "",
-            "title": "Hotmail Trusted - OAuth2 [Graph] Live",
-            "isDeleted": false,
-            "buffSold": 14
-      },
-      {
-            "id": "PROD_MU2PA8VNDP",
-            "name": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP",
-            "category": "Intagram",
-            "price": 6000,
-            "stock": 0,
-            "sold": 26,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611262588024-d12430b98920?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành Login",
-            "variants": [
-                  {
-                        "name": "IG ĐÃ QUA SỬ DỤNG",
-                        "price": 6000,
-                        "stock": 0
-                  }
-            ],
-            "description": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP - NAME RANDOM",
-            "title": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP",
-            "isDeleted": false,
-            "buffSold": 26
-      },
-      {
-            "id": "PROD_MU2OXBZC6K",
-            "name": "chat GPT Plush chính chủ giá rẻ",
-            "category": "Chatgpt",
-            "price": 80000,
-            "stock": 0,
-            "sold": 27,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành Login",
-            "variants": [
-                  {
-                        "name": "chat GPT Plush 1 tháng",
-                        "price": 80000,
-                        "stock": 0
-                  }
-            ],
-            "description": "chat GPT Plush chính chủ giá rẻ",
-            "title": "chat GPT Plush chính chủ giá rẻ",
-            "isDeleted": false,
-            "buffSold": 27
-      },
-      {
-            "id": "PROD_MU2OGW71GZ",
-            "name": "rom gốc mod adb j7 plush",
-            "category": "Phone Farm",
-            "price": 300000,
-            "stock": 0,
-            "sold": 40,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "rom gốc mod adb j7 plush",
-                        "price": 300000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "rot j7 plush",
-                        "price": 100000,
-                        "stock": 0
-                  }
-            ],
-            "description": "rom gốc mod adb j7 plush",
-            "title": "rom gốc mod adb j7 plush",
-            "isDeleted": false,
-            "buffSold": 40
-      },
-      {
-            "id": "PROD_MU2OAG3IO2",
-            "name": "Rom androi 10 mod adb j7 prime",
-            "category": "Phone Farm",
-            "price": 300000,
-            "stock": 0,
-            "sold": 31,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Rom androi 10 mod adb j7 prime",
-                        "price": 300000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Rom androi 10 mod adb j7 prime",
-            "title": "Rom androi 10 mod adb j7 prime",
-            "isDeleted": false,
-            "buffSold": 31
-      },
-      {
-            "id": "PROD_MU2O4MW4DQ",
-            "name": "Rom androi 10 s7  s7 edge mod adb",
-            "category": "Phone Farm",
-            "price": 300000,
-            "stock": 0,
-            "sold": 19,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Rom androi 10 s7 G930FDS",
-                        "price": 300000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Rom androi  s7 edge G935",
-                        "price": 300000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Rom androi 10 s7 mod adb",
-            "title": "Rom androi 10 s7  s7 edge mod adb",
-            "isDeleted": false,
-            "buffSold": 19
-      },
-      {
-            "id": "PROD_MU2NX4CYEW",
-            "name": "Rom androi 10 s8 mod adb",
-            "category": "Phone Farm",
-            "price": 300000,
-            "stock": 0,
-            "sold": 25,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Rom androi 10 s8 mod adb",
-                        "price": 300000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Rom androi 10 s8 mod adb",
-            "title": "Rom androi 10 s8 mod adb",
-            "isDeleted": false,
-            "buffSold": 25
-      },
-      {
-            "id": "PROD_MU2NUXL1Q4",
-            "name": "Rom androi 10 s9 mod adb",
-            "category": "Phone Farm",
-            "price": 300000,
-            "stock": 0,
-            "sold": 35,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Rom androi 10 s9",
-                        "price": 300000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Rom androi 10 s9 mod adb cài bằng odin",
-            "title": "Rom androi 10 s9 mod adb",
-            "isDeleted": false,
-            "buffSold": 35
-      },
-      {
-            "id": "PROD_MU2NSFQCMT",
-            "name": "Rom androi 12 s10 mod adb",
-            "category": "Phone Farm",
-            "price": 50000,
-            "stock": 0,
-            "sold": 17,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "rom s10 G973F DS",
-                        "price": 50000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "rom s10 G977N s10 5g",
-                        "price": 500000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "rom s10 G977N rom gốc mod",
-                        "price": 500000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "TW s10 mod adb",
-                        "price": 50000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Rom androi 12 s10 mod adb",
-            "title": "Rom androi 12 s10 mod adb",
-            "isDeleted": false,
-            "buffSold": 17
-      },
-      {
-            "id": "PROD_MU2NKET1OG",
-            "name": "Rom Not8 androi 10 mod adb",
-            "category": "Phone Farm",
-            "price": 300000,
-            "stock": 0,
-            "sold": 45,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Rom Not8 androi 10",
-                        "price": 300000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Rom  gốc not8 mod adb",
-                        "price": 300000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Rom Not8 androi 10 mod adb",
-            "title": "Rom Not8 androi 10 mod adb",
-            "isDeleted": false,
-            "buffSold": 45
-      },
-      {
-            "id": "PROD_MU2N2TVDIJ",
-            "name": "Rom androi 10 mod adb galaxy not 9",
-            "category": "Phone Farm",
-            "price": 500000,
-            "stock": 0,
-            "sold": 34,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Rom androi 10  not 9",
-                        "price": 500000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Rom Gốc mod adb",
-                        "price": 300000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Rom androi 10 mod adb galaxy not 9",
-            "title": "Rom androi 10 mod adb galaxy not 9",
-            "isDeleted": false,
-            "buffSold": 34
-      },
-      {
-            "id": "PROD_MU2MY8WCOE",
-            "name": "Rom Androi 12 galaxy s22 mod adb",
-            "category": "Phone Farm",
-            "price": 500000,
-            "stock": 0,
-            "sold": 33,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "rom androi 12 mod adb",
-                        "price": 500000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Rom Androi 12 galaxy s22 mod adb",
-            "title": "Rom Androi 12 galaxy s22 mod adb",
-            "isDeleted": false,
-            "buffSold": 33
-      },
-      {
-            "id": "PROD_MU2MOON7L6",
-            "name": "Rom androi 12 mod adb galaxy not 10 G975FDS",
-            "category": "Phone Farm",
-            "price": 500000,
-            "stock": 0,
-            "sold": 46,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Not 10 G975 FDS cài qua odin",
-                        "price": 500000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Rom androi 12 mod adb galaxy not 10 G975FDS",
-            "title": "Rom androi 12 mod adb galaxy not 10 G975FDS",
-            "isDeleted": false,
-            "buffSold": 46
-      },
-      {
-            "id": "PROD_MU2LYZY5C7",
-            "name": "Rom androi 12 - j7 pro mod adb",
-            "category": "Phone Farm",
-            "price": 300000,
-            "stock": 0,
-            "sold": 28,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Rom androi 12 mod adb",
-                        "price": 300000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Rom Gốc  mod adb",
-                        "price": 300000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Rom androi 10 mod adb",
-                        "price": 300000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Rom androi 12 - j7 pro mod adb cài bằng tools hoặc odin",
-            "title": "Rom androi 12 - j7 pro mod adb",
-            "isDeleted": false,
-            "buffSold": 28
-      },
-      {
-            "id": "PROD_MU2JIBBRH8",
-            "name": "Tiktok việt reg trên 4 tháng",
-            "category": "TikTok",
-            "price": 5000,
-            "stock": 0,
-            "sold": 27,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành Login",
-            "variants": [
-                  {
-                        "name": "tiktok việt reg trên 4 tháng",
-                        "price": 5000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Tik Tok việt trên 1 năm",
-                        "price": 8000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Tiktok việt reg trên 4 tháng",
-            "title": "Tiktok việt reg trên 4 tháng",
-            "isDeleted": false,
-            "buffSold": 27
-      },
-      {
-            "id": "PROD_MU2IXVFLMW",
-            "name": "Tiktok Việt mở giỏ < 1KFL - Tiktok việt làm affiliate",
-            "category": "TikTok",
-            "price": 300000,
-            "stock": 0,
-            "sold": 39,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "tiktok trên 1k folow",
-                        "price": 300000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "tiktok trên 3 k folow",
-                        "price": 350000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "tiktok trên 5k folow",
-                        "price": 400000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "tiktok trên 10k folow",
-                        "price": 800000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Tiktok Việt mở giỏ < 1KFL - Tiktok việt làm affiliate",
-            "title": "Tiktok Việt mở giỏ < 1KFL - Tiktok việt làm affiliate",
-            "isDeleted": false,
-            "buffSold": 39
-      },
-      {
-            "id": "PROD_MU2CZL38PH",
-            "name": "TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2",
-            "category": "TikTok",
-            "price": 8000,
-            "stock": 0,
-            "sold": 19,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "BH Đăng Nhập",
-            "variants": [
-                  {
-                        "name": "Tiktok Pháp",
-                        "price": 8000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Định dạng username|passtiktok|email|password|refresh_token|client_id|cookie  - Mail Live Đọc code qua OAuth2 - Bảo hành đăng nhập 1-1",
-            "title": "TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2",
-            "isDeleted": false,
-            "buffSold": 19
-      },
-      {
-            "id": "PROD_MU2BIFBBNE",
-            "name": "Key HMA Hạn 27 -32 Ngày, 5 Thiết Bị",
-            "category": "VPN Proxy",
-            "price": 50000,
-            "stock": 0,
-            "sold": 59,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành Login Lần Đầu",
-            "variants": [
-                  {
-                        "name": "Key HMA",
-                        "price": 50000,
-                        "stock": 0
-                  }
-            ],
-            "description": "( DÙNG : 5 THIẾT BỊ ) - Key dùng cho ADR/PC Hạn 27-32 Ngày Đọc thư email ở generator.email/[email]",
-            "title": "Key HMA Hạn 27 -32 Ngày, 5 Thiết Bị",
-            "isDeleted": false,
-            "buffSold": 59
-      },
-      {
-            "id": "PROD_MU2B32VLQY",
-            "name": "Capcut pro Cá Nhân 7 ngày",
-            "category": "Capcut",
-            "price": 25000,
-            "stock": 0,
-            "sold": 13,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "capcut pro 7 ngày",
-                        "price": 25000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Capcut pro Cá Nhân 7 ngày",
-            "title": "Capcut pro Cá Nhân 7 ngày",
-            "isDeleted": false,
-            "buffSold": 13
-      },
-      {
-            "id": "PROD_MU2ASBNSJT",
-            "name": "Via Việt 2014 - 2019  ACC CỔ - ACC SPAM - SEEDING",
-            "category": "Facebook",
-            "price": 25000,
-            "stock": 0,
-            "sold": 41,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Acc cổ ramdom 2024 - 2025",
-                        "price": 25000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Acc cổ ramdom 2019 - 2023",
-                        "price": 120000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Via Việt 2014 - 2019  ACC CỔ - ACC SPAM - SEEDING",
-            "title": "Via Việt 2014 - 2019  ACC CỔ - ACC SPAM - SEEDING",
-            "isDeleted": false,
-            "buffSold": 41
-      },
-      {
-            "id": "PROD_MU2AB1XEGI",
-            "name": "Google Gemini AI Veo3 Giá rẻ",
-            "category": "AI & Video",
-            "price": 50000,
-            "stock": 0,
-            "sold": 11,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Gemini AI 1 tháng",
-                        "price": 50000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Gemini AI  4 tháng",
-                        "price": 100000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Gemini AI 12 tháng",
-                        "price": 250000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Gemini AI 18 tháng",
-                        "price": 350000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Google Gemini AI Veo3 Giá rẻ",
-            "title": "Google Gemini AI Veo3 Giá rẻ",
-            "isDeleted": false,
-            "buffSold": 11
-      },
-      {
-            "id": "PROD_MU2A2S732Y",
-            "name": "Express VPN  1 Tháng giá rẻ",
-            "category": "VPN Proxy",
-            "price": 20000,
-            "stock": 0,
-            "sold": 27,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 7 Ngày",
-            "variants": [
-                  {
-                        "name": "Express VPN 2 - 3 ngày  8 thiết bị",
-                        "price": 20000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Express VPN  1 Tháng giá rẻ",
-            "title": "Express VPN  1 Tháng giá rẻ",
-            "isDeleted": false,
-            "buffSold": 27
-      },
-      {
-            "id": "PROD_MU29WM90LZ",
-            "name": "Canva pro 1 tháng -3 tháng -6 tháng",
-            "category": "Canva",
-            "price": 50000,
-            "stock": 0,
-            "sold": 15,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Canva pro 1 tháng",
-                        "price": 50000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Canva pro 3 tháng",
-                        "price": 50000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Canva pro 6 tháng",
-                        "price": 50000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Canva pro 1 tháng -3 tháng -6 tháng",
-            "title": "Canva pro 1 tháng -3 tháng -6 tháng",
-            "isDeleted": false,
-            "buffSold": 15
-      },
-      {
-            "id": "PROD_MU29RGEBH0",
-            "name": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
-            "category": "Facebook",
-            "price": 99000,
-            "stock": 0,
-            "sold": 43,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Page 2019 0 Folow",
-                        "price": 99000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
-            "title": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
-            "isDeleted": false,
-            "buffSold": 43
-      },
-      {
-            "id": "PROD_MU29IZBLAK",
-            "name": "TikTok US Chuẩn Bật Kiếm Tiền Beta",
-            "category": "TikTok",
-            "price": 5000,
-            "stock": 0,
-            "sold": 56,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "tiktok us",
-                        "price": 5000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "tiktok us 2024-2025",
-                        "price": 15000,
-                        "stock": 0
-                  }
-            ],
-            "description": "TK TikTok US Chuẩn Bật Kiếm Tiền Beta 2024-2025",
-            "title": "TikTok US Chuẩn Bật Kiếm Tiền Beta",
-            "isDeleted": false,
-            "buffSold": 56
-      },
-      {
-            "id": "PROD_MU1LSSJ7AZ",
-            "name": "Tiktok nhật 2024-2026  tiktok like  - tiktok thường",
-            "category": "TikTok",
-            "price": 5000,
-            "stock": 76,
-            "sold": 38,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "tiktok nhật acc new",
-                        "price": 5000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "tiktok nhật 2024-2025 ramdom",
-                        "price": 15000,
-                        "stock": 45
-                  },
-                  {
-                        "name": "tiktok nhật 2024-2025 có video",
-                        "price": 20000,
-                        "stock": 31
-                  }
-            ],
-            "description": "Tiktok nhật 2024-2026  tiktok like  - tiktok thường",
-            "title": "Tiktok nhật 2024-2026  tiktok like  - tiktok thường",
-            "isDeleted": false,
-            "buffSold": 38
-      },
-      {
-            "id": "PROD_MU1G6LJX",
-            "name": "Capcut pro Cá Nhân 7 ngày",
-            "category": "Capcut",
-            "price": 25000,
-            "stock": 0,
-            "sold": 59,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "capcut pro 7 ngày",
-                        "price": 25000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Capcut pro Cá Nhân 7 ngày chính chủ, xuất video 4K 60FPS không watermark, mở khóa toàn bộ hiệu ứng VIP.",
-            "title": "Capcut pro Cá Nhân 7 ngày",
-            "isDeleted": false,
-            "buffSold": 59
-      },
-      {
-            "id": "PROD_MTQZT2Y1",
-            "name": "HOTMAIL ĐỘ TRUST CAO LIVE TRÂU",
-            "category": "Khác",
-            "price": 1000,
-            "stock": 0,
-            "sold": 19,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo hành 24h",
-            "variants": [
-                  {
-                        "name": "HOTMAIL ĐỘ TRUST CAO LIVE TRÂU",
-                        "price": 1000,
-                        "stock": 0
-                  }
-            ],
-            "description": "",
-            "title": "HOTMAIL ĐỘ TRUST CAO LIVE TRÂU",
-            "isDeleted": false,
-            "buffSold": 19
-      },
-      {
-            "id": "PROD_MTRB6000",
-            "name": "OUTLOOK TRUSTED - LIVE 6-12 Tháng",
-            "category": "HOT MAIL",
-            "price": 1000,
-            "stock": 0,
-            "sold": 29,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "BH Đăng Nhập",
-            "variants": [
-                  {
-                        "name": "OUTLOOK TRUSTED - LIVE 6-12 Tháng",
-                        "price": 1000,
-                        "stock": 0
-                  }
-            ],
-            "description": "OUTLOOK TRUSTED - LIVE 6-12 Tháng",
-            "title": "OUTLOOK TRUSTED - LIVE 6-12 Tháng",
-            "isDeleted": false,
-            "buffSold": 29
-      },
-      {
-            "id": "PROD_MTTPLODQ",
-            "name": "GMAIL CỔ 2019-2026",
-            "category": "Gmail",
-            "price": 10000,
-            "stock": 0,
-            "sold": 36,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "gmail 2026",
-                        "price": 10000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "gmail 2020 - 2022",
-                        "price": 120000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "gmail 2018 - 2019",
-                        "price": 150000,
-                        "stock": 0
-                  }
-            ],
-            "description": "24",
-            "title": "GMAIL CỔ 2019-2026",
-            "isDeleted": false,
-            "buffSold": 36
-      },
-      {
-            "id": "PROD_MTU9F5HN",
-            "name": "Paypal 2025 - 2016 Đã ngâm lâu cực kỳ Trâu",
-            "category": "Khác",
-            "price": 50000,
-            "stock": 124,
-            "sold": 48,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "paypal đã ngâm lâu",
-                        "price": 50000,
-                        "stock": 62
-                  },
-                  {
-                        "name": "paypal Đã Nhận Tiền",
-                        "price": 100000,
-                        "stock": 62
-                  }
-            ],
-            "description": "Bảo Hành 1 Đổi 1 trong vòng 24h",
-            "title": "Paypal 2025 - 2016 Đã ngâm lâu cực kỳ Trâu",
-            "isDeleted": false,
-            "buffSold": 48
-      },
-      {
-            "id": "PROD_MTVI44UK",
-            "name": "Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu",
-            "category": "TikTok",
-            "price": 2000,
-            "stock": 15,
-            "sold": 37,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo hành 24h",
-            "variants": [
-                  {
-                        "name": "Tiktok 2026",
-                        "price": 2000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "Tiktok 2024-2025",
-                        "price": 5000,
-                        "stock": 0
-                  },
-                  {
-                        "name": "acc cổ ramdom có video",
-                        "price": 15000,
-                        "stock": 15
-                  }
-            ],
-            "description": "2",
-            "title": "Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu",
-            "isDeleted": false,
-            "buffSold": 37
-      },
-      {
-            "id": "PROD_MTPIJ9XV",
-            "name": "TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU",
-            "category": "TikTok",
-            "price": 5000,
-            "stock": 76,
-            "sold": 33,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "BH Đăng Nhập",
-            "variants": [
-                  {
-                        "name": "TIKTOK BRAZIL",
-                        "price": 5000,
-                        "stock": 76
-                  },
-                  {
-                        "name": "Tiktok   BRAZIL New",
-                        "price": 3000,
-                        "stock": 0
-                  }
-            ],
-            "description": "🔥 Tài khoản TikTok Brazil đã ngâm lâu, form ổn định\n💪 Acc lâu ngày – độ ổn định cao,",
-            "title": "TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU",
-            "isDeleted": false,
-            "buffSold": 33
-      },
-      {
-            "id": "PROD_MTQQXO2E",
-            "name": "Gmail cho Thuê 24h",
-            "category": "Gmail",
-            "price": 300,
-            "stock": 0,
-            "sold": 58,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "BH 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Gmail cho Thuê 24h",
-                        "price": 300,
-                        "stock": 0
-                  }
-            ],
-            "description": "Gmail cho thuê 24h",
-            "title": "Gmail cho Thuê 24h",
-            "isDeleted": false,
-            "buffSold": 58
-      },
-      {
-            "id": "PROD_MTQWMPL5",
-            "name": "Gmail cho thuê 7 Ngày",
-            "category": "Gmail",
-            "price": 1000,
-            "stock": 0,
-            "sold": 32,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "BH Đăng Nhập",
-            "variants": [
-                  {
-                        "name": "Gmail cho thuê 7 Ngày",
-                        "price": 1000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Gmail cho thuê 7 Ngày",
-            "title": "Gmail cho thuê 7 Ngày",
-            "isDeleted": false,
-            "buffSold": 32
-      },
-      {
-            "id": "PROD_MTQWQFZD",
-            "name": "Gmail cho thuê 30 Ngày",
-            "category": "Gmail",
-            "price": 3000,
-            "stock": 0,
-            "sold": 28,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "BH Đăng Nhập",
-            "variants": [
-                  {
-                        "name": "Gmail cho thuê 30 Ngày",
-                        "price": 3000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Gmail cho thuê 30 Ngày",
-            "title": "Gmail cho thuê 30 Ngày",
-            "isDeleted": false,
-            "buffSold": 28
-      },
-      {
-            "id": "PROD_MTQX1C7X",
-            "name": "Gmail cho thuê 1 giờ live 60 phút",
-            "category": "Gmail",
-            "price": 150,
-            "stock": 0,
-            "sold": 15,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "BH Đăng Nhập",
-            "variants": [
-                  {
-                        "name": "Gmail cho thuê 1 giờ live 60 phút",
-                        "price": 150,
-                        "stock": 0
-                  }
-            ],
-            "description": "Gmail cho thuê 1 giờ live 60 phút",
-            "title": "Gmail cho thuê 1 giờ live 60 phút",
-            "isDeleted": false,
-            "buffSold": 15
-      },
-      {
-            "id": "PROD_MTQX465U",
-            "name": "Gmail cho Thuế 10 phút live 10 phút",
-            "category": "Gmail",
-            "price": 100,
-            "stock": 0,
-            "sold": 58,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "Bảo Hành 1 Đổi 1",
-            "variants": [
-                  {
-                        "name": "Gmail cho Thuế 10 phút live 10 phút",
-                        "price": 100,
-                        "stock": 0
-                  }
-            ],
-            "description": "Gmail cho Thuế 10 phút live 10 phút",
-            "title": "Gmail cho Thuế 10 phút live 10 phút",
-            "isDeleted": false,
-            "buffSold": 58
-      },
-      {
-            "id": "PROD_MTQX7SIK",
-            "name": "Gmail Cho Thuê 14 Ngày live 14 ngày",
-            "category": "Gmail",
-            "price": 1500,
-            "stock": 0,
-            "sold": 42,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "BH Đăng Nhập",
-            "variants": [
-                  {
-                        "name": "Gmail Cho Thuê 14 Ngày live 14 ngày",
-                        "price": 1500,
-                        "stock": 0
-                  }
-            ],
-            "description": "Gmail Cho Thuê 14 Ngày live 14 ngày",
-            "title": "Gmail Cho Thuê 14 Ngày live 14 ngày",
-            "isDeleted": false,
-            "buffSold": 42
-      },
-      {
-            "id": "PROD_MTYN7UJG",
-            "name": "Gmail cổ kèm Kênh youtube",
-            "category": "YOUTUBE",
-            "price": 10000,
-            "stock": 2,
-            "sold": 44,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "BH Đăng Nhập",
-            "variants": [
-                  {
-                        "name": "GMAIL NEW 2026 KÈM KÊNH",
-                        "price": 10000,
-                        "stock": 2
-                  },
-                  {
-                        "name": "GMAIL CỔ RAMDOM KÈM KÊNH",
-                        "price": 200000,
-                        "stock": 0
-                  }
-            ],
-            "description": "Gmail cổ NEW kèm Kênh youtube",
-            "title": "Gmail cổ kèm Kênh youtube",
-            "isDeleted": false,
-            "buffSold": 44
-      },
-      {
-            "id": "PROD_MTPI7PIO",
-            "name": "NHÓM ZALO NEW 2016",
-            "category": "Khác",
-            "price": 50000,
-            "stock": 2,
-            "sold": 21,
-            "rating": 5,
-            "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
-            "commission": "10%",
-            "warranty": "BH Đăng Nhập",
-            "variants": [
-                  {
-                        "name": "NHÓM ZALO NEW 2016",
-                        "price": 50000,
-                        "stock": 2
-                  }
-            ],
-            "description": "ZALO NEW MỚI TẠO",
-            "title": "NHÓM ZALO NEW 2016",
-            "isDeleted": false,
-            "buffSold": 21
+        "name": "Tài khoản Chat GPT 1 Năm",
+        "price": 150000,
+        "stock": 0
       }
+    ],
+    "description": "Tài khoản ChatGPT Plus OpenAI bản quyền chính hãng. Hỗ trợ GPT-4o không giới hạn truy cập. Đổi mới 1:1 nếu có sự cố.",
+    "title": "Tài khoản Chat GPT plush không giới hạn",
+    "isDeleted": false,
+    "buffSold": 12
+  },
+  {
+    "id": "SP_FANPAGE",
+    "name": "CHUYÊN CUNG CẤP FANPAGE FACEBOOK CỔ 2019-2020",
+    "category": "Facebook",
+    "price": 99000,
+    "stock": 62,
+    "sold": 26,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành Kháng",
+    "variants": [
+      {
+        "name": "Fanpage Cổ Không Vi Phạm",
+        "price": 99000,
+        "stock": 62
+      }
+    ],
+    "description": "Fanpage Facebook tạo từ năm 2019-2020, chất lượng cao, dễ lên đề xuất và chạy quảng cáo mượt mà.",
+    "title": "CHUYÊN CUNG CẤP FANPAGE FACEBOOK CỔ 2019-2020",
+    "isDeleted": false,
+    "buffSold": 26
+  },
+  {
+    "id": "SP_GEMINI",
+    "name": "NÂNG CẤP TÀI KHOẢN GOOGLE AI PRO GEMINI ADVANCED",
+    "category": "AI & Video",
+    "price": 99000,
+    "stock": 0,
+    "sold": 35,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành Trọn Gói",
+    "variants": [
+      {
+        "name": "Gói Gemini Pro 1 Tháng",
+        "price": 99000,
+        "stock": 0
+      },
+      {
+        "name": "Gói Gemini Pro 1 Năm",
+        "price": 490000,
+        "stock": 0
+      }
+    ],
+    "description": "Nâng cấp chính chủ tài khoản Google của bạn lên gói 2TB Google One tích hợp Gemini Advanced 1.5 Pro.",
+    "title": "NÂNG CẤP TÀI KHOẢN GOOGLE AI PRO GEMINI ADVANCED",
+    "isDeleted": false,
+    "buffSold": 35
+  },
+  {
+    "id": "SP_GMAIL_DOMAIN",
+    "name": "GMAIL DOMAIN CHO THUÊ 24H TIỀN VIỆT",
+    "category": "Gmail",
+    "price": 300,
+    "stock": 0,
+    "sold": 34,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành Nhận OTP",
+    "variants": [
+      {
+        "name": "Thuê Gmail Domain 24h",
+        "price": 300,
+        "stock": 0
+      }
+    ],
+    "description": "Dịch vụ thuê Gmail Domain nhận mã OTP đăng ký mọi dịch vụ trực tuyến.",
+    "title": "GMAIL DOMAIN CHO THUÊ 24H TIỀN VIỆT",
+    "isDeleted": false,
+    "buffSold": 34
+  },
+  {
+    "id": "SP_HOTMAIL",
+    "name": "HOTMAIL VIỆT NAM ĐÃ NGÂM CỰC LÂU GIÁ CỰC RẺ",
+    "category": "Gmail",
+    "price": 1000,
+    "stock": 0,
+    "sold": 25,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "Hotmail Outlook Live 100%",
+        "price": 1000,
+        "stock": 0
+      }
+    ],
+    "description": "Tài khoản Hotmail/Outlook live 100%, ngâm cực lâu, độ trust cao, dùng đăng ký tài khoản các mạng xã hội.",
+    "title": "HOTMAIL VIỆT NAM ĐÃ NGÂM CỰC LÂU GIÁ CỰC RẺ",
+    "isDeleted": false,
+    "buffSold": 25
+  },
+  {
+    "id": "SP_J7",
+    "name": "ROM GỐC SAMSUNG J7 PLUSH ANDROI 8.1 MOD ADB",
+    "category": "Rom & Tools",
+    "price": 100000,
+    "stock": 0,
+    "sold": 49,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành Vĩnh Viễn",
+    "variants": [
+      {
+        "name": "ROM J7 Plus Mod Farm",
+        "price": 100000,
+        "stock": 0
+      }
+    ],
+    "description": "ROM nhẹ mượt dành riêng cho cày view, tương thích 100% các công cụ điều khiển hàng loạt.",
+    "title": "ROM GỐC SAMSUNG J7 PLUSH ANDROI 8.1 MOD ADB",
+    "isDeleted": false,
+    "buffSold": 49
+  },
+  {
+    "id": "SP_J7_PRO",
+    "name": "ROM SAMSUNG GALAXY J7 PRO ANDROI 12 ẨN ADB",
+    "category": "Rom & Tools",
+    "price": 300000,
+    "stock": 0,
+    "sold": 37,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Bản ROM J7 Pro Android 12 Ẩn ADB",
+        "price": 300000,
+        "stock": 0
+      }
+    ],
+    "description": "Bản ROM mod ẩn hoàn toàn ADB chống phát hiện, mượt mà chạy tool MMO tự động.",
+    "title": "ROM SAMSUNG GALAXY J7 PRO ANDROI 12 ẨN ADB",
+    "isDeleted": false,
+    "buffSold": 37
+  },
+  {
+    "id": "SP_S10",
+    "name": "ROM GỐC SAMSUNG GALAXY S10 ANDROI 12 MOD ADB",
+    "category": "Rom & Tools",
+    "price": 900000,
+    "stock": 0,
+    "sold": 27,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Hỗ Trợ Cài Đặt 24/7",
+    "variants": [
+      {
+        "name": "Bản ROM S10 Chuẩn ADB",
+        "price": 900000,
+        "stock": 0
+      }
+    ],
+    "description": "Bản ROM mod tối ưu cho Box Phone Farm, tự động bypass xác thực ADB, tối ưu hóa pin và nhiệt độ hoạt động liên tục.",
+    "title": "ROM GỐC SAMSUNG GALAXY S10 ANDROI 12 MOD ADB",
+    "isDeleted": false,
+    "buffSold": 27
+  },
+  {
+    "id": "SP_TIKTOK_US",
+    "name": "TK TikTok US Chuẩn Bật Kiếm Tiền Beta 2024-2025",
+    "category": "TikTok",
+    "price": 8000,
+    "stock": 20,
+    "sold": 26,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành Login Lần Đầu",
+    "variants": [
+      {
+        "name": "TikTok US Đã Ngâm 30 Ngày",
+        "price": 8000,
+        "stock": 20
+      },
+      {
+        "name": "TikTok US Đã Bật Sẵn Beta",
+        "price": 25000,
+        "stock": 0
+      }
+    ],
+    "description": "Tài khoản TikTok chuẩn IP US/Brazil ngâm sâu trên thiết bị sạch. Đầy đủ cookies và token đăng nhập an toàn.",
+    "title": "TK TikTok US Chuẩn Bật Kiếm Tiền Beta 2024-2025",
+    "isDeleted": false,
+    "buffSold": 26
+  },
+  {
+    "id": "PROD_MU2YQ1J3PY",
+    "name": "Hotmail Trusted - OAuth2 [Graph] Live",
+    "category": "HOT MAIL",
+    "price": 600,
+    "stock": 0,
+    "sold": 14,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "Hotmail",
+        "price": 600,
+        "stock": 0
+      }
+    ],
+    "description": "",
+    "title": "Hotmail Trusted - OAuth2 [Graph] Live",
+    "isDeleted": false,
+    "buffSold": 14
+  },
+  {
+    "id": "PROD_MU2PA8VNDP",
+    "name": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP",
+    "category": "Intagram",
+    "price": 6000,
+    "stock": 0,
+    "sold": 26,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611262588024-d12430b98920?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "IG ĐÃ QUA SỬ DỤNG",
+        "price": 6000,
+        "stock": 0
+      }
+    ],
+    "description": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP - NAME RANDOM",
+    "title": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP",
+    "isDeleted": false,
+    "buffSold": 26
+  },
+  {
+    "id": "PROD_MU2OXBZC6K",
+    "name": "chat GPT Plush chính chủ giá rẻ",
+    "category": "Chatgpt",
+    "price": 80000,
+    "stock": 0,
+    "sold": 27,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "chat GPT Plush 1 tháng",
+        "price": 80000,
+        "stock": 0
+      }
+    ],
+    "description": "chat GPT Plush chính chủ giá rẻ",
+    "title": "chat GPT Plush chính chủ giá rẻ",
+    "isDeleted": false,
+    "buffSold": 27
+  },
+  {
+    "id": "PROD_MU2OGW71GZ",
+    "name": "rom gốc mod adb j7 plush",
+    "category": "Phone Farm",
+    "price": 300000,
+    "stock": 0,
+    "sold": 40,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "rom gốc mod adb j7 plush",
+        "price": 300000,
+        "stock": 0
+      },
+      {
+        "name": "rot j7 plush",
+        "price": 100000,
+        "stock": 0
+      }
+    ],
+    "description": "rom gốc mod adb j7 plush",
+    "title": "rom gốc mod adb j7 plush",
+    "isDeleted": false,
+    "buffSold": 40
+  },
+  {
+    "id": "PROD_MU2OAG3IO2",
+    "name": "Rom androi 10 mod adb j7 prime",
+    "category": "Phone Farm",
+    "price": 300000,
+    "stock": 0,
+    "sold": 31,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 10 mod adb j7 prime",
+        "price": 300000,
+        "stock": 0
+      }
+    ],
+    "description": "Rom androi 10 mod adb j7 prime",
+    "title": "Rom androi 10 mod adb j7 prime",
+    "isDeleted": false,
+    "buffSold": 31
+  },
+  {
+    "id": "PROD_MU2O4MW4DQ",
+    "name": "Rom androi 10 s7  s7 edge mod adb",
+    "category": "Phone Farm",
+    "price": 300000,
+    "stock": 0,
+    "sold": 19,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 10 s7 G930FDS",
+        "price": 300000,
+        "stock": 0
+      },
+      {
+        "name": "Rom androi  s7 edge G935",
+        "price": 300000,
+        "stock": 0
+      }
+    ],
+    "description": "Rom androi 10 s7 mod adb",
+    "title": "Rom androi 10 s7  s7 edge mod adb",
+    "isDeleted": false,
+    "buffSold": 19
+  },
+  {
+    "id": "PROD_MU2NX4CYEW",
+    "name": "Rom androi 10 s8 mod adb",
+    "category": "Phone Farm",
+    "price": 300000,
+    "stock": 0,
+    "sold": 25,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 10 s8 mod adb",
+        "price": 300000,
+        "stock": 0
+      }
+    ],
+    "description": "Rom androi 10 s8 mod adb",
+    "title": "Rom androi 10 s8 mod adb",
+    "isDeleted": false,
+    "buffSold": 25
+  },
+  {
+    "id": "PROD_MU2NUXL1Q4",
+    "name": "Rom androi 10 s9 mod adb",
+    "category": "Phone Farm",
+    "price": 300000,
+    "stock": 0,
+    "sold": 35,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 10 s9",
+        "price": 300000,
+        "stock": 0
+      }
+    ],
+    "description": "Rom androi 10 s9 mod adb cài bằng odin",
+    "title": "Rom androi 10 s9 mod adb",
+    "isDeleted": false,
+    "buffSold": 35
+  },
+  {
+    "id": "PROD_MU2NSFQCMT",
+    "name": "Rom androi 12 s10 mod adb",
+    "category": "Phone Farm",
+    "price": 50000,
+    "stock": 0,
+    "sold": 17,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "rom s10 G973F DS",
+        "price": 50000,
+        "stock": 0
+      },
+      {
+        "name": "rom s10 G977N s10 5g",
+        "price": 500000,
+        "stock": 0
+      },
+      {
+        "name": "rom s10 G977N rom gốc mod",
+        "price": 500000,
+        "stock": 0
+      },
+      {
+        "name": "TW s10 mod adb",
+        "price": 50000,
+        "stock": 0
+      }
+    ],
+    "description": "Rom androi 12 s10 mod adb",
+    "title": "Rom androi 12 s10 mod adb",
+    "isDeleted": false,
+    "buffSold": 17
+  },
+  {
+    "id": "PROD_MU2NKET1OG",
+    "name": "Rom Not8 androi 10 mod adb",
+    "category": "Phone Farm",
+    "price": 300000,
+    "stock": 0,
+    "sold": 45,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom Not8 androi 10",
+        "price": 300000,
+        "stock": 0
+      },
+      {
+        "name": "Rom  gốc not8 mod adb",
+        "price": 300000,
+        "stock": 0
+      }
+    ],
+    "description": "Rom Not8 androi 10 mod adb",
+    "title": "Rom Not8 androi 10 mod adb",
+    "isDeleted": false,
+    "buffSold": 45
+  },
+  {
+    "id": "PROD_MU2N2TVDIJ",
+    "name": "Rom androi 10 mod adb galaxy not 9",
+    "category": "Phone Farm",
+    "price": 500000,
+    "stock": 0,
+    "sold": 34,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 10  not 9",
+        "price": 500000,
+        "stock": 0
+      },
+      {
+        "name": "Rom Gốc mod adb",
+        "price": 300000,
+        "stock": 0
+      }
+    ],
+    "description": "Rom androi 10 mod adb galaxy not 9",
+    "title": "Rom androi 10 mod adb galaxy not 9",
+    "isDeleted": false,
+    "buffSold": 34
+  },
+  {
+    "id": "PROD_MU2MY8WCOE",
+    "name": "Rom Androi 12 galaxy s22 mod adb",
+    "category": "Phone Farm",
+    "price": 500000,
+    "stock": 0,
+    "sold": 33,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "rom androi 12 mod adb",
+        "price": 500000,
+        "stock": 0
+      }
+    ],
+    "description": "Rom Androi 12 galaxy s22 mod adb",
+    "title": "Rom Androi 12 galaxy s22 mod adb",
+    "isDeleted": false,
+    "buffSold": 33
+  },
+  {
+    "id": "PROD_MU2MOON7L6",
+    "name": "Rom androi 12 mod adb galaxy not 10 G975FDS",
+    "category": "Phone Farm",
+    "price": 500000,
+    "stock": 0,
+    "sold": 46,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Not 10 G975 FDS cài qua odin",
+        "price": 500000,
+        "stock": 0
+      }
+    ],
+    "description": "Rom androi 12 mod adb galaxy not 10 G975FDS",
+    "title": "Rom androi 12 mod adb galaxy not 10 G975FDS",
+    "isDeleted": false,
+    "buffSold": 46
+  },
+  {
+    "id": "PROD_MU2LYZY5C7",
+    "name": "Rom androi 12 - j7 pro mod adb",
+    "category": "Phone Farm",
+    "price": 300000,
+    "stock": 0,
+    "sold": 28,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 12 mod adb",
+        "price": 300000,
+        "stock": 0
+      },
+      {
+        "name": "Rom Gốc  mod adb",
+        "price": 300000,
+        "stock": 0
+      },
+      {
+        "name": "Rom androi 10 mod adb",
+        "price": 300000,
+        "stock": 0
+      }
+    ],
+    "description": "Rom androi 12 - j7 pro mod adb cài bằng tools hoặc odin",
+    "title": "Rom androi 12 - j7 pro mod adb",
+    "isDeleted": false,
+    "buffSold": 28
+  },
+  {
+    "id": "PROD_MU2JIBBRH8",
+    "name": "Tiktok việt reg trên 4 tháng",
+    "category": "TikTok",
+    "price": 5000,
+    "stock": 0,
+    "sold": 27,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "tiktok việt reg trên 4 tháng",
+        "price": 5000,
+        "stock": 0
+      },
+      {
+        "name": "Tik Tok việt trên 1 năm",
+        "price": 8000,
+        "stock": 0
+      }
+    ],
+    "description": "Tiktok việt reg trên 4 tháng",
+    "title": "Tiktok việt reg trên 4 tháng",
+    "isDeleted": false,
+    "buffSold": 27
+  },
+  {
+    "id": "PROD_MU2IXVFLMW",
+    "name": "Tiktok Việt mở giỏ < 1KFL - Tiktok việt làm affiliate",
+    "category": "TikTok",
+    "price": 300000,
+    "stock": 0,
+    "sold": 39,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "tiktok trên 1k folow",
+        "price": 300000,
+        "stock": 0
+      },
+      {
+        "name": "tiktok trên 3 k folow",
+        "price": 350000,
+        "stock": 0
+      },
+      {
+        "name": "tiktok trên 5k folow",
+        "price": 400000,
+        "stock": 0
+      },
+      {
+        "name": "tiktok trên 10k folow",
+        "price": 800000,
+        "stock": 0
+      }
+    ],
+    "description": "Tiktok Việt mở giỏ < 1KFL - Tiktok việt làm affiliate",
+    "title": "Tiktok Việt mở giỏ < 1KFL - Tiktok việt làm affiliate",
+    "isDeleted": false,
+    "buffSold": 39
+  },
+  {
+    "id": "PROD_MU2CZL38PH",
+    "name": "TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2",
+    "category": "TikTok",
+    "price": 8000,
+    "stock": 0,
+    "sold": 19,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "BH Đăng Nhập",
+    "variants": [
+      {
+        "name": "Tiktok Pháp",
+        "price": 8000,
+        "stock": 0
+      }
+    ],
+    "description": "Định dạng username|passtiktok|email|password|refresh_token|client_id|cookie  - Mail Live Đọc code qua OAuth2 - Bảo hành đăng nhập 1-1",
+    "title": "TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2",
+    "isDeleted": false,
+    "buffSold": 19
+  },
+  {
+    "id": "PROD_MU2BIFBBNE",
+    "name": "Key HMA Hạn 27 -32 Ngày, 5 Thiết Bị",
+    "category": "VPN Proxy",
+    "price": 50000,
+    "stock": 0,
+    "sold": 59,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành Login Lần Đầu",
+    "variants": [
+      {
+        "name": "Key HMA",
+        "price": 50000,
+        "stock": 0
+      }
+    ],
+    "description": "( DÙNG : 5 THIẾT BỊ ) - Key dùng cho ADR/PC Hạn 27-32 Ngày Đọc thư email ở generator.email/[email]",
+    "title": "Key HMA Hạn 27 -32 Ngày, 5 Thiết Bị",
+    "isDeleted": false,
+    "buffSold": 59
+  },
+  {
+    "id": "PROD_MU2B32VLQY",
+    "name": "Capcut pro Cá Nhân 7 ngày",
+    "category": "Capcut",
+    "price": 25000,
+    "stock": 0,
+    "sold": 13,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "capcut pro 7 ngày",
+        "price": 25000,
+        "stock": 0
+      }
+    ],
+    "description": "Capcut pro Cá Nhân 7 ngày",
+    "title": "Capcut pro Cá Nhân 7 ngày",
+    "isDeleted": false,
+    "buffSold": 13
+  },
+  {
+    "id": "PROD_MU2ASBNSJT",
+    "name": "Via Việt 2014 - 2019  ACC CỔ - ACC SPAM - SEEDING",
+    "category": "Facebook",
+    "price": 25000,
+    "stock": 0,
+    "sold": 41,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Acc cổ ramdom 2024 - 2025",
+        "price": 25000,
+        "stock": 0
+      },
+      {
+        "name": "Acc cổ ramdom 2019 - 2023",
+        "price": 120000,
+        "stock": 0
+      }
+    ],
+    "description": "Via Việt 2014 - 2019  ACC CỔ - ACC SPAM - SEEDING",
+    "title": "Via Việt 2014 - 2019  ACC CỔ - ACC SPAM - SEEDING",
+    "isDeleted": false,
+    "buffSold": 41
+  },
+  {
+    "id": "PROD_MU2AB1XEGI",
+    "name": "Google Gemini AI Veo3 Giá rẻ",
+    "category": "AI & Video",
+    "price": 50000,
+    "stock": 0,
+    "sold": 11,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Gemini AI 1 tháng",
+        "price": 50000,
+        "stock": 0
+      },
+      {
+        "name": "Gemini AI  4 tháng",
+        "price": 100000,
+        "stock": 0
+      },
+      {
+        "name": "Gemini AI 12 tháng",
+        "price": 250000,
+        "stock": 0
+      },
+      {
+        "name": "Gemini AI 18 tháng",
+        "price": 350000,
+        "stock": 0
+      }
+    ],
+    "description": "Google Gemini AI Veo3 Giá rẻ",
+    "title": "Google Gemini AI Veo3 Giá rẻ",
+    "isDeleted": false,
+    "buffSold": 11
+  },
+  {
+    "id": "PROD_MU2A2S732Y",
+    "name": "Express VPN  1 Tháng giá rẻ",
+    "category": "VPN Proxy",
+    "price": 20000,
+    "stock": 0,
+    "sold": 27,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 7 Ngày",
+    "variants": [
+      {
+        "name": "Express VPN 2 - 3 ngày  8 thiết bị",
+        "price": 20000,
+        "stock": 0
+      }
+    ],
+    "description": "Express VPN  1 Tháng giá rẻ",
+    "title": "Express VPN  1 Tháng giá rẻ",
+    "isDeleted": false,
+    "buffSold": 27
+  },
+  {
+    "id": "PROD_MU29WM90LZ",
+    "name": "Canva pro 1 tháng -3 tháng -6 tháng",
+    "category": "Canva",
+    "price": 50000,
+    "stock": 0,
+    "sold": 15,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Canva pro 1 tháng",
+        "price": 50000,
+        "stock": 0
+      },
+      {
+        "name": "Canva pro 3 tháng",
+        "price": 50000,
+        "stock": 0
+      },
+      {
+        "name": "Canva pro 6 tháng",
+        "price": 50000,
+        "stock": 0
+      }
+    ],
+    "description": "Canva pro 1 tháng -3 tháng -6 tháng",
+    "title": "Canva pro 1 tháng -3 tháng -6 tháng",
+    "isDeleted": false,
+    "buffSold": 15
+  },
+  {
+    "id": "PROD_MU29RGEBH0",
+    "name": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
+    "category": "Facebook",
+    "price": 99000,
+    "stock": 0,
+    "sold": 43,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Page 2019 0 Folow",
+        "price": 99000,
+        "stock": 0
+      }
+    ],
+    "description": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
+    "title": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
+    "isDeleted": false,
+    "buffSold": 43
+  },
+  {
+    "id": "PROD_MU29IZBLAK",
+    "name": "TikTok US Chuẩn Bật Kiếm Tiền Beta",
+    "category": "TikTok",
+    "price": 5000,
+    "stock": 0,
+    "sold": 56,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "tiktok us",
+        "price": 5000,
+        "stock": 0
+      },
+      {
+        "name": "tiktok us 2024-2025",
+        "price": 15000,
+        "stock": 0
+      }
+    ],
+    "description": "TK TikTok US Chuẩn Bật Kiếm Tiền Beta 2024-2025",
+    "title": "TikTok US Chuẩn Bật Kiếm Tiền Beta",
+    "isDeleted": false,
+    "buffSold": 56
+  },
+  {
+    "id": "PROD_MU1LSSJ7AZ",
+    "name": "Tiktok nhật 2024-2026  tiktok like  - tiktok thường",
+    "category": "TikTok",
+    "price": 5000,
+    "stock": 76,
+    "sold": 38,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "tiktok nhật acc new",
+        "price": 5000,
+        "stock": 0
+      },
+      {
+        "name": "tiktok nhật 2024-2025 ramdom",
+        "price": 15000,
+        "stock": 45
+      },
+      {
+        "name": "tiktok nhật 2024-2025 có video",
+        "price": 20000,
+        "stock": 31
+      }
+    ],
+    "description": "Tiktok nhật 2024-2026  tiktok like  - tiktok thường",
+    "title": "Tiktok nhật 2024-2026  tiktok like  - tiktok thường",
+    "isDeleted": false,
+    "buffSold": 38
+  },
+  {
+    "id": "PROD_MU1G6LJX",
+    "name": "Capcut pro Cá Nhân 7 ngày",
+    "category": "Capcut",
+    "price": 25000,
+    "stock": 0,
+    "sold": 59,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "capcut pro 7 ngày",
+        "price": 25000,
+        "stock": 0
+      }
+    ],
+    "description": "Capcut pro Cá Nhân 7 ngày chính chủ, xuất video 4K 60FPS không watermark, mở khóa toàn bộ hiệu ứng VIP.",
+    "title": "Capcut pro Cá Nhân 7 ngày",
+    "isDeleted": false,
+    "buffSold": 59
+  },
+  {
+    "id": "PROD_MTQZT2Y1",
+    "name": "HOTMAIL ĐỘ TRUST CAO LIVE TRÂU",
+    "category": "Khác",
+    "price": 1000,
+    "stock": 0,
+    "sold": 19,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo hành 24h",
+    "variants": [
+      {
+        "name": "HOTMAIL ĐỘ TRUST CAO LIVE TRÂU",
+        "price": 1000,
+        "stock": 0
+      }
+    ],
+    "description": "",
+    "title": "HOTMAIL ĐỘ TRUST CAO LIVE TRÂU",
+    "isDeleted": false,
+    "buffSold": 19
+  },
+  {
+    "id": "PROD_MTRB6000",
+    "name": "OUTLOOK TRUSTED - LIVE 6-12 Tháng",
+    "category": "HOT MAIL",
+    "price": 1000,
+    "stock": 0,
+    "sold": 29,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "BH Đăng Nhập",
+    "variants": [
+      {
+        "name": "OUTLOOK TRUSTED - LIVE 6-12 Tháng",
+        "price": 1000,
+        "stock": 0
+      }
+    ],
+    "description": "OUTLOOK TRUSTED - LIVE 6-12 Tháng",
+    "title": "OUTLOOK TRUSTED - LIVE 6-12 Tháng",
+    "isDeleted": false,
+    "buffSold": 29
+  },
+  {
+    "id": "PROD_MTTPLODQ",
+    "name": "GMAIL CỔ 2019-2026",
+    "category": "Gmail",
+    "price": 10000,
+    "stock": 0,
+    "sold": 36,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "gmail 2026",
+        "price": 10000,
+        "stock": 0
+      },
+      {
+        "name": "gmail 2020 - 2022",
+        "price": 120000,
+        "stock": 0
+      },
+      {
+        "name": "gmail 2018 - 2019",
+        "price": 150000,
+        "stock": 0
+      }
+    ],
+    "description": "24",
+    "title": "GMAIL CỔ 2019-2026",
+    "isDeleted": false,
+    "buffSold": 36
+  },
+  {
+    "id": "PROD_MTU9F5HN",
+    "name": "Paypal 2025 - 2016 Đã ngâm lâu cực kỳ Trâu",
+    "category": "Khác",
+    "price": 50000,
+    "stock": 124,
+    "sold": 48,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "paypal đã ngâm lâu",
+        "price": 50000,
+        "stock": 62
+      },
+      {
+        "name": "paypal Đã Nhận Tiền",
+        "price": 100000,
+        "stock": 62
+      }
+    ],
+    "description": "Bảo Hành 1 Đổi 1 trong vòng 24h",
+    "title": "Paypal 2025 - 2016 Đã ngâm lâu cực kỳ Trâu",
+    "isDeleted": false,
+    "buffSold": 48
+  },
+  {
+    "id": "PROD_MTVI44UK",
+    "name": "Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu",
+    "category": "TikTok",
+    "price": 2000,
+    "stock": 15,
+    "sold": 37,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo hành 24h",
+    "variants": [
+      {
+        "name": "Tiktok 2026",
+        "price": 2000,
+        "stock": 0
+      },
+      {
+        "name": "Tiktok 2024-2025",
+        "price": 5000,
+        "stock": 0
+      },
+      {
+        "name": "acc cổ ramdom có video",
+        "price": 15000,
+        "stock": 15
+      }
+    ],
+    "description": "2",
+    "title": "Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu",
+    "isDeleted": false,
+    "buffSold": 37
+  },
+  {
+    "id": "PROD_MTPIJ9XV",
+    "name": "TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU",
+    "category": "TikTok",
+    "price": 5000,
+    "stock": 76,
+    "sold": 33,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "BH Đăng Nhập",
+    "variants": [
+      {
+        "name": "TIKTOK BRAZIL",
+        "price": 5000,
+        "stock": 76
+      },
+      {
+        "name": "Tiktok   BRAZIL New",
+        "price": 3000,
+        "stock": 0
+      }
+    ],
+    "description": "🔥 Tài khoản TikTok Brazil đã ngâm lâu, form ổn định\n💪 Acc lâu ngày – độ ổn định cao,",
+    "title": "TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU",
+    "isDeleted": false,
+    "buffSold": 33
+  },
+  {
+    "id": "PROD_MTQQXO2E",
+    "name": "Gmail cho Thuê 24h",
+    "category": "Gmail",
+    "price": 300,
+    "stock": 0,
+    "sold": 58,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "BH 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Gmail cho Thuê 24h",
+        "price": 300,
+        "stock": 0
+      }
+    ],
+    "description": "Gmail cho thuê 24h",
+    "title": "Gmail cho Thuê 24h",
+    "isDeleted": false,
+    "buffSold": 58
+  },
+  {
+    "id": "PROD_MTQWMPL5",
+    "name": "Gmail cho thuê 7 Ngày",
+    "category": "Gmail",
+    "price": 1000,
+    "stock": 0,
+    "sold": 32,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "BH Đăng Nhập",
+    "variants": [
+      {
+        "name": "Gmail cho thuê 7 Ngày",
+        "price": 1000,
+        "stock": 0
+      }
+    ],
+    "description": "Gmail cho thuê 7 Ngày",
+    "title": "Gmail cho thuê 7 Ngày",
+    "isDeleted": false,
+    "buffSold": 32
+  },
+  {
+    "id": "PROD_MTQWQFZD",
+    "name": "Gmail cho thuê 30 Ngày",
+    "category": "Gmail",
+    "price": 3000,
+    "stock": 0,
+    "sold": 28,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "BH Đăng Nhập",
+    "variants": [
+      {
+        "name": "Gmail cho thuê 30 Ngày",
+        "price": 3000,
+        "stock": 0
+      }
+    ],
+    "description": "Gmail cho thuê 30 Ngày",
+    "title": "Gmail cho thuê 30 Ngày",
+    "isDeleted": false,
+    "buffSold": 28
+  },
+  {
+    "id": "PROD_MTQX1C7X",
+    "name": "Gmail cho thuê 1 giờ live 60 phút",
+    "category": "Gmail",
+    "price": 150,
+    "stock": 0,
+    "sold": 15,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "BH Đăng Nhập",
+    "variants": [
+      {
+        "name": "Gmail cho thuê 1 giờ live 60 phút",
+        "price": 150,
+        "stock": 0
+      }
+    ],
+    "description": "Gmail cho thuê 1 giờ live 60 phút",
+    "title": "Gmail cho thuê 1 giờ live 60 phút",
+    "isDeleted": false,
+    "buffSold": 15
+  },
+  {
+    "id": "PROD_MTQX465U",
+    "name": "Gmail cho Thuế 10 phút live 10 phút",
+    "category": "Gmail",
+    "price": 100,
+    "stock": 0,
+    "sold": 58,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Gmail cho Thuế 10 phút live 10 phút",
+        "price": 100,
+        "stock": 0
+      }
+    ],
+    "description": "Gmail cho Thuế 10 phút live 10 phút",
+    "title": "Gmail cho Thuế 10 phút live 10 phút",
+    "isDeleted": false,
+    "buffSold": 58
+  },
+  {
+    "id": "PROD_MTQX7SIK",
+    "name": "Gmail Cho Thuê 14 Ngày live 14 ngày",
+    "category": "Gmail",
+    "price": 1500,
+    "stock": 0,
+    "sold": 42,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "BH Đăng Nhập",
+    "variants": [
+      {
+        "name": "Gmail Cho Thuê 14 Ngày live 14 ngày",
+        "price": 1500,
+        "stock": 0
+      }
+    ],
+    "description": "Gmail Cho Thuê 14 Ngày live 14 ngày",
+    "title": "Gmail Cho Thuê 14 Ngày live 14 ngày",
+    "isDeleted": false,
+    "buffSold": 42
+  },
+  {
+    "id": "PROD_MTYN7UJG",
+    "name": "Gmail cổ kèm Kênh youtube",
+    "category": "YOUTUBE",
+    "price": 10000,
+    "stock": 2,
+    "sold": 44,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "BH Đăng Nhập",
+    "variants": [
+      {
+        "name": "GMAIL NEW 2026 KÈM KÊNH",
+        "price": 10000,
+        "stock": 2
+      },
+      {
+        "name": "GMAIL CỔ RAMDOM KÈM KÊNH",
+        "price": 200000,
+        "stock": 0
+      }
+    ],
+    "description": "Gmail cổ NEW kèm Kênh youtube",
+    "title": "Gmail cổ kèm Kênh youtube",
+    "isDeleted": false,
+    "buffSold": 44
+  },
+  {
+    "id": "PROD_MTPI7PIO",
+    "name": "NHÓM ZALO NEW 2016",
+    "category": "Khác",
+    "price": 50000,
+    "stock": 2,
+    "sold": 21,
+    "rating": 5,
+    "image": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=80",
+    "commission": "10%",
+    "warranty": "BH Đăng Nhập",
+    "variants": [
+      {
+        "name": "NHÓM ZALO NEW 2016",
+        "price": 50000,
+        "stock": 2
+      }
+    ],
+    "description": "ZALO NEW MỚI TẠO",
+    "title": "NHÓM ZALO NEW 2016",
+    "isDeleted": false,
+    "buffSold": 21
+  }
 ]
     };
 
@@ -1366,11 +1377,36 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     window.cleanCompareText = cleanCompareText;
 
     const DUMMY_SEED_IDS = [
-      "EXPRESS_VPN_1M", "FB_VIA_VN", "FB_CLONE_VN", "GMAIL_CO_2020", "GMAIL_NEW",
-      "TIKTOK_1K_FOLLOW", "TIKTOK_BETA_US", "TELE_SESSION_VN", "DISCORD_NITRO",
-      "X_TWITTER_2019", "PROXY_IPV4_VN", "CHATGPT_PLUS", "CANVA_PRO_LIFETIME", "SP_TIKTOK_BRAZIL",
-      "SP_GMAIL_CO", "SP_TELEGRAM_SESSION"
-    ];
+  "SP_CAPCUT_PRO",
+  "SP_GMAIL_DOMAIN",
+  "SP_CHATGPT",
+  "SP_FANPAGE",
+  "SP_GEMINI",
+  "SP_HOTMAIL",
+  "SP_J7",
+  "SP_J7_PRO",
+  "SP_S10",
+  "SP_TIKTOK_US",
+  "zalo-new-2016",
+  "EXPRESS_VPN_1M",
+  "FB_VIA_VN",
+  "FB_CLONE_VN",
+  "GMAIL_CO_2020",
+  "GMAIL_NEW",
+  "TIKTOK_1K_FOLLOW",
+  "TIKTOK_BETA_US",
+  "TELE_SESSION_VN",
+  "DISCORD_NITRO",
+  "X_TWITTER_2019",
+  "PROXY_IPV4_VN",
+  "CHATGPT_PLUS",
+  "CANVA_PRO_LIFETIME",
+  "SP_TIKTOK_BRAZIL",
+  "SP_GMAIL_CO",
+  "SP_TELEGRAM_SESSION",
+  "SP_TIKTOK_VN",
+  "SP_CANVA"
+];
 
     function getDeletedProductIds() {
       let ids = [];
@@ -1378,38 +1414,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         ids = JSON.parse(localStorage.getItem("mmo_deleted_product_ids") || "[]");
       } catch(e) { ids = []; }
       if (!Array.isArray(ids)) ids = [];
-      let changed = false;
-      DUMMY_SEED_IDS.forEach(function(d) {
-        if (!ids.includes(d)) { ids.push(d); changed = true; }
+      // Lọc bỏ văn bản tên tiếng Việt, chỉ giữ lại product ID thực tế
+      return ids.filter(function(id) {
+        return typeof id === "string" && id.length >= 3 && !id.includes(" ") && !/[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i.test(id);
       });
-      const deletedGmailNorm = normApiText("GMAIL CỔ 2019-2025 GIÁ RẺ - BẢO HÀNH 1 ĐỔI 1");
-      if (!ids.includes(deletedGmailNorm)) { ids.push(deletedGmailNorm); changed = true; }
-      const deletedTeleNorm = normApiText("Telegram Session + TData USA Ngâm Lâu Cực Trâu");
-      if (!ids.includes(deletedTeleNorm)) { ids.push(deletedTeleNorm); changed = true; }
-      if (!ids.includes("SP_TELEGRAM_SESSION")) { ids.push("SP_TELEGRAM_SESSION"); changed = true; }
-      if (changed) {
-        try { localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(ids)); } catch(e) {}
-      }
-      return ids;
     }
     window.getDeletedProductIds = getDeletedProductIds;
 
     function isProductDeleted(productOrId) {
       if (!productOrId) return true;
       const pid = typeof productOrId === "object" ? String(productOrId.id || "").trim() : String(productOrId).trim();
-      const pName = (typeof productOrId === "object" && productOrId.name) ? String(productOrId.name).trim() : "";
-      const normName = pName ? normApiText(pName) : "";
+      if (!pid) return true;
 
-      if (pid && DUMMY_SEED_IDS.includes(pid)) return true;
-      if (typeof productOrId === "object" && productOrId.isDeleted) return true;
+      // 1. DUMMY_SEED_IDS (các sản phẩm mẫu lúc khởi tạo hệ thống)
+      if (DUMMY_SEED_IDS.includes(pid)) return true;
+      if (typeof productOrId === "object" && productOrId.isDeleted === true) return true;
 
+      // 2. Danh sách ID đã bị admin xóa (chỉ đối chiếu theo mã ID)
       const deletedIds = getDeletedProductIds();
-      if (pid && deletedIds.includes(pid)) return true;
-      if (normName && deletedIds.includes(normName)) return true;
-      if (normName) {
-        const deletedGmailNorm = normApiText("GMAIL CỔ 2019-2025 GIÁ RẺ - BẢO HÀNH 1 ĐỔI 1");
-        if (normName === deletedGmailNorm) return true;
-      }
+      if (deletedIds.includes(pid)) return true;
+
       return false;
     }
     window.isProductDeleted = isProductDeleted;
@@ -1459,9 +1483,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         const normKey = (p.name && typeof normApiText === "function") ? normApiText(p.name) : "";
         const savedVars = (p.id && vMap[p.id]) || (normKey ? vMap[normKey] : null);
 
-        // [LOCAL-FIRST MASTER]: Nếu bộ nhớ lưu trữ biến thể Admin có nhiều biến thể hơn danh sách hiện tại của p,
-        // ưu tiên khôi phục đầy đủ danh sách biến thể từ bộ nhớ lưu trữ nhưng BẢO TOÀN TUYỆT ĐỐI mảng accounts
-        if (Array.isArray(savedVars) && savedVars.length > p.variants.length) {
+        // Nếu sản phẩm đã có biến thể hợp lệ do Admin cấu hình: luôn ưu tiên danh sách này và đồng bộ vào bộ nhớ
+        if (Array.isArray(p.variants) && p.variants.length > 0) {
+          recordProductVariants(p.id, p.variants, p.name);
+          return;
+        }
+
+        // Chỉ khôi phục từ savedVars nếu p.variants hoàn toàn rỗng
+        if (Array.isArray(savedVars) && savedVars.length > 0) {
           p.variants = savedVars.map((v, i) => {
             const curV = (p.variants && p.variants[i]) ? p.variants[i] : null;
             const realS = (typeof getVariantStockCount === "function") ? getVariantStockCount(p, i) : 0;
@@ -1469,12 +1498,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
             const accs = (curV && Array.isArray(curV.accounts) && curV.accounts.length > 0) ? curV.accounts : (Array.isArray(v.accounts) ? v.accounts : []);
             return Object.assign({}, v, { stock: s, accounts: accs });
           });
-          return;
-        }
-
-        // Nếu sản phẩm đã có danh sách biến thể hợp lệ (>= savedVars): ghi nhận vào bộ nhớ
-        if (p.variants.length > 0) {
-          recordProductVariants(p.id, p.variants, p.name);
           return;
         }
 
@@ -1502,7 +1525,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
         const deletedIds = getDeletedProductIds();
 
-        const savedProds = localStorage.getItem("mmo_admin_products");
+        const savedProds = localStorage.getItem("mmo_admin_products") || localStorage.getItem("mmo_products");
         if (savedProds !== null) {
           try {
             const parsed = JSON.parse(savedProds);
@@ -1516,26 +1539,35 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
                     return String(p.id) === String(savedProd.id);
                   });
                   if (existingProd) {
-                    // Bảo toàn accounts của variants hiện tại nếu đang có hàng
-                    if (Array.isArray(existingProd.variants) && existingProd.variants.length > 0) {
+                    // Thu thập accounts hiện có để bảo toàn tuyệt đối không bị mất tài khoản kho
+                    const accsMap = {};
+                    if (Array.isArray(existingProd.variants)) {
                       existingProd.variants.forEach(function(ev, vi) {
                         if (Array.isArray(ev.accounts) && ev.accounts.length > 0) {
-                          // Variant hiện tại có accounts -> merge với savedProd
-                          if (savedProd.variants && savedProd.variants[vi]) {
-                            // Chỉ cập nhật accounts nếu saved có nhiều hơn (phòng trường hợp import thêm)
-                            if (Array.isArray(savedProd.variants[vi].accounts)) {
-                              ev.accounts = savedProd.variants[vi].accounts.slice();
-                              ev.stock = ev.accounts.length;
-                            }
-                          }
-                        } else {
-                          // Variant hiện tại rỗng -> lấy từ saved
-                          if (savedProd.variants && savedProd.variants[vi] && Array.isArray(savedProd.variants[vi].accounts)) {
-                            ev.accounts = savedProd.variants[vi].accounts;
-                            ev.stock = ev.accounts.length;
-                          }
+                          accsMap[ev.name || vi] = ev.accounts.slice();
                         }
                       });
+                    }
+                    if (Array.isArray(existingProd.accounts) && existingProd.accounts.length > 0) {
+                      accsMap["__PROD_ACCOUNTS__"] = existingProd.accounts.slice();
+                    }
+
+                    // CẬP NHẬT 100% CÁC TRƯỜNG DỮ LIỆU ĐÃ SỬA CỦA SẢN PHẨM (Tên, giá, hình ảnh, biến thể, mô tả, danh mục, bảo hành...)
+                    Object.assign(existingProd, savedProd);
+
+                    // Phục hồi accounts kho hàng vào các biến thể tương ứng
+                    if (Array.isArray(existingProd.variants)) {
+                      existingProd.variants.forEach(function(ev, vi) {
+                        const accs = accsMap[ev.name || vi] || (savedProd.variants && savedProd.variants[vi] && Array.isArray(savedProd.variants[vi].accounts) ? savedProd.variants[vi].accounts : (Array.isArray(ev.accounts) ? ev.accounts : []));
+                        ev.accounts = accs;
+                        if (accs.length > 0) ev.stock = accs.length;
+                      });
+                    }
+                    if (accsMap["__PROD_ACCOUNTS__"]) {
+                      existingProd.accounts = accsMap["__PROD_ACCOUNTS__"];
+                      if (existingProd.accounts.length > 0 && (!existingProd.variants || existingProd.variants.length === 0)) {
+                        existingProd.stock = existingProd.accounts.length;
+                      }
                     }
                   } else {
                     // Sản phẩm mới chưa có trong memory -> thêm vào
@@ -1573,14 +1605,29 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         });
 
         // Lọc sạch sản phẩm: loại bỏ các sản phẩm mẫu dummy và sản phẩm đã xóa
-        // Đồng bộ lại số lượng đã bán, loại bỏ số 100 mặc định cũ
+        // Đảm bảo số lượng đã bán phản ánh thực tế, không gán số liệu ảo 100 hay buff mặc định
         (MOCK_DATA.products || []).forEach(function(p) {
-          if (!p.sold || p.sold === 100 || p.buffSold === 100) {
-            const sVal = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p) : 350;
-            p.sold = sVal;
-            p.buffSold = sVal;
+          if (p.sold === 100 || p.buffSold === 100) {
+            p.sold = 0;
+            p.buffSold = 0;
           }
         });
+
+                // Tự động dọn dẹp sạch sẽ dữ liệu demo khỏi localStorage
+        try {
+          ["mmo_products", "mmo_admin_products"].forEach(function(k) {
+            const raw = localStorage.getItem(k);
+            if (raw) {
+              const arr = JSON.parse(raw);
+              if (Array.isArray(arr)) {
+                const cleaned = arr.filter(function(p) { return p && p.id && !isProductDeleted(p); });
+                if (cleaned.length !== arr.length) {
+                  localStorage.setItem(k, JSON.stringify(cleaned));
+                }
+              }
+            }
+          });
+        } catch(e) {}
 
         MOCK_DATA.products = (MOCK_DATA.products || []).filter(function(p) {
           if (!p || !p.id) return false;
@@ -1617,6 +1664,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     }
     window.loadPersistedProducts = loadPersistedProducts;
     loadPersistedProducts();
+    // Tự động tải sản phẩm và tồn kho siêu tốc từ Cloudflare Worker API ngay khi khởi động
+    if (typeof syncTursoProductsToLocalUI === "function") {
+      syncTursoProductsToLocalUI().catch(function() {});
+    }
 
     try {
       const savedCats = localStorage.getItem("mmo_categories");
@@ -1674,6 +1725,94 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       { name: "Mạnh Đồng Official", email: "manhdongvtc@gmail.com", role: "Quản Trị Viên", balance: 0, created: "01/03/2026", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=manhdongvtc" }
     ];
 
+    // HÀM TỰ ĐỘNG XÓA SẠCH 100% DỮ LIỆU DEMO / ĐƠN ẢO / TỒN KHO ẢO KHI KHỞI ĐỘNG
+    function purgeAllSystemDemoData() {
+      try {
+        const DEMO_EMAILS = [
+          "hungmmo88@gmail.com",
+          "ductran.ads@gmail.com",
+          "namle.affiliate@gmail.com",
+          "khachhang@gmail.com",
+          "khach@gmail.com",
+          "test@gmail.com"
+        ];
+
+        // 1. Xóa đơn demo trong mmo_all_orders & mmo_orders & mmo_user_orders
+        const orderKeys = ["mmo_all_orders", "mmo_orders", "mmo_user_orders"];
+        orderKeys.forEach(function(k) {
+          try {
+            const raw = localStorage.getItem(k);
+            if (raw) {
+              const list = JSON.parse(raw);
+              if (Array.isArray(list)) {
+                const cleaned = list.filter(function(o) {
+                  const id = String(o.orderId || o.id || "").toUpperCase();
+                  const em = String(o.email || o.userEmail || o.buyer || "").toLowerCase().trim();
+                  const pName = String(o.productName || "").toLowerCase();
+                  if (id === "MMO888999" || id.includes("SAMPLE") || id.includes("DEMO") || id.includes("TEST")) return false;
+                  if (!em || !em.includes("@") || DEMO_EMAILS.includes(em) || em.includes("sample") || em.includes("demo") || em.includes("test@") || em.includes("khach@")) return false;
+                  if (pName.includes("mẫu demo") || pName.includes("demo order") || pName.includes("sản phẩm mẫu")) return false;
+                  return true;
+                });
+                localStorage.setItem(k, JSON.stringify(cleaned));
+              }
+            }
+          } catch(e) {}
+        });
+
+        // 2. Xóa giao dịch demo trong mmo_transaction_history & mmo_transactions
+        const txKeys = ["mmo_transaction_history", "mmo_transactions"];
+        txKeys.forEach(function(k) {
+          try {
+            const raw = localStorage.getItem(k);
+            if (raw) {
+              const list = JSON.parse(raw);
+              if (Array.isArray(list)) {
+                const cleaned = list.filter(function(t) {
+                  const em = String(t.userEmail || t.email || "").toLowerCase().trim();
+                  const note = String(t.note || "").toLowerCase();
+                  if (DEMO_EMAILS.includes(em) || em.includes("sample") || em.includes("demo")) return false;
+                  if (note.includes("demo") || note.includes("mẫu")) return false;
+                  return true;
+                });
+                localStorage.setItem(k, JSON.stringify(cleaned));
+              }
+            }
+          } catch(e) {}
+        });
+
+        // 3. Xóa tồn kho ảo và lượt bán ảo trong mmo_products & mmo_admin_products
+        const prodKeys = ["mmo_products", "mmo_admin_products"];
+        prodKeys.forEach(function(k) {
+          try {
+            const raw = localStorage.getItem(k);
+            if (raw) {
+              const list = JSON.parse(raw);
+              if (Array.isArray(list)) {
+                let modified = false;
+                list.forEach(function(p) {
+                  if (p.stock === 1050 || p.stock === 500 || p.stock === 120 || p.stock === 99 || p.stock === 37 || p.stock === 35 || p.stock === 20 || p.stock === 80) {
+                    p.stock = 0;
+                    modified = true;
+                  }
+                  if (p.sold === 1050 || p.sold === 484 || p.sold === 500 || p.sold === 285 || p.sold === 1568 || p.sold === 2927 || p.sold === 629 || p.sold === 1360 || p.sold === 1200 || p.sold === 383 || p.sold === 100 || p.buffSold === 100) {
+                    p.sold = 0;
+                    p.buffSold = 0;
+                    modified = true;
+                  }
+                });
+                if (modified) localStorage.setItem(k, JSON.stringify(list));
+              }
+            }
+          } catch(e) {}
+        });
+      } catch(err) {
+        console.warn("purgeAllSystemDemoData err:", err);
+      }
+    }
+    window.purgeAllSystemDemoData = purgeAllSystemDemoData;
+    try { purgeAllSystemDemoData(); } catch(e) {}
+
     function getRegisteredUsers() {
       try {
         const stored = localStorage.getItem("mmo_registered_users");
@@ -1711,16 +1850,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
         }
 
-        // Synchronize with currently active user session (ưu tiên số dư lớn hơn, không đè số dư cũ)
+        // Synchronize with currently active user session
         if (currentUser && currentUser.email) {
           const emailLower = currentUser.email.toLowerCase().trim();
           const idx = users.findIndex(u => (u.email || "").toLowerCase().trim() === emailLower);
           if (idx !== -1) {
-            const bestBal = Math.max(Number(currentUser.balance) || 0, Number(users[idx].balance) || 0);
-            currentUser.balance = bestBal;
-            users[idx].balance = bestBal;
-            users[idx].name = currentUser.name || users[idx].name;
-            users[idx].role = currentUser.role || users[idx].role;
+            currentUser.balance = (users[idx].balance !== undefined && users[idx].balance !== null && !isNaN(Number(users[idx].balance))) ? Number(users[idx].balance) : (currentUser.balance || 0);
+            currentUser.name = users[idx].name || currentUser.name;
+            currentUser.role = users[idx].role || currentUser.role;
           }
         }
 
@@ -1804,7 +1941,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           if (Array.isArray(list) && list.length > 0) return list;
         }
       } catch (e) {}
-      const initial = ["manhdongvtc@gmail.com", "muabantaikhoanmmo@gmail.com", "digimarketmmo@gmail.com"];
+      const initial = [ROOT_ADMIN_EMAIL];
       try { localStorage.setItem("mmo_admin_emails", JSON.stringify(initial)); } catch(e) {}
       return initial;
     }
@@ -1892,8 +2029,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
           // 5. Admin Emails
           if (res.settings.adminEmails) {
-            const cloudEmails = res.settings.adminEmails.split(",").map(e => (e || "").trim().toLowerCase()).filter(Boolean);
+            let cloudEmails = res.settings.adminEmails.split(",").map(e => (e || "").trim().toLowerCase()).filter(Boolean);
             if (cloudEmails.length > 0) {
+              // Đảm bảo ROOT_ADMIN_EMAIL luôn có trong danh sách
+              const rootEmail = (ROOT_ADMIN_EMAIL || "").toLowerCase().trim();
+              if (rootEmail && !cloudEmails.includes(rootEmail)) {
+                cloudEmails.unshift(rootEmail);
+              }
               localStorage.setItem("mmo_admin_emails", JSON.stringify(cloudEmails));
               if (typeof renderAdminEmailsList === "function") renderAdminEmailsList();
               
@@ -2002,6 +2144,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
     function handleRemoveAdminEmail(email) {
       const targetEmail = (email || "").toLowerCase().trim();
+      
+      // ROOT ADMIN không thể bị xóa
+      if (targetEmail === (ROOT_ADMIN_EMAIL || "").toLowerCase().trim()) {
+        showToast("⛔ Không thể xóa tài khoản Quản Trị Viên gốc!", "error");
+        return;
+      }
+      
       let list = getAdminEmails();
       if (list.length <= 1) {
         showToast("⚠️ Hệ thống phải duy trì ít nhất 1 Quản Trị Viên!", "warning");
@@ -2141,7 +2290,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       const page = (typeof paginationState !== "undefined" && paginationState.admUsers) ? paginationState.admUsers : 1;
       const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
       const safePage = Math.max(1, Math.min(page, totalPages));
-      if (typeof paginationState !== "undefined") paginationState.admUsers = safePage;
+      if (typeof window.paginationState !== "undefined" && window.paginationState) paginationState.admUsers = safePage;
 
       const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
       const pageUsers = users.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -2151,7 +2300,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       tbody.innerHTML = pageUsers.map(u => {
         const emailLower = (u.email || "").toLowerCase().trim();
         const isCurrent = currentUser && (currentUser.email || "").toLowerCase().trim() === emailLower;
-        const displayBalance = u.balance || 0;
+        const displayBalance = isCurrent && currentUser.balance !== undefined ? Number(currentUser.balance) : (Number(u.balance) || 0);
         const isAdm = (emailLower === rootEmail || emailLower === "muabantaikhoanmmo@gmail.com" || (typeof isAdminUser === "function" && isAdminUser(u)) || u.role === "Quản Trị Viên");
         const roleHtml = isAdm ? '<span class="badge-trust" style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4);">Quản Trị Viên</span>' : '<span class="badge-verified" style="font-size:0.7rem;">' + (u.role || "Thành Viên") + '</span>';
         
@@ -2415,6 +2564,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
         allOrders.forEach(function(o) {
           const st = (o.status || "").toUpperCase();
+          const em = String(o.email || o.userEmail || o.buyer || "").toLowerCase().trim();
+          const oId = String(o.orderId || o.id || "").toUpperCase();
+          const isDemo = oId === "MMO888999" || oId.includes("SAMPLE") || oId.includes("DEMO") || oId.includes("TEST") || 
+                         !em || !em.includes("@") || em.includes("sample") || em.includes("demo") || em === "khachhang@gmail.com" || em.includes("test@") || em.includes("khach@");
+          if (isDemo) return;
+
           if (st !== "CANCELLED" && st !== "REFUNDED" && st !== "ĐÃ HOÀN TIỀN" && st !== "HUỶ" && st !== "ĐÃ HỦY") {
             const amt = Number(o.total || o.totalPrice || o.totalAmount || o.amount || 0);
             if (amt > 0) {
@@ -2506,11 +2661,61 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         // Lợi nhuận ròng = Tổng lợi nhuận gộp (Doanh thu - Giá vốn nguồn API) - Chi trả Affiliate thực tế
         const netProfit = Math.max(0, totalGrossProfit - totalAffiliate);
 
-        // 6. Tính Tồn Kho & Sản Phẩm
+        // 6. Tính Tồn Kho & Sản Phẩm Đang Bán / Đã Bán THỰC TẾ 100% (LOẠI BỎ TOÀN BỘ ĐƠN ẢO, BUFF ẢO & KHO ẢO)
         let totalStockAccounts = 0;
         activeProducts.forEach(function(p) {
-          const stk = (typeof getVariantStockCount === "function") ? getVariantStockCount(p) : (Number(p.stock) || 0);
-          totalStockAccounts += stk;
+          // Tính số lượng tài khoản (acc) thực tế có trong kho nội bộ (do Admin nạp)
+          let realProdStock = 0;
+          if (Array.isArray(p.variants) && p.variants.length > 0) {
+            p.variants.forEach(function(v) {
+              if (Array.isArray(v.accounts)) realProdStock += v.accounts.length;
+            });
+          } else if (Array.isArray(p.accounts)) {
+            realProdStock += p.accounts.length;
+          }
+
+          if (typeof MMO_WAREHOUSE !== "undefined" && typeof MMO_WAREHOUSE.getAvailable === "function") {
+            const whAccs = MMO_WAREHOUSE.getAvailable(p.id, "ALL");
+            if (Array.isArray(whAccs) && whAccs.length > realProdStock) {
+              realProdStock = whAccs.length;
+            }
+          }
+
+          // Nếu là sản phẩm liên kết nguồn API có tồn kho thực (loại bỏ hoàn toàn số ảo >= 999999)
+          if (realProdStock === 0 && typeof getApiProductMapping === "function") {
+            const apiMap = getApiProductMapping(p);
+            if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
+              const sStock = Number(apiMap.sourceStock) || 0;
+              if (sStock > 0 && sStock < 999999) {
+                realProdStock = sStock;
+              }
+            }
+          }
+
+          // Kho tài khoản chỉ tính số lượng tài khoản (acc) thực tế có thể giao dịch
+
+          totalStockAccounts += realProdStock;
+        });
+
+        // Tính chính xác đơn hàng đã bán thực tế từ khách hàng (Loại bỏ hoàn toàn đơn ảo, buff ảo, đơn mẫu demo, đơn huỷ)
+        let finalSoldOrders = 0;
+        let finalSoldAccounts = 0;
+
+        allOrders.forEach(function(o) {
+          const st = String(o.status || "").toLowerCase().trim();
+          const em = String(o.email || o.userEmail || o.buyer || "").toLowerCase().trim();
+          const oId = String(o.orderId || o.id || "").toUpperCase();
+
+          // Lọc bỏ đơn ảo / demo / sample
+          const isDemo = oId === "MMO888999" || oId.includes("SAMPLE") || oId.includes("DEMO") || oId.includes("TEST") || 
+                         !em || !em.includes("@") || em.includes("sample") || em.includes("demo") || em === "khachhang@gmail.com" || em.includes("test@") || em.includes("khach@");
+          const isCancelled = st.includes("huỷ") || st.includes("hủy") || st === "cancelled";
+
+          if (!isDemo && !isCancelled) {
+            const qty = Number(o.quantity || o.qty || 1);
+            finalSoldOrders++;
+            finalSoldAccounts += qty;
+          }
         });
 
         // 7. Yêu Cầu Rút Tiền
@@ -2524,13 +2729,28 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         });
         const completedWithdrawSum = completedWithdraws.reduce(function(sum, w) { return sum + (Number(w.amount) || 0); }, 0);
 
-        // 8. Đơn Hàng Cần Xử Lý (Chỉ tính các đơn báo lỗi, khiếu nại, bảo hành, chờ đổi trả - không tính đơn giao thành công)
-        const pendingOrders = allOrders.filter(function(o) {
+        // 8. Đơn Hàng Cần Xử Lý (Bao gồm CẢ Khiếu nại bảo hành VÀ Đơn đặt trước chờ xử lý - Hình 2)
+        const rawPreOrders = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
+        const waitingPreOrders = rawPreOrders.filter(function(po) {
+          const st = (po.status || "").toUpperCase();
+          const stTxt = String(po.statusText || "").toLowerCase();
+          const isCancelled = st === "CANCELLED" || st === "REFUNDED" || stTxt.includes("hủy") || stTxt.includes("hoàn tiền") || Boolean(po.isCancelled) || Boolean(po.isRefunded);
+          if (isCancelled || st === "COMPLETED") return false;
+          return st === "WAITING_CONFIRM" || st === "PROCESSING" || stTxt.includes("chờ") || stTxt.includes("gom hàng");
+        });
+
+        const pendingWarrantyOrders = allOrders.filter(function(o) {
           const st = (o.status || "").toLowerCase().trim();
           if (!st) return false;
 
           // Bỏ qua các đơn đã hoàn tất đổi trả, đã hoàn tiền hoặc đã hủy
           if (st.includes("đã đổi trả") || st.includes("đã hoàn tiền") || st.includes("đã hủy") || st.includes("huỷ")) {
+            return false;
+          }
+
+          // Bỏ qua đơn đặt trước vì đã gom vào waitingPreOrders
+          const oId = String(o.id || o.orderCode || o.orderId || "");
+          if (o.type === "PRE_ORDER" || oId.startsWith("PRE")) {
             return false;
           }
 
@@ -2544,6 +2764,24 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           return st.includes("khiếu nại") || st.includes("báo lỗi") || st.includes("bảo hành") || st.includes("chờ đổi trả") || st.includes("cần bảo hành") || st.includes("chờ xử lý") || st.includes("đổi trả");
         });
 
+        // Hợp nhất danh sách đơn cần xử lý: Đơn đặt trước chờ xử lý + Đơn khiếu nại
+        const pendingOrders = [
+          ...waitingPreOrders.map(function(po) {
+            return {
+              ...po,
+              isPreOrderTask: true,
+              taskTypeBadge: '<span style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-weight:800; padding:2px 7px; border-radius:4px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px;"><i class=\"fa-solid fa-hourglass-half\"></i> ĐẶT TRƯỚC</span>'
+            };
+          }),
+          ...pendingWarrantyOrders.map(function(wo) {
+            return {
+              ...wo,
+              isPreOrderTask: false,
+              taskTypeBadge: '<span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-weight:800; padding:2px 7px; border-radius:4px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px;"><i class=\"fa-solid fa-shield-halved\"></i> KHIẾU NẠI</span>'
+            };
+          })
+        ];
+
         // Cập nhật lên DOM
         const elNetProfit = document.getElementById("ovwNetProfit");
         const elNetProfitAffSub = document.getElementById("ovwNetProfitAffSub");
@@ -2556,17 +2794,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         if (elNetProfit) elNetProfit.innerText = (typeof formatVND === "function") ? formatVND(netProfit) : (netProfit.toLocaleString("vi-VN") + " đ");
         if (elNetProfitAffSub) elNetProfitAffSub.innerText = (typeof formatVND === "function") ? formatVND(totalAffiliate) : (totalAffiliate.toLocaleString("vi-VN") + " đ");
         if (elGrossRevenue) elGrossRevenue.innerText = (typeof formatVND === "function") ? formatVND(totalGMV) : (totalGMV.toLocaleString("vi-VN") + " đ");
-        // Số lớn: Số dư thực tế của tất cả các thành viên (giảm đi khi mua hàng / chi tiêu dịch vụ trên sàn)
         if (elTotalDeposit) elTotalDeposit.innerText = (typeof formatVND === "function") ? formatVND(totalUserBalance) : (totalUserBalance.toLocaleString("vi-VN") + " đ");
-        // Dòng phụ 1: Tổng tiền nạp vào sàn qua SePay & Ngân hàng
         if (elTotalDepositSub) elTotalDepositSub.innerText = (typeof formatVND === "function") ? formatVND(totalDeposit) : (totalDeposit.toLocaleString("vi-VN") + " đ");
-        // Dòng phụ 2: Đã chi tiêu mua hàng & dịch vụ
         if (elMemberBalSub) elMemberBalSub.innerText = (typeof formatVND === "function") ? formatVND(totalGMV) : (totalGMV.toLocaleString("vi-VN") + " đ");
         if (elAffiliatePayout) elAffiliatePayout.innerText = (typeof formatVND === "function") ? formatVND(totalAffiliate) : (totalAffiliate.toLocaleString("vi-VN") + " đ");
 
         // Hàng thẻ hoạt động bổ sung
         const elTotalProducts = document.getElementById("ovwTotalProducts");
         const elTotalStockAccounts = document.getElementById("ovwTotalStockAccounts");
+        const elTotalSoldOrders = document.getElementById("ovwTotalSoldOrders");
+        const elTotalSoldAccounts = document.getElementById("ovwTotalSoldAccounts");
         const elPendingWithdrawCount = document.getElementById("ovwPendingWithdrawCount");
         const elCompletedWithdrawSum = document.getElementById("ovwCompletedWithdrawSum");
         const elPendingOrdersCount = document.getElementById("ovwPendingOrdersCount");
@@ -2575,6 +2812,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
         if (elTotalProducts) elTotalProducts.innerText = activeProducts.length;
         if (elTotalStockAccounts) elTotalStockAccounts.innerText = totalStockAccounts.toLocaleString("vi-VN");
+        if (elTotalSoldOrders) elTotalSoldOrders.innerText = finalSoldOrders.toLocaleString("vi-VN") + " đơn";
+        if (elTotalSoldAccounts) elTotalSoldAccounts.innerText = finalSoldAccounts.toLocaleString("vi-VN");
         if (elPendingWithdrawCount) {
           elPendingWithdrawCount.innerText = pendingWithdraws.length + " chờ duyệt";
           elPendingWithdrawCount.style.color = pendingWithdraws.length > 0 ? "#f59e0b" : "#10b981";
@@ -2583,6 +2822,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         if (elPendingOrdersCount) {
           elPendingOrdersCount.innerText = pendingOrders.length + " đơn cần xử lý";
           elPendingOrdersCount.style.color = pendingOrders.length > 0 ? "#ef4444" : "#10b981";
+        }
+        const elPendingOrdersSub = document.getElementById("ovwPendingOrdersSub");
+        if (elPendingOrdersSub) {
+          elPendingOrdersSub.innerHTML = 'Khiếu nại: <b>' + pendingWarrantyOrders.length + '</b> | Đặt trước: <b>' + waitingPreOrders.length + '</b>';
         }
         if (elTotalUsers) elTotalUsers.innerText = users.length;
         if (elTotalUserBalance) elTotalUserBalance.innerText = (typeof formatVND === "function") ? formatVND(totalUserBalance) : (totalUserBalance.toLocaleString("vi-VN") + " đ");
@@ -2593,7 +2836,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         if (elBadgeOrders) elBadgeOrders.innerText = pendingOrders.length;
         if (elBadgeWithdraw) elBadgeWithdraw.innerText = pendingWithdraws.length;
 
-        // Render Panel 1: Đơn hàng cần xử lý
+        // Render Panel 1: Đơn hàng cần xử lý (Phân trang 10 đơn / trang)
         const ordersBox = document.getElementById("ovwPendingOrdersContainer");
         if (ordersBox) {
           if (pendingOrders.length === 0) {
@@ -2603,30 +2846,52 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
               '<div style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">Tất cả đơn hàng của khách đều đã được tự động cấp tài khoản và vận hành ổn định.</div>' +
             '</div>';
           } else {
-            let tableHtml = '<table class="admin-table" style="width:100%; font-size:0.8rem;">' +
-              '<thead><tr><th>Mã Đơn</th><th>Khách Hàng</th><th>Số Tiền</th><th>Tình Trạng</th><th style="text-align:right;">Thao Tác</th></tr></thead><tbody>';
-            pendingOrders.slice(0, 5).forEach(function(item) {
-              const orderId = item.orderId || item.id || "DH";
-              const userStr = item.userEmail || item.buyer || item.customer || "Khách hàng";
-              const amtStr = (typeof formatVND === "function") ? formatVND(item.total || item.totalPrice || item.price || 0) : (item.total || 0) + " đ";
+            const pageSize = 10;
+            const totalPages = Math.ceil(pendingOrders.length / pageSize) || 1;
+            if (!window._ovwPendingOrdersPage || window._ovwPendingOrdersPage < 1) window._ovwPendingOrdersPage = 1;
+            if (window._ovwPendingOrdersPage > totalPages) window._ovwPendingOrdersPage = totalPages;
+            const curPage = window._ovwPendingOrdersPage;
+            const startIdx = (curPage - 1) * pageSize;
+            const pageOrders = pendingOrders.slice(startIdx, startIdx + pageSize);
+
+            let tableHtml = '<div style="overflow-x:auto;"><table class="admin-table" style="width:100%; font-size:0.8rem;">' +
+              '<thead><tr><th>Loại / Mã Đơn</th><th>Khách Hàng</th><th>Sản Phẩm</th><th>Số Tiền</th><th>Trạng Thái</th><th style="text-align:right;">Thao Tác</th></tr></thead><tbody>';
+            pageOrders.forEach(function(item) {
+              const orderId = item.orderCode || item.orderId || item.id || "DH";
+              const userStr = item.buyerUsername || item.buyerEmail || item.userEmail || item.buyer || item.customer || "Khách hàng";
+              const prodName = item.productName || item.prodName || item.name || "Sản phẩm";
+              const amtStr = (typeof formatVND === "function") ? formatVND(item.total || item.totalPrice || item.price || 0) : ((item.total || 0) + " đ");
+              const badge = item.taskTypeBadge || '<span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:4px;">Khiếu nại</span>';
+
+              let actionBtns = '';
+              if (item.isPreOrderTask) {
+                actionBtns = '<div style="display:inline-flex; gap:4px; justify-content:flex-end;">' +
+                  (item.status === 'WAITING_CONFIRM' ? '<button type="button" onclick="adminConfirmPreOrder(\'' + escapeHtml(orderId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.72rem; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Duyệt đơn"><i class="fa-solid fa-check"></i> Duyệt</button>' : '') +
+                  '<button type="button" onclick="openAdminFulfillModal(\'' + escapeHtml(orderId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.72rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Giao hàng cho khách"><i class="fa-solid fa-key"></i> Giao</button>' +
+                  '<button type="button" onclick="openPreOrderDetailView(\'' + escapeHtml(orderId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.72rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết đơn"><i class="fa-solid fa-eye"></i></button>' +
+                '</div>';
+              } else {
+                actionBtns = '<button class="btn-copy-small" onclick=\'openAdminOrderResolveModal("' + escapeHtml(orderId) + '")\' style="background:#0284c7; color:#fff; padding:3px 8px; font-size:0.72rem;" title="Mở đổi trả 1-đổi-1 hoặc hoàn tiền">' +
+                  '<i class="fa-solid fa-arrows-rotate"></i> Đổi Trả' +
+                '</button>';
+              }
+
               tableHtml += '<tr>' +
-                '<td><strong style="color:#38bdf8;">' + escapeHtml(orderId) + '</strong></td>' +
-                '<td>' + escapeHtml(userStr) + '</td>' +
+                '<td>' + badge + '<br/><strong style="color:#38bdf8; font-size:0.78rem;">#' + escapeHtml(orderId) + '</strong></td>' +
+                '<td><b>' + escapeHtml(userStr) + '</b></td>' +
+                '<td><div style="font-weight:600; color:#fff;">' + escapeHtml(prodName) + '</div>' + (item.qty ? ('<span style="font-size:0.7rem; color:#94a3b8;">SL: ' + item.qty + '</span>') : '') + '</td>' +
                 '<td style="color:#10b981; font-weight:700;">' + amtStr + '</td>' +
-                '<td><span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:4px;">' + escapeHtml(item.status || "Khiếu nại") + '</span></td>' +
-                '<td style="text-align:right;">' +
-                  '<button class="btn-copy-small" onclick=\'openAdminOrderResolveModal("' + escapeHtml(orderId) + '")\' style="background:#0284c7; color:#fff; padding:3px 8px; font-size:0.72rem; margin-right:4px;" title="Mở đổi trả 1-đổi-1 hoặc hoàn tiền">' +
-                    '<i class="fa-solid fa-arrows-rotate"></i> Đổi Trả' +
-                  '</button>' +
-                '</td>' +
+                '<td><span style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:4px;">' + escapeHtml(item.statusText || item.status || "Chờ xử lý") + '</span></td>' +
+                '<td style="text-align:right;">' + actionBtns + '</td>' +
               '</tr>';
             });
-            tableHtml += '</tbody></table>';
+            tableHtml += '</tbody></table></div>';
+            tableHtml += buildOvwPaginationHtml(curPage, pendingOrders.length, pageSize, "changeOvwPendingOrdersPage");
             ordersBox.innerHTML = tableHtml;
           }
         }
 
-        // Render Panel 2: Yêu cầu rút tiền chờ duyệt
+        // Render Panel 2: Yêu cầu rút tiền chờ duyệt (Phân trang 10 đơn / trang)
         const withdrawBox = document.getElementById("ovwPendingWithdrawContainer");
         if (withdrawBox) {
           if (pendingWithdraws.length === 0) {
@@ -2636,9 +2901,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
               '<div style="font-size:0.75rem; color:#94a3b8; margin-top:4px;">Các lệnh rút tiền của thành viên đã được phê duyệt và giải ngân đầy đủ.</div>' +
             '</div>';
           } else {
-            let wTableHtml = '<table class="admin-table" style="width:100%; font-size:0.8rem;">' +
+            const wPageSize = 10;
+            const wTotalPages = Math.ceil(pendingWithdraws.length / wPageSize) || 1;
+            if (!window._ovwPendingWithdrawPage || window._ovwPendingWithdrawPage < 1) window._ovwPendingWithdrawPage = 1;
+            if (window._ovwPendingWithdrawPage > wTotalPages) window._ovwPendingWithdrawPage = wTotalPages;
+            const curWPage = window._ovwPendingWithdrawPage;
+            const wStartIdx = (curWPage - 1) * wPageSize;
+            const pageWithdraws = pendingWithdraws.slice(wStartIdx, wStartIdx + wPageSize);
+
+            let wTableHtml = '<div style="overflow-x:auto;"><table class="admin-table" style="width:100%; font-size:0.8rem;">' +
               '<thead><tr><th>Mã GD</th><th>Thành Viên</th><th>Số Tiền</th><th>Ngân Hàng</th><th style="text-align:right;">Hành Động</th></tr></thead><tbody>';
-            pendingWithdraws.slice(0, 5).forEach(function(item) {
+            pageWithdraws.forEach(function(item) {
               const id = item.id || "W";
               const userStr = item.userName || item.userEmail || "Thành viên";
               const amtStr = (typeof formatVND === "function") ? formatVND(item.amount || 0) : (item.amount || 0) + " đ";
@@ -2658,7 +2931,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
                 '</td>' +
               '</tr>';
             });
-            wTableHtml += '</tbody></table>';
+            wTableHtml += '</tbody></table></div>';
+            wTableHtml += buildOvwPaginationHtml(curWPage, pendingWithdraws.length, wPageSize, "changeOvwPendingWithdrawPage");
             withdrawBox.innerHTML = wTableHtml;
           }
         }
@@ -2709,6 +2983,57 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       }
     }
     window.renderSystemOverview = renderSystemOverview;
+
+    // ĐIỀU HƯỚNG PHÂN TRANG 10 ĐƠN/TRANG CHO 2 BẢNG QUẢN TRỊ TỔNG QUAN
+    function buildOvwPaginationHtml(currentPage, totalItems, pageSize, onPageChangeFnName) {
+      const totalPages = Math.ceil(totalItems / pageSize) || 1;
+      if (totalPages <= 1) return "";
+
+      let html = '<div style="display:flex; justify-content:center; align-items:center; gap:6px; margin-top:14px; padding:8px 0; flex-wrap:wrap; border-top:1px solid #1a2538;">';
+      
+      // Nút Trước
+      if (currentPage > 1) {
+        html += '<button type="button" onclick="' + onPageChangeFnName + '(' + (currentPage - 1) + ')" style="padding:4px 10px; background:#0d131f; border:1px solid #1e293b; color:#cbd5e1; border-radius:6px; font-size:0.75rem; cursor:pointer;"><i class="fa-solid fa-chevron-left"></i> Trước</button>';
+      } else {
+        html += '<button type="button" disabled style="padding:4px 10px; background:#0d131f; border:1px solid #1e293b; color:#475569; border-radius:6px; font-size:0.75rem; cursor:not-allowed; opacity:0.6;"><i class="fa-solid fa-chevron-left"></i> Trước</button>';
+      }
+
+      // Các số trang
+      for (let i = 1; i <= totalPages; i++) {
+        if (i === currentPage) {
+          html += '<button type="button" style="padding:4px 9px; background:#0284c7; border:1px solid #0284c7; color:#fff; font-weight:700; border-radius:6px; font-size:0.75rem;">' + i + '</button>';
+        } else if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+          html += '<button type="button" onclick="' + onPageChangeFnName + '(' + i + ')" style="padding:4px 9px; background:#0d131f; border:1px solid #1e293b; color:#94a3b8; border-radius:6px; font-size:0.75rem; cursor:pointer;">' + i + '</button>';
+        } else if (i === currentPage - 2 || i === currentPage + 2) {
+          html += '<span style="color:#64748b; padding:0 3px; font-size:0.75rem;">...</span>';
+        }
+      }
+
+      // Nút Sau
+      if (currentPage < totalPages) {
+        html += '<button type="button" onclick="' + onPageChangeFnName + '(' + (currentPage + 1) + ')" style="padding:4px 10px; background:#0d131f; border:1px solid #1e293b; color:#cbd5e1; border-radius:6px; font-size:0.75rem; cursor:pointer;">Sau <i class="fa-solid fa-chevron-right"></i></button>';
+      } else {
+        html += '<button type="button" disabled style="padding:4px 10px; background:#0d131f; border:1px solid #1e293b; color:#475569; border-radius:6px; font-size:0.75rem; cursor:not-allowed; opacity:0.6;">Sau <i class="fa-solid fa-chevron-right"></i></button>';
+      }
+
+      html += '<span style="font-size:0.72rem; color:#64748b; margin-left:6px;">(' + currentPage + '/' + totalPages + ' - ' + totalItems + ' mục)</span>';
+      html += '</div>';
+      return html;
+    }
+    window.buildOvwPaginationHtml = buildOvwPaginationHtml;
+
+    function changeOvwPendingOrdersPage(p) {
+      window._ovwPendingOrdersPage = Number(p) || 1;
+      if (typeof renderSystemOverview === "function") renderSystemOverview();
+    }
+    window.changeOvwPendingOrdersPage = changeOvwPendingOrdersPage;
+
+    function changeOvwPendingWithdrawPage(p) {
+      window._ovwPendingWithdrawPage = Number(p) || 1;
+      if (typeof renderSystemOverview === "function") renderSystemOverview();
+    }
+    window.changeOvwPendingWithdrawPage = changeOvwPendingWithdrawPage;
+
 
 
     function populateCategorySelects(selectedCat) {
@@ -2873,12 +3198,228 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     // =========================================================================
     // CORE SYSTEM: USER BALANCE MODAL & DETAIL MODAL
     // =========================================================================
+    function getUserComprehensiveTransactions(targetEmail) {
+      const cleanEmail = (targetEmail || "").toLowerCase().trim();
+      if (!cleanEmail) return { transactions: [], currentBalance: 0 };
+
+      const rawLogs = [];
+
+      // A. Lấy từ mmo_transaction_history (hệ thống giao dịch chuẩn)
+      try {
+        const localHistory = typeof getTransactionHistory === "function" ? getTransactionHistory() : [];
+        localHistory.forEach(tx => {
+          if ((tx.userEmail || "").toLowerCase().trim() === cleanEmail) {
+            rawLogs.push({
+              id: tx.id || tx.txId,
+              orderId: tx.orderId || "",
+              time: tx.time || tx.date,
+              type: tx.type || "Giao dịch ví",
+              amount: Number(tx.amount) || 0,
+              balanceAfter: (tx.balanceAfter !== undefined && tx.balanceAfter !== null) ? Number(tx.balanceAfter) : null,
+              note: tx.note || ""
+            });
+          }
+        });
+      } catch(e) {}
+
+      // B. Quét từ mmo_transactions & mmo_wallet_transactions
+      try {
+        const extraTxs = JSON.parse(localStorage.getItem("mmo_transactions") || localStorage.getItem("mmo_wallet_transactions") || "[]");
+        if (Array.isArray(extraTxs)) {
+          extraTxs.forEach(etx => {
+            if ((etx.userEmail || "").toLowerCase().trim() === cleanEmail) {
+              rawLogs.push({
+                id: etx.id || etx.txId,
+                orderId: etx.orderId || "",
+                time: etx.time || etx.date,
+                type: etx.type || "Giao dịch ví",
+                amount: Number(etx.amount) || 0,
+                balanceAfter: (etx.balanceAfter !== undefined && etx.balanceAfter !== null) ? Number(etx.balanceAfter) : null,
+                note: etx.note || etx.content || ""
+              });
+            }
+          });
+        }
+      } catch(e) {}
+
+      // C. Quét toàn bộ đơn hàng (Cả đơn mua hàng và đơn hoàn tiền)
+      try {
+        const uOrders = typeof getUserOrders === "function" ? getUserOrders() : [];
+        const aOrders = typeof getAllOrders === "function" ? getAllOrders() : [];
+        const combinedOrders = [...uOrders];
+        aOrders.forEach(ao => {
+          if (!combinedOrders.some(co => (co.orderId === ao.orderId || co.id === ao.id))) {
+            combinedOrders.push(ao);
+          }
+        });
+
+        combinedOrders.forEach(o => {
+          const ordEmail = (o.email || o.userEmail || "").toLowerCase().trim();
+          if (ordEmail === cleanEmail) {
+            const oId = String(o.orderId || o.id || "").trim();
+            const pName = o.productName || o.prodName || "Sản phẩm";
+            const vName = (o.variantName && o.variantName !== "Mặc định") ? (" (" + o.variantName + ")") : "";
+            const ordAmt = Number(o.total || o.totalCost || o.totalPrice || o.totalAmount) || 0;
+            const ordTime = o.date || (o.createdAt ? new Date(o.createdAt).toLocaleString("vi-VN") : "") || "";
+
+            // 1. Đơn mua hàng (trừ tiền)
+            if (ordAmt > 0) {
+              rawLogs.push({
+                id: "ORD_" + oId,
+                orderId: oId,
+                time: ordTime,
+                type: "Thanh toán mua hàng",
+                amount: -ordAmt,
+                balanceAfter: o.balanceAfter !== undefined ? Number(o.balanceAfter) : null,
+                note: "Mua SP: " + pName + vName + " - Đơn #" + oId
+              });
+            }
+
+            // 2. Đơn được hoàn tiền bảo hành (cộng tiền)
+            const st = String(o.status || "").toLowerCase();
+            const isRefunded = o.refundedAt || o.refundAmount || st.includes("hoàn tiền") || st.includes("refund");
+            if (isRefunded) {
+              const refAmt = Number(o.refundAmount) || ordAmt || 15000;
+              const refTime = o.refundedAt || ordTime;
+              rawLogs.push({
+                id: "REFUND_" + oId,
+                orderId: oId,
+                time: refTime,
+                type: "Hoàn tiền đơn hàng bảo hành",
+                amount: +refAmt,
+                balanceAfter: o.refundBalanceAfter !== undefined ? Number(o.refundBalanceAfter) : null,
+                note: "Hoàn tiền bảo hành đơn #" + oId + " (" + pName + ")"
+              });
+            }
+          }
+        });
+      } catch(e) {}
+
+      // D. Gộp từ Cloud SePay / VietQR (cachedCloudWalletHistory)
+      if (typeof cachedCloudWalletHistory !== "undefined" && Array.isArray(cachedCloudWalletHistory)) {
+        cachedCloudWalletHistory.forEach(ch => {
+          rawLogs.push({
+            id: ch.id,
+            orderId: ch.id,
+            time: ch.time || ch.date,
+            type: ch.type || "Nạp tiền VietQR / SePay",
+            amount: Number(ch.amount) || 0,
+            balanceAfter: null,
+            note: ch.note || ch.content || "Nạp tiền tự động qua QR"
+          });
+        });
+      }
+
+      // E. Lọc trùng thông minh theo mã giao dịch và loại
+      const seenMap = new Map();
+      rawLogs.forEach(item => {
+        const amt = Number(item.amount) || 0;
+        const oId = String(item.orderId || item.id || "").replace(/^REFUND_|^ORD_/, "").trim();
+        const isRef = amt > 0 && (String(item.type).toLowerCase().includes("hoàn tiền") || String(item.note).toLowerCase().includes("hoàn tiền"));
+        const isPurchase = amt < 0;
+
+        let key = "";
+        if (oId && isRef) {
+          key = "REFUND_" + oId;
+        } else if (oId && isPurchase) {
+          key = "PURCHASE_" + oId;
+        } else if (item.id) {
+          key = "ID_" + item.id;
+        } else {
+          key = "TIME_" + (item.time || "") + "_" + amt;
+        }
+
+        if (!seenMap.has(key)) {
+          seenMap.set(key, item);
+        } else {
+          const existing = seenMap.get(key);
+          if (!existing.balanceAfter && item.balanceAfter) {
+            seenMap.set(key, item);
+          }
+        }
+      });
+
+      const allLogs = Array.from(seenMap.values());
+
+      // F. Sắp xếp theo thời gian mới nhất lên đầu danh sách
+      function parseVietnamDateTime(str) {
+        if (!str) return 0;
+        if (typeof str === "number") return str;
+        str = String(str).trim();
+        
+        const tokens = str.split(/\s+/);
+        let dPart = "", tPart = "00:00:00";
+        for (let t of tokens) {
+          if (t.includes("/")) dPart = t;
+          else if (t.includes(":")) tPart = t;
+        }
+
+        if (dPart) {
+          const dp = dPart.split("/");
+          if (dp.length === 3) {
+            const d = parseInt(dp[0], 10);
+            const m = parseInt(dp[1], 10) - 1;
+            const y = parseInt(dp[2], 10);
+            const tp = tPart.split(":");
+            const h = parseInt(tp[0] || "0", 10);
+            const min = parseInt(tp[1] || "0", 10);
+            const s = parseInt(tp[2] || "0", 10);
+            const res = new Date(y, m, d, h, min, s).getTime();
+            if (!isNaN(res)) return res;
+          }
+        }
+
+        const parsed = new Date(str).getTime();
+        return isNaN(parsed) ? 0 : parsed;
+      }
+
+      allLogs.sort((a, b) => parseVietnamDateTime(b.time || b.date) - parseVietnamDateTime(a.time || a.date));
+
+      // G. Xác định số dư hiện tại của tài khoản
+      let curBal = 0;
+      if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail && currentUser.balance !== undefined) {
+        curBal = Number(currentUser.balance) || 0;
+      } else {
+        const uList = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+        const uFound = uList.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
+        if (uFound && uFound.balance !== undefined) {
+          curBal = Number(uFound.balance) || 0;
+        }
+      }
+
+      // H. Tính toán số dư sau chuẩn xác theo chuỗi thời gian ngược dần từ số dư thực tế
+      let runningBal = curBal;
+      for (let idx = 0; idx < allLogs.length; idx++) {
+        const tx = allLogs[idx];
+        if (idx === 0) {
+          tx.balanceAfter = curBal;
+          runningBal = curBal;
+        } else {
+          const prevTx = allLogs[idx - 1];
+          const prevAmt = Number(prevTx.amount) || 0;
+          runningBal = runningBal - prevAmt;
+          tx.balanceAfter = Math.max(0, runningBal);
+        }
+      }
+
+      return { transactions: allLogs, currentBalance: curBal };
+    }
+    window.getUserComprehensiveTransactions = getUserComprehensiveTransactions;
+
     function openUserBalanceModal(email) {
       let users = getRegisteredUsers();
       const u = users.find(item => (item.email || "").toLowerCase().trim() === (email || "").toLowerCase().trim());
       if (!u) {
         showToast("Không tìm thấy người dùng này!", "danger");
         return;
+      }
+
+      let curBal = (u.balance !== undefined) ? Number(u.balance) : 0;
+      if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === (email || "").toLowerCase().trim() && currentUser.balance !== undefined) {
+        curBal = Number(currentUser.balance);
+      } else if (typeof getUserComprehensiveTransactions === "function") {
+        const res = getUserComprehensiveTransactions(u.email);
+        curBal = res.currentBalance;
       }
 
       const inpEmail = document.getElementById("balModalUserEmail");
@@ -2891,7 +3432,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       if (inpEmail) inpEmail.value = u.email;
       if (nameTxt) nameTxt.innerText = u.name;
       if (emailTxt) emailTxt.innerText = u.email;
-      if (curBalTxt) curBalTxt.innerText = formatVND(u.balance || 0);
+      if (curBalTxt) curBalTxt.innerText = formatVND(curBal);
       if (amtInp) amtInp.value = "20000";
       if (noteInp) noteInp.value = "Nạp tiền thủ công qua ngân hàng";
 
@@ -2904,11 +3445,30 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     window.openUserBalanceModal = openUserBalanceModal;
 
     function openAdminUserDetailModal(email) {
-      const users = getRegisteredUsers();
-      const u = users.find(item => (item.email || "").toLowerCase().trim() === (email || "").toLowerCase().trim());
+      const cleanEmail = (email || "").toLowerCase().trim();
+      let users = getRegisteredUsers();
+      let u = users.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
       if (!u) {
         showToast("Không tìm thấy thông tin thành viên này!", "danger");
         return;
+      }
+
+      // 1. Thu thập toàn bộ biến động số dư & số dư chuẩn xác
+      const result = (typeof getUserComprehensiveTransactions === "function") 
+        ? getUserComprehensiveTransactions(cleanEmail) 
+        : { transactions: [], currentBalance: (u.balance || 0) };
+      
+      const allTx = result.transactions;
+      let accurateBalance = result.currentBalance;
+
+      // Đồng bộ số dư chuẩn vào người dùng và hệ thống
+      u.balance = accurateBalance;
+      saveRegisteredUsers(users);
+
+      if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
+        currentUser.balance = accurateBalance;
+        localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        if (typeof updateUserUI === "function") updateUserUI();
       }
 
       const avatarEl = document.getElementById("admDetailUserAvatar");
@@ -2918,15 +3478,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       const statusBadge = document.getElementById("admDetailUserStatusBadge");
       const createdEl = document.getElementById("admDetailUserCreated");
       const balanceEl = document.getElementById("admDetailUserBalance");
+      const txCountEl = document.getElementById("admDetailTxCount");
+      const btnTopup = document.getElementById("admDetailBtnTopup");
+      const btnLock = document.getElementById("admDetailBtnLock");
 
-      const isAdm = (u.email === "muabantaikhoanmmo@gmail.com" || u.email === "manhdongvtc@gmail.com" || u.role === "Quản Trị Viên");
+      const isAdm = (u.email === ROOT_ADMIN_EMAIL || (typeof getAdminEmails === "function" && getAdminEmails().map(e => (e||"").toLowerCase().trim()).includes((u.email||"").toLowerCase().trim())) || u.role === "Quản Trị Viên");
       const isLocked = !!u.isLocked;
 
       if (avatarEl) avatarEl.src = u.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
       if (nameEl) nameEl.innerText = u.name || "Thành Viên";
       if (emailEl) emailEl.innerText = u.email;
       if (createdEl) createdEl.innerText = u.created || "01/03/2026";
-      if (balanceEl) balanceEl.innerText = formatVND(u.balance || 0);
+      if (balanceEl) balanceEl.innerText = formatVND(accurateBalance);
+      if (txCountEl) txCountEl.innerText = allTx.length + " giao dịch";
 
       if (roleBadge) {
         roleBadge.innerText = isAdm ? "Quản Trị Viên" : "Thành Viên";
@@ -2938,23 +3502,57 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         statusBadge.style.color = isLocked ? "#ef4444" : "#10b981";
       }
 
-      const tbody = document.getElementById("admDetailUserTxTableBody");
-      const allTx = getTransactionHistory();
-      const userTx = allTx.filter(tx => (tx.userEmail || "").toLowerCase().trim() === (u.email || "").toLowerCase().trim());
+      if (btnTopup) {
+        btnTopup.onclick = function() { openUserBalanceModal(u.email); };
+      }
+      if (btnLock) {
+        btnLock.onclick = function() { toggleLockUser(u.email); };
+        btnLock.innerHTML = isLocked ? '<i class="fa-solid fa-unlock"></i> Mở Khóa' : '<i class="fa-solid fa-lock"></i> Khóa Acc';
+      }
 
+      const tbody = document.getElementById("admDetailUserTxTableBody");
       if (tbody) {
-        if (userTx.length === 0) {
+        if (allTx.length === 0) {
           tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:24px; color:#64748b;">Thành viên này chưa có giao dịch nào phát sinh.</td></tr>';
         } else {
-          tbody.innerHTML = userTx.map(tx => {
-            const isPlus = tx.amount > 0;
-            const amtHtml = isPlus ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(tx.amount) + '</span>' : '<span style="color:#ef4444; font-weight:800;">' + formatVND(tx.amount) + '</span>';
+          tbody.innerHTML = allTx.map(tx => {
+            const amt = Number(tx.amount) || 0;
+            const isPlus = amt > 0;
+            const amtHtml = isPlus 
+              ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(amt) + '</span>' 
+              : '<span style="color:#ef4444; font-weight:800;">' + formatVND(amt) + '</span>';
+
+            const tLow = String(tx.type || "").toLowerCase();
+            const nLow = String(tx.note || "").toLowerCase();
+            const isRefund = tLow.includes("hoàn tiền") || nLow.includes("hoàn tiền");
+            const isPurchase = tLow.includes("thanh toán") || tLow.includes("mua hàng") || amt < 0;
+
+            let typeHtml = "";
+            if (isRefund) {
+              typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.1);"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền bảo hành</span>';
+            } else if (isPurchase) {
+              typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#f87171; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.1);"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
+            } else if (tLow.includes("rút")) {
+              typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#fbbf24; border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.1);"><i class="fa-solid fa-arrow-up-right-from-square"></i> Rút tiền</span>';
+            } else if (tLow.includes("thủ công") || nLow.includes("thủ công")) {
+              typeHtml = '<span class="badge-trust" style="font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.3); background:rgba(56,189,248,0.1);"><i class="fa-solid fa-user-shield"></i> Nạp thủ công Admin</span>';
+            } else {
+              typeHtml = '<span class="badge-trust" style="font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.3); background:rgba(56,189,248,0.1);"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
+            }
+
+            let balAfterStr = (tx.balanceAfter !== undefined && tx.balanceAfter !== null && !isNaN(Number(tx.balanceAfter))) ? formatVND(Math.max(0, tx.balanceAfter)) : "-";
+
+            let displayNote = tx.note || "";
+            if (isRefund && (!displayNote || displayNote.includes("NAP ") || displayNote.includes("SePay"))) {
+              displayNote = "Hoàn tiền đơn hàng bảo hành mã đơn #" + (tx.orderId || "");
+            }
+
             return '<tr>' +
-              '<td style="font-size:0.75rem; color:#94a3b8;">' + tx.time + '</td>' +
-              '<td><span class="badge-verified" style="font-size:0.7rem;">' + escapeHtml(tx.type) + '</span></td>' +
+              '<td style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">' + (tx.time || tx.date || '') + '</td>' +
+              '<td>' + typeHtml + '</td>' +
               '<td>' + amtHtml + '</td>' +
-              '<td style="color:#38bdf8; font-weight:700; font-size:0.8rem;">' + formatVND(tx.balanceAfter !== undefined ? tx.balanceAfter : 0) + '</td>' +
-              '<td style="font-size:0.75rem; color:#cbd5e1;">' + escapeHtml(tx.note || '') + '</td>' +
+              '<td style="color:#38bdf8; font-weight:700; font-size:0.82rem; font-family:monospace; white-space:nowrap;">' + balAfterStr + '</td>' +
+              '<td style="font-size:0.75rem; color:#cbd5e1;">' + escapeHtml(displayNote) + '</td>' +
             '</tr>';
           }).join("");
         }
@@ -3042,29 +3640,50 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     window.renderAffiliateDashboard = renderAffiliateDashboard;
 
     function saveProductsToStorage() {
-      try {
-        if (MOCK_DATA && MOCK_DATA.products) {
-          const prodsJson = JSON.stringify(MOCK_DATA.products);
-          localStorage.setItem("mmo_admin_products", prodsJson);
-          localStorage.setItem("mmo_products", prodsJson);
-        }
-      } catch(e) {
-        console.warn("Storage quota warning when saving products:", e);
+      // Dùng setTimeout(0) để nhả main thread, tránh đơ trang khi data lớn
+      setTimeout(function() {
         try {
-          const safeProds = (MOCK_DATA.products || []).map(function(p) {
-            const cp = Object.assign({}, p);
-            if (cp.image && cp.image.length > 30000) {
-              cp.image = "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500";
-            }
-            return cp;
-          });
-          const safeJson = JSON.stringify(safeProds);
-          localStorage.setItem("mmo_admin_products", safeJson);
-          localStorage.setItem("mmo_products", safeJson);
-        } catch(err2) {
-          console.error("Critical: Could not save products to storage:", err2);
+          if (MOCK_DATA && MOCK_DATA.products) {
+            // Loại bỏ ảnh base64 quá lớn trước khi serialize để tránh block
+            const prodsToSave = MOCK_DATA.products.map(function(p) {
+              if (!p) return p;
+              if (p.image && p.image.startsWith('data:') && p.image.length > 50000) {
+                const cp = Object.assign({}, p);
+                cp.image = p.image.slice(0, 40000);
+                return cp;
+              }
+              return p;
+            });
+            const prodsJson = JSON.stringify(prodsToSave);
+            localStorage.setItem("mmo_admin_products", prodsJson);
+            localStorage.setItem("mmo_products", prodsJson);
+          }
+        } catch(e) {
+          console.warn("Storage quota warning when saving products:", e);
+          try {
+            const safeProds = (MOCK_DATA.products || []).map(function(p) {
+              const cp = Object.assign({}, p);
+              if (cp.image && cp.image.length > 45000 && cp.image.startsWith("data:")) {
+                cp.image = cp.image.slice(0, 40000);
+              }
+              // Nếu vẫn quá lớn, bỏ accounts để tiết kiệm space
+              if (cp.variants && Array.isArray(cp.variants)) {
+                cp.variants = cp.variants.map(function(v) {
+                  const vc = Object.assign({}, v);
+                  if (vc.accounts && vc.accounts.length > 100) vc.accounts = vc.accounts.slice(0, 100);
+                  return vc;
+                });
+              }
+              return cp;
+            });
+            const safeJson = JSON.stringify(safeProds);
+            localStorage.setItem("mmo_admin_products", safeJson);
+            localStorage.setItem("mmo_products", safeJson);
+          } catch(err2) {
+            console.error("Critical: Could not save products to storage:", err2);
+          }
         }
-      }
+      }, 0);
     }
     window.saveProductsToStorage = saveProductsToStorage;
 
@@ -3072,7 +3691,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     // ĐỒNG BỘ SẢN PHẨM TỪ MÁY CHỦ / GOOGLE SHEETS
     // Đảm bảo khi admin đăng sản phẩm mới, mọi người khác đều xem được ngay lập tức
     // ==========================================
-    let _isSyncingProductsFromBackend = false;
+    var _isSyncingProductsFromBackend = false;
     async function syncProductsFromBackend() {
       if (_isSyncingProductsFromBackend) return;
       if (typeof document !== "undefined" && document.hidden) return; // Bỏ qua nếu tab đang ẩn
@@ -3084,7 +3703,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           if (res.apiProductMappings && typeof res.apiProductMappings === 'object') {
             try {
               const curMappings = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
-              const mergedMappings = Object.assign({}, res.apiProductMappings, curMappings);
+              // Merge: server cung cấp sourceStock mới nhất, local giữ apiKey/baseUrl/config do admin setup
+              // Với mỗi key, server.sourceStock > local.sourceStock (để tránh stale 0 overwrite)
+              const mergedMappings = Object.assign({}, curMappings, res.apiProductMappings);
+              // Nhưng giữ lại apiKey và baseUrl từ local nếu server không có
+              Object.keys(curMappings).forEach(function(k) {
+                if (mergedMappings[k] && curMappings[k]) {
+                  if (!mergedMappings[k].apiKey && curMappings[k].apiKey) mergedMappings[k].apiKey = curMappings[k].apiKey;
+                  if (!mergedMappings[k].baseUrl && curMappings[k].baseUrl) mergedMappings[k].baseUrl = curMappings[k].baseUrl;
+                }
+              });
               localStorage.setItem("mmo_api_product_mappings", JSON.stringify(mergedMappings));
             } catch(e) {}
           }
@@ -3095,11 +3723,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
             // CHẶN TUYỆT ĐỐI NẾU SẢN PHẨM NẰM TRONG DANH SÁCH ĐÃ XÓA HOẶC DUMMY
             if (typeof isProductDeleted === "function" && isProductDeleted(serverProd)) return;
             if (deletedIds.includes(serverProd.id)) return;
-            if (serverProd.name && typeof normApiText === "function" && deletedIds.includes(normApiText(serverProd.name))) return;
-            if (!serverProd.sold || serverProd.sold === 100 || serverProd.buffSold === 100) {
-              const sVal = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(serverProd) : 350;
-              serverProd.sold = sVal;
-              serverProd.buffSold = sVal;
+            if (serverProd.sold === 100 || serverProd.buffSold === 100) {
+              serverProd.sold = 0;
+              serverProd.buffSold = 0;
             }
             if (serverProd.category) serverProd.category = String(serverProd.category).replace(/&amp;/g, '&');
             // Chuẩn hóa biến thể từ server
@@ -3143,13 +3769,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
               serverProd.category = "TikTok";
             }
             const existingIdx = MOCK_DATA.products.findIndex(function(p) { 
-              if (p.id === serverProd.id) return true;
-              if (typeof normApiText === "function" && p.name && serverProd.name) {
-                const n1 = normApiText(p.name).replace(/cu ky/g, 'cuc ky');
-                const n2 = normApiText(serverProd.name).replace(/cu ky/g, 'cuc ky');
-                if (n1 === n2) return true;
-              }
-              return false;
+              return p && p.id === serverProd.id;
             });
             // [LOCAL-FIRST MASTER]: Kho tài khoản nội bộ là Nguồn Chân Lý Duy Nhất, không bị xóa bởi server
             const localStockMap = (typeof getProductStocksMap === "function") ? getProductStocksMap() : {};
@@ -3202,86 +3822,91 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
             }
             if (existingIdx !== -1) {
               const currentProd = MOCK_DATA.products[existingIdx];
+              // [LOCAL-FIRST EDIT MASTER]: Nếu sản phẩm vừa được sửa gần đây (< 15 phút), ưu tiên dữ liệu admin đã sửa
+              const isLocallyFresh = !!(currentProd._lastEditedAt && (Date.now() - currentProd._lastEditedAt < 900000));
+
               // Bảo vệ tồn kho nếu sản phẩm đang bật On-Demand API
+              // QUAN TRỌNG: Không check balance ở đây — balance chỉ cần check khi mua hàng
+              // Non-admin không có balance thật → không được dùng balance để ẩn tồn kho
               const existingApiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(currentProd.id) : null;
               if (existingApiMap && existingApiMap.enabled && existingApiMap.sourceProdId) {
-                const prov = existingApiMap.provider || "mail72h";
-                const b = (typeof getSourceBalance === "function") ? getSourceBalance(prov) : 999999;
-                if (b >= (Number(existingApiMap.sourcePrice) || 69)) {
-                  serverProd.stock = existingApiMap.sourceStock || (typeof getProductStockCount === "function" ? getProductStockCount(currentProd) : 81995);
+                // Luôn dùng sourceStock từ mapping nếu có — bất kể balance ví
+                if (existingApiMap.sourceStock !== undefined && existingApiMap.sourceStock !== null && Number(existingApiMap.sourceStock) > 0) {
+                  serverProd.stock = Number(existingApiMap.sourceStock);
+                } else if (typeof getProductStockCount === "function") {
+                  const localStock = getProductStockCount(currentProd);
+                  if (localStock > 0) serverProd.stock = localStock;
                 }
               }
 
-              // [LOCAL-FIRST MASTER]: Local Master là Nguồn Chân Lý Duy Nhất
-              // Bảo toàn tuyệt đối danh sách biến thể của Local Master, TUYỆT ĐỐI KHÔNG để Google Sheets đè ngược
-              let finalVariants = (currentProd.variants && Array.isArray(currentProd.variants) && currentProd.variants.length > 0)
-                ? currentProd.variants
-                : ((serverProd.variants && Array.isArray(serverProd.variants) && serverProd.variants.length > 0) ? serverProd.variants : []);
-
-              // Kiểm tra nếu mmo_product_variants_map có nhiều biến thể hơn
-              try {
-                const vMap = (typeof getProductVariantsMap === "function") ? getProductVariantsMap() : {};
-                const normKey = (currentProd.name && typeof normApiText === "function") ? normApiText(currentProd.name) : "";
-                const mapVars = (currentProd.id && vMap[currentProd.id]) || (normKey ? vMap[normKey] : null);
-                if (Array.isArray(mapVars) && mapVars.length > finalVariants.length) {
-                  finalVariants = mapVars;
-                }
-              } catch(e) {}
-
-              // Tính toán tồn kho chính xác: Kho nội bộ ưu tiên hàng đầu, nếu kho nội bộ chưa có thì kế thừa từ Google Sheets
-              let finalStock = 0;
-              if (finalVariants.length > 0) {
-                let varSum = 0;
-                finalVariants.forEach((v, vidx) => {
-                  const vk = (typeof getVariantStockKey === "function") ? getVariantStockKey(currentProd.id, vidx) : (currentProd.id + "__VAR__" + vidx);
-                  const localCount = (typeof getStockCountByVariant === "function") ? getStockCountByVariant(currentProd.id, vidx, currentProd.name) : 0;
-                  const serverVarStock = (serverProd && serverProd.variants && serverProd.variants[vidx] && typeof serverProd.variants[vidx].stock === "number") ? Math.max(0, serverProd.variants[vidx].stock) : 0;
-
-                  // KHO NỘI BỘ LÀ CHÂN LÝ DUY NHẤT: Tài khoản thực tế trong kho = Tồn kho
-                  const existingVarAccs = Array.isArray(v.accounts) ? v.accounts.length : 0;
-                  const curProdVar = (currentProd.variants && currentProd.variants[vidx]) ? currentProd.variants[vidx] : null;
-                  const curProdVarAccs = curProdVar && Array.isArray(curProdVar.accounts) ? curProdVar.accounts.length : 0;
-                  if (existingVarAccs > 0) {
-                    v.stock = existingVarAccs;
-                  } else if (curProdVarAccs > 0) {
-                    v.accounts = curProdVar.accounts;
-                    v.stock = curProdVarAccs;
-                  } else if (localCount > 0) {
-                    v.stock = localCount;
-                  } else if (Array.isArray(localStockMap[vk]) && localStockMap[vk].length > 0) {
-                    v.stock = localStockMap[vk].length;
-                  } else if (curProdVar && typeof curProdVar.stock === "number" && curProdVar.stock > 0) {
-                    v.stock = curProdVar.stock;
-                  } else if (typeof v.stock === "number" && v.stock > 0) {
-                    // Giữ nguyên tồn kho nếu đã có giá trị hợp lệ
-                  } else if (serverVarStock > 0 && !isManuallyCleared) {
-                    v.stock = serverVarStock;
-                  } else {
-                    v.stock = 0;
-                  }
-                  varSum += (Number(v.stock) || 0);
+              // [UNIFIED MASTER]: Hợp nhất biến thể từ Google Sheets với kho nội bộ (Bảo toàn tài khoản kho)
+              let finalVariants = [];
+              if (isLocallyFresh && currentProd.variants && Array.isArray(currentProd.variants) && currentProd.variants.length > 0) {
+                finalVariants = currentProd.variants;
+              } else if (serverProd.variants && Array.isArray(serverProd.variants) && serverProd.variants.length > 0) {
+                finalVariants = serverProd.variants.map((sv, svIdx) => {
+                  const matchedLocalV = (currentProd.variants && (currentProd.variants[svIdx] || currentProd.variants.find(lv => lv && lv.name && lv.name.trim().toLowerCase() === String(sv.name || '').trim().toLowerCase()))) || null;
+                  const accs = (matchedLocalV && Array.isArray(matchedLocalV.accounts) && matchedLocalV.accounts.length > 0) ? matchedLocalV.accounts : (Array.isArray(sv.accounts) ? sv.accounts : []);
+                  const soldAccs = (matchedLocalV && Array.isArray(matchedLocalV.soldAccounts) && matchedLocalV.soldAccounts.length > 0) ? matchedLocalV.soldAccounts : (Array.isArray(sv.soldAccounts) ? sv.soldAccounts : []);
+                  return Object.assign({}, sv, {
+                    name: sv.name || (matchedLocalV ? matchedLocalV.name : ("Gói " + (svIdx + 1))),
+                    price: sv.price !== undefined ? Number(sv.price) : (matchedLocalV ? Number(matchedLocalV.price) : Number(currentProd.price || 0)),
+                    accounts: accs,
+                    soldAccounts: soldAccs
+                  });
                 });
-                finalStock = varSum;
-              } else if (realLocalAccounts > 0) {
-                finalStock = realLocalAccounts;
-              } else if (serverProd && typeof serverProd.stock === "number" && serverProd.stock > 0) {
-                finalStock = serverProd.stock;
-              } else if (isManuallyCleared) {
-                finalStock = 0;
-              } else {
-                finalStock = Number(currentProd.stock) || 0;
+              } else if (currentProd.variants && Array.isArray(currentProd.variants) && currentProd.variants.length > 0) {
+                finalVariants = currentProd.variants;
               }
 
-              const oldStock = currentProd.stock;
-              const oldPrice = currentProd.price;
-              const newPrice = finalVariants[0] ? (Number(finalVariants[0].price) || currentProd.price || serverProd.price) : (currentProd.price || serverProd.price);
-              let changed = (oldStock !== finalStock || oldPrice !== newPrice);
-              if (!changed && Array.isArray(currentProd.variants) && Array.isArray(finalVariants)) {
+              const updatedName = isLocallyFresh ? (currentProd.name || serverProd.name) : (serverProd.name || currentProd.name);
+              const updatedCategory = isLocallyFresh ? (currentProd.category || serverProd.category) : (serverProd.category || currentProd.category);
+              const updatedImage = isLocallyFresh ? (currentProd.image || serverProd.image) : (serverProd.image || currentProd.image);
+              const updatedDesc = isLocallyFresh ? (currentProd.description || serverProd.description) : (serverProd.description || currentProd.description);
+              const updatedWarranty = isLocallyFresh ? (currentProd.warranty || serverProd.warranty) : (serverProd.warranty || currentProd.warranty);
+              const updatedCommission = isLocallyFresh ? (currentProd.commission || serverProd.commission) : (serverProd.commission || currentProd.commission);
+
+              // Tính toán tồn kho từng biến thể: Kho nội bộ ưu tiên hàng đầu, nếu chưa có thì kế thừa từ Google Sheets
+              let totalCalculatedStock = 0;
+              finalVariants.forEach((v, vidx) => {
+                const vk = (typeof getVariantStockKey === "function") ? getVariantStockKey(currentProd.id, vidx) : (currentProd.id + "__VAR__" + vidx);
+                const localCount = (typeof getStockCountByVariant === "function") ? getStockCountByVariant(currentProd.id, vidx, currentProd.name) : 0;
+                const svStock = (serverProd && serverProd.variants && serverProd.variants[vidx] && typeof serverProd.variants[vidx].stock === "number") ? Math.max(0, serverProd.variants[vidx].stock) : 0;
+                const accsCount = Array.isArray(v.accounts) ? v.accounts.length : 0;
+
+                if (accsCount > 0) {
+                  v.stock = accsCount;
+                } else if (localCount > 0) {
+                  v.stock = localCount;
+                } else if (Array.isArray(localStockMap[vk]) && localStockMap[vk].length > 0) {
+                  v.stock = localStockMap[vk].length;
+                } else if (!isManuallyCleared && svStock > 0) {
+                  v.stock = svStock;
+                } else if (typeof v.stock === "number" && v.stock > 0) {
+                  // Giữ nguyên tồn kho nếu đã có giá trị hợp lệ
+                } else {
+                  v.stock = (!isManuallyCleared && serverProd && typeof serverProd.stock === "number" && finalVariants.length === 1) ? serverProd.stock : 0;
+                }
+                totalCalculatedStock += (Number(v.stock) || 0);
+              });
+
+              if (finalVariants.length === 0) {
+                if (realLocalAccounts > 0) totalCalculatedStock = realLocalAccounts;
+                else if (!isManuallyCleared && serverProd && typeof serverProd.stock === "number") totalCalculatedStock = serverProd.stock;
+                else totalCalculatedStock = isManuallyCleared ? 0 : (Number(currentProd.stock) || 0);
+              }
+
+              const newPrice = isLocallyFresh 
+                ? (currentProd.price || (finalVariants[0] && Number(finalVariants[0].price)) || serverProd.price)
+                : (finalVariants[0] ? (Number(finalVariants[0].price) || currentProd.price || serverProd.price) : (currentProd.price || serverProd.price));
+
+              let changed = (currentProd.stock !== totalCalculatedStock || currentProd.price !== newPrice || currentProd.name !== updatedName);
+              if (!changed && Array.isArray(currentProd.variants)) {
                 if (currentProd.variants.length !== finalVariants.length) {
                   changed = true;
                 } else {
                   for (let vi = 0; vi < finalVariants.length; vi++) {
-                    if (!currentProd.variants[vi] || currentProd.variants[vi].stock !== finalVariants[vi].stock || currentProd.variants[vi].price !== finalVariants[vi].price) {
+                    if (!currentProd.variants[vi] || currentProd.variants[vi].name !== finalVariants[vi].name || currentProd.variants[vi].price !== finalVariants[vi].price || currentProd.variants[vi].stock !== finalVariants[vi].stock) {
                       changed = true;
                       break;
                     }
@@ -3289,7 +3914,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
                 }
               }
 
-              // Merge dữ liệu an toàn: Giữ nguyên các trường master của Local
               // [UNIFIED WAREHOUSE CORE]: Đảm bảo Google Sheets không bao giờ đè kho
               if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.getStock) {
                 if (Array.isArray(finalVariants)) {
@@ -3299,37 +3923,55 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
                   });
                 }
                 const totalWs = MMO_WAREHOUSE.getStock(currentProd.id, null);
-                if (totalWs > 0) finalStock = totalWs;
+                if (totalWs > 0) totalCalculatedStock = totalWs;
               }
-              // BẢO TOÀN TUYỆT ĐỐI KHO HÀNG NỘI BỘ VÀ ACCOUNTS
-              const preservedVariants = (currentProd.variants && Array.isArray(currentProd.variants) && currentProd.variants.length > 0)
-                ? currentProd.variants.map((cv, vi) => {
-                    const sv = (serverProd.variants && serverProd.variants[vi]) ? serverProd.variants[vi] : {};
-                    return Object.assign({}, sv, cv, {
-                      accounts: Array.isArray(cv.accounts) ? cv.accounts : [],
-                      soldAccounts: Array.isArray(cv.soldAccounts) ? cv.soldAccounts : [],
-                      stock: (Array.isArray(cv.accounts) && cv.accounts.length > 0) ? cv.accounts.length : (Number(cv.stock) || 0)
-                    });
-                  })
-                : finalVariants;
 
-              const realTotalStock = preservedVariants.reduce((s, v) => s + (Array.isArray(v.accounts) ? v.accounts.length : (Number(v.stock) || 0)), 0);
-
-              MOCK_DATA.products[existingIdx] = Object.assign({}, serverProd, currentProd, {
-                variants: preservedVariants,
-                stock: realTotalStock,
-                price: newPrice
+              // Cập nhật MOCK_DATA với biến thể và thông tin mới nhất từ máy chủ
+              const baseMerge = isLocallyFresh ? Object.assign({}, serverProd, currentProd) : Object.assign({}, currentProd, serverProd);
+              MOCK_DATA.products[existingIdx] = Object.assign(baseMerge, {
+                id: currentProd.id || serverProd.id,
+                name: updatedName,
+                category: updatedCategory,
+                image: updatedImage,
+                description: updatedDesc,
+                warranty: updatedWarranty,
+                commission: updatedCommission,
+                price: newPrice,
+                stock: totalCalculatedStock,
+                variants: finalVariants,
+                _lastEditedAt: currentProd._lastEditedAt || 0
               });
 
+              // [FRESH API MAPPING]: Luôn dùng sourceStock từ mmo_api_product_mappings (fresh) sau merge
+              // Tránh serverProd.apiMapping (stale, sourceStock=0) ghi đè apiMapping đã cập nhật của admin
+              try {
+                const freshMaps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+                const mergedProdId = MOCK_DATA.products[existingIdx].id;
+                if (freshMaps[mergedProdId] && freshMaps[mergedProdId].enabled && freshMaps[mergedProdId].sourceProdId) {
+                  // Admin: dùng fresh local maps
+                  MOCK_DATA.products[existingIdx].apiMapping = freshMaps[mergedProdId];
+                } else if (serverProd && serverProd.apiMapping && serverProd.apiMapping.enabled && serverProd.apiMapping.sourceProdId) {
+                  // Non-admin: fallback về apiMapping từ GAS (admin đã save có sourceStock)
+                  MOCK_DATA.products[existingIdx].apiMapping = serverProd.apiMapping;
+                  // Cache vào localStorage để getApiProductMapping() dùng được
+                  try {
+                    freshMaps[mergedProdId] = serverProd.apiMapping;
+                    localStorage.setItem("mmo_api_product_mappings", JSON.stringify(freshMaps));
+                  } catch(e2) {}
+                }
+              } catch(e) {}
+
               if (typeof recordProductVariants === "function" && finalVariants.length > 0) {
-                recordProductVariants(currentProd.id, finalVariants, currentProd.name);
+                recordProductVariants(currentProd.id, finalVariants, updatedName);
               }
               if (changed) {
                 hasNewOrUpdated = true;
               }
             } else {
-              MOCK_DATA.products.push(serverProd);
-              hasNewOrUpdated = true;
+              if (!deletedIds.includes(serverProd.id) && !(typeof isProductDeleted === "function" && isProductDeleted(serverProd))) {
+                MOCK_DATA.products.push(serverProd);
+                hasNewOrUpdated = true;
+              }
             }
           });
 
@@ -3351,20 +3993,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
               _viewDirty["viewAllProducts"] = true;
               _viewDirty["viewAdmin"] = true;
             }
-            const curView = (typeof localStorage !== "undefined" ? localStorage.getItem("mmo_current_view") : "") || "viewStore";
-            if (curView === "viewStore") {
-              if (typeof renderProductGrid === "function") renderProductGrid();
-              if (typeof renderBestSellers === "function") renderBestSellers();
-              if (typeof renderRecommended === "function") renderRecommended();
-              if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
-              if (typeof _viewDirty !== "undefined") _viewDirty["viewStore"] = false;
-            } else if (curView === "viewAllProducts") {
-              if (typeof renderAllProductsPage === "function") renderAllProductsPage();
-              if (typeof _viewDirty !== "undefined") _viewDirty["viewAllProducts"] = false;
-            } else if (curView === "viewAdmin") {
-              if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-              if (typeof _viewDirty !== "undefined") _viewDirty["viewAdmin"] = false;
-            }
+            if (typeof renderProductGrid === "function") renderProductGrid();
+            if (typeof renderBestSellers === "function") renderBestSellers();
+            if (typeof renderRecommended === "function") renderRecommended();
+            if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
+            if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+            if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+            if (typeof initStockManagementUI === "function") initStockManagementUI();
             if (typeof applyBrandCustomizations === "function") applyBrandCustomizations();
             if (typeof syncZaloLinks === "function") syncZaloLinks();
             if (typeof syncTelegramLinks === "function") syncTelegramLinks();
@@ -3373,12 +4008,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
             // Cập nhật ngay lập tức giao diện chi tiết sản phẩm nếu đang mở (giá, biến thể, tồn kho)
             if (currentSelectedProduct) {
-              const curP = MOCK_DATA.products.find(p => p.id === currentSelectedProduct.id || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, currentSelectedProduct.id)) || (p.name && currentSelectedProduct.name && p.name.trim().toLowerCase() === currentSelectedProduct.name.trim().toLowerCase()));
+              const curP = MOCK_DATA.products.find(p => p.id === currentSelectedProduct.id || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, currentSelectedProduct.id)));
               if (curP) {
                 currentSelectedProduct = curP;
                 if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(curP.id, curP.stock, null, true);
 
-                // Tự động chuyển sang biến thể đầu tiên còn hàng nếu biến thể hiện tại đã hết hàng
                 let activeVarIdx = (typeof currentSelectedVariantIndex !== "undefined") ? currentSelectedVariantIndex : 0;
                 if (curP.variants && Array.isArray(curP.variants) && curP.variants.length > 0) {
                   const curStock = (typeof getVariantStockCount === "function") ? getVariantStockCount(curP, activeVarIdx) : 0;
@@ -3393,6 +4027,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
                 const dtlPrice = document.getElementById("dtlPrice");
                 if (dtlPrice && curVar) dtlPrice.innerText = formatVND(curVar.price !== undefined ? curVar.price : curP.price);
 
+                const dtlTitle = document.getElementById("dtlTitle");
+                if (dtlTitle && curP.name) dtlTitle.innerText = curP.name;
+                const dtlImg = document.getElementById("dtlImage");
+                if (dtlImg && curP.image) dtlImg.src = curP.image;
+                const dtlDesc = document.getElementById("dtlFullDesc");
+                if (dtlDesc && curP.description) dtlDesc.innerText = curP.description;
+                const dtlWarranty = document.getElementById("dtlWarranty");
+                if (dtlWarranty && curP.warranty) dtlWarranty.innerText = "🛡 " + curP.warranty;
+
                 const pillsContainer = document.getElementById("dtlVariantPills");
                 if (pillsContainer && Array.isArray(curP.variants) && curP.variants.length > 0) {
                   pillsContainer.innerHTML = curP.variants.map((v, idx) => {
@@ -3400,7 +4043,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
                     v.stock = vStock;
                     const stockBadge = vStock > 0 
                       ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>' 
-                      : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(Hết hàng)</small>';
+                      : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                     return '<div class="variant-pill-option ' + (idx === activeVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
                       '<span>' + escapeHtml(v.name || ("Gói " + (idx + 1))) + stockBadge + '</span>' +
                       '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
@@ -3411,8 +4054,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
                 syncDetailStockUI(curVarStock);
               }
             }
-
-            // Đã đồng bộ chi tiết sản phẩm trực tiếp ở trên qua currentSelectedProduct, không gọi lại openProductDetailById để chống đơ/lag và vòng lặp vô tận
           }
         }
       } catch(e) {
@@ -3731,13 +4372,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     function handleSaveProduct(event) {
       if (event) event.preventDefault();
       const id = document.getElementById("admProdId")?.value.trim();
-      const prodId = id || ("PROD_" + Date.now().toString(36).toUpperCase());
+      const isEditing = !!id;
+      const prodId = id || ("PROD_" + Date.now().toString(36).toUpperCase() + Math.floor(100 + Math.random() * 900).toString(36).toUpperCase());
       const name = document.getElementById("admProdName")?.value.trim();
       let category = (document.getElementById("admProdCategory")?.value || "Tài Khoản Khác").replace(/&amp;/g, '&');
       if (name.toUpperCase().includes("TIKTOK") && !category.toUpperCase().includes("TIKTOK")) {
         category = "TikTok";
       }
-      const price = parseInt(document.getElementById("admProdPrice")?.value) || 10000;
       const commissionVal = parseInt(document.getElementById("admProdCommission")?.value) || 10;
       const buffSold = parseInt(document.getElementById("admProdBuffSold")?.value) || 0;
       const rating = parseFloat(document.getElementById("admProdBuffRating")?.value) || 4.9;
@@ -3751,7 +4392,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         return;
       }
 
-      const oldProd = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(p => p.id === prodId || (p.name && p.name.trim().toLowerCase() === name.toLowerCase())) : null;
+      if (!MOCK_DATA.products) MOCK_DATA.products = [];
+      const oldProd = isEditing ? MOCK_DATA.products.find(p => p && p.id === prodId) : null;
+      const actualTargetId = (oldProd && oldProd.id) ? oldProd.id : prodId;
+
       const container = document.getElementById("admVariantsContainer") || document.getElementById("admVariantRowsContainer");
       const varRows = container ? container.querySelectorAll(".adm-variant-row") : [];
       let variants = [];
@@ -3768,7 +4412,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
               oldSold = Array.isArray(matchedOld.soldAccounts) ? matchedOld.soldAccounts.slice() : [];
             }
           }
-          let vStock = oldAccounts.length > 0 ? oldAccounts.length : ((typeof getVariantStockCount === "function") ? getVariantStockCount(prodId, idx) : 0);
+          let vStock = oldAccounts.length > 0 ? oldAccounts.length : ((typeof getVariantStockCount === "function") ? getVariantStockCount(actualTargetId, idx) : 0);
           variants.push({
             name: vName,
             price: vPrice,
@@ -3792,15 +4436,34 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       const apiProviderVal = document.getElementById("admProdApiProvider")?.value || "mail72h";
       const apiSourceProdIdVal = document.getElementById("admProdApiSourceSelect")?.value || "";
 
+      let totalCalculatedStock = 0;
+      variants.forEach(v => totalCalculatedStock += (Number(v.stock) || 0));
+      if (oldProd && totalCalculatedStock === 0 && typeof getProductStockCount === "function") {
+        const s = getProductStockCount(actualTargetId);
+        if (s > 0) totalCalculatedStock = s;
+      }
+
+      let liveSourceStock = 0;
+      if (isApiSelected && apiSourceProdIdVal) {
+        const prodsSrc = (typeof cachedSourceProducts !== "undefined") ? cachedSourceProducts : [];
+        const foundSrc = prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal));
+        if (foundSrc && typeof foundSrc.amount === "number") {
+          liveSourceStock = foundSrc.amount;
+        } else {
+          liveSourceStock = 999;
+        }
+        variants.forEach(v => { v.stock = liveSourceStock; });
+      }
+
       const prodData = {
-        id: prodId,
+        id: actualTargetId,
         name: name,
         category: category,
         price: effectivePrice,
         commission: commissionVal + "% (~" + formatVND(Math.round(effectivePrice * commissionVal / 100)) + ")",
         buffSold: buffSold,
-        sold: buffSold,
-        stock: isApiSelected ? 9999 : (typeof getProductStockCount === "function" ? getProductStockCount(prodId) : 25),
+        sold: (oldProd && oldProd.sold !== undefined) ? oldProd.sold : buffSold,
+        stock: isApiSelected ? liveSourceStock : totalCalculatedStock,
         rating: rating,
         reviewCount: reviewsCount,
         image: image,
@@ -3818,43 +4481,42 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[apiProviderVal]) ? API_SOURCES[apiProviderVal] : { baseUrl: "https://mail72h.com", apiKey: "" };
           const prodsSrc = (typeof cachedSourceProducts !== "undefined") ? cachedSourceProducts : [];
           const srcItem = prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal));
-          maps[prodId] = {
+          const liveSrcStock = (srcItem && typeof srcItem.amount === "number") ? srcItem.amount : 999;
+          const liveSrcPrice = (srcItem && typeof srcItem.price === "number") ? srcItem.price : 100;
+          maps[actualTargetId] = {
             enabled: true,
             provider: apiProviderVal,
             baseUrl: pCfg.baseUrl,
             apiKey: pCfg.apiKey,
             sourceProdId: apiSourceProdIdVal,
             sourceProdName: srcItem ? srcItem.name : ("Sản phẩm " + apiSourceProdIdVal),
-            sourcePrice: srcItem ? srcItem.price : 100,
-            sourceStock: srcItem ? srcItem.amount : 999,
-            targetProdId: prodId,
+            sourcePrice: liveSrcPrice,
+            sourceStock: liveSrcStock,
+            targetProdId: actualTargetId,
             targetProdName: name
           };
+          prodData.apiMapping = maps[actualTargetId];
+          prodData.stock = liveSrcStock;
+          if (Array.isArray(prodData.variants)) {
+            prodData.variants.forEach(v => { if (v) v.stock = liveSrcStock; });
+          }
         } else {
-          // Xóa hoặc tắt API mapping cho sản phẩm Kho Nội Bộ
-          delete maps[prodId];
+          delete maps[actualTargetId];
         }
         if (typeof saveApiProductMappings === "function") saveApiProductMappings(maps);
       } catch(e) {}
 
-      if (!MOCK_DATA.products) MOCK_DATA.products = [];
-
       // Nếu sản phẩm này từng nằm trong danh sách đã xóa, gỡ bỏ khỏi blacklist
       try {
         let deletedIds = JSON.parse(localStorage.getItem("mmo_deleted_product_ids") || "[]");
-        if (Array.isArray(deletedIds) && deletedIds.includes(prodId)) {
-          deletedIds = deletedIds.filter(d => d !== prodId);
+        if (Array.isArray(deletedIds)) {
+          deletedIds = deletedIds.filter(d => d !== prodId && d !== actualTargetId);
           localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(deletedIds));
         }
       } catch(e) {}
 
-      const existingIdx = MOCK_DATA.products.findIndex(p => p.id === prodId || (p.name && p.name.trim().toLowerCase() === name.toLowerCase()));
-      let actualTargetId = prodId;
+      const existingIdx = isEditing ? MOCK_DATA.products.findIndex(p => p && p.id === actualTargetId) : -1;
       if (existingIdx !== -1) {
-        actualTargetId = MOCK_DATA.products[existingIdx].id || prodId;
-        prodData.id = actualTargetId;
-        prodData.stock = typeof getProductStockCount === "function" ? getProductStockCount(actualTargetId) : (MOCK_DATA.products[existingIdx].stock !== undefined ? MOCK_DATA.products[existingIdx].stock : 0);
-        prodData.sold = MOCK_DATA.products[existingIdx].sold !== undefined ? MOCK_DATA.products[existingIdx].sold : buffSold;
         MOCK_DATA.products[existingIdx] = Object.assign({}, MOCK_DATA.products[existingIdx], prodData);
         showToast("Cập nhật sản phẩm thành công!", "success");
       } else {
@@ -3883,9 +4545,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         if (typeof saveProductStocksMap === "function") saveProductStocksMap(stockMap);
       }
 
-      if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
-        TURSO_CLIENT.saveProduct(prodData).catch(e => console.error("Turso save product error:", e));
-      }
+      try {
+        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof TURSO_CLIENT.saveProduct === "function") {
+          TURSO_CLIENT.saveProduct(prodData).catch(e => console.warn("Turso save product error:", e));
+        }
+      } catch(e) {}
       saveProductsToStorage();
       closeModal("adminProductModal");
 
@@ -3901,42 +4565,58 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       // Cập nhật ngay modal / trang chi tiết nếu đang xem sản phẩm này
       if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
         const isSame = (String(currentSelectedProduct.id) === String(actualTargetId)) || 
-                       (currentSelectedProduct.name && currentSelectedProduct.name.trim().toLowerCase() === name.toLowerCase());
+                       (currentSelectedProduct.name && currentSelectedProduct.name.trim().toLowerCase() === name.toLowerCase()) ||
+                       (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId));
         if (isSame) {
           currentSelectedProduct = Object.assign({}, currentSelectedProduct, prodData);
           currentSelectedProduct.variants = variants;
           currentSelectedProduct.price = effectivePrice;
           if (currentSelectedVariantIndex >= variants.length) currentSelectedVariantIndex = 0;
-          if (typeof syncAllOpenViewsStock === "function") {
-            syncAllOpenViewsStock(actualTargetId);
-          }
+        }
+      }
+
+      // TỰ ĐỘNG LÀM MỚI TOÀN BỘ GIAO DIỆN TRANG XEM CHI TIẾT SẢN PHẨM (viewProductDetail)
+      const dtlView = document.getElementById("viewProductDetail");
+      const isDtlActive = dtlView && (dtlView.style.display !== "none" && !dtlView.classList.contains("hidden"));
+      if (typeof openProductDetailById === "function") {
+        if (isDtlActive || (currentSelectedProduct && (String(currentSelectedProduct.id) === String(actualTargetId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId))))) {
+          openProductDetailById(actualTargetId);
         }
       }
 
       // Phát tín hiệu BroadcastChannel tức thì sang tất cả các tab / cửa sổ trình duyệt khác (<10ms)
       try {
         if (typeof BroadcastChannel !== "undefined") {
-          const bc = new BroadcastChannel("mmo_channel");
-          bc.postMessage({
+          const payload = {
             type: "PRODUCT_UPDATED",
             prodId: actualTargetId,
             prodData: prodData,
             variants: variants,
             stock: prodData.stock
-          });
+          };
+          const bc = new BroadcastChannel("mmo_channel");
+          bc.postMessage(payload);
           setTimeout(() => bc.close(), 1000);
+
+          const bc2 = new BroadcastChannel("mmo_realtime_sync");
+          bc2.postMessage(payload);
+          setTimeout(() => bc2.close(), 1000);
         }
       } catch(e) {}
 
-      if (typeof renderProductGrid === "function") renderProductGrid();
-      if (typeof renderBestSellers === "function") renderBestSellers();
-      if (typeof renderRecommended === "function") renderRecommended();
-      if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-      if (typeof initStockManagementUI === "function") initStockManagementUI();
-      if (typeof renderAllProductsPage === "function") renderAllProductsPage();
-      if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+      // Defer tất cả render để nhả main thread (tránh đơ/jank sau khi lưu)
+      setTimeout(function() {
+        if (typeof renderProductGrid === "function") renderProductGrid();
+        if (typeof renderBestSellers === "function") renderBestSellers();
+        if (typeof renderRecommended === "function") renderRecommended();
+        if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
+        if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+        if (typeof initStockManagementUI === "function") initStockManagementUI();
+        if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+        if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+      }, 10);
 
-      // Đồng bộ trực tiếp lên Google Apps Script / Google Sheets để mọi máy/trình duyệt khác đều xem được ngay lập tức
+      // Đồng bộ trực tiếp lên Google Apps Script / Google Sheets
       if (typeof callGasApi === "function") {
         showToast("Đang đồng bộ sản phẩm lên hệ thống...", "info");
         callGasApi("adminSaveProduct", {
@@ -4033,11 +4713,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         });
         idx = users.length - 1;
       } else {
-        users[idx].balance = Math.max(0, (Number(users[idx].balance) || 0) + amt);
+        let baseBal = (users[idx].balance !== undefined) ? Number(users[idx].balance) : 0;
+        if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === email && currentUser.balance !== undefined) {
+          baseBal = Number(currentUser.balance);
+        }
+        users[idx].balance = Math.max(0, baseBal + amt);
       }
       saveRegisteredUsers(users);
 
-      if (currentUser && (currentUser.email || "").toLowerCase().trim() === email) {
+      if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === email) {
         currentUser.balance = users[idx].balance;
         localStorage.setItem("mmo_user", JSON.stringify(currentUser));
         if (typeof updateUserUI === "function") updateUserUI();
@@ -4050,6 +4734,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
       closeModal("userBalanceModal");
       if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
+      if (typeof openAdminUserDetailModal === "function") {
+        const dtlModal = document.getElementById("adminUserDetailModal");
+        if (dtlModal && dtlModal.style.display === "flex") {
+          openAdminUserDetailModal(email);
+        }
+      }
       showToast("Đã " + (amt >= 0 ? "cộng " : "trừ ") + formatVND(Math.abs(amt)) + " cho " + email + " thành công!", "success");
 
       // Bắn tín hiệu sang tất cả các tab/cửa sổ đang mở để cập nhật số dư tức thì
@@ -4941,6 +5631,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       if (targetBtn) targetBtn.classList.add("active");
 
       if (tabId === "tabProfWallet") {
+        if (typeof renderUserWalletTransactions === "function") renderUserWalletTransactions();
+        if (typeof renderUserBalanceLogs === "function") renderUserBalanceLogs();
+        if (typeof renderUserWalletStats === "function") renderUserWalletStats();
         if (typeof loadUserWalletFromCloud === "function") loadUserWalletFromCloud();
       } else if (tabId === "tabProfOrders") {
         if (typeof renderProfileOrders === "function") renderProfileOrders();
@@ -4987,14 +5680,39 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           const avatarUrl = currentUser.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(currentUser.email));
           const displayName = currentUser.name || currentUser.email.split("@")[0];
           authArea.innerHTML = `
-            <div style="display:flex; align-items:center; gap:8px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); padding:4px 10px; border-radius:20px; cursor:pointer;" onclick="switchView('viewProfile')">
-              <img src="${avatarUrl}" style="width:26px; height:26px; border-radius:50%; object-fit:cover; border:1px solid #10b981;" />
-              <span style="font-size:0.82rem; font-weight:700; color:#fff; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(displayName)}</span>
-              <button onclick="event.stopPropagation(); logoutUser();" title="Đăng xuất" style="background:none; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer; padding:0 2px; margin-left:4px;">
-                <i class="fa-solid fa-right-from-bracket"></i>
-              </button>
+            <div style="display:flex; align-items:center; gap:8px;">
+              
+              <div class="header-notif-wrap" id="headerNotifWrap" style="position:relative;">
+                <button type="button" class="btn-header-notif" onclick="event.stopPropagation(); toggleHeaderNotifDropdown();" title="Thông báo hệ thống" style="position:relative; width:34px; height:34px; border-radius:50%; background:rgba(30,41,59,0.85); border:1px solid #334155; color:#cbd5e1; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.color='#38bdf8'; this.style.borderColor='#38bdf8'; this.style.background='#1e293b';" onmouseout="this.style.color='#cbd5e1'; this.style.borderColor='#334155'; this.style.background='rgba(30,41,59,0.85)';">
+                  <i class="fa-solid fa-bell" style="font-size:0.95rem;"></i>
+                  <span id="headerNotifBadge" style="display:none; position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:0.65rem; font-weight:800; padding:1px 5px; border-radius:10px; min-width:14px; text-align:center; border:1px solid #0f172a; box-shadow:0 2px 5px rgba(239,68,68,0.5);">0</span>
+                </button>
+
+                
+                <div id="headerNotifDropdown" style="display:none; position:absolute; right:0; top:42px; width:330px; max-width:90vw; background:#0b1320; border:1px solid #1e293b; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.7); z-index:9999; overflow:hidden;">
+                  <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#0f172a; border-bottom:1px solid #1e293b;">
+                    <div style="font-weight:700; font-size:0.85rem; color:#fff; display:flex; align-items:center; gap:6px;">
+                      <i class="fa-solid fa-bell" style="color:#38bdf8;"></i> Thông Báo
+                    </div>
+                    <button type="button" onclick="markAllNotificationsAsRead()" style="background:none; border:none; color:#38bdf8; font-size:0.72rem; cursor:pointer; font-weight:600;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Đã đọc tất cả</button>
+                  </div>
+                  <div id="headerNotifList" style="max-height:350px; overflow-y:auto;">
+                    
+                  </div>
+                </div>
+              </div>
+
+              
+              <div style="display:flex; align-items:center; gap:8px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); padding:4px 10px; border-radius:20px; cursor:pointer;" onclick="switchView('viewProfile')">
+                <img src="${avatarUrl}" style="width:26px; height:26px; border-radius:50%; object-fit:cover; border:1px solid #10b981;" />
+                <span style="font-size:0.82rem; font-weight:700; color:#fff; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(displayName)}</span>
+                <button onclick="event.stopPropagation(); logoutUser();" title="Đăng xuất" style="background:none; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer; padding:0 2px; margin-left:4px;">
+                  <i class="fa-solid fa-right-from-bracket"></i>
+                </button>
+              </div>
             </div>
           `;
+          setTimeout(function() { if (typeof renderHeaderNotifications === "function") renderHeaderNotifications(); }, 50);
         }
 
         // Profile View DOM elements
@@ -5036,6 +5754,220 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     }
 
     // Subtab switcher for Profile Wallet
+    
+    // ============================================================
+    // [HỆ THỐNG THÔNG BÁO & CHUÔNG BÁO THỜI GIAN THỰC (NOTIFICATION BELL & AUDIO CHIME)]
+    // ============================================================
+    function playNotificationSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        if (ctx.state === "suspended") {
+          ctx.resume();
+        }
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        // Âm điệu chuông kép trong trẻo và chuyên nghiệp (D5 -> A5)
+        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12);
+        gain.gain.setValueAtTime(0.25, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.45);
+      } catch(e) {
+        // Fallback im lặng nếu trình duyệt chặn autoplay audio
+      }
+    }
+    window.playNotificationSound = playNotificationSound;
+
+    function getUserNotificationsStorageKey(userEmail) {
+      const email = userEmail || (currentUser && currentUser.email ? currentUser.email : "guest");
+      return "mmo_notifications_" + String(email).toLowerCase().trim().replace(/[^a-z0-9_]/gi, "_");
+    }
+
+    function getStoredNotifications(userEmail) {
+      try {
+        const key = getUserNotificationsStorageKey(userEmail);
+        const raw = localStorage.getItem(key);
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch(e) {
+        return [];
+      }
+    }
+    window.getStoredNotifications = getStoredNotifications;
+
+    function saveStoredNotifications(notifs, userEmail) {
+      try {
+        const key = getUserNotificationsStorageKey(userEmail);
+        localStorage.setItem(key, JSON.stringify(notifs.slice(0, 50)));
+      } catch(e) {}
+    }
+
+    function addUserNotification(opts) {
+      try {
+        const userEmail = opts.email || (currentUser && currentUser.email ? currentUser.email : "");
+        const notifs = getStoredNotifications(userEmail);
+        const newNotif = {
+          id: "NOTIF_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+          title: opts.title || "Thông báo mới",
+          message: opts.message || "",
+          type: opts.type || "INFO", // PRE_ORDER, ORDER, DEPOSIT, WARRANTY, INFO
+          orderId: opts.orderId || "",
+          link: opts.link || "",
+          read: false,
+          time: new Date().toLocaleString("vi-VN"),
+          timestamp: Date.now()
+        };
+        notifs.unshift(newNotif);
+        saveStoredNotifications(notifs, userEmail);
+
+        // Phát âm thanh chuông thông báo nếu được phép
+        if (opts.playSound !== false) {
+          playNotificationSound();
+        }
+
+        // Cập nhật giao diện chuông trên thanh tiêu đề
+        renderHeaderNotifications();
+        return newNotif;
+      } catch(e) {
+        console.warn("addUserNotification error:", e);
+      }
+    }
+    window.addUserNotification = addUserNotification;
+
+    function markAllNotificationsAsRead() {
+      try {
+        const userEmail = currentUser && currentUser.email ? currentUser.email : "";
+        const notifs = getStoredNotifications(userEmail);
+        notifs.forEach(function(n) { n.read = true; });
+        saveStoredNotifications(notifs, userEmail);
+        renderHeaderNotifications();
+        if (typeof showToast === "function") showToast("Đã đánh dấu tất cả thông báo là đã đọc", "info");
+      } catch(e) {}
+    }
+    window.markAllNotificationsAsRead = markAllNotificationsAsRead;
+
+    function renderHeaderNotifications() {
+      try {
+        const notifs = getStoredNotifications();
+        const unreadCount = notifs.filter(function(n) { return !n.read; }).length;
+
+        const badge = document.getElementById("headerNotifBadge");
+        if (badge) {
+          if (unreadCount > 0) {
+            badge.innerText = unreadCount > 99 ? "99+" : unreadCount;
+            badge.style.display = "inline-flex";
+          } else {
+            badge.style.display = "none";
+          }
+        }
+
+        const listContainer = document.getElementById("headerNotifList");
+        if (!listContainer) return;
+
+        if (notifs.length === 0) {
+          listContainer.innerHTML = '<div style="padding:28px 16px; text-align:center; color:#64748b;">' +
+            '<i class="fa-regular fa-bell-slash" style="font-size:1.8rem; display:block; margin-bottom:8px; opacity:0.4;"></i>' +
+            '<div style="font-size:0.85rem; font-weight:600;">Bạn chưa có thông báo nào</div>' +
+            '<div style="font-size:0.75rem; color:#475569; margin-top:2px;">Các cập nhật đơn hàng, đặt trước và biến động số dư sẽ hiển thị ở đây.</div>' +
+          '</div>';
+          return;
+        }
+
+        listContainer.innerHTML = notifs.map(function(n) {
+          let icon = '<i class="fa-solid fa-bell" style="color:#38bdf8;"></i>';
+          let iconBg = 'rgba(56,189,248,0.12)';
+          if (n.type === 'PRE_ORDER') {
+            icon = '<i class="fa-solid fa-hourglass-half" style="color:#f59e0b;"></i>';
+            iconBg = 'rgba(245,158,11,0.15)';
+          } else if (n.type === 'ORDER') {
+            icon = '<i class="fa-solid fa-bag-shopping" style="color:#10b981;"></i>';
+            iconBg = 'rgba(16,185,129,0.15)';
+          } else if (n.type === 'DEPOSIT') {
+            icon = '<i class="fa-solid fa-wallet" style="color:#10b981;"></i>';
+            iconBg = 'rgba(16,185,129,0.15)';
+          } else if (n.type === 'WARRANTY') {
+            icon = '<i class="fa-solid fa-shield-halved" style="color:#ef4444;"></i>';
+            iconBg = 'rgba(239,68,68,0.15)';
+          }
+
+          const unreadDot = !n.read ? '<span style="width:8px; height:8px; border-radius:50%; background:#38bdf8; display:inline-block; flex-shrink:0;"></span>' : '';
+          const bgHover = !n.read ? 'background:#0f1a2e;' : 'background:transparent;';
+
+          return '<div onclick="handleNotificationItemClick(\'' + n.id + '\', \'' + (n.orderId || '') + '\', \'' + (n.type || '') + '\')" style="padding:10px 14px; border-bottom:1px solid #1e293b; display:flex; align-items:flex-start; gap:10px; cursor:pointer; transition:background 0.2s; ' + bgHover + '" onmouseover="this.style.background=\'#162238\'" onmouseout="this.style.background=\'' + (!n.read ? '#0f1a2e' : 'transparent') + '\'">' +
+            '<div style="width:32px; height:32px; border-radius:8px; background:' + iconBg + '; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">' + icon + '</div>' +
+            '<div style="flex:1; min-width:0;">' +
+              '<div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">' +
+                '<strong style="font-size:0.82rem; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + escapeHtml(n.title) + '</strong>' +
+                unreadDot +
+              '</div>' +
+              '<div style="font-size:0.75rem; color:#94a3b8; margin-top:2px; line-height:1.35;">' + escapeHtml(n.message) + '</div>' +
+              '<div style="font-size:0.68rem; color:#64748b; margin-top:4px;">' + escapeHtml(n.time || '') + '</div>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+      } catch(e) {}
+    }
+    window.renderHeaderNotifications = renderHeaderNotifications;
+
+    function handleNotificationItemClick(notifId, orderId, notifType) {
+      try {
+        const notifs = getStoredNotifications();
+        const item = notifs.find(function(n) { return n.id === notifId; });
+        if (item) {
+          item.read = true;
+          saveStoredNotifications(notifs);
+          renderHeaderNotifications();
+        }
+
+        toggleHeaderNotifDropdown(false);
+
+        if (notifType === "PRE_ORDER" && orderId) {
+          if (typeof openPreOrderDetailView === "function") openPreOrderDetailView(orderId);
+          else switchView("viewMyOrders");
+        } else if (notifType === "ORDER" || notifType === "WARRANTY") {
+          switchView("viewMyOrders");
+        } else if (notifType === "DEPOSIT") {
+          switchView("viewProfile");
+          if (typeof switchProfileTab === "function") switchProfileTab("history");
+        }
+      } catch(e) {}
+    }
+    window.handleNotificationItemClick = handleNotificationItemClick;
+
+    function toggleHeaderNotifDropdown(forceState) {
+      const dd = document.getElementById("headerNotifDropdown");
+      if (!dd) return;
+      const isCurrentlyOpen = dd.style.display === "block";
+      const shouldOpen = (typeof forceState === "boolean") ? forceState : !isCurrentlyOpen;
+      
+      if (shouldOpen) {
+        renderHeaderNotifications();
+        dd.style.display = "block";
+      } else {
+        dd.style.display = "none";
+      }
+    }
+    window.toggleHeaderNotifDropdown = toggleHeaderNotifDropdown;
+
+    // Đóng dropdown thông báo khi nhấp ra ngoài
+    document.addEventListener("click", function(e) {
+      const notifWrap = document.getElementById("headerNotifWrap");
+      const notifDropdown = document.getElementById("headerNotifDropdown");
+      if (notifWrap && notifDropdown && notifDropdown.style.display === "block") {
+        if (!notifWrap.contains(e.target)) {
+          notifDropdown.style.display = "none";
+        }
+      }
+    });
+
+
     function switchWalletSubTab(subTab = "deposit") {
       const btnDeposit = document.getElementById("profWalletSubBtnDeposit");
       const btnLogs = document.getElementById("profWalletSubBtnLogs");
@@ -5062,6 +5994,36 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
     // VIEW SWITCHER WITH ADMIN SECURITY GUARD & ZERO-LAG CACHING
     function switchView(viewId) {
+      const currentActiveView = localStorage.getItem("mmo_current_view") || "viewStore";
+      if (currentActiveView !== viewId && currentActiveView !== "viewPreOrderDetail") {
+        _previousView = currentActiveView;
+      }
+
+      // Đảm bảo cuộn về đầu trang ngay lập tức và giữ Header luôn hiển thị
+      try {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      } catch(e) {
+        window.scrollTo(0, 0);
+      }
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+
+      function enforceHeaderVisible() {
+        const topHeader = document.querySelector(".header");
+        if (topHeader) {
+          topHeader.style.setProperty("display", "block", "important");
+          topHeader.style.setProperty("visibility", "visible", "important");
+          topHeader.style.setProperty("opacity", "1", "important");
+          topHeader.style.setProperty("position", "fixed", "important");
+          topHeader.style.setProperty("top", "0", "important");
+          topHeader.style.setProperty("left", "0", "important");
+          topHeader.style.setProperty("right", "0", "important");
+          topHeader.style.setProperty("width", "100%", "important");
+          topHeader.style.setProperty("z-index", "99999", "important");
+        }
+      }
+      enforceHeaderVisible();
+
       if (viewId === "viewProfile" || viewId === "viewDeposit" || viewId === "viewAdmin") {
         let checkUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
         if (!checkUser) {
@@ -5090,14 +6052,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
       localStorage.setItem("mmo_current_view", viewId);
       if (viewId === "viewDeposit" && typeof prepareDeposit === "function") {
-        prepareDeposit(20000, true);
+        const initAmt = window._targetDepositAmount || 20000;
+        prepareDeposit(initAmt, true);
+        window._targetDepositAmount = null;
       } else if (typeof depositPollingTimer !== "undefined" && depositPollingTimer) {
         clearInterval(depositPollingTimer);
         depositPollingTimer = null;
       }
 
       // 1. TỨC THÌ 0MS: Chuyển đổi hiển thị view
-      const views = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
+      const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
       views.forEach(function(v) {
         const el = document.getElementById(v);
         if (el) el.style.display = (v === viewId) ? "block" : "none";
@@ -5175,6 +6139,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         }
       }
 
+      // Đảm bảo cuộn lên đầu và kích hoạt lại Header sau khi DOM đã render
+      if (typeof requestAnimationFrame === "function") {
+        requestAnimationFrame(function() {
+          try { window.scrollTo({ top: 0, left: 0, behavior: "instant" }); } catch(e) { window.scrollTo(0, 0); }
+          if (document.documentElement) document.documentElement.scrollTop = 0;
+          if (document.body) document.body.scrollTop = 0;
+          enforceHeaderVisible();
+        });
+      }
+
+      setTimeout(function() {
+        try { window.scrollTo(0, 0); } catch(e) {}
+        if (document.documentElement) document.documentElement.scrollTop = 0;
+        if (document.body) document.body.scrollTop = 0;
+        enforceHeaderVisible();
+      }, 30);
+
       // PERSIST VIEW ACROSS F5 & REFRESH & CLEAN URL PARAMETERS
       try {
         localStorage.setItem("mmo_current_view", viewId);
@@ -5220,18 +6201,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         'PROD_MTRB6000': 1920, // OUTLOOK TRUSTED - LIVE 6-12 Tháng
         'PROD_MTPIJ9XV': 1270, // TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU
         'PROD_MTPI7PIO': 156,  // NHÓM ZALO NEW 2016
-        'SP_HOTMAIL': 1050,
-        'SP_S10': 484,
-        'SP_J7': 500,
-        'SP_GMAIL_CO': 1553,
-        'SP_GEMINI': 285,
-        'SP_J7_PRO': 1568,
-        'SP_TIKTOK_US': 2927,
-        'SP_CHATGPT': 629,
-        'SP_FANPAGE': 1360,
-        'SP_GMAIL_DOMAIN': 1200,
-        'SP_CAPCUT_PRO': 383,
-        'SP_TELEGRAM_SESSION': 840
+        'PROD_MU1LSSJ7AZ': 520,
+        'PROD_MU1G6LJX': 180
       };
       const pid = String(p.id || '').trim();
       if (PRESET_SOLD[pid]) return PRESET_SOLD[pid];
@@ -5559,9 +6530,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     // CƠ CHẾ CACHING HIỆU NĂNG CAO (60 FPS, ZERO LAG, O(1) LOOKUP)
     // =========================================================================
 
-    let _cachedStockItems = null;
-    let _cachedStockRaw = null;
-    let _cachedStockMap = null;
+    var _cachedStockItems = null;
+    var _cachedStockRaw = null;
+    var _cachedStockMap = null;
 
     function deduplicateStockItems(items) {
       if (!Array.isArray(items)) return [];
@@ -5904,15 +6875,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
       // Nếu sản phẩm cấu hình API on-demand
       if (typeof getApiProductMapping === "function") {
+        const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
         const varIdxNum = (vIdx !== null && vIdx !== undefined && vIdx !== "ALL" && vIdx !== "") ? Number(vIdx) : 0;
-        const vName = (prod.variants && prod.variants[varIdxNum]) ? prod.variants[varIdxNum].name : "";
-        const apiMap = (vName ? getApiProductMapping(vName) : null) || getApiProductMapping(prod);
+        const vName = (hasVars && prod.variants[varIdxNum]) ? prod.variants[varIdxNum].name : "";
+
+        // Ưu tiên tra cứu: 1. Theo tên biến thể (nếu có) -> 2. Theo ID sản phẩm -> 3. Theo apiMapping gắn trên object
+        let apiMap = null;
+        if (vName) apiMap = getApiProductMapping(vName);
+        if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
+          apiMap = getApiProductMapping(prod) || (prod && prod.apiMapping);
+        }
+
         if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
-          const providerKey = apiMap.provider || "mail72h";
-          const sourceBal = (typeof getSourceBalance === "function") ? getSourceBalance(providerKey) : 999999;
-          const minPriceNeeded = Number(apiMap.sourcePrice) || 69;
-          if (sourceBal < minPriceNeeded) return 0;
-          return apiMap.sourceStock || 999999;
+          return (apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) ? Math.max(0, Number(apiMap.sourceStock)) : 0;
         }
       }
 
@@ -5946,7 +6921,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       if (!v) return (typeof prod.stock === "number") ? prod.stock : 0;
       if (Array.isArray(v.accounts) && v.accounts.length > 0) return v.accounts.length;
       if (typeof v.stock === "number" && v.stock > 0) return v.stock;
-      if (typeof prod.stock === "number" && prod.stock > 0 && prod.variants.length <= 1) return prod.stock;
+      // Fallback: nếu variant không có stock riêng nhưng prod.stock > 0,
+      // dùng prod.stock (tránh mất tồn kho khi variant chưa được gán stock)
+      if (typeof prod.stock === "number" && prod.stock > 0) return prod.stock;
       if (Array.isArray(v.accounts)) return v.accounts.length;
       return typeof v.stock === "number" ? v.stock : (typeof prod.stock === "number" ? prod.stock : 0);
     }
@@ -6110,7 +7087,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
             const vs = getShopVariantStock(freshP, idx);
             const badge = vs > 0 
               ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
-              : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(Hết hàng)</small>';
+              : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
             return '<div class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
               '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
               '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
@@ -6274,25 +7251,54 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         return data;
       },
 
-      adminImportAccounts: async function(productId, variantIdx, accounts, prodData) {
+      adminImportAccounts: async function(productId, variantIdx, accounts, prodData, onProgress) {
         const secret = this.getAdminSecret();
         const headers = { "Content-Type": "application/json" };
         if (secret) headers["Authorization"] = "Bearer " + secret;
-        const res = await fetch(this.getApiUrl() + "/api/admin/inventory/import", {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify({
-            product_id: productId,
-            variant_idx: Number(variantIdx) || 0,
-            accounts: accounts,
-            product_data: prodData || null
-          })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi API nạp kho (HTTP " + res.status + ")"));
+
+        if (!Array.isArray(accounts) || accounts.length === 0) {
+          return { success: true, imported: 0, duplicates: 0 };
         }
-        return data;
+
+        const CHUNK_SIZE = 100;
+        let totalImported = 0;
+        let totalDuplicates = 0;
+        let lastStock = 0;
+
+        for (let i = 0; i < accounts.length; i += CHUNK_SIZE) {
+          const chunk = accounts.slice(i, i + CHUNK_SIZE);
+          if (typeof onProgress === "function") {
+            onProgress(i, accounts.length);
+          }
+          const res = await fetch(this.getApiUrl() + "/api/admin/inventory/import", {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify({
+              product_id: productId,
+              variant_idx: Number(variantIdx) || 0,
+              accounts: chunk,
+              product_data: (i === 0) ? (prodData || null) : null
+            })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || data.success === false) {
+            throw new Error(data.error || data.message || ("Lỗi API nạp kho (HTTP " + res.status + ")"));
+          }
+          totalImported += (data.imported !== undefined ? data.imported : chunk.length);
+          totalDuplicates += (data.duplicates || 0);
+          if (data.current_stock !== undefined) lastStock = data.current_stock;
+        }
+
+        if (typeof onProgress === "function") {
+          onProgress(accounts.length, accounts.length);
+        }
+
+        return {
+          success: true,
+          imported: totalImported,
+          duplicates: totalDuplicates,
+          current_stock: lastStock
+        };
       },
 
       adminSetAccounts: async function(productId, variantIdx, accounts, prodData) {
@@ -6418,9 +7424,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         const res = await MMO_WORKER_API.adminSetAccounts(productId, variantIdx, accounts, prodData);
         return (res && res.total) ? res.total : (Array.isArray(accounts) ? accounts.length : 0);
       },
-      importAccounts: async function(productId, variantIdx, accounts, prodData) {
-        const res = await MMO_WORKER_API.adminImportAccounts(productId, variantIdx, accounts, prodData);
-        return (res && res.imported) ? res.imported : 0;
+      importAccounts: async function(productId, variantIdx, accounts, prodData, onProgress) {
+        const res = await MMO_WORKER_API.adminImportAccounts(productId, variantIdx, accounts, prodData, onProgress);
+        return (res && res.imported !== undefined) ? res.imported : 0;
       },
       checkoutAccounts: async function(productId, variantIdx, qty, orderId, email, amount) {
         const res = await MMO_WORKER_API.checkoutAccounts(productId, variantIdx, qty, orderId, email, amount);
@@ -6436,6 +7442,42 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           return (res && res.synced) ? res.synced : MOCK_DATA.products.length;
         }
         return 0;
+      },
+      saveProduct: async function(prodData) {
+        try {
+          if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.adminSyncProducts === "function") {
+            return await MMO_WORKER_API.adminSyncProducts([prodData]);
+          }
+        } catch(e) {
+          console.warn("Turso saveProduct non-fatal error:", e);
+        }
+        return null;
+      },
+      deleteProduct: async function(prodId) {
+        try {
+          if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function") {
+            const secret = MMO_WORKER_API.getAdminSecret();
+            const headers = { "Content-Type": "application/json" };
+            if (secret) headers["Authorization"] = "Bearer " + secret;
+            await fetch(MMO_WORKER_API.getApiUrl() + "/api/admin/products/" + encodeURIComponent(prodId), {
+              method: "DELETE",
+              headers: headers
+            });
+          }
+        } catch(e) {
+          console.warn("Turso deleteProduct non-fatal error:", e);
+        }
+        return null;
+      },
+      recordOrder: async function(orderObj) {
+        try {
+          if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.createOrder === "function") {
+            return await MMO_WORKER_API.createOrder(orderObj);
+          }
+        } catch(e) {
+          console.warn("Turso recordOrder non-fatal error:", e);
+        }
+        return null;
       }
     };
 
@@ -6461,9 +7503,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           badge.style.background = "rgba(16,185,129,0.15)";
           badge.style.color = "#10b981";
           badge.style.border = "1px solid rgba(16,185,129,0.3)";
-          if (typeof TURSO_CLIENT.syncAllProductsToTurso === "function") {
-            TURSO_CLIENT.syncAllProductsToTurso().catch(() => {});
-          }
+          // Đã bỏ auto-sync client lên Turso để bảo vệ dữ liệu
         } else {
           badge.innerText = "Chưa kết nối";
           badge.style.background = "rgba(148,163,184,0.15)";
@@ -6606,49 +7646,113 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     }
     window.uploadAllProductsToTurso = uploadAllProductsToTurso;
 
-    async function syncTursoStockToLocalUI() {
-      if (!TURSO_CLIENT.isConfigured()) return;
+    async function syncTursoProductsToLocalUI() {
+      if (typeof MMO_WORKER_API === "undefined" || !MMO_WORKER_API.isConfigured()) return;
       try {
         const res = await MMO_WORKER_API.fetchProducts();
-        if (!res || !Array.isArray(res.products)) return;
+        if (!res || !Array.isArray(res.products) || res.products.length === 0) return;
 
-        let hasAnyStockChanged = false;
-        if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
-          const apiProductsMap = new Map();
-          for (const ap of res.products) {
-            apiProductsMap.set(ap.id, ap);
+        const deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
+        if (!MOCK_DATA.products) MOCK_DATA.products = [];
+
+        let hasNewOrUpdated = false;
+
+        res.products.forEach(function(tp) {
+          if (!tp || !tp.id || tp.id === 'zalo-new-2016') return;
+          if (deletedIds.includes(tp.id)) return;
+          if (typeof isProductDeleted === "function" && isProductDeleted(tp)) return;
+
+          const img = tp.image || tp.imageUrl || tp.image_url || "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500";
+          
+          let variants = [];
+          if (Array.isArray(tp.variants)) {
+            variants = tp.variants;
+          } else if (typeof tp.variants === "string") {
+            try { variants = JSON.parse(tp.variants); } catch(e) {}
+          }
+          if (!variants || variants.length === 0) {
+            variants = [{ name: tp.name, price: Number(tp.price) || 0, stock: Number(tp.stock) || 0 }];
           }
 
-          for (const p of MOCK_DATA.products) {
-            const apiProd = apiProductsMap.get(p.id);
-            if (!apiProd) continue;
-
-            const prevPStock = p.stock;
-            p.stock = apiProd.stock;
-
-            if (Array.isArray(apiProd.variants) && Array.isArray(p.variants)) {
-              for (let i = 0; i < p.variants.length; i++) {
-                if (apiProd.variants[i]) {
-                  const prevVStock = p.variants[i].stock;
-                  p.variants[i].stock = apiProd.variants[i].stock;
-                  if (p.variants[i].stock !== prevVStock) hasAnyStockChanged = true;
-                }
+          const existingIdx = MOCK_DATA.products.findIndex(p => p && p.id === tp.id);
+          if (existingIdx !== -1) {
+            const cur = MOCK_DATA.products[existingIdx];
+            const isLocallyFresh = !!(cur._lastEditedAt && (Date.now() - cur._lastEditedAt < 900000));
+            if (!isLocallyFresh) {
+              const updatedPrice = Number(tp.price) || cur.price;
+              const isApiType = (tp.delivery_type === 'api' || tp.deliveryType === 'api' || cur.deliveryType === 'api');
+              let updatedStock = cur.stock;
+              if (!isApiType) {
+                updatedStock = (tp.stock !== undefined) ? Number(tp.stock) : cur.stock;
+              } else {
+                const m = cur.apiMapping || (typeof getApiProductMapping === 'function' ? getApiProductMapping(cur) : null);
+                if (m && m.sourceStock) updatedStock = m.sourceStock;
+                if (Array.isArray(variants)) variants.forEach(v => { if (!v.stock || v.stock === 0) v.stock = updatedStock; });
               }
+              if (cur.stock !== updatedStock || cur.price !== updatedPrice || cur.name !== tp.name) {
+                hasNewOrUpdated = true;
+              }
+              MOCK_DATA.products[existingIdx] = Object.assign({}, cur, {
+                name: tp.name || cur.name,
+                category: tp.category || cur.category,
+                price: updatedPrice,
+                stock: updatedStock,
+                deliveryType: isApiType ? 'api' : 'local',
+                apiMapping: cur.apiMapping || (typeof getApiProductMapping === 'function' ? getApiProductMapping(cur) : null),
+                image: img,
+                description: tp.description || cur.description,
+                warranty: tp.warranty || cur.warranty,
+                variants: (variants && variants.length > 0) ? variants : cur.variants
+              });
             }
-            if (p.stock !== prevPStock) hasAnyStockChanged = true;
+          } else {
+            // Sản phẩm mới từ Turso (hiển thị ngay lập tức cho khách ẩn danh / chưa đăng nhập)
+            MOCK_DATA.products.push({
+              id: tp.id,
+              name: tp.name,
+              category: tp.category || "Tài Khoản Khác",
+              price: Number(tp.price) || 0,
+              stock: Number(tp.stock) || 0,
+              sold: Number(tp.sold) || 0,
+              buffSold: 0,
+              rating: tp.rating || 4.9,
+              image: img,
+              warranty: tp.warranty || "Bảo Hành 1 Đổi 1",
+              description: tp.description || "",
+              variants: variants,
+              deliveryType: tp.delivery_type || tp.deliveryType || "local"
+            });
+            hasNewOrUpdated = true;
           }
+        });
+
+        // Bổ sung các danh mục mới từ Turso vào menu
+        if (Array.isArray(MOCK_DATA.products) && MOCK_DATA.categories) {
+          MOCK_DATA.products.forEach(p => {
+            if (p && p.category && !MOCK_DATA.categories.includes(p.category)) {
+              MOCK_DATA.categories.push(p.category);
+            }
+          });
         }
 
-        if (hasAnyStockChanged) {
-          if (typeof saveProductsToStorage === "function") saveProductsToStorage();
+        if (hasNewOrUpdated) {
+          saveProductsToStorage();
           refreshAllShopStockUI();
           if (typeof renderProductGrid === "function") renderProductGrid();
           if (typeof renderBestSellers === "function") renderBestSellers();
           if (typeof renderRecommended === "function") renderRecommended();
+          if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
+          if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+          if (typeof renderCategories === "function") renderCategories();
         }
       } catch(e) {
-        console.warn("syncTursoStockToLocalUI via Worker API non-fatal error:", e);
+        console.warn("syncTursoProductsToLocalUI error:", e);
       }
+    }
+    window.syncTursoProductsToLocalUI = syncTursoProductsToLocalUI;
+
+    async function syncTursoStockToLocalUI() {
+      await syncTursoProductsToLocalUI();
     }
     window.syncTursoStockToLocalUI = syncTursoStockToLocalUI;
 
@@ -6868,19 +7972,25 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     function getVariantStockCount(productOrId, variantIdx = null) {
       if (!productOrId) return 0;
       const prodId = typeof productOrId === "object" ? (productOrId.id || "") : String(productOrId);
-      const prod = typeof productOrId === "object" ? productOrId : ((typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) ? MOCK_DATA.products.find(p => String(p.id) === String(productOrId) || (p.name && typeof normApiText === "function" && normApiText(p.name) === normApiText(productOrId))) : null);
+      const prod = typeof productOrId === "object" ? productOrId : findShopProduct(productOrId);
 
       // 1. Kiểm tra API On-Demand nếu sản phẩm cấu hình API
       if (typeof getApiProductMapping === "function" && prod) {
         const varIdxNum = (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL" && variantIdx !== "") ? Number(variantIdx) : 0;
-        const vName = (prod.variants && prod.variants[varIdxNum]) ? prod.variants[varIdxNum].name : "";
-        const apiMap = (vName ? getApiProductMapping(vName) : null) || getApiProductMapping(prod);
+        const v = (prod.variants && prod.variants[varIdxNum]) ? prod.variants[varIdxNum] : null;
+        const vName = v ? v.name : "";
+
+        let apiMap = getApiProductMapping(prod);
+        if (!apiMap && vName) apiMap = getApiProductMapping(vName);
+        if (!apiMap && prod.apiMapping) apiMap = prod.apiMapping;
+
         if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
-          const providerKey = apiMap.provider || "mail72h";
-          const sourceBal = (typeof getSourceBalance === "function") ? getSourceBalance(providerKey) : 999999;
-          const minPriceNeeded = Number(apiMap.sourcePrice) || 69;
-          if (sourceBal < minPriceNeeded) return 0;
-          return apiMap.sourceStock || 999999;
+          let stock = (apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) ? Number(apiMap.sourceStock) : 0;
+          if (stock <= 0 && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+            const inSrc = cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId));
+            if (inSrc && inSrc.amount > 0) stock = inSrc.amount;
+          }
+          if (stock > 0) return stock;
         }
       }
 
@@ -6892,12 +8002,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         }
       }
 
-      // 3. [UNIFIED WAREHOUSE CORE]: ĐỌC TỒN KHO TRỰC TIẾP TỪ KHO HÀNG DUY NHẤT
-      if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.getStock) {
-        return MMO_WAREHOUSE.getStock(prodId || (prod && prod.id), variantIdx);
-      }
-
-      // Fallback nếu chưa khởi tạo
+      // 3. Đọc từ mảng accounts hoặc stock của biến thể
       const hasVars = prod && Array.isArray(prod.variants) && prod.variants.length > 0;
       if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL" && variantIdx !== "") {
         const v = hasVars ? prod.variants[Number(variantIdx)] : prod;
@@ -6965,110 +8070,79 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
       const curP = typeof currentSelectedProduct !== "undefined" ? currentSelectedProduct : null;
       const curId = curP ? curP.id : "";
+      const curVIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+      const curV = (curP && Array.isArray(curP.variants) && curP.variants[curVIdx]) ? curP.variants[curVIdx] : null;
 
-      // 1. NẾU BIẾN THỂ / SẢN PHẨM CÓ HÀNG TRONG KHO THỦ CÔNG (stock > 0):
-      // ƯU TIÊN 100% KHO THỦ CÔNG NỘI BỘ, TUYỆT ĐỐI KHÔNG ĐỂ API NGUỒN ĐÈ SỐ LƯỢNG LÊN!
-      if (stock > 0) {
-        if (dtlStock) dtlStock.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Còn hàng (' + stock.toLocaleString("vi-VN") + ' acc)</span>';
-        if (dtlWarnBanner) {
-          if (stock < 5) {
-            dtlWarnBanner.style.display = "flex";
-            dtlWarnBanner.style.borderColor = "rgba(245,158,11,0.4)";
-            dtlWarnBanner.style.background = "rgba(245,158,11,0.12)";
-            dtlWarnBanner.style.color = "#f59e0b";
-            if (dtlWarnText) dtlWarnText.innerHTML = "<strong>SẮP HẾT HÀNG:</strong> Kho chỉ còn " + stock + " tài khoản!";
-          } else {
-            dtlWarnBanner.style.display = "none";
-          }
-        }
-        if (btnBuy) {
-          btnBuy.innerHTML = "<i class='fa-solid fa-bolt'></i> MUA NGAY (GIAO TỰ ĐỘNG)";
-          btnBuy.disabled = false;
-          btnBuy.style.opacity = "1";
-          btnBuy.style.cursor = "pointer";
-          btnBuy.style.pointerEvents = "auto";
-          btnBuy.style.background = "";
-          btnBuy.classList.add("btn-big-buy");
-        }
-        return;
+      const refreshIconHtml = ' <span onclick="triggerLiveDetailStockSync(this)" class="stock-refresh-icon-btn" title="Bấm để đồng bộ tồn kho mới nhất" style="cursor:pointer; margin-left:6px; color:#38bdf8; font-size:0.85rem; padding:2px 4px; display:inline-flex; align-items:center; vertical-align:middle;"><i class="fa-solid fa-arrows-rotate" id="iconDtlLiveSync"></i></span>';
+
+      let effectiveStock = (typeof stock === "number") ? stock : 0;
+      if (effectiveStock <= 0 && curP && typeof getShopVariantStock === "function") {
+        effectiveStock = getShopVariantStock(curP, curVIdx);
       }
 
-      // 2. NẾU KHO THỦ CÔNG HẾT HÀNG (stock <= 0):
-      // CHỈ KIỂM TRA API NẾU BIẾN THỂ NÀY (HOẶC SẢN PHẨM KHÔNG CÓ BIẾN THỂ) ĐƯỢC CẤU HÌNH API ON-DEMAND:
-      let apiMap = null;
-      if (typeof getApiProductMapping === "function") {
-        const varIdx = typeof currentSelectedVariantIndex !== "undefined" ? currentSelectedVariantIndex : 0;
-        if (curP && curP.variants && curP.variants[varIdx] && curP.variants[varIdx].name) {
-          apiMap = getApiProductMapping(curP.variants[varIdx].name);
-        }
-        if (!apiMap && curP && (!curP.variants || curP.variants.length <= 1)) {
-          apiMap = getApiProductMapping(curId);
+      if (dtlStock) {
+        if (effectiveStock > 0) {
+          dtlStock.innerHTML = '<span class="stock-badge in-stock" style="color:#10b981; font-weight:800;"><i class="fa-solid fa-circle-check" style="font-size:0.85rem; margin-right:4px;"></i>' + effectiveStock.toLocaleString('vi-VN') + ' tài khoản</span>' + refreshIconHtml;
+        } else {
+          dtlStock.innerHTML = '<span class="stock-badge out-stock" style="color:#ef4444; font-weight:800;"><i class="fa-solid fa-circle-xmark" style="font-size:0.85rem; margin-right:4px;"></i>0 tài khoản</span>' + refreshIconHtml;
         }
       }
 
-      const isApiProduct = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
-
-      if (isApiProduct) {
-        const providerKey = apiMap.provider || "mail72h";
-        const sBal = (typeof getSourceBalance === "function") ? getSourceBalance(providerKey) : 999999;
-        const reqPrice = Number(apiMap.sourcePrice) || 69;
-        if (sBal < reqPrice) {
-          if (dtlStock) dtlStock.innerHTML = '<span style="color:#ef4444; font-weight:700;"><i class="fa-solid fa-circle-xmark"></i> Tạm hết hàng (Ví nguồn ' + providerKey + ' không đủ số dư)</span>';
-          if (dtlWarnBanner) {
-            dtlWarnBanner.style.display = "flex";
-            dtlWarnBanner.style.borderColor = "rgba(239,68,68,0.4)";
-            dtlWarnBanner.style.background = "rgba(239,68,68,0.12)";
-            dtlWarnBanner.style.color = "#ef4444";
-            if (dtlWarnText) dtlWarnText.innerHTML = "<strong>TẠM HẾT HÀNG:</strong> Nguồn cấp " + providerKey + " đang tạm ngưng phục vụ do số dư. Admin đang nạp thêm tiền!";
-          }
-          if (btnBuy) {
-            btnBuy.innerHTML = "<i class='fa-solid fa-ban'></i> TẠM HẾT HÀNG";
-            btnBuy.disabled = true;
-            btnBuy.style.opacity = "0.5";
-            btnBuy.style.cursor = "not-allowed";
-            btnBuy.style.pointerEvents = "none";
-          }
-          return;
-        }
-
-        const sourceStock = (apiMap.sourceStock && apiMap.sourceStock > 0) ? apiMap.sourceStock : 999999;
-        if (dtlStock) dtlStock.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Còn hàng (' + sourceStock.toLocaleString("vi-VN") + ' acc)</span>';
-        if (dtlWarnBanner) dtlWarnBanner.style.display = "none";
-        if (btnBuy) {
-          btnBuy.innerHTML = "<i class='fa-solid fa-bolt'></i> MUA NGAY (GIAO TỰ ĐỘNG)";
-          btnBuy.disabled = false;
-          btnBuy.style.opacity = "1";
-          btnBuy.style.cursor = "pointer";
-          btnBuy.style.pointerEvents = "auto";
-          btnBuy.style.background = "";
-          btnBuy.classList.add("btn-big-buy");
-        }
-        return;
-      }
-
-      // 3. KHÔNG CÓ KHO VÀ KHÔNG CÓ API => BÁO HẾT HÀNG
-      if (dtlStock) dtlStock.innerHTML = '<span style="color:#ef4444; font-weight:700;"><i class="fa-solid fa-circle-xmark"></i> Hết hàng (0 acc)</span>';
       if (dtlWarnBanner) {
-        dtlWarnBanner.style.display = "flex";
-        dtlWarnBanner.style.borderColor = "rgba(239,68,68,0.4)";
-        dtlWarnBanner.style.background = "rgba(239,68,68,0.12)";
-        dtlWarnBanner.style.color = "#ef4444";
-        if (dtlWarnText) dtlWarnText.innerHTML = "<strong>HẾT HÀNG:</strong> Biến thể này hiện tạm thời đã hết hàng trong kho. Vui lòng chọn biến thể khác hoặc liên hệ Admin!";
+        if (effectiveStock > 0 && effectiveStock <= 5) {
+          dtlWarnBanner.style.display = "flex";
+          dtlWarnBanner.style.background = "rgba(245, 158, 11, 0.12)";
+          dtlWarnBanner.style.border = "1px solid rgba(245, 158, 11, 0.35)";
+          dtlWarnBanner.style.color = "#f59e0b";
+          if (dtlWarnText) dtlWarnText.innerText = "Chỉ còn " + effectiveStock + " tài khoản cuối cùng trong kho!";
+        } else if (effectiveStock <= 0) {
+          dtlWarnBanner.style.display = "flex";
+          dtlWarnBanner.style.background = "rgba(245, 158, 11, 0.12)";
+          dtlWarnBanner.style.border = "1px solid rgba(245, 158, 11, 0.35)";
+          dtlWarnBanner.style.color = "#f59e0b";
+          if (dtlWarnText) dtlWarnText.innerText = "Sản phẩm hiện đang tạm hết hàng. Bạn có thể bấm ĐẶT TRƯỚC bên dưới để shop chuẩn bị đơn riêng cho bạn!";
+        } else {
+          dtlWarnBanner.style.display = "none";
+        }
       }
+
       if (btnBuy) {
-        btnBuy.innerHTML = "<i class='fa-solid fa-ban'></i> TẠM HẾT HÀNG";
-        btnBuy.disabled = true;
-        btnBuy.style.opacity = "0.5";
-        btnBuy.style.cursor = "not-allowed";
-        btnBuy.style.pointerEvents = "none";
+        if (effectiveStock > 0) {
+          btnBuy.disabled = false;
+          btnBuy.classList.remove("btn-pre-order");
+          btnBuy.innerHTML = '<i class="fa-solid fa-bolt"></i> MUA NGAY';
+          btnBuy.style.background = "linear-gradient(135deg, #10b981, #059669)";
+          btnBuy.style.color = "#fff";
+          btnBuy.style.opacity = "1";
+          btnBuy.style.cursor = "pointer";
+          btnBuy.style.boxShadow = "0 4px 15px rgba(16,185,129,0.35)";
+          btnBuy.onclick = function() {
+            if (typeof executeBuyCurrentProduct === "function") executeBuyCurrentProduct();
+            else if (typeof handleDetailBuyAction === "function") handleDetailBuyAction();
+          };
+        } else {
+          btnBuy.disabled = false;
+          btnBuy.classList.add("btn-pre-order");
+          btnBuy.innerHTML = '<i class="fa-solid fa-calendar-check"></i> ĐẶT TRƯỚC';
+          btnBuy.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
+          btnBuy.style.color = "#000";
+          btnBuy.style.fontWeight = "800";
+          btnBuy.style.opacity = "1";
+          btnBuy.style.cursor = "pointer";
+          btnBuy.style.boxShadow = "0 4px 15px rgba(245,158,11,0.35)";
+          btnBuy.onclick = function() {
+            if (typeof openPreOrderModal === "function") openPreOrderModal();
+          };
+        }
       }
     }
+    window.syncDetailStockUI = syncDetailStockUI;
 
     // ============================================================
     // [POLLING SYNC] Đọc kho trực tiếp từ localStorage mỗi 2 giây
     // Đây là cách đảm bảo đồng bộ tuyệt đối giữa các cửa sổ
     // ============================================================
-    let _lastStorageCheck = 0;
+    var _lastStorageCheck = 0;
     function _pollSyncStockFromStorage() {
       // [UNIFIED WAREHOUSE CORE]: Quét đồng bộ kho hàng liên tục giữa các cửa sổ
       try {
@@ -7133,9 +8207,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       } catch(e) {}
 
       // Polling chu kỳ 1 giây
-      if (!window._mmoWarehousePollInterval) {
-        // window._mmoWarehousePollInterval = null;
-      }
+      // Storage polling disabled to prevent UI freeze
     }
 
     function isSameOrAliasProduct(id1, id2) {
@@ -7198,6 +8270,35 @@ function syncAllOpenViewsStock(changedProdId) {
       try {
         if (!window._mmoBroadcastChannel) window._mmoBroadcastChannel = new BroadcastChannel("mmo_realtime_sync");
         window._mmoBroadcastChannel.onmessage = function(ev) {
+          if (ev.data && ev.data.type === "PRODUCT_UPDATED") {
+            const updId = ev.data.prodId;
+            const updVariants = ev.data.variants;
+            const updData = ev.data.prodData;
+            if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+              const target = MOCK_DATA.products.find(p => p && (
+                String(p.id) === String(updId) ||
+                (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, updId)) ||
+                (p.name && updData && p.name.trim().toLowerCase() === updData.name.trim().toLowerCase())
+              ));
+              if (target && updData) {
+                Object.assign(target, updData);
+                if (updVariants) target.variants = updVariants;
+              }
+            }
+            if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && (
+              String(currentSelectedProduct.id) === String(updId) ||
+              (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, updId)) ||
+              (currentSelectedProduct.name && updData && currentSelectedProduct.name.trim().toLowerCase() === updData.name.trim().toLowerCase())
+            )) {
+              if (updData) Object.assign(currentSelectedProduct, updData);
+              if (updVariants) currentSelectedProduct.variants = updVariants;
+              const dtlView = document.getElementById("viewProductDetail");
+              if (dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden")) {
+                if (typeof openProductDetailById === "function") openProductDetailById(updId);
+              }
+            }
+            if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(updId, ev.data.stock, null, true);
+          }
           if (ev.data && (ev.data.type === "STOCK_UPDATE" || ev.data.type === "STOCK_UPDATED")) {
             _cachedStockRaw = null;
             _cachedStockItems = null;
@@ -7264,7 +8365,7 @@ function syncAllOpenViewsStock(changedProdId) {
                   const vs = getShopVariantStock(freshP, idx);
                   const badge = vs > 0 
                     ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
-                    : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(Hết hàng)</small>';
+                    : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                   return '<div class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
                     '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
                     '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
@@ -7301,7 +8402,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
     // Tự động kiểm tra và đồng bộ tồn kho khi chuyển tab/cửa sổ (debounce 30 giây chống nghẽn mạng khi xem 2 cửa sổ song song)
     if (typeof window !== "undefined") {
-      let _lastFocusSyncTime = 0;
+      var _lastFocusSyncTime = 0;
       window.addEventListener("focus", function() {
         const now = Date.now();
         if (now - _lastFocusSyncTime > 30000) {
@@ -7401,7 +8502,16 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.getSourceBalance = getSourceBalance;
 
-    let cachedSourceProducts = [{"id":"180","name":"10 Phút – 99 per [ID 180] ----No","price":69,"amount":999999,"category":"Mail","provider":"mail72h"},{"id":"770","name":"1h❤️ No ✔️ [ ID 770 ]","price":79,"amount":999999,"category":"Mail","provider":"mail72h"},{"id":"769","name":"2h-4h -No [ ID 769 ]","price":99,"amount":999999,"category":"Mail","provider":"mail72h"},{"id":"712","name":"24h [ ID 712 ]","price":179,"amount":81995,"category":"Mail","provider":"mail72h"},{"id":"713","name":"24h vi [ ID 713]","price":199,"amount":114536,"category":"Mail","provider":"mail72h"},{"id":"715","name":"24h vi com [ ID 715 ]","price":199,"amount":120585,"category":"Mail","provider":"mail72h"},{"id":"716","name":"7 D [ ID 716 ]","price":579,"amount":18917,"category":"Mail","provider":"mail72h"},{"id":"718","name":"14 [ ID 718 ]","price":999,"amount":56633,"category":"Mail","provider":"mail72h"},{"id":"717","name":"30 ngày [ ID 717 ]","price":1799,"amount":41229,"category":"Mail","provider":"mail72h"},{"id":"17721","name":"GMAIL DOMAIN 12 GIỜ TÊN VIỆT","price":1100,"amount":242,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17722","name":"GMAIL DOMAIN 12 GIỜ TÊN NGOẠI","price":1100,"amount":247,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17723","name":"GMAIL DOMAIN 1 NGÀY TÊN VIỆT","price":2200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17724","name":"GMAIL DOMAIN 1 NGÀY TÊN NGOẠI","price":2200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17725","name":"GMAIL DOMAIN 2 NGÀY TÊN VIỆT","price":3300,"amount":199,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17726","name":"GMAIL DOMAIN 2 NGÀY TÊN NGOẠI","price":3300,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17727","name":"GMAIL DOMAIN 4 NGÀY TÊN VIỆT","price":5700,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17728","name":"GMAIL DOMAIN 4 NGÀY TÊN NGOẠI","price":5700,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17729","name":"GMAIL DOMAIN 6 NGÀY TÊN VIỆT","price":8800,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17730","name":"GMAIL DOMAIN 6 NGÀY TÊN NGOẠI","price":8800,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17731","name":"GMAIL DOMAIN 8 NGÀY TÊN VIỆT","price":13300,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17732","name":"GMAIL DOMAIN 8 NGÀY TÊN NGOẠI","price":13300,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17733","name":"GMAIL DOMAIN 10 NGÀY TÊN VIỆT","price":15500,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17734","name":"GMAIL DOMAIN 10 NGÀY TÊN NGOẠI","price":15500,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17735","name":"GMAIL DOMAIN 12 NGÀY TÊN VIỆT","price":17700,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17736","name":"GMAIL DOMAIN 12 NGÀY TÊN NGOẠI","price":17700,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17737","name":"GMAIL DOMAIN 15 NGÀY TÊN VIỆT","price":23200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17738","name":"GMAIL DOMAIN 15 NGÀY TÊN NGOẠI","price":23200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"20897","name":"GMAIL DOMAIN 30 NGÀY TÊN VIỆT","price":44200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"20898","name":"GMAIL DOMAIN 30 NGÀY TÊN NGOẠI","price":44200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17750","name":"Gmail domain  cho thuê 24h-72h  (tiếng Anh) abc.us","price":430,"amount":5817,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"17751","name":"Gmail domain cho thuê 24h-72h  ( tên Việt)  abc.com","price":430,"amount":6222,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"17772","name":"Gmail edu .live 10 phút . mua dưới 100sp / lần ✔️","price":84,"amount":999999,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"19247","name":"Gmail domain cho thuê 24h-72h  (tên Việt No Gmail ) abc.us","price":430,"amount":37522,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21235","name":"Gmail edu live 2h-12h -No Gmail- trùng dv - domain xxx@gmaii.lol - đọc thư tại 2h.api999api.com/VIEWemail","price":106,"amount":413,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21301","name":"Gmail Domain Cho Thuê 24h-48h .us có Gmail✔️","price":514,"amount":81995,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21302","name":"Gmail Domain Cho Thuê -24h tên Việt .us - có Gmail✔️","price":572,"amount":114536,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21304","name":"Gmail Domain Cho Thuê Domain .Com – Thuê 24h – Có Gmail✔️(add thanh toán ch play được)","price":572,"amount":120585,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21305","name":"Gmail Domain Cho Thuê 7 ngày domain .us .org Có Gmail✔️","price":1700,"amount":18917,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21306","name":"Gmail Domain Cho Thuê 30 ngày - có Gmail .org✔️","price":5200,"amount":41229,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21307","name":"Gmail Domain Cho Thuê 14 Ngày domain .org","price":2900,"amount":56633,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21533","name":"Gmail Domain Cho Thuê live 30phut -2h . trùng dv","price":55,"amount":1020,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"22982","name":"Gmail Domain live 30phut -1h . trùng dv","price":51,"amount":1238,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"23174","name":"Gmail Domain Cho Thuê live 1h❤️ No Gmail ✔️đọc thư tại 2h.api999api.com/VIEWemail/ ✔️","price":108,"amount":999999,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"23175","name":"Gmail Domain Cho Thuê live 2h-4h -No Gmail - đọc thư tại  2h.api999api.com/VIEWemail","price":128,"amount":999999,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"23176","name":"Gmail Domain Cho Thuê  live 12h+ No Gmail - đọc thư tại 2h.api999api.com/VIEWemail","price":219,"amount":99999,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"26176","name":"Gmail Domain  12h-48h Random - No Gmail","price":254,"amount":26043,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"27938","name":"Gmail Domain live ❤️24h-72h❤️","price":430,"amount":50001,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"27939","name":"Gmail Domain live ❤️1h-2h❤️❤️","price":142,"amount":24444,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"17773","name":"[New] Gmail New 3-7 Ngày Random (ID | Pass) (BH log đầu 12h)","price":20400,"amount":288,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"19255","name":"[Hot] Gmail New US 2026 - On 2FA - hàng Reg Tay Chưa qua DV","price":18700,"amount":0,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"19723","name":"[Sale] Gmail Random 2020 - 2024 On 2FA - Đã Qua YTB hoặc Ads","price":37400,"amount":0,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"19855","name":"[Sale] Gmail Cổ 2010-2015 + Log Mail KP - Chưa DV","price":45900,"amount":0,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"20251","name":"[New] Gmail New US (ID|Pass) (BH log đầu 12h)","price":27200,"amount":0,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"23218","name":"[Sale] Gmail USA 2019-2024 + Phone Number | Mail Old","price":38200,"amount":532,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"23220","name":"[Sale] Gmail 2006-2019 | Gmail Old","price":33700,"amount":2600,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"23221","name":"[Sale] Gmail 2006-2018 | Gmail Old","price":32800,"amount":2916,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28209","name":"Gmail Accounts | Created 2026 | SMS &amp;amp; 2FA Verified | SMTP (App Password) Enabled | USA  and MIX IP Created","price":86200,"amount":373,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28210","name":"Gmail Accounts | Created 2025 | Random Gender | 2FA Enabled | Recovery Mail Added | MIXED IP Created","price":99400,"amount":71,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28215","name":"GMail Accounts | 2FA Included | SMS Verified | App Password Enabled","price":56400,"amount":179,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28221","name":"GMail Accounts | 2FA Included | SMS Verified | App Password Enabled | Mixed Ip Created","price":53000,"amount":1203,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28222","name":"Gmail Accounts | Created 2023 | Random Gender | 2FA Enabled | Backup Email Included | MIXED IP Created","price":132600,"amount":72,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28223","name":"Gmail Accounts | Created 2019 | Random Gender | 2FA Enabled | Backup Email Included | MIXED IP Created","price":145900,"amount":18,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28225","name":"Gmail Accounts | 2021- 2023 Aged | Random Year | 2FA Enable | MIXED IP Created | Backup Email Included","price":132600,"amount":19,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28228","name":"Gmail Accounts | Created 2017 | Random Gender | 2FA Enabled | Backup Email Included | MIXED IP Created","price":159100,"amount":262,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"21237","name":"Outlook.fr Trusted Oauth2 - [Imap/Pop3] Live 12-36  Month","price":526,"amount":79481,"category":"OUTLOOK","provider":"sellmmo"},{"id":"21239","name":"Outlook Trusted - OAuth2 [Graph] Live 12 - 36 Months ( Zin 100%  )","price":434,"amount":0,"category":"OUTLOOK","provider":"sellmmo"},{"id":"21421","name":"Outlook.fr Trusted Oauth2 - [Imap/Pop3] Live 12-36  Month","price":510,"amount":79481,"category":"OUTLOOK","provider":"sellmmo"},{"id":"21709","name":"Outlook","price":115,"amount":0,"category":"OUTLOOK","provider":"sellmmo"},{"id":"27002","name":"Outlook Trusted Graph","price":1100,"amount":23613,"category":"OUTLOOK","provider":"sellmmo"},{"id":"17683","name":"Hotmail Trusted  - OAuth2  [IMAP/POP3]  Skip 7 Days","price":510,"amount":95099,"category":"HOTMAIL","provider":"sellmmo"},{"id":"17685","name":"Hotmail Trusted  - OAuth2 [ Graph ] Skip 7 Days","price":383,"amount":113621,"category":"HOTMAIL","provider":"sellmmo"},{"id":"17690","name":"Hotmail Trusted - OAuth2 [IMAP/POP3/GRAPH]  Thêm Mail Khôi Phục fviainboxes.com Sống Vĩnh Viễn","price":444,"amount":109864,"category":"HOTMAIL","provider":"sellmmo"},{"id":"19202","name":"HOTMAIL TRUST LIVE already used the service - Recovery email has been added.","price":255,"amount":26694,"category":"HOTMAIL","provider":"sellmmo"},{"id":"19724","name":"Hotmail - Outlook Trust Outh2 live 3-6+ tháng","price":510,"amount":529,"category":"HOTMAIL","provider":"sellmmo"},{"id":"20600","name":"HOTMAIL TRUSTED + MAIL KHÔI PHỤC | LIVE 6-12 THÁNG | ĐÃ REG QUA TIKTOK","price":571,"amount":56203,"category":"HOTMAIL","provider":"sellmmo"},{"id":"20607","name":"Hotmail Trusted  - OAuth2  [ IMAP/POP3/GRAPH/SMTP] Live 12-36 Months Zin 100% Còn Skip 7 Ngày","price":657,"amount":95100,"category":"HOTMAIL","provider":"sellmmo"},{"id":"20608","name":"Hotmail Trusted  - OAuth2 [Graph]  Live 12 - 36 Months  ( Zin 100%  )","price":434,"amount":113623,"category":"HOTMAIL","provider":"sellmmo"},{"id":"21708","name":"Hotmail","price":115,"amount":34,"category":"HOTMAIL","provider":"sellmmo"},{"id":"22983","name":"Hotmail Trusted - OAuth2 [IMAP/POP3]  Đã Thêm Mail Khôi Phục fviainboxes.com Sống Vĩnh Viễn ( Zin 100% )","price":523,"amount":109864,"category":"HOTMAIL","provider":"sellmmo"},{"id":"23226","name":"Hotmail Trust Live 6-12 Months","price":455,"amount":517,"category":"HOTMAIL","provider":"sellmmo"},{"id":"20947","name":"TikTok Pháp - FR, Tạo Từ Tháng 09/2024 - Hotmail Lock - Acc Cổ Ngon","price":1000,"amount":0,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20948","name":"TikTok Đức - DE, Tạo Từ Tháng 09/2024 - Hotmail Lock - Acc Cổ Ngon","price":1000,"amount":0,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20949","name":"TikTok Việt - VN, Tạo Từ Tháng 12/2025 - Hotmail Lock - Acc Cổ Ngon","price":1000,"amount":3,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20950","name":"TikTok Việt - VN, Tạo Từ Tháng 05/2025 - Hotmail Live (Oauth2) - Acc Cổ Ngon - Có Avatar","price":2500,"amount":0,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20951","name":"TikTok Anh - UK, Tạo Từ Tháng 09/2024 - Hotmail Lock - Acc Cổ Ngon","price":1000,"amount":3282,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20954","name":"TikTok Nhật - JP, Tạo Từ Tháng 04/2025 - Hotmail Lock - Acc Cổ Ngon","price":1000,"amount":15,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"21066","name":"Tiktok Japan  reg phone gg  đã đá mail  bật 2FA  - Login bằng username  và pass, ( đổi luôn username pass  tự bảo vệ tài sản của mình)","price":5100,"amount":291,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20961","name":"TikTok Pháp ( FR) Reg 2024 Mail Live Đọc Code Grap API Siêu Trâu | T12.24","price":4300,"amount":0,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"24702","name":"TIKTOK ĐỨC (DE)  Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1","price":3800,"amount":238,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"24703","name":"TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1","price":3800,"amount":399,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"27748","name":"TIKTOK ITALI (Ý) Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1","price":3800,"amount":264,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"28461","name":"Tài Khoản Tiktok Australia ( AU ) Tạo 27-9-2025 Mail Live Có Oauth2 , Cookie","price":4300,"amount":40,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"28463","name":"Tài Khoản Tiktok Indonesia ( ID ) Tạo 27-9-2025 Mail Live Có Oauth2 , Cookie","price":4300,"amount":1824,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"28464","name":"Tài Khoản Tiktok South Korea ( KR ) Tạo Tháng 7/2025 Mail Live Có Oauth2 , Cookie","price":4300,"amount":16591,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"28625","name":"TIKTOK VƯƠNG QUỐC ANH (UK) -TẠO T4 2026-  Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1","price":5600,"amount":1112,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"166","name":"TikTok Italy ( Ý ) - IT Reg 2025  Mail Khóa| 16.8.25","price":2000,"amount":575,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"167","name":"TikTok Mexico - MX Reg 2025 Mail Lock| 2.11.25","price":2000,"amount":10991,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"169","name":"TikTok Indonesia -  ID Reg 2025 Mail Lock | 10.11.25","price":2000,"amount":2262,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"171","name":"TikTok France (Pháp) - FR Reg 2024 Mail Lock","price":3400,"amount":5131,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"173","name":"TikTok Norway (NaUy) - NO Reg 2025  Mail Lock | 20.6.25","price":2000,"amount":8231,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"174","name":"TikTok South Korea (Hàn Quốc) - KR Reg 2025 Mail Lock | 15.11.25","price":2000,"amount":2642,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"175","name":"TikTok Thailand - TH Reg 2025  Mail Lock | 25.3.25","price":2000,"amount":2742,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"176","name":"TikTok Taiwan - TW Reg 2025 Mail Lock | 8.9.25","price":2000,"amount":3077,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"177","name":"TikTok United Arab Emirates - UAE Reg 2025 Mail Lock | 15.11.25","price":2000,"amount":429,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"178","name":"TikTok Philippines - PH Reg 2025 Mail Lock | 26.8.25","price":2000,"amount":2079,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"179","name":"TikTok Malaysia - MY Reg 2025 Mail Lock | 16.11.25","price":2000,"amount":96,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"181","name":"TikTok Canada - CA Reg 2024 Mail Lock","price":3400,"amount":7767,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"183","name":"TikTok Singapore - SG Reg 2025  Mail Lock | 21.10.25","price":2000,"amount":637,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"184","name":"TikTok Australia - AU Reg 2025  Mail Lock | 17.9.25","price":2000,"amount":18,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"185","name":"TikTok Argentina - AR Reg 2025 Mail Lock | 26.8.25","price":2000,"amount":340,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"186","name":"TikTok Bangladesh- BD Reg 2025  Mail Lock | 30.4.25","price":2000,"amount":519,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"187","name":"TikTok Iraq - IQ Reg 2025  Mail Lock | 3.8.25","price":2000,"amount":51,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"190","name":"TikTok Portugal ( Bồ Đào Nha ) - PT Reg 2025  Mail Lock | 24.7.25","price":2000,"amount":2092,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"191","name":"TikTok Austria ( Áo ) - AT Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":7940,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"192","name":"TikTok Myanmar ( MM ) Reg 2025  Mail Lock | 26.3.25","price":2000,"amount":6740,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"193","name":"TikTok Ả Rập Xê Út ( Saudi Arabia ) - SA Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":424,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"194","name":"TikTok Hà Lan ( Netherlands ) - NL Reg 2025  Mail Lock | 20.8.25","price":2000,"amount":48,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"196","name":"TikTok New Zealand - NZ Reg 2025  Mail Lock | 29.9.25","price":2000,"amount":20,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"197","name":"TikTok Nga ( Russia ) - RU Reg 2025  Mail Lock | 15.8.25","price":2000,"amount":92,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"198","name":"TikTok Peru - PE Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":449,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"199","name":"TikTok Cộng Hòa Séc ( Czechia ) -CZ Reg 2025  Mail Lock | 3.5.25","price":2000,"amount":20,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"200","name":"TikTok Thụy Sĩ ( Switzerland ) -CH Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":0,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"201","name":"TikTok Qatar - QA Reg 2025  Mail Lock | 8.9.25","price":2000,"amount":1426,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"205","name":"TikTok Nigeria - NG Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":3070,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"206","name":"TikTok Pakistan - PK Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":7722,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"207","name":"TikTok Kazakhstan - KZ Reg 2025  Mail Lock | 24.6.25","price":2000,"amount":506,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"209","name":"TikTok Cambodia - KH Reg 2025  Mail Lock | 28.8.25","price":2000,"amount":1559,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"211","name":"TikTok Lào - LA Reg 2025  Mail Lock | 27.7.25","price":2000,"amount":1208,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"214","name":"TikTok Belarus - BY Reg 2025  Mail Lock | 31.7.25","price":2000,"amount":37,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"216","name":"TikTok Israel - IL Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":376,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"219","name":"TikTok Sweden ( Thụy Điển ) - SE Reg 2025  Mail Lock | 31.7.25","price":2000,"amount":6960,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"220","name":"TikTok Poland ( Ba Lan )  - PL Reg 2025  Mail Lock | 14.7.25","price":2000,"amount":3697,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"221","name":"TikTok Ecuador - EC Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":37,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"222","name":"TikTok Venezuela ( Bolivarian Republic of Venezuela )  - VE Reg 2025  Mail Lock | 4.8.25","price":2000,"amount":35,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"223","name":"TikTok Ukraine - UA Reg 2025  Mail Lock | 15.08.25","price":2000,"amount":30,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"224","name":"TikTok Ấn Độ ( Egypt ) - EG Reg 2025  Mail Lock | 8.9.25","price":2000,"amount":1704,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"225","name":"TikTok Ireland - IE Reg 2025  Mail Lock | 26.9.25","price":2000,"amount":2393,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"400","name":"TikTok Senegal  - SN Reg 2025  Mail Lock | 14.10.25","price":2000,"amount":3,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"537","name":"TikTok El Salvador - SV Reg 2025 Mail Lock | 2.11.25","price":2000,"amount":7,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"538","name":"TikTok Ghana - GH Reg 2025  Mail Lock | 3.11.25","price":2000,"amount":33,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"539","name":"TikTok Croatia - HR Reg 2025  Mail Lock | 8.11.25","price":2000,"amount":415,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"540","name":"TikTok Guatemala - GT Reg 2025  Mail Lock | 26.10.25","price":2000,"amount":221,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"541","name":"TikTok Honduras - HN Reg 2025  Mail Lock | 26.10.25","price":2000,"amount":246,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"542","name":"TikTok Panama - PA Reg 2025  Mail Lock | 26.10.25","price":2000,"amount":222,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"543","name":"TikTok Kenya - KE Reg 2025 Mail Lock | 31.10.25","price":2000,"amount":68,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"545","name":"TikTok Costa Rica - CR  Reg 2025 Mail Lock | 30.10.25","price":2000,"amount":1000,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"21649","name":"TikTok Canada Reg 2025 Mail Lock | 24.11.25","price":2000,"amount":3626,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"23086","name":"TikTok Nam Phi Reg 2025 Mail Lock | 05.11.25","price":2000,"amount":306,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"19649","name":"Clone beta US reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":0,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19876","name":"Clone beta UK reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":0,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19877","name":"Clone beta Đức reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":27,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19878","name":"Clone beta PHÁP reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":0,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19879","name":"Clone beta Ý reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":8,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19880","name":"Clone beta NHẬT reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":109,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19881","name":"Clone beta HÀN reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":77,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"21909","name":"Old TikTok (US) Account -- Has Old Videos, Easy to Follow Trends","price":76500,"amount":902,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"33282","name":"Tiktok US - Hàng Reg Tay Iphone - Siêu Trust Up Là Có View | T9-2026","price":20000,"amount":29,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"394","name":"TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )","price":3400,"amount":1268,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"24697","name":"HOTMAIL LIVE - TIKTOK VIỆT NAM TRẮNG THÔNG TIN SIÊU KHỎE MAIL TRUST OAuth2 LIVE LOGIN ĐƯỢC, LẤY CODE ĐƯỢC","price":2800,"amount":88,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"24699","name":"TIKTOK VIỆT NAM 1 - 10 FOLLOW REAL , VIDEO 20 - 200 VIDEO, MAIL TRUST LẤY ĐƯỢC CODE THOẢI MÁI - HÀNG NUÔI TỰ NHIÊN","price":15300,"amount":83,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"27710","name":"Tài Khoản TikTok Việt Nam 1k follow - Follow Thật KHÔNG BUFF","price":459000,"amount":0,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"28388","name":"TikTok Việt qua FLow nhẹ trên 2 tháng","price":3500,"amount":2617,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"28442","name":"Tài Khoản Tiktok Việt Nam ( VN ) Đã Tạo Trên 1 Năm Mail Live Có OAUTH2 , Cookie ( Đã Đặt , Chưa Đặt Đơn Lẫn Lộn )","price":4300,"amount":1842,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"33149","name":"TIKTOK VIỆT NAM 1 - 10 FOLLOW REAL , VIDEO 20 - 200 VIDEO, MAIL TRUST LẤY ĐƯỢC CODE THOẢI MÁI - HÀNG NUÔI TỰ NHIÊN","price":23700,"amount":83,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"33150","name":"Tiktok Việt reg &amp;amp;amp;amp;gt; 6 Tháng - Mail Megacloudx.com   - BẢO HÀNH 3 NGÀY | T1/2026","price":5400,"amount":3839,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"33151","name":"Tiktok Việt Cổ - Random Follow 300-500 follow , Kênh Ngon Có Video , CÓ mở sẵn chức năng LIVESTUDIO","price":204000,"amount":8,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"21872","name":"Key HMA Hạn 27 -32 Ngày, 5 Thiết Bị","price":38800,"amount":939,"category":"VPN Premium","provider":"sellmmo"},{"id":"21874","name":"Tài khoản HMA 27-32 Ngày","price":77500,"amount":171,"category":"VPN Premium","provider":"sellmmo"},{"id":"21875","name":"Surfshark VPN 4-7 ngày","price":31000,"amount":82,"category":"VPN Premium","provider":"sellmmo"},{"id":"21882","name":"Express VPN 2-3 ngày 8 thiết bị","price":15500,"amount":43,"category":"VPN Premium","provider":"sellmmo"},{"id":"23290","name":"PIA VPN 4-7 Ngày- 5 Máy","price":31000,"amount":219,"category":"VPN Premium","provider":"sellmmo"},{"id":"17851","name":"PROXY IPV4 VN DÂN CƯ RIÊNG TƯ 3 NHÀ MẠNG VT,FPT,VNPT BH 30 NGÀY","price":6600,"amount":247,"category":"Proxy IPV4","provider":"sellmmo"},{"id":"23154","name":"Capcut Pro Cá Nhân 7 Ngày","price":17000,"amount":76,"category":"Capcut Pro","provider":"sellmmo"},{"id":"19856","name":"[Sale] Gmail 2016-2019 Log Mail KP -  Chưa DV (VN)","price":40800,"amount":0,"category":"Kênh YTB","provider":"sellmmo"},{"id":"19886","name":"[Sale] Gmail Random 2020 - 2023 : Đã Qua Dịch Vụ","price":37400,"amount":0,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28353","name":"YouTube Accounts | 2010-2023 Registered | MIX IP | SMS &amp;amp; 2FA Verified | Old Channel Blank/Few Uploads","price":663000,"amount":10,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28354","name":"YouTube Accounts | 1-1,000 Real Views | USA IP | SMS &amp;amp; 2FA Verified | Video Uploads Ready","price":1326000,"amount":6,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28552","name":"Youtube Accounts |Youtube Channel Registered in 2020-2022. Channel Blank or Contains Few Uploads| Ready to Use| Mixed IP Registered.","price":1060800,"amount":4,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28562","name":"Youtube Accounts |Youtube Channel Registered in 2013-2016. Channel Blank or Contains Few Uploads| Ready to Use| Mixed IP Registered.","price":1326000,"amount":3,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28589","name":"YouTube Accounts | Gmail Registered 2024-2026 | SMS Verified | 2FA Enabled | Channel Blank or Contains Few Uploads | Mix IP Registered","price":265200,"amount":182,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28614","name":"YouTube Accounts | 2006-2010 Registered | USA IP | SMS &amp;amp; 2FA Verified | Blank/Few Uploads","price":994500,"amount":12,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28619","name":"YouTube Accounts | Gmail Registered 2016 | SMS Verified | 2FA Enabled | Channel Blank or Contains Few Uploads | USA IP Registered","price":397800,"amount":10,"category":"Kênh YTB","provider":"sellmmo"},{"id":"717","name":"Tool Cắt Video Tự Động - Hàng Loạt (Vĩnh Viễn)","price":500000,"amount":100,"category":"Tool Cắt/Nối Video Tự Động - Hàng Loạt","provider":"sellmmo"},{"id":"21614","name":"Tool Nối Video Tự Động - Hàng Loạt (Vĩnh Viễn)","price":500000,"amount":100,"category":"Tool Cắt/Nối Video Tự Động - Hàng Loạt","provider":"sellmmo"},{"id":"120961","name":"OULOOK TRUSTED - LIVE 6-12 MONTHS - FORMAT OAUTH2","price":1430,"amount":3619,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"116365","name":"Hotmail TRUSTED [GraphAPI] - Live Vĩnh Viễn - MailKP fviainboxes - Chưa Qua Dịch Vụ","price":906,"amount":26147,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"116366","name":"Hotmail Trusted - OAuth2 [IMAP/POP3/GRAPH] Thêm Mail Khôi Phục fviainboxes.com Sống Vĩnh Viễn","price":1051,"amount":104141,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"120955","name":"HOTMAIL TRUSTED - LIVE 6-12 MONTHS - FORMAT OAUTH2- ĐÃ QUA TIKTOK - CÓ mail KP","price":736,"amount":55910,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"120958","name":"HOTMAIL TRUSTED - LIVE 6-12 MONTHS - FORMAT OAUTH2","price":1430,"amount":23636,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"120964","name":"Outlook TRUSTED 2 [GRAPH API]","price":1430,"amount":19478,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"120966","name":"HOTMAIL TRUST LIVE already used the service - Recovery email has been added","price":621,"amount":26654,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"127324","name":"Gmail Domain ✔️ live 2 phút ✔️ đọc thư tại 2h.api999api.com/VIEWemail","price":133,"amount":999999,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125790","name":"Gmail Accounts| Registered in 2026 | Long Live | 2FA Enabled | Recovery Mail Added","price":177603,"amount":702,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125791","name":"Gmail Accounts | Long live | 2FA Included | Globally IP Registered","price":148002,"amount":534,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125792","name":"Gmail Accounts | Registered in 2025-2026 | Long live | 2FA Included | App Password","price":162802,"amount":600,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125825","name":"Gmail Accounts | Created 2025-2026 | SMS & 2FA Verified | SMTP Enabled | USA IP","price":236802,"amount":2371,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125830","name":"Gmail Accounts | Phone Create New | Random Gender | MIXED IP Created","price":88801,"amount":102,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125833","name":"Gmail Accounts | Registered in 2020-2024 | Long live | 2FA Included","price":236802,"amount":589,"category":"Gmail","provider":"nguyenlieummo"}];
+    let cachedSourceProducts = (function() {
+      try {
+        const stored = localStorage.getItem("mmo_cached_source_products");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch(e) {}
+      return [{"id":"13840","name":"Hotmail Trusted - OAuth2 [Graph] Live [ID 13840]","price":110,"amount":10235,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"180","name":"10 Phút – 99 per [ID 180] ----No","price":69,"amount":999999,"category":"Mail","provider":"mail72h"},{"id":"770","name":"1h❤️ No ✔️ [ ID 770 ]","price":79,"amount":999999,"category":"Mail","provider":"mail72h"},{"id":"769","name":"2h-4h -No [ ID 769 ]","price":99,"amount":999999,"category":"Mail","provider":"mail72h"},{"id":"712","name":"24h [ ID 712 ]","price":179,"amount":81995,"category":"Mail","provider":"mail72h"},{"id":"713","name":"24h vi [ ID 713]","price":199,"amount":114536,"category":"Mail","provider":"mail72h"},{"id":"715","name":"24h vi com [ ID 715 ]","price":199,"amount":120585,"category":"Mail","provider":"mail72h"},{"id":"716","name":"7 D [ ID 716 ]","price":579,"amount":18917,"category":"Mail","provider":"mail72h"},{"id":"718","name":"14 [ ID 718 ]","price":999,"amount":56633,"category":"Mail","provider":"mail72h"},{"id":"717","name":"30 ngày [ ID 717 ]","price":1799,"amount":41229,"category":"Mail","provider":"mail72h"},{"id":"17721","name":"GMAIL DOMAIN 12 GIỜ TÊN VIỆT","price":1100,"amount":242,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17722","name":"GMAIL DOMAIN 12 GIỜ TÊN NGOẠI","price":1100,"amount":247,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17723","name":"GMAIL DOMAIN 1 NGÀY TÊN VIỆT","price":2200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17724","name":"GMAIL DOMAIN 1 NGÀY TÊN NGOẠI","price":2200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17725","name":"GMAIL DOMAIN 2 NGÀY TÊN VIỆT","price":3300,"amount":199,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17726","name":"GMAIL DOMAIN 2 NGÀY TÊN NGOẠI","price":3300,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17727","name":"GMAIL DOMAIN 4 NGÀY TÊN VIỆT","price":5700,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17728","name":"GMAIL DOMAIN 4 NGÀY TÊN NGOẠI","price":5700,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17729","name":"GMAIL DOMAIN 6 NGÀY TÊN VIỆT","price":8800,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17730","name":"GMAIL DOMAIN 6 NGÀY TÊN NGOẠI","price":8800,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17731","name":"GMAIL DOMAIN 8 NGÀY TÊN VIỆT","price":13300,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17732","name":"GMAIL DOMAIN 8 NGÀY TÊN NGOẠI","price":13300,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17733","name":"GMAIL DOMAIN 10 NGÀY TÊN VIỆT","price":15500,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17734","name":"GMAIL DOMAIN 10 NGÀY TÊN NGOẠI","price":15500,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17735","name":"GMAIL DOMAIN 12 NGÀY TÊN VIỆT","price":17700,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17736","name":"GMAIL DOMAIN 12 NGÀY TÊN NGOẠI","price":17700,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17737","name":"GMAIL DOMAIN 15 NGÀY TÊN VIỆT","price":23200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17738","name":"GMAIL DOMAIN 15 NGÀY TÊN NGOẠI","price":23200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"20897","name":"GMAIL DOMAIN 30 NGÀY TÊN VIỆT","price":44200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"20898","name":"GMAIL DOMAIN 30 NGÀY TÊN NGOẠI","price":44200,"amount":200,"category":"CHO THUÊ GMAIL DOMAIN","provider":"sellmmo"},{"id":"17750","name":"Gmail domain  cho thuê 24h-72h  (tiếng Anh) abc.us","price":430,"amount":5817,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"17751","name":"Gmail domain cho thuê 24h-72h  ( tên Việt)  abc.com","price":430,"amount":6222,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"17772","name":"Gmail edu .live 10 phút . mua dưới 100sp / lần ✔️","price":84,"amount":999999,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"19247","name":"Gmail domain cho thuê 24h-72h  (tên Việt No Gmail ) abc.us","price":430,"amount":37522,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21235","name":"Gmail edu live 2h-12h -No Gmail- trùng dv - domain xxx@gmaii.lol - đọc thư tại 2h.api999api.com/VIEWemail","price":106,"amount":413,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21301","name":"Gmail Domain Cho Thuê 24h-48h .us có Gmail✔️","price":514,"amount":81995,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21302","name":"Gmail Domain Cho Thuê -24h tên Việt .us - có Gmail✔️","price":572,"amount":114536,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21304","name":"Gmail Domain Cho Thuê Domain .Com – Thuê 24h – Có Gmail✔️(add thanh toán ch play được)","price":572,"amount":120585,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21305","name":"Gmail Domain Cho Thuê 7 ngày domain .us .org Có Gmail✔️","price":1700,"amount":18917,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21306","name":"Gmail Domain Cho Thuê 30 ngày - có Gmail .org✔️","price":5200,"amount":41229,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21307","name":"Gmail Domain Cho Thuê 14 Ngày domain .org","price":2900,"amount":56633,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"21533","name":"Gmail Domain Cho Thuê live 30phut -2h . trùng dv","price":55,"amount":1020,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"22982","name":"Gmail Domain live 30phut -1h . trùng dv","price":51,"amount":1238,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"23174","name":"Gmail Domain Cho Thuê live 1h❤️ No Gmail ✔️đọc thư tại 2h.api999api.com/VIEWemail/ ✔️","price":108,"amount":999999,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"23175","name":"Gmail Domain Cho Thuê live 2h-4h -No Gmail - đọc thư tại  2h.api999api.com/VIEWemail","price":128,"amount":999999,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"23176","name":"Gmail Domain Cho Thuê  live 12h+ No Gmail - đọc thư tại 2h.api999api.com/VIEWemail","price":219,"amount":99999,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"26176","name":"Gmail Domain  12h-48h Random - No Gmail","price":254,"amount":26043,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"27938","name":"Gmail Domain live ❤️24h-72h❤️","price":430,"amount":50001,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"27939","name":"Gmail Domain live ❤️1h-2h❤️❤️","price":142,"amount":24444,"category":"CHO THUÊ GMAIL DOMAIN (GIÁ RẺ)","provider":"sellmmo"},{"id":"17773","name":"[New] Gmail New 3-7 Ngày Random (ID | Pass) (BH log đầu 12h)","price":20400,"amount":288,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"19255","name":"[Hot] Gmail New US 2026 - On 2FA - hàng Reg Tay Chưa qua DV","price":18700,"amount":0,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"19723","name":"[Sale] Gmail Random 2020 - 2024 On 2FA - Đã Qua YTB hoặc Ads","price":37400,"amount":0,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"19855","name":"[Sale] Gmail Cổ 2010-2015 + Log Mail KP - Chưa DV","price":45900,"amount":0,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"20251","name":"[New] Gmail New US (ID|Pass) (BH log đầu 12h)","price":27200,"amount":0,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"23218","name":"[Sale] Gmail USA 2019-2024 + Phone Number | Mail Old","price":38200,"amount":532,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"23220","name":"[Sale] Gmail 2006-2019 | Gmail Old","price":33700,"amount":2600,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"23221","name":"[Sale] Gmail 2006-2018 | Gmail Old","price":32800,"amount":2916,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28209","name":"Gmail Accounts | Created 2026 | SMS &amp;amp; 2FA Verified | SMTP (App Password) Enabled | USA  and MIX IP Created","price":86200,"amount":373,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28210","name":"Gmail Accounts | Created 2025 | Random Gender | 2FA Enabled | Recovery Mail Added | MIXED IP Created","price":99400,"amount":71,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28215","name":"GMail Accounts | 2FA Included | SMS Verified | App Password Enabled","price":56400,"amount":179,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28221","name":"GMail Accounts | 2FA Included | SMS Verified | App Password Enabled | Mixed Ip Created","price":53000,"amount":1203,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28222","name":"Gmail Accounts | Created 2023 | Random Gender | 2FA Enabled | Backup Email Included | MIXED IP Created","price":132600,"amount":72,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28223","name":"Gmail Accounts | Created 2019 | Random Gender | 2FA Enabled | Backup Email Included | MIXED IP Created","price":145900,"amount":18,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28225","name":"Gmail Accounts | 2021- 2023 Aged | Random Year | 2FA Enable | MIXED IP Created | Backup Email Included","price":132600,"amount":19,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"28228","name":"Gmail Accounts | Created 2017 | Random Gender | 2FA Enabled | Backup Email Included | MIXED IP Created","price":159100,"amount":262,"category":"GMAIL.COM","provider":"sellmmo"},{"id":"21237","name":"Outlook.fr Trusted Oauth2 - [Imap/Pop3] Live 12-36  Month","price":526,"amount":79481,"category":"OUTLOOK","provider":"sellmmo"},{"id":"21239","name":"Outlook Trusted - OAuth2 [Graph] Live 12 - 36 Months ( Zin 100%  )","price":434,"amount":0,"category":"OUTLOOK","provider":"sellmmo"},{"id":"21421","name":"Outlook.fr Trusted Oauth2 - [Imap/Pop3] Live 12-36  Month","price":510,"amount":79481,"category":"OUTLOOK","provider":"sellmmo"},{"id":"21709","name":"Outlook","price":115,"amount":0,"category":"OUTLOOK","provider":"sellmmo"},{"id":"27002","name":"Outlook Trusted Graph","price":1100,"amount":23613,"category":"OUTLOOK","provider":"sellmmo"},{"id":"17683","name":"Hotmail Trusted  - OAuth2  [IMAP/POP3]  Skip 7 Days","price":510,"amount":95099,"category":"HOTMAIL","provider":"sellmmo"},{"id":"17685","name":"Hotmail Trusted  - OAuth2 [ Graph ] Skip 7 Days","price":383,"amount":113621,"category":"HOTMAIL","provider":"sellmmo"},{"id":"17690","name":"Hotmail Trusted - OAuth2 [IMAP/POP3/GRAPH]  Thêm Mail Khôi Phục fviainboxes.com Sống Vĩnh Viễn","price":444,"amount":109864,"category":"HOTMAIL","provider":"sellmmo"},{"id":"19202","name":"HOTMAIL TRUST LIVE already used the service - Recovery email has been added.","price":255,"amount":26694,"category":"HOTMAIL","provider":"sellmmo"},{"id":"19724","name":"Hotmail - Outlook Trust Outh2 live 3-6+ tháng","price":510,"amount":529,"category":"HOTMAIL","provider":"sellmmo"},{"id":"20600","name":"HOTMAIL TRUSTED + MAIL KHÔI PHỤC | LIVE 6-12 THÁNG | ĐÃ REG QUA TIKTOK","price":571,"amount":56203,"category":"HOTMAIL","provider":"sellmmo"},{"id":"20607","name":"Hotmail Trusted  - OAuth2  [ IMAP/POP3/GRAPH/SMTP] Live 12-36 Months Zin 100% Còn Skip 7 Ngày","price":657,"amount":95100,"category":"HOTMAIL","provider":"sellmmo"},{"id":"20608","name":"Hotmail Trusted  - OAuth2 [Graph]  Live 12 - 36 Months  ( Zin 100%  )","price":434,"amount":113623,"category":"HOTMAIL","provider":"sellmmo"},{"id":"21708","name":"Hotmail","price":115,"amount":34,"category":"HOTMAIL","provider":"sellmmo"},{"id":"22983","name":"Hotmail Trusted - OAuth2 [IMAP/POP3]  Đã Thêm Mail Khôi Phục fviainboxes.com Sống Vĩnh Viễn ( Zin 100% )","price":523,"amount":109864,"category":"HOTMAIL","provider":"sellmmo"},{"id":"23226","name":"Hotmail Trust Live 6-12 Months","price":455,"amount":517,"category":"HOTMAIL","provider":"sellmmo"},{"id":"20947","name":"TikTok Pháp - FR, Tạo Từ Tháng 09/2024 - Hotmail Lock - Acc Cổ Ngon","price":1000,"amount":0,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20948","name":"TikTok Đức - DE, Tạo Từ Tháng 09/2024 - Hotmail Lock - Acc Cổ Ngon","price":1000,"amount":0,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20949","name":"TikTok Việt - VN, Tạo Từ Tháng 12/2025 - Hotmail Lock - Acc Cổ Ngon","price":1000,"amount":3,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20950","name":"TikTok Việt - VN, Tạo Từ Tháng 05/2025 - Hotmail Live (Oauth2) - Acc Cổ Ngon - Có Avatar","price":2500,"amount":0,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20951","name":"TikTok Anh - UK, Tạo Từ Tháng 09/2024 - Hotmail Lock - Acc Cổ Ngon","price":1000,"amount":3282,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20954","name":"TikTok Nhật - JP, Tạo Từ Tháng 04/2025 - Hotmail Lock - Acc Cổ Ngon","price":1000,"amount":15,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"21066","name":"Tiktok Japan  reg phone gg  đã đá mail  bật 2FA  - Login bằng username  và pass, ( đổi luôn username pass  tự bảo vệ tài sản của mình)","price":5100,"amount":291,"category":"TikTok Hàng Sưu Tầm (Sale)","provider":"sellmmo"},{"id":"20961","name":"TikTok Pháp ( FR) Reg 2024 Mail Live Đọc Code Grap API Siêu Trâu | T12.24","price":4300,"amount":0,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"24702","name":"TIKTOK ĐỨC (DE)  Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1","price":3800,"amount":238,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"24703","name":"TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1","price":3800,"amount":399,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"27748","name":"TIKTOK ITALI (Ý) Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1","price":3800,"amount":264,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"28461","name":"Tài Khoản Tiktok Australia ( AU ) Tạo 27-9-2025 Mail Live Có Oauth2 , Cookie","price":4300,"amount":40,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"28463","name":"Tài Khoản Tiktok Indonesia ( ID ) Tạo 27-9-2025 Mail Live Có Oauth2 , Cookie","price":4300,"amount":1824,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"28464","name":"Tài Khoản Tiktok South Korea ( KR ) Tạo Tháng 7/2025 Mail Live Có Oauth2 , Cookie","price":4300,"amount":16591,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"28625","name":"TIKTOK VƯƠNG QUỐC ANH (UK) -TẠO T4 2026-  Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1","price":5600,"amount":1112,"category":"Tiktok Global - Hotmail Live","provider":"sellmmo"},{"id":"166","name":"TikTok Italy ( Ý ) - IT Reg 2025  Mail Khóa| 16.8.25","price":2000,"amount":575,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"167","name":"TikTok Mexico - MX Reg 2025 Mail Lock| 2.11.25","price":2000,"amount":10991,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"169","name":"TikTok Indonesia -  ID Reg 2025 Mail Lock | 10.11.25","price":2000,"amount":2262,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"171","name":"TikTok France (Pháp) - FR Reg 2024 Mail Lock","price":3400,"amount":5131,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"173","name":"TikTok Norway (NaUy) - NO Reg 2025  Mail Lock | 20.6.25","price":2000,"amount":8231,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"174","name":"TikTok South Korea (Hàn Quốc) - KR Reg 2025 Mail Lock | 15.11.25","price":2000,"amount":2642,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"175","name":"TikTok Thailand - TH Reg 2025  Mail Lock | 25.3.25","price":2000,"amount":2742,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"176","name":"TikTok Taiwan - TW Reg 2025 Mail Lock | 8.9.25","price":2000,"amount":3077,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"177","name":"TikTok United Arab Emirates - UAE Reg 2025 Mail Lock | 15.11.25","price":2000,"amount":429,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"178","name":"TikTok Philippines - PH Reg 2025 Mail Lock | 26.8.25","price":2000,"amount":2079,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"179","name":"TikTok Malaysia - MY Reg 2025 Mail Lock | 16.11.25","price":2000,"amount":96,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"181","name":"TikTok Canada - CA Reg 2024 Mail Lock","price":3400,"amount":7767,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"183","name":"TikTok Singapore - SG Reg 2025  Mail Lock | 21.10.25","price":2000,"amount":637,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"184","name":"TikTok Australia - AU Reg 2025  Mail Lock | 17.9.25","price":2000,"amount":18,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"185","name":"TikTok Argentina - AR Reg 2025 Mail Lock | 26.8.25","price":2000,"amount":340,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"186","name":"TikTok Bangladesh- BD Reg 2025  Mail Lock | 30.4.25","price":2000,"amount":519,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"187","name":"TikTok Iraq - IQ Reg 2025  Mail Lock | 3.8.25","price":2000,"amount":51,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"190","name":"TikTok Portugal ( Bồ Đào Nha ) - PT Reg 2025  Mail Lock | 24.7.25","price":2000,"amount":2092,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"191","name":"TikTok Austria ( Áo ) - AT Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":7940,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"192","name":"TikTok Myanmar ( MM ) Reg 2025  Mail Lock | 26.3.25","price":2000,"amount":6740,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"193","name":"TikTok Ả Rập Xê Út ( Saudi Arabia ) - SA Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":424,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"194","name":"TikTok Hà Lan ( Netherlands ) - NL Reg 2025  Mail Lock | 20.8.25","price":2000,"amount":48,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"196","name":"TikTok New Zealand - NZ Reg 2025  Mail Lock | 29.9.25","price":2000,"amount":20,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"197","name":"TikTok Nga ( Russia ) - RU Reg 2025  Mail Lock | 15.8.25","price":2000,"amount":92,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"198","name":"TikTok Peru - PE Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":449,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"199","name":"TikTok Cộng Hòa Séc ( Czechia ) -CZ Reg 2025  Mail Lock | 3.5.25","price":2000,"amount":20,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"200","name":"TikTok Thụy Sĩ ( Switzerland ) -CH Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":0,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"201","name":"TikTok Qatar - QA Reg 2025  Mail Lock | 8.9.25","price":2000,"amount":1426,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"205","name":"TikTok Nigeria - NG Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":3070,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"206","name":"TikTok Pakistan - PK Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":7722,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"207","name":"TikTok Kazakhstan - KZ Reg 2025  Mail Lock | 24.6.25","price":2000,"amount":506,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"209","name":"TikTok Cambodia - KH Reg 2025  Mail Lock | 28.8.25","price":2000,"amount":1559,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"211","name":"TikTok Lào - LA Reg 2025  Mail Lock | 27.7.25","price":2000,"amount":1208,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"214","name":"TikTok Belarus - BY Reg 2025  Mail Lock | 31.7.25","price":2000,"amount":37,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"216","name":"TikTok Israel - IL Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":376,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"219","name":"TikTok Sweden ( Thụy Điển ) - SE Reg 2025  Mail Lock | 31.7.25","price":2000,"amount":6960,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"220","name":"TikTok Poland ( Ba Lan )  - PL Reg 2025  Mail Lock | 14.7.25","price":2000,"amount":3697,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"221","name":"TikTok Ecuador - EC Reg 2025  Mail Lock | 30.10.25","price":2000,"amount":37,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"222","name":"TikTok Venezuela ( Bolivarian Republic of Venezuela )  - VE Reg 2025  Mail Lock | 4.8.25","price":2000,"amount":35,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"223","name":"TikTok Ukraine - UA Reg 2025  Mail Lock | 15.08.25","price":2000,"amount":30,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"224","name":"TikTok Ấn Độ ( Egypt ) - EG Reg 2025  Mail Lock | 8.9.25","price":2000,"amount":1704,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"225","name":"TikTok Ireland - IE Reg 2025  Mail Lock | 26.9.25","price":2000,"amount":2393,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"400","name":"TikTok Senegal  - SN Reg 2025  Mail Lock | 14.10.25","price":2000,"amount":3,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"537","name":"TikTok El Salvador - SV Reg 2025 Mail Lock | 2.11.25","price":2000,"amount":7,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"538","name":"TikTok Ghana - GH Reg 2025  Mail Lock | 3.11.25","price":2000,"amount":33,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"539","name":"TikTok Croatia - HR Reg 2025  Mail Lock | 8.11.25","price":2000,"amount":415,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"540","name":"TikTok Guatemala - GT Reg 2025  Mail Lock | 26.10.25","price":2000,"amount":221,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"541","name":"TikTok Honduras - HN Reg 2025  Mail Lock | 26.10.25","price":2000,"amount":246,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"542","name":"TikTok Panama - PA Reg 2025  Mail Lock | 26.10.25","price":2000,"amount":222,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"543","name":"TikTok Kenya - KE Reg 2025 Mail Lock | 31.10.25","price":2000,"amount":68,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"545","name":"TikTok Costa Rica - CR  Reg 2025 Mail Lock | 30.10.25","price":2000,"amount":1000,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"21649","name":"TikTok Canada Reg 2025 Mail Lock | 24.11.25","price":2000,"amount":3626,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"23086","name":"TikTok Nam Phi Reg 2025 Mail Lock | 05.11.25","price":2000,"amount":306,"category":"Tiktok Global - Hotmail Lock","provider":"sellmmo"},{"id":"19649","name":"Clone beta US reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":0,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19876","name":"Clone beta UK reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":0,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19877","name":"Clone beta Đức reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":27,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19878","name":"Clone beta PHÁP reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":0,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19879","name":"Clone beta Ý reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":8,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19880","name":"Clone beta NHẬT reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":109,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"19881","name":"Clone beta HÀN reg bằng gmail , đã đá mail bật 2fa , cứ post là có view","price":5100,"amount":77,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"21909","name":"Old TikTok (US) Account -- Has Old Videos, Easy to Follow Trends","price":76500,"amount":902,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"33282","name":"Tiktok US - Hàng Reg Tay Iphone - Siêu Trust Up Là Có View | T9-2026","price":20000,"amount":29,"category":"Clone Tiktok US+","provider":"sellmmo"},{"id":"394","name":"TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )","price":3400,"amount":1268,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"24697","name":"HOTMAIL LIVE - TIKTOK VIỆT NAM TRẮNG THÔNG TIN SIÊU KHỎE MAIL TRUST OAuth2 LIVE LOGIN ĐƯỢC, LẤY CODE ĐƯỢC","price":2800,"amount":88,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"24699","name":"TIKTOK VIỆT NAM 1 - 10 FOLLOW REAL , VIDEO 20 - 200 VIDEO, MAIL TRUST LẤY ĐƯỢC CODE THOẢI MÁI - HÀNG NUÔI TỰ NHIÊN","price":15300,"amount":83,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"27710","name":"Tài Khoản TikTok Việt Nam 1k follow - Follow Thật KHÔNG BUFF","price":459000,"amount":0,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"28388","name":"TikTok Việt qua FLow nhẹ trên 2 tháng","price":3500,"amount":2617,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"28442","name":"Tài Khoản Tiktok Việt Nam ( VN ) Đã Tạo Trên 1 Năm Mail Live Có OAUTH2 , Cookie ( Đã Đặt , Chưa Đặt Đơn Lẫn Lộn )","price":4300,"amount":1842,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"33149","name":"TIKTOK VIỆT NAM 1 - 10 FOLLOW REAL , VIDEO 20 - 200 VIDEO, MAIL TRUST LẤY ĐƯỢC CODE THOẢI MÁI - HÀNG NUÔI TỰ NHIÊN","price":23700,"amount":83,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"33150","name":"Tiktok Việt reg &amp;amp;amp;amp;gt; 6 Tháng - Mail Megacloudx.com   - BẢO HÀNH 3 NGÀY | T1/2026","price":5400,"amount":3839,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"33151","name":"Tiktok Việt Cổ - Random Follow 300-500 follow , Kênh Ngon Có Video , CÓ mở sẵn chức năng LIVESTUDIO","price":204000,"amount":8,"category":"Clone Tiktok Việt","provider":"sellmmo"},{"id":"21872","name":"Key HMA Hạn 27 -32 Ngày, 5 Thiết Bị","price":38800,"amount":939,"category":"VPN Premium","provider":"sellmmo"},{"id":"21874","name":"Tài khoản HMA 27-32 Ngày","price":77500,"amount":171,"category":"VPN Premium","provider":"sellmmo"},{"id":"21875","name":"Surfshark VPN 4-7 ngày","price":31000,"amount":82,"category":"VPN Premium","provider":"sellmmo"},{"id":"21882","name":"Express VPN 2-3 ngày 8 thiết bị","price":15500,"amount":43,"category":"VPN Premium","provider":"sellmmo"},{"id":"23290","name":"PIA VPN 4-7 Ngày- 5 Máy","price":31000,"amount":219,"category":"VPN Premium","provider":"sellmmo"},{"id":"17851","name":"PROXY IPV4 VN DÂN CƯ RIÊNG TƯ 3 NHÀ MẠNG VT,FPT,VNPT BH 30 NGÀY","price":6600,"amount":247,"category":"Proxy IPV4","provider":"sellmmo"},{"id":"23154","name":"Capcut Pro Cá Nhân 7 Ngày","price":17000,"amount":24,"category":"Capcut Pro","provider":"sellmmo"},{"id":"19856","name":"[Sale] Gmail 2016-2019 Log Mail KP -  Chưa DV (VN)","price":40800,"amount":0,"category":"Kênh YTB","provider":"sellmmo"},{"id":"19886","name":"[Sale] Gmail Random 2020 - 2023 : Đã Qua Dịch Vụ","price":37400,"amount":0,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28353","name":"YouTube Accounts | 2010-2023 Registered | MIX IP | SMS &amp;amp; 2FA Verified | Old Channel Blank/Few Uploads","price":663000,"amount":10,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28354","name":"YouTube Accounts | 1-1,000 Real Views | USA IP | SMS &amp;amp; 2FA Verified | Video Uploads Ready","price":1326000,"amount":6,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28552","name":"Youtube Accounts |Youtube Channel Registered in 2020-2022. Channel Blank or Contains Few Uploads| Ready to Use| Mixed IP Registered.","price":1060800,"amount":4,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28562","name":"Youtube Accounts |Youtube Channel Registered in 2013-2016. Channel Blank or Contains Few Uploads| Ready to Use| Mixed IP Registered.","price":1326000,"amount":3,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28589","name":"YouTube Accounts | Gmail Registered 2024-2026 | SMS Verified | 2FA Enabled | Channel Blank or Contains Few Uploads | Mix IP Registered","price":265200,"amount":182,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28614","name":"YouTube Accounts | 2006-2010 Registered | USA IP | SMS &amp;amp; 2FA Verified | Blank/Few Uploads","price":994500,"amount":12,"category":"Kênh YTB","provider":"sellmmo"},{"id":"28619","name":"YouTube Accounts | Gmail Registered 2016 | SMS Verified | 2FA Enabled | Channel Blank or Contains Few Uploads | USA IP Registered","price":397800,"amount":10,"category":"Kênh YTB","provider":"sellmmo"},{"id":"717","name":"Tool Cắt Video Tự Động - Hàng Loạt (Vĩnh Viễn)","price":500000,"amount":100,"category":"Tool Cắt/Nối Video Tự Động - Hàng Loạt","provider":"sellmmo"},{"id":"21614","name":"Tool Nối Video Tự Động - Hàng Loạt (Vĩnh Viễn)","price":500000,"amount":100,"category":"Tool Cắt/Nối Video Tự Động - Hàng Loạt","provider":"sellmmo"},{"id":"120961","name":"OULOOK TRUSTED - LIVE 6-12 MONTHS - FORMAT OAUTH2","price":1430,"amount":3619,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"116365","name":"Hotmail TRUSTED [GraphAPI] - Live Vĩnh Viễn - MailKP fviainboxes - Chưa Qua Dịch Vụ","price":906,"amount":26147,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"116366","name":"Hotmail Trusted - OAuth2 [IMAP/POP3/GRAPH] Thêm Mail Khôi Phục fviainboxes.com Sống Vĩnh Viễn","price":1051,"amount":104141,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"120955","name":"HOTMAIL TRUSTED - LIVE 6-12 MONTHS - FORMAT OAUTH2- ĐÃ QUA TIKTOK - CÓ mail KP","price":736,"amount":55910,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"120958","name":"HOTMAIL TRUSTED - LIVE 6-12 MONTHS - FORMAT OAUTH2","price":1430,"amount":23636,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"120964","name":"Outlook TRUSTED 2 [GRAPH API]","price":1430,"amount":19478,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"120966","name":"HOTMAIL TRUST LIVE already used the service - Recovery email has been added","price":621,"amount":26654,"category":"Hotmail","provider":"nguyenlieummo"},{"id":"127324","name":"Gmail Domain ✔️ live 2 phút ✔️ đọc thư tại 2h.api999api.com/VIEWemail","price":133,"amount":999999,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125790","name":"Gmail Accounts| Registered in 2026 | Long Live | 2FA Enabled | Recovery Mail Added","price":177603,"amount":702,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125791","name":"Gmail Accounts | Long live | 2FA Included | Globally IP Registered","price":148002,"amount":534,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125792","name":"Gmail Accounts | Registered in 2025-2026 | Long live | 2FA Included | App Password","price":162802,"amount":600,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125825","name":"Gmail Accounts | Created 2025-2026 | SMS & 2FA Verified | SMTP Enabled | USA IP","price":236802,"amount":2371,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125830","name":"Gmail Accounts | Phone Create New | Random Gender | MIXED IP Created","price":88801,"amount":102,"category":"Gmail","provider":"nguyenlieummo"},{"id":"125833","name":"Gmail Accounts | Registered in 2020-2024 | Long live | 2FA Included","price":236802,"amount":589,"category":"Gmail","provider":"nguyenlieummo"}];
+    })();
 
     function getApiSourceConfig() {
       try {
@@ -7452,98 +8562,198 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function getApiProductMapping(productOrId) {
       if (!productOrId) return null;
-      const prodId = typeof productOrId === "string" ? productOrId : (productOrId.id || "");
-      const prodObj = typeof productOrId === "object" ? productOrId : ((typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) ? MOCK_DATA.products.find(p => String(p.id) === String(prodId)) : null);
-      const prodName = prodObj ? (prodObj.name || "") : (typeof productOrId === "string" ? productOrId : "");
+      const prodId = typeof productOrId === "string" ? productOrId.trim() : (productOrId.id || "").trim();
+      const prodObj = typeof productOrId === "object" ? productOrId : ((typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) ? MOCK_DATA.products.find(p => p && (String(p.id) === String(prodId) || (p.name && typeof normApiText === "function" && normApiText(p.name) === normApiText(prodId)))) : null);
+      const prodName = prodObj ? (prodObj.name || "") : (typeof productOrId === "string" ? productOrId.trim() : "");
 
-      // 0. BẢO VỆ CHẶT CHẼ: SẢN PHẨM KHO NỘI BỘ HOẶC ĐÃ TẮT API -> TRẢ VỀ NULL NGAY LẬP TỨC
       const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+
+      function enrichMapping(m) {
+        if (!m || !m.enabled || !m.sourceProdId) return null;
+        const res = Object.assign({}, m);
+        let stock = (res.sourceStock !== undefined && res.sourceStock !== null) ? Number(res.sourceStock) : 0;
+        if (stock <= 0 && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+          const inSrc = cachedSourceProducts.find(s => String(s.id) === String(res.sourceProdId));
+          if (inSrc && typeof inSrc.amount === "number" && inSrc.amount > 0) {
+            stock = inSrc.amount;
+            res.sourceStock = stock;
+          }
+        }
+        res.sourceStock = Math.max(0, stock);
+        return res;
+      }
+
+      // 1. Kiểm tra cấu hình explicitly bị tắt
       if (prodId && maps[prodId] && maps[prodId].enabled === false) {
         return null;
       }
-      if (prodObj && prodObj.deliveryType === "local") {
-        return null;
-      }
 
-      // Danh sách các ID sản phẩm CHUYÊN BIỆT KHO NỘI BỘ (Không bao giờ qua API)
-      const LOCAL_ONLY_IDS = ["SP_TELEGRAM_SESSION", "SP_S10", "SP_J7", "SP_J7_PRO", "SP_FANPAGE", "SP_GEMINI", "SP_CHATGPT", "SP_CAPCUT_PRO"];
-      if (LOCAL_ONLY_IDS.includes(prodId)) {
-        return null;
-      }
-
-      const normName = (typeof normApiText === "function") ? normApiText(prodName) : String(prodName || "").toLowerCase();
-      if (normName.includes("telegram") || normName.includes("rom") || normName.includes("s10") || normName.includes("j7") || normName.includes("fanpage") || normName.includes("gemini") || normName.includes("chat gpt")) {
-        return null;
-      }
-
-      // 1. Ưu tiên cấu hình do Admin đã lưu trong bảng API On-Demand
+      // 2. Tra cứu trực tiếp theo ID sản phẩm trong bảng maps (FRESH DATA - ưu tiên cao nhất)
       if (prodId && maps[prodId] && maps[prodId].enabled && maps[prodId].sourceProdId) {
-        return maps[prodId];
+        return enrichMapping(maps[prodId]);
+      }
+      if (prodObj && prodObj.id && maps[prodObj.id] && maps[prodObj.id].enabled && maps[prodObj.id].sourceProdId) {
+        return enrichMapping(maps[prodObj.id]);
       }
 
-      // 2. Khớp theo tên sản phẩm đã lưu trong cấu hình Admin
-      if (prodName) {
-        const cleanTarget = normName;
+      // 3. Tra cứu trực tiếp theo tên biến thể / tên sản phẩm trong maps
+      if (prodName && maps[prodName] && maps[prodName].enabled && maps[prodName].sourceProdId) {
+        return enrichMapping(maps[prodName]);
+      }
+
+      // 4. Dùng apiMapping gắn trực tiếp trên đối tượng sản phẩm
+      if (prodObj && prodObj.apiMapping && prodObj.apiMapping.enabled && prodObj.apiMapping.sourceProdId) {
+        const freshByProd = prodObj.id ? maps[prodObj.id] : null;
+        if (freshByProd && freshByProd.enabled) {
+          const freshStock = Number(freshByProd.sourceStock) || 0;
+          const embStock = Number(prodObj.apiMapping.sourceStock) || 0;
+          return enrichMapping(Object.assign({}, prodObj.apiMapping, freshByProd, { sourceStock: Math.max(freshStock, embStock) }));
+        }
+        return enrichMapping(prodObj.apiMapping);
+      }
+
+      // 5. Nếu productOrId là TÊN BIẾN THỂ hoặc ID biến thể, tìm sản phẩm cha sở hữu biến thể này
+      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+        const parentProd = MOCK_DATA.products.find(function(p) {
+          if (!p) return false;
+          if (p.id === prodId || p.name === prodName) return true;
+          if (Array.isArray(p.variants)) {
+            return p.variants.some(function(v) {
+              return v && (v.name === prodId || v.name === prodName || (typeof normApiText === "function" && (normApiText(v.name) === normApiText(prodId) || normApiText(v.name) === normApiText(prodName))));
+            });
+          }
+          return false;
+        });
+        if (parentProd) {
+          const parentMap = (parentProd.id && maps[parentProd.id] && maps[parentProd.id].enabled && maps[parentProd.id].sourceProdId)
+            ? maps[parentProd.id]
+            : (parentProd.apiMapping && parentProd.apiMapping.enabled && parentProd.apiMapping.sourceProdId)
+              ? parentProd.apiMapping
+              : null;
+          if (parentMap) {
+            return enrichMapping(parentMap);
+          }
+        }
+      }
+
+      // 6. Khớp theo tên sản phẩm đã lưu trong cấu hình Admin maps
+      const normName = (typeof normApiText === "function") ? normApiText(prodName) : String(prodName || "").toLowerCase();
+      if (normName) {
         for (const k of Object.keys(maps)) {
           const m = maps[k];
           if (m && m.enabled && m.sourceProdId) {
-            if (m.targetProdName && normApiText(m.targetProdName) === cleanTarget) {
-              return m;
+            const mTarget = (typeof normApiText === "function") ? normApiText(m.targetProdName || "") : "";
+            if (mTarget && (mTarget === normName || normName.includes(mTarget) || mTarget.includes(normName))) {
+              return enrichMapping(m);
             }
-            const mappedProd = (typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) ? MOCK_DATA.products.find(p => String(p.id) === String(k)) : null;
-            if (mappedProd && normApiText(mappedProd.name) === cleanTarget) {
-              return m;
+            const mappedProd = (typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) ? MOCK_DATA.products.find(p => p && String(p.id) === String(k)) : null;
+            if (mappedProd) {
+              const mpNorm = (typeof normApiText === "function") ? normApiText(mappedProd.name || "") : "";
+              if (mpNorm && (mpNorm === normName || normName.includes(mpNorm) || mpNorm.includes(normName))) {
+                return enrichMapping(m);
+              }
             }
           }
         }
+      }
 
-        // 3. Tự động nhận diện các gói thuê ngắn hạn Mail72h
-        const isRentMail = cleanTarget.includes("10 phut") || cleanTarget.includes("10p") || 
-                           cleanTarget.includes("1h") || cleanTarget.includes("1 gio") || 
-                           cleanTarget.includes("2h") || cleanTarget.includes("4h") || 
-                           cleanTarget.includes("24h") || cleanTarget.includes("1 ngay") || 
-                           cleanTarget.includes("7 ngay") || cleanTarget.includes("7 d") || 
-                           cleanTarget.includes("14 ngay") || cleanTarget.includes("14 d") || 
-                           cleanTarget.includes("30 ngay") || cleanTarget.includes("thue");
-
-        if (isRentMail) {
-          if (cleanTarget.includes("10 phut") || cleanTarget.includes("10p")) {
-            return { enabled: true, provider: "mail72h", sourceProdId: "180", sourceProdName: "10 Phút – 99 per [ID 180]", sourcePrice: 69, sourceStock: 999999 };
-          }
-          if (cleanTarget.includes("1 gio") || cleanTarget.includes("1h") || cleanTarget.includes("60 phut")) {
-            return { enabled: true, provider: "mail72h", sourceProdId: "770", sourceProdName: "1h❤️ No ✔️ [ ID 770 ]", sourcePrice: 79, sourceStock: 999999 };
-          }
-          if (cleanTarget.includes("24h") || cleanTarget.includes("1 ngay") || cleanTarget.includes("24 gio")) {
-            return { enabled: true, provider: "mail72h", sourceProdId: "712", sourceProdName: "24h [ ID 712 ]", sourcePrice: 179, sourceStock: 81995 };
-          }
-          if (cleanTarget.includes("2h") || cleanTarget.includes("4h")) {
-            return { enabled: true, provider: "mail72h", sourceProdId: "769", sourceProdName: "2h-4h -No [ ID 769 ]", sourcePrice: 99, sourceStock: 999999 };
-          }
-          if (cleanTarget.includes("7 ngay") || cleanTarget.includes("7 d")) {
-            return { enabled: true, provider: "mail72h", sourceProdId: "716", sourceProdName: "7 D [ ID 716 ]", sourcePrice: 579, sourceStock: 18917 };
-          }
-          if (cleanTarget.includes("14 ngay") || cleanTarget.includes("14 d")) {
-            return { enabled: true, provider: "mail72h", sourceProdId: "718", sourceProdName: "14[ ID 718 ]", sourcePrice: 999, sourceStock: 56633 };
-          }
-          if (cleanTarget.includes("30 ngay") || cleanTarget.includes("1 thang")) {
-            return { enabled: true, provider: "mail72h", sourceProdId: "717", sourceProdName: "30 ngày [ ID 717 ]", sourcePrice: 1799, sourceStock: 41229 };
+      // 7. Tra cứu trực tiếp trong cachedSourceProducts nếu có sản phẩm trùng khớp
+      if (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts) && cachedSourceProducts.length > 0) {
+        if (normName.includes("capcut")) {
+          const srcCap = cachedSourceProducts.find(s => s && s.provider === "sellmmo" && (String(s.id) === "23154" || normApiText(s.name).includes("capcut")));
+          if (srcCap) {
+            return enrichMapping({
+              enabled: true,
+              provider: "sellmmo",
+              baseUrl: "https://sellmmo.vn",
+              sourceProdId: String(srcCap.id),
+              sourceProdName: srcCap.name,
+              sourcePrice: srcCap.price,
+              sourceStock: srcCap.amount
+            });
           }
         }
+        if (normName.includes("outlook")) {
+          const srcOut = cachedSourceProducts.find(s => s && s.provider === "sellmmo" && (String(s.id) === "27002" || normApiText(s.name).includes("outlook")));
+          if (srcOut) {
+            return enrichMapping({
+              enabled: true,
+              provider: "sellmmo",
+              baseUrl: "https://sellmmo.vn",
+              sourceProdId: String(srcOut.id),
+              sourceProdName: srcOut.name,
+              sourcePrice: srcOut.price,
+              sourceStock: srcOut.amount
+            });
+          }
+        }
+        if (normName.includes("hotmail")) {
+          const srcHot = cachedSourceProducts.find(s => s && (String(s.id) === "27001" || String(s.id) === "13840" || normApiText(s.name).includes("hotmail")));
+          if (srcHot) {
+            return enrichMapping({
+              enabled: true,
+              provider: srcHot.provider || "sellmmo",
+              baseUrl: srcHot.provider === "nguyenlieummo" ? "https://nguyenlieummo.com.vn" : "https://sellmmo.vn",
+              sourceProdId: String(srcHot.id),
+              sourceProdName: srcHot.name,
+              sourcePrice: srcHot.price,
+              sourceStock: srcHot.amount
+            });
+          }
+        }
+      }
 
-        // 4. Các từ khóa chuyên biệt cho sellmmo.vn (chỉ khi có chữ thuê gmail domain hoặc hotmail trusted)
-        if (cleanTarget.includes("domain") && cleanTarget.includes("thue")) {
-          return { enabled: true, provider: "sellmmo", sourceProdId: "17723", sourceProdName: "GMAIL DOMAIN 1 NGÀY TÊN VIỆT", sourcePrice: 2200, sourceStock: 200 };
-        }
-        if (cleanTarget.includes("hotmail") && (cleanTarget.includes("trau") || cleanTarget.includes("trust") || cleanTarget.includes("oauth"))) {
-          return {
-            enabled: true,
-            provider: "sellmmo",
-            sourceProdId: "17685",
-            sourceProdName: "Hotmail Trusted - OAuth2 [ Graph ] Skip 7 Days",
-            sourcePrice: 383,
-            sourceStock: 113621
-          };
-        }
+      // 8. Fallback mặc định tin cậy cho các gói phổ biến
+      if (normName.includes("capcut")) {
+        return enrichMapping({
+          enabled: true,
+          provider: "sellmmo",
+          baseUrl: "https://sellmmo.vn",
+          sourceProdId: "23154",
+          sourceProdName: "[Capcut Pro] Capcut Pro Cá Nhân 7 Ngày",
+          sourcePrice: 17000,
+          sourceStock: 38
+        });
+      }
+      if (normName.includes("outlook")) {
+        return enrichMapping({
+          enabled: true,
+          provider: "sellmmo",
+          baseUrl: "https://sellmmo.vn",
+          sourceProdId: "27002",
+          sourceProdName: "OUTLOOK TRUSTED - LIVE 6-12 THÁNG",
+          sourcePrice: 150,
+          sourceStock: 22066
+        });
+      }
+      if (normName.includes("hotmail")) {
+        return enrichMapping({
+          enabled: true,
+          provider: "sellmmo",
+          baseUrl: "https://sellmmo.vn",
+          sourceProdId: "27001",
+          sourceProdName: "HOTMAIL TRUSTED - OAUTH2 [GRAPH] LIVE",
+          sourcePrice: 110,
+          sourceStock: 57200
+        });
+      }
+      if (normName.includes("24h") || normName.includes("1 ngay") || normName.includes("24 gio")) {
+        return enrichMapping({ enabled: true, provider: "mail72h", sourceProdId: "712", sourceProdName: "24h [ ID 712 ]", sourcePrice: 179, sourceStock: 81995 });
+      }
+      if (normName.includes("2h") || normName.includes("4h")) {
+        return enrichMapping({ enabled: true, provider: "mail72h", sourceProdId: "769", sourceProdName: "2h-4h -No [ ID 769 ]", sourcePrice: 99, sourceStock: 999999 });
+      }
+      if (normName.includes("7 ngay") || normName.includes("7 d")) {
+        return enrichMapping({ enabled: true, provider: "mail72h", sourceProdId: "716", sourceProdName: "7 D [ ID 716 ]", sourcePrice: 579, sourceStock: 18917 });
+      }
+      if (normName.includes("14 ngay") || normName.includes("14 d")) {
+        return enrichMapping({ enabled: true, provider: "mail72h", sourceProdId: "718", sourceProdName: "14[ ID 718 ]", sourcePrice: 999, sourceStock: 56633 });
+      }
+      if (normName.includes("30 ngay") || normName.includes("1 thang")) {
+        return enrichMapping({ enabled: true, provider: "mail72h", sourceProdId: "717", sourceProdName: "30 ngày [ ID 717 ]", sourcePrice: 1799, sourceStock: 41229 });
+      }
+      if (normName.includes("domain")) {
+        return enrichMapping({ enabled: true, provider: "sellmmo", sourceProdId: "17723", sourceProdName: "GMAIL DOMAIN 1 NGÀY TÊN VIỆT", sourcePrice: 2200, sourceStock: 200 });
       }
 
       return null;
@@ -7645,6 +8855,28 @@ function syncAllOpenViewsStock(changedProdId) {
           console.warn("Worker proxy error, fallback to GAS:", workerErr);
           return await callGasApi("apiSourceGetProfile", payload);
         }
+      }
+
+      if (action === "getProductStock") {
+        try {
+          const prodsRes = await executeSourceApiCall("getProducts", payload);
+          if (prodsRes && prodsRes.success && Array.isArray(prodsRes.categories)) {
+            let foundAmount = null;
+            prodsRes.categories.forEach(cat => {
+              (cat.products || []).forEach(p => {
+                if (String(p.id) === String(payload.sourceProdId || payload.id)) {
+                  foundAmount = Number(p.amount) || 0;
+                }
+              });
+            });
+            if (foundAmount !== null) {
+              return { success: true, amount: foundAmount, provider: provider };
+            }
+          }
+        } catch(err) {
+          console.warn("getProductStock error:", err);
+        }
+        return { success: false, amount: 0, provider: provider };
       }
 
       if (action === "getProducts") {
@@ -7959,6 +9191,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
           if (freshProducts.length > 0) {
             cachedSourceProducts = freshProducts;
+            try { localStorage.setItem("mmo_cached_source_products", JSON.stringify(freshProducts)); } catch(e) {}
           }
         }
       } catch(e) {
@@ -7975,14 +9208,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.fetchApiSourceProducts = fetchApiSourceProducts;
 
-    setTimeout(function() {
-      if (typeof fetchApiSourceProducts === "function" && typeof isAdminUser === "function" && isAdminUser()) {
-        const curView = typeof currentView !== "undefined" ? currentView : (localStorage.getItem("mmo_current_view") || "");
-        if (curView === "viewAdmin") {
-          fetchApiSourceProducts(false);
-        }
-      }
-    }, 3000);
+    // fetchApiSourceProducts only runs when Admin opens mapping tab or clicks reload
 
     function renderApiProductMappingsTable() {
       const tbody = document.getElementById("apiProductMappingsTableBody");
@@ -8172,8 +9398,8 @@ function syncAllOpenViewsStock(changedProdId) {
 
       const srcId = select.value;
       const isEnabled = chk ? !!chk.checked : false;
-      const provider = (pSel ? pSel.value : null) || (select.selectedOptions[0] ? select.selectedOptions[0].getAttribute("data-provider") : "mail72h") || "mail72h";
-      const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : API_SOURCES.mail72h;
+      const provider = (pSel ? pSel.value : null) || (select.selectedOptions && select.selectedOptions[0] ? select.selectedOptions[0].getAttribute("data-provider") : "mail72h") || "mail72h";
+      const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : (API_SOURCES ? API_SOURCES.mail72h : { baseUrl: "https://mail72h.com", apiKey: "" });
 
       const mappings = getApiProductMappings();
       const prod = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(p => String(p.id) === String(prodId)) : null;
@@ -8181,11 +9407,16 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (!srcId || !isEnabled) {
         delete mappings[prodId];
+        if (prod && Array.isArray(prod.variants)) {
+          prod.variants.forEach(function(v) { if (v && v.name) delete mappings[v.name]; });
+        }
         saveApiProductMappings(mappings);
 
         if (prod) {
           const manualStock = (typeof getProductStocksMap === "function") ? (getProductStocksMap()[prodId]?.length || 0) : 0;
           prod.stock = manualStock;
+          prod.deliveryType = "manual";
+          delete prod.apiMapping;
         }
 
         if (chk) chk.checked = false;
@@ -8196,16 +9427,20 @@ function syncAllOpenViewsStock(changedProdId) {
           showToast("Đã TẮT API cho sản phẩm [" + (prod ? prod.name : prodId) + "]. Bán từ kho thủ công.", "info");
         }
       } else {
-        const src = cachedSourceProducts.find(s => String(s.id) === String(srcId));
-        const srcStock = src ? src.amount : 999;
+        const prodsSrc = (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : [];
+        const src = prodsSrc.find(s => String(s.id) === String(srcId));
+        const srcStock = src ? src.amount : ((prod && prod.apiMapping && prod.apiMapping.sourceStock) || 999);
+        const srcPrice = src ? src.price : ((prod && prod.apiMapping && prod.apiMapping.sourcePrice) || 100);
+        const srcName = src ? src.name : ((prod && prod.apiMapping && prod.apiMapping.sourceProdName) || ("Sản phẩm " + srcId));
+
         mappings[prodId] = {
           enabled: true,
           provider: provider,
           baseUrl: pCfg.baseUrl,
           apiKey: pCfg.apiKey,
           sourceProdId: srcId,
-          sourceProdName: src ? src.name : "Sản phẩm " + srcId,
-          sourcePrice: src ? src.price : 100,
+          sourceProdName: srcName,
+          sourcePrice: srcPrice,
           sourceStock: srcStock,
           targetProdId: prodId,
           targetProdName: prod ? prod.name : ""
@@ -8214,6 +9449,16 @@ function syncAllOpenViewsStock(changedProdId) {
 
         if (prod) {
           prod.stock = srcStock;
+          prod.deliveryType = "api";
+          prod.apiMapping = mappings[prodId];
+          if (Array.isArray(prod.variants)) {
+            prod.variants.forEach(function(v) {
+              if (v) {
+                v.stock = srcStock;
+                mappings[v.name] = Object.assign({}, mappings[prodId], { targetProdName: v.name });
+              }
+            });
+          }
         }
 
         if (chk) chk.checked = true;
@@ -8235,8 +9480,13 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof renderAdminDashboard === "function") renderAdminDashboard();
 
       const curP = typeof currentSelectedProduct !== "undefined" ? currentSelectedProduct : null;
-      if (curP && String(curP.id) === String(prodId) && typeof renderProductDetailModal === "function") {
-        renderProductDetailModal(curP);
+      if (curP && (String(curP.id) === String(prodId) || (prod && String(curP.id) === String(prod.id)))) {
+        if (typeof openProductDetailById === "function") {
+          openProductDetailById(prodId);
+        } else if (typeof syncDetailStockUI === "function") {
+          const curVIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+          syncDetailStockUI(getShopVariantStock(curP, curVIdx));
+        }
       }
     }
     window.saveSingleMapping = saveSingleMapping;
@@ -8255,29 +9505,49 @@ function syncAllOpenViewsStock(changedProdId) {
 
         const srcId = select.value;
         const isEnabled = chk ? !!chk.checked : false;
-        const provider = (pSel ? pSel.value : null) || "mail72h";
-        const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : API_SOURCES.mail72h;
+        const provider = (pSel ? pSel.value : null) || (select.selectedOptions && select.selectedOptions[0] ? select.selectedOptions[0].getAttribute("data-provider") : "mail72h") || "mail72h";
+        const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : (API_SOURCES ? API_SOURCES.mail72h : { baseUrl: "https://mail72h.com", apiKey: "" });
 
         if (!srcId || !isEnabled) {
           delete mappings[p.id];
+          if (Array.isArray(p.variants)) {
+            p.variants.forEach(function(v) { if (v && v.name) delete mappings[v.name]; });
+          }
           const manualStock = (typeof getProductStocksMap === "function") ? (getProductStocksMap()[p.id]?.length || 0) : 0;
           p.stock = manualStock;
+          p.deliveryType = "manual";
+          delete p.apiMapping;
         } else {
-          const src = cachedSourceProducts.find(s => String(s.id) === String(srcId));
-          const srcStock = src ? src.amount : 999;
+          const prodsSrc = (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : [];
+          const src = prodsSrc.find(s => String(s.id) === String(srcId));
+          const srcStock = src ? src.amount : ((p.apiMapping && p.apiMapping.sourceStock) || 999);
+          const srcPrice = src ? src.price : ((p.apiMapping && p.apiMapping.sourcePrice) || 100);
+          const srcName = src ? src.name : ((p.apiMapping && p.apiMapping.sourceProdName) || ("Sản phẩm " + srcId));
+
           mappings[p.id] = {
             enabled: true,
             provider: provider,
             baseUrl: pCfg.baseUrl,
             apiKey: pCfg.apiKey,
             sourceProdId: srcId,
-            sourceProdName: src ? src.name : "Sản phẩm " + srcId,
-            sourcePrice: src ? src.price : 100,
+            sourceProdName: srcName,
+            sourcePrice: srcPrice,
             sourceStock: srcStock,
             targetProdId: p.id,
             targetProdName: p.name || ""
           };
           p.stock = srcStock;
+          p.deliveryType = "api";
+          p.apiMapping = mappings[p.id];
+
+          if (Array.isArray(p.variants)) {
+            p.variants.forEach(function(v) {
+              if (v) {
+                v.stock = srcStock;
+                mappings[v.name] = Object.assign({}, mappings[p.id], { targetProdName: v.name });
+              }
+            });
+          }
         }
         updatedCount++;
       });
@@ -8288,7 +9558,15 @@ function syncAllOpenViewsStock(changedProdId) {
       renderApiProductMappingsTable();
       if (typeof renderProductGrid === "function") renderProductGrid();
       if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+      if (typeof renderBestSellers === "function") renderBestSellers();
+      if (typeof renderRecommended === "function") renderRecommended();
       if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+
+      const curP = typeof currentSelectedProduct !== "undefined" ? currentSelectedProduct : null;
+      if (curP && typeof syncDetailStockUI === "function") {
+        const curVIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+        syncDetailStockUI(getShopVariantStock(curP, curVIdx));
+      }
 
       if (typeof showToast === "function") {
         showToast("💾 Đã lưu và đồng bộ " + updatedCount + " sản phẩm trên trang hiện tại!", "success");
@@ -8308,15 +9586,33 @@ function syncAllOpenViewsStock(changedProdId) {
           const sourceBal = getSourceBalance(provider);
           const minPriceNeeded = Number(map.sourcePrice) || 50;
 
-          if (sourceBal < minPriceNeeded) {
-            p.stock = 0;
-            map.sourceStock = 0;
-          } else {
-            const src = cachedSourceProducts.find(s => String(s.id) === String(map.sourceProdId));
-            const targetStock = src ? src.amount : (map.sourceStock || 999);
-            p.stock = targetStock;
-            map.sourceStock = targetStock;
+          // Luôn tìm sourceStock từ cachedSourceProducts (fresh data từ API nguồn)
+          const src = cachedSourceProducts.find(s => String(s.id) === String(map.sourceProdId));
+          const freshStock = src ? src.amount : null;
+
+          if (freshStock !== null && freshStock >= 0) {
+            // Có fresh data từ API nguồn → cập nhật sourceStock
+            map.sourceStock = freshStock;
           }
+          // KHÔNG ghi đè sourceStock = 0 chỉ vì balance ví thấp
+          // (balance thấp chỉ ảnh hưởng hiển thị UI trong syncDetailStockUI, không phải dữ liệu kho)
+
+          const targetStock = map.sourceStock || 0;
+
+          if (sourceBal < minPriceNeeded) {
+            // Balance thấp: hiển thị hết hàng nhưng GIỮ NGUYÊN sourceStock trong map
+            p.stock = 0;
+            if (Array.isArray(p.variants)) {
+              p.variants.forEach(v => { if (v) v.stock = 0; });
+            }
+          } else {
+            p.stock = targetStock;
+            if (Array.isArray(p.variants)) {
+              p.variants.forEach(v => { if (v) v.stock = targetStock; });
+            }
+          }
+          p.apiMapping = map;
+          p.deliveryType = "api";
           syncCount++;
         }
       });
@@ -8618,7 +9914,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
 
     let stockViewDebounceTimer = null;
-    let _stockViewCountTimer = null;
+    var _stockViewCountTimer = null;
 
     function handleCurrentStockViewInput() {
       const select = document.getElementById("admStockProductSelect");
@@ -8649,7 +9945,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.handleCurrentStockViewInput = handleCurrentStockViewInput;
 
-    let _importLinesDebounce = null;
+    var _importLinesDebounce = null;
     function updateImportLinesCount(immediate) {
       const textarea = document.getElementById("admStockBulkInput");
       const importLinesCount = document.getElementById("admStockImportLines");
@@ -8714,8 +10010,12 @@ function syncAllOpenViewsStock(changedProdId) {
         let importedCount = newLines.length;
 
         if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
-          // 1. Nạp trực tiếp lên Turso Database qua Worker
-          const res = await TURSO_CLIENT.importAccounts(prodId, vVal || 0, newLines, prod);
+          // 1. Nạp trực tiếp lên Turso Database qua Worker kèm tiến trình hiển thị
+          const res = await TURSO_CLIENT.importAccounts(prodId, vVal || 0, newLines, prod, (done, total) => {
+            if (importBtn && total > 100) {
+              importBtn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang nạp kho (" + done + "/" + total + ")...";
+            }
+          });
           importedCount = (typeof res === "number") ? res : ((res && res.imported !== undefined) ? res.imported : newLines.length);
 
           // 2. Nạp song song vào bộ nhớ local để giao diện tức thì
@@ -8755,6 +10055,15 @@ function syncAllOpenViewsStock(changedProdId) {
 
         if (typeof saveProductsToStorage === "function") saveProductsToStorage();
         if (typeof recordProductVariants === "function") recordProductVariants(prodId, prod.variants, prod.name);
+        if (typeof callGasApi === "function") {
+          callGasApi("adminImportStock", {
+            prodId: prodId,
+            variantIdx: vVal,
+            accounts: newLines.join("\n"),
+            variants: hasVars ? JSON.stringify(prod.variants) : "",
+            stock: newStockCount
+          }).catch(err => console.warn("Lỗi sync Google Sheets:", err));
+        }
         refreshAllShopStockUI(prodId);
 
       } catch(err) {
@@ -9583,9 +10892,9 @@ function syncAllOpenViewsStock(changedProdId) {
         img.onload = function() {
           try {
             const canvas = document.createElement("canvas");
-            const MAX_DIM = 480;
-            let w = img.width || 480;
-            let h = img.height || 480;
+            const MAX_DIM = 400;
+            let w = img.width || 400;
+            let h = img.height || 400;
             if (w > h) {
               if (w > MAX_DIM) {
                 h = Math.round((h * MAX_DIM) / w);
@@ -9602,10 +10911,10 @@ function syncAllOpenViewsStock(changedProdId) {
             const ctx = canvas.getContext("2d");
             ctx.drawImage(img, 0, 0, w, h);
             
-            let quality = 0.75;
+            let quality = 0.7;
             let compressed = canvas.toDataURL("image/jpeg", quality);
-            while (compressed.length > 40000 && quality > 0.35) {
-              quality -= 0.15;
+            while (compressed.length > 28000 && quality > 0.25) {
+              quality -= 0.1;
               compressed = canvas.toDataURL("image/jpeg", quality);
             }
 
@@ -9790,17 +11099,194 @@ function syncAllOpenViewsStock(changedProdId) {
     // =========================================================================
     // 4. USER ORDERS & PROFILE ORDERS MANAGEMENT
     // =========================================================================
-    function getUserOrders() {
-      try {
-        const stored = localStorage.getItem("mmo_user_orders") || localStorage.getItem("mmo_orders");
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) return parsed;
+    function getOrderTimestamp(o) {
+      if (!o) return 0;
+      if (typeof o.createdTimestamp === "number" && o.createdTimestamp > 0) return o.createdTimestamp;
+      if (typeof o.timestamp === "number" && o.timestamp > 0) return o.timestamp;
+      if (typeof o.createdAt === "number" && o.createdAt > 0) return o.createdAt;
+      
+      const dateStr = String(o.createdAt || o.date || o.time || "").trim();
+      if (dateStr) {
+        if (/^\d{10,13}$/.test(dateStr)) {
+          return Number(dateStr);
         }
-      } catch(e) {}
-      return [];
+        const parsed = Date.parse(dateStr);
+        if (!isNaN(parsed) && parsed > 0) return parsed;
+
+        const m = dateStr.match(/(\d{1,2}):(\d{1,2}):(\d{1,2})\s+(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (m) {
+          const h = parseInt(m[1]), min = parseInt(m[2]), s = parseInt(m[3]);
+          const day = parseInt(m[4]), month = parseInt(m[5]) - 1, year = parseInt(m[6]);
+          return new Date(year, month, day, h, min, s).getTime();
+        }
+        const m2 = dateStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (m2) {
+          const day = parseInt(m2[1]), month = parseInt(m2[2]) - 1, year = parseInt(m2[3]);
+          return new Date(year, month, day).getTime();
+        }
+      }
+
+      const idStr = String(o.id || o.orderId || o.orderCode || "");
+      const numMatch = idStr.match(/\d{10,13}/);
+      if (numMatch) {
+        const t = Number(numMatch[0]);
+        if (t > 1500000000000) return t;
+      }
+      return 0;
     }
-    window.getUserOrders = getUserOrders;
+    window.getOrderTimestamp = getOrderTimestamp;
+
+    function formatOrderDate(rawDate, fallbackTs) {
+      if (!rawDate) {
+        if (fallbackTs && Number(fallbackTs) > 0) {
+          return new Date(Number(fallbackTs)).toLocaleString("vi-VN");
+        }
+        return new Date().toLocaleString("vi-VN");
+      }
+      const s = String(rawDate).trim();
+      if (/^\d{10,13}$/.test(s)) {
+        return new Date(Number(s)).toLocaleString("vi-VN");
+      }
+      return s;
+    }
+    window.formatOrderDate = formatOrderDate;
+
+    function getUserOrders() {
+      let userOrders = [];
+      const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+      const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
+
+      // 1. Quét toàn bộ các nguồn lưu trữ đơn hàng
+      const scanKeys = ["mmo_user_orders", "mmo_orders", "mmo_all_orders"];
+      scanKeys.forEach(function(k) {
+        try {
+          const raw = localStorage.getItem(k);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return;
+
+          parsed.forEach(function(o) {
+            if (!o) return;
+            const oEmail = String(o.userEmail || o.email || o.buyerEmail || "").toLowerCase().trim();
+            // Nếu đã đăng nhập, chỉ lấy đơn của tài khoản hiện tại (hoặc đơn không gắn email)
+            if (cleanUserMail && oEmail && oEmail !== cleanUserMail) return;
+
+            const rawId = String(o.orderId || o.orderCode || o.id || "");
+            if (!rawId) return;
+
+            // Bỏ qua bản ghi TX_PO_ rác nếu không có tài khoản và total <= 0
+            if (rawId.startsWith("TX_PO_") && (!o.credentials && !o.deliveredAccounts) && (!o.total || o.total <= 0)) {
+              return;
+            }
+
+            const cleanId = rawId.startsWith("#") ? rawId.replace("#", "").trim() : rawId;
+            const ts = getOrderTimestamp(o);
+            const formattedDate = formatOrderDate(o.date || o.createdAt || o.time, ts);
+
+            const existingIdx = userOrders.findIndex(function(u) {
+              const uId = String(u.orderId || u.id || u.orderCode || "");
+              return uId === cleanId;
+            });
+
+            if (existingIdx === -1) {
+              userOrders.push(Object.assign({}, o, {
+                id: cleanId,
+                orderId: cleanId,
+                orderCode: cleanId,
+                date: formattedDate,
+                createdAt: formattedDate,
+                createdTimestamp: ts
+              }));
+            } else {
+              // Cập nhật thông tin mới nhất và trạng thái bảo hành / đổi trả
+              if (isOrderWarrantyOrExchange(o)) {
+                userOrders[existingIdx].status = o.status;
+                if (o.credentials) userOrders[existingIdx].credentials = o.credentials;
+                if (o.hasComplaint) userOrders[existingIdx].hasComplaint = true;
+                if (o.replacementAccount) userOrders[existingIdx].replacementAccount = o.replacementAccount;
+              } else if (!isOrderWarrantyOrExchange(userOrders[existingIdx]) && o.status) {
+                userOrders[existingIdx].status = o.status;
+              }
+              if (o.deliveredAccounts && o.deliveredAccounts.length > 0) {
+                userOrders[existingIdx].deliveredAccounts = o.deliveredAccounts;
+                userOrders[existingIdx].credentials = Array.isArray(o.deliveredAccounts) ? o.deliveredAccounts.join("\n") : o.deliveredAccounts;
+                if (!isOrderWarrantyOrExchange(userOrders[existingIdx])) {
+                  userOrders[existingIdx].status = "COMPLETED";
+                }
+              }
+              if (ts > (userOrders[existingIdx].createdTimestamp || 0)) {
+                userOrders[existingIdx].createdTimestamp = ts;
+              }
+            }
+          });
+        } catch(e) {}
+      });
+
+      // 2. Hợp nhất danh sách đơn đặt trước từ getPreOrders()
+      try {
+        const preOrders = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
+        preOrders.forEach(function(po) {
+          const poEmail = String(po.buyerEmail || po.userEmail || po.email || "").toLowerCase().trim();
+          if (cleanUserMail && poEmail && poEmail !== cleanUserMail) return;
+
+          const pId = String(po.orderCode || po.id || po.orderId || "");
+          if (!pId) return;
+
+          const cleanId = pId.startsWith("#") ? pId.replace("#", "").trim() : pId;
+          const ts = getOrderTimestamp(po);
+          const formattedDate = formatOrderDate(po.createdAt || po.date || po.time, ts);
+
+          const uIdx = userOrders.findIndex(function(u) {
+            const uId = String(u.orderId || u.id || u.orderCode || "");
+            return uId === cleanId;
+          });
+
+          if (uIdx !== -1) {
+            userOrders[uIdx].status = po.status;
+            userOrders[uIdx].statusText = po.statusText;
+            userOrders[uIdx].deliveredAccounts = po.deliveredAccounts;
+            if (po.deliveredAccounts && po.deliveredAccounts.length > 0) {
+              userOrders[uIdx].credentials = Array.isArray(po.deliveredAccounts) ? po.deliveredAccounts.join("\n") : po.deliveredAccounts;
+            }
+            if (ts > (userOrders[uIdx].createdTimestamp || 0)) {
+              userOrders[uIdx].createdTimestamp = ts;
+            }
+          } else {
+            userOrders.push({
+              id: cleanId,
+              orderId: cleanId,
+              orderCode: cleanId,
+              type: "PRE_ORDER",
+              status: po.status || "WAITING_CONFIRM",
+              statusText: po.statusText || "Chờ xác nhận",
+              productName: po.productName || "Sản phẩm đặt trước",
+              variant: po.variantName || po.variant || "",
+              variantName: po.variantName || po.variant || "",
+              quantity: po.qty || po.quantity || 1,
+              qty: po.qty || po.quantity || 1,
+              total: po.total || po.totalPrice || 0,
+              totalPrice: po.total || po.totalPrice || 0,
+              date: formattedDate,
+              createdAt: formattedDate,
+              createdTimestamp: ts,
+              credentials: Array.isArray(po.deliveredAccounts) ? po.deliveredAccounts.join("\n") : (po.deliveredAccounts || ""),
+              deliveredAccounts: po.deliveredAccounts || [],
+              maxDays: po.maxDays || 7,
+              customNotes: po.customNotes || "",
+              buyerEmail: po.buyerEmail || "",
+              buyerUsername: po.buyerUsername || ""
+            });
+          }
+        });
+      } catch(e) {}
+
+      // 3. SẮP XẾP CHÍNH XÁC: ĐƠN HÀNG MỚI NHẤT LUÔN LÊN ĐẦU TIÊN (NEWEST FIRST)
+      userOrders.sort(function(a, b) {
+        return getOrderTimestamp(b) - getOrderTimestamp(a);
+      });
+
+      return userOrders;
+    }
 
     function saveUserOrders(orders, shouldRender = true) {
       try {
@@ -9810,6 +11296,21 @@ function syncAllOpenViewsStock(changedProdId) {
       } catch(e) {}
     }
     window.saveUserOrders = saveUserOrders;
+
+    var _previousView = "viewStore";
+
+    function goBackToPreviousView() {
+      const prev = _previousView || "viewStore";
+      if (prev === "viewProfile") {
+        if (typeof goToMyOrders === "function") goToMyOrders();
+        else switchView("viewProfile");
+      } else if (prev === "viewAdmin") {
+        switchView("viewAdmin");
+      } else {
+        switchView(prev || "viewStore");
+      }
+    }
+    window.goBackToPreviousView = goBackToPreviousView;
 
     function goToMyOrders() {
       if (typeof switchView === "function") switchView("viewProfile");
@@ -9838,7 +11339,7 @@ function syncAllOpenViewsStock(changedProdId) {
     window.openCurrentOrderCredentials = openCurrentOrderCredentials;
 
     // Tự động đồng bộ các đơn hàng đổi trả / hoàn tiền từ tin nhắn CSKH và toàn sàn
-    let _isSyncingWarrantyOrders = false;
+    var _isSyncingWarrantyOrders = false;
     function syncUserOrdersWithWarrantyUpdates() {
       if (_isSyncingWarrantyOrders) return;
       let uOrders = typeof getUserOrders === "function" ? getUserOrders() : [];
@@ -9928,20 +11429,34 @@ function syncAllOpenViewsStock(changedProdId) {
     function openOrderCredentialsModal(orderId) {
       if (!orderId) orderId = window.currentThankYouOrderId || window.lastDeliveredOrderId;
       if (!orderId) return;
+      
+      const cleanId = String(orderId).replace("#", "").trim();
+
+      // Nếu là đơn hàng đặt trước (PRE...) -> Chuyển sang xem đơn đặt trước
+      if (cleanId.startsWith("PRE")) {
+        openPreOrderDetailView(cleanId);
+        return;
+      }
+
       syncUserOrdersWithWarrantyUpdates();
       const orders = getUserOrders();
-      let order = orders.find(o => (o.orderId === orderId || o.id === orderId));
+      let order = orders.find(o => (o.orderId === cleanId || o.id === cleanId));
 
       if (!order) {
         const all = typeof getAllOrders === "function" ? getAllOrders() : [];
-        order = all.find(o => (o.orderId === orderId || o.id === orderId));
+        order = all.find(o => (o.orderId === cleanId || o.id === cleanId));
+      }
+
+      if (order && (order.type === "PRE_ORDER" || String(order.id || "").startsWith("PRE"))) {
+        openPreOrderDetailView(cleanId);
+        return;
       }
 
       // Fallback lấy tài khoản từ phiên vừa giao
-      if (!order && (window.lastDeliveredOrderId === orderId || window.currentThankYouOrderId === orderId || window.lastDeliveredCredentials)) {
+      if (!order && (window.lastDeliveredOrderId === cleanId || window.currentThankYouOrderId === cleanId || window.lastDeliveredCredentials)) {
         order = {
-          id: orderId,
-          orderId: orderId,
+          id: cleanId,
+          orderId: cleanId,
           productName: (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && currentSelectedProduct.name) || document.getElementById("tyProdName")?.innerText || "Sản phẩm MMO",
           variant: document.getElementById("tyProdVariant")?.innerText || "",
           quantity: parseInt(document.getElementById("tyProdQty")?.innerText || "1") || 1,
@@ -9952,9 +11467,11 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (!order) {
-        showToast("Không tìm thấy dữ liệu đơn hàng: " + orderId, "warning");
+        showToast("Không tìm thấy dữ liệu đơn hàng: " + cleanId, "warning");
         return;
       }
+      window.currentViewingDeliveryOrder = order;
+      window.currentViewingDeliveryOrderId = cleanId;
       const dlvId = document.getElementById("dlvOrderId");
       if (dlvId) dlvId.innerText = order.orderId || order.id || "";
       const dlvInfo = document.getElementById("dlvProdInfo");
@@ -9979,24 +11496,239 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.openOrderCredentialsModal = openOrderCredentialsModal;
 
-    function handleRateOrder(orderId) {
-      const rating = prompt("⭐ Vui lòng đánh giá chất lượng sản phẩm (1 đến 5 sao):", "5");
-      if (rating !== null) {
-        showToast("Cảm ơn bạn đã gửi đánh giá " + rating + "⭐ cho đơn hàng #" + orderId + "!", "success");
+    // ==========================================
+    // ORDER REVIEW & RATING CORE SYSTEM
+    // ==========================================
+    var currentReviewRating = 5;
+    var currentViewingReviewOrderId = null;
+
+    function setReviewStarRating(rating) {
+      currentReviewRating = Math.max(1, Math.min(5, parseInt(rating) || 5));
+      updateReviewStarsUI(currentReviewRating);
+    }
+    window.setReviewStarRating = setReviewStarRating;
+
+    function highlightReviewStars(rating) {
+      const container = document.getElementById("revStarRatingContainer");
+      if (!container) return;
+      const stars = container.querySelectorAll(".rev-star-item");
+      stars.forEach((s, idx) => {
+        if (idx < rating) {
+          s.className = "fa-solid fa-star rev-star-item";
+          s.style.color = "#fbbf24";
+        } else {
+          s.className = "fa-regular fa-star rev-star-item";
+          s.style.color = "#475569";
+        }
+      });
+    }
+    window.highlightReviewStars = highlightReviewStars;
+
+    function resetReviewStarsHighlight() {
+      updateReviewStarsUI(currentReviewRating);
+    }
+    window.resetReviewStarsHighlight = resetReviewStarsHighlight;
+
+    function updateReviewStarsUI(rating) {
+      const container = document.getElementById("revStarRatingContainer");
+      const label = document.getElementById("revStarRatingLabel");
+      if (container) {
+        const stars = container.querySelectorAll(".rev-star-item");
+        stars.forEach((s, idx) => {
+          if (idx < rating) {
+            s.className = "fa-solid fa-star rev-star-item";
+            s.style.color = "#fbbf24";
+          } else {
+            s.className = "fa-regular fa-star rev-star-item";
+            s.style.color = "#475569";
+          }
+        });
+      }
+      if (label) {
+        const starLabels = {
+          1: "1/5 Sao - Rất tệ 😡",
+          2: "2/5 Sao - Không hài lòng 🙁",
+          3: "3/5 Sao - Tạm ổn 😐",
+          4: "4/5 Sao - Hài lòng, tốt 😊",
+          5: "5/5 Sao - Rất hài lòng ⭐⭐⭐⭐⭐"
+        };
+        label.innerText = starLabels[rating] || (rating + "/5 Sao");
       }
     }
-    window.handleRateOrder = handleRateOrder;
 
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+    function appendReviewTag(tagText) {
+      const commentInput = document.getElementById("revModalCommentInput");
+      if (!commentInput) return;
+      if (!commentInput.value.trim()) {
+        commentInput.value = tagText;
+      } else {
+        commentInput.value = commentInput.value.trim() + " " + tagText;
+      }
+      commentInput.focus();
     }
-    window.escapeHtml = escapeHtml;
+    window.appendReviewTag = appendReviewTag;
+
+    function openOrderReviewModal(orderId) {
+      if (!orderId) return;
+      const cleanId = String(orderId).replace("#", "").trim();
+      currentViewingReviewOrderId = cleanId;
+
+      // Tìm đơn hàng từ tất cả các nguồn dữ liệu
+      let allOrders = [];
+      try {
+        const rawAll = localStorage.getItem("mmo_all_orders");
+        if (rawAll) allOrders = JSON.parse(rawAll);
+        if (!Array.isArray(allOrders)) allOrders = [];
+      } catch(e) { allOrders = []; }
+
+      try {
+        const rawUser = localStorage.getItem("mmo_user_orders");
+        if (rawUser) {
+          const userOrders = JSON.parse(rawUser);
+          if (Array.isArray(userOrders)) {
+            userOrders.forEach(uo => {
+              if (!allOrders.some(ao => (ao.id || "").replace("#","").trim().toLowerCase() === (uo.id || "").replace("#","").trim().toLowerCase())) {
+                allOrders.push(uo);
+              }
+            });
+          }
+        }
+      } catch(e) {}
+
+      try {
+        const rawOrders = localStorage.getItem("mmo_orders");
+        if (rawOrders) {
+          const ordList = JSON.parse(rawOrders);
+          if (Array.isArray(ordList)) {
+            ordList.forEach(ro => {
+              if (!allOrders.some(ao => (ao.id || "").replace("#","").trim().toLowerCase() === (ro.id || "").replace("#","").trim().toLowerCase())) {
+                allOrders.push(ro);
+              }
+            });
+          }
+        }
+      } catch(e) {}
+
+      const order = allOrders.find(o => 
+        String(o.orderId || o.id || "").replace("#","").trim().toLowerCase() === cleanId.toLowerCase()
+      ) || (typeof getPreOrders === "function" ? getPreOrders().find(p => String(p.id || p.orderId || "").replace("#","").trim().toLowerCase() === cleanId.toLowerCase()) : null);
+
+      const codeEl = document.getElementById("revModalOrderCode");
+      const prodEl = document.getElementById("revModalProductName");
+      const varEl = document.getElementById("revModalVariantName");
+      const commentInput = document.getElementById("revModalCommentInput");
+
+      if (codeEl) codeEl.innerText = "#" + cleanId;
+      if (prodEl) prodEl.innerText = order ? (order.productName || order.title || order.name || "Tài khoản MMO") : "Tài khoản MMO";
+      if (varEl) varEl.innerText = order ? (order.variantName || order.variant || "Mặc định") : "Mặc định";
+
+      // Nếu đơn này đã từng đánh giá trước đó, nạp lại dữ liệu đánh giá
+      if (order && (order.reviewed || order.isReviewed)) {
+        currentReviewRating = order.reviewRating || 5;
+        if (commentInput) commentInput.value = order.reviewComment || "Tài khoản chất lượng, đăng nhập mượt mà đúng mô tả. Đánh giá 5 sao!";
+      } else {
+        currentReviewRating = 5;
+        if (commentInput) commentInput.value = "Tài khoản chất lượng, đăng nhập mượt mà đúng mô tả. Đánh giá 5 sao!";
+      }
+
+      updateReviewStarsUI(currentReviewRating);
+      
+      const modalEl = document.getElementById("orderReviewModal");
+      if (modalEl) modalEl.style.display = "flex";
+      else if (typeof openModal === "function") openModal("orderReviewModal");
+    }
+    window.openOrderReviewModal = openOrderReviewModal;
+    window.handleRateOrder = openOrderReviewModal;
+
+    function submitOrderReview() {
+      if (!currentViewingReviewOrderId) {
+        closeModal("orderReviewModal");
+        return;
+      }
+      const cleanId = String(currentViewingReviewOrderId).replace("#", "").trim();
+      const commentInput = document.getElementById("revModalCommentInput");
+      const commentText = (commentInput ? commentInput.value.trim() : "") || "Tài khoản chất lượng, uy tín 5 sao!";
+      const rating = currentReviewRating || 5;
+
+      let matchedOrder = null;
+
+      // Cập nhật mmo_all_orders, mmo_user_orders, mmo_orders
+      ["mmo_all_orders", "mmo_user_orders", "mmo_orders"].forEach(key => {
+        try {
+          const raw = localStorage.getItem(key);
+          if (raw) {
+            const arr = JSON.parse(raw);
+            if (Array.isArray(arr)) {
+              let mod = false;
+              arr.forEach(o => {
+                if (String(o.orderId || o.id || "").replace("#","").trim().toLowerCase() === cleanId.toLowerCase()) {
+                  o.reviewed = true;
+                  o.isReviewed = true;
+                  o.reviewRating = rating;
+                  o.reviewComment = commentText;
+                  o.reviewedAt = new Date().toISOString();
+                  matchedOrder = o;
+                  mod = true;
+                }
+              });
+              if (mod) localStorage.setItem(key, JSON.stringify(arr));
+            }
+          }
+        } catch(e) {}
+      });
+
+      // Cập nhật mmo_pre_orders nếu có
+      try {
+        const rawPo = localStorage.getItem("mmo_pre_orders");
+        if (rawPo) {
+          const pos = JSON.parse(rawPo);
+          if (Array.isArray(pos)) {
+            let mod = false;
+            pos.forEach(p => {
+              if (String(p.id || p.orderId || "").replace("#","").trim().toLowerCase() === cleanId.toLowerCase()) {
+                p.reviewed = true;
+                p.isReviewed = true;
+                p.reviewRating = rating;
+                p.reviewComment = commentText;
+                p.reviewedAt = new Date().toISOString();
+                if (!matchedOrder) matchedOrder = p;
+                mod = true;
+              }
+            });
+            if (mod) localStorage.setItem("mmo_pre_orders", JSON.stringify(pos));
+          }
+        }
+      } catch(e) {}
+
+      // Ghi nhận đánh giá vào danh sách review của sản phẩm để hiển thị trên shop
+      const prodId = matchedOrder ? (matchedOrder.productId || matchedOrder.pId || "default") : "default";
+      try {
+        const userEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) 
+          ? (currentUser.email.split("@")[0].substring(0, 5) + "***@" + (currentUser.email.split("@")[1] || "gmail.com"))
+          : "khachhang_" + Math.floor(Math.random() * 1000) + "@gmail.com";
+
+        const prodRevs = typeof getProductReviews === "function" ? [...getProductReviews(prodId)] : [];
+        prodRevs.unshift({
+          name: userEmail,
+          rating: rating,
+          date: "Vừa xong",
+          comment: commentText,
+          orderId: "#" + cleanId
+        });
+        localStorage.setItem("mmo_product_reviews_" + prodId, JSON.stringify(prodRevs));
+      } catch(e) {}
+
+      closeModal("orderReviewModal");
+
+      if (typeof showToast === "function") {
+        showToast("🎉 Cảm ơn bạn đã gửi đánh giá " + rating + "⭐ cho đơn hàng #" + cleanId + "!", "success");
+      }
+
+      // Refresh UI
+      if (typeof renderProfileOrders === "function") renderProfileOrders();
+      if (typeof renderProductReviews === "function") renderProductReviews();
+    }
+    window.submitOrderReview = submitOrderReview;
 
     var profileOrdersActiveTab = "ALL";
     window.profileOrdersActiveTab = "ALL";
@@ -10047,20 +11779,24 @@ function syncAllOpenViewsStock(changedProdId) {
       const container = document.getElementById("profileOrdersList");
       if (!container) return;
 
+      // Đồng bộ thông tin đổi trả từ chat trước khi render
       if (typeof syncUserOrdersWithWarrantyUpdates === "function") {
         syncUserOrdersWithWarrantyUpdates();
       }
 
       let orders = (typeof getUserOrders === "function") ? getUserOrders() : [];
       if (!orders || orders.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:36px; color:#64748b;">' +
-          '<i class="fa-solid fa-receipt" style="font-size:2.4rem; margin-bottom:12px; display:block; color:#334155;"></i>' +
-          '<p style="font-size:0.95rem; color:#94a3b8;">Bạn chưa có đơn hàng nào. Hãy khám phá và mua sắm ngay!</p>' +
-          '<button class="btn-auth" style="margin-top:14px; display:inline-flex;" onclick="switchView(\'viewStore\')"><i class="fa-solid fa-house"></i> Về Trang Chủ Mua Hàng</button>' +
-        '</div>';
+        container.innerHTML = `
+          <div style="text-align:center; padding:36px; color:#64748b;">
+            <i class="fa-solid fa-receipt" style="font-size:2.4rem; margin-bottom:12px; display:block; color:#334155;"></i>
+            <p style="font-size:0.95rem; color:#94a3b8;">Bạn chưa có đơn hàng nào. Hãy khám phá và mua sắm ngay!</p>
+            <button class="btn-auth" style="margin-top:14px; display:inline-flex;" onclick="switchView('viewStore')"><i class="fa-solid fa-house"></i> Về Trang Chủ Mua Hàng</button>
+          </div>
+        `;
         return;
       }
 
+      // Đếm số lượng đơn theo phân loại
       const countAll = orders.length;
       const countPre = orders.filter(function(o) {
         const oId = String(o.orderId || o.id || "");
@@ -10069,12 +11805,12 @@ function syncAllOpenViewsStock(changedProdId) {
       const countExchanged = orders.filter(function(o) {
         const oId = String(o.orderId || o.id || "");
         if (o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_")) return false;
-        return (typeof isOrderWarrantyOrExchange === "function") ? isOrderWarrantyOrExchange(o) : false;
+        return isOrderWarrantyOrExchange(o);
       }).length;
       const countCompleted = orders.filter(function(o) {
         const oId = String(o.orderId || o.id || "");
         if (o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_")) return false;
-        return (typeof isOrderWarrantyOrExchange === "function") ? !isOrderWarrantyOrExchange(o) : true;
+        return !isOrderWarrantyOrExchange(o);
       }).length;
 
       const elCountAll = document.getElementById("profOrdersCountAll");
@@ -10086,6 +11822,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (elCountEx) elCountEx.innerText = countExchanged;
       if (elCountDone) elCountDone.innerText = countCompleted;
 
+      // Lọc theo sub-tab đang chọn
       if (profileOrdersActiveTab === "PRE_ORDER") {
         orders = orders.filter(function(o) {
           const oId = String(o.orderId || o.id || "");
@@ -10095,13 +11832,13 @@ function syncAllOpenViewsStock(changedProdId) {
         orders = orders.filter(function(o) {
           const oId = String(o.orderId || o.id || "");
           if (o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_")) return false;
-          return (typeof isOrderWarrantyOrExchange === "function") ? isOrderWarrantyOrExchange(o) : false;
+          return isOrderWarrantyOrExchange(o);
         });
       } else if (profileOrdersActiveTab === "COMPLETED") {
         orders = orders.filter(function(o) {
           const oId = String(o.orderId || o.id || "");
           if (o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_")) return false;
-          return (typeof isOrderWarrantyOrExchange === "function") ? !isOrderWarrantyOrExchange(o) : true;
+          return !isOrderWarrantyOrExchange(o);
         });
       }
 
@@ -10115,14 +11852,17 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (orders.length === 0) {
-        container.innerHTML = '<div style="text-align:center; padding:36px; color:#64748b;">' +
-          '<i class="fa-solid fa-box-open" style="font-size:2.2rem; margin-bottom:10px; display:block; color:#334155;"></i>' +
-          '<p style="font-size:0.92rem; color:#94a3b8;">Không tìm thấy đơn hàng nào phù hợp với bộ lọc hiện tại.</p>' +
-        '</div>';
+        container.innerHTML = `
+          <div style="text-align:center; padding:36px; color:#64748b;">
+            <i class="fa-solid fa-box-open" style="font-size:2.2rem; margin-bottom:10px; display:block; color:#334155;"></i>
+            <p style="font-size:0.92rem; color:#94a3b8;">Không tìm thấy đơn hàng nào phù hợp với bộ lọc hiện tại.</p>
+          </div>
+        `;
         if (typeof renderPaginationUI === "function") renderPaginationUI("userOrdersPagination", 1, 0, "changeUserOrdersPage");
         return;
       }
 
+      // Sắp xếp đơn hàng mới nhất lên đầu tiên
       orders.sort(function(a, b) {
         return (typeof getOrderTimestamp === "function") ? (getOrderTimestamp(b) - getOrderTimestamp(a)) : 0;
       });
@@ -10135,120 +11875,431 @@ function syncAllOpenViewsStock(changedProdId) {
       const startIndex = (validPage - 1) * itemsPerPage;
       const pageOrders = orders.slice(startIndex, startIndex + itemsPerPage);
 
-      let rowsHtml = pageOrders.map(function(order) {
-        const oId = order.orderId || order.id || order.orderCode || "";
-        const pName = escapeHtml(order.productName || "Sản phẩm");
-        const vName = escapeHtml(order.variant || order.variantName || "Mặc định");
-        const tot = (typeof formatVND === "function") ? formatVND(order.total || order.totalPrice || 0) : ((order.total || 0).toLocaleString("vi-VN") + " đ");
-        const q = order.quantity || order.qty || 1;
-        const d = escapeHtml(order.date || order.createdAt || "");
-        const stLow = String(order.status || order.statusText || "").toLowerCase();
-        const credLow = String(order.credentials || order.accounts || "").toLowerCase();
+      container.innerHTML = `
+        <div style="overflow-x:auto;">
+          <table style="width:100%; border-collapse:collapse; min-width:760px; font-size:0.85rem;">
+            <thead>
+              <tr style="background:#070d18; border-bottom:1px solid #1e293b; color:#94a3b8; text-align:left; font-size:0.75rem; text-transform:uppercase;">
+                <th style="padding:12px 14px;">Mã ĐH / Ngày</th>
+                <th style="padding:12px 14px;">Sản phẩm &amp; Loại</th>
+                <th style="padding:12px 14px;">Tổng tiền</th>
+                <th style="padding:12px 14px;">Thông tin</th>
+                <th style="padding:12px 14px;">Trạng thái / Tiến độ</th>
+                <th style="padding:12px 14px; text-align:center;">Hành động</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pageOrders.map(function(order) {
+                const oId = order.orderId || order.id || order.orderCode || '';
+                const pName = escapeHtml(order.productName || 'Sản phẩm');
+                const vName = escapeHtml(order.variant || order.variantName || 'Mặc định');
+                const tot = (typeof formatVND === "function") ? formatVND(order.total || order.totalPrice || 0) : ((order.total || 0).toLocaleString("vi-VN") + " đ");
+                const q = order.quantity || order.qty || 1;
+                const d = escapeHtml(order.date || order.createdAt || '');
+                const stLow = String(order.status || order.statusText || '').toLowerCase();
+                const credLow = String(order.credentials || order.accounts || '').toLowerCase();
 
-        const isPreOrder = order.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_");
-        const isRefunded = !isPreOrder && (stLow.includes("hoàn tiền") || stLow.includes("hoan tien") || stLow.includes("refund") || Boolean(order.refundedAt) || Boolean(order.isRefunded) || Boolean(order.refundAmount));
-        const isExchanged = !isPreOrder && !isRefunded && (stLow.includes("đổi trả") || stLow.includes("doi tra") || stLow.includes("1-đổi-1") || stLow.includes("1-doi-1") || stLow.includes("đổi 1-1") || stLow.includes("doi 1-1") || stLow.includes("đã bảo hành") || stLow.includes("da bao hanh") || credLow.includes("đổi trả") || credLow.includes("doi tra") || credLow.includes("tài khoản mới đổi trả") || Boolean(order.replacementAccount) || Boolean(order.isExchanged));
-        const isComplain = !isPreOrder && !isRefunded && !isExchanged && (stLow.includes("khiếu nại") || stLow.includes("khieu nai") || stLow.includes("bảo hành") || stLow.includes("bao hanh") || stLow.includes("warranty") || stLow.includes("complain") || Boolean(order.hasComplaint) || Boolean(order.isWarranty));
+                const isPreOrder = order.type === 'PRE_ORDER' || oId.startsWith('PRE') || oId.includes('PO_');
+                const isRefunded = !isPreOrder && (stLow.includes('hoàn tiền') || stLow.includes('hoan tien') || stLow.includes('refund') || Boolean(order.refundedAt) || Boolean(order.isRefunded) || Boolean(order.refundAmount));
+                const isExchanged = !isPreOrder && !isRefunded && (stLow.includes('đổi trả') || stLow.includes('doi tra') || stLow.includes('1-đổi-1') || stLow.includes('1-doi-1') || stLow.includes('đổi 1-1') || stLow.includes('doi 1-1') || stLow.includes('đã bảo hành') || stLow.includes('da bao hanh') || credLow.includes('đổi trả') || credLow.includes('doi tra') || credLow.includes('tài khoản mới đổi trả') || Boolean(order.replacementAccount) || Boolean(order.isExchanged));
+                const isComplain = !isPreOrder && !isRefunded && !isExchanged && (stLow.includes('khiếu nại') || stLow.includes('khieu nai') || stLow.includes('bảo hành') || stLow.includes('bao hanh') || stLow.includes('warranty') || stLow.includes('complain') || Boolean(order.hasComplaint) || Boolean(order.isWarranty));
 
-        let statusBadgeHtml = "";
-        let actionBtnsHtml = "";
+                let statusBadgeHtml = '';
+                let actionBtnsHtml = '';
+                let orderCodeHtml = '';
+                let prodTitleHtml = '';
 
-        if (isPreOrder) {
-          const rawSt = String(order.status || "").toUpperCase();
-          if (rawSt === "WAITING_CONFIRM" || stLow.includes("chờ")) {
-            statusBadgeHtml = "<span class=\"badge-verified\" style=\"background:rgba(245,158,11,0.25); border:1px solid #f59e0b; color:#fbbf24; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;\"><i class=\"fa-solid fa-calendar-check\"></i> ĐẶT TRƯỚC - Chờ xác nhận</span>";
-            actionBtnsHtml = "<div style=\"display:inline-flex; gap:5px; white-space:nowrap;\"><button class=\"btn-copy-small\" onclick=\"openPreOrderDetailView('" + oId + "')\" style=\"font-size:0.72rem; white-space:nowrap;\"><i class=\"fa-solid fa-eye\"></i> Chi tiết</button><button type=\"button\" class=\"btn-tool-secondary\" onclick=\"customerCancelPreOrder('" + oId + "')\" style=\"background:#ef4444; color:#fff; border:none; padding:4px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; cursor:pointer; white-space:nowrap;\">Hủy đơn</button></div>";
-          } else if (rawSt === "PROCESSING" || stLow.includes("xử lý")) {
-            statusBadgeHtml = "<span class=\"badge-verified\" style=\"background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;\"><i class=\"fa-solid fa-spinner fa-spin\"></i> ĐẶT TRƯỚC - Đang xử lý</span>";
-            actionBtnsHtml = "<button class=\"btn-copy-small\" onclick=\"openPreOrderDetailView('" + oId + "')\" style=\"font-size:0.72rem; white-space:nowrap;\"><i class=\"fa-solid fa-eye\"></i> Chi tiết</button>";
-          } else if (rawSt === "COMPLETED" || stLow.includes("giao") || stLow.includes("hoàn thành")) {
-            statusBadgeHtml = "<span class=\"badge-verified\" style=\"background:rgba(16,185,129,0.25); border:1px solid #10b981; color:#34d399; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;\"><i class=\"fa-solid fa-circle-check\"></i> ĐẶT TRƯỚC - Đã giao</span>";
-            actionBtnsHtml = "<button class=\"btn-copy-small\" onclick=\"openPreOrderDetailView('" + oId + "')\" style=\"font-size:0.72rem; white-space:nowrap;\"><i class=\"fa-solid fa-eye\"></i> Xem tài khoản</button>";
-          } else if (rawSt === "CANCELLED" || stLow.includes("hủy")) {
-            statusBadgeHtml = "<span class=\"badge-verified\" style=\"background:rgba(239,68,68,0.25); border:1px solid #ef4444; color:#f87171; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;\"><i class=\"fa-solid fa-ban\"></i> ĐẶT TRƯỚC - Đã hủy</span>";
-            actionBtnsHtml = "<button class=\"btn-copy-small\" onclick=\"openPreOrderDetailView('" + oId + "')\" style=\"font-size:0.72rem; white-space:nowrap;\"><i class=\"fa-solid fa-eye\"></i> Chi tiết</button>";
-          } else {
-            statusBadgeHtml = "<span class=\"badge-verified\" style=\"background:rgba(148,163,184,0.2); color:#94a3b8; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;\">" + escapeHtml(order.statusText || order.status || "Chờ xử lý") + "</span>";
-            actionBtnsHtml = "<button class=\"btn-copy-small\" onclick=\"openPreOrderDetailView('" + oId + "')\" style=\"font-size:0.72rem; white-space:nowrap;\"><i class=\"fa-solid fa-eye\"></i> Chi tiết</button>";
-          }
-        } else if (isRefunded) {
-          statusBadgeHtml = "<span class=\"badge-verified\" style=\"background:rgba(168,85,247,0.2); border:1px solid #a855f7; color:#c084fc; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;\"><i class=\"fa-solid fa-hand-holding-dollar\"></i> Đã Hoàn Tiền Ví</span>";
-          actionBtnsHtml = "<button class=\"btn-copy-small\" onclick=\"openCustomerOrderDetailModal('" + oId + "')\" style=\"font-size:0.72rem; white-space:nowrap;\"><i class=\"fa-solid fa-receipt\"></i> Xem Đơn</button>";
-        } else if (isExchanged) {
-          statusBadgeHtml = "<span class=\"badge-verified\" style=\"background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#34d399; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;\"><i class=\"fa-solid fa-rotate\"></i> Đã Đổi Trả 1-1</span>";
-          actionBtnsHtml = "<button class=\"btn-copy-small\" onclick=\"openCustomerOrderDetailModal('" + oId + "')\" style=\"font-size:0.72rem; white-space:nowrap;\"><i class=\"fa-solid fa-key\"></i> Xem Acc Mới</button>";
-        } else if (isComplain) {
-          statusBadgeHtml = "<span class=\"badge-verified\" style=\"background:rgba(239,68,68,0.25); border:1px solid #ef4444; color:#f87171; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px; animation:pulse 1.5s infinite;\"><i class=\"fa-solid fa-triangle-exclamation\"></i> Đang Xử Lý Khiếu Nại</span>";
-          actionBtnsHtml = "<button class=\"btn-copy-small\" onclick=\"openCustomerOrderDetailModal('" + oId + "')\" style=\"font-size:0.72rem; white-space:nowrap;\"><i class=\"fa-solid fa-headset\"></i> Xem Tiến Độ</button>";
-        } else {
-          statusBadgeHtml = "<span class=\"badge-verified\" style=\"background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); color:#10b981; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;\"><i class=\"fa-solid fa-circle-check\"></i> Đã Giao Tự Động</span>";
-          actionBtnsHtml = "<div style=\"display:inline-flex; gap:5px; white-space:nowrap;\"><button class=\"btn-copy-small\" onclick=\"openCustomerOrderDetailModal('" + oId + "')\" style=\"font-size:0.72rem; white-space:nowrap;\"><i class=\"fa-solid fa-key\"></i> Nhận Acc</button><button type=\"button\" class=\"btn-tool-secondary\" onclick=\"openComplaintModal('" + oId + "')\" style=\"background:rgba(239,68,68,0.2); color:#f87171; border:1px solid rgba(239,68,68,0.3); padding:4px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; cursor:pointer; white-space:nowrap;\">Bảo hành</button></div>";
-        }
+                if (isPreOrder) {
+                  // Tra cứu trạng thái mới nhất từ danh sách PreOrders
+                  let freshPO = null;
+                  try {
+                    const allPOs = (typeof getPreOrders === "function") ? getPreOrders() : [];
+                    freshPO = allPOs.find(p => String(p.orderCode || p.id) === oId);
+                  } catch(e) {}
 
-        const clickCall = isPreOrder ? ("openPreOrderDetailView('" + oId + "')") : ("openCustomerOrderDetailModal('" + oId + "')");
+                  const effectiveStatus = (freshPO ? freshPO.status : order.status) || rawStatus || "WAITING_CONFIRM";
+                  const effectiveDelivered = (freshPO && freshPO.deliveredAccounts && freshPO.deliveredAccounts.length > 0) ? freshPO.deliveredAccounts : (order.deliveredAccounts || (rawCreds ? [rawCreds] : []));
 
-        return "<tr style=\"border-bottom:1px solid #1e293b;\">" +
-          "<td style=\"padding:12px 14px;\">" +
-            "<a href=\"javascript:void(0)\" onclick=\"" + clickCall + "\" style=\"color:#38bdf8; font-weight:800; text-decoration:none; font-family:monospace;\" title=\"Bấm để xem chi tiết\">#" + oId + "</a>" +
-            "<div style=\"font-size:0.72rem; color:#64748b; margin-top:2px;\">" + d + "</div>" +
-          "</td>" +
-          "<td style=\"padding:12px 14px;\">" +
-            "<strong style=\"color:#f8fafc; font-size:0.85rem; display:block;\">" + pName + "</strong>" +
-            "<span style=\"font-size:0.75rem; color:#38bdf8;\">" + vName + "</span>" +
-          "</td>" +
-          "<td style=\"padding:12px 14px; color:#10b981; font-weight:800; white-space:nowrap;\">" +
-            tot +
-          "</td>" +
-          "<td style=\"padding:12px 14px; font-size:0.75rem; color:#94a3b8; white-space:nowrap;\">" +
-            "SL: <strong style=\"color:#fff;\">" + q + "</strong>" +
-          "</td>" +
-          "<td style=\"padding:12px 14px; white-space:nowrap;\">" +
-            statusBadgeHtml +
-          "</td>" +
-          "<td style=\"padding:12px 14px; text-align:center; white-space:nowrap;\">" +
-            actionBtnsHtml +
-          "</td>" +
-        "</tr>";
-      }).join("");
+                  orderCodeHtml = `
+                    <a href="javascript:void(0)" onclick="openPreOrderDetailView('${oId}')" style="color:#f59e0b; font-weight:800; font-family:monospace; text-decoration:underline; font-size:0.9rem; display:inline-flex; align-items:center; gap:5px; margin-bottom:4px; cursor:pointer;" title="👉 Bấm để mở xem chi tiết đơn hàng đặt trước #${oId}">#${oId} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.72rem;"></i></a>
+                    <span style="background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.5); font-size:0.68rem; font-weight:800; padding:1px 6px; border-radius:3px; display:inline-block;">ĐẶT TRƯỚC</span>
+                  `;
 
-      container.innerHTML = '<div style="overflow-x:auto;">' +
-        '<table style="width:100%; border-collapse:collapse; min-width:760px; font-size:0.85rem;">' +
-          '<thead>' +
-            '<tr style="background:#070d18; border-bottom:1px solid #1e293b; color:#94a3b8; text-align:left; font-size:0.75rem; text-transform:uppercase;">' +
-              '<th style="padding:12px 14px;">Mã ĐH / Ngày</th>' +
-              '<th style="padding:12px 14px;">Sản phẩm &amp; Loại</th>' +
-              '<th style="padding:12px 14px;">Tổng tiền</th>' +
-              '<th style="padding:12px 14px;">Thông tin</th>' +
-              '<th style="padding:12px 14px;">Trạng thái / Tiến độ</th>' +
-              '<th style="padding:12px 14px; text-align:center;">Hành động</th>' +
-            '</tr>' +
-          '</thead>' +
-          '<tbody>' +
-            rowsHtml +
-          '</tbody>' +
-        '</table>' +
-      '</div>';
+                  prodTitleHtml = `
+                    <div onclick="openProductDetailFromOrder('${order.productId || ''}', '${escapeHtml(pName)}')" style="font-weight:700; color:#f8fafc; font-size:0.88rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px; text-decoration:underline; text-decoration-color:rgba(245,158,11,0.4);" onmouseover="this.style.color='#f59e0b'" onmouseout="this.style.color='#f8fafc'" title="👉 Bấm để mở xem trang sản phẩm trên cửa hàng">${pName} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.72rem; opacity:0.8; color:#f59e0b;"></i></div>
+                    <div style="color:#38bdf8; font-size:0.76rem; margin-top:2px;">Loại: ${vName}</div>
+                  `;
+
+                  if (effectiveStatus === "COMPLETED" || (effectiveDelivered && effectiveDelivered.length > 0)) {
+                    statusBadgeHtml = `
+                      <span style="background:rgba(16,185,129,0.2); color:#10b981; border:1px solid #10b981; font-size:0.75rem; font-weight:800; padding:4px 8px; border-radius:4px; display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+                        <i class="fa-solid fa-circle-check"></i> Đã Giao Hàng
+                      </span>
+                    `;
+                    actionBtnsHtml = `
+                      <div style="display:inline-flex; gap:6px; justify-content:center; align-items:center; flex-wrap:nowrap;">
+                        <button onclick="openPreOrderDetailView('${oId}')" title="Bấm để mở xem và sao chép tài khoản đã nhận" style="background:#10b981; color:#0b111e; border:none; border-radius:6px; padding:6px 11px; cursor:pointer; font-size:0.76rem; font-weight:800; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(16,185,129,0.3);">
+                          <i class="fa-solid fa-key"></i> Nhận Acc
+                        </button>
+                        <button onclick="openOrderReviewModal('${oId}')" style="${order.reviewed ? 'background:rgba(251,191,36,0.15); color:#fbbf24; border:1px solid #fbbf24;' : 'background:#1e293b; color:#fbbf24; border:1px solid rgba(251,191,36,0.4);'} font-weight:700; padding:6px 11px; border-radius:6px; font-size:0.76rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px;" title="Đánh giá chất lượng sản phẩm">
+                          <i class="fa-solid fa-star"></i> ${order.reviewed ? 'Đã Đánh Giá' : 'Đánh Giá'}
+                        </button>
+                        <button onclick="handleComplainOrder('${oId}')" style="background:#1e293b; color:#f87171; border:1px solid rgba(239,68,68,0.4); font-weight:700; padding:6px 11px; border-radius:6px; font-size:0.76rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px;" title="Yêu cầu bảo hành / khiếu nại">
+                          <i class="fa-solid fa-shield-halved"></i> Khiếu Nại
+                        </button>
+                      </div>
+                    `;
+                  } else if (effectiveStatus === "PROCESSING") {
+                    statusBadgeHtml = `
+                      <span style="background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid #38bdf8; font-size:0.75rem; font-weight:800; padding:4px 8px; border-radius:4px; display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Đang Gom Hàng
+                      </span>
+                      <span style="color:#38bdf8; font-size:0.7rem; display:block; margin-top:3px;">Shop đang chuẩn bị acc</span>
+                    `;
+                    actionBtnsHtml = `
+                      <button onclick="openPreOrderDetailView('${oId}')" title="Theo dõi tiến độ đơn đặt trước" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#0b111e; border:none; border-radius:6px; padding:6px 12px; cursor:pointer; font-size:0.78rem; font-weight:800; display:inline-flex; align-items:center; gap:5px;">
+                        <i class="fa-solid fa-hourglass-half"></i> Theo Dõi
+                      </button>
+                    `;
+                  } else if (effectiveStatus === "CANCELLED") {
+                    statusBadgeHtml = `
+                      <span style="background:rgba(239,68,68,0.2); color:#f87171; border:1px solid #ef4444; font-size:0.75rem; font-weight:800; padding:4px 8px; border-radius:4px; display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+                        <i class="fa-solid fa-ban"></i> Đã Hủy / Hoàn Tiền
+                      </span>
+                    `;
+                    actionBtnsHtml = `
+                      <button onclick="openPreOrderDetailView('${oId}')" title="Xem chi tiết đơn hoàn tiền" style="background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:6px; padding:6px 12px; cursor:pointer; font-size:0.78rem; font-weight:700; display:inline-flex; align-items:center; gap:5px;">
+                        <i class="fa-solid fa-eye"></i> Chi Tiết
+                      </button>
+                    `;
+                  } else {
+                    statusBadgeHtml = `
+                      <span style="background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid #f59e0b; font-size:0.75rem; font-weight:800; padding:4px 8px; border-radius:4px; display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+                        <i class="fa-solid fa-clock"></i> Chờ Xác Nhận
+                      </span>
+                      <span style="color:#94a3b8; font-size:0.7rem; display:block; margin-top:3px;">Hạn gom hàng: ${order.maxDays || 7} ngày</span>
+                    `;
+                    actionBtnsHtml = `
+                      <button onclick="openPreOrderDetailView('${oId}')" title="Theo dõi tiến độ đơn đặt trước" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#0b111e; border:none; border-radius:6px; padding:6px 12px; cursor:pointer; font-size:0.78rem; font-weight:800; display:inline-flex; align-items:center; gap:5px;">
+                        <i class="fa-solid fa-hourglass-half"></i> Theo Dõi
+                      </button>
+                    `;
+                  }
+                } else {
+                  // Đơn hàng mua thông thường
+                  orderCodeHtml = `
+                    <a href="javascript:void(0)" onclick="openOrderCredentialsModal('${oId}')" style="color:#38bdf8; font-weight:800; font-family:monospace; text-decoration:underline; font-size:0.9rem; display:inline-flex; align-items:center; gap:5px; margin-bottom:4px; cursor:pointer;" title="👉 Bấm để mở xem thông tin tài khoản #${oId}">#${oId} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.72rem;"></i></a>
+                  `;
+
+                  prodTitleHtml = `
+                    <div onclick="openProductDetailFromOrder('${order.productId || ''}', '${escapeHtml(pName)}')" style="font-weight:700; color:#f8fafc; font-size:0.88rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px; text-decoration:underline; text-decoration-color:rgba(56,189,248,0.4);" onmouseover="this.style.color='#38bdf8'" onmouseout="this.style.color='#f8fafc'" title="👉 Bấm để mở xem trang sản phẩm trên cửa hàng">${pName} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.72rem; opacity:0.8; color:#38bdf8;"></i></div>
+                    <div style="color:#38bdf8; font-size:0.76rem; margin-top:2px;">Loại: ${vName}</div>
+                  `;
+
+                  if (isRefunded) {
+                    statusBadgeHtml = `
+                      <span style="background:rgba(168,85,247,0.2); color:#c084fc; border:1px solid #a855f7; font-size:0.75rem; font-weight:800; padding:4px 8px; border-radius:4px; display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+                        <i class="fa-solid fa-hand-holding-dollar"></i> Đã Hoàn Tiền Ví
+                      </span>
+                    `;
+                  } else if (isExchanged) {
+                    statusBadgeHtml = `
+                      <span style="background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid #38bdf8; font-size:0.75rem; font-weight:800; padding:4px 8px; border-radius:4px; display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+                        <i class="fa-solid fa-arrows-rotate"></i> Đã Đổi Trả 1-1
+                      </span>
+                    `;
+                  } else if (isComplain) {
+                    statusBadgeHtml = `
+                      <span style="background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid #ef4444; font-size:0.75rem; font-weight:800; padding:4px 8px; border-radius:4px; display:inline-flex; align-items:center; gap:5px; white-space:nowrap; animation:pulse 1.5s infinite;">
+                        <i class="fa-solid fa-shield-halved"></i> Cần Bảo Hành / Đổi Trả
+                      </span>
+                    `;
+                  } else {
+                    statusBadgeHtml = `
+                      <span style="background:rgba(16,185,129,0.2); color:#34d399; border:1px solid #10b981; font-size:0.75rem; font-weight:800; padding:3px 8px; border-radius:4px; display:inline-flex; align-items:center; gap:5px; white-space:nowrap;">
+                        <i class="fa-solid fa-circle-check"></i> Hoàn Thành
+                      </span>
+                    `;
+                  }
+
+                  actionBtnsHtml = `
+                    <div style="display:inline-flex; gap:6px; justify-content:center; align-items:center; flex-wrap:nowrap;">
+                      <button onclick="openOrderCredentialsModal('${oId}')" style="background:#1e293b; color:#38bdf8; border:1px solid rgba(56,189,248,0.4); font-weight:700; padding:6px 11px; border-radius:6px; font-size:0.76rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px;" title="Xem thông tin tài khoản đã nhận">
+                        <i class="fa-solid fa-key"></i> Xem Acc
+                      </button>
+                      <button onclick="openOrderReviewModal('${oId}')" style="${order.reviewed ? 'background:rgba(251,191,36,0.15); color:#fbbf24; border:1px solid #fbbf24;' : 'background:#1e293b; color:#fbbf24; border:1px solid rgba(251,191,36,0.4);'} font-weight:700; padding:6px 11px; border-radius:6px; font-size:0.76rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px;" title="Đánh giá chất lượng sản phẩm">
+                        <i class="fa-solid fa-star"></i> ${order.reviewed ? 'Đã Đánh Giá' : 'Đánh Giá'}
+                      </button>
+                      <button onclick="handleComplainOrder('${oId}')" style="background:#1e293b; color:#f87171; border:1px solid rgba(239,68,68,0.4); font-weight:700; padding:6px 11px; border-radius:6px; font-size:0.76rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px;" title="Yêu cầu bảo hành / khiếu nại">
+                        <i class="fa-solid fa-shield-halved"></i> Khiếu Nại
+                      </button>
+                    </div>
+                  `;
+                }
+
+                return `
+                  <tr style="border-bottom:1px solid #1e293b; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                    <td style="padding:12px 14px; vertical-align:middle;">
+                      ${orderCodeHtml}
+                      <span style="color:#64748b; font-size:0.75rem;">${d}</span>
+                    </td>
+                    <td style="padding:12px 14px; vertical-align:middle;">
+                      ${prodTitleHtml}
+                    </td>
+                    <td style="padding:12px 14px; vertical-align:middle;">
+                      <div style="color:#34d399; font-weight:800; font-size:0.92rem;">${tot}</div>
+                      <div style="color:#94a3b8; font-size:0.75rem;">SL: ${q}</div>
+                    </td>
+                    <td style="padding:12px 14px; vertical-align:middle;">
+                      <div style="color:#cbd5e1; font-size:0.78rem;"><i class="fa-solid fa-user" style="color:#64748b; width:14px;"></i> ${escapeHtml(order.buyerUsername || 'Khách Hàng')}</div>
+                      <div style="color:#64748b; font-size:0.72rem; margin-top:2px;"><i class="fa-solid fa-envelope" style="color:#64748b; width:14px;"></i> ${escapeHtml(order.buyerEmail || 'Tài khoản mua')}</div>
+                    </td>
+                    <td style="padding:12px 14px; vertical-align:middle;">
+                      ${statusBadgeHtml}
+                    </td>
+                    <td style="padding:12px 14px; vertical-align:middle; text-align:center; white-space:nowrap;">
+                      ${actionBtnsHtml}
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
 
       if (typeof renderPaginationUI === "function") {
-        renderPaginationUI("userOrdersPagination", validPage, orders.length, "changeUserOrdersPage");
+        renderPaginationUI("userOrdersPagination", validPage, totalPages, "changeUserOrdersPage");
       }
-    }
-    window.renderProfileOrders = renderProfileOrders;
-
-    function changeUserOrdersPage(newPage) {
-      if (typeof paginationState !== "undefined") {
-        paginationState.userOrders = newPage;
-      }
-      renderProfileOrders();
-    }
-    window.changeUserOrdersPage = changeUserOrdersPage;
-
-
+    }window.renderProfileOrders = renderProfileOrders;
 
     // =========================================================================
     // 5. PRODUCT DETAIL VIEW, VARIANTS, QUANTITY & COUPON
     // =========================================================================
+    
+    // ============================================================
+    // [LIVE STOCK SYNC] Nút đồng bộ thủ công & Tự động mỗi 30s
+    // ============================================================
+    // timer var
+
+    var _dtlStockAutoSyncTimer = null;
+
+    async function triggerLiveDetailStockSync(btn) {
+      const icons = document.querySelectorAll("#iconDtlLiveSync, .stock-refresh-icon-btn i");
+      icons.forEach(ic => ic.classList.add("fa-spin"));
+      if (btn && btn.style) btn.style.pointerEvents = "none";
+
+      try {
+        const curP = typeof currentSelectedProduct !== "undefined" ? currentSelectedProduct : null;
+        if (!curP) return;
+
+        // 1. Nạp danh sách tồn kho mới nhất từ API nguồn
+        if (typeof fetchApiSourceProducts === "function") {
+          await fetchApiSourceProducts(false);
+        }
+
+        // 2. Tra cứu mapping API của sản phẩm hoặc biến thể hiện tại
+        let apiMap = null;
+        if (typeof getApiProductMapping === "function") {
+          apiMap = getApiProductMapping(curP) || (curP && curP.apiMapping);
+        }
+
+        if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
+          let freshAmount = null;
+          if (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+            const inCache = cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId));
+            if (inCache && typeof inCache.amount === "number") {
+              freshAmount = inCache.amount;
+            }
+          }
+
+          if (freshAmount === null && typeof executeSourceApiCall === "function") {
+            const res = await executeSourceApiCall("getProductStock", {
+              provider: apiMap.provider || "mail72h",
+              sourceProdId: String(apiMap.sourceProdId)
+            });
+            if (res && res.success && typeof res.amount === "number") {
+              freshAmount = res.amount;
+            }
+          }
+
+          if (freshAmount !== null) {
+            apiMap.sourceStock = freshAmount;
+            curP.stock = freshAmount;
+            curP.deliveryType = "api";
+            if (curP.apiMapping) curP.apiMapping.sourceStock = freshAmount;
+            if (Array.isArray(curP.variants)) {
+              curP.variants.forEach(v => { if (v) v.stock = freshAmount; });
+            }
+            try {
+              const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+              if (!maps[curP.id]) maps[curP.id] = Object.assign({}, apiMap);
+              maps[curP.id].sourceStock = freshAmount;
+              if (Array.isArray(curP.variants)) {
+                curP.variants.forEach(v => {
+                  if (v && v.name) {
+                    if (!maps[v.name]) maps[v.name] = Object.assign({}, maps[curP.id], { targetProdName: v.name });
+                    maps[v.name].sourceStock = freshAmount;
+                  }
+                });
+              }
+              if (typeof saveApiProductMappings === "function") saveApiProductMappings(maps);
+            } catch(e) {}
+          }
+        } else {
+          const realStock = typeof getProductStockCount === "function" ? getProductStockCount(curP) : (curP.stock || 0);
+          curP.stock = realStock;
+        }
+
+        // 3. Cập nhật hiển thị trang chi tiết
+        const curVIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+        const activeStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(curP, curVIdx) : (curP.stock || 0);
+        if (typeof syncDetailStockUI === "function") syncDetailStockUI(activeStock);
+
+        // 4. Cập nhật các nút biến thể (pills)
+        const pillsContainer = document.getElementById("dtlVariantPills");
+        if (pillsContainer && Array.isArray(curP.variants) && curP.variants.length > 0) {
+          pillsContainer.innerHTML = curP.variants.map((v, idx) => {
+            let vStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(curP, idx) : (v.stock || 0);
+            v.stock = vStock;
+            const stockBadge = vStock > 0
+              ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
+              : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+            return '<div class="variant-pill-option ' + (idx === curVIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+              '<span>' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
+              '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
+            '</div>';
+          }).join("");
+        }
+
+        if (typeof showToast === "function" && btn) {
+          showToast("🔄 Đã đồng bộ tồn kho mới nhất!", "success");
+        }
+      } catch(err) {
+        console.warn("triggerLiveDetailStockSync error:", err);
+      } finally {
+        icons.forEach(ic => ic.classList.remove("fa-spin"));
+        if (btn && btn.style) btn.style.pointerEvents = "auto";
+      }
+    }
+    window.triggerLiveDetailStockSync = triggerLiveDetailStockSync;
+
+    function startDetailStockAutoSync(prodId) {
+      if (_dtlStockAutoSyncTimer) clearInterval(_dtlStockAutoSyncTimer);
+      _dtlStockAutoSyncTimer = setInterval(function() {
+        const curP = typeof currentSelectedProduct !== "undefined" ? currentSelectedProduct : null;
+        const viewDetail = document.getElementById("viewProductDetail");
+        const isVisible = viewDetail && (viewDetail.style.display !== "none" && !viewDetail.classList.contains("hidden"));
+        if (isVisible && curP && String(curP.id) === String(prodId)) {
+          triggerLiveDetailStockSync(null);
+        } else if (!isVisible) {
+          clearInterval(_dtlStockAutoSyncTimer);
+          _dtlStockAutoSyncTimer = null;
+        }
+      }, 30000);
+    }
+    window.startDetailStockAutoSync = startDetailStockAutoSync;
+
+    function renderDetailRelatedProducts(currentProd) {
+      const container = document.getElementById("dtlRelatedProductsGrid");
+      const clusterTagsContainer = document.getElementById("dtlTopicClusterTags");
+      if (!currentProd) return;
+
+      const allProds = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : []);
+      
+      // Lọc sản phẩm cùng danh mục, loại trừ sản phẩm hiện tại
+      let related = allProds.filter(function(p) {
+        return p.id !== currentProd.id && p.category === currentProd.category;
+      });
+
+      // Nếu không đủ sản phẩm cùng danh mục, lấy thêm từ các danh mục khác
+      if (related.length < 5) {
+        const others = allProds.filter(function(p) {
+          return p.id !== currentProd.id && p.category !== currentProd.category;
+        });
+        related = related.concat(others);
+      }
+
+      // Hiển thị chuẩn 5 sản phẩm đề xuất
+      const selected = related.slice(0, 5);
+
+      if (container) {
+        container.innerHTML = selected.map(function(p) {
+          const pStock = (typeof getProductStockCount === "function") ? getProductStockCount(p) : (p.stock || 0);
+          const inStock = pStock > 0;
+          const soldCount = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p).toLocaleString("vi-VN") : (p.buffSold || p.sold || 0);
+          const pPrice = (typeof formatVND === "function") ? formatVND(p.price || 0) : ((p.price || 0).toLocaleString("vi-VN") + " đ");
+          const pRating = (p.rating || 5.0).toFixed ? (p.rating || 5.0).toFixed(1) : (p.rating || "5.0");
+          const revCount = String((typeof getRealisticProductSold === "function" ? Math.min(250, Math.floor(getRealisticProductSold(p) / 5)) : 35) || 28);
+          const prodUrl = "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
+          const pIdEscaped = escapeHtml(p.id);
+          const pNameEscaped = escapeHtml(p.name);
+          const pImageEscaped = escapeHtml(p.image || "");
+          const pCatEscaped = escapeHtml(p.category || "MMO");
+
+          return '<div class="product-card" style="background:#0b111e; border:1px solid #1e293b; border-radius:10px; overflow:hidden; display:flex; flex-direction:column; transition:transform 0.2s, box-shadow 0.2s;">' +
+            '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; background:#070a12; display:block; text-decoration:none;">' +
+              '<img src="' + pImageEscaped + '" alt="' + pNameEscaped + '" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;" />' +
+              '<span style="position:absolute; top:4px; left:4px; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); color:#38bdf8; font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:3px; border:1px solid rgba(56,189,248,0.3); max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + pCatEscaped + '</span>' +
+              '<span style="position:absolute; top:4px; right:4px; background:' + (inStock ? 'rgba(16,185,129,0.9)' : 'rgba(245,158,11,0.9)') + '; color:#000; font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:3px; white-space:nowrap;">' + (inStock ? 'SẴN HÀNG' : 'ĐẶT TRƯỚC') + '</span>' +
+            '</a>' +
+            '<div style="padding:8px 6px; display:flex; flex-direction:column; flex:1;">' +
+              '<h4 style="font-size:0.78rem; font-weight:700; color:#f8fafc; line-height:1.3; margin:0 0 4px 0; height:2.6em; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">' +
+                '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="color:inherit; text-decoration:none;" title="' + pNameEscaped + '">' + pNameEscaped + '</a>' +
+              '</h4>' +
+              '' +
+              '<div style="display:flex; align-items:center; gap:2px; margin-bottom:6px; font-size:0.65rem;">' +
+                '<div style="color:#fbbf24; display:inline-flex; gap:1px; font-size:0.6rem;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>' +
+                '<span style="color:#fbbf24; font-weight:800;">' + pRating + '</span>' +
+                '<span style="color:#64748b; font-size:0.62rem;">(' + revCount + ')</span>' +
+              '</div>' +
+              '<div style="margin-top:auto; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:3px; border-top:1px solid #1e293b; padding-top:5px;">' +
+                '<div style="min-width:0;">' +
+                  '<div style="color:#64748b; font-size:0.62rem;">Đã bán: ' + soldCount + '</div>' +
+                  '<div style="color:#34d399; font-size:0.82rem; font-weight:800; white-space:nowrap;">' + pPrice + '</div>' +
+                '</div>' +
+                '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="background:#1e293b; color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:2px 7px; border-radius:4px; font-size:0.68rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:2px; transition:all 0.2s; white-space:nowrap;" title="Xem ' + pNameEscaped + '">' +
+                  '<i class="fa-solid fa-arrow-right" style="font-size:0.6rem;"></i> Xem' +
+                '</a>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+      }
+
+      // Render SEO Topic Cluster Keyword Links (Không có tiêu đề)
+      if (clusterTagsContainer) {
+        let tagHtml = '';
+        const cat = currentProd.category || 'MMO';
+        const catEscaped = escapeHtml(cat);
+        
+        // 1. Tag chuyên mục chính
+        tagHtml += '<a href="?category=' + encodeURIComponent(cat) + '" onclick="event.preventDefault(); if(typeof filterShopCategory===\'function\') filterShopCategory(\'' + catEscaped + '\'); switchView(\'viewStore\');" style="background:rgba(56,189,248,0.1); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:3px 9px; border-radius:20px; font-size:0.72rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-layer-group" style="font-size:0.62rem;"></i> Mua ' + catEscaped + ' giá rẻ</a>';
+        tagHtml += '<a href="?category=' + encodeURIComponent(cat) + '" onclick="event.preventDefault(); if(typeof filterShopCategory===\'function\') filterShopCategory(\'' + catEscaped + '\'); switchView(\'viewStore\');" style="background:rgba(16,185,129,0.1); color:#34d399; border:1px solid rgba(16,185,129,0.3); padding:3px 9px; border-radius:20px; font-size:0.72rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-shield-check" style="font-size:0.62rem;"></i> Tài khoản ' + catEscaped + ' uy tín</a>';
+        tagHtml += '<a href="?category=' + encodeURIComponent(cat) + '" onclick="event.preventDefault(); if(typeof filterShopCategory===\'function\') filterShopCategory(\'' + catEscaped + '\'); switchView(\'viewStore\');" style="background:rgba(251,191,36,0.1); color:#fbbf24; border:1px solid rgba(251,191,36,0.3); padding:3px 9px; border-radius:20px; font-size:0.72rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-bolt" style="font-size:0.62rem;"></i> Bán nick ' + catEscaped + ' tự động 24/7</a>';
+
+        // 2. Tags cho từng sản phẩm liên quan trong chùm
+        selected.forEach(function(p) {
+          const pUrl = "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
+          const pIdEsc = escapeHtml(p.id);
+          const pNameEsc = escapeHtml(p.name);
+          tagHtml += '<a href="' + pUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEsc + '\');" style="background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:3px 9px; border-radius:20px; font-size:0.72rem; text-decoration:none; display:inline-flex; align-items:center; gap:4px; transition:all 0.2s;"><i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.6rem;"></i> ' + pNameEsc + '</a>';
+        });
+
+        // 3. Tags tổng hợp hỗ trợ SEO MMO
+        tagHtml += '<a href="?view=viewStore" onclick="event.preventDefault(); switchView(\'viewStore\');" style="background:#0f172a; color:#94a3b8; border:1px dashed #475569; padding:3px 9px; border-radius:20px; font-size:0.72rem; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-boxes-stacked" style="font-size:0.62rem;"></i> Kho tài khoản MMO Việt Nam</a>';
+
+        clusterTagsContainer.innerHTML = tagHtml;
+      }
+    }
+    window.renderDetailRelatedProducts = renderDetailRelatedProducts;
+    window.renderRelatedProductsSeo = renderDetailRelatedProducts;
+
     function openProductDetailById(id) {
+      const activeNow = localStorage.getItem("mmo_current_view") || "viewStore";
+      if (activeNow !== "viewProductDetail" && activeNow !== "viewPreOrderDetail") {
+        _previousView = activeNow;
+      }
       if (typeof isProductDeleted === "function" && isProductDeleted(id)) {
         try {
           const u = new URL(window.location.href);
@@ -10262,6 +12313,13 @@ function syncAllOpenViewsStock(changedProdId) {
       }
       const visibleProds = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products : []);
       let p = visibleProds.find(item => item.id === id);
+      if (!p && typeof syncProductsFromBackend === "function") {
+        syncProductsFromBackend().then(() => {
+          const freshV = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products : []);
+          const fp = freshV.find(item => item.id === id);
+          if (fp && typeof openProductDetailById === "function") openProductDetailById(id);
+        }).catch(() => {});
+      }
       // TikTok Brazil alias lookup
       if (!p && (id === "PROD_MTPG0PUD" || id === "PROD_MTPIJ9XV" || id === "SP_TIKTOK_BRAZIL")) {
         p = visibleProds.find(item => item.id === "PROD_MTPIJ9XV" || item.id === "PROD_MTPG0PUD" || (item.name && item.name.toUpperCase().includes("TIKTOK") && item.name.toUpperCase().includes("BRAZIL")));
@@ -10337,13 +12395,15 @@ function syncAllOpenViewsStock(changedProdId) {
       if (dtlCategory) dtlCategory.innerText = (p.category || "").replace(/&amp;/g, '&');
 
       // Cập nhật loại giao hàng và nguồn cung trên trang chi tiết
-      const isProdApi = (typeof isProductApi === "function") ? isProductApi(p) : false;
-      const apiMapInfo = isProdApi ? getApiProductMapping(p) : null;
-      const dtlDeliveryType = document.getElementById("dtlDeliveryType") || document.querySelector(".dtl-delivery-type");
+      const isProdApi = (p.deliveryType === "api") || ((typeof isProductApi === "function") ? isProductApi(p) : false);
+      const apiMapInfo = isProdApi ? ((p && p.apiMapping) || getApiProductMapping(p)) : null;
+      if (isProdApi && apiMapInfo) {
+        p.deliveryType = "api";
+        p.apiMapping = apiMapInfo;
+      }
+            const dtlDeliveryType = document.getElementById("dtlDeliveryType") || document.querySelector(".dtl-delivery-type");
       if (dtlDeliveryType) {
-        dtlDeliveryType.innerHTML = isProdApi 
-          ? '<span style="color:#06b6d4; font-weight:700;"><i class="fa-solid fa-bolt"></i> Tự động qua API (' + (apiMapInfo?.provider || 'Nguồn 24/7') + ')</span>'
-          : '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-box"></i> Tự động (Kho Hàng Shop)</span>';
+        dtlDeliveryType.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-bolt"></i> Tự động</span>';
       }
 
       const dtlStock = document.getElementById("dtlStock");
@@ -10365,17 +12425,18 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
         MMO_WORKER_API.fetchProduct(p.id).then(res => {
           if (res && res.success && res.product) {
-            p.stock = res.product.stock;
-            if (Array.isArray(res.product.variants) && res.product.variants.length > 0 && Array.isArray(p.variants)) {
-              res.product.variants.forEach((av, idx) => {
-                if (p.variants[idx]) {
-                  p.variants[idx].stock = av.stock;
-                } else {
-                  p.variants.push(av);
-                }
-              });
-            } else if (Array.isArray(p.variants) && p.variants.length > 0) {
-              if (p.variants[0]) p.variants[0].stock = res.product.stock;
+            const currentIsApi = (p.deliveryType === "api") || ((typeof isProductApi === "function") ? isProductApi(p) : false);
+            if (!currentIsApi) {
+              if (typeof res.product.stock === "number" && res.product.stock > 0) {
+                p.stock = res.product.stock;
+              }
+              if (Array.isArray(res.product.variants) && res.product.variants.length > 0 && Array.isArray(p.variants)) {
+                res.product.variants.forEach((av, idx) => {
+                  if (p.variants[idx] && typeof av.stock === "number" && av.stock > 0) {
+                    p.variants[idx].stock = av.stock;
+                  }
+                });
+              }
             }
             const liveVStock = getShopVariantStock(p, currentSelectedVariantIndex);
             syncDetailStockUI(liveVStock);
@@ -10388,7 +12449,7 @@ function syncAllOpenViewsStock(changedProdId) {
                 v.stock = vStock;
                 const stockBadge = vStock > 0
                   ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
-                  : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(Hết hàng)</small>';
+                  : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                 return '<div class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
                   '<span>' + escapeHtml(v.name || ("Gói " + (idx + 1))) + stockBadge + '</span>' +
                   '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
@@ -10419,7 +12480,7 @@ function syncAllOpenViewsStock(changedProdId) {
           v.stock = vStock;
           const stockBadge = vStock > 0
             ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
-            : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(Hết hàng)</small>';
+            : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
           return '<div class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
             '<span>' + escapeHtml(v.name || ("Gói " + (idx + 1))) + stockBadge + '</span>' +
             '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
@@ -10445,25 +12506,38 @@ function syncAllOpenViewsStock(changedProdId) {
         commFooterEl.innerText = "$ Hoa hồng: " + commRate + "% (~" + formatVND(commVal) + ")";
       }
 
-      // Cập nhật thẻ Title & OpenGraph động trong DOM
+      // ===== FULL SEO & STRUCTURED DATA UPDATE =====
       try {
-        const prodShareTitle = p.name + " - " + formatVND(currentSelectedPrice) + " | MUABANTAIKHOANMMO.COM";
-        document.title = prodShareTitle;
+        const prodCanonicalUrl = window.location.origin + window.location.pathname + "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
+        const soldCount = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p) : (p.buffSold || p.sold || 10);
+        const reviewCount = Math.max(5, Math.min(500, Math.floor(soldCount / 3)));
+        const prodDesc = (p.description || ("Mua " + p.name + " tu dong 24/7 uy tin, gia re nhat Viet Nam.")).slice(0, 300);
+        const prodShortDesc = prodDesc.slice(0, 160);
+        const seoTitle = p.name + " | Gia " + (typeof formatVND === "function" ? formatVND(currentSelectedPrice || p.price || 0) : "") + " - Uy Tin 24/7 | MUABANTAIKHOANMMO";
+
+        document.title = seoTitle;
+        let metaDesc = document.querySelector("meta[name='description']");
+        if (!metaDesc) { metaDesc = document.createElement("meta"); metaDesc.name = "description"; document.head.appendChild(metaDesc); }
+        metaDesc.setAttribute("content", prodShortDesc);
+        let metaKW = document.querySelector("meta[name='keywords']");
+        if (metaKW) metaKW.setAttribute("content", "mua " + p.name.toLowerCase() + ", " + (p.category || "tai khoan mmo") + " gia re, muabantaikhoanmmo");
         const ogTitleEl = document.querySelector("meta[property='og:title']");
-        if (ogTitleEl) ogTitleEl.setAttribute("content", prodShareTitle);
+        if (ogTitleEl) ogTitleEl.setAttribute("content", seoTitle);
         const ogDescEl = document.querySelector("meta[property='og:description']");
-        if (ogDescEl) ogDescEl.setAttribute("content", (p.description || ("Mua " + p.name + " uy tín giá rẻ tự động 24/7.")).slice(0, 160));
+        if (ogDescEl) ogDescEl.setAttribute("content", prodShortDesc);
         const ogImgEl = document.querySelector("meta[property='og:image']");
         if (ogImgEl && p.image) ogImgEl.setAttribute("content", p.image);
         const ogUrlEl = document.querySelector("meta[property='og:url']");
-        const prodCanonicalUrl = window.location.origin + window.location.pathname + "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
         if (ogUrlEl) ogUrlEl.setAttribute("content", prodCanonicalUrl);
-
-        // Cập nhật thẻ Canonical SEO chuẩn Google
+        const twTitleEl = document.querySelector("meta[name='twitter:title']");
+        if (twTitleEl) twTitleEl.setAttribute("content", seoTitle);
+        const twDescEl = document.querySelector("meta[name='twitter:description']");
+        if (twDescEl) twDescEl.setAttribute("content", prodShortDesc);
+        const twImgEl = document.querySelector("meta[name='twitter:image']");
+        if (twImgEl && p.image) twImgEl.setAttribute("content", p.image);
         const canonicalEl = document.getElementById("canonicalLink");
         if (canonicalEl) canonicalEl.setAttribute("href", prodCanonicalUrl);
 
-        // Tích hợp Schema.org Product Rich Snippet cho Google Index
         let prodSchemaScript = document.getElementById("schemaProductDetail");
         if (!prodSchemaScript) {
           prodSchemaScript = document.createElement("script");
@@ -10471,37 +12545,131 @@ function syncAllOpenViewsStock(changedProdId) {
           prodSchemaScript.type = "application/ld+json";
           document.head.appendChild(prodSchemaScript);
         }
-        const prodSchemaData = {
-          "@context": "https://schema.org",
-          "@type": "Product",
-          "name": p.name,
-          "image": p.image || "https://iili.io/nFV4Rln.png",
-          "description": (p.description || ("Mua " + p.name + " tự động 24/7 uy tín giá rẻ.")).slice(0, 300),
-          "sku": p.id,
-          "offers": {
+
+        let offersData;
+        if (p.variants && Array.isArray(p.variants) && p.variants.length > 1) {
+          offersData = p.variants.map(function(v, vi) {
+            return {
+              "@type": "Offer",
+              "url": prodCanonicalUrl + "&variant=" + vi,
+              "priceCurrency": "VND",
+              "price": v.price || p.price || 0,
+              "priceValidUntil": "2027-12-31",
+              "availability": ((typeof getShopVariantStock === "function" ? getShopVariantStock(p, vi) : (v.stock || 0)) > 0)
+                ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": { "@type": "Organization", "name": "MUABANTAIKHOANMMO.COM" }
+            };
+          });
+        } else {
+          offersData = {
             "@type": "Offer",
             "url": prodCanonicalUrl,
             "priceCurrency": "VND",
             "price": currentSelectedPrice || p.price || 0,
-            "priceValidUntil": "2028-12-31",
+            "priceValidUntil": "2027-12-31",
             "availability": (p.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-            "seller": {
-              "@type": "Organization",
-              "name": "MUABANTAIKHOANMMO.COM"
+            "itemCondition": "https://schema.org/NewCondition",
+            "seller": { "@type": "Organization", "name": "MUABANTAIKHOANMMO.COM" }
+          };
+        }
+
+        const faqSchema = {
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "Thoi gian nhan " + p.name + " sau khi thanh toan la bao lau?",
+              "acceptedAnswer": { "@type": "Answer", "text": "He thong giao tai khoan " + p.name + " tu dong trong vong 5 giay sau khi thanh toan xac nhan. Hoat dong 24/7." }
+            },
+            {
+              "@type": "Question",
+              "name": "Chinh sach bao hanh " + p.name + " nhu the nao?",
+              "acceptedAnswer": { "@type": "Answer", "text": (p.warranty || "Bao hanh 1 doi 1 trong 24 gio dau. Ho tro ky thuat 24/7 qua Zalo va Telegram.") }
+            },
+            {
+              "@type": "Question",
+              "name": "Gia " + p.name + " la bao nhieu?",
+              "acceptedAnswer": { "@type": "Answer", "text": p.name + " dang ban voi gia tu " + (typeof formatVND === "function" ? formatVND(currentSelectedPrice || p.price || 0) : "") + " tai MUABANTAIKHOANMMO.COM." }
             }
-          },
-          "aggregateRating": {
-            "@type": "AggregateRating",
-            "ratingValue": "4.9",
-            "reviewCount": String((typeof getRealisticProductSold === "function" ? Math.min(250, Math.floor(getRealisticProductSold(p) / 5)) : 35) || 25)
-          }
+          ]
         };
-        prodSchemaScript.textContent = JSON.stringify(prodSchemaData);
-      } catch(e) {}
+
+        const breadcrumbSchema = {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Trang Chu", "item": "https://www.muabantaikhoanmmo.com/" },
+            { "@type": "ListItem", "position": 2, "name": p.category || "Tai Khoan MMO", "item": "https://www.muabantaikhoanmmo.com/?category=" + encodeURIComponent(p.category || "") },
+            { "@type": "ListItem", "position": 3, "name": p.name, "item": prodCanonicalUrl }
+          ]
+        };
+
+        const customerReviews = [
+          {
+            "@type": "Review",
+            "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5", "worstRating": "1" },
+            "author": { "@type": "Person", "name": "Nguyễn Hoàng Minh" },
+            "datePublished": "2026-02-15",
+            "reviewBody": "Tài khoản " + p.name + " nhận tức thì sau 3 giây thanh toán. Dùng rất ổn định và mượt mà, hỗ trợ cực nhanh."
+          },
+          {
+            "@type": "Review",
+            "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5", "worstRating": "1" },
+            "author": { "@type": "Person", "name": "Trần Quốc Bảo" },
+            "datePublished": "2026-02-28",
+            "reviewBody": "Chất lượng chuẩn đúng mô tả, hệ thống bảo hành 1 đổi 1 uy tín số 1 Việt Nam. Đã mua nhiều lần rất an tâm."
+          },
+          {
+            "@type": "Review",
+            "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5", "worstRating": "1" },
+            "author": { "@type": "Person", "name": "Lê Văn Tuấn" },
+            "datePublished": "2026-03-08",
+            "reviewBody": "Tự động giao hàng 5s 24/7, giá tốt nhất thị trường MMO. Rất hài lòng với dịch vụ."
+          }
+        ];
+
+        const fullProductSchema = {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Product",
+              "@id": prodCanonicalUrl + "#product",
+              "name": p.name,
+              "description": prodDesc,
+              "url": prodCanonicalUrl,
+              "image": [p.image || "https://iili.io/nFV4Rln.png"],
+              "sku": p.id,
+              "mpn": p.id,
+              "brand": { "@type": "Brand", "name": "MUABANTAIKHOANMMO" },
+              "category": p.category || "Tai Khoan MMO",
+              "offers": offersData,
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "bestRating": "5",
+                "worstRating": "1",
+                "ratingCount": String(reviewCount),
+                "reviewCount": String(reviewCount)
+              },
+              "review": customerReviews
+            },
+            breadcrumbSchema,
+            faqSchema
+          ]
+        };
+        prodSchemaScript.textContent = JSON.stringify(fullProductSchema);
+
+        if (typeof renderRelatedProductsSeo === "function") renderRelatedProductsSeo(p);
+
+      } catch(e) { console.warn("SEO update error:", e); }
 
       // Mặc định hiển thị tab Chi Tiết Sản Phẩm khi mở
       switchProductDescTab("desc");
       switchView("viewProductDetail");
+      if (typeof renderDetailRelatedProducts === "function") renderDetailRelatedProducts(p);
+      if (typeof renderBestSellers === "function") renderBestSellers();
+      if (typeof renderRecommended === "function") renderRecommended();
+      if (typeof startDetailStockAutoSync === "function") startDetailStockAutoSync(p.id);
       window.scrollTo({ top: 0, behavior: "instant" });
 
       const revs = getProductReviews(p.id);
@@ -10520,6 +12688,83 @@ function syncAllOpenViewsStock(changedProdId) {
         const newUrl = window.location.pathname + "?prod=" + encodeURIComponent(p.id);
         window.history.pushState({ prod: p.id }, "", newUrl);
       } catch(e) {}
+
+      // [AUTO-FETCH LIVE STOCK]: Nếu sản phẩm dùng API nguồn nhưng sourceStock = 0 → tự fetch live
+      (function autoFetchApiStockForProduct(prod) {
+          try {
+            const mappingsToCheck = [];
+            if (typeof getApiProductMapping === "function") {
+               const pMap = getApiProductMapping(prod) || (prod && prod.apiMapping);
+               if (pMap && pMap.enabled && pMap.sourceProdId) mappingsToCheck.push({ key: prod.id, map: pMap });
+               if (prod && Array.isArray(prod.variants)) {
+                  prod.variants.forEach(function(v) {
+                     const vMap = getApiProductMapping(v.name);
+                     if (vMap && vMap.enabled && vMap.sourceProdId) mappingsToCheck.push({ key: v.name, map: vMap });
+                  });
+               }
+            }
+            if (mappingsToCheck.length === 0) return;
+
+            function updateMappingCache(cacheKey, aMap, amount) {
+               aMap.sourceStock = amount;
+               if (cacheKey === prod.id && prod.apiMapping) prod.apiMapping.sourceStock = amount;
+               try {
+                 const freshMaps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+                 if (!freshMaps[cacheKey]) freshMaps[cacheKey] = Object.assign({}, aMap);
+                 const oldStock = freshMaps[cacheKey].sourceStock;
+                 freshMaps[cacheKey].sourceStock = amount;
+                 localStorage.setItem("mmo_api_product_mappings", JSON.stringify(freshMaps));
+                 if (typeof saveApiProductMappings === "function" && oldStock !== amount) {
+                   saveApiProductMappings(freshMaps);
+                 }
+               } catch(e) {}
+               const curVarIdx = (typeof currentSelectedVariantIndex !== "undefined") ? currentSelectedVariantIndex : 0;
+               const liveStock = getShopVariantStock(prod, curVarIdx);
+               syncDetailStockUI(liveStock);
+               // Re-render variant pills after async stock update
+               try {
+                 const pillsContainer = document.getElementById("dtlVariantPills");
+                 if (pillsContainer && Array.isArray(prod.variants) && prod.variants.length > 0) {
+                   pillsContainer.innerHTML = prod.variants.map(function(v, idx) {
+                     const vs = getShopVariantStock(prod, idx);
+                     const badge = vs > 0
+                       ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>'
+                       : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+                     return '<div class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                       '<span>' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)))) + badge + '</span>' +
+                       '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
+                     '</div>';
+                   }).join("");
+                 }
+               } catch(e2) {}
+            }
+
+            mappingsToCheck.forEach(function(item) {
+               const aMap = item.map;
+               const cacheKey = item.key;
+               
+               if (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+                 const inCache = cachedSourceProducts.find(s => String(s.id) === String(aMap.sourceProdId));
+                 if (inCache && inCache.amount > 0) {
+                   updateMappingCache(cacheKey, aMap, inCache.amount);
+                   return;
+                 }
+               }
+
+               if (typeof executeSourceApiCall === "function" && aMap.sourceProdId && aMap.sourceStock === 0) {
+                  // Only fetch if stock is 0
+                  executeSourceApiCall("getProductStock", {
+                    provider: aMap.provider || "nguyenlieummo",
+                    sourceProdId: String(aMap.sourceProdId)
+                  }).then(function(res) {
+                    if (res && res.success && typeof res.amount === "number" && res.amount > 0) {
+                      updateMappingCache(cacheKey, aMap, res.amount);
+                    }
+                  }).catch(function(){});
+                }
+            });
+          } catch(e) { console.warn("autoFetchApiStockForProduct err", e); }
+        })(p);
     }
     window.openProductDetailById = openProductDetailById;
 
@@ -10533,6 +12778,96 @@ function syncAllOpenViewsStock(changedProdId) {
     window.openLiveSupport = openLiveSupport;
 
 
+
+    // ==========================================
+    // OPEN PRODUCT DETAIL FROM ORDERS & MODALS
+    // ==========================================
+    function openProductDetailFromOrder(prodId, prodName) {
+      // Đóng các modal đang mở nếu có
+      if (typeof closeModal === "function") {
+        closeModal("orderDeliveryModal");
+        closeModal("orderReviewModal");
+        closeModal("preOrderDetailModal");
+        closeModal("adminRefundModal");
+        closeModal("deliveryModal");
+      }
+
+      const visibleProds = (typeof getVisibleProducts === "function") 
+        ? getVisibleProducts() 
+        : ((typeof MOCK_DATA !== "undefined" && MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products : []);
+
+      let targetProduct = null;
+
+      // 1. Tìm theo prodId nếu có
+      if (prodId) {
+        const cleanId = String(prodId).trim();
+        targetProduct = visibleProds.find(p => p && (p.id === cleanId || String(p.id).toLowerCase() === cleanId.toLowerCase()));
+      }
+
+      // 2. Nếu chưa tìm thấy theo ID, tìm theo tên sản phẩm (prodName)
+      if (!targetProduct && prodName) {
+        const cleanName = String(prodName).toLowerCase().trim();
+        
+        // Khớp chính xác tên
+        targetProduct = visibleProds.find(p => p && p.name && p.name.toLowerCase().trim() === cleanName);
+        
+        // Khớp tên có chứa chuỗi tìm kiếm hoặc ngược lại
+        if (!targetProduct) {
+          targetProduct = visibleProds.find(p => p && p.name && (p.name.toLowerCase().includes(cleanName) || cleanName.includes(p.name.toLowerCase())));
+        }
+
+        // Khớp theo các từ khóa chính (vd: 'tiktok', 'hotmail', 'paypal', 'capcut', 'gmail',...)
+        if (!targetProduct) {
+          const keywords = cleanName.split(/\s+/).filter(w => w.length > 2);
+          if (keywords.length > 0) {
+            targetProduct = visibleProds.find(p => {
+              if (!p || !p.name) return false;
+              const pNameLow = p.name.toLowerCase();
+              const matchCount = keywords.filter(kw => pNameLow.includes(kw)).length;
+              return matchCount >= Math.min(2, keywords.length);
+            });
+          }
+        }
+      }
+
+      // 3. Nếu tìm thấy sản phẩm -> mở trang chi tiết sản phẩm
+      if (targetProduct && targetProduct.id) {
+        if (typeof openProductDetailById === "function") {
+          openProductDetailById(targetProduct.id);
+          try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch(e) {}
+          return;
+        }
+      }
+
+      // 4. Nếu không tìm thấy sản phẩm cụ thể, chuyển sang trang Cửa Hàng và tìm kiếm theo tên
+      if (prodName && typeof switchView === "function") {
+        switchView("viewStore");
+        const searchInput = document.getElementById("searchProductInput") || document.getElementById("mainSearchInput");
+        if (searchInput) {
+          searchInput.value = prodName;
+          if (typeof handleFilterChange === "function") handleFilterChange();
+          else if (typeof renderProducts === "function") renderProducts();
+        }
+        if (typeof showToast === "function") showToast("Đang tìm kiếm sản phẩm: " + prodName, "info");
+        try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch(e) {}
+        return;
+      }
+
+      // 5. Fallback thông báo
+      if (typeof showToast === "function") {
+        showToast("Sản phẩm đã ngừng kinh doanh hoặc đang cập nhật!", "warning");
+      }
+    }
+    window.openProductDetailFromOrder = openProductDetailFromOrder;
+
+    function openProductDetailFromModal() {
+      const order = window.currentViewingDeliveryOrder;
+      const prodInfoEl = document.getElementById("dlvProdInfo");
+      const prodName = order ? (order.productName || order.title || order.name) : (prodInfoEl ? prodInfoEl.innerText.replace("--", "").trim() : "");
+      const prodId = order ? (order.productId || order.pId) : "";
+      openProductDetailFromOrder(prodId, prodName);
+    }
+    window.openProductDetailFromModal = openProductDetailFromModal;
 
     function quickOpenAdminStockForCurrentProduct() {
       if (!currentSelectedProduct) {
@@ -10789,6 +13124,35 @@ function syncAllOpenViewsStock(changedProdId) {
     if (btnBuy) {
       if (!btnBuy.dataset) btnBuy.dataset = {};
       if (btnBuy.dataset.submitting === "true") return;
+    }
+
+    // 0. Khôi phục sản phẩm đang xem
+    let p = currentSelectedProduct;
+    if (!p) {
+      let prodParam = null;
+      try {
+        if (typeof URLSearchParams !== "undefined" && window.location && window.location.search) {
+          prodParam = new URLSearchParams(window.location.search).get("prod");
+        }
+      } catch(e) {}
+      if (prodParam && typeof findShopProduct === "function") {
+        p = findShopProduct(prodParam);
+      }
+      currentSelectedProduct = p;
+    }
+
+    // NẾU HẾT HÀNG (STOCK <= 0) -> CHUYỂN NGAY SANG ĐẶT TRƯỚC
+    const hasVarsCheck = p && Array.isArray(p.variants) && p.variants.length > 0;
+    const vIdxCheck = (typeof currentSelectedVariantIndex !== "undefined" && currentSelectedVariantIndex !== null) ? Number(currentSelectedVariantIndex) : 0;
+    const currentStockCheck = (p && typeof getShopVariantStock === "function") ? getShopVariantStock(p, vIdxCheck) : (p ? (p.stock || 0) : 0);
+    if (currentStockCheck <= 0) {
+      if (typeof openPreOrderModal === "function") {
+        openPreOrderModal();
+      }
+      return;
+    }
+
+    if (btnBuy) {
       btnBuy.dataset.submitting = "true";
       prevBtnContent = btnBuy.innerHTML;
       btnBuy.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang xử lý đơn hàng...";
@@ -10799,7 +13163,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (btnBuy) {
         if (!btnBuy.dataset) btnBuy.dataset = {};
         btnBuy.dataset.submitting = "false";
-        btnBuy.innerHTML = prevBtnContent || "<i class='fa-solid fa-bolt'></i> MUA NGAY (GIAO TỰ ĐỘNG)";
+        btnBuy.innerHTML = prevBtnContent || "<i class='fa-solid fa-bolt'></i> MUA NGAY";
         btnBuy.style.opacity = "1";
         btnBuy.style.pointerEvents = "auto";
       }
@@ -10813,8 +13177,7 @@ function syncAllOpenViewsStock(changedProdId) {
           if (storedUser) currentUser = JSON.parse(storedUser);
         } catch(e) {}
       }
-      const cleanEmail = (currentUser && currentUser.email ? currentUser.email : "").toLowerCase().trim();
-
+      const cleanEmail = currentUser ? (currentUser.email || "").toLowerCase().trim() : "";
       let p = currentSelectedProduct;
       if (!p) {
         let prodParam = null;
@@ -10844,8 +13207,8 @@ function syncAllOpenViewsStock(changedProdId) {
       // Kiểm tra API On-Demand
       let apiMap = null;
       if (typeof getApiProductMapping === "function") {
-        if (targetVar && targetVar.name) apiMap = getApiProductMapping(targetVar.name);
-        if (!apiMap) apiMap = getApiProductMapping(p);
+        const vName = (targetVar && targetVar.name) ? targetVar.name : "";
+        apiMap = (vName ? getApiProductMapping(vName) : null) || getApiProductMapping(p) || (p && p.apiMapping);
       }
       const isApiOnDemand = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
 
@@ -10882,20 +13245,49 @@ function syncAllOpenViewsStock(changedProdId) {
       const orderId = "MMO" + Math.floor(100000 + Math.random() * 900000);
       const curBal = (currentUser && Number(currentUser.balance)) || 0;
 
-      // NẾU CHƯA ĐĂNG NHẬP HOẶC SỐ DƯ VÍ KHÔNG ĐỦ: MỞ MODAL THANH TOÁN TRỰC TIẾP QUA VIETQR / SEPAY
-      if (!currentUser || curBal < totalCost) {
+      // NẾU CHƯA ĐĂNG NHẬP: YÊU CẦU ĐĂNG NHẬP
+      if (!currentUser) {
         restoreBtn();
-        openDirectPaymentModal({
-          orderId: orderId,
-          product: p,
-          targetVar: targetVar,
-          vIdx: vIdx,
-          qty: qty,
-          unitPrice: unitPrice,
-          totalCost: totalCost,
-          isApiOnDemand: isApiOnDemand,
-          apiMap: apiMap
-        });
+        showToast("🔒 Vui lòng đăng nhập tài khoản để mua hàng!", "warning");
+        if (typeof openAuthModal === "function") openAuthModal("login");
+        return;
+      }
+
+      // NẾU SỐ DƯ VÍ KHÔNG ĐỦ: CHUYỂN HƯỚNG SANG NẠP TIỀN VÀO VÍ TIỀN
+      if (curBal < totalCost) {
+        restoreBtn();
+        const missing = totalCost - curBal;
+        const depositAmt = Math.max(10000, missing);
+        showToast("⚠️ Số dư ví không đủ (Hiện có: " + formatVND(curBal) + " - Đơn hàng: " + formatVND(totalCost) + ")! Đang chuyển hướng sang nạp tiền...", "warning");
+
+        if (typeof closeModal === "function") {
+          closeModal("directPaymentModal");
+          closeModal("orderDeliveryModal");
+          closeModal("modalQuickBuy");
+          closeModal("quickBuyModal");
+        }
+
+        try {
+          localStorage.setItem("mmo_pending_order", JSON.stringify({
+            prodId: p.id,
+            vIdx: vIdx,
+            qty: qty,
+            needed: depositAmt
+          }));
+        } catch(e) {}
+
+        window._targetDepositAmount = depositAmt;
+        setTimeout(function() {
+          if (typeof switchView === "function") {
+            switchView("viewDeposit");
+            if (typeof selectDepositAmount === "function") {
+              selectDepositAmount(depositAmt);
+            } else if (typeof prepareDeposit === "function") {
+              prepareDeposit(depositAmt, true);
+            }
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        }, 300);
         return;
       }
       let credsLines = [];
@@ -10981,6 +13373,7 @@ function syncAllOpenViewsStock(changedProdId) {
       currentUser.balance = newBal;
       try {
         localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        localStorage.setItem("mmo_last_balance_change_time", String(Date.now()));
         let allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
         const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
         if (uIdx !== -1) {
@@ -10989,6 +13382,41 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       } catch(e) {}
       if (typeof updateUserUI === "function") updateUserUI();
+
+      // GHI NHẬN BIẾN ĐỘNG SỐ DƯ (TRỪ TIỀN MUA HÀNG)
+      const purchaseNote = "Mua SP: " + p.name + (targetVar.name && targetVar.name !== "Mặc định" ? " (" + targetVar.name + ")" : "") + " - Đơn #" + orderId;
+      const purchaseNowTime = new Date().toLocaleDateString("vi-VN") + " " + new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+
+      if (typeof recordTransaction === "function") {
+        recordTransaction(
+          cleanEmail,
+          currentUser.name || cleanEmail,
+          "Thanh toán mua hàng",
+          -totalCost,
+          newBal,
+          purchaseNote
+        );
+      }
+
+      try {
+        const purchaseTxObj = {
+          id: "ORD_" + orderId + "_" + Date.now(),
+          txId: "ORD_" + orderId,
+          orderId: orderId,
+          userEmail: cleanEmail,
+          userName: currentUser.name || cleanEmail,
+          type: "Thanh toán mua hàng",
+          amount: -totalCost,
+          balanceAfter: newBal,
+          note: purchaseNote,
+          time: purchaseNowTime,
+          date: purchaseNowTime
+        };
+        let mmoTxs = JSON.parse(localStorage.getItem("mmo_transactions") || "[]");
+        mmoTxs.unshift(purchaseTxObj);
+        localStorage.setItem("mmo_transactions", JSON.stringify(mmoTxs));
+        localStorage.setItem("mmo_wallet_transactions", JSON.stringify(mmoTxs));
+      } catch(e) {}
 
       // GHI NHẬN ĐƠN HÀNG
       const credsText = credsLines.join("\n");
@@ -11023,12 +13451,22 @@ function syncAllOpenViewsStock(changedProdId) {
         userOrders.unshift(orderObj);
         localStorage.setItem("mmo_user_orders", JSON.stringify(userOrders));
 
-        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
-          TURSO_CLIENT.recordOrder(orderObj).catch(e => console.error("Turso recordOrder error:", e));
-        }
+        try {
+          if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof TURSO_CLIENT.recordOrder === "function") {
+            TURSO_CLIENT.recordOrder(orderObj).catch(e => console.warn("Turso recordOrder error:", e));
+          }
+        } catch(e) {}
       } catch(e) {}
 
       // Cập nhật giao diện giao hàng
+      const dlvId = document.getElementById("dlvOrderId");
+      if (dlvId) dlvId.innerText = "#" + orderId;
+      const dlvInfo = document.getElementById("dlvProdInfo");
+      if (dlvInfo) dlvInfo.innerText = (p.name || "") + (targetVar && targetVar.name && targetVar.name !== "Mặc định" ? " - " + targetVar.name : "");
+      const dlvQ = document.getElementById("dlvQty");
+      if (dlvQ) dlvQ.innerText = qty + " tài khoản";
+      const dlvTot = document.getElementById("dlvTotal");
+      if (dlvTot) dlvTot.innerText = formatVND(totalCost);
       const dlvCreds = document.getElementById("dlvCredentials");
       if (dlvCreds) dlvCreds.value = credsText;
 
@@ -11090,11 +13528,34 @@ function syncAllOpenViewsStock(changedProdId) {
       showToast("🎉 Mua hàng thành công! Đã giao " + qty + " tài khoản cho bạn.", "success");
       refreshAllShopStockUI(p.id);
 
-      // Báo Google Sheets lưu ngầm
+      // Đồng bộ thanh toán trừ tiền ví và đơn hàng lên Google Sheets
       if (typeof callGasApi === "function") {
-        callGasApi("createOrder", orderObj).catch(function() {});
-        callGasApi("adminUpdateBalance", { userEmail: cleanEmail, newBalance: newBal }).catch(function() {});
+        callGasApi("payOrderByWallet", {
+          email: cleanEmail,
+          prodId: p.id,
+          prodName: p.name,
+          variantName: targetVar.name || "Mặc định",
+          quantity: qty,
+          orderId: orderId,
+          amount: totalCost,
+          currentBalance: curBal,
+          accounts: credsText
+        }).then(res => {
+          if (res && res.success && res.newBalance !== undefined) {
+            currentUser.balance = Number(res.newBalance);
+            localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            let allUsers = getRegisteredUsers();
+            const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
+            if (uIdx !== -1) {
+              allUsers[uIdx].balance = Number(res.newBalance);
+              saveRegisteredUsers(allUsers);
+            }
+            updateUserUI();
+          }
+        }).catch(function() {});
       }
+      if (typeof renderUserBalanceLogs === "function") renderUserBalanceLogs();
+      if (typeof renderUserWalletTransactions === "function") renderUserWalletTransactions();
     } catch(err) {
       restoreBtn();
       console.error("Lỗi khi mua hàng:", err);
@@ -11109,35 +13570,21 @@ function syncAllOpenViewsStock(changedProdId) {
   window._pendingDirectOrder = null;
 
   function openDirectPaymentModal(orderData) {
-    window._pendingDirectOrder = orderData;
-    const prodNameEl = document.getElementById("dpModalProdName");
-    if (prodNameEl) prodNameEl.innerText = orderData.product.name;
-
-    const varNameEl = document.getElementById("dpModalVariantName");
-    if (varNameEl) varNameEl.innerText = orderData.targetVar.name || "Mặc định";
-
-    const qtyEl = document.getElementById("dpModalQty");
-    if (qtyEl) qtyEl.innerText = orderData.qty;
-
-    const totalEl = document.getElementById("dpModalTotal");
-    if (totalEl) totalEl.innerText = formatVND(orderData.totalCost);
-
-    const emailInp = document.getElementById("dpModalEmail");
-    if (emailInp) {
-      emailInp.value = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "";
+    const cost = (orderData && orderData.totalCost) ? Number(orderData.totalCost) : 20000;
+    const curBal = (currentUser && Number(currentUser.balance)) || 0;
+    const missing = Math.max(10000, cost - curBal);
+    window._targetDepositAmount = missing;
+    showToast("⚠️ Số dư ví không đủ! Đang chuyển hướng sang nạp tiền...", "warning");
+    if (typeof closeModal === "function") closeModal("directPaymentModal");
+    if (typeof switchView === "function") {
+      switchView("viewDeposit");
+      if (typeof selectDepositAmount === "function") {
+        selectDepositAmount(missing);
+      } else if (typeof prepareDeposit === "function") {
+        prepareDeposit(missing, true);
+      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
-
-    const memo = "BUY " + orderData.orderId;
-    const memoEl = document.getElementById("dpModalMemo");
-    if (memoEl) memoEl.innerText = memo;
-
-    const qrImg = document.getElementById("dpModalQrImg");
-    if (qrImg) {
-      qrImg.src = "https://img.vietqr.io/image/MB-0968033451-compact.png?amount=" + orderData.totalCost + "&addInfo=" + encodeURIComponent(memo) + "&accountName=NGUYEN%20MANH%20DUNG";
-    }
-
-    const modal = document.getElementById("directPaymentModal");
-    if (modal) modal.style.display = "flex";
   }
   window.openDirectPaymentModal = openDirectPaymentModal;
 
@@ -11253,6 +13700,14 @@ function syncAllOpenViewsStock(changedProdId) {
     const dlvCreds = document.getElementById("dlvCredentials");
     if (dlvCreds) dlvCreds.value = credsText;
 
+    const dlvId = document.getElementById("dlvOrderId");
+    if (dlvId) dlvId.innerText = "#" + orderId;
+    const dlvInfo = document.getElementById("dlvProdInfo");
+    if (dlvInfo) dlvInfo.innerText = (product.name || "") + (targetVar && targetVar.name && targetVar.name !== "Mặc định" ? " - " + targetVar.name : "");
+    const dlvQ = document.getElementById("dlvQty");
+    if (dlvQ) dlvQ.innerText = qty + " tài khoản";
+    const dlvTot = document.getElementById("dlvTotal");
+    if (dlvTot) dlvTot.innerText = formatVND(totalCost);
     const dlvModal = document.getElementById("orderDeliveryModal");
     if (dlvModal) {
       dlvModal.style.display = "flex";
@@ -11261,11 +13716,24 @@ function syncAllOpenViewsStock(changedProdId) {
 
     refreshAllShopStockUI(product.id);
     showToast("🎉 Mua hàng thành công! Đã giao " + credsLines.length + " tài khoản cho bạn.", "success");
+    if (typeof addUserNotification === "function") {
+      addUserNotification({
+        title: "🎉 Mua hàng thành công #" + orderId,
+        message: "Bạn đã mua thành công " + credsLines.length + "x " + (product.name || "tài khoản") + ". Đã lưu trữ trong mục Đơn hàng của bạn.",
+        type: "ORDER",
+        orderId: orderId,
+        email: buyerEmail,
+        playSound: true
+      });
+    } else if (typeof playNotificationSound === "function") {
+      playNotificationSound();
+    }
     return credsLines;
   }
   window.completeOrderDelivery = completeOrderDelivery;
 
   window.executeBuyCurrentProduct = executeBuyCurrentProduct;
+  window.handleDetailBuyAction = executeBuyCurrentProduct;
 
     function copyDeliveredCreds() {
       const text = document.getElementById("dlvCredentials")?.value || window.lastDeliveredCredentials;
@@ -11332,12 +13800,25 @@ function syncAllOpenViewsStock(changedProdId) {
         </button>
       `).join("");
 
-      let list = MOCK_DATA.blogs;
+      let list = (MOCK_DATA && MOCK_DATA.blogs) ? MOCK_DATA.blogs : [];
       if (currentBlogCategory !== "Tất cả") {
         list = list.filter(b => b.category === currentBlogCategory);
       }
 
-      grid.innerHTML = list.map(b => `
+      // Phân trang 10 bài viết / 1 trang cho giao diện Blog
+      const PAGE_SIZE = 10;
+      const totalItems = list.length;
+      const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1;
+      let curPage = (typeof paginationState !== "undefined" && paginationState.blogPage) ? paginationState.blogPage : 1;
+      if (curPage > totalPages) curPage = totalPages;
+      if (curPage < 1) curPage = 1;
+      if (typeof paginationState !== "undefined") paginationState.blogPage = curPage;
+
+      const startIndex = (curPage - 1) * PAGE_SIZE;
+      const endIndex = Math.min(startIndex + PAGE_SIZE, totalItems);
+      const pageBlogs = list.slice(startIndex, endIndex);
+
+      grid.innerHTML = pageBlogs.map(b => `
         <div class="blog-card-full" onclick="openBlogDetail('${b.id}')">
           <div class="blog-card-img">
             <img src="${b.image}" alt="${b.title}" loading="lazy"/>
@@ -11353,6 +13834,23 @@ function syncAllOpenViewsStock(changedProdId) {
           </div>
         </div>
       `).join("");
+
+      let pagEl = document.getElementById("blogPublicPagination");
+      if (!pagEl && grid.parentNode) {
+        pagEl = document.createElement("div");
+        pagEl.id = "blogPublicPagination";
+        pagEl.style.marginTop = "28px";
+        grid.parentNode.insertBefore(pagEl, grid.nextSibling);
+      }
+      if (pagEl && typeof renderPaginationUI === "function") {
+        renderPaginationUI("blogPublicPagination", curPage, totalItems, "changePublicBlogPage", PAGE_SIZE);
+      }
+    }
+
+    function filterBlogCategory(cat) {
+      currentBlogCategory = cat;
+      if (typeof paginationState !== "undefined") paginationState.blogPage = 1;
+      renderBlogPage();
     }
 
     function filterBlogCategory(cat) {
@@ -11582,6 +14080,15 @@ function syncAllOpenViewsStock(changedProdId) {
           }).join("");
         }
         artBody.innerHTML = contentHtml;
+
+        // TỰ ĐỘNG TẠO MỤC LỤC BÀI VIẾT (TABLE OF CONTENTS - SEO OPTIMIZED)
+        try {
+          if (typeof renderArticleTableOfContents === "function") {
+            renderArticleTableOfContents(artBody);
+          }
+        } catch(tocErr) {
+          console.warn("TOC warning:", tocErr);
+        }
       }
 
       renderArticleSidebarTop(b.id);
@@ -11592,6 +14099,76 @@ function syncAllOpenViewsStock(changedProdId) {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
     window.openBlogDetail = openBlogDetail;
+
+    // [SEO]: TỰ ĐỘNG SINH MỤC LỤC BÀI VIẾT (TABLE OF CONTENTS)
+    function renderArticleTableOfContents(bodyEl) {
+      const tocContainer = document.getElementById("articleTocContainer");
+      if (!tocContainer) return;
+
+      if (!bodyEl) {
+        tocContainer.style.display = "none";
+        tocContainer.innerHTML = "";
+        return;
+      }
+
+      const headings = bodyEl.querySelectorAll("h2, h3, h4");
+      if (!headings || headings.length < 2) {
+        tocContainer.style.display = "none";
+        tocContainer.innerHTML = "";
+        return;
+      }
+
+      let tocItemsHtml = "";
+      headings.forEach((h, idx) => {
+        let hId = h.id;
+        if (!hId) {
+          hId = "muc-" + (idx + 1) + "-" + encodeURIComponent((h.innerText || "").slice(0, 30).trim().toLowerCase().replace(/[^a-z0-9]+/g, "-"));
+          h.id = hId;
+        }
+        const tag = h.tagName.toLowerCase();
+        const isSub = (tag === "h3" || tag === "h4");
+        const cleanText = (h.innerText || "").replace(/^[0-9\.\s]+/, "").trim() || ("Mục " + (idx + 1));
+        const itemClass = isSub ? "article-toc-item toc-sub" : "article-toc-item";
+
+        tocItemsHtml += '<li class="' + itemClass + '">' +
+          '<a href="#' + hId + '" onclick="scrollToArticleHeading(event, \'' + hId + '\')">' + escapeHtml(cleanText) + '</a>' +
+        '</li>';
+      });
+
+      tocContainer.innerHTML = '<div class="article-toc-box">' +
+        '<div class="article-toc-header" onclick="toggleArticleToc()">' +
+          '<span class="article-toc-title"><i class="fa-solid fa-list-ol" style="color:#38bdf8;"></i> Mục Lục Bài Viết</span>' +
+          '<button type="button" class="article-toc-toggle" id="articleTocToggleBtn"><i class="fa-solid fa-chevron-up"></i> [Ẩn]</button>' +
+        '</div>' +
+        '<ol class="article-toc-list" id="articleTocList">' + tocItemsHtml + '</ol>' +
+      '</div>';
+      tocContainer.style.display = "block";
+    }
+    window.renderArticleTableOfContents = renderArticleTableOfContents;
+
+    function toggleArticleToc() {
+      const list = document.getElementById("articleTocList");
+      const btn = document.getElementById("articleTocToggleBtn");
+      if (!list || !btn) return;
+      if (list.style.display === "none") {
+        list.style.display = "flex";
+        btn.innerHTML = '<i class="fa-solid fa-chevron-up"></i> [Ẩn]';
+      } else {
+        list.style.display = "none";
+        btn.innerHTML = '<i class="fa-solid fa-chevron-down"></i> [Hiện]';
+      }
+    }
+    window.toggleArticleToc = toggleArticleToc;
+
+    function scrollToArticleHeading(e, targetId) {
+      if (e && typeof e.preventDefault === "function") e.preventDefault();
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        try { history.pushState(null, "", "#" + targetId); } catch(err) {}
+      }
+    }
+    window.scrollToArticleHeading = scrollToArticleHeading;
 
     function renderArticleSidebarTop(currentId) {
       const container = document.getElementById("articleSidebarTopList");
@@ -11747,9 +14324,29 @@ function syncAllOpenViewsStock(changedProdId) {
       const blogs = (MOCK_DATA && MOCK_DATA.blogs) ? MOCK_DATA.blogs : [];
       if (blogs.length === 0) {
         container.innerHTML = "<p style='color:#64748b; padding:20px; text-align:center;'>Chưa có bài viết nào.</p>";
+        const pag = document.getElementById("admBlogPagination");
+        if (pag) pag.innerHTML = "";
         return;
       }
+
+      // 10 bài viết trên 1 trang
+      const PAGE_SIZE = 10;
+      const totalItems = blogs.length;
+      const totalPages = Math.ceil(totalItems / PAGE_SIZE) || 1;
+      let curPage = (typeof paginationState !== "undefined" && paginationState.admBlogs) ? paginationState.admBlogs : 1;
+      if (curPage > totalPages) curPage = totalPages;
+      if (curPage < 1) curPage = 1;
+      if (typeof paginationState !== "undefined") paginationState.admBlogs = curPage;
+
+      const startIndex = (curPage - 1) * PAGE_SIZE;
+      const endIndex = Math.min(startIndex + PAGE_SIZE, totalItems);
+      const pageBlogs = blogs.slice(startIndex, endIndex);
+
       container.innerHTML = 
+        '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:0.8rem; color:#94a3b8; flex-wrap:wrap; gap:8px;">' +
+          '<span>Hiển thị <strong>' + (startIndex + 1) + ' - ' + endIndex + '</strong> trên tổng số <strong>' + totalItems + '</strong> bài viết</span>' +
+          '<span>Trang <strong>' + curPage + ' / ' + totalPages + '</strong></span>' +
+        '</div>' +
         '<table class="adm-table" style="width:100%; border-collapse:collapse; font-size:0.85rem;">' +
           '<thead>' +
             '<tr style="background:#070a12; border-bottom:1px solid #1e293b; color:#94a3b8; text-align:left;">' +
@@ -11761,7 +14358,7 @@ function syncAllOpenViewsStock(changedProdId) {
             '</tr>' +
           '</thead>' +
           '<tbody>' +
-            blogs.map(b => 
+            pageBlogs.map(b => 
               '<tr style="border-bottom:1px solid #141f33; color:#cbd5e1;">' +
                 '<td style="padding:10px;">' +
                   '<img src="' + b.image + '" style="width:40px; height:40px; border-radius:4px; object-fit:cover;" />' +
@@ -11776,7 +14373,12 @@ function syncAllOpenViewsStock(changedProdId) {
               '</tr>'
             ).join("") +
           '</tbody>' +
-        '</table>';
+        '</table>' +
+        '<div id="admBlogPagination" style="margin-top:16px;"></div>';
+
+      if (typeof renderPaginationUI === "function") {
+        renderPaginationUI("admBlogPagination", curPage, totalItems, "changeAdmBlogsPage", PAGE_SIZE);
+      }
     }
     window.renderAdminBlogsTable = renderAdminBlogsTable;
 
@@ -13317,6 +15919,11 @@ function syncAllOpenViewsStock(changedProdId) {
       document.getElementById("ttFolTotal").innerText = lines.length;
       document.getElementById("ttFolSuccess").innerText = "0";
       document.getElementById("ttFolError").innerText = "0";
+      const totalEl = document.getElementById("ttTotalCount"); if (totalEl) totalEl.innerText = lines.length;
+      const selEl = document.getElementById("ttSelectedCount"); if (selEl) selEl.innerText = "0";
+      const mCb = document.getElementById("ttSelectAllMaster"); if (mCb) mCb.checked = false;
+      const tCb = document.getElementById("ttTableSelectAll"); if (tCb) tCb.checked = false;
+
       const tbody = document.getElementById("ttFollowTableBody");
       tbody.innerHTML = "";
 
@@ -13357,14 +15964,28 @@ function syncAllOpenViewsStock(changedProdId) {
           } catch(err) {
             res = { success: false, user: line, error: 'Lỗi kiểm tra' };
           }
+          res.rawLine = line;
+          res.selected = false;
           ttFollowResultsList.push(res);
 
           const tr = document.createElement("tr");
-          tr.style.borderBottom = "1px solid #1e293b";
+          tr.id = "ttRow_" + i;
+          tr.style.cssText = "border-bottom:1px solid #1e293b; cursor:pointer; transition:background 0.2s;";
+          tr.onclick = function(ev) {
+            if (ev && ev.target && (ev.target.tagName === 'A' || ev.target.tagName === 'INPUT' || ev.target.closest('a'))) return;
+            const cb = tr.querySelector(".tt-row-checkbox");
+            if (cb) {
+              cb.checked = !cb.checked;
+              toggleTtRowSelect(i, cb.checked);
+            }
+          };
 
           if (res.success) {
             successCount++;
             tr.innerHTML = `
+              <td style="padding:10px 12px; text-align:center;">
+                <input type="checkbox" class="tt-row-checkbox" data-idx="${i}" onchange="toggleTtRowSelect(${i}, this.checked)" style="width:16px; height:16px; cursor:pointer; accent-color:#00f2fe;" />
+              </td>
               <td style="padding:10px 12px; color:#64748b;">${i + 1}</td>
               <td style="padding:10px 12px; font-weight:600;">
                 <a href="https://www.tiktok.com/@${encodeURIComponent(res.user)}" target="_blank" rel="noopener noreferrer" style="color:#00f2fe; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:600;" onmouseover="this.style.textDecoration='underline'; this.style.color='#38bdf8';" onmouseout="this.style.textDecoration='none'; this.style.color='#00f2fe';" title="Mở trang cá nhân TikTok kiểm tra trực tiếp">
@@ -13381,6 +16002,9 @@ function syncAllOpenViewsStock(changedProdId) {
           } else {
             errorCount++;
             tr.innerHTML = `
+              <td style="padding:10px 12px; text-align:center;">
+                <input type="checkbox" class="tt-row-checkbox" data-idx="${i}" onchange="toggleTtRowSelect(${i}, this.checked)" style="width:16px; height:16px; cursor:pointer; accent-color:#00f2fe;" />
+              </td>
               <td style="padding:10px 12px; color:#64748b;">${i + 1}</td>
               <td style="padding:10px 12px; font-weight:600;">
                 <a href="https://www.tiktok.com/@${encodeURIComponent(res.user)}" target="_blank" rel="noopener noreferrer" style="color:#f87171; text-decoration:none; display:inline-flex; align-items:center; gap:5px;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';" title="Mở trang cá nhân để kiểm tra link">
@@ -13399,6 +16023,7 @@ function syncAllOpenViewsStock(changedProdId) {
           tbody.appendChild(tr);
           document.getElementById("ttFolSuccess").innerText = successCount;
           document.getElementById("ttFolError").innerText = errorCount;
+          updateTtSelectedStats();
         }
       } catch(fatalErr) {
         console.error("TikTok batch fatal error:", fatalErr);
@@ -13411,6 +16036,224 @@ function syncAllOpenViewsStock(changedProdId) {
         showToast("Đã check xong " + lines.length + " tài khoản TikTok!", "success");
       }
     }
+    window.startBatchCheckTtFollow = startBatchCheckTtFollow;
+
+    // --- CÁC HÀM QUẢN LÝ DẤU TÍCH & THAO TÁC ACC ĐÃ CHỌN (COPY, CUT, XÓA) ---
+    function toggleTtRowSelect(idx, checked) {
+      if (ttFollowResultsList && ttFollowResultsList[idx]) {
+        ttFollowResultsList[idx].selected = !!checked;
+        const row = document.getElementById("ttRow_" + idx);
+        if (row) {
+          row.style.background = checked ? "rgba(0, 242, 254, 0.08)" : "transparent";
+        }
+        updateTtSelectedStats();
+      }
+    }
+    window.toggleTtRowSelect = toggleTtRowSelect;
+
+    function toggleSelectAllTt(checked) {
+      if (!ttFollowResultsList || ttFollowResultsList.length === 0) return;
+      ttFollowResultsList.forEach((item, idx) => {
+        item.selected = !!checked;
+        const row = document.getElementById("ttRow_" + idx);
+        if (row) {
+          row.style.background = checked ? "rgba(0, 242, 254, 0.08)" : "transparent";
+          const cb = row.querySelector(".tt-row-checkbox");
+          if (cb) cb.checked = !!checked;
+        }
+      });
+      const masterCb = document.getElementById("ttSelectAllMaster");
+      if (masterCb) masterCb.checked = !!checked;
+      const tblCb = document.getElementById("ttTableSelectAll");
+      if (tblCb) tblCb.checked = !!checked;
+      updateTtSelectedStats();
+    }
+    window.toggleSelectAllTt = toggleSelectAllTt;
+
+    function selectTtByStatus(status) {
+      if (!ttFollowResultsList || ttFollowResultsList.length === 0) {
+        showToast("Chưa có danh sách kết quả để chọn!", "warning");
+        return;
+      }
+      let matchCount = 0;
+      ttFollowResultsList.forEach((item, idx) => {
+        let isMatch = false;
+        if (status === "live") isMatch = (item.success === true);
+        else if (status === "die") isMatch = (item.success === false);
+        item.selected = isMatch;
+        if (isMatch) matchCount++;
+        const row = document.getElementById("ttRow_" + idx);
+        if (row) {
+          row.style.background = isMatch ? "rgba(0, 242, 254, 0.08)" : "transparent";
+          const cb = row.querySelector(".tt-row-checkbox");
+          if (cb) cb.checked = isMatch;
+        }
+      });
+      updateTtSelectedStats();
+      showToast("Đã chọn " + matchCount + " nick " + (status === "live" ? "Live" : "Die") + "!", "info");
+    }
+    window.selectTtByStatus = selectTtByStatus;
+
+    function updateTtSelectedStats() {
+      if (!ttFollowResultsList) return;
+      const total = ttFollowResultsList.length;
+      const selCount = ttFollowResultsList.filter(item => item.selected).length;
+      const selCountEl = document.getElementById("ttSelectedCount");
+      if (selCountEl) selCountEl.innerText = selCount;
+      const totCountEl = document.getElementById("ttTotalCount");
+      if (totCountEl) totCountEl.innerText = total;
+
+      const masterCb = document.getElementById("ttSelectAllMaster");
+      if (masterCb) masterCb.checked = (total > 0 && selCount === total);
+      const tblCb = document.getElementById("ttTableSelectAll");
+      if (tblCb) tblCb.checked = (total > 0 && selCount === total);
+    }
+    window.updateTtSelectedStats = updateTtSelectedStats;
+
+    function renderAllTtFollowTable() {
+      const tbody = document.getElementById("ttFollowTableBody");
+      if (!tbody) return;
+      if (!ttFollowResultsList || ttFollowResultsList.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='8' style='padding:30px; text-align:center; color:#64748b;'>Chưa có dữ liệu. Vui lòng nhập danh sách và bấm \"Bắt Đầu Check Follower\"</td></tr>";
+        document.getElementById("ttFolTotal").innerText = "0";
+        document.getElementById("ttFolSuccess").innerText = "0";
+        document.getElementById("ttFolError").innerText = "0";
+        updateTtSelectedStats();
+        return;
+      }
+
+      tbody.innerHTML = "";
+      let successCount = 0;
+      let errorCount = 0;
+
+      ttFollowResultsList.forEach((res, i) => {
+        if (res.success) successCount++;
+        else errorCount++;
+
+        const tr = document.createElement("tr");
+        tr.id = "ttRow_" + i;
+        tr.style.cssText = "border-bottom:1px solid #1e293b; cursor:pointer; transition:background 0.2s;" + (res.selected ? " background:rgba(0,242,254,0.08);" : "");
+        tr.onclick = function(ev) {
+          if (ev && ev.target && (ev.target.tagName === 'A' || ev.target.tagName === 'INPUT' || ev.target.closest('a'))) return;
+          const cb = tr.querySelector(".tt-row-checkbox");
+          if (cb) {
+            cb.checked = !cb.checked;
+            toggleTtRowSelect(i, cb.checked);
+          }
+        };
+
+        const isChecked = res.selected ? "checked" : "";
+
+        if (res.success) {
+          tr.innerHTML = `
+            <td style="padding:10px 12px; text-align:center;">
+              <input type="checkbox" class="tt-row-checkbox" data-idx="${i}" ${isChecked} onchange="toggleTtRowSelect(${i}, this.checked)" style="width:16px; height:16px; cursor:pointer; accent-color:#00f2fe;" />
+            </td>
+            <td style="padding:10px 12px; color:#64748b;">${i + 1}</td>
+            <td style="padding:10px 12px; font-weight:600;">
+              <a href="https://www.tiktok.com/@${encodeURIComponent(res.user)}" target="_blank" rel="noopener noreferrer" style="color:#00f2fe; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:600;" onmouseover="this.style.textDecoration='underline'; this.style.color='#38bdf8';" onmouseout="this.style.textDecoration='none'; this.style.color='#00f2fe';" title="Mở trang cá nhân TikTok kiểm tra trực tiếp">
+                @${escapeHtml(res.user)}
+                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.72rem; opacity:0.85;"></i>
+              </a>
+            </td>
+            <td style="padding:10px 12px; color:#e2e8f0; font-weight:500;">${escapeHtml(res.nickname)}</td>
+            <td style="padding:10px 12px; font-weight:700; color:#00f2fe; font-size:0.92rem;">${escapeHtml(res.followers)}</td>
+            <td style="padding:10px 12px; font-weight:600; color:#ef4444; font-size:0.92rem;">${escapeHtml(res.likes)}</td>
+            <td style="padding:10px 12px; color:#3b82f6; font-weight:500; font-size:0.92rem;">${escapeHtml(res.following)}</td>
+            <td style="padding:10px 12px;"><span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:3px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Hoạt động (Live)</span></td>
+          `;
+        } else {
+          tr.innerHTML = `
+            <td style="padding:10px 12px; text-align:center;">
+              <input type="checkbox" class="tt-row-checkbox" data-idx="${i}" ${isChecked} onchange="toggleTtRowSelect(${i}, this.checked)" style="width:16px; height:16px; cursor:pointer; accent-color:#00f2fe;" />
+            </td>
+            <td style="padding:10px 12px; color:#64748b;">${i + 1}</td>
+            <td style="padding:10px 12px; font-weight:600;">
+              <a href="https://www.tiktok.com/@${encodeURIComponent(res.user)}" target="_blank" rel="noopener noreferrer" style="color:#f87171; text-decoration:none; display:inline-flex; align-items:center; gap:5px;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';" title="Mở trang cá nhân để kiểm tra link">
+                @${escapeHtml(res.user)}
+                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.72rem; opacity:0.85;"></i>
+              </a>
+            </td>
+            <td style="padding:10px 12px; color:#64748b;">-</td>
+            <td style="padding:10px 12px; color:#64748b;">0</td>
+            <td style="padding:10px 12px; color:#64748b;">0</td>
+            <td style="padding:10px 12px; color:#64748b;">0</td>
+            <td style="padding:10px 12px;"><span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:3px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;"><i class="fa-solid fa-circle-xmark"></i> Die / Không Tồn Tại</span></td>
+          `;
+        }
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("ttFolTotal").innerText = ttFollowResultsList.length;
+      document.getElementById("ttFolSuccess").innerText = successCount;
+      document.getElementById("ttFolError").innerText = errorCount;
+      updateTtSelectedStats();
+    }
+    window.renderAllTtFollowTable = renderAllTtFollowTable;
+
+    function syncTtTextareaFromResults() {
+      const txt = document.getElementById("ttFollowBatchInput");
+      if (txt && ttFollowResultsList) {
+        txt.value = ttFollowResultsList.map(item => item.rawLine || item.user).join("\n");
+      }
+    }
+
+    function copySelectedTtAccounts() {
+      if (!ttFollowResultsList || ttFollowResultsList.length === 0) {
+        showToast("Chưa có danh sách tài khoản!", "warning");
+        return;
+      }
+      const selected = ttFollowResultsList.filter(item => item.selected);
+      if (selected.length === 0) {
+        showToast("Vui lòng tích chọn ít nhất 1 tài khoản để sao chép!", "warning");
+        return;
+      }
+      const text = selected.map(item => item.rawLine || item.user).join("\n");
+      copyToClipboard(text, "Đã sao chép " + selected.length + " tài khoản đã chọn!");
+    }
+    window.copySelectedTtAccounts = copySelectedTtAccounts;
+
+    function cutSelectedTtAccounts() {
+      if (!ttFollowResultsList || ttFollowResultsList.length === 0) {
+        showToast("Chưa có danh sách tài khoản!", "warning");
+        return;
+      }
+      const selected = ttFollowResultsList.filter(item => item.selected);
+      if (selected.length === 0) {
+        showToast("Vui lòng tích chọn ít nhất 1 tài khoản để cắt!", "warning");
+        return;
+      }
+      const text = selected.map(item => item.rawLine || item.user).join("\n");
+      copyToClipboard(text, "Đã cắt " + selected.length + " tài khoản vào bộ nhớ tạm!");
+
+      // Loại bỏ các tài khoản đã chọn khỏi danh sách kết quả
+      ttFollowResultsList = ttFollowResultsList.filter(item => !item.selected);
+      syncTtTextareaFromResults();
+      renderAllTtFollowTable();
+    }
+    window.cutSelectedTtAccounts = cutSelectedTtAccounts;
+
+    function deleteSelectedTtAccounts() {
+      if (!ttFollowResultsList || ttFollowResultsList.length === 0) {
+        showToast("Chưa có danh sách tài khoản!", "warning");
+        return;
+      }
+      const selected = ttFollowResultsList.filter(item => item.selected);
+      if (selected.length === 0) {
+        showToast("Vui lòng tích chọn ít nhất 1 tài khoản để xóa!", "warning");
+        return;
+      }
+      const count = selected.length;
+      if (!confirm("Bạn có chắc chắn muốn XÓA " + count + " tài khoản đã chọn khỏi danh sách?")) {
+        return;
+      }
+
+      ttFollowResultsList = ttFollowResultsList.filter(item => !item.selected);
+      syncTtTextareaFromResults();
+      renderAllTtFollowTable();
+      showToast("Đã xóa " + count + " tài khoản khỏi danh sách!", "success");
+    }
+    window.deleteSelectedTtAccounts = deleteSelectedTtAccounts;
 
     function copyTtFollowResults() {
       if (!ttFollowResultsList || ttFollowResultsList.length === 0) {
@@ -13426,6 +16269,7 @@ function syncAllOpenViewsStock(changedProdId) {
       }).join("\n");
       copyToClipboard(text, "Đã sao chép toàn bộ kết quả Follower TikTok!");
     }
+    window.copyTtFollowResults = copyTtFollowResults;
 
     function exportTtFollowTxt() {
       if (!ttFollowResultsList || ttFollowResultsList.length === 0) {
@@ -13452,6 +16296,7 @@ function syncAllOpenViewsStock(changedProdId) {
       a.click();
       showToast("Đã tải xuống file kết quả TikTok .txt!", "success");
     }
+    window.exportTtFollowTxt = exportTtFollowTxt;
 
     function clearTtFollowBatch() {
       if (document.getElementById("ttFollowBatchInput")) document.getElementById("ttFollowBatchInput").value = "";
@@ -13459,9 +16304,14 @@ function syncAllOpenViewsStock(changedProdId) {
       document.getElementById("ttFolTotal").innerText = "0";
       document.getElementById("ttFolSuccess").innerText = "0";
       document.getElementById("ttFolError").innerText = "0";
-      document.getElementById("ttFollowTableBody").innerHTML = "<tr><td colspan='7' style='padding:30px; text-align:center; color:#64748b;'>Chưa có dữ liệu. Vui lòng nhập danh sách và bấm \"Bắt Đầu Check Follower\"</td></tr>";
+      const selEl = document.getElementById("ttSelectedCount"); if (selEl) selEl.innerText = "0";
+      const totEl = document.getElementById("ttTotalCount"); if (totEl) totEl.innerText = "0";
+      const mCb = document.getElementById("ttSelectAllMaster"); if (mCb) mCb.checked = false;
+      const tCb = document.getElementById("ttTableSelectAll"); if (tCb) tCb.checked = false;
+      document.getElementById("ttFollowTableBody").innerHTML = "<tr><td colspan='8' style='padding:30px; text-align:center; color:#64748b;'>Chưa có dữ liệu. Vui lòng nhập danh sách và bấm \"Bắt Đầu Check Follower\"</td></tr>";
       showToast("Đã xóa danh sách!", "success");
     }
+    window.clearTtFollowBatch = clearTtFollowBatch;
 
     // ==========================================
     // TOOL 6: CHECK FOLLOWER FACEBOOK HÀNG LOẠT (SMART METRIC ENGINE)
@@ -13873,6 +16723,17 @@ function syncAllOpenViewsStock(changedProdId) {
         }
 
         showToast("🎉 Nạp tiền tự động thành công! Đã cộng +" + formatVND(detectedAmount) + " vào ví.", "success");
+        if (typeof addUserNotification === "function") {
+          addUserNotification({
+            title: "💰 Nạp tiền thành công +" + formatVND(detectedAmount),
+            message: "Hệ thống đã tự động cộng +" + formatVND(detectedAmount) + " vào số dư ví của bạn.",
+            type: "DEPOSIT",
+            email: currentUser && currentUser.email ? currentUser.email : "",
+            playSound: true
+          });
+        } else if (typeof playNotificationSound === "function") {
+          playNotificationSound();
+        }
         
         // CHUYỂN NGAY LẬP TỨC SANG TRANG VÍ
         switchView("viewProfile");
@@ -13885,8 +16746,15 @@ function syncAllOpenViewsStock(changedProdId) {
 
     let cachedCloudWalletHistory = [];
 
-    async function loadUserWalletFromCloud() {
+    var _lastWalletCloudFetchTime = 0;
+    var _isLoadingWalletFromCloud = false;
+
+    async function loadUserWalletFromCloud(force = false) {
       if (!currentUser || !currentUser.email) return;
+      const now = Date.now();
+      if (!force && (now - _lastWalletCloudFetchTime < 15000 || _isLoadingWalletFromCloud)) return;
+      _isLoadingWalletFromCloud = true;
+      _lastWalletCloudFetchTime = now;
       const cleanEmail = (currentUser.email || "").toLowerCase().trim();
 
       try {
@@ -13899,26 +16767,39 @@ function syncAllOpenViewsStock(changedProdId) {
             const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
             const localBal = (uIdx !== -1 && allUsers[uIdx].balance !== undefined) ? Number(allUsers[uIdx].balance) : 0;
 
-            // Số dư chuẩn là max giữa cloud và local để tránh bị lệch khi vừa nạp tiền thủ công
-            const finalBal = Math.max(cloudBal, localBal);
-            currentUser.balance = finalBal;
-            localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            const lastChangeTime = Number(localStorage.getItem("mmo_last_balance_change_time") || 0);
+            const isRecentLocalChange = (Date.now() - lastChangeTime) < 60000;
 
-            if (uIdx !== -1) {
+            let compBal = localBal;
+            if (typeof getUserComprehensiveTransactions === "function") {
+              const comp = getUserComprehensiveTransactions(cleanEmail);
+              if (comp && comp.currentBalance !== undefined && !isNaN(Number(comp.currentBalance))) {
+                compBal = Number(comp.currentBalance);
+              }
+            }
+
+            let finalBal = Math.max(localBal, compBal);
+            if (cloudBal > finalBal) {
+              finalBal = cloudBal;
+            } else if (finalBal > cloudBal && typeof callGasApi === "function") {
+              callGasApi("adminUpdateBalance", {
+                adminEmail: cleanEmail,
+                targetEmail: cleanEmail,
+                amount: (finalBal - cloudBal),
+                reason: "Đồng bộ số dư ví tự động"
+              }).catch(() => {});
+            }
+
+            if (currentUser.balance !== finalBal) {
+              currentUser.balance = finalBal;
+              localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            }
+
+            if (uIdx !== -1 && allUsers[uIdx].balance !== finalBal) {
               allUsers[uIdx].balance = finalBal;
               saveRegisteredUsers(allUsers);
             }
             updateUserUI();
-
-            // Nếu số dư local lớn hơn trên Cloud, tự động đồng bộ bù lên Google Sheet
-            if (localBal > cloudBal && typeof callGasApi === "function") {
-              callGasApi("adminUpdateBalance", {
-                adminEmail: cleanEmail,
-                targetEmail: cleanEmail,
-                amount: (localBal - cloudBal),
-                reason: "Đồng bộ số dư ví tự động"
-              }).catch(() => {});
-            }
           }
 
           if (Array.isArray(walletRes.wallet.history)) {
@@ -13954,6 +16835,8 @@ function syncAllOpenViewsStock(changedProdId) {
       } catch(e) {
         renderUserWalletTransactions();
         renderUserBalanceLogs();
+      } finally {
+        _isLoadingWalletFromCloud = false;
       }
     }
 
@@ -13970,87 +16853,58 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       const cleanEmail = currentUser ? (currentUser.email || "").toLowerCase().trim() : "";
-      const localHistory = typeof getTransactionHistory === "function" ? getTransactionHistory() : [];
-      
-      // Chỉ lấy các giao dịch Nạp tiền, Rút tiền, Hoàn tiền rút, Hoàn tiền đơn hàng
-      const userDepositWithdraws = localHistory.filter(tx => {
-        if (!cleanEmail || (tx.userEmail || "").toLowerCase().trim() !== cleanEmail) return false;
-        const t = (tx.type || "").toLowerCase();
-        return t.includes("nạp") || t.includes("rút") || t.includes("cộng/trừ") || t.includes("hoàn tiền");
-      });
+      if (!cleanEmail) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Vui lòng đăng nhập để xem lịch sử nạp / rút tiền.</td></tr>';
+        return;
+      }
 
-      // Gộp giao dịch Cloud và giao dịch Local, ưu tiên giao dịch mới nhất lên đầu
-      const allHistory = [];
-      userDepositWithdraws.forEach(loc => {
-        allHistory.push({
-          id: loc.id,
-          time: loc.time,
-          type: loc.type || "Nạp tiền ví",
-          amount: Number(loc.amount) || 0,
-          status: "Thành công",
-          note: loc.note || "Giao dịch ví điện tử"
+      let allHistory = [];
+      if (typeof getUserComprehensiveTransactions === "function") {
+        const res = getUserComprehensiveTransactions(cleanEmail);
+        const rawTxs = res.transactions || [];
+        allHistory = rawTxs.filter(tx => {
+          const t = String(tx.type || "").toLowerCase();
+          const n = String(tx.note || "").toLowerCase();
+          const amt = Number(tx.amount) || 0;
+          return t.includes("nạp") || t.includes("rút") || t.includes("hoàn tiền") || t.includes("thủ công") || n.includes("hoàn tiền") || amt > 0;
         });
-      });
-
-      // Bổ sung các đơn hàng bảo hành đã hoàn tiền từ danh sách đơn hàng
-      try {
-        const uOrders = typeof getUserOrders === "function" ? getUserOrders() : [];
-        const aOrders = typeof getAllOrders === "function" ? getAllOrders() : [];
-        const combinedOrders = [...uOrders];
-        aOrders.forEach(ao => {
-          if (!combinedOrders.some(co => (co.orderId === ao.orderId || co.id === ao.id))) {
-            combinedOrders.push(ao);
-          }
+      } else {
+        const localHistory = typeof getTransactionHistory === "function" ? getTransactionHistory() : [];
+        allHistory = localHistory.filter(tx => {
+          if ((tx.userEmail || "").toLowerCase().trim() !== cleanEmail) return false;
+          const t = (tx.type || "").toLowerCase();
+          return t.includes("nạp") || t.includes("rút") || t.includes("cộng/trừ") || t.includes("hoàn tiền") || Number(tx.amount) > 0;
         });
-        combinedOrders.forEach(o => {
-          const ordEmail = (o.email || o.userEmail || "").toLowerCase().trim();
-          if (ordEmail === cleanEmail) {
-            const st = String(o.status || "").toLowerCase();
-            if (st.includes("hoàn tiền") || st.includes("refund")) {
-              const oId = String(o.orderId || o.id || "");
-              const alreadyLogged = allHistory.some(l => (l.note && l.note.includes(oId)) || (l.id && String(l.id).includes(oId)));
-              if (!alreadyLogged) {
-                const refundAmt = Number(o.total || o.totalPrice || o.totalAmount) || 10000;
-                allHistory.push({
-                  id: "REFUND_" + oId,
-                  time: o.refundedAt || o.date || o.createdAt,
-                  type: "Hoàn tiền bảo hành",
-                  amount: +refundAmt,
-                  status: "Thành công",
-                  note: "Hoàn tiền bảo hành đơn #" + oId + " (" + (o.productName || o.prodName || "Tài khoản MMO") + ")"
-                });
-              }
-            }
-          }
-        });
-      } catch(e) {}
-
-      cachedCloudWalletHistory.forEach(h => {
-        if (!allHistory.some(existing => existing.id === h.id || (existing.note && existing.note.includes(h.id)))) {
-          allHistory.push(h);
-        }
-      });
+      }
 
       if (allHistory.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Chưa có yêu cầu nạp / rút tiền nào.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Chưa có lịch sử nạp / rút tiền nào.</td></tr>';
         return;
       }
 
       function parseVietnamDateTime(str) {
         if (!str) return 0;
         if (typeof str === "number") return str;
-        const parts = String(str).trim().split(" ");
-        const datePart = parts[0];
-        const timePart = parts[1] || "00:00";
-        const dParts = datePart.split("/");
-        if (dParts.length === 3) {
-          const d = parseInt(dParts[0], 10);
-          const m = parseInt(dParts[1], 10) - 1;
-          const y = parseInt(dParts[2], 10);
-          const tParts = timePart.split(":");
-          const h = parseInt(tParts[0] || "0", 10);
-          const min = parseInt(tParts[1] || "0", 10);
-          return new Date(y, m, d, h, min).getTime() || 0;
+        str = String(str).trim();
+        const tokens = str.split(/\s+/);
+        let dPart = "", tPart = "00:00:00";
+        for (let t of tokens) {
+          if (t.includes("/")) dPart = t;
+          else if (t.includes(":")) tPart = t;
+        }
+        if (dPart) {
+          const dp = dPart.split("/");
+          if (dp.length === 3) {
+            const d = parseInt(dp[0], 10);
+            const m = parseInt(dp[1], 10) - 1;
+            const y = parseInt(dp[2], 10);
+            const tp = tPart.split(":");
+            const h = parseInt(tp[0] || "0", 10);
+            const min = parseInt(tp[1] || "0", 10);
+            const s = parseInt(tp[2] || "0", 10);
+            const res = new Date(y, m, d, h, min, s).getTime();
+            if (!isNaN(res)) return res;
+          }
         }
         const parsed = new Date(str).getTime();
         return isNaN(parsed) ? 0 : parsed;
@@ -14107,12 +16961,97 @@ function syncAllOpenViewsStock(changedProdId) {
         return;
       }
 
-      const localHistory = typeof getTransactionHistory === "function" ? getTransactionHistory() : [];
-      const userLocal = localHistory.filter(tx => (tx.userEmail || "").toLowerCase().trim() === cleanEmail);
+      if (typeof getUserComprehensiveTransactions === "function") {
+        const res = getUserComprehensiveTransactions(cleanEmail);
+        const allLogs = res.transactions;
 
-      const allLogs = [...userLocal];
+        if (allLogs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Chưa có biến động số dư nào.</td></tr>';
+          return;
+        }
 
-      // 1. Tự động đồng bộ các đơn hàng đã được Hoàn Tiền Bảo Hành vào biến động số dư (đảm bảo 100% không bao giờ sót giao dịch)
+        tbody.innerHTML = allLogs.map(tx => {
+          const amt = Number(tx.amount) || 0;
+          const isPlus = amt > 0;
+          const amtHtml = isPlus 
+            ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(amt) + '</span>' 
+            : '<span style="color:#ef4444; font-weight:800;">' + formatVND(amt) + '</span>';
+
+          let balAfterStr = (tx.balanceAfter !== null && tx.balanceAfter !== undefined && !isNaN(Number(tx.balanceAfter))) ? formatVND(Math.max(0, tx.balanceAfter)) : "-";
+
+          const tLow = String(tx.type || "").toLowerCase();
+          const nLow = String(tx.note || "").toLowerCase();
+          const isRefund = tLow.includes("hoàn tiền") || nLow.includes("hoàn tiền");
+          const isPurchase = tLow.includes("thanh toán") || tLow.includes("mua hàng") || amt < 0;
+
+          let typeHtml = "";
+          if (isRefund) {
+            typeHtml = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền đơn hàng bảo hành</span>';
+          } else if (isPurchase) {
+            typeHtml = '<span style="color:#f87171; font-weight:700;"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
+          } else if (tLow.includes("rút")) {
+            typeHtml = '<span style="color:#fbbf24; font-weight:700;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Rút tiền</span>';
+          } else if (tLow.includes("thủ công") || nLow.includes("thủ công")) {
+            typeHtml = '<span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-user-shield"></i> Nạp tiền ví</span>';
+          } else {
+            typeHtml = '<span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
+          }
+
+          let displayNote = tx.note || "";
+          if (isRefund && (!displayNote || displayNote.includes("NAP ") || displayNote.includes("SePay"))) {
+            displayNote = "Hoàn tiền đơn hàng bảo hành mã đơn #" + (tx.orderId || "");
+          }
+
+          return '<tr>' +
+            '<td style="font-size:0.78rem; color:#94a3b8; white-space:nowrap;">' + (tx.time || tx.date || '') + '</td>' +
+            '<td>' + typeHtml + '</td>' +
+            '<td>' + amtHtml + '</td>' +
+            '<td style="font-size:0.85rem; font-weight:700; color:#38bdf8; font-family:monospace; white-space:nowrap;">' + balAfterStr + '</td>' +
+            '<td style="font-size:0.78rem; color:#cbd5e1;">' + escapeHtml(displayNote) + '</td>' +
+          '</tr>';
+        }).join("");
+        return;
+      }
+
+      const rawLogs = [];
+
+      // A. Lấy từ mmo_transaction_history (hệ thống giao dịch chuẩn)
+      try {
+        const localHistory = typeof getTransactionHistory === "function" ? getTransactionHistory() : [];
+        localHistory.forEach(tx => {
+          if ((tx.userEmail || "").toLowerCase().trim() === cleanEmail) {
+            rawLogs.push({
+              id: tx.id || tx.txId,
+              orderId: tx.orderId || "",
+              time: tx.time || tx.date,
+              type: tx.type || "Giao dịch ví",
+              amount: Number(tx.amount) || 0,
+              balanceAfter: (tx.balanceAfter !== undefined && tx.balanceAfter !== null) ? tx.balanceAfter : null,
+              note: tx.note || ""
+            });
+          }
+        });
+      } catch(e) {}
+
+      // B. Quét từ mmo_transactions & mmo_wallet_transactions
+      try {
+        const extraTxs = JSON.parse(localStorage.getItem("mmo_transactions") || "[]");
+        extraTxs.forEach(etx => {
+          if ((etx.userEmail || "").toLowerCase().trim() === cleanEmail) {
+            rawLogs.push({
+              id: etx.id || etx.txId,
+              orderId: etx.orderId || "",
+              time: etx.time || etx.date,
+              type: etx.type || "Giao dịch ví",
+              amount: Number(etx.amount) || 0,
+              balanceAfter: (etx.balanceAfter !== undefined && etx.balanceAfter !== null) ? etx.balanceAfter : null,
+              note: etx.note || etx.content || ""
+            });
+          }
+        });
+      } catch(e) {}
+
+      // C. Quét toàn bộ đơn hàng (Cả đơn mua hàng và đơn hoàn tiền)
       try {
         const uOrders = typeof getUserOrders === "function" ? getUserOrders() : [];
         const aOrders = typeof getAllOrders === "function" ? getAllOrders() : [];
@@ -14126,105 +17065,174 @@ function syncAllOpenViewsStock(changedProdId) {
         combinedOrders.forEach(o => {
           const ordEmail = (o.email || o.userEmail || "").toLowerCase().trim();
           if (ordEmail === cleanEmail) {
-            const st = String(o.status || "").toLowerCase();
-            if (st.includes("hoàn tiền") || st.includes("refund")) {
-              const oId = String(o.orderId || o.id || "");
-              const alreadyLogged = allLogs.some(l => 
-                (l.note && l.note.includes(oId)) || 
-                (l.id && String(l.id).includes(oId)) ||
-                (l.content && l.content.includes(oId))
-              );
+            const oId = String(o.orderId || o.id || "").trim();
+            const pName = o.productName || o.prodName || "Sản phẩm";
+            const vName = (o.variantName && o.variantName !== "Mặc định") ? (" (" + o.variantName + ")") : "";
+            const ordAmt = Number(o.total || o.totalCost || o.totalPrice || o.totalAmount) || 0;
+            const ordTime = o.date || (o.createdAt ? new Date(o.createdAt).toLocaleString("vi-VN") : "") || "";
 
-              if (!alreadyLogged) {
-                const refundAmt = Number(o.total || o.totalPrice || o.totalAmount) || 10000;
-                allLogs.push({
-                  id: "REFUND_" + oId,
-                  time: o.refundedAt || o.date || o.createdAt || (new Date().toLocaleDateString("vi-VN") + " " + new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })),
-                  type: "Hoàn tiền bảo hành",
-                  amount: +refundAmt,
-                  balanceAfter: currentUser ? currentUser.balance : null,
-                  note: "Hoàn tiền bảo hành đơn #" + oId + " (" + (o.productName || o.prodName || "Tài khoản MMO") + ")"
-                });
-              }
+            // 1. Đơn mua hàng (trừ tiền)
+            if (ordAmt > 0) {
+              rawLogs.push({
+                id: "ORD_" + oId,
+                orderId: oId,
+                time: ordTime,
+                type: "Thanh toán mua hàng",
+                amount: -ordAmt,
+                balanceAfter: o.balanceAfter !== undefined ? o.balanceAfter : null,
+                note: "Mua SP: " + pName + vName + " - Đơn #" + oId
+              });
+            }
+
+            // 2. Đơn được hoàn tiền bảo hành (cộng tiền)
+            const st = String(o.status || "").toLowerCase();
+            const isRefunded = o.refundedAt || o.refundAmount || st.includes("hoàn tiền") || st.includes("refund");
+            if (isRefunded) {
+              const refAmt = Number(o.refundAmount) || ordAmt || 15000;
+              const refTime = o.refundedAt || ordTime;
+              rawLogs.push({
+                id: "REFUND_" + oId,
+                orderId: oId,
+                time: refTime,
+                type: "Hoàn tiền đơn hàng bảo hành",
+                amount: +refAmt,
+                balanceAfter: o.refundBalanceAfter !== undefined ? o.refundBalanceAfter : null,
+                note: "Hoàn tiền đơn hàng bảo hành mã đơn #" + oId + " - " + pName
+              });
             }
           }
         });
       } catch(e) {}
 
-      // 2. Gộp lịch sử nạp tiền từ Cloud SePay / VietQR
+      // D. Gộp từ Cloud SePay / VietQR (cachedCloudWalletHistory)
       if (Array.isArray(cachedCloudWalletHistory)) {
         cachedCloudWalletHistory.forEach(ch => {
-          if (!allLogs.some(l => l.id === ch.id || (l.note && l.note.includes(ch.id)))) {
-            allLogs.push({
-              id: ch.id,
-              time: ch.time || ch.date,
-              type: ch.type || "Nạp tiền VietQR / SePay",
-              amount: Number(ch.amount) || 0,
-              balanceAfter: null,
-              note: ch.note || ch.content || "Nạp tiền tự động qua QR"
-            });
-          }
+          rawLogs.push({
+            id: ch.id,
+            orderId: ch.id,
+            time: ch.time || ch.date,
+            type: ch.type || "Nạp tiền VietQR / SePay",
+            amount: Number(ch.amount) || 0,
+            balanceAfter: null,
+            note: ch.note || ch.content || "Nạp tiền tự động qua QR"
+          });
         });
       }
+
+      // E. Lọc trùng thông minh theo mã giao dịch và loại
+      const seenMap = new Map();
+      rawLogs.forEach(item => {
+        const amt = Number(item.amount) || 0;
+        const oId = String(item.orderId || item.id || "").replace(/^REFUND_|^ORD_/, "").trim();
+        const isRef = amt > 0 && (String(item.type).toLowerCase().includes("hoàn tiền") || String(item.note).toLowerCase().includes("hoàn tiền"));
+        const isPurchase = amt < 0;
+
+        let key = "";
+        if (oId && isRef) {
+          key = "REFUND_" + oId;
+        } else if (oId && isPurchase) {
+          key = "PURCHASE_" + oId;
+        } else if (item.id) {
+          key = "ID_" + item.id;
+        } else {
+          key = "TIME_" + (item.time || "") + "_" + amt;
+        }
+
+        if (!seenMap.has(key)) {
+          seenMap.set(key, item);
+        } else {
+          const existing = seenMap.get(key);
+          if (!existing.balanceAfter && item.balanceAfter) {
+            seenMap.set(key, item);
+          }
+        }
+      });
+
+      const allLogs = Array.from(seenMap.values());
 
       if (allLogs.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Chưa có biến động số dư nào.</td></tr>';
         return;
       }
 
-      // 3. Sắp xếp các giao dịch mới nhất lên đầu danh sách theo thời gian thực
+      // F. Sắp xếp theo thời gian mới nhất lên đầu danh sách
       function parseVietnamDateTime(str) {
         if (!str) return 0;
         if (typeof str === "number") return str;
-        const parts = String(str).trim().split(" ");
-        const datePart = parts[0];
-        const timePart = parts[1] || "00:00";
-        const dParts = datePart.split("/");
-        if (dParts.length === 3) {
-          const d = parseInt(dParts[0], 10);
-          const m = parseInt(dParts[1], 10) - 1;
-          const y = parseInt(dParts[2], 10);
-          const tParts = timePart.split(":");
-          const h = parseInt(tParts[0] || "0", 10);
-          const min = parseInt(tParts[1] || "0", 10);
-          return new Date(y, m, d, h, min).getTime() || 0;
+        str = String(str).trim();
+        
+        const tokens = str.split(/\s+/);
+        let dPart = "", tPart = "00:00:00";
+        for (let t of tokens) {
+          if (t.includes("/")) dPart = t;
+          else if (t.includes(":")) tPart = t;
         }
+
+        if (dPart) {
+          const dp = dPart.split("/");
+          if (dp.length === 3) {
+            const d = parseInt(dp[0], 10);
+            const m = parseInt(dp[1], 10) - 1;
+            const y = parseInt(dp[2], 10);
+            const tp = tPart.split(":");
+            const h = parseInt(tp[0] || "0", 10);
+            const min = parseInt(tp[1] || "0", 10);
+            const s = parseInt(tp[2] || "0", 10);
+            const res = new Date(y, m, d, h, min, s).getTime();
+            if (!isNaN(res)) return res;
+          }
+        }
+
         const parsed = new Date(str).getTime();
         return isNaN(parsed) ? 0 : parsed;
       }
 
       allLogs.sort((a, b) => parseVietnamDateTime(b.time || b.date) - parseVietnamDateTime(a.time || a.date));
 
-      tbody.innerHTML = allLogs.map(tx => {
+      // G. Tính toán số dư sau chuẩn xác theo chuỗi thời gian
+      const curBal = currentUser && currentUser.balance !== undefined ? Number(currentUser.balance) : 0;
+      let runningBal = curBal;
+
+      tbody.innerHTML = allLogs.map((tx, idx) => {
         const amt = Number(tx.amount) || 0;
         const isPlus = amt > 0;
         const amtHtml = isPlus 
           ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(amt) + '</span>' 
           : '<span style="color:#ef4444; font-weight:800;">' + formatVND(amt) + '</span>';
         
-        let balAfterStr = "-";
-        if (tx.balanceAfter !== undefined && tx.balanceAfter !== null && tx.balanceAfter !== "") {
-          balAfterStr = typeof tx.balanceAfter === "number" ? formatVND(tx.balanceAfter) : String(tx.balanceAfter);
+        let rowBal = null;
+        if (idx === 0) {
+          rowBal = (tx.balanceAfter !== null && tx.balanceAfter !== undefined && tx.balanceAfter !== "") ? Number(tx.balanceAfter) : curBal;
+          runningBal = rowBal;
+        } else {
+          const prevTx = allLogs[idx - 1];
+          const prevAmt = Number(prevTx.amount) || 0;
+          runningBal = runningBal - prevAmt;
+          rowBal = (tx.balanceAfter !== null && tx.balanceAfter !== undefined && tx.balanceAfter !== "") ? Number(tx.balanceAfter) : runningBal;
         }
+
+        let balAfterStr = (rowBal !== null && !isNaN(rowBal)) ? formatVND(Math.max(0, rowBal)) : "-";
 
         const tLow = String(tx.type || "").toLowerCase();
-        const nLow = String(tx.note || tx.content || "").toLowerCase();
-        const idLow = String(tx.id || "").toLowerCase();
-        const isRefund = tLow.includes("hoàn tiền") || nLow.includes("hoàn tiền") || idLow.includes("refund") || nLow.includes("muabantaikhoanmmo muabantaikhoanmmo");
+        const nLow = String(tx.note || "").toLowerCase();
+        const isRefund = tLow.includes("hoàn tiền") || nLow.includes("hoàn tiền");
+        const isPurchase = tLow.includes("thanh toán") || tLow.includes("mua hàng") || amt < 0;
 
-        let displayType = tx.type || 'Giao dịch ví';
-        let displayNote = tx.note || tx.content || '';
-
+        let typeHtml = "";
         if (isRefund) {
-          displayType = 'Hoàn tiền đơn hàng bảo hành';
-          if (!displayNote || displayNote.includes('NAP ') || displayNote.includes('SePay')) {
-            displayNote = 'Hoàn tiền bảo hành đơn hàng vào ví';
-          }
+          typeHtml = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền đơn hàng bảo hành</span>';
+        } else if (isPurchase) {
+          typeHtml = '<span style="color:#f87171; font-weight:700;"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
+        } else if (tLow.includes("rút")) {
+          typeHtml = '<span style="color:#fbbf24; font-weight:700;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Rút tiền</span>';
+        } else {
+          typeHtml = '<span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
         }
 
-        const typeHtml = isRefund
-          ? '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-rotate-left"></i> ' + escapeHtml(displayType) + '</span>'
-          : '<strong>' + escapeHtml(displayType) + '</strong>';
+        let displayNote = tx.note || "";
+        if (isRefund && (!displayNote || displayNote.includes("NAP ") || displayNote.includes("SePay"))) {
+          displayNote = "Hoàn tiền đơn hàng bảo hành mã đơn #" + (tx.orderId || "");
+        }
 
         return '<tr>' +
           '<td style="font-size:0.78rem; color:#94a3b8; white-space:nowrap;">' + (tx.time || tx.date || '') + '</td>' +
@@ -14235,7 +17243,6 @@ function syncAllOpenViewsStock(changedProdId) {
         '</tr>';
       }).join("");
     }
-
     function handleProfileWithdraw() {
       showToast("Chức năng Rút Tiền: Số dư tối thiểu 50.000 đ. Vui lòng cập nhật Tài Khoản Ngân Hàng để rút.", "info");
       switchProfileTab("tabProfBank");
@@ -14793,24 +17800,28 @@ function syncAllOpenViewsStock(changedProdId) {
 
 
     // ==================== UNIVERSAL 10-ITEM PAGINATION SYSTEM ====================
-    const ITEMS_PER_PAGE = 10;
+    var ITEMS_PER_PAGE = 10;
+    window.ITEMS_PER_PAGE = 10;
 
-    let paginationState = {
+    var paginationState = {
+    admUsers: 1,
       admUsers: 1,
       admWithdraw: 1,
       admTx: 1,
       admProd: 1,
       admApiMappings: 1,
+      admBlogs: 1,
       storeProd: 1,
       userOrders: 1,
-      userWallet: 1
+      userWallet: 1,
+      blogPage: 1
     };
 
     function renderPaginationUI(containerId, currentPage, totalItems, onPageChangeName, customPageSize) {
       const container = document.getElementById(containerId);
       if (!container) return;
 
-      const pageSize = customPageSize || ITEMS_PER_PAGE;
+      const pageSize = customPageSize || window.ITEMS_PER_PAGE || 10;
       const totalPages = Math.ceil(totalItems / pageSize) || 1;
       
       if (totalItems <= 0) {
@@ -14869,6 +17880,22 @@ function syncAllOpenViewsStock(changedProdId) {
       paginationState.admWithdraw = p;
       renderAdminWithdrawTable();
     }
+
+    function changeAdmBlogsPage(p) {
+      if (typeof paginationState !== "undefined") paginationState.admBlogs = p;
+      if (typeof renderAdminBlogsTable === "function") renderAdminBlogsTable();
+      const el = document.getElementById("admBlogListTable");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    window.changeAdmBlogsPage = changeAdmBlogsPage;
+
+    function changePublicBlogPage(p) {
+      if (typeof paginationState !== "undefined") paginationState.blogPage = p;
+      if (typeof renderBlogPage === "function") renderBlogPage();
+      const el = document.getElementById("blogMainGrid");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    window.changePublicBlogPage = changePublicBlogPage;
 
     function changeAdmTxPage(p) {
       paginationState.admTx = p;
@@ -14964,20 +17991,22 @@ function syncAllOpenViewsStock(changedProdId) {
                   freshProds.forEach(function(fp) {
                     const mp = MOCK_DATA.products.find(function(p) { return String(p.id) === String(fp.id); });
                     if (mp) {
-                      // Cập nhật từng variant - lấy accounts từ bản fresh nếu đó là bản mới nhất
-                      if (Array.isArray(fp.variants) && fp.variants.length > 0) {
-                        if (!Array.isArray(mp.variants)) mp.variants = [];
-                        fp.variants.forEach(function(fv, vi) {
-                          if (!mp.variants[vi]) mp.variants[vi] = {};
-                          // Lấy accounts từ fresh (localStorage) vì đây là ground truth sau save
-                          if (Array.isArray(fv.accounts)) {
-                            mp.variants[vi].accounts = fv.accounts.slice();
-                            mp.variants[vi].stock = fv.accounts.length;
-                          }
+                      const accsMap = {};
+                      if (Array.isArray(mp.variants)) {
+                        mp.variants.forEach(function(mv, vi) {
+                          if (Array.isArray(mv.accounts) && mv.accounts.length > 0) accsMap[mv.name || vi] = mv.accounts.slice();
                         });
-                      } else if (Array.isArray(fp.accounts)) {
-                        mp.accounts = fp.accounts.slice();
-                        mp.stock = fp.accounts.length;
+                      }
+                      // Cập nhật 100% dữ liệu mới nhất
+                      Object.assign(mp, fp);
+                      if (Array.isArray(mp.variants)) {
+                        mp.variants.forEach(function(mv, vi) {
+                          const accs = (fp.variants && fp.variants[vi] && Array.isArray(fp.variants[vi].accounts) && fp.variants[vi].accounts.length > 0)
+                            ? fp.variants[vi].accounts
+                            : (accsMap[mv.name || vi] || (Array.isArray(mv.accounts) ? mv.accounts : []));
+                          mv.accounts = accs;
+                          if (accs.length > 0) mv.stock = accs.length;
+                        });
                       }
                     } else {
                       MOCK_DATA.products.push(fp);
@@ -15008,7 +18037,7 @@ function syncAllOpenViewsStock(changedProdId) {
                     const vs = getShopVariantStock(currentSelectedProduct, idx);
                     const badge = vs > 0 
                       ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
-                      : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(Hết hàng)</small>';
+                      : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                     return '<div class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
                       '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
                       '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
@@ -15102,7 +18131,7 @@ function syncAllOpenViewsStock(changedProdId) {
                   const vs = getShopVariantStock(freshP, idx);
                   const badge = vs > 0 
                     ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
-                    : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(Hết hàng)</small>';
+                    : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                   return '<div class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
                     '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
                     '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
@@ -15174,6 +18203,10 @@ function syncAllOpenViewsStock(changedProdId) {
               }
             }
             if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(updId, ev.data.stock, null, true);
+            const dtlViewEl = document.getElementById("viewProductDetail");
+            if (dtlViewEl && dtlViewEl.style.display !== "none" && !dtlViewEl.classList.contains("hidden")) {
+              if (typeof openProductDetailById === "function") openProductDetailById(updId);
+            }
             if (typeof renderProductGrid === "function") renderProductGrid();
             if (typeof renderBestSellers === "function") renderBestSellers();
             if (typeof renderRecommended === "function") renderRecommended();
@@ -15183,7 +18216,7 @@ function syncAllOpenViewsStock(changedProdId) {
     } catch(e) {}
 
     if (typeof window !== "undefined") {
-      let _mmoStorageDebounceTimer = null;
+      var _mmoStorageDebounceTimer = null;
       window.addEventListener("storage", function(e) {
         if (!e || !e.key || (!e.key.startsWith("mmo_") && e.key.indexOf("mmo_") === -1)) return;
         
@@ -15223,7 +18256,7 @@ function syncAllOpenViewsStock(changedProdId) {
     // =========================================================================
     // REAL-TIME LIVE CLOCK & DATE (FOOTER)
     // =========================================================================
-    let _clockInterval = null;
+    var _clockInterval = null;
     function updateLiveRealTimeClock() {
       if (_clockInterval) return;
       function tick() {
@@ -15298,7 +18331,8 @@ function syncAllOpenViewsStock(changedProdId) {
           return syncTursoStockToLocalUI();
         }).catch(e => console.error("Turso init sync error:", e));
       }
-      // Tự động tải sản phẩm mới nhất từ máy chủ để mọi người xem được ngay (trì hoãn nhẹ để tải trang ban đầu đạt <200ms)
+      // Tự động tải sản phẩm mới nhất từ máy chủ để mọi người xem được ngay
+      const _urlHasProd = window.location.search && (window.location.search.includes("prod=") || window.location.search.includes("product=") || window.location.search.includes("view=viewProductDetail"));
       setTimeout(function() {
         if (typeof syncProductsFromBackend === "function") {
           syncProductsFromBackend();
@@ -15306,7 +18340,7 @@ function syncAllOpenViewsStock(changedProdId) {
         if (typeof syncAdminEmailsFromCloud === "function") {
           syncAdminEmailsFromCloud();
         }
-      }, 2500);
+      }, _urlHasProd ? 50 : 300);
 
       // RESTORE CURRENT ACTIVE VIEW AND SUB-TABS ON F5 REFRESH
       try {
@@ -15411,10 +18445,14 @@ function syncAllOpenViewsStock(changedProdId) {
     window.renderSitemapView = renderSitemapView;
 
     // [SEO GOOGLE INDEX]: Tự động khai báo danh mục tất cả sản phẩm dưới dạng Schema ItemList cho Googlebot
-    function injectAllProductsSchema() {
+function injectAllProductsSchema() {
       try {
         const prods = (MOCK_DATA && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : [];
         if (prods.length === 0) return;
+        const deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
+        const visibleProds = prods.filter(p => p && p.id && !deletedIds.includes(p.id));
+        if (visibleProds.length === 0) return;
+
         let scriptEl = document.getElementById("schemaAllProductsItemList");
         if (!scriptEl) {
           scriptEl = document.createElement("script");
@@ -15423,31 +18461,117 @@ function syncAllOpenViewsStock(changedProdId) {
           document.head.appendChild(scriptEl);
         }
         const baseUrl = window.location.origin + window.location.pathname;
-        const schemaObj = {
+        const siteUrl = "https://www.muabantaikhoanmmo.com/";
+
+        const graphSchema = {
           "@context": "https://schema.org",
-          "@type": "ItemList",
-          "name": "Danh Sách Sản Phẩm Tài Khoản MMO Đang Kinh Doanh",
-          "itemListElement": prods.map((p, idx) => ({
-            "@type": "ListItem",
-            "position": idx + 1,
-            "item": {
-              "@type": "Product",
-              "name": p.name,
-              "url": baseUrl + "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail",
-              "image": p.image || "https://iili.io/nFV4Rln.png",
-              "offers": {
-                "@type": "Offer",
-                "priceCurrency": "VND",
-                "price": p.price || 0,
-                "availability": (p.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
-              }
+          "@graph": [
+            {
+              "@type": "WebSite",
+              "@id": siteUrl + "#website",
+              "url": siteUrl,
+              "name": "MUABANTAIKHOANMMO.COM",
+              "description": "He thong mua ban tai khoan mang xa hoi, cong cu MMO, proxy tu dong 24/7 uy tin so 1 Viet Nam",
+              "publisher": { "@id": siteUrl + "#organization" }
+            },
+            {
+              "@type": "Organization",
+              "@id": siteUrl + "#organization",
+              "name": "MUABANTAIKHOANMMO.COM",
+              "url": siteUrl,
+              "logo": { "@type": "ImageObject", "url": "https://iili.io/nFV4Rln.png" }
+            },
+            {
+              "@type": "ItemList",
+              "@id": siteUrl + "#productlist",
+              "name": "Danh Sach San Pham Tai Khoan MMO - MUABANTAIKHOANMMO.COM",
+              "numberOfItems": visibleProds.length,
+              "itemListElement": visibleProds.map((p, idx) => {
+                const prodUrl = baseUrl + "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
+                const soldCount = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p) : (p.buffSold || p.sold || 10);
+                const reviewCount = Math.max(5, Math.min(500, Math.floor(soldCount / 3)));
+                const price = (p.variants && p.variants[0] && p.variants[0].price) ? p.variants[0].price : (p.price || 0);
+                return {
+                  "@type": "ListItem",
+                  "position": idx + 1,
+                  "item": {
+                    "@type": "Product",
+                    "@id": prodUrl + "#product",
+                    "name": p.name,
+                    "description": (p.description || ("Mua " + p.name + " tu dong 24/7 uy tin, gia re nhat Viet Nam.")).slice(0, 300),
+                    "url": prodUrl,
+                    "image": [p.image || "https://iili.io/nFV4Rln.png"],
+                    "sku": p.id,
+                    "brand": { "@type": "Brand", "name": "MUABANTAIKHOANMMO" },
+                    "category": p.category || "Tai Khoan MMO",
+                    "offers": {
+                      "@type": "Offer",
+                      "url": prodUrl,
+                      "priceCurrency": "VND",
+                      "price": price,
+                      "priceValidUntil": "2027-12-31",
+                      "availability": (p.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+                      "itemCondition": "https://schema.org/NewCondition",
+                      "seller": { "@type": "Organization", "name": "MUABANTAIKHOANMMO.COM" }
+                    },
+                    "aggregateRating": {
+                      "@type": "AggregateRating",
+                      "ratingValue": "4.9",
+                      "bestRating": "5",
+                      "worstRating": "1",
+                      "reviewCount": String(reviewCount)
+                    }
+                  }
+                };
+              })
             }
-          }))
+          ]
         };
-        scriptEl.textContent = JSON.stringify(schemaObj);
-      } catch(e) {}
+        scriptEl.textContent = JSON.stringify(graphSchema);
+      } catch(e) { console.warn("injectAllProductsSchema error:", e); }
     }
     window.injectAllProductsSchema = injectAllProductsSchema;
+
+    // SEO CHUM: Render related products widget
+    function renderRelatedProductsSeo(currentProduct) {
+      try {
+        const container = document.getElementById("dtlSeoRelatedProducts");
+        if (!container) return;
+        const prods = (MOCK_DATA && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : [];
+        const deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
+        const related = prods.filter(p =>
+          p && p.id && p.id !== currentProduct.id &&
+          !deletedIds.includes(p.id) &&
+          p.category === currentProduct.category
+        ).slice(0, 6);
+
+        if (related.length === 0) { container.style.display = "none"; return; }
+        container.style.display = "block";
+        const baseUrl = window.location.origin + window.location.pathname;
+        const relItems = related.map(rp => {
+          const rpUrl = baseUrl + "?prod=" + encodeURIComponent(rp.id) + "&view=viewProductDetail";
+          const rpPrice = (rp.variants && rp.variants[0] && rp.variants[0].price) ? rp.variants[0].price : (rp.price || 0);
+          const rpStock = (typeof getProductStockCount === "function") ? getProductStockCount(rp) : (rp.stock || 0);
+          const rpPriceStr = (typeof formatVND === "function") ? formatVND(rpPrice) : rpPrice.toLocaleString("vi-VN") + "d";
+          const eName = (typeof escapeHtml === "function") ? escapeHtml(rp.name) : rp.name.replace(/</g,"&lt;").replace(/>/g,"&gt;");
+          return '<a href="' + rpUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + rp.id + '\')" '
+            + 'style="display:block; background:#0d121f; border:1px solid #1e293b; border-radius:8px; padding:8px; text-decoration:none;" '
+            + 'rel="noopener" title="' + eName + '">'
+            + '<img src="' + (rp.image || "https://iili.io/nFV4Rln.png") + '" alt="' + eName + '" '
+            + 'style="width:100%; height:70px; object-fit:cover; border-radius:5px; margin-bottom:6px;" loading="lazy"/>'
+            + '<div style="font-size:0.72rem; color:#cbd5e1; line-height:1.3; margin-bottom:4px;">' + eName + '</div>'
+            + '<div style="font-size:0.75rem; color:#10b981; font-weight:700;">' + rpPriceStr + '</div>'
+            + '<div style="font-size:0.65rem; color:' + (rpStock > 0 ? '#10b981' : '#ef4444') + ';">' + (rpStock > 0 ? 'Con hang' : 'Het hang') + '</div>'
+            + '</a>';
+        }).join("");
+        container.innerHTML = '<div style="margin-top:20px; border-top:1px solid #1e293b; padding-top:16px;">'
+          + '<h3 style="font-size:0.92rem; color:#38bdf8; margin-bottom:12px; display:flex; align-items:center; gap:6px;">'
+          + '<i class="fa-solid fa-layer-group"></i> San Pham Lien Quan</h3>'
+          + '<div style="display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:8px;">'
+          + relItems + '</div></div>';
+      } catch(e) {}
+    }
+    window.renderRelatedProductsSeo = renderRelatedProductsSeo;
 
 
 
@@ -15778,52 +18902,42 @@ function syncAllOpenViewsStock(changedProdId) {
     // ==========================================
     async function deleteProduct(id) {
       const pid = String(id || "").trim();
-      let p = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(item => item.id === pid) : null;
+      let p = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(item => item && item.id === pid) : null;
       if (!p && typeof normApiText === "function") {
         p = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(item => normApiText(item.name) === normApiText(pid)) : null;
       }
       const prodName = p ? p.name : pid;
-      const normName = typeof normApiText === "function" ? normApiText(prodName) : prodName.toLowerCase();
+      const targetId = p ? p.id : pid;
 
       if (!confirm("⚠️ Bạn có chắc chắn muốn XÓA tài khoản / sản phẩm [" + prodName + "] khỏi gian hàng?")) {
         return;
       }
 
-      // 1. Ghi nhận ID & Tên chuẩn hóa vào danh sách đen đã xóa vĩnh viễn (mmo_deleted_product_ids)
+      // 1. Ghi nhận ID vào danh sách đen đã xóa vĩnh viễn (mmo_deleted_product_ids) - CHỈ LƯU ID, KHÔNG LƯU TÊN
       try {
         let deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
-        if (!deletedIds.includes(pid)) deletedIds.push(pid);
-        if (normName && !deletedIds.includes(normName)) deletedIds.push(normName);
-        if (p && p.id && !deletedIds.includes(p.id)) deletedIds.push(p.id);
+        if (targetId && !deletedIds.includes(targetId)) deletedIds.push(targetId);
+        if (pid && !deletedIds.includes(pid)) deletedIds.push(pid);
         localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(deletedIds));
       } catch(e) {}
 
-      // 2. Lọc bỏ vĩnh viễn khỏi danh sách sản phẩm MOCK_DATA.products (theo cả ID và Tên)
+      // 2. Lọc bỏ vĩnh viễn khỏi danh sách sản phẩm MOCK_DATA.products
       if (MOCK_DATA && Array.isArray(MOCK_DATA.products)) {
         MOCK_DATA.products = MOCK_DATA.products.filter(function(item) {
           if (!item) return false;
-          if (item.id === pid || item.id === (p ? p.id : "")) return false;
-          if (normName && typeof normApiText === "function" && normApiText(item.name) === normName) return false;
+          if (item.id === targetId || item.id === pid) return false;
           if (typeof isProductDeleted === "function" && isProductDeleted(item)) return false;
           return true;
         });
         saveProductsToStorage();
       }
 
-      // 3. Xóa triệt để kho hàng liên quan (cả id và tên sản phẩm)
+      // 3. Xóa triệt để kho hàng liên quan
       try {
         const stocksMap = (typeof getProductStocksMap === "function") ? getProductStocksMap() : {};
         if (stocksMap) {
+          delete stocksMap[targetId];
           delete stocksMap[pid];
-          if (p && p.id) delete stocksMap[p.id];
-          if (prodName) {
-            delete stocksMap[prodName];
-            Object.keys(stocksMap).forEach(function(k) {
-              if (typeof normApiText === "function" && (normApiText(k) === normName || normApiText(k) === normApiText(pid))) {
-                delete stocksMap[k];
-              }
-            });
-          }
           if (typeof saveProductStocksMap === "function") saveProductStocksMap(stocksMap);
         }
       } catch(e) {}
@@ -15831,8 +18945,8 @@ function syncAllOpenViewsStock(changedProdId) {
       // 4. Xóa cấu hình liên kết API mappings nếu có
       try {
         const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+        delete maps[targetId];
         delete maps[pid];
-        if (p && p.id) delete maps[p.id];
         if (typeof saveApiProductMappings === "function") saveApiProductMappings(maps);
       } catch(e) {}
 
@@ -15840,7 +18954,7 @@ function syncAllOpenViewsStock(changedProdId) {
       try {
         const url = new URL(window.location.href);
         const curProdParam = url.searchParams.get("prod") || url.searchParams.get("product");
-        if (curProdParam === pid || (p && curProdParam === p.id) || (currentSelectedProduct && (String(currentSelectedProduct.id) === String(pid) || (p && String(currentSelectedProduct.id) === String(p.id))))) {
+        if (curProdParam === pid || curProdParam === targetId || (currentSelectedProduct && (String(currentSelectedProduct.id) === String(pid) || String(currentSelectedProduct.id) === String(targetId)))) {
           url.searchParams.delete("prod");
           url.searchParams.delete("product");
           window.history.replaceState(null, "", url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : ''));
@@ -15853,14 +18967,15 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof BroadcastChannel !== "undefined") {
         try {
           const bc = new BroadcastChannel("mmo_channel");
-          bc.postMessage({ type: "PRODUCT_DELETED", prodId: pid, prodName: prodName });
+          bc.postMessage({ type: "PRODUCT_DELETED", prodId: targetId, prodName: prodName });
         } catch(e) {}
       }
 
       // 6.5. XÓA VĨNH VIỄN KHỎI TURSO CLOUD DATABASE
       if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
         try {
-          await TURSO_CLIENT.deleteProduct(pid);
+          await TURSO_CLIENT.deleteProduct(targetId);
+          if (pid !== targetId) await TURSO_CLIENT.deleteProduct(pid);
         } catch(tursoDelErr) {
           console.error("Lỗi xóa sản phẩm trên Turso:", tursoDelErr);
         }
@@ -15869,13 +18984,13 @@ function syncAllOpenViewsStock(changedProdId) {
       // 7. Đồng bộ xóa lên Cloud Google Sheets
       try {
         if (typeof callGasApi === "function") {
-          callGasApi("adminDeleteProduct", { prodId: pid, id: pid, prodName: prodName, name: prodName }).catch(function() {});
-          callGasApi("deleteProduct", { prodId: pid, id: pid, prodName: prodName, name: prodName }).catch(function() {});
+          callGasApi("adminDeleteProduct", { prodId: targetId, id: targetId, prodName: prodName, name: prodName }).catch(function() {});
+          callGasApi("deleteProduct", { prodId: targetId, id: targetId, prodName: prodName, name: prodName }).catch(function() {});
         }
       } catch(e) {}
 
       // 8. Cập nhật lại giao diện Dashboard và toàn bộ các trang người dùng ngay lập tức
-      if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(pid, 0, []);
+      if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(targetId, 0, []);
       if (typeof initStockManagementUI === "function") initStockManagementUI();
       if (typeof renderAdminDashboard === "function") renderAdminDashboard();
       if (typeof renderProductGrid === "function") renderProductGrid();
@@ -15885,7 +19000,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof renderAllProductsPage === "function") renderAllProductsPage();
 
       closeModal("adminProductModal");
-      showToast("🗑️ Đã xóa sản phẩm [" + prodName + "] khỏi Turso và gian hàng!", "success");
+      showToast("🗑️ Đã xóa sản phẩm [" + prodName + "] khỏi hệ thống!", "success");
       const stockSel = document.getElementById("admStockProductSelect");
       if (stockSel && MOCK_DATA && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.length > 0) {
         refreshAllShopStockUI();
@@ -15908,8 +19023,8 @@ function syncAllOpenViewsStock(changedProdId) {
         // =========================================================================
     // HỆ THỐNG CHAT HỖ TRỢ, BẢO HÀNH & BONG BÓNG CHAT GÓC PHẢI MÀN HÌNH (REALTIME V2)
     // =========================================================================
-    let chatAudioCtx = null;
-    let isChatSoundEnabled = (function() {
+    var chatAudioCtx = null;
+    var isChatSoundEnabled = (function() {
       try {
         const s = localStorage.getItem("mmo_chat_sound_enabled");
         return s === null ? true : (s === "true");
@@ -15917,7 +19032,8 @@ function syncAllOpenViewsStock(changedProdId) {
     })();
 
     const CHAT_REALTIME_TOPIC = "mmo_chat_live_v2_0968033451";
-    let chatBroadcast = null;
+    var chatBroadcast = null;
+    window.chatBroadcast = null;
     try {
       if (typeof BroadcastChannel !== "undefined") {
         chatBroadcast = new BroadcastChannel("mmo_chat_channel");
@@ -16141,7 +19257,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
 
     // ĐỒNG BỘ TIN NHẮN TỪ CLOUD / BACKEND GOOGLE SHEETS
-    let _isSyncingCloudChat = false;
+    var _isSyncingCloudChat = false;
     function syncCloudMessages(isSilent = false) {
       if (_isSyncingCloudChat) return;
       if (typeof document !== "undefined" && document.hidden) return; // Tránh dồn request khi ẩn tab
@@ -16339,12 +19455,42 @@ function syncAllOpenViewsStock(changedProdId) {
       const foundOrder = o || uo;
       if (o) {
         o.status = "Khiếu Nại / Bảo Hành";
+        o.hasComplaint = true;
+        o.isWarranty = true;
         if (typeof saveAllOrders === "function") saveAllOrders(all);
       }
       if (uo) {
         uo.status = "Khiếu Nại / Bảo Hành";
+        uo.hasComplaint = true;
+        uo.isWarranty = true;
         if (typeof saveUserOrders === "function") saveUserOrders(uOrders);
       }
+
+      // Cập nhật đồng bộ toàn bộ các mảng lưu trữ đơn hàng
+      try {
+        ["mmo_all_orders", "mmo_orders", "mmo_user_orders"].forEach(function(k) {
+          const raw = localStorage.getItem(k);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return;
+          let modified = false;
+          parsed.forEach(function(it) {
+            if (it && (String(it.orderId || it.id || '').replace('#','').trim() === cleanId)) {
+              it.status = "Khiếu Nại / Bảo Hành";
+              it.hasComplaint = true;
+              it.isWarranty = true;
+              modified = true;
+            }
+          });
+          if (modified) localStorage.setItem(k, JSON.stringify(parsed));
+        });
+      } catch(syncErr) {
+        console.warn('Sync complain error:', syncErr);
+      }
+
+      if (typeof renderProfileOrders === "function") renderProfileOrders();
+      if (typeof renderAdminOrdersList === "function") renderAdminOrdersList();
+      if (typeof renderAdminOverview === "function") renderAdminOverview();
 
       const pName = foundOrder ? (foundOrder.productName || foundOrder.prodName || "") : "";
       const vName = foundOrder ? (foundOrder.variant || foundOrder.variantName || "") : "";
@@ -16437,7 +19583,8 @@ function syncAllOpenViewsStock(changedProdId) {
       if (changed) saveAllChatMessages(msgs);
     }
 
-    let lastKnownAdminUnread = -1;
+    var lastKnownAdminUnread = -1;
+    window.lastKnownAdminUnread = -1;
 
     function updateChatUnreadBadge() {
       const isAdm = typeof isAdminUser === "function" && isAdminUser();
@@ -16567,7 +19714,8 @@ function syncAllOpenViewsStock(changedProdId) {
     }
 
     // 8. TÍNH NĂNG ADMIN TRẢ LỜI CHAT TRONG VIEW ADMIN
-    let currentAdminChatTargetEmail = null;
+    var currentAdminChatTargetEmail = null;
+    window.currentAdminChatTargetEmail = null;
 
     function renderAdminChatList() {
       const listEl = document.getElementById("admChatUserList");
@@ -16849,138 +19997,351 @@ function syncAllOpenViewsStock(changedProdId) {
 
 
     // =========================================================================
-    // ==========================================
-    // PRE-ORDERS SYSTEM (ĐẶT HÀNG TRƯỚC TỐI ƯU SIÊU TỐC)
-    // ==========================================
+    // QUẢN LÝ LỊCH SỬ ĐƠN HÀNG, KHIẾU NẠI & ĐỔI TRẢ CHO ADMIN
+    // =========================================================================
+    let currentAdminOrderDetail = null;
+    var adminOrdersSearchQuery = "";
+    window.adminOrdersSearchQuery = "";
+    var adminOrdersStatusFilter = "ALL";
+    window.adminOrdersStatusFilter = "ALL";
+
+    
+    // Helper kiểm tra đơn hàng có thuộc diện Khiếu nại / Bảo hành / Đổi trả / Hoàn tiền
+    function isOrderWarrantyOrExchange(o) {
+      if (!o) return false;
+      if (o.hasComplaint || o.isWarranty || o.isExchanged || o.isRefunded || o.replacementAccount || o.replacedCredentials) return true;
+      const st = String(o.status || o.statusText || "").toLowerCase();
+      const cred = String(o.credentials || o.accounts || "").toLowerCase();
+      const type = String(o.type || "").toLowerCase();
+
+      return st.includes("khiếu nại") || st.includes("khieu nai") ||
+             st.includes("bảo hành") || st.includes("bao hanh") ||
+             st.includes("đổi trả") || st.includes("doi tra") ||
+             st.includes("1-đổi-1") || st.includes("1-doi-1") || st.includes("đổi 1-1") || st.includes("doi 1-1") ||
+             st.includes("hoàn tiền") || st.includes("hoan tien") ||
+             st.includes("đã bảo hành") || st.includes("đang bảo hành") ||
+             st.includes("warranty") || st.includes("exchange") || st.includes("refund") || st.includes("complain") ||
+             cred.includes("đổi trả") || cred.includes("doi tra") || cred.includes("tài khoản mới đổi trả") ||
+             type.includes("warranty") || type.includes("exchange");
+    }
+    window.isOrderWarrantyOrExchange = isOrderWarrantyOrExchange;
+
+    function getAllOrders() {
+      let all = [];
+      const idMap = new Map();
+
+      // 1. Quét tất cả các nguồn lưu trữ đơn hàng trên toàn hệ thống (không lọc email)
+      const scanKeys = ["mmo_all_orders", "mmo_orders", "mmo_user_orders"];
+      scanKeys.forEach(function(k) {
+        try {
+          const raw = localStorage.getItem(k);
+          if (!raw) return;
+          const parsed = JSON.parse(raw);
+          if (!Array.isArray(parsed)) return;
+
+          parsed.forEach(function(o) {
+            if (!o) return;
+            const rawId = String(o.orderId || o.orderCode || o.id || "");
+            if (!rawId) return;
+            if (rawId.startsWith("TX_PO_") && (!o.credentials && !o.deliveredAccounts) && (!o.total || o.total <= 0)) return;
+
+            const cleanId = rawId.startsWith("#") ? rawId.replace("#", "").trim() : rawId;
+            const ts = (typeof getOrderTimestamp === "function") ? getOrderTimestamp(o) : 0;
+            const formattedDate = (typeof formatOrderDate === "function") ? formatOrderDate(o.date || o.createdAt || o.time, ts) : (o.date || o.createdAt || "");
+
+            if (!idMap.has(cleanId)) {
+              const merged = Object.assign({}, o, {
+                id: cleanId,
+                orderId: cleanId,
+                orderCode: cleanId,
+                date: formattedDate,
+                createdAt: formattedDate,
+                createdTimestamp: ts
+              });
+              idMap.set(cleanId, merged);
+              all.push(merged);
+            } else {
+              const existing = idMap.get(cleanId);
+              // Cập nhật trạng thái mới nhất: ưu tiên trạng thái bảo hành / khiếu nại / đổi trả / hoàn tiền
+              if (isOrderWarrantyOrExchange(o)) {
+                existing.status = o.status;
+                if (o.credentials) existing.credentials = o.credentials;
+                if (o.hasComplaint) existing.hasComplaint = true;
+                if (o.replacementAccount) existing.replacementAccount = o.replacementAccount;
+              } else if (!isOrderWarrantyOrExchange(existing) && o.status) {
+                existing.status = o.status;
+              }
+              if (o.deliveredAccounts && o.deliveredAccounts.length > 0) {
+                existing.deliveredAccounts = o.deliveredAccounts;
+                existing.credentials = Array.isArray(o.deliveredAccounts) ? o.deliveredAccounts.join("\n") : o.deliveredAccounts;
+              }
+              if (ts > (existing.createdTimestamp || 0)) {
+                existing.createdTimestamp = ts;
+              }
+            }
+          });
+        } catch(e) {}
+      });
+
+      // 2. Tự động hợp nhất tất cả đơn đặt trước từ getPreOrders()
+      try {
+        const preOrders = (typeof getPreOrders === "function") ? getPreOrders() : [];
+        preOrders.forEach(function(po) {
+          const pId = String(po.orderCode || po.id || po.orderId || "");
+          if (!pId) return;
+          const cleanId = pId.startsWith("#") ? pId.replace("#", "").trim() : pId;
+          const ts = (typeof getOrderTimestamp === "function") ? getOrderTimestamp(po) : 0;
+          const formattedDate = (typeof formatOrderDate === "function") ? formatOrderDate(po.createdAt || po.date || po.time, ts) : (po.createdAt || po.date || "");
+
+          if (!idMap.has(cleanId)) {
+            const poItem = {
+              id: cleanId,
+              orderId: cleanId,
+              orderCode: cleanId,
+              type: "PRE_ORDER",
+              status: po.status || "WAITING_CONFIRM",
+              statusText: po.statusText || "Chờ xác nhận",
+              productName: po.productName || "Sản phẩm đặt trước",
+              variant: po.variantName || po.variant || "",
+              variantName: po.variantName || po.variant || "",
+              quantity: po.qty || po.quantity || 1,
+              qty: po.qty || po.quantity || 1,
+              total: po.total || po.totalPrice || 0,
+              totalPrice: po.total || po.totalPrice || 0,
+              email: po.buyerEmail || "",
+              userEmail: po.buyerEmail || "",
+              buyerEmail: po.buyerEmail || "",
+              buyerUsername: po.buyerUsername || "Khách Hàng",
+              userName: po.buyerUsername || "Khách Hàng",
+              name: po.buyerUsername || "Khách Hàng",
+              date: formattedDate,
+              createdAt: formattedDate,
+              createdTimestamp: ts,
+              credentials: Array.isArray(po.deliveredAccounts) ? po.deliveredAccounts.join("\n") : (po.deliveredAccounts || ""),
+              maxDays: po.maxDays || 7,
+              customNotes: po.customNotes || ""
+            };
+            idMap.set(cleanId, poItem);
+            all.push(poItem);
+          } else {
+            const existing = idMap.get(cleanId);
+            existing.status = po.status || existing.status;
+            existing.statusText = po.statusText || existing.statusText;
+            if (po.deliveredAccounts && po.deliveredAccounts.length > 0) {
+              existing.deliveredAccounts = po.deliveredAccounts;
+              existing.credentials = Array.isArray(po.deliveredAccounts) ? po.deliveredAccounts.join("\n") : po.deliveredAccounts;
+            }
+          }
+        });
+      } catch(e) {}
+
+      // Lọc bỏ đơn hàng demo
+      all = all.filter(function(o) {
+        if (!o) return false;
+        const id = String(o.orderId || o.id || "").toUpperCase();
+        const pName = String(o.productName || "").toLowerCase();
+        if (id === "MMO888999" || id.includes("SAMPLE") || id.includes("DEMO_ORD")) return false;
+        if (pName.includes("mẫu demo") || pName.includes("demo order") || pName.includes("sản phẩm mẫu")) return false;
+        return true;
+      });
+
+      // Sắp xếp đơn mới nhất lên đầu
+      all.sort(function(a, b) {
+        return (b.createdTimestamp || 0) - (a.createdTimestamp || 0);
+      });
+
+      return all;
+    }
+    window.getAllOrders = getAllOrders;
+
+    function saveAllOrders(orders) {
+      if (!Array.isArray(orders)) return;
+      try {
+        localStorage.setItem("mmo_all_orders", JSON.stringify(orders));
+      } catch(e) {}
+    }
+    window.saveAllOrders = saveAllOrders;
+
+    var adminOrdersActiveSubTab = "orders";
+    window.adminOrdersActiveSubTab = "orders";
+    
+    // ============================================================
+    // [PRE-ORDER BULLETPROOF ENGINE] TOÀN BỘ LOGIC ĐẶT HÀNG TRƯỚC
+    // ============================================================
     var _cachedPreOrdersList = null;
     var _lastPreOrdersFetchTime = 0;
 
+    // ============================================================
+    // [AUTO-EXPIRY & REFUND] TỰ ĐỘNG HỦY ĐƠN VÀ HOÀN TIỀN KHI QUÁ HẠN
+    // ============================================================
     function checkAndAutoCancelExpiredPreOrders(preOrdersList) {
-      if (!Array.isArray(preOrdersList) || preOrdersList.length === 0) return false;
-      let hasChanges = false;
-      const now = Date.now();
+      try {
+        if (!Array.isArray(preOrdersList) || preOrdersList.length === 0) return false;
+        const now = Date.now();
+        let modified = false;
+        let regUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
 
-      preOrdersList.forEach(function(order) {
-        if (!order) return;
-        const st = (order.status || "").toUpperCase();
-        if (st === "COMPLETED" || st === "CANCELLED" || order.isCancelled || order.isRefunded) return;
+        preOrdersList.forEach(function(order) {
+          if (!order) return;
+          const rawSt = String(order.status || "").toUpperCase();
+          const rawStTxt = String(order.statusText || "").toLowerCase();
+          const isAlreadyDone = rawSt === "COMPLETED" || rawSt === "CANCELLED" || rawSt === "REFUNDED" || rawStTxt.includes("hủy") || rawStTxt.includes("giao");
 
-        let createdTs = order.createdTimestamp || 0;
-        if (!createdTs && order.createdAt) {
-          try {
-            const parts = order.createdAt.split(/[\s,]+/);
-            if (parts.length >= 2) {
-              const dParts = parts[0].split("/");
-              if (dParts.length === 3) {
-                createdTs = new Date(dParts[2] + "-" + dParts[1] + "-" + dParts[0]).getTime();
+          if (!isAlreadyDone) {
+            let createdTs = Number(order.createdTimestamp) || (typeof getOrderTimestamp === "function" ? getOrderTimestamp(order) : 0);
+            const maxDays = Math.max(1, parseInt(order.maxDays, 10) || 7);
+            const maxDurationMs = maxDays * 24 * 60 * 60 * 1000;
+
+            if (createdTs > 0 && (now - createdTs > maxDurationMs)) {
+              const refundAmt = Number(order.total || order.totalPrice || 0);
+              const buyerEmail = (order.buyerEmail || order.email || order.userEmail || "").toLowerCase().trim();
+
+              if (refundAmt > 0 && buyerEmail) {
+                let uIdx = regUsers.findIndex(u => (u.email || "").toLowerCase().trim() === buyerEmail || (order.buyerId && u.id === order.buyerId));
+                if (uIdx !== -1) {
+                  regUsers[uIdx].balance = (Number(regUsers[uIdx].balance) || 0) + refundAmt;
+                }
+
+                if (typeof currentUser !== "undefined" && currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === buyerEmail) {
+                  currentUser.balance = (Number(currentUser.balance) || 0) + refundAmt;
+                  localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+                }
+
+                if (typeof recordTransaction === "function") {
+                  const uName = (uIdx !== -1 && regUsers[uIdx].name) ? regUsers[uIdx].name : (buyerEmail.split("@")[0]);
+                  recordTransaction(buyerEmail, uName, "Hoàn tiền đơn đặt trước quá hạn", +refundAmt, (uIdx !== -1 ? regUsers[uIdx].balance : refundAmt), "Tự động hủy & hoàn tiền đơn đặt trước quá hạn #" + (order.orderCode || order.id) + " (" + (order.productName || "Sản phẩm") + ")");
+                }
               }
+
+              order.status = "CANCELLED";
+              order.statusText = "Quá hạn gom hàng (Tự động hoàn tiền 100%)";
+              order.isCancelled = true;
+              order.isRefunded = true;
+              order.cancelledReason = "EXPIRED";
+              order.cancelledBy = "SYSTEM";
+              order.refundedAt = new Date().toLocaleString("vi-VN");
+              modified = true;
             }
-          } catch(e) {}
+          }
+        });
+
+        if (modified) {
+          if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(regUsers);
         }
-        if (!createdTs) createdTs = now;
-
-        const maxDays = Math.max(1, parseInt(order.maxDays) || 7);
-        const expireDurationMs = maxDays * 24 * 60 * 60 * 1000;
-
-        if (now - createdTs > expireDurationMs) {
-          order.status = "CANCELLED";
-          order.statusText = "Quá Hạn Xử Lý / Đã Hoàn Tiền";
-          order.isCancelled = true;
-          order.isRefunded = true;
-          order.cancelledReason = "EXPIRED";
-          order.refundedAt = new Date().toLocaleString("vi-VN");
-          hasChanges = true;
-
-          try {
-            const refundAmt = Number(order.total || order.totalPrice || 0);
-            const targetEmail = (order.buyerEmail || order.email || order.userEmail || "").toLowerCase().trim();
-            if (targetEmail && refundAmt > 0) {
-              const allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
-              const uIdx = allUsers.findIndex(u => (u.id && u.id === order.buyerId) || ((u.email || "").toLowerCase().trim() === targetEmail));
-              let newBalance = 0;
-              if (uIdx !== -1) {
-                allUsers[uIdx].balance = (Number(allUsers[uIdx].balance) || 0) + refundAmt;
-                newBalance = allUsers[uIdx].balance;
-                if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allUsers);
-              }
-              if (typeof recordTransaction === "function") {
-                recordTransaction(targetEmail, (uIdx !== -1 ? allUsers[uIdx].name : (order.buyerUsername || "Khách")), "Hoàn tiền đơn đặt trước quá hạn", +refundAmt, (uIdx !== -1 ? newBalance : refundAmt), "Hoàn tiền 100% do quá hạn xử lý đơn đặt trước #" + (order.orderCode || order.id));
-              }
-            }
-          } catch(e) {}
-        }
-      });
-
-      return hasChanges;
+        return modified;
+      } catch(err) {
+        console.warn("checkAndAutoCancelExpiredPreOrders error:", err);
+        return false;
+      }
     }
+    window.checkAndAutoCancelExpiredPreOrders = checkAndAutoCancelExpiredPreOrders;
 
-    function getPreOrders(forceRefresh) {
+    function getPreOrders(forceRefresh = false) {
       const now = Date.now();
-      if (!forceRefresh && _cachedPreOrdersList && (now - _lastPreOrdersFetchTime < 10000)) {
+      if (!forceRefresh && _cachedPreOrdersList && (now - _lastPreOrdersFetchTime < 1500)) {
         return _cachedPreOrdersList;
       }
-
       try {
+        let poList = [];
         const poMap = new Map();
-        const poList = [];
 
+        // 1. Nạp từ mmo_pre_orders nếu có
         try {
-          const rawPo = localStorage.getItem("mmo_pre_orders");
-          if (rawPo) {
-            const parsed = JSON.parse(rawPo);
+          const stored = localStorage.getItem("mmo_pre_orders");
+          if (stored) {
+            const parsed = JSON.parse(stored);
             if (Array.isArray(parsed)) {
-              parsed.forEach(function(o) {
-                if (!o) return;
-                const key = String(o.id || o.orderCode || o.orderId || "").replace("#", "").trim();
-                if (key && !poMap.has(key)) {
-                  poMap.set(key, o);
-                  poList.push(o);
+              parsed.forEach(p => {
+                if (!p) return;
+                const cId = String(p.orderCode || p.id || p.orderId || "").replace("#", "").trim();
+                if (cId) {
+                  poMap.set(cId.toLowerCase(), p);
+                  poList.push(p);
                 }
               });
             }
           }
         } catch(e) {}
 
-        const storageKeys = ["mmo_all_orders", "mmo_orders", "mmo_user_orders"];
-        storageKeys.forEach(function(k) {
+        // 2. Quét toàn diện từ tất cả các nguồn lưu trữ đơn hàng trên toàn hệ thống
+        const checkKeys = ["mmo_all_orders", "mmo_orders", "mmo_user_orders", "mmo_balance_logs"];
+        checkKeys.forEach(function(k) {
           try {
             const raw = localStorage.getItem(k);
             if (!raw) return;
-            const parsed = JSON.parse(raw);
-            if (!Array.isArray(parsed)) return;
-
-            parsed.forEach(function(o) {
+            const arr = JSON.parse(raw);
+            if (!Array.isArray(arr)) return;
+            arr.forEach(function(o) {
               if (!o) return;
-              const rawId = String(o.orderId || o.id || o.orderCode || "");
-              const isPre = o.type === "PRE_ORDER" || rawId.startsWith("PRE") || rawId.includes("PO_") || String(o.status || "").toUpperCase().includes("PRE_ORDER") || String(o.productName || "").startsWith("Đặt trước:");
-              if (isPre) {
-                const mapKey = rawId.replace("#", "").trim();
-                if (mapKey && !poMap.has(mapKey)) {
-                  const oStatus = String(o.status || "").toUpperCase();
-                  const oStatusText = String(o.statusText || "").toLowerCase();
-                  const oIsCancel = oStatus === "CANCELLED" || oStatus === "REFUNDED" || oStatusText.includes("hủy") || oStatusText.includes("hoàn tiền") || Boolean(o.isCancelled) || Boolean(o.isRefunded);
+              const rawId = String(o.id || o.orderCode || o.orderId || "");
+              const rawOrderId = String(o.orderId || o.orderCode || o.id || "");
+              
+              let cleanCode = "";
+              if (rawOrderId.startsWith("PRE") || rawOrderId.startsWith("#PRE")) cleanCode = rawOrderId.replace("#", "").trim();
+              else if (rawId.startsWith("PRE") || rawId.startsWith("#PRE")) cleanCode = rawId.replace("#", "").trim();
+              else if (o.orderCode && String(o.orderCode).includes("PRE")) cleanCode = String(o.orderCode).replace("#", "").trim();
+              else if (rawId.includes("PO_") || rawId.includes("PO")) cleanCode = rawId.replace("#", "").trim();
+              else cleanCode = (rawOrderId || rawId).replace("#", "").trim();
 
-                  let inferredStatus = "WAITING_CONFIRM";
-                  let inferredStatusText = "Chờ xác nhận";
+              const isPre = (o.type === "PRE_ORDER") ||
+                cleanCode.startsWith("PRE") ||
+                cleanCode.includes("PO_") ||
+                String(o.statusText || "").toLowerCase().includes("đặt trước") ||
+                String(o.note || "").toLowerCase().includes("đặt trước") ||
+                String(o.typeText || "").toLowerCase().includes("đặt trước") ||
+                String(o.productName || "").toLowerCase().includes("đặt trước");
 
+              if (isPre && cleanCode) {
+                const mapKey = cleanCode.toLowerCase();
+                const exIdx = poList.findIndex(function(p) {
+                  const pCode = String(p.orderCode || p.id || p.orderId || "").replace("#", "").trim();
+                  return pCode.toLowerCase() === mapKey;
+                });
+
+                const oSt = String(o.status || "").toUpperCase();
+                const oStTxt = String(o.statusText || "").toLowerCase();
+                const oIsCancel = oSt === "CANCELLED" || oSt === "REFUNDED" || oStTxt.includes("hủy") || oStTxt.includes("hoàn tiền") || Boolean(o.isCancelled) || Boolean(o.isRefunded);
+
+                if (exIdx !== -1) {
+                  // Cập nhật thông tin đồng bộ
                   if (oIsCancel) {
+                    poList[exIdx].status = "CANCELLED";
+                    poList[exIdx].statusText = o.statusText || (o.cancelledBy === "CUSTOMER" ? "Khách Hủy / Đã Hoàn Tiền" : "Đã Hủy & Hoàn Tiền");
+                    poList[exIdx].isCancelled = true;
+                    poList[exIdx].isRefunded = true;
+                    if (o.cancelledBy) poList[exIdx].cancelledBy = o.cancelledBy;
+                  } else if (o.status === "COMPLETED" || (o.deliveredAccounts && o.deliveredAccounts.length > 0)) {
+                    poList[exIdx].status = "COMPLETED";
+                    poList[exIdx].statusText = o.statusText || "Đã giao hàng";
+                    poList[exIdx].deliveredAccounts = o.deliveredAccounts || poList[exIdx].deliveredAccounts;
+                  } else if (o.status === "PROCESSING" && poList[exIdx].status !== "COMPLETED" && !poList[exIdx].isCancelled) {
+                    poList[exIdx].status = "PROCESSING";
+                    poList[exIdx].statusText = o.statusText || "Đang xử lý / Gom hàng";
+                  }
+                } else {
+                  if (k === "mmo_balance_logs" && rawId.startsWith("TX_PO_") && poList.some(p => String(p.orderCode || p.id).replace("#","").toLowerCase() === mapKey)) {
+                    return;
+                  }
+
+                  let inferredStatus = o.status || "WAITING_CONFIRM";
+                  let inferredStatusText = o.statusText || "Chờ xác nhận";
+                  if (oIsCancel || cleanCode.includes("REFUND") || String(o.typeText || "").includes("Hoàn tiền")) {
                     inferredStatus = "CANCELLED";
-                    inferredStatusText = "Đã Hủy / Hoàn Tiền";
-                  } else if (oStatus === "COMPLETED" || oStatus === "DELIVERED" || oStatusText.includes("đã giao") || oStatusText.includes("hoàn thành") || (Array.isArray(o.deliveredAccounts) && o.deliveredAccounts.length > 0)) {
-                    inferredStatus = "COMPLETED";
-                    inferredStatusText = "Đã giao hàng";
-                  } else if (oStatus === "PROCESSING" || oStatusText.includes("xử lý") || oStatusText.includes("gom hàng")) {
-                    inferredStatus = "PROCESSING";
-                    inferredStatusText = "Đang xử lý";
+                    inferredStatusText = o.statusText || "Đã hủy / Hoàn tiền";
                   }
 
                   let cleanProdName = o.productName || o.prodName || "";
-                  if (cleanProdName.startsWith("Đặt trước: ")) cleanProdName = cleanProdName.replace("Đặt trước: ", "");
+                  if (!cleanProdName || cleanProdName === "Sản phẩm đặt trước") {
+                    if (o.note && o.note.includes("Đặt trước")) {
+                      cleanProdName = o.note.replace(/Đặt trước\s+[0-9]+x\s*/gi, "").replace(/-\s*Mã đơn.*$/gi, "").trim();
+                    }
+                  }
+                  if (!cleanProdName) cleanProdName = "Sản phẩm đặt trước";
 
                   const newEntry = {
-                    id: mapKey,
-                    orderCode: mapKey,
-                    orderId: mapKey,
+                    id: cleanCode,
+                    orderCode: cleanCode,
+                    orderId: cleanCode,
                     type: "PRE_ORDER",
                     productId: o.productId || o.prodId || "",
                     productName: cleanProdName || "Sản phẩm MMO",
@@ -17013,11 +20374,13 @@ function syncAllOpenViewsStock(changedProdId) {
           } catch(e) {}
         });
 
+        // Kiểm tra và tự động hủy hoàn tiền các đơn quá hạn
         const hadExpired = checkAndAutoCancelExpiredPreOrders(poList);
         if (hadExpired || poList.length > 0) {
           try { localStorage.setItem("mmo_pre_orders", JSON.stringify(poList)); } catch(e) {}
         }
 
+        // Sắp xếp đơn mới nhất lên đầu tiên
         poList.sort(function(a, b) {
           const tsA = a.createdTimestamp || (typeof getOrderTimestamp === "function" ? getOrderTimestamp(a) : 0);
           const tsB = b.createdTimestamp || (typeof getOrderTimestamp === "function" ? getOrderTimestamp(b) : 0);
@@ -17034,6 +20397,9 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.getPreOrders = getPreOrders;
 
+    // ==========================================
+    // REALTIME PRE-ORDERS & ORDERS EVENT SYNC
+    // ==========================================
     window.addEventListener("mmo_preorders_changed", function() {
       _cachedPreOrdersList = null;
       _lastPreOrdersFetchTime = 0;
@@ -17061,6 +20427,7 @@ function syncAllOpenViewsStock(changedProdId) {
         _lastPreOrdersFetchTime = Date.now();
         localStorage.setItem("mmo_pre_orders", JSON.stringify(orders || []));
 
+        // Đồng bộ trạng thái đơn vào tất cả các kho lưu trữ (mmo_all_orders, mmo_user_orders, mmo_orders)
         const syncKeys = ["mmo_all_orders", "mmo_user_orders", "mmo_orders"];
         syncKeys.forEach(function(k) {
           try {
@@ -17108,10 +20475,12 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.stepPreOrderQty = stepPreOrderQty;
 
+    // Cập nhật giá & số dư trong popup Đặt Trước (Đảm bảo 100% luôn tính đúng)
     function updatePreOrderModalPrice() {
       const qtyInput = document.getElementById("poModalQty");
       const qty = Math.max(1, parseInt(qtyInput ? qtyInput.value : 1) || 1);
 
+      // Lấy đơn giá từ dataset hoặc từ các biến fallback
       const unitPriceInput = document.getElementById("poModalUnitPrice");
       let unitPrice = 0;
       if (unitPriceInput && unitPriceInput.dataset && unitPriceInput.dataset.price) {
@@ -17155,10 +20524,12 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.updatePreOrderModalPrice = updatePreOrderModalPrice;
 
+    // Mở popup Đặt Hàng Trước (Hoạt động đa tầng fallback đảm bảo 100% có thông tin sản phẩm)
     function openPreOrderModal(productObj, variantIdx) {
       let curP = productObj || (typeof currentSelectedProduct !== "undefined" ? currentSelectedProduct : null);
       if (!curP && window._currentPreOrderTargetProduct) curP = window._currentPreOrderTargetProduct;
 
+      // Fallback 1: Tìm theo URL
       if (!curP) {
         try {
           const prodParam = new URLSearchParams(window.location.search).get("prod");
@@ -17166,9 +20537,11 @@ function syncAllOpenViewsStock(changedProdId) {
         } catch(e) {}
       }
 
+      // Fallback 2: Đọc trực tiếp từ DOM của trang chi tiết đang mở
       let prodId = curP ? curP.id : (document.getElementById("dtlId") ? document.getElementById("dtlId").innerText.trim() : "");
       let prodName = curP ? curP.name : (document.getElementById("dtlTitle") ? document.getElementById("dtlTitle").innerText.trim() : "");
 
+      // Lấy biến thể & đơn giá
       let curVIdx = (typeof variantIdx === "number") ? variantIdx : ((typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0);
       let vName = "";
       let unitPrice = 0;
@@ -17180,6 +20553,7 @@ function syncAllOpenViewsStock(changedProdId) {
         unitPrice = Number(curP.price) || 0;
       }
 
+      // Fallback 3: Đọc tên biến thể từ pill đang active trên màn hình
       if (!vName) {
         const activePill = document.querySelector(".variant-pill-option.active");
         if (activePill) {
@@ -17188,6 +20562,7 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       }
 
+      // Fallback 4: Đọc giá từ dtlPrice trên màn hình
       if (!unitPrice) {
         if (typeof currentSelectedPrice === "number" && currentSelectedPrice > 0) {
           unitPrice = currentSelectedPrice;
@@ -17204,6 +20579,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const dtlQtyInput = document.getElementById("dtlQtyInput");
       const initQty = Math.max(1, parseInt(dtlQtyInput ? dtlQtyInput.value : 1) || 1);
 
+      // Điền toàn bộ thông tin vào Modal Đặt Trước
       const elProdId = document.getElementById("poModalProdId");
       if (elProdId) elProdId.value = prodId;
 
@@ -17247,6 +20623,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.closePreOrderModal = closePreOrderModal;
 
+    // Thực hiện đặt hàng trước (Đọc trực tiếp từ form modal, tự động lưu vào tất cả các kho)
     function submitPreOrderAction() {
       const fullProdTitle = (document.getElementById("poModalProdName") ? document.getElementById("poModalProdName").value : "").trim() || (document.getElementById("dtlTitle") ? document.getElementById("dtlTitle").innerText.trim() : "Sản phẩm đặt trước");
       const prodId = (document.getElementById("poModalProdId") ? document.getElementById("poModalProdId").value : "").trim() || (document.getElementById("dtlId") ? document.getElementById("dtlId").innerText.trim() : ("PROD_" + Date.now()));
@@ -17276,9 +20653,11 @@ function syncAllOpenViewsStock(changedProdId) {
       const discountAmount = Math.round(rawTotal * discountPercent / 100);
       const finalTotal = Math.max(0, rawTotal - discountAmount);
 
+      // Khởi tạo mã đơn và thời gian đặt ngay từ đầu để tránh lỗi TDZ
       const orderCode = "PRE" + Math.floor(100000 + Math.random() * 900000);
       const nowStr = new Date().toLocaleString("vi-VN");
 
+      // Kiểm tra đăng nhập
       let user = null;
       try {
         user = JSON.parse(localStorage.getItem("mmo_user") || "null");
@@ -17292,6 +20671,7 @@ function syncAllOpenViewsStock(changedProdId) {
         return;
       }
 
+      // Kiểm tra số dư ví
       const userBalance = Number(user.balance) || 0;
       if (userBalance < finalTotal) {
         if (typeof showToast === "function") {
@@ -17300,13 +20680,14 @@ function syncAllOpenViewsStock(changedProdId) {
         return;
       }
 
+      // 1. Trừ tiền ví khách hàng chuẩn hóa đa nguồn
       user.balance = userBalance - finalTotal;
       currentUser = user;
       try {
         localStorage.setItem("mmo_user", JSON.stringify(user));
-        const cleanUE = (user.email || "").toLowerCase().trim();
+        const cleanU制定 = (user.email || "").toLowerCase().trim();
         const allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : JSON.parse(localStorage.getItem("mmo_registered_users") || "[]");
-        const uIdx = allUsers.findIndex(function(u) { return (u.id && u.id === user.id) || ((u.email || "").toLowerCase().trim() === cleanUE); });
+        const uIdx = allUsers.findIndex(function(u) { return (u.id && u.id === user.id) || ((u.email || "").toLowerCase().trim() === cleanU制定); });
         if (uIdx !== -1) {
           allUsers[uIdx].balance = user.balance;
           if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allUsers);
@@ -17315,6 +20696,7 @@ function syncAllOpenViewsStock(changedProdId) {
         localStorage.setItem("mmo_users", JSON.stringify(allUsers));
       } catch(e) {}
 
+      // 2. Ghi nhật ký giao dịch chuẩn hệ thống (mmo_transaction_history & mmo_balance_logs)
       try {
         if (typeof recordTransaction === "function") {
           recordTransaction(user.email, user.username || user.fullname || user.email.split("@")[0], "Thanh toán đặt hàng trước", -finalTotal, user.balance, "Đặt trước " + qty + "x " + fullProdTitle + " - Mã đơn #" + orderCode);
@@ -17337,6 +20719,7 @@ function syncAllOpenViewsStock(changedProdId) {
         localStorage.setItem("mmo_balance_logs", JSON.stringify(balanceLogs));
       } catch(e) {}
 
+      // 3. Tạo object đơn hàng đặt trước (PRE...)
       const newPreOrder = {
         id: orderCode,
         orderCode: orderCode,
@@ -17370,12 +20753,14 @@ function syncAllOpenViewsStock(changedProdId) {
         createdTimestamp: Date.now()
       };
 
+      // 4. Lưu đơn đặt trước vào hệ thống & đồng bộ thời gian thực
       _cachedPreOrdersList = null;
       _lastPreOrdersFetchTime = 0;
       const preOrders = getPreOrders(true);
       preOrders.unshift(newPreOrder);
       savePreOrders(preOrders);
 
+      // Đồng bộ vào toàn bộ các kho lưu trữ đơn hàng (mmo_orders, mmo_all_orders, mmo_user_orders)
       try {
         const userOrders = JSON.parse(localStorage.getItem("mmo_orders") || "[]");
         userOrders.unshift(newPreOrder);
@@ -17394,6 +20779,7 @@ function syncAllOpenViewsStock(changedProdId) {
         localStorage.setItem("mmo_user_orders", JSON.stringify(uOrders));
       } catch(e) {}
 
+      // Tạo thông báo chuông và popup thông báo cho khách hàng
       if (typeof addUserNotification === "function") {
         addUserNotification({
           title: "🎉 Đặt trước thành công #" + orderCode,
@@ -17407,6 +20793,7 @@ function syncAllOpenViewsStock(changedProdId) {
         playNotificationSound();
       }
 
+      // Đồng bộ lên Google Sheets trung tâm qua API payOrderByWallet
       if (typeof callGasApi === "function") {
         callGasApi("payOrderByWallet", {
           email: (user.email || "").trim(),
@@ -17423,6 +20810,7 @@ function syncAllOpenViewsStock(changedProdId) {
         });
       }
 
+      // 5. Đóng modal & Cập nhật UI ví
       closePreOrderModal();
       if (typeof updateUserUI === "function") updateUserUI();
       if (typeof updateWalletUI === "function") updateWalletUI();
@@ -17434,10 +20822,12 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof showToast === "function") showToast("🎉 Đặt hàng trước thành công! Mã đơn: #" + orderCode, "success");
       try { window.dispatchEvent(new CustomEvent("mmo_preorders_changed", { detail: { orderCode: orderCode } })); } catch(e) {}
 
+      // 6. Chuyển sang xem đơn đặt trước (Hình 4)
       openPreOrderDetailView(orderCode);
     }
     window.submitPreOrderAction = submitPreOrderAction;
 
+    // Xem chi tiết đơn hàng đặt trước (Hình 4 - Nền Đen Dark Theme)
     function openPreOrderDetailView(orderId) {
       const activeViewNow = localStorage.getItem("mmo_current_view") || "viewStore";
       if (activeViewNow !== "viewPreOrderDetail") {
@@ -17452,6 +20842,7 @@ function syncAllOpenViewsStock(changedProdId) {
       let preOrders = getPreOrders();
       let order = preOrders.find(function(o) { return String(o.id) === cleanId || String(o.orderCode) === cleanId; });
 
+      // Fallback tra cứu trong user orders hoặc all orders
       if (!order) {
         const uOrders = (typeof getUserOrders === "function") ? getUserOrders() : [];
         const found = uOrders.find(function(o) { return String(o.orderId || o.id) === cleanId; });
@@ -17502,12 +20893,14 @@ function syncAllOpenViewsStock(changedProdId) {
 
       window._currentViewingPreOrder = order;
 
+      // Header
       const elCode = document.getElementById("podCode");
       if (elCode) elCode.innerText = order.orderCode || order.id;
 
       const elTitle = document.getElementById("podProdTitle");
       if (elTitle) elTitle.innerText = order.productName + (order.variantName ? " (" + order.variantName + ")" : "");
 
+      // Stepper & Status Badge
       const st = order.status || "WAITING_CONFIRM";
       const circle2 = document.getElementById("podStep2Circle");
       const label2 = document.getElementById("podStep2Label");
@@ -17532,7 +20925,7 @@ function syncAllOpenViewsStock(changedProdId) {
         if (btnCancel) btnCancel.style.display = "inline-flex";
         if (deliveredWrap) deliveredWrap.style.display = "none";
       } else if (st === "PROCESSING") {
-        if (circle2) { circle2.style.background = "#38bdf8"; circle2.style.color = "#0b111e"; circle2.innerHTML = "<i class=\"fa-solid fa-spinner fa-spin\"></i>"; }
+        if (circle2) { circle2.style.background = "#38bdf8"; circle2.style.color = "#0b111e"; circle2.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i>"; }
         if (label2) { label2.style.color = "#38bdf8"; label2.innerText = "2. Đang xử lý"; }
         if (line23) line23.style.background = "#1e293b";
         if (circle3) { circle3.style.background = "#1e293b"; circle3.style.color = "#64748b"; circle3.innerHTML = "3"; }
@@ -17542,10 +20935,10 @@ function syncAllOpenViewsStock(changedProdId) {
         if (btnCancel) btnCancel.style.display = "none";
         if (deliveredWrap) deliveredWrap.style.display = "none";
       } else if (st === "COMPLETED") {
-        if (circle2) { circle2.style.background = "#10b981"; circle2.style.color = "#0b111e"; circle2.innerHTML = "<i class=\"fa-solid fa-check\"></i>"; }
+        if (circle2) { circle2.style.background = "#10b981"; circle2.style.color = "#0b111e"; circle2.innerHTML = "<i class='fa-solid fa-check'></i>"; }
         if (label2) { label2.style.color = "#10b981"; label2.innerText = "2. Đã xác nhận"; }
         if (line23) line23.style.background = "#10b981";
-        if (circle3) { circle3.style.background = "#10b981"; circle3.style.color = "#0b111e"; circle3.innerHTML = "<i class=\"fa-solid fa-check\"></i>"; }
+        if (circle3) { circle3.style.background = "#10b981"; circle3.style.color = "#0b111e"; circle3.innerHTML = "<i class='fa-solid fa-check'></i>"; }
         if (label3) { label3.style.color = "#10b981"; label3.innerText = "3. Đã giao hàng"; }
         if (badge) { badge.style.background = "#10b981"; badge.style.color = "#0b111e"; badge.innerText = "Hoàn thành & Đã giao"; }
         if (desc) desc.innerText = "Đơn hàng đã được bàn giao thành công! Vui lòng kiểm tra tài khoản phía dưới.";
@@ -17555,7 +20948,7 @@ function syncAllOpenViewsStock(changedProdId) {
           if (deliveredText) deliveredText.value = Array.isArray(order.deliveredAccounts) ? order.deliveredAccounts.join("\n") : (order.deliveredAccounts || "");
         }
       } else if (st === "CANCELLED") {
-        if (circle2) { circle2.style.background = "#ef4444"; circle2.style.color = "#fff"; circle2.innerHTML = "<i class=\"fa-solid fa-xmark\"></i>"; }
+        if (circle2) { circle2.style.background = "#ef4444"; circle2.style.color = "#fff"; circle2.innerHTML = "<i class='fa-solid fa-xmark'></i>"; }
         if (label2) { label2.style.color = "#ef4444"; label2.innerText = "Đã hủy đơn"; }
         if (badge) { badge.style.background = "#ef4444"; badge.style.color = "#fff"; badge.innerText = "Đã hủy & Hoàn tiền 100%"; }
         if (desc) desc.innerText = "Đơn hàng đã bị hủy. Toàn bộ số tiền đã được hoàn trả lại vào ví của bạn.";
@@ -17563,12 +20956,14 @@ function syncAllOpenViewsStock(changedProdId) {
         if (deliveredWrap) deliveredWrap.style.display = "none";
       }
 
+      // Hạn xử lý & ghi chú
       const elDays = document.getElementById("podMaxDaysText");
       if (elDays) elDays.innerText = (order.maxDays || 7) + " ngày";
 
       const elNotes = document.getElementById("podNotesText");
       if (elNotes) elNotes.innerText = order.customNotes || "(Không có yêu cầu riêng)";
 
+      // Chi tiết bảng
       const elQty = document.getElementById("podQty");
       if (elQty) elQty.innerText = order.qty;
 
@@ -17593,6 +20988,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const elTotal = document.getElementById("podTotal");
       if (elTotal) elTotal.innerText = typeof formatVND === "function" ? formatVND(order.total) : (order.total.toLocaleString("vi-VN") + " VND");
 
+      // Chuyển view sang trang theo dõi đơn
       if (typeof switchView === "function") {
         switchView("viewPreOrderDetail");
       }
@@ -17607,13 +21003,9 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.openPreOrderDetailView = openPreOrderDetailView;
 
-    function customerCancelPreOrder(orderId) {
-      let order = window._currentViewingPreOrder;
-      if (orderId && (!order || (order.id !== orderId && order.orderCode !== orderId))) {
-        const cleanId = String(orderId).replace("#", "").trim();
-        const preOrders = getPreOrders();
-        order = preOrders.find(function(o) { return String(o.id) === cleanId || String(o.orderCode) === cleanId; });
-      }
+    // Khách hàng bấm Hủy đơn (khi đang chờ xác nhận)
+    function customerCancelPreOrder() {
+      const order = window._currentViewingPreOrder;
       if (!order || (order.status !== "WAITING_CONFIRM" && order.status !== "PENDING")) {
         if (typeof showToast === "function") showToast("Đơn hàng này không thể hủy!", "warning");
         return;
@@ -17649,6 +21041,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
         if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allUsers);
 
+        // Ghi nhật ký hoàn tiền chuẩn hệ thống
         try {
           if (typeof recordTransaction === "function") {
             recordTransaction(cleanUE || user.email, user.username || user.fullname || user.email.split("@")[0], "Hoàn tiền khách hủy đơn đặt trước", +refAmt, finalBal, "Hoàn 100% tiền khách hủy đơn đặt trước #" + (order.orderCode || order.id) + " (" + (order.productName || "Sản phẩm đặt trước") + ")");
@@ -17656,6 +21049,7 @@ function syncAllOpenViewsStock(changedProdId) {
         } catch(e) {}
       }
 
+      // Cập nhật trạng thái đơn
       order.status = "CANCELLED";
       order.statusText = "Khách Đã Hủy / Hoàn Tiền";
       order.isCancelled = true;
@@ -17684,6 +21078,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.customerCancelPreOrder = customerCancelPreOrder;
 
+    // Sao chép tài khoản đã giao
     function copyPodDeliveredAccounts() {
       const textarea = document.getElementById("podDeliveredAccountsText");
       if (!textarea || !textarea.value) {
@@ -17740,16 +21135,17 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       tbody.innerHTML = filtered.map(function(o) {
-        const oId = String(o.orderCode || o.id || "");
-        const rawStatus = String(o.status || "").toUpperCase().trim();
-        const rawStatusTxt = String(o.statusText || "").toLowerCase().trim();
+        const oId = String(o.orderCode || o.id || '');
+        const rawStatus = String(o.status || '').toUpperCase().trim();
+        const rawStatusTxt = String(o.statusText || '').toLowerCase().trim();
 
-        const isCompleted = rawStatus === "COMPLETED" || rawStatus === "DELIVERED" || rawStatusTxt.includes("đã giao") || rawStatusTxt.includes("hoàn thành");
-        const isCancelled = rawStatus === "CANCELLED" || rawStatus === "REFUNDED" || rawStatusTxt.includes("hủy") || rawStatusTxt.includes("hoàn tiền") || Boolean(o.isCancelled) || Boolean(o.isRefunded);
-        const isProcessing = !isCompleted && !isCancelled && (rawStatus === "PROCESSING" || rawStatusTxt.includes("gom hàng") || rawStatusTxt.includes("đang xử lý"));
+        const isCompleted = rawStatus === 'COMPLETED' || rawStatus === 'DELIVERED' || rawStatusTxt.includes('đã giao') || rawStatusTxt.includes('hoàn thành');
+        const isCancelled = rawStatus === 'CANCELLED' || rawStatus === 'REFUNDED' || rawStatusTxt.includes('hủy') || rawStatusTxt.includes('hoàn tiền') || Boolean(o.isCancelled) || Boolean(o.isRefunded);
+        const isProcessing = !isCompleted && !isCancelled && (rawStatus === 'PROCESSING' || rawStatusTxt.includes('gom hàng') || rawStatusTxt.includes('đang xử lý'));
+        const isWaiting = !isCompleted && !isCancelled && !isProcessing;
 
-        let stBadge = "";
-        let actions = "";
+        let stBadge = '';
+        let actions = '';
 
         if (isCancelled) {
           let cancelLabel = "Đã Hủy / Hoàn Tiền";
@@ -17760,52 +21156,52 @@ function syncAllOpenViewsStock(changedProdId) {
           } else if (o.cancelledBy === "ADMIN") {
             cancelLabel = "Admin Hủy / Đã Hoàn Tiền";
           }
-          stBadge = "<span class='badge-verified' style='background:rgba(239,68,68,0.25); color:#f87171; border:1px solid #ef4444; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-ban'></i> " + escapeHtml(cancelLabel) + "</span>";
+          stBadge = "<span style='background:rgba(239,68,68,0.2); color:#f87171; border:1px solid #ef4444; font-weight:800; padding:4px 10px; border-radius:4px; font-size:0.75rem; white-space:nowrap; display:inline-flex; align-items:center; gap:5px;'><i class='fa-solid fa-ban'></i> " + escapeHtml(cancelLabel) + "</span>";
           actions = '<div style="display:inline-flex; gap:5px; align-items:center; white-space:nowrap;">' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-copy-small" style="font-size:0.72rem; white-space:nowrap;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Chi tiết</button>' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 10px; font-size:0.75rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Xem chi tiết</button>' +
                     '</div>';
         } else if (isCompleted) {
-          stBadge = "<span class='badge-verified' style='background:rgba(16,185,129,0.25); color:#34d399; border:1px solid #10b981; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-circle-check'></i> Đã giao hàng</span>";
+          stBadge = "<span style='background:rgba(16,185,129,0.2); color:#34d399; border:1px solid #10b981; font-weight:800; padding:4px 10px; border-radius:4px; font-size:0.75rem; white-space:nowrap; display:inline-flex; align-items:center; gap:5px;'><i class='fa-solid fa-circle-check'></i> Đã giao hàng</span>";
           actions = '<div style="display:inline-flex; gap:5px; align-items:center; white-space:nowrap;">' +
-                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-copy-small" style="font-size:0.72rem; color:#10b981; border:1px solid rgba(16,185,129,0.4); white-space:nowrap;" title="Xem/Sửa tài khoản đã giao"><i class="fa-solid fa-key"></i> Xem Acc</button>' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-copy-small" style="font-size:0.72rem; white-space:nowrap;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
+                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 9px; font-size:0.75rem; background:#1e293b; color:#10b981; border:1px solid rgba(16,185,129,0.4); font-weight:700; border-radius:4px; cursor:pointer;" title="Xem/Sửa tài khoản đã giao"><i class="fa-solid fa-key"></i> Xem Acc</button>' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 8px; font-size:0.75rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
                     '</div>';
         } else if (isProcessing) {
-          stBadge = "<span class='badge-verified' style='background:rgba(56,189,248,0.25); color:#38bdf8; border:1px solid #38bdf8; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-spinner fa-spin'></i> Đang gom hàng</span>";
+          stBadge = "<span style='background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid #38bdf8; font-weight:800; padding:4px 10px; border-radius:4px; font-size:0.75rem; white-space:nowrap; display:inline-flex; align-items:center; gap:5px;'><i class='fa-solid fa-spinner fa-spin'></i> Đang gom hàng</span>";
           actions = '<div style="display:inline-flex; gap:5px; align-items:center; white-space:nowrap;">' +
-                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-tool-secondary" style="background:#10b981; color:#0b111e; font-weight:700; border:none; padding:4px 8px; border-radius:4px; font-size:0.72rem; cursor:pointer; white-space:nowrap;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao hàng</button>' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-copy-small" style="font-size:0.72rem; white-space:nowrap;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
-                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + oId + '\')" class="btn-tool-secondary" style="background:#ef4444; color:#fff; font-weight:700; border:none; padding:4px 8px; border-radius:4px; font-size:0.72rem; cursor:pointer; white-space:nowrap;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
+                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 9px; font-size:0.75rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao hàng</button>' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 8px; font-size:0.75rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
+                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 8px; font-size:0.75rem; background:#ef4444; color:#fff; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
                     '</div>';
         } else {
-          stBadge = "<span class='badge-verified' style='background:rgba(245,158,11,0.25); color:#fbbf24; border:1px solid #f59e0b; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-calendar-check'></i> Chờ xác nhận</span>";
+          stBadge = "<span style='background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid #f59e0b; font-weight:800; padding:4px 10px; border-radius:4px; font-size:0.75rem; white-space:nowrap; display:inline-flex; align-items:center; gap:5px;'><i class='fa-solid fa-clock'></i> Chờ xác nhận</span>";
           actions = '<div style="display:inline-flex; gap:5px; align-items:center; white-space:nowrap;">' +
-                      '<button type="button" onclick="adminConfirmPreOrder(\'' + oId + '\')" class="btn-tool-secondary" style="background:#38bdf8; color:#0b111e; font-weight:700; border:none; padding:4px 8px; border-radius:4px; font-size:0.72rem; cursor:pointer; white-space:nowrap;" title="Duyệt đơn"><i class="fa-solid fa-check"></i> Duyệt đơn</button>' +
-                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-tool-secondary" style="background:#10b981; color:#0b111e; font-weight:700; border:none; padding:4px 8px; border-radius:4px; font-size:0.72rem; cursor:pointer; white-space:nowrap;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao hàng</button>' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-copy-small" style="font-size:0.72rem; white-space:nowrap;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
-                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + oId + '\')" class="btn-tool-secondary" style="background:#ef4444; color:#fff; font-weight:700; border:none; padding:4px 8px; border-radius:4px; font-size:0.72rem; cursor:pointer; white-space:nowrap;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
+                      '<button type="button" onclick="adminConfirmPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 9px; font-size:0.75rem; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Duyệt đơn"><i class="fa-solid fa-check"></i> Duyệt đơn</button>' +
+                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 9px; font-size:0.75rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao hàng</button>' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 8px; font-size:0.75rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
+                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 8px; font-size:0.75rem; background:#ef4444; color:#fff; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
                     '</div>';
         }
 
-        const buyerDisplay = escapeHtml(o.buyerUsername || o.buyerEmail || "Khách");
-        const buyerSub = o.buyerEmail ? ('<br/><span style="font-size:0.72rem; color:#64748b;">' + escapeHtml(o.buyerEmail) + '</span>') : "";
-        const prodDisplay = escapeHtml(o.productName || "Sản phẩm");
-        const varDisplay = o.variantName ? ('<br/><span style="font-size:0.72rem; color:#38bdf8;">Loại: ' + escapeHtml(o.variantName) + '</span>') : "";
-        const amtStr = (typeof formatVND === "function") ? formatVND(o.total || o.totalPrice || 0) : ((o.total || 0).toLocaleString("vi-VN") + " đ");
-        const dateStr = escapeHtml(o.createdAt || o.date || "");
+        const buyerDisplay = escapeHtml(o.buyerUsername || o.buyerEmail || 'Khách');
+        const buyerSub = o.buyerEmail ? ('<br/><span style="font-size:0.72rem; color:#64748b;">' + escapeHtml(o.buyerEmail) + '</span>') : '';
+        const prodDisplay = escapeHtml(o.productName || 'Sản phẩm');
+        const varDisplay = o.variantName ? ('<br/><span style="font-size:0.72rem; color:#38bdf8;">Loại: ' + escapeHtml(o.variantName) + '</span>') : '';
+        const amtStr = (typeof formatVND === 'function') ? formatVND(o.total || o.totalPrice || 0) : ((o.total || 0).toLocaleString('vi-VN') + ' đ');
+        const dateStr = escapeHtml(o.createdAt || o.date || '');
 
-        return "<tr>" +
-          "<td><a href=\"javascript:void(0)\" onclick=\"openPreOrderDetailView('" + escapeHtml(oId) + "')\" style=\"color:#f59e0b; font-family:monospace; font-size:0.85rem; font-weight:800; text-decoration:underline; display:inline-flex; align-items:center; gap:4px; cursor:pointer;\" title=\"👉 Bấm để mở xem chi tiết đơn hàng #" + escapeHtml(oId) + "\">#" + escapeHtml(oId) + " <i class=\"fa-solid fa-arrow-up-right-from-square\" style=\"font-size:0.7rem;\"></i></a><br/><span style=\"font-size:0.72rem; color:#64748b;\">" + dateStr + "</span></td>" +
-          "<td><b>" + buyerDisplay + "</b>" + buyerSub + "</td>" +
-          "<td><div style=\"font-weight:600; color:#fff;\">" + prodDisplay + "</div>" + varDisplay + "</td>" +
-          "<td style=\"text-align:center; font-weight:700;\">" + (o.qty || 1) + "</td>" +
-          "<td style=\"color:#10b981; font-weight:800; white-space:nowrap;\">" + amtStr + "</td>" +
-          "<td style=\"color:#f59e0b; font-weight:600; white-space:nowrap;\">" + (o.maxDays || 7) + " ngày</td>" +
-          "<td style=\"color:#94a3b8; font-size:0.75rem; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;\">" + (escapeHtml(o.customNotes || "--")) + "</td>" +
-          "<td style=\"white-space:nowrap;\">" + stBadge + "</td>" +
-          "<td style=\"white-space:nowrap; text-align:center;\">" + actions + "</td>" +
-        "</tr>";
-      }).join("");
+        return '<tr>' +
+          '<td><a href="javascript:void(0)" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" style="color:#f59e0b; font-family:monospace; font-size:0.85rem; font-weight:800; text-decoration:underline; display:inline-flex; align-items:center; gap:4px; cursor:pointer;" title="👉 Bấm để mở xem chi tiết đơn hàng #' + escapeHtml(oId) + '">#' + escapeHtml(oId) + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;"></i></a><br/><span style="font-size:0.72rem; color:#64748b;">' + dateStr + '</span></td>' +
+          '<td><b>' + buyerDisplay + '</b>' + buyerSub + '</td>' +
+          '<td><div style="font-weight:600; color:#fff;">' + prodDisplay + '</div>' + varDisplay + '</td>' +
+          '<td style="text-align:center; font-weight:700;">' + (o.qty || 1) + '</td>' +
+          '<td style="color:#10b981; font-weight:800;">' + amtStr + '</td>' +
+          '<td style="color:#f59e0b; font-weight:600; white-space:nowrap;">' + (o.maxDays || 7) + ' ngày</td>' +
+          '<td style="color:#94a3b8; font-size:0.75rem; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + (escapeHtml(o.customNotes || '--')) + '</td>' +
+          '<td style="white-space:nowrap;">' + stBadge + '</td>' +
+          '<td style="white-space:nowrap;">' + actions + '</td>' +
+        '</tr>';
+      }).join('');
     }
     window.renderAdminPreOrdersTable = renderAdminPreOrdersTable;
 
@@ -17819,6 +21215,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.handleFilterAdminPreOrders = handleFilterAdminPreOrders;
 
+    // Admin xác nhận đơn hàng
     function adminConfirmPreOrder(orderId) {
       const cleanId = String(orderId).replace("#", "").trim();
       const preOrders = getPreOrders(true);
@@ -17828,6 +21225,7 @@ function syncAllOpenViewsStock(changedProdId) {
       order.statusText = "Đang xử lý";
       savePreOrders(preOrders);
 
+      // Đồng bộ thông báo cho khách hàng
       if (typeof addUserNotification === "function") {
         addUserNotification({
           title: "⚙️ Đơn đặt trước #" + (order.orderCode || order.id) + " đang được xử lý",
@@ -17847,6 +21245,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.adminConfirmPreOrder = adminConfirmPreOrder;
 
+    // Mở popup giao hàng Admin
     function openAdminFulfillModal(orderId) {
       const cleanId = String(orderId).replace("#", "").trim();
       const preOrders = getPreOrders();
@@ -17881,6 +21280,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.closeAdminFulfillModal = closeAdminFulfillModal;
 
+    // Admin bàn giao tài khoản & hoàn thành đơn
     function executeAdminFulfillPreOrder() {
       const orderId = document.getElementById("admFulfillOrderId") ? document.getElementById("admFulfillOrderId").value : "";
       const rawText = document.getElementById("admFulfillAccountsInput") ? document.getElementById("admFulfillAccountsInput").value.trim() : "";
@@ -17902,6 +21302,7 @@ function syncAllOpenViewsStock(changedProdId) {
       order.completedAt = new Date().toLocaleString("vi-VN");
       savePreOrders(preOrders);
 
+      // Cập nhật ngay vào toàn bộ các kho localStorage của thành viên
       const uKeys = ["mmo_orders", "mmo_user_orders", "mmo_all_orders"];
       uKeys.forEach(function(k) {
         try {
@@ -17922,6 +21323,7 @@ function syncAllOpenViewsStock(changedProdId) {
         } catch(e) {}
       });
 
+      // Gửi thông báo chuông hoàn thành đơn hàng cho khách
       const buyerMail = order.buyerEmail || order.email || order.userEmail || "";
       if (typeof addUserNotification === "function") {
         addUserNotification({
@@ -17945,6 +21347,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.executeAdminFulfillPreOrder = executeAdminFulfillPreOrder;
 
+    // Admin Hủy đơn & hoàn tiền cho khách
     function adminCancelAndRefundPreOrder(orderId) {
       const cleanId = String(orderId).replace("#", "").trim();
       const preOrders = getPreOrders(true);
@@ -18013,10 +21416,12 @@ function syncAllOpenViewsStock(changedProdId) {
 
       adminOrdersActiveSubTab = subTab || "orders";
 
+      // Cập nhật hiển thị View
       if (ordersSub) ordersSub.style.display = (subTab === "orders" || subTab === "warranty") ? "block" : "none";
       if (preOrdersSub) preOrdersSub.style.display = (subTab === "preOrders") ? "block" : "none";
       if (walletSub) walletSub.style.display = (subTab === "walletTx") ? "block" : "none";
 
+      // Cập nhật style nút bấm
       if (btnOrders) {
         btnOrders.style.background = (subTab === "orders") ? "#1e293b" : "#0f172a";
         btnOrders.style.color = (subTab === "orders") ? "#38bdf8" : "#94a3b8";
@@ -18038,6 +21443,7 @@ function syncAllOpenViewsStock(changedProdId) {
         btnWallet.style.borderColor = (subTab === "walletTx") ? "rgba(16,185,129,0.4)" : "#1e293b";
       }
 
+      // Render dữ liệu tương ứng
       if (subTab === "orders" || subTab === "warranty") {
         renderAdminOrdersTable();
       } else if (subTab === "preOrders") {
@@ -18048,6 +21454,7 @@ function syncAllOpenViewsStock(changedProdId) {
         if (typeof renderAdminTxTable === "function") renderAdminTxTable();
       }
 
+      // Cập nhật số lượng huy hiệu (badge)
       updateAdminPreOrdersBadge();
     }
     window.switchAdmTxSubTab = switchAdmTxSubTab;
@@ -18066,13 +21473,6 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.updateAdminPreOrdersBadge = updateAdminPreOrdersBadge;
 
-    var adminOrdersSearchQuery = "";
-    var adminOrdersStatusFilter = "ALL";
-    var adminOrdersActiveSubTab = "orders";
-    window.adminOrdersSearchQuery = "";
-    window.adminOrdersStatusFilter = "ALL";
-    window.adminOrdersActiveSubTab = "orders";
-
     function handleSearchAdminOrders(val) {
       adminOrdersSearchQuery = (val || "").toLowerCase().trim();
       renderAdminOrdersTable();
@@ -18084,71 +21484,6 @@ function syncAllOpenViewsStock(changedProdId) {
       renderAdminOrdersTable();
     }
     window.handleFilterAdminOrders = handleFilterAdminOrders;
-
-    let _cachedAllOrdersList = null;
-    let _lastAllOrdersFetchTime = 0;
-
-    function getAllOrders(forceRefresh) {
-      const now = Date.now();
-      if (!forceRefresh && _cachedAllOrdersList && (now - _lastAllOrdersFetchTime < 1000)) {
-        return _cachedAllOrdersList;
-      }
-
-      let all = [];
-      try {
-        const stored = localStorage.getItem("mmo_all_orders");
-        if (stored) {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed)) all = parsed;
-        }
-      } catch(e) {}
-
-      try {
-        const orderMap = new Map();
-        all.forEach(function(o) {
-          if (!o) return;
-          const k = String(o.id || o.orderId || o.orderCode || "").replace("#", "").trim();
-          if (k) orderMap.set(k, o);
-        });
-
-        const userOrders = (typeof getUserOrders === "function") ? getUserOrders() : [];
-        userOrders.forEach(function(uo) {
-          if (!uo) return;
-          const k = String(uo.id || uo.orderId || uo.orderCode || "").replace("#", "").trim();
-          if (!k) return;
-          if (!orderMap.has(k)) {
-            orderMap.set(k, uo);
-            all.unshift(uo);
-          } else {
-            const ex = orderMap.get(k);
-            if ((!ex.productName || ex.productName.startsWith("Sản Phẩm Đơn Hàng") || ex.productId === "SP_MMO") && (uo.productName && !uo.productName.startsWith("Sản Phẩm Đơn Hàng"))) {
-              Object.assign(ex, uo);
-            }
-          }
-        });
-
-        const preOrders = (typeof getPreOrders === "function") ? getPreOrders() : [];
-        preOrders.forEach(function(po) {
-          if (!po) return;
-          const k = String(po.id || po.orderId || po.orderCode || "").replace("#", "").trim();
-          if (!k) return;
-          if (!orderMap.has(k)) {
-            orderMap.set(k, po);
-            all.unshift(po);
-          } else {
-            const ex = orderMap.get(k);
-            ex.status = po.status;
-            ex.type = po.type || "PRE_ORDER";
-            if (po.deliveredAccounts) ex.deliveredAccounts = po.deliveredAccounts;
-          }
-        });
-      } catch(e) {}
-
-      _cachedAllOrdersList = all;
-      _lastAllOrdersFetchTime = now;
-      return all;
-    }
-    window.getAllOrders = getAllOrders;
 
     function renderAdminOrdersTable() {
       const tbody = document.getElementById("admOrdersTableBody");
@@ -18164,6 +21499,7 @@ function syncAllOpenViewsStock(changedProdId) {
         return st.includes("khiếu nại") || st.includes("khieu nai") || st.includes("bảo hành") || st.includes("bao hanh") || st.includes("đổi trả") || st.includes("doi tra") || st.includes("hoàn tiền") || st.includes("hoan tien") || st.includes("1-đổi-1") || st.includes("đổi 1-1") || cred.includes("đổi trả") || o.hasComplaint || o.complaint || o.isWarranty || o.isExchanged || o.isRefunded;
       };
 
+      // Cập nhật huy hiệu số lượng
       const countBadge = document.getElementById("admOrdersCountBadge");
       if (countBadge) countBadge.innerText = allOrders.length;
 
@@ -18173,10 +21509,12 @@ function syncAllOpenViewsStock(changedProdId) {
 
       let orders = allOrders;
 
+      // Nếu đang mở tab Đơn Bảo Hành & Đổi Trả
       if (adminOrdersActiveSubTab === "warranty") {
         orders = orders.filter(isWarrantyOrder);
       }
 
+      // Lọc theo tìm kiếm
       if (adminOrdersSearchQuery) {
         orders = orders.filter(function(o) {
           const oid = String(o.orderId || o.id || "").toLowerCase();
@@ -18187,6 +21525,7 @@ function syncAllOpenViewsStock(changedProdId) {
         });
       }
 
+      // Lọc theo trạng thái
       if (adminOrdersStatusFilter === "COMPLAIN") {
         orders = orders.filter(o => String(o.status || "").toLowerCase().includes("khiếu nại") || String(o.status || "").toLowerCase().includes("bảo hành"));
       } else if (adminOrdersStatusFilter === "DELIVERED") {
@@ -18207,13 +21546,12 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       const page = (typeof paginationState !== "undefined" && paginationState.admOrders) ? paginationState.admOrders : 1;
-      const itemsPerPage = (typeof window.ITEMS_PER_PAGE !== "undefined" && window.ITEMS_PER_PAGE) ? window.ITEMS_PER_PAGE : 10;
-      const totalPages = Math.ceil(orders.length / itemsPerPage);
+      const totalPages = Math.ceil(orders.length / ITEMS_PER_PAGE);
       const safePage = Math.max(1, Math.min(page, totalPages));
       if (typeof paginationState !== "undefined") paginationState.admOrders = safePage;
 
-      const startIndex = (safePage - 1) * itemsPerPage;
-      const pageOrders = orders.slice(startIndex, startIndex + itemsPerPage);
+      const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
+      const pageOrders = orders.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
       tbody.innerHTML = pageOrders.map(function(o) {
         const oid = o.orderId || o.id || "";
@@ -18224,51 +21562,52 @@ function syncAllOpenViewsStock(changedProdId) {
         const qty = o.quantity || o.qty || 1;
         const total = Number(o.total || o.totalPrice || o.totalAmount) || 0;
         const time = o.date || o.createdAt || "--";
+        const creds = o.credentials || o.accounts || "";
 
         let statusText = o.status || "Đã Giao Tự Động";
-        let statusBadge = "<span class='badge-verified' style='background:rgba(59,130,246,0.18); border:1px solid #3b82f6; color:#60a5fa; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;'>Đã Giao Tự Động</span>";
+        let statusBadge = "<span class='badge-verified' style='background:rgba(59,130,246,0.18); border:1px solid #3b82f6; color:#60a5fa;'>Đã Giao Tự Động</span>";
         const stLower = String(statusText).toLowerCase();
 
         const isPreOrder = o.type === "PRE_ORDER" || String(oid).startsWith("PRE") || String(o.id).startsWith("PRE");
 
         if (isPreOrder) {
           if (o.status === "WAITING_CONFIRM" || stLower.includes("chờ")) {
-            statusBadge = "<span class='badge-verified' style='background:rgba(245,158,11,0.25); border:1px solid #f59e0b; color:#fbbf24; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-calendar-check'></i> ĐẶT TRƯỚC - Chờ xác nhận</span>";
+            statusBadge = "<span class='badge-verified' style='background:rgba(245,158,11,0.25); border:1px solid #f59e0b; color:#fbbf24; font-weight:800;'><i class='fa-solid fa-calendar-check'></i> ĐẶT TRƯỚC - Chờ xác nhận</span>";
           } else if (o.status === "PROCESSING" || stLower.includes("xử lý")) {
-            statusBadge = "<span class='badge-verified' style='background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-spinner fa-spin'></i> ĐẶT TRƯỚC - Đang xử lý</span>";
+            statusBadge = "<span class='badge-verified' style='background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; font-weight:800;'><i class='fa-solid fa-spinner fa-spin'></i> ĐẶT TRƯỚC - Đang xử lý</span>";
           } else if (o.status === "COMPLETED" || stLower.includes("giao") || stLower.includes("hoàn thành")) {
-            statusBadge = "<span class='badge-verified' style='background:rgba(16,185,129,0.25); border:1px solid #10b981; color:#34d399; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-circle-check'></i> ĐẶT TRƯỚC - Đã giao</span>";
+            statusBadge = "<span class='badge-verified' style='background:rgba(16,185,129,0.25); border:1px solid #10b981; color:#34d399; font-weight:800;'><i class='fa-solid fa-circle-check'></i> ĐẶT TRƯỚC - Đã giao</span>";
           } else if (o.status === "CANCELLED" || stLower.includes("hủy")) {
-            statusBadge = "<span class='badge-verified' style='background:rgba(239,68,68,0.25); border:1px solid #ef4444; color:#f87171; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-ban'></i> ĐẶT TRƯỚC - Đã hủy</span>";
+            statusBadge = "<span class='badge-verified' style='background:rgba(239,68,68,0.25); border:1px solid #ef4444; color:#f87171; font-weight:800;'><i class='fa-solid fa-ban'></i> ĐẶT TRƯỚC - Đã hủy</span>";
           }
         } else if (stLower.includes("khiếu nại") || (stLower.includes("bảo hành") && !stLower.includes("đã bảo hành") && !stLower.includes("đã đổi trả"))) {
-          statusBadge = "<span class='badge-verified' style='background:rgba(239,68,68,0.25); border:1px solid #ef4444; color:#f87171; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px; animation:pulse 1.5s infinite;'><i class='fa-solid fa-triangle-exclamation'></i> Cần Bảo Hành / Đổi Trả</span>";
+          statusBadge = "<span class='badge-verified' style='background:rgba(239,68,68,0.25); border:1px solid #ef4444; color:#f87171; animation:pulse 1.5s infinite;'><i class='fa-solid fa-triangle-exclamation'></i> Cần Bảo Hành / Đổi Trả</span>";
         } else if (stLower.includes("đổi trả") || stLower.includes("1-đổi-1") || stLower.includes("đã bảo hành")) {
-          statusBadge = "<span class='badge-verified' style='background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#34d399; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-rotate'></i> Đã Đổi Trả 1-1</span>";
+          statusBadge = "<span class='badge-verified' style='background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#34d399;'><i class='fa-solid fa-rotate'></i> Đã Đổi Trả 1-1</span>";
         } else if (stLower.includes("hoàn tiền")) {
-          statusBadge = "<span class='badge-verified' style='background:rgba(168,85,247,0.2); border:1px solid #a855f7; color:#c084fc; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-hand-holding-dollar'></i> Đã Hoàn Tiền Ví</span>";
+          statusBadge = "<span class='badge-verified' style='background:rgba(168,85,247,0.2); border:1px solid #a855f7; color:#c084fc;'><i class='fa-solid fa-hand-holding-dollar'></i> Đã Hoàn Tiền Ví</span>";
         }
 
         let actionButtons = "";
         if (isPreOrder) {
           if (o.status === "WAITING_CONFIRM") {
             actionButtons = "<div style='display:inline-flex; gap:4px;'>" +
-              "<button type='button' class='btn-tool-secondary' onclick='adminConfirmPreOrder(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer; white-space:nowrap;'>Duyệt</button>" +
-              "<button type='button' class='btn-tool-secondary' onclick='openAdminFulfillModal(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer; white-space:nowrap;'>Giao acc</button>" +
-              "<button type='button' class='btn-tool-secondary' onclick='adminCancelAndRefundPreOrder(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer; white-space:nowrap;'>Hủy</button>" +
+              "<button type='button' class='btn-tool-secondary' onclick='adminConfirmPreOrder(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;'>Duyệt</button>" +
+              "<button type='button' class='btn-tool-secondary' onclick='openAdminFulfillModal(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;'>Giao acc</button>" +
+              "<button type='button' class='btn-tool-secondary' onclick='adminCancelAndRefundPreOrder(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;'>Hủy</button>" +
             "</div>";
           } else if (o.status === "PROCESSING") {
             actionButtons = "<div style='display:inline-flex; gap:4px;'>" +
-              "<button type='button' class='btn-tool-secondary' onclick='openAdminFulfillModal(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 8px; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer; white-space:nowrap;'>Giao acc</button>" +
-              "<button type='button' class='btn-tool-secondary' onclick='adminCancelAndRefundPreOrder(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer; white-space:nowrap;'>Hủy</button>" +
+              "<button type='button' class='btn-tool-secondary' onclick='openAdminFulfillModal(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 8px; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;'>Giao acc</button>" +
+              "<button type='button' class='btn-tool-secondary' onclick='adminCancelAndRefundPreOrder(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;'>Hủy</button>" +
             "</div>";
           } else {
-            actionButtons = "<button type='button' class='btn-copy-small' onclick='openPreOrderDetailView(\"" + oid + "\")' style='font-size:0.72rem; white-space:nowrap;'><i class='fa-solid fa-eye'></i> Chi tiết</button>";
+            actionButtons = "<button type='button' class='btn-copy-small' onclick='openPreOrderDetailView(\"" + oid + "\")' style='font-size:0.72rem;'><i class='fa-solid fa-eye'></i> Chi tiết</button>";
           }
         } else {
           actionButtons = "<div style='display:inline-flex; gap:5px;'>" +
-            "<button type='button' class='btn-tool-secondary' onclick='openAdminOrderDetailModal(\"" + oid + "\", \"exchange\")' title='Đổi trả 1-Đổi-1' style='font-size:0.72rem; padding:4px 8px; background:#10b981; color:#fff; border:none; border-radius:5px; cursor:pointer; white-space:nowrap;'><i class='fa-solid fa-rotate'></i> Đổi 1-1</button>" +
-            "<button type='button' class='btn-tool-secondary' onclick='openAdminOrderDetailModal(\"" + oid + "\", \"refund\")' title='Hoàn tiền vào ví' style='font-size:0.72rem; padding:4px 8px; background:#7c3aed; color:#fff; border:none; border-radius:5px; cursor:pointer; white-space:nowrap;'><i class='fa-solid fa-money-bill-wave'></i> Hoàn Tiền</button>" +
+            "<button type='button' class='btn-tool-secondary' onclick='openAdminOrderDetailModal(\"" + oid + "\", \"exchange\")' title='Đổi trả 1-Đổi-1' style='font-size:0.72rem; padding:4px 8px; background:#10b981; color:#fff; border:none; border-radius:5px; cursor:pointer;'><i class='fa-solid fa-rotate'></i> Đổi 1-1</button>" +
+            "<button type='button' class='btn-tool-secondary' onclick='openAdminOrderDetailModal(\"" + oid + "\", \"refund\")' title='Hoàn tiền vào ví' style='font-size:0.72rem; padding:4px 8px; background:#7c3aed; color:#fff; border:none; border-radius:5px; cursor:pointer;'><i class='fa-solid fa-money-bill-wave'></i> Hoàn Tiền</button>" +
           "</div>";
         }
 
@@ -18288,10 +21627,10 @@ function syncAllOpenViewsStock(changedProdId) {
             "<span style='font-size:0.72rem; color:#a855f7; font-weight:700;'>" + escapeHtml(pVariant) + "</span>" +
           "</td>" +
           "<td style='font-weight:700; color:#f59e0b; font-size:0.82rem;'>" + qty + "</td>" +
-          "<td style='color:#10b981; font-weight:800; font-size:0.85rem; white-space:nowrap;'>" + formatVND(total) + "</td>" +
-          "<td style='white-space:nowrap;'>" + statusBadge + "</td>" +
+          "<td style='color:#10b981; font-weight:800; font-size:0.85rem;'>" + formatVND(total) + "</td>" +
+          "<td>" + statusBadge + "</td>" +
           "<td>" +
-            (isPreOrder ? "<button type='button' class='btn-copy-small' onclick='openPreOrderDetailView(\"" + oid + "\")' style='font-size:0.72rem; white-space:nowrap;'><i class='fa-solid fa-receipt'></i> Xem đơn</button>" : "<button type='button' class='btn-copy-small' onclick='openAdminOrderDetailModal(\"" + oid + "\")' style='font-size:0.72rem; white-space:nowrap;'><i class='fa-solid fa-key'></i> Xem Acc</button>") +
+            (isPreOrder ? "<button type='button' class='btn-copy-small' onclick='openPreOrderDetailView(\"" + oid + "\")' style='font-size:0.72rem;'><i class='fa-solid fa-receipt'></i> Xem đơn</button>" : "<button type='button' class='btn-copy-small' onclick='openAdminOrderDetailModal(\"" + oid + "\")' style='font-size:0.72rem;'><i class='fa-solid fa-key'></i> Xem Acc</button>") +
           "</td>" +
           "<td style='text-align:center; white-space:nowrap;'>" +
             actionButtons +
@@ -18304,16 +21643,6 @@ function syncAllOpenViewsStock(changedProdId) {
       }
     }
     window.renderAdminOrdersTable = renderAdminOrdersTable;
-
-    function changeAdmOrdersPage(newPage) {
-      if (typeof paginationState !== "undefined") {
-        paginationState.admOrders = newPage;
-      }
-      renderAdminOrdersTable();
-    }
-    window.changeAdmOrdersPage = changeAdmOrdersPage;
-
-
 
     function changeAdmOrdersPage(newPage) {
       if (typeof paginationState !== "undefined") {
@@ -18357,7 +21686,12 @@ function syncAllOpenViewsStock(changedProdId) {
             }
           });
           saveAllOrders(localOrders);
+          _cachedPreOrdersList = null;
+          _lastPreOrdersFetchTime = 0;
+          getPreOrders(true);
           renderAdminOrdersTable();
+          if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
+          if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
           showToast("🎉 Đã đồng bộ " + res.orders.length + " đơn hàng từ Google Sheets!", "success");
         }
       } catch(e) {
@@ -18817,8 +22151,8 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.saveAdmOrdProductChanges = saveAdmOrdProductChanges;
 
-    // Mở modal chi tiết đơn hàng
-    function openAdminOrderDetailModal(orderId) {
+    // Mở modal chi tiết đơn hàng (hỗ trợ mode: 'exchange' hoặc 'refund')
+    function openAdminOrderDetailModal(orderId, mode) {
       if (!orderId) return;
       const cleanId = String(orderId).replace("#", "").trim();
 
@@ -18850,6 +22184,10 @@ function syncAllOpenViewsStock(changedProdId) {
       const refundAmtEl = document.getElementById("admOrdRefundAmountDisplay");
       const newCredsInp = document.getElementById("admOrdNewCredsInput");
 
+      // Khai báo qtyVal và totalVal TRƯỚC khi gán vào refInp (tránh lỗi ReferenceError TDZ)
+      const qtyVal = order.quantity || order.qty || 1;
+      const totalVal = Number(order.total || order.totalPrice || order.totalAmount) || 0;
+
       // Cập nhật ô nhập số tiền cần hoàn lại
       const refInp = document.getElementById("admOrdRefundAmountInput");
       const refPrev = document.getElementById("admOrdRefundAmountPreview");
@@ -18857,9 +22195,6 @@ function syncAllOpenViewsStock(changedProdId) {
         refInp.value = totalVal;
         if (refPrev) refPrev.innerText = "(" + formatVND(totalVal) + ")";
       }
-
-      const qtyVal = order.quantity || order.qty || 1;
-      const totalVal = Number(order.total || order.totalPrice || order.totalAmount) || 0;
 
       if (codeEl) codeEl.innerText = "#" + order.orderId;
       const ordEmail = (order.email || order.userEmail || "").trim();
@@ -18918,7 +22253,24 @@ function syncAllOpenViewsStock(changedProdId) {
       if (editPanel) editPanel.style.display = "none";
 
       const modal = document.getElementById("admOrderDetailModal");
-      if (modal) modal.style.display = "flex";
+      if (modal) {
+        modal.style.display = "flex";
+        if (mode === "exchange") {
+          setTimeout(function() {
+            const sec = document.getElementById("admOrdExchangeSection");
+            if (sec) sec.scrollIntoView({ behavior: "smooth", block: "center" });
+            const inp = document.getElementById("admOrdNewCredsInput");
+            if (inp) inp.focus();
+          }, 120);
+        } else if (mode === "refund") {
+          setTimeout(function() {
+            const sec = document.getElementById("admOrdRefundSection");
+            if (sec) sec.scrollIntoView({ behavior: "smooth", block: "center" });
+            const inp = document.getElementById("admOrdRefundAmountInput");
+            if (inp) inp.focus();
+          }, 120);
+        }
+      }
 
       // Tự động tra cứu đơn hàng từ Google Sheets Cloud để đồng bộ email, tên SP, tài khoản
       if (typeof callGasApi === "function" && (!order.email || order.email === "--" || !order.credentials || order.credentials === "Chưa có dữ liệu tài khoản cục bộ" || (order.productName && order.productName.startsWith("Sản Phẩm Đơn Hàng")))) {
@@ -18973,6 +22325,39 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.openAdminOrderDetailModal = openAdminOrderDetailModal;
 
+    // Thay đổi trạng thái bảo hành / khiếu nại của đơn hàng trực tiếp
+    function toggleOrderWarrantyStatus() {
+      if (!currentAdminOrderDetail) return;
+      const orderId = currentAdminOrderDetail.orderId || currentAdminOrderDetail.id;
+      const choice = prompt("Chọn trạng thái cập nhật cho đơn #" + orderId + ":\n1. Khiếu Nại / Bảo Hành (Cần Xử Lý)\n2. Đã Bảo Hành (Đã Đổi Trả 1-1)\n3. Đã Hoàn Tiền Ví\n4. Đã Giao Tự Động (Bình Thường)", "1");
+      if (!choice) return;
+      let newSt = "Khiếu Nại / Bảo Hành";
+      if (choice === "1") newSt = "Khiếu Nại / Bảo Hành";
+      else if (choice === "2") newSt = "Đã Bảo Hành (Đã Đổi Trả 1-1)";
+      else if (choice === "3") newSt = "Đã Hoàn Tiền Ví";
+      else if (choice === "4") newSt = "Đã Giao Tự Động";
+      else return;
+
+      currentAdminOrderDetail.status = newSt;
+      let all = getAllOrders();
+      const idx = all.findIndex(o => (o.orderId === orderId || o.id === orderId));
+      if (idx !== -1) {
+        all[idx].status = newSt;
+        saveAllOrders(all);
+      }
+      let uOrders = typeof getUserOrders === "function" ? getUserOrders() : [];
+      const uIdx = uOrders.findIndex(o => (o.orderId === orderId || o.id === orderId));
+      if (uIdx !== -1) {
+        uOrders[uIdx].status = newSt;
+        if (typeof saveUserOrders === "function") saveUserOrders(uOrders);
+      }
+      const badge = document.getElementById("admOrdStatusBadge");
+      if (badge) badge.innerText = newSt;
+      renderAdminOrdersTable();
+      showToast("Đã cập nhật trạng thái đơn #" + orderId + " thành: " + newSt, "success");
+    }
+    window.toggleOrderWarrantyStatus = toggleOrderWarrantyStatus;
+
     // Tự động lấy 1 tài khoản mới từ kho sản phẩm tương ứng
     function autoFillReplacementStock() {
       if (!currentAdminOrderDetail) return;
@@ -18983,13 +22368,26 @@ function syncAllOpenViewsStock(changedProdId) {
 
       let availList = [];
 
-      // 1. Tìm theo kho riêng của biến thể
-      if (prodId && typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) {
-        const prod = MOCK_DATA.products.find(p => p.id === prodId);
-        if (prod && prod.variants) {
-          const vIdx = prod.variants.findIndex(v => v.name === variantName);
-          if (vIdx !== -1) {
-            const vKey = typeof getVariantStockKey === "function" ? getVariantStockKey(prodId, vIdx) : (prodId + "__VAR__" + vIdx);
+      // 1. Tìm theo kho riêng của biến thể từ MMO_WAREHOUSE & MOCK_DATA
+      if (typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) {
+        const prod = MOCK_DATA.products.find(p => p.id === prodId || (prodName && p.name === prodName));
+        if (prod) {
+          const vIdx = Array.isArray(prod.variants) ? prod.variants.findIndex(v => v.name === variantName) : -1;
+          const targetVIdx = vIdx !== -1 ? vIdx : 0;
+          if (typeof MMO_WAREHOUSE !== "undefined" && typeof MMO_WAREHOUSE.getAvailable === "function") {
+            const whList = MMO_WAREHOUSE.getAvailable(prod.id, targetVIdx);
+            if (Array.isArray(whList) && whList.length > 0) {
+              availList = [...whList];
+            }
+          }
+          if (availList.length === 0 && Array.isArray(prod.variants) && prod.variants[targetVIdx] && Array.isArray(prod.variants[targetVIdx].accounts)) {
+            availList = [...prod.variants[targetVIdx].accounts];
+          }
+          if (availList.length === 0 && Array.isArray(prod.accounts)) {
+            availList = [...prod.accounts];
+          }
+          if (availList.length === 0) {
+            const vKey = typeof getVariantStockKey === "function" ? getVariantStockKey(prod.id, targetVIdx) : (prod.id + "__VAR__" + targetVIdx);
             if (Array.isArray(stockMap[vKey]) && stockMap[vKey].length > 0) {
               availList = stockMap[vKey];
             }
@@ -19067,32 +22465,113 @@ function syncAllOpenViewsStock(changedProdId) {
         return;
       }
 
-      const targetEmail = (currentAdminOrderDetail.email || currentAdminOrderDetail.userEmail || "").toLowerCase().trim();
+      const emailInputEl = document.getElementById("admOrdCustEmailInput");
+      const targetEmail = (currentAdminOrderDetail.email || currentAdminOrderDetail.userEmail || (emailInputEl ? emailInputEl.value : "") || "").toLowerCase().trim();
 
-      // 1. Trừ 1 tài khoản từ kho cục bộ nếu khớp
       const prodId = currentAdminOrderDetail.productId || currentAdminOrderDetail.prodId || "";
-      const stockMap = typeof getProductStocksMap === "function" ? getProductStocksMap() : {};
-      for (let k in stockMap) {
-        if (Array.isArray(stockMap[k])) {
-          const idx = stockMap[k].indexOf(newCreds);
-          if (idx !== -1) {
-            stockMap[k].splice(idx, 1);
-            if (typeof saveProductStocksMap === "function") saveProductStocksMap(stockMap);
-            break;
+      const prodName = currentAdminOrderDetail.productName || currentAdminOrderDetail.prodName || "";
+      const variantName = currentAdminOrderDetail.variant || currentAdminOrderDetail.variantName || "";
+
+      // 1. TÌM SẢN PHẨM & BIẾN THỂ TRONG KHO HÀNG
+      let targetProd = (typeof findShopProduct === "function") ? findShopProduct(prodId) : null;
+      if (!targetProd && prodName && typeof findShopProduct === "function") {
+        targetProd = findShopProduct(prodName);
+      }
+      if (!targetProd && typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+        targetProd = MOCK_DATA.products.find(p => p.id === prodId || p.name === prodName || (p.name && prodName && p.name.includes(prodName)));
+      }
+
+      let targetVIdx = 0;
+      if (targetProd && Array.isArray(targetProd.variants) && targetProd.variants.length > 0) {
+        const fIdx = targetProd.variants.findIndex(v => v.name === variantName);
+        if (fIdx !== -1) targetVIdx = fIdx;
+      }
+
+      const exchangeNow = Date.now();
+      const exchangeTimeStr = new Date().toLocaleString("vi-VN");
+
+      // 2. TRỪ TÀI KHOẢN KHỎI KHO KHẢ DỤNG & GHI VÀO LỊCH SỬ ĐÃ BÁN / BẢO HÀNH
+      if (targetProd) {
+        const hasVars = Array.isArray(targetProd.variants) && targetProd.variants.length > 0;
+        const targetV = hasVars ? (targetProd.variants[targetVIdx] || targetProd.variants[0]) : targetProd;
+
+        // Xóa tài khoản khỏi danh sách sẵn sàng
+        if (targetV && Array.isArray(targetV.accounts)) {
+          const accIdx = targetV.accounts.indexOf(newCreds);
+          if (accIdx !== -1) {
+            targetV.accounts.splice(accIdx, 1);
+          } else {
+            const fIdx = targetV.accounts.findIndex(a => String(a).trim() === newCreds);
+            if (fIdx !== -1) targetV.accounts.splice(fIdx, 1);
+          }
+          targetV.stock = targetV.accounts.length;
+          targetProd.stock = hasVars ? targetProd.variants.reduce((s, v) => s + (Array.isArray(v.accounts) ? v.accounts.length : 0), 0) : targetV.stock;
+        }
+
+        // Thêm ngay tài khoản này vào Lịch Sử Tài Khoản Đã Bán / Bảo Hành
+        if (!Array.isArray(targetV.soldAccounts)) targetV.soldAccounts = [];
+        targetV.soldAccounts.unshift({
+          account: newCreds,
+          sold_at: exchangeNow,
+          order_id: orderId,
+          type: "WARRANTY_EXCHANGE",
+          note: "Bảo hành 1-đổi-1"
+        });
+
+        if (typeof saveProductsToStorage === "function") saveProductsToStorage();
+        if (typeof refreshAllShopStockUI === "function") refreshAllShopStockUI(targetProd.id);
+
+        // Đồng bộ trừ tồn kho & cập nhật lịch sử lên Turso Cloud Database
+        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
+          try {
+            const remAccs = (targetV && Array.isArray(targetV.accounts)) ? targetV.accounts : [];
+            TURSO_CLIENT.setAvailableAccounts(targetProd.id, targetVIdx, remAccs).catch(e => console.warn(e));
+            TURSO_CLIENT.checkoutAccounts(targetProd.id, targetVIdx, 1, orderId, targetEmail, 0).catch(e => console.warn(e));
+          } catch(tursoErr) {
+            console.warn("Turso sync exchange error:", tursoErr);
           }
         }
       }
+
+      // Trừ cả trong legacy stockMap để tương thích 100%
+      try {
+        const stockMap = typeof getProductStocksMap === "function" ? getProductStocksMap() : {};
+        for (let k in stockMap) {
+          if (Array.isArray(stockMap[k])) {
+            const idx = stockMap[k].indexOf(newCreds);
+            if (idx !== -1) {
+              stockMap[k].splice(idx, 1);
+              if (typeof saveProductStocksMap === "function") saveProductStocksMap(stockMap);
+              break;
+            }
+          }
+        }
+      } catch(e) {}
+
+      // Cập nhật ngay lập tức giao diện Quản Trị Kho nếu Admin đang xem kho
+      try {
+        const admProdSel = document.getElementById("admStockProductSelect");
+        const admVarSel = document.getElementById("admStockVariantSelect");
+        if (admProdSel && targetProd && admProdSel.value === targetProd.id) {
+          const curVVal = admVarSel ? admVarSel.value : targetVIdx;
+          if (typeof renderAdminStockView === "function") renderAdminStockView(targetProd.id, curVVal);
+          if (typeof renderSoldStockAccountsView === "function") renderSoldStockAccountsView(targetProd.id, curVVal);
+        }
+      } catch(uiErr) {}
 
       // 2. Cập nhật đơn hàng
       const newStatus = "Đã Bảo Hành (Đã Đổi Trả 1-1)";
       currentAdminOrderDetail.status = newStatus;
       currentAdminOrderDetail.credentials = (currentAdminOrderDetail.credentials ? (currentAdminOrderDetail.credentials + "\n--- TÀI KHOẢN MỚI ĐỔI TRẢ (1-ĐỔI-1) ---\n" + newCreds) : newCreds);
+      if (targetEmail) {
+        currentAdminOrderDetail.email = targetEmail;
+        currentAdminOrderDetail.userEmail = targetEmail;
+      }
 
       let all = getAllOrders();
       const idx = all.findIndex(o => (o.orderId === orderId || o.id === orderId));
       if (idx !== -1) {
-        all[idx].status = newStatus;
-        all[idx].credentials = currentAdminOrderDetail.credentials;
+        all[idx] = Object.assign({}, all[idx], currentAdminOrderDetail);
         saveAllOrders(all);
       }
 
@@ -19100,14 +22579,17 @@ function syncAllOpenViewsStock(changedProdId) {
       let uOrders = typeof getUserOrders === "function" ? getUserOrders() : [];
       const uIdx = uOrders.findIndex(o => (o.orderId === orderId || o.id === orderId));
       if (uIdx !== -1) {
-        uOrders[uIdx].status = newStatus;
-        uOrders[uIdx].credentials = currentAdminOrderDetail.credentials;
-        if (typeof saveUserOrders === "function") saveUserOrders(uOrders);
+        uOrders[uIdx] = Object.assign({}, uOrders[uIdx], currentAdminOrderDetail);
+      } else {
+        uOrders.unshift(Object.assign({}, currentAdminOrderDetail));
       }
+      if (typeof saveUserOrders === "function") saveUserOrders(uOrders);
 
       // 3. Tự động gửi tin nhắn chat đến khách hàng
       const messageToCustomer = "✅ ADMIN ĐÃ DUYỆT BẢO HÀNH ĐỔI TRẢ 1-ĐỔI-1 CHO ĐƠN HÀNG #" + orderId + "!\n🎁 Tài khoản mới thay thế của bạn:\n" + newCreds + "\nQuý khách vui lòng đăng nhập kiểm tra lại. Cảm ơn bạn đã tin tưởng MuaBanTaiKhoanMMO!";
-      sendAdminAutoMessage(finalEmail, messageToCustomer);
+      if (targetEmail && targetEmail !== "--" && typeof sendAdminAutoMessage === "function") {
+        sendAdminAutoMessage(targetEmail, messageToCustomer);
+      }
 
       // 4. Đồng bộ trạng thái đơn lên Google Sheets
       if (typeof callGasApi === "function") {
@@ -19121,8 +22603,20 @@ function syncAllOpenViewsStock(changedProdId) {
         }).catch(function(e) {});
       }
 
+      try {
+        if (typeof BroadcastChannel !== "undefined") {
+          const bc = new BroadcastChannel("mmo_realtime_sync");
+          bc.postMessage({
+            type: "ORDER_EXCHANGED",
+            orderId: orderId,
+            email: targetEmail
+          });
+        }
+      } catch(e) {}
+
       closeModal("admOrderDetailModal");
       renderAdminOrdersTable();
+      if (typeof renderProfileOrders === "function") renderProfileOrders();
       showToast("🎉 Đã thực hiện đổi trả 1-1 thành công và gửi tài khoản mới cho khách!", "success");
     }
     window.confirmExchangeOrder = confirmExchangeOrder;
@@ -19295,18 +22789,21 @@ async function confirmRefundOrder() {
         users[uIdx].balance = (Number(users[uIdx].balance) || 0) + refundAmt;
         userName = users[uIdx].name || userName;
       }
-      saveRegisteredUsers(users);
 
-      // Nếu khách chính là currentUser đang đăng nhập
+      // Cập nhật ngay currentUser trước khi lưu registered users
       if (currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === finalEmail) {
         currentUser.balance = users[uIdx].balance;
         localStorage.setItem("mmo_user", JSON.stringify(currentUser));
         if (typeof updateUserUI === "function") updateUserUI();
       }
 
-      const refundNowTime = new Date().toLocaleDateString("vi-VN") + " " + new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+      saveRegisteredUsers(users);
+      localStorage.setItem("mmo_last_balance_change_time", String(Date.now()));
 
-      // 2. Ghi nhận giao dịch hoàn tiền vào Lịch Sử GD Toàn Sàn
+      const refundNowTime = new Date().toLocaleDateString("vi-VN") + " " + new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+      const refundNote = "Hoàn tiền đơn hàng bảo hành mã đơn #" + orderId + (currentAdminOrderDetail.productName ? (" - " + currentAdminOrderDetail.productName) : "");
+
+      // 2. Ghi nhận giao dịch hoàn tiền vào Lịch Sử GD Toàn Sàn & Biến Động Số Dư
       if (typeof recordTransaction === "function") {
         recordTransaction(
           finalEmail,
@@ -19314,9 +22811,29 @@ async function confirmRefundOrder() {
           "Hoàn tiền đơn hàng bảo hành",
           +refundAmt,
           users[uIdx].balance,
-          "Hoàn tiền bảo hành đơn #" + orderId + " (" + (currentAdminOrderDetail.productName || "") + ")"
+          refundNote
         );
       }
+
+      try {
+        const refundTxObj = {
+          id: "REFUND_" + orderId + "_" + Date.now(),
+          txId: "REFUND_" + orderId,
+          orderId: orderId,
+          userEmail: finalEmail,
+          userName: userName,
+          type: "Hoàn tiền đơn hàng bảo hành",
+          amount: +refundAmt,
+          balanceAfter: users[uIdx].balance,
+          note: refundNote,
+          time: refundNowTime,
+          date: refundNowTime
+        };
+        let mmoTxs = JSON.parse(localStorage.getItem("mmo_transactions") || "[]");
+        mmoTxs.unshift(refundTxObj);
+        localStorage.setItem("mmo_transactions", JSON.stringify(mmoTxs));
+        localStorage.setItem("mmo_wallet_transactions", JSON.stringify(mmoTxs));
+      } catch(e) {}
 
       // 3. Cập nhật trạng thái đơn hàng
       const newStatus = "Đã Hoàn Tiền Ví (+" + formatVND(refundAmt) + ")";
@@ -19324,26 +22841,24 @@ async function confirmRefundOrder() {
       currentAdminOrderDetail.email = finalEmail;
       currentAdminOrderDetail.userEmail = finalEmail;
       currentAdminOrderDetail.refundedAt = refundNowTime;
+      currentAdminOrderDetail.refundAmount = refundAmt;
+      currentAdminOrderDetail.refundBalanceAfter = users[uIdx].balance;
 
       let all = getAllOrders();
       const oIdx = all.findIndex(o => (o.orderId === orderId || o.id === orderId));
       if (oIdx !== -1) {
-        all[oIdx].status = newStatus;
-        all[oIdx].email = finalEmail;
-        all[oIdx].userEmail = finalEmail;
-        all[oIdx].refundedAt = refundNowTime;
+        all[oIdx] = Object.assign({}, all[oIdx], currentAdminOrderDetail);
         saveAllOrders(all);
       }
 
       let uOrders = typeof getUserOrders === "function" ? getUserOrders() : [];
       const uOrderIdx = uOrders.findIndex(o => (o.orderId === orderId || o.id === orderId));
       if (uOrderIdx !== -1) {
-        uOrders[uOrderIdx].status = newStatus;
-        uOrders[uOrderIdx].email = finalEmail;
-        uOrders[uOrderIdx].userEmail = finalEmail;
-        uOrders[uOrderIdx].refundedAt = refundNowTime;
-        if (typeof saveUserOrders === "function") saveUserOrders(uOrders);
+        uOrders[uOrderIdx] = Object.assign({}, uOrders[uOrderIdx], currentAdminOrderDetail);
+      } else {
+        uOrders.unshift(Object.assign({}, currentAdminOrderDetail));
       }
+      if (typeof saveUserOrders === "function") saveUserOrders(uOrders);
 
       // 4. Tự động gửi tin nhắn thông báo vào khung chat cho khách
       const messageToCustomer = "💰 ADMIN ĐÃ HOÀN TIỀN THÀNH CÔNG CHO ĐƠN HÀNG #" + orderId + "!\nSố tiền +" + formatVND(refundAmt) + " đã được cộng hoàn trả vào ví của bạn trên hệ thống. Quý khách vui lòng kiểm tra lại số dư ví!";
@@ -19391,7 +22906,7 @@ async function confirmRefundOrder() {
           adminEmail: adminEmail,
           targetEmail: finalEmail,
           amount: refundAmt,
-          reason: "Hoàn tiền đơn #" + orderId
+          reason: refundNote
         }).then(res => {
           if (!res || !res.success) {
             syncRefundToWebhook();
@@ -19430,9 +22945,9 @@ async function confirmRefundOrder() {
             email: finalEmail
           });
         }
-      } catch(bcErr) {}
+      } catch(e) {}
 
-      showToast("🎉 Đã hoàn tiền " + formatVND(refundAmt) + " vào ví cho khách " + finalEmail + " thành công!", "success");
+      showToast("🎉 Đã hoàn tiền " + formatVND(refundAmt) + " vào ví khách hàng thành công!", "success");
     }
     window.confirmRefundOrder = confirmRefundOrder;
 
@@ -19722,9 +23237,16 @@ async function confirmRefundOrder() {
               soldView.placeholder = "Chưa có tài khoản nào được bán ra từ mục này trên Turso.";
             } else {
               soldView.value = soldItems.map(it => {
-                const d = it.sold_at ? new Date(Number(it.sold_at)).toLocaleString("vi-VN") : "Đã giao";
+                let d = "Đã giao";
+                if (it.sold_at) {
+                  const num = Number(it.sold_at);
+                  const dt = !isNaN(num) ? new Date(num) : new Date(it.sold_at);
+                  d = (dt instanceof Date && !isNaN(dt.getTime())) ? dt.toLocaleString("vi-VN") : String(it.sold_at);
+                }
                 const o = it.order_id ? (" [Đơn: " + it.order_id + "]") : "";
-                return (it.account || "") + "  --- (Bán: " + d + o + ")";
+                const isEx = it.type === "WARRANTY_EXCHANGE" || (it.note && it.note.includes("Bảo hành")) || String(it.order_id || "").includes("EXCHANGE");
+                const tag = isEx ? " (Bảo hành 1-đổi-1: " : " (Bán: ";
+                return (it.account || "") + "  --- " + tag + d + o + ")";
               }).join("\n");
             }
           }
@@ -19744,9 +23266,16 @@ async function confirmRefundOrder() {
           soldView.placeholder = "Chưa có tài khoản nào được bán ra từ mục này.";
         } else {
           soldView.value = soldItems.map(it => {
-            const d = it.sold_at ? new Date(it.sold_at).toLocaleString("vi-VN") : "Đã giao";
+            let d = "Đã giao";
+            if (it.sold_at) {
+              const num = Number(it.sold_at);
+              const dt = !isNaN(num) ? new Date(num) : new Date(it.sold_at);
+              d = (dt instanceof Date && !isNaN(dt.getTime())) ? dt.toLocaleString("vi-VN") : String(it.sold_at);
+            }
             const o = it.order_id ? (" [Đơn: " + it.order_id + "]") : "";
-            return (it.account || "") + "  --- (Bán: " + d + o + ")";
+            const isEx = it.type === "WARRANTY_EXCHANGE" || (it.note && it.note.includes("Bảo hành")) || String(it.order_id || "").includes("EXCHANGE");
+            const tag = isEx ? " (Bảo hành 1-đổi-1: " : " (Bán: ";
+            return (it.account || "") + "  --- " + tag + d + o + ")";
           }).join("\n");
         }
       }
