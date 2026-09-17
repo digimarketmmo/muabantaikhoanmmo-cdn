@@ -3492,7 +3492,7 @@
 
     @media (max-width: 768px) {
       html, body {
-        overflow-x: hidden !important;
+        overflow-x: clip !important;
         max-width: 100vw !important;
         width: 100% !important;
         box-sizing: border-box !important;
@@ -3502,7 +3502,7 @@
         max-width: 100% !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        overflow-x: hidden !important;
+        overflow-x: clip !important;
       }
       .home-main-layout {
         display: block !important;
@@ -3962,3 +3962,23 @@
     text-align: right;
     color: rgba(255,255,255,0.7);
   }
+
+
+
+/* ==========================================================================
+   BALANCED FULL-HEIGHT STICKY SIDEBARS (ALL VIEWS: STORE, DETAIL, BLOG, ALLPROD)
+   ========================================================================== */
+html, body { overflow-x: clip !important; max-width: 100vw !important; }
+.home-container, .container, .detail-container-3col, .home-main-layout, .all-products-layout, .article-layout-grid { overflow: visible !important; }
+.home-sidebar-left, .home-sidebar-right, .detail-col-left, .detail-col-right, .article-sidebar, .all-prod-sidebar {
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 80px !important;
+  z-index: 20 !important;
+  align-self: start !important;
+  height: fit-content !important;
+  max-height: calc(100vh - 95px) !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #1e293b transparent !important;
+}
