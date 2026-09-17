@@ -5376,11 +5376,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         }
         if (title) title.innerHTML = "<i class='fa-solid fa-key' style='color:#38bdf8;'></i> Khôi Phục Mật Khẩu";
         
-        const curLoginEmail = document.getElementById("loginEmailInput")?.value.trim();
-        const forgotEmailInp = document.getElementById("forgotEmailInput");
-        if (curLoginEmail && forgotEmailInp && !forgotEmailInp.value) {
-          forgotEmailInp.value = curLoginEmail;
-        }
+        try {
+          const loginEmailEl = document.getElementById("loginEmailInput");
+          const curLoginEmail = loginEmailEl && loginEmailEl.value ? String(loginEmailEl.value).trim() : "";
+          const forgotEmailInp = document.getElementById("forgotEmailInput");
+          if (curLoginEmail && forgotEmailInp && !forgotEmailInp.value) {
+            forgotEmailInp.value = curLoginEmail;
+          }
+        } catch(e) {}
         const s1 = document.getElementById("forgotStep1");
         const s2 = document.getElementById("forgotStep2");
         if (s1) s1.style.display = "block";
