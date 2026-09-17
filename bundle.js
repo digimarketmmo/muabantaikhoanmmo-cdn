@@ -7935,6 +7935,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     }
     window.syncTursoStockToLocalUI = syncTursoStockToLocalUI;
 
+    // [MULTI-BLOG NETWORK SYNC] Tự động đồng bộ sản phẩm, danh mục & tồn kho thời gian thực giữa các blog vệ tinh
+    (function() {
+      if (typeof window !== "undefined") {
+        window.addEventListener("focus", function() {
+          if (typeof syncTursoProductsToLocalUI === "function") {
+            syncTursoProductsToLocalUI().catch(function() {});
+          }
+        });
+        if (!window._mmoMultiBlogSyncTimer) {
+          window._mmoMultiBlogSyncTimer = setInterval(function() {
+            if (typeof document !== "undefined" && !document.hidden) {
+              if (typeof syncTursoProductsToLocalUI === "function") {
+                syncTursoProductsToLocalUI().catch(function() {});
+              }
+            }
+          }, 30000);
+        }
+      }
+    })();
+
 
     // HỆ THỐNG KHO HÀNG HỢP NHẤT TẬP TRUNG (MMO_WAREHOUSE)
     window.MMO_WAREHOUSE = {
@@ -13605,30 +13625,23 @@ function syncAllOpenViewsStock(changedProdId) {
               // Đồng bộ trừ tồn kho local
               MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
             } else {
-              // Fail-safe thông minh: Nếu Turso không đủ nhưng kho nội bộ có đủ, xuất kho nội bộ và đồng bộ lại Turso
-              const localAvail = MMO_WAREHOUSE.getAvailable(p.id, vIdx);
-              if (localAvail && localAvail.length >= qty) {
-                console.warn("Kho Turso chưa đồng bộ đủ, tự động xuất từ kho nội bộ và đồng bộ sang Turso...");
-                credsLines = MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
-                const remAccounts = MMO_WAREHOUSE.getAvailable(p.id, vIdx);
-                TURSO_CLIENT.setAvailableAccounts(p.id, vIdx, remAccounts).catch(e => console.warn(e));
-              } else {
-                restoreBtn();
-                showToast("⚠️ Kho hàng không đủ số lượng tài khoản khả dụng!", "danger");
-                return;
-              }
-            }
-          } catch(tursoBuyErr) {
-            console.warn("Lỗi giao hàng Turso, chuyển sang kho nội bộ fallback:", tursoBuyErr);
-            credsLines = MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
-            if (!credsLines || credsLines.length < qty) {
               restoreBtn();
-              showToast("⚠️ Lỗi xuất kho Turso: " + (tursoBuyErr.message || "Không thể kết nối kho"), "danger");
+              // Chống bán trùng: Khi Turso báo hết hàng hoặc không đủ, cập nhật kho ngay lập tức
+              if (p && Array.isArray(p.variants) && p.variants[vIdx]) p.variants[vIdx].stock = 0;
+              if (typeof syncDetailStockUI === "function") syncDetailStockUI(0);
+              showToast("⚠️ Rất tiếc, sản phẩm vừa được khách hàng khác thanh toán trước! Bạn có thể chọn ĐẶT TRƯỚC bên dưới.", "warning");
               return;
             }
+          } catch(tursoBuyErr) {
+            restoreBtn();
+            if (p && Array.isArray(p.variants) && p.variants[vIdx]) p.variants[vIdx].stock = 0;
+            if (typeof syncDetailStockUI === "function") syncDetailStockUI(0);
+            const errMsg = (tursoBuyErr && tursoBuyErr.message) ? tursoBuyErr.message : "Kho hàng không đủ tài khoản khả dụng";
+            showToast("⚠️ " + errMsg + ". Số dư của bạn chưa bị trừ!", "warning");
+            return;
           }
         } else {
-          // GIAO HÀNG TỰ ĐỘNG TỪ KHO NỘI BỘ
+          // GIAO HÀNG TỰ ĐỘNG TỪ KHO NỘI BỘ (Chỉ khi không cấu hình Cloud)
           credsLines = MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
         }
       }
@@ -13917,17 +13930,14 @@ function syncAllOpenViewsStock(changedProdId) {
             credsLines = tursoCreds;
             MMO_WAREHOUSE.deliverAccounts(product.id, vIdx, qty, orderId);
           } else {
-            const localAvail = MMO_WAREHOUSE.getAvailable(product.id, vIdx);
-            if (localAvail && localAvail.length >= qty) {
-              credsLines = MMO_WAREHOUSE.deliverAccounts(product.id, vIdx, qty, orderId);
-              const remAccounts = MMO_WAREHOUSE.getAvailable(product.id, vIdx);
-              TURSO_CLIENT.setAvailableAccounts(product.id, vIdx, remAccounts).catch(e => console.warn(e));
-            } else {
-              throw new Error("Kho hàng không đủ số lượng tài khoản khả dụng!");
-            }
+            if (product && Array.isArray(product.variants) && product.variants[vIdx]) product.variants[vIdx].stock = 0;
+            if (typeof syncDetailStockUI === "function") syncDetailStockUI(0);
+            throw new Error("Sản phẩm vừa được khách hàng khác thanh toán trước! Kho hàng đã hết.");
           }
         } catch(tursoErr) {
-          credsLines = MMO_WAREHOUSE.deliverAccounts(product.id, vIdx, qty, orderId);
+          if (product && Array.isArray(product.variants) && product.variants[vIdx]) product.variants[vIdx].stock = 0;
+          if (typeof syncDetailStockUI === "function") syncDetailStockUI(0);
+          throw new Error((tursoErr && tursoErr.message) || "Kho hàng không đủ số lượng tài khoản khả dụng!");
         }
       } else {
         credsLines = MMO_WAREHOUSE.deliverAccounts(product.id, vIdx, qty, orderId);
