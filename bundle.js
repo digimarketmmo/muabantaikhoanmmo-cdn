@@ -6051,6 +6051,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       }
 
       localStorage.setItem("mmo_current_view", viewId);
+      if (viewId === "viewProfile" || viewId === "viewAdmin") {
+        if (typeof fetchAdminOrdersFromCloud === "function") {
+          fetchAdminOrdersFromCloud(true);
+        }
+      }
       if (viewId === "viewDeposit" && typeof prepareDeposit === "function") {
         const initAmt = window._targetDepositAmount || 20000;
         prepareDeposit(initAmt, true);
@@ -11944,12 +11949,11 @@ function syncAllOpenViewsStock(changedProdId) {
                   // Tra cứu trạng thái mới nhất từ danh sách PreOrders
                   let freshPO = null;
                   try {
-                    const allPOs = (typeof getPreOrders === "function") ? getPreOrders() : [];
-                    freshPO = allPOs.find(p => String(p.orderCode || p.id) === oId);
+                    freshPO = (typeof findPreOrderFlexible === "function") ? findPreOrderFlexible(oId) : null;
                   } catch(e) {}
 
-                  const effectiveStatus = (freshPO ? freshPO.status : order.status) || rawStatus || "WAITING_CONFIRM";
-                  const effectiveDelivered = (freshPO && freshPO.deliveredAccounts && freshPO.deliveredAccounts.length > 0) ? freshPO.deliveredAccounts : (order.deliveredAccounts || (rawCreds ? [rawCreds] : []));
+                  const effectiveStatus = (freshPO ? freshPO.status : order.status) || "WAITING_CONFIRM";
+                  const effectiveDelivered = (freshPO && freshPO.deliveredAccounts && freshPO.deliveredAccounts.length > 0) ? freshPO.deliveredAccounts : (order.deliveredAccounts && order.deliveredAccounts.length > 0 ? order.deliveredAccounts : (order.credentials ? String(order.credentials).split(String.fromCharCode(10)).filter(Boolean) : []));
 
                   orderCodeHtml = `
                     <a href="javascript:void(0)" onclick="openPreOrderDetailView('${oId}')" style="color:#f59e0b; font-weight:800; font-family:monospace; text-decoration:underline; font-size:0.9rem; display:inline-flex; align-items:center; gap:5px; margin-bottom:4px; cursor:pointer;" title="👉 Bấm để mở xem chi tiết đơn hàng đặt trước #${oId}">#${oId} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.72rem;"></i></a>
@@ -21376,6 +21380,22 @@ function injectAllProductsSchema() {
         });
       }
 
+      // Đồng bộ trạng thái đơn duyệt lên Turso Cloud Worker
+      var TURSO_WORKER_URL = (typeof TURSO_CONFIG !== "undefined" && TURSO_CONFIG.DEFAULT_API_URL) ? TURSO_CONFIG.DEFAULT_API_URL : "https://mmo-shop-api.manhdongvtc.workers.dev";
+      try {
+        fetch(TURSO_WORKER_URL + "/api/orders/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orders: [{
+              id: order.orderCode || order.id,
+              orderId: order.orderCode || order.id,
+              status: "PROCESSING"
+            }]
+          })
+        }).catch(function() {});
+      } catch(e) {}
+
       if (typeof showToast === "function") showToast("✅ Đã chuyển đơn #" + (order.orderCode || order.id) + " sang trạng thái Đang gom hàng!", "success");
       if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
       if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
@@ -21931,34 +21951,151 @@ function injectAllProductsSchema() {
           const data = await resp.json();
           if (data && data.success && Array.isArray(data.orders)) {
             let localOrders = (typeof getAllOrders === "function") ? getAllOrders() : [];
+            let preOrders = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
+            let userOrders = [];
+            try { userOrders = JSON.parse(localStorage.getItem("mmo_user_orders") || "[]"); } catch(e) {}
+            let mOrders = [];
+            try { mOrders = JSON.parse(localStorage.getItem("mmo_orders") || "[]"); } catch(e) {}
+
             data.orders.forEach(function(cloudOrd) {
-              const cId = String(cloudOrd.orderId || cloudOrd.id || "").replace(/#/g, "").trim().toLowerCase();
-              const idx = localOrders.findIndex(o => String(o.orderId || o.id || "").replace(/#/g, "").trim().toLowerCase() === cId);
+              const rawId = String(cloudOrd.orderId || cloudOrd.id || "").trim();
+              const cId = rawId.replace(/#/g, "").trim();
+              const cIdLower = cId.toLowerCase();
+              const isPre = cId.startsWith("PRE") || (cloudOrd.type === "PRE_ORDER") || String(cloudOrd.productName || "").toLowerCase().includes("đặt trước");
+              const ordStatus = String(cloudOrd.status || "WAITING_CONFIRM").toUpperCase();
+              const isCompleted = ordStatus === "COMPLETED" || ordStatus === "DELIVERED" || ordStatus.includes("GIAO");
+              const isCancelled = ordStatus === "CANCELLED" || ordStatus.includes("HỦY");
+              const accLines = cloudOrd.accounts ? cloudOrd.accounts.split(String.fromCharCode(10)).map(function(l) { return l.trim(); }).filter(Boolean) : (cloudOrd.deliveredAccounts || []);
+              const credsStr = accLines.join(String.fromCharCode(10)) || cloudOrd.credentials || cloudOrd.accounts || "";
+
+              let statusText = "Chờ xác nhận";
+              if (isCompleted) statusText = "Đã giao hàng";
+              else if (ordStatus === "PROCESSING") statusText = "Đang gom hàng";
+              else if (isCancelled) statusText = "Đã hủy";
+
+              // A. Cập nhật mmo_all_orders
+              const idx = localOrders.findIndex(function(o) { return String(o.orderId || o.id || "").replace(/#/g, "").trim().toLowerCase() === cIdLower; });
               if (idx !== -1) {
-                if (cloudOrd.status) localOrders[idx].status = cloudOrd.status;
-                if (cloudOrd.accounts) localOrders[idx].credentials = cloudOrd.accounts;
+                localOrders[idx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
+                localOrders[idx].statusText = statusText;
+                if (accLines.length > 0) {
+                  localOrders[idx].deliveredAccounts = accLines;
+                  localOrders[idx].credentials = credsStr;
+                  localOrders[idx].accounts = credsStr;
+                }
               } else {
                 localOrders.push({
-                  orderId: cloudOrd.orderId,
-                  id: cloudOrd.orderId,
+                  orderId: cId,
+                  id: cId,
+                  orderCode: cId,
                   productId: cloudOrd.productId,
                   productName: cloudOrd.productName,
+                  variantName: cloudOrd.variantName,
                   quantity: cloudOrd.quantity,
                   price: cloudOrd.unitPrice,
                   totalPrice: cloudOrd.total,
                   total: cloudOrd.total,
                   date: cloudOrd.createdAt,
-                  status: cloudOrd.status,
-                  credentials: cloudOrd.accounts,
+                  createdAt: cloudOrd.createdAt,
+                  status: isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus),
+                  statusText: statusText,
+                  credentials: credsStr,
+                  accounts: credsStr,
+                  deliveredAccounts: accLines,
                   email: cloudOrd.email,
                   userEmail: cloudOrd.email,
                   userName: cloudOrd.userName,
-                  type: (String(cloudOrd.orderId).startsWith("PRE") || String(cloudOrd.id).startsWith("PRE")) ? "PRE_ORDER" : "DIRECT"
+                  type: isPre ? "PRE_ORDER" : "DIRECT"
                 });
               }
+
+              // B. Cập nhật mmo_pre_orders (Đặc biệt quan trọng cho đơn đặt trước!)
+              if (isPre) {
+                const pIdx = preOrders.findIndex(function(p) { return String(p.orderCode || p.id || p.orderId || "").replace(/#/g, "").trim().toLowerCase() === cIdLower; });
+                if (pIdx !== -1) {
+                  preOrders[pIdx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
+                  preOrders[pIdx].statusText = statusText;
+                  if (accLines.length > 0) {
+                    preOrders[pIdx].deliveredAccounts = accLines;
+                    preOrders[pIdx].credentials = credsStr;
+                  }
+                  if (isCancelled) {
+                    preOrders[pIdx].isCancelled = true;
+                    preOrders[pIdx].isRefunded = true;
+                  }
+                } else {
+                  preOrders.unshift({
+                    id: cId,
+                    orderCode: cId,
+                    orderId: cId,
+                    type: "PRE_ORDER",
+                    productId: cloudOrd.productId || "",
+                    productName: cloudOrd.productName || "Sản phẩm MMO",
+                    variantName: cloudOrd.variantName || "Mặc định",
+                    buyerUsername: cloudOrd.userName || "Khách Hàng",
+                    buyerEmail: cloudOrd.email || "",
+                    userEmail: cloudOrd.email || "",
+                    email: cloudOrd.email || "",
+                    userName: cloudOrd.userName || "Khách Hàng",
+                    status: isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus),
+                    statusText: statusText,
+                    isCancelled: isCancelled,
+                    isRefunded: isCancelled,
+                    unitPrice: Number(cloudOrd.price || cloudOrd.unitPrice) || 0,
+                    qty: Number(cloudOrd.quantity || cloudOrd.qty) || 1,
+                    total: Number(cloudOrd.total || cloudOrd.totalPrice) || 0,
+                    maxDays: cloudOrd.maxDays || 7,
+                    deliveredAccounts: accLines,
+                    credentials: credsStr,
+                    date: cloudOrd.date || cloudOrd.createdAt || new Date().toLocaleString("vi-VN"),
+                    createdAt: cloudOrd.createdAt || cloudOrd.date || new Date().toLocaleString("vi-VN"),
+                    createdTimestamp: (typeof getOrderTimestamp === "function") ? getOrderTimestamp(cloudOrd) : Date.now()
+                  });
+                }
+              }
+
+              // C. Cập nhật mmo_user_orders & mmo_orders
+              [userOrders, mOrders].forEach(function(arr) {
+                const uIdx = arr.findIndex(function(o) { return String(o.orderId || o.id || o.orderCode || "").replace(/#/g, "").trim().toLowerCase() === cIdLower; });
+                if (uIdx !== -1) {
+                  arr[uIdx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
+                  arr[uIdx].statusText = statusText;
+                  if (accLines.length > 0) {
+                    arr[uIdx].deliveredAccounts = accLines;
+                    arr[uIdx].credentials = credsStr;
+                  }
+                } else if (isPre) {
+                  arr.unshift({
+                    id: cId,
+                    orderId: cId,
+                    orderCode: cId,
+                    productId: cloudOrd.productId,
+                    productName: cloudOrd.productName,
+                    variantName: cloudOrd.variantName,
+                    quantity: cloudOrd.quantity,
+                    total: cloudOrd.total,
+                    date: cloudOrd.createdAt,
+                    createdAt: cloudOrd.createdAt,
+                    status: isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus),
+                    statusText: statusText,
+                    deliveredAccounts: accLines,
+                    credentials: credsStr,
+                    email: cloudOrd.email,
+                    userEmail: cloudOrd.email,
+                    userName: cloudOrd.userName,
+                    type: "PRE_ORDER"
+                  });
+                }
+              });
             });
 
             if (typeof saveAllOrders === "function") saveAllOrders(localOrders);
+            if (typeof savePreOrders === "function") savePreOrders(preOrders);
+            try { localStorage.setItem("mmo_user_orders", JSON.stringify(userOrders)); } catch(e) {}
+            try { localStorage.setItem("mmo_orders", JSON.stringify(mOrders)); } catch(e) {}
+            _cachedPreOrdersList = null;
+            _lastPreOrdersFetchTime = 0;
+
             syncSuccess = true;
             syncCount = data.orders.length;
             if (!isSilent && typeof showToast === "function") {
@@ -21968,53 +22105,6 @@ function injectAllProductsSchema() {
         }
       } catch(tursoErr) {
         console.warn("Turso cloud orders sync notice:", tursoErr);
-      }
-
-      // 2. Dự phòng Google Sheets nếu cấu hình GAS
-      if (typeof callGasApi === "function") {
-        try {
-          const callerEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "admin@muabantaikhoanmmo.com";
-          const res = await callGasApi("adminGetAllOrders", { adminEmail: callerEmail }).catch(() => null);
-          if (res && res.success && Array.isArray(res.orders)) {
-            let localOrders = (typeof getAllOrders === "function") ? getAllOrders() : [];
-            res.orders.forEach(function(cloudOrd) {
-              const cId = String(cloudOrd.orderId || cloudOrd.id || "").replace(/#/g, "").trim().toLowerCase();
-              const idx = localOrders.findIndex(o => String(o.orderId || o.id || "").replace(/#/g, "").trim().toLowerCase() === cId);
-              if (idx !== -1) {
-                localOrders[idx].status = cloudOrd.status || localOrders[idx].status;
-                if (cloudOrd.accounts) localOrders[idx].credentials = cloudOrd.accounts;
-              } else {
-                localOrders.push({
-                  orderId: cloudOrd.orderId,
-                  id: cloudOrd.orderId,
-                  productId: cloudOrd.prodId,
-                  productName: cloudOrd.prodName,
-                  quantity: cloudOrd.quantity,
-                  price: cloudOrd.price,
-                  totalPrice: cloudOrd.totalAmount,
-                  total: cloudOrd.totalAmount,
-                  date: cloudOrd.createdAt,
-                  status: cloudOrd.status,
-                  credentials: cloudOrd.accounts,
-                  email: cloudOrd.email,
-                  userEmail: cloudOrd.email,
-                  userName: cloudOrd.name,
-                  type: (String(cloudOrd.orderId).startsWith("PRE") || String(cloudOrd.id).startsWith("PRE")) ? "PRE_ORDER" : "DIRECT"
-                });
-              }
-            });
-            if (typeof saveAllOrders === "function") saveAllOrders(localOrders);
-            if (!syncSuccess) {
-              syncSuccess = true;
-              syncCount = res.orders.length;
-              if (!isSilent && typeof showToast === "function") {
-                showToast("🎉 Đã đồng bộ " + syncCount + " đơn hàng từ Google Sheets!", "success");
-              }
-            }
-          }
-        } catch(gasErr) {
-          console.warn("GAS sync notice:", gasErr);
-        }
       }
 
       if (syncSuccess) {
@@ -22029,7 +22119,7 @@ function injectAllProductsSchema() {
     }
     window.fetchAdminOrdersFromCloud = fetchAdminOrdersFromCloud;
 
-    // Tự động đồng bộ ngầm chu kỳ 35 giây (Auto background sync)
+    // Tự động đồng bộ ngầm chu kỳ 15 giây (Auto background sync)
     if (!window._mmoCloudAutoSyncTimerStarted) {
       window._mmoCloudAutoSyncTimerStarted = true;
       setInterval(function() {
@@ -22039,7 +22129,7 @@ function injectAllProductsSchema() {
             fetchAdminOrdersFromCloud(true);
           }
         } catch(e) {}
-      }, 35000);
+      }, 15000);
     }
 
 
