@@ -5503,6 +5503,27 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         sessionStorage.setItem("mmo_forgot_time", String(Date.now()));
       } catch(e) {}
 
+      // Gửi mã OTP vào Email người dùng qua Google Apps Script MailApp / GmailApp
+      let gasRes = null;
+      if (typeof callGasApi === "function") {
+        try {
+          gasRes = await callGasApi("sendPasswordResetOtp", { email: email, otp: otpCode });
+          console.log("[ForgotPass] Email dispatch response:", gasRes);
+        } catch (err) {
+          console.warn("[ForgotPass] Email dispatch error:", err);
+        }
+      }
+
+      if (btnReq) {
+        btnReq.disabled = false;
+        btnReq.innerHTML = "<i class='fa-solid fa-paper-plane'></i> TIẾP TỤC / GỬI MÃ XÁC THỰC";
+      }
+
+      if (gasRes && gasRes.success === false) {
+        showToast("⚠️ Máy chủ phản hồi: " + (gasRes.message || "Không thể gửi email") + ". Vui lòng cập nhật và Triển khai bản mới của Code.gs trên Google Apps Script!", "danger", 12000);
+        return;
+      }
+
       // Chuyển sang Bước 2
       const s1 = document.getElementById("forgotStep1");
       const s2 = document.getElementById("forgotStep2");
@@ -5520,20 +5541,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       }
 
       startForgotCooldown(60);
-
-      // Gửi mã OTP vào Email người dùng qua Google Apps Script MailApp / GmailApp
-      if (typeof callGasApi === "function") {
-        callGasApi("sendPasswordResetOtp", { email: email, otp: otpCode }).then(function(res) {
-          console.log("[ForgotPass] Email dispatch response:", res);
-        }).catch(function(err) {
-          console.warn("[ForgotPass] Email dispatch error:", err);
-        });
-      }
-
-      if (btnReq) {
-        btnReq.disabled = false;
-        btnReq.innerHTML = "<i class='fa-solid fa-paper-plane'></i> TIẾP TỤC / GỬI MÃ XÁC THỰC";
-      }
 
       // Thông báo an toàn: KHÔNG hiển thị mã OTP lên màn hình
       showToast("📧 Mã xác thực OTP đã được gửi đến hộp thư " + email + ". Vui lòng kiểm tra Hộp thư đến (hoặc hòm thư Spam/Rác) để lấy mã xác thực!", "success", 12000);
@@ -11384,7 +11391,8 @@ function syncAllOpenViewsStock(changedProdId) {
         "adminUpdateUserRole", "adminDeleteStockItem", "adminImportStock", "createOrder",
         "authGoogle", "authEmail", "verifyAdminPin", "payOrderByWallet",
         "apiSourceBuyProduct", "apiSourceGetProfile", "apiSourceGetProducts", "sendChatMessage", "markChatRead",
-        "adminUpdateBalance", "adminUpdateOrderStatus"
+        "adminUpdateBalance", "adminUpdateOrderStatus",
+        "sendPasswordResetOtp", "sendResetOtp", "resetPassword"
       ].includes(action);
 
       // Timeout an toàn: Đột biến 10s, đọc dữ liệu 6s để tránh làm treo hoặc đơ trình duyệt
