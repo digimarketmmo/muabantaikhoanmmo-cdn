@@ -9,7 +9,7 @@
     window.adminOrdersStatusFilter = "ALL";
   
 
-const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyHkIlfSpwQXrtVz65Z-k0dwSyAaWbr6NW32-xPB8s8pgi_gw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
 
     const MOCK_DATA = {
       categories: ["Tất cả","AI & Video","Facebook","Gmail","Rom & Tools","TikTok","HOT MAIL","Intagram","Chatgpt","Phone Farm","VPN Proxy","Capcut","Canva","Khác","YOUTUBE"],
@@ -11371,7 +11371,7 @@ function syncAllOpenViewsStock(changedProdId) {
       try {
         const sys = typeof getGeneralSettings === "function" ? getGeneralSettings() : {};
         if (sys && sys.gasUrl && sys.gasUrl.trim()) {
-          if (sys.gasUrl.includes("AKfycbxNVgZI") || sys.gasUrl.includes("AKfycbx0dSYQOt6") || sys.gasUrl.includes("AKfycbx5PNa")) return "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyHkIlfSpwQXrtVz65Z-k0dwSyAaWbr6NW32-xPB8s8pgi_gw/exec";
+          if (sys.gasUrl.includes("AKfycbxNVgZI") || sys.gasUrl.includes("AKfycbx0dSYQOt6") || sys.gasUrl.includes("AKfycbx5PNa") || sys.gasUrl.includes("AKfycbxX7")) return "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
           return sys.gasUrl.trim();
         }
       } catch(e) {}
