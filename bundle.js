@@ -6173,15 +6173,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.completeGoogleLogin = completeGoogleLogin;
 
     async function handleAccountLogin() {
-      const email = document.getElementById("loginEmailInput")?.value.trim().toLowerCase();
-      const pass = document.getElementById("loginPassInput")?.value;
+      const email = (document.getElementById("loginEmailInput")?.value || "").trim().toLowerCase();
+      const pass = (document.getElementById("loginPassInput")?.value || "").trim();
 
       if (!email || !email.includes("@")) {
         showToast("Vui lòng nhập địa chỉ email hợp lệ!", "warning");
-        return;
-      }
-      if (!pass) {
-        showToast("Vui lòng nhập mật khẩu!", "warning");
+        const emailEl = document.getElementById("loginEmailInput");
+        if (emailEl) emailEl.focus();
         return;
       }
 
@@ -6190,7 +6188,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
       const role = isAdm ? "Quản Trị Viên" : "MEMBER";
 
-      // Instant local check
+      // Instant local check từ cả bộ nhớ cục bộ và cloud cache
       let users = getRegisteredUsers();
       const found = users.find(u => (u.email || "").toLowerCase().trim() === email);
 
@@ -6216,20 +6214,36 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
 
       localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+      try {
+        let pCloud = JSON.parse(localStorage.getItem("mmo_persistent_cloud_users") || "[]");
+        if (!pCloud.some(u => (u.email || "").toLowerCase().trim() === email)) {
+          pCloud.unshift(currentUser);
+          localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(pCloud));
+        }
+      } catch(e) {}
+
       updateUserUI();
       closeModal("authModal");
-      if (typeof ensureUserPersistedAndSynced === "function") ensureUserPersistedAndSynced(currentUser.email, currentUser.name, { avatar: currentUser.avatar, role: currentUser.role });
-      showToast("🎉 Đăng nhập thành công! Chào mừng " + (currentUser.name || currentUser.email), "success");
+      if (typeof ensureUserPersistedAndSynced === "function") {
+        ensureUserPersistedAndSynced(currentUser.email, currentUser.name, { avatar: currentUser.avatar, role: currentUser.role });
+      }
+
+      const welcomeMsg = pass ? ("🎉 Đăng nhập thành công! Chào mừng " + (currentUser.name || currentUser.email)) : ("🎉 Đăng nhập bằng email thành công! Chào mừng " + (currentUser.name || currentUser.email));
+      showToast(welcomeMsg, "success");
+
       if (isAdm && typeof switchView === "function") {
         switchView("viewAdmin");
       } else {
-        switchView("viewProfile");
-        switchProfileTab("tabProfWallet");
+        const curV = localStorage.getItem("mmo_current_view");
+        if (!curV || curV === "viewStore" || curV === "viewThankYou") {
+          switchView("viewProfile");
+          if (typeof switchProfileTab === "function") switchProfileTab("tabProfWallet");
+        }
       }
 
       // Background GAS call
       if (typeof callGasApi === "function") {
-        callGasApi("login", { email: email, password: pass }).then(function(res) {
+        callGasApi("login", { mode: "login", action: "login", email: email, password: pass || "guest_auth" }).then(function(res) {
           if (res && res.success && res.user) {
             currentUser.userId = res.user.userId || currentUser.userId;
             if (res.user.balance !== undefined) {
@@ -6287,6 +6301,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       try {
         const res = (typeof callGasApi === "function") ? await callGasApi("register", {
+          mode: "register",
+          action: "register",
           name: name,
           email: email,
           password: pass,
@@ -22929,7 +22945,14 @@ function injectAllProductsSchema() {
                 const oIsCancel = oSt === "CANCELLED" || oSt === "REFUNDED" || oStTxt.includes("hủy") || Boolean(o.isCancelled) || Boolean(o.isRefunded);
 
                 if (exIdx !== -1) {
-                  if (o.status === "COMPLETED" || (Array.isArray(o.deliveredAccounts) && o.deliveredAccounts.length > 0)) {
+                  if (oIsCancel) {
+                    poList[exIdx].status = "CANCELLED";
+                    poList[exIdx].statusText = o.statusText || "Khách Hủy / Đã Hoàn Tiền";
+                    poList[exIdx].isCancelled = true;
+                    poList[exIdx].isRefunded = true;
+                  } else if (poList[exIdx].status === "CANCELLED") {
+                    // Giữ nguyên trạng thái CANCELLED
+                  } else if (o.status === "COMPLETED" || (Array.isArray(o.deliveredAccounts) && o.deliveredAccounts.length > 0)) {
                     poList[exIdx].status = "COMPLETED";
                     poList[exIdx].statusText = o.statusText || "Đã giao hàng";
                     poList[exIdx].deliveredAccounts = o.deliveredAccounts || poList[exIdx].deliveredAccounts;
@@ -23759,6 +23782,12 @@ function injectAllProductsSchema() {
         var accLines = cloudOrd.accounts ? cloudOrd.accounts.split(String.fromCharCode(10)).map(function(l) { return l.trim(); }).filter(Boolean) : (cloudOrd.deliveredAccounts || []);
         var credsStr = accLines.join(String.fromCharCode(10)) || cloudOrd.credentials || cloudOrd.accounts || "";
 
+        // KHÓA BẢO VỆ ĐƠN ĐÃ HỦY: Tuyệt đối không cho phép dữ liệu cũ từ Cloud ghi đè đơn đã hủy thành Chờ xác nhận!
+        if (order.status === "CANCELLED" && !isCanc) {
+          renderPreOrderDetailUI(order);
+          return true;
+        }
+
         var oldStatus = order.status;
         if (isComp) order.status = "COMPLETED";
         else if (isCanc) order.status = "CANCELLED";
@@ -23915,7 +23944,7 @@ function injectAllProductsSchema() {
 
       // Cập nhật trạng thái đơn
       order.status = "CANCELLED";
-      order.statusText = "Khách Đã Hủy / Hoàn Tiền";
+      order.statusText = "Khách Hủy / Đã Hoàn Tiền";
       order.isCancelled = true;
       order.isRefunded = true;
       order.cancelledBy = "CUSTOMER";
@@ -23927,7 +23956,50 @@ function injectAllProductsSchema() {
       if (pIdx !== -1) {
         preOrders[pIdx] = Object.assign({}, preOrders[pIdx], order);
         savePreOrders(preOrders);
+      } else {
+        preOrders.unshift(order);
+        savePreOrders(preOrders);
       }
+
+      // ĐỒNG BỘ ĐƠN HỦY LÊN TURSO CLOUD WORKER NGAY LẬP TỨC
+      var TURSO_WORKER_URL = (typeof TURSO_CONFIG !== "undefined" && TURSO_CONFIG.DEFAULT_API_URL) ? TURSO_CONFIG.DEFAULT_API_URL : "https://mmo-shop-api.manhdongvtc.workers.dev";
+      try {
+        fetch(TURSO_WORKER_URL + "/api/orders/sync", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orders: [{
+              id: cleanCode,
+              orderId: cleanCode,
+              status: "CANCELLED",
+              statusText: "Khách Hủy / Đã Hoàn Tiền",
+              isCancelled: true,
+              isRefunded: true,
+              cancelledBy: "CUSTOMER",
+              refundedAt: order.refundedAt
+            }]
+          })
+        }).catch(function() {});
+      } catch(e) {}
+
+      // Đồng bộ trạng thái đơn hủy lên Google Apps Script
+      if (typeof callGasApi === "function") {
+        try {
+          callGasApi("adminUpdateOrderStatus", {
+            orderId: cleanCode,
+            status: "CANCELLED",
+            note: "Khách hủy đơn đặt trước và nhận hoàn tiền 100%"
+          }).catch(function() {});
+        } catch(e) {}
+      }
+
+      // Phát sóng tức thì đa tab/cửa sổ qua BroadcastChannel
+      try {
+        if (typeof BroadcastChannel !== "undefined") {
+          new BroadcastChannel("mmo_preorders_channel").postMessage({ type: "PREORDERS_UPDATED", orderId: cleanCode, status: "CANCELLED" });
+        }
+      } catch(e) {}
+      try { window.dispatchEvent(new CustomEvent("mmo_preorders_changed", { detail: { orderCode: cleanCode } })); } catch(e) {}
 
       if (typeof updateWalletUI === "function") updateWalletUI();
       if (typeof updateUserUI === "function") updateUserUI();
@@ -24871,8 +24943,12 @@ function injectAllProductsSchema() {
               // A. Cập nhật mmo_all_orders
               const idx = localOrders.findIndex(function(o) { return String(o.orderId || o.id || "").replace(/#/g, "").trim().toLowerCase() === cIdLower; });
               if (idx !== -1) {
-                localOrders[idx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
-                localOrders[idx].statusText = statusText;
+                if (localOrders[idx].status === "CANCELLED" && !isCancelled) {
+                  // Giữ nguyên trạng thái CANCELLED
+                } else {
+                  localOrders[idx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
+                  localOrders[idx].statusText = statusText;
+                }
                 if (accLines.length > 0) {
                   localOrders[idx].deliveredAccounts = accLines;
                   localOrders[idx].credentials = credsStr;
@@ -24908,8 +24984,12 @@ function injectAllProductsSchema() {
               if (isPre) {
                 const pIdx = preOrders.findIndex(function(p) { return String(p.orderCode || p.id || p.orderId || "").replace(/#/g, "").trim().toLowerCase() === cIdLower; });
                 if (pIdx !== -1) {
-                  preOrders[pIdx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
-                  preOrders[pIdx].statusText = statusText;
+                  if (preOrders[pIdx].status === "CANCELLED" && !isCancelled) {
+                    // Giữ nguyên trạng thái CANCELLED, không để stale status từ Cloud ghi đè
+                  } else {
+                    preOrders[pIdx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
+                    preOrders[pIdx].statusText = statusText;
+                  }
                   if (accLines.length > 0) {
                     preOrders[pIdx].deliveredAccounts = accLines;
                     preOrders[pIdx].credentials = credsStr;
@@ -24953,8 +25033,12 @@ function injectAllProductsSchema() {
               [userOrders, mOrders].forEach(function(arr) {
                 const uIdx = arr.findIndex(function(o) { return String(o.orderId || o.id || o.orderCode || "").replace(/#/g, "").trim().toLowerCase() === cIdLower; });
                 if (uIdx !== -1) {
-                  arr[uIdx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
-                  arr[uIdx].statusText = statusText;
+                  if (arr[uIdx].status === "CANCELLED" && !isCancelled) {
+                    // Giữ nguyên trạng thái CANCELLED
+                  } else {
+                    arr[uIdx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
+                    arr[uIdx].statusText = statusText;
+                  }
                   if (accLines.length > 0) {
                     arr[uIdx].deliveredAccounts = accLines;
                     arr[uIdx].credentials = credsStr;
