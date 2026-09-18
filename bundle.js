@@ -24152,9 +24152,13 @@ function injectAllProductsSchema() {
         }
 
         user.balance = finalBal;
-        if (currentUser && ((currentUser.id && currentUser.id === user.id) || (currentUser.email && currentUser.email.toLowerCase().trim() === cleanUE))) {
+        localStorage.setItem("mmo_user", JSON.stringify(user));
+        if (typeof currentUser !== "undefined" && currentUser) {
           currentUser.balance = finalBal;
           localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        }
+        if (typeof window !== "undefined") {
+          window.currentUser = currentUser || user;
         }
 
         localStorage.setItem("mmo_last_balance_change_time", String(Date.now()));
