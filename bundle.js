@@ -6282,8 +6282,220 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (typeof populateProfileInfoInputs === "function") populateProfileInfoInputs();
       } else if (tabId === "tabProfAffiliate") {
         if (typeof renderAffiliateDashboard === "function") renderAffiliateDashboard();
+      } else if (tabId === "tabProfApi") {
+        if (typeof renderProfileApiTab === "function") renderProfileApiTab();
       }
     }
+
+    // =========================================================================
+    // HỆ THỐNG TÀI LIỆU API CHO TRANG CÁ NHÂN (tabProfApi)
+    // =========================================================================
+    let currentApiDocLang = "curl";
+
+    function getUserApiKey(user) {
+      if (!user) return "mmo_live_sec_892348a8f902";
+      if (user.apiKey && String(user.apiKey).trim()) return String(user.apiKey).trim();
+      const email = (user.email || "").toLowerCase().trim();
+      if (!email) return "mmo_live_sec_892348a8f902";
+
+      const savedKey = localStorage.getItem("mmo_api_key_" + email);
+      if (savedKey) {
+        user.apiKey = savedKey;
+        return savedKey;
+      }
+
+      let hash = 0;
+      for (let i = 0; i < email.length; i++) {
+        hash = ((hash << 5) - hash) + email.charCodeAt(i);
+        hash |= 0;
+      }
+      const hexPart = Math.abs(hash).toString(16).padStart(8, '0');
+      const genKey = "mmo_live_sec_" + hexPart + "89a8f902";
+      user.apiKey = genKey;
+
+      try {
+        localStorage.setItem("mmo_api_key_" + email, genKey);
+        const uList = getRegisteredUsers();
+        const idx = uList.findIndex(u => (u.email || "").toLowerCase().trim() === email);
+        if (idx !== -1) {
+          uList[idx].apiKey = genKey;
+          localStorage.setItem("mmo_registered_users", JSON.stringify(uList));
+        }
+      } catch(e) {}
+      return genKey;
+    }
+    window.getUserApiKey = getUserApiKey;
+
+    function copyUserApiKey() {
+      const inp = document.getElementById("profApiKeyDisplay");
+      if (inp) {
+        copyTextDirect(inp.value);
+        showToast("✅ Đã sao chép API Key thành công!", "success");
+      }
+    }
+    window.copyUserApiKey = copyUserApiKey;
+
+    function regenerateUserApiKey() {
+      if (!currentUser || !currentUser.email) {
+        showToast("Vui lòng đăng nhập để đổi API Key!", "warning");
+        return;
+      }
+      if (!confirm("⚠️ Bạn có chắc chắn muốn tạo API Key mới? Toàn bộ các hệ thống/bot đang dùng Key cũ sẽ không thể mua hàng nữa.")) {
+        return;
+      }
+      const email = currentUser.email.toLowerCase().trim();
+      const randStr = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
+      const newKey = "mmo_live_sec_" + randStr;
+      currentUser.apiKey = newKey;
+
+      try {
+        localStorage.setItem("mmo_api_key_" + email, newKey);
+        localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        const uList = getRegisteredUsers();
+        const idx = uList.findIndex(u => (u.email || "").toLowerCase().trim() === email);
+        if (idx !== -1) {
+          uList[idx].apiKey = newKey;
+          localStorage.setItem("mmo_registered_users", JSON.stringify(uList));
+        }
+      } catch(e) {}
+
+      if (typeof ensureUserPersistedAndSynced === "function") {
+        ensureUserPersistedAndSynced(email, currentUser.name, { apiKey: newKey });
+      }
+
+      renderProfileApiTab();
+      showToast("✅ Đã tạo API Key mới thành công!", "success");
+    }
+    window.regenerateUserApiKey = regenerateUserApiKey;
+
+    function switchApiDocLang(lang) {
+      currentApiDocLang = lang || "curl";
+      ["curl", "python", "node", "php"].forEach(l => {
+        const btn = document.getElementById("btnLang" + l.charAt(0).toUpperCase() + l.slice(1));
+        if (btn) {
+          if (l === currentApiDocLang) {
+            btn.style.background = "#1e293b";
+            btn.style.color = "#fff";
+            btn.style.border = "none";
+          } else {
+            btn.style.background = "transparent";
+            btn.style.color = "#94a3b8";
+            btn.style.border = "1px solid #1e293b";
+          }
+        }
+      });
+
+      const key = (currentUser && currentUser.email) ? getUserApiKey(currentUser) : "mmo_live_sec_892348a8f902";
+      const codeBlock = document.getElementById("apiDocCodeBlock");
+      if (!codeBlock) return;
+
+      let code = "";
+      if (currentApiDocLang === "curl") {
+        code = `curl -X POST "https://mmo-shop-api.manhdongvtc.workers.dev/api/v1/buy" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "api_key": "${key}",
+    "product_id": "PROD_MTPIJ9XV",
+    "variant_idx": 0,
+    "quantity": 1
+  }'`;
+      } else if (currentApiDocLang === "python") {
+        code = `import requests
+
+url = "https://mmo-shop-api.manhdongvtc.workers.dev/api/v1/buy"
+payload = {
+    "api_key": "${key}",
+    "product_id": "PROD_MTPIJ9XV",
+    "variant_idx": 0,
+    "quantity": 1
+}
+
+response = requests.post(url, json=payload)
+data = response.json()
+
+if data.get("status") == "success":
+    print("Mua hàng thành công!")
+    print("Mã đơn:", data.get("order_id"))
+    print("Danh sách tài khoản:")
+    for acc in data.get("accounts", []):
+        print("->", acc)
+else:
+    print("Lỗi:", data.get("message"))`;
+      } else if (currentApiDocLang === "node") {
+        code = `// Chạy trên Node 18+ (fetch native) hoặc thư viện node-fetch / axios
+async function buyAccounts() {
+  const res = await fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/v1/buy", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      api_key: "${key}",
+      product_id: "PROD_MTPIJ9XV",
+      variant_idx: 0,
+      quantity: 1
+    })
+  });
+
+  const data = await res.json();
+  if (data.status === "success") {
+    console.log("Mua hàng thành công! Số tài khoản nhận được:", data.accounts.length);
+    console.log(data.accounts);
+  } else {
+    console.error("Lỗi:", data.message);
+  }
+}
+
+buyAccounts();`;
+      } else if (currentApiDocLang === "php") {
+        code = `<?php
+$url = "https://mmo-shop-api.manhdongvtc.workers.dev/api/v1/buy";
+$payload = [
+    "api_key" => "${key}",
+    "product_id" => "PROD_MTPIJ9XV",
+    "variant_idx" => 0,
+    "quantity" => 1
+];
+
+$ch = curl_init($url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_POST, true);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$result = json_decode($response, true);
+if ($result && $result['status'] === 'success') {
+    echo "Mua hàng thành công!\\n";
+    print_r($result['accounts']);
+} else {
+    echo "Lỗi: " . ($result['message'] ?? 'Không rõ lỗi');
+}
+?>`;
+      }
+
+      codeBlock.innerText = code;
+    }
+    window.switchApiDocLang = switchApiDocLang;
+
+    function copyApiDocSnippet() {
+      const codeBlock = document.getElementById("apiDocCodeBlock");
+      if (codeBlock) {
+        copyTextDirect(codeBlock.innerText || codeBlock.textContent);
+        showToast("✅ Đã sao chép code mẫu (" + currentApiDocLang.toUpperCase() + ")!", "success");
+      }
+    }
+    window.copyApiDocSnippet = copyApiDocSnippet;
+
+    function renderProfileApiTab() {
+      const disp = document.getElementById("profApiKeyDisplay");
+      if (disp) {
+        const key = (currentUser && currentUser.email) ? getUserApiKey(currentUser) : "mmo_live_sec_892348a8f902";
+        disp.value = key;
+      }
+      switchApiDocLang(currentApiDocLang || "curl");
+    }
+    window.renderProfileApiTab = renderProfileApiTab;
 
     function updateUserUI() {
       try {
@@ -14181,22 +14393,25 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
 
     
     // =========================================================================
-    // CHUYỂN TAB THÔNG TIN CHI TIẾT SẢN PHẨM: CHI TIẾT, HƯỚNG DẪN & ĐÁNH GIÁ
+    // CHUYỂN TAB THÔNG TIN CHI TIẾT SẢN PHẨM: CHI TIẾT, HƯỚNG DẪN, ĐÁNH GIÁ & API
     // =========================================================================
     function switchProductDescTab(tabKey, btnElement) {
       const secDesc = document.getElementById("dtlTabSecDesc");
       const secGuide = document.getElementById("dtlTabSecGuide");
       const secReviews = document.getElementById("dtlTabSecReviews");
+      const secApi = document.getElementById("dtlTabSecApi");
 
       if (secDesc) secDesc.style.display = (tabKey === "desc") ? "block" : "none";
       if (secGuide) secGuide.style.display = (tabKey === "guide") ? "block" : "none";
       if (secReviews) secReviews.style.display = (tabKey === "reviews") ? "block" : "none";
+      if (secApi) secApi.style.display = (tabKey === "api") ? "block" : "none";
 
       const btnDesc = document.getElementById("dtlTabBtnDesc");
       const btnGuide = document.getElementById("dtlTabBtnGuide");
       const btnReviews = document.getElementById("dtlTabBtnReviews");
+      const btnApi = document.getElementById("dtlTabBtnApi");
 
-      [btnDesc, btnGuide, btnReviews].forEach(b => {
+      [btnDesc, btnGuide, btnReviews, btnApi].forEach(b => {
         if (b) b.classList.remove("active");
       });
 
@@ -14206,13 +14421,184 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
         if (tabKey === "desc" && btnDesc) btnDesc.classList.add("active");
         if (tabKey === "guide" && btnGuide) btnGuide.classList.add("active");
         if (tabKey === "reviews" && btnReviews) btnReviews.classList.add("active");
+        if (tabKey === "api" && btnApi) btnApi.classList.add("active");
       }
 
       if (tabKey === "reviews") {
         renderProductReviews();
+      } else if (tabKey === "api") {
+        renderProductApiTab();
       }
     }
     window.switchProductDescTab = switchProductDescTab;
+
+    // =========================================================================
+    // RENDER TAB TÍCH HỢP MUA HÀNG QUA API TRÊN TRANG CHI TIẾT SẢN PHẨM
+    // =========================================================================
+    function renderProductApiTab() {
+      const container = document.getElementById("dtlApiTabContent");
+      if (!container) return;
+
+      const p = currentSelectedProduct;
+      if (!p || !p.id) {
+        container.innerHTML = '<p style="color:#94a3b8; padding:20px; text-align:center;">Đang tải thông tin sản phẩm...</p>';
+        return;
+      }
+
+      const vIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+      let variantsList = [];
+      if (Array.isArray(p.variants) && p.variants.length > 0) {
+        variantsList = p.variants;
+      } else {
+        variantsList = [{ name: p.name, price: p.price || 0, stock: p.stock || 0 }];
+      }
+
+      const selVar = variantsList[vIdx] || variantsList[0] || { name: p.name, price: p.price || 0 };
+      const curPrice = (selVar.price !== undefined) ? Number(selVar.price) : Number(p.price || 0);
+      const curStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(p, vIdx) : (selVar.stock || p.stock || 0);
+
+      // Render danh sách biến thể với index tương ứng
+      let varRowsHtml = "";
+      variantsList.forEach((v, i) => {
+        const vStk = (typeof getShopVariantStock === "function") ? getShopVariantStock(p, i) : (v.stock || 0);
+        const isCur = (i === vIdx);
+        varRowsHtml += `
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.06); ${isCur ? 'background:rgba(16,185,129,0.08); font-weight:700;' : ''}">
+            <td style="padding:8px 12px; font-family:monospace; color:#38bdf8;">${i} ${isCur ? '<span style="color:#10b981; font-size:0.75rem;">(Đang chọn)</span>' : ''}</td>
+            <td style="padding:8px 12px; color:#f1f5f9;">${escapeHtml(v.name || ('Biến thể ' + (i + 1)))}</td>
+            <td style="padding:8px 12px; color:#10b981;">${formatVND(v.price || p.price || 0)}</td>
+            <td style="padding:8px 12px; color:${vStk > 0 ? '#38bdf8' : '#ef4444'};">${vStk} acc</td>
+          </tr>
+        `;
+      });
+
+      const curlCmd = `curl -X POST "https://mmo-shop-api.manhdongvtc.workers.dev/api/v1/buy" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "api_key": "YOUR_API_KEY",
+    "product_id": "${p.id}",
+    "variant_idx": ${vIdx},
+    "quantity": 1
+  }'`;
+
+      const responseSample = `{
+  "status": "success",
+  "message": "Mua hàng thành công",
+  "order_id": "ORD-API-${Math.floor(100000 + Math.random() * 900000)}",
+  "product_id": "${p.id}",
+  "product_name": "${escapeHtml(p.name)}",
+  "variant_idx": ${vIdx},
+  "variant_name": "${escapeHtml(selVar.name || p.name)}",
+  "quantity": 1,
+  "unit_price": ${curPrice},
+  "total_amount": ${curPrice},
+  "balance_after": 215000,
+  "accounts": [
+    "user_sample|pass123456|2fa_secret_key"
+  ],
+  "data": [
+    "user_sample|pass123456|2fa_secret_key"
+  ]
+}`;
+
+      container.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:14px; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:10px;">
+          <div>
+            <h4 style="font-size:0.95rem; font-weight:800; color:#fff; margin:0 0 2px 0; display:flex; align-items:center; gap:8px;">
+              <i class="fa-solid fa-bolt" style="color:#10b981;"></i> Mua Sản Phẩm Này Qua API Tự Động
+            </h4>
+            <span style="font-size:0.75rem; color:#94a3b8;">Kết nối trực tiếp vào bot, website hoặc ứng dụng của bạn để xuất hàng tự động 24/7</span>
+          </div>
+          <span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); font-size:0.75rem; font-weight:800; padding:3px 10px; border-radius:20px;">
+            <i class="fa-solid fa-check"></i> Hỗ trợ API Mua Hàng
+          </span>
+        </div>
+
+        <!-- Thông số kỹ thuật của sản phẩm -->
+        <div style="background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:14px; margin-bottom:16px;">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin-bottom:12px;">
+            <div style="background:#0d131f; border:1px solid #1e293b; padding:10px; border-radius:6px;">
+              <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:4px;">MÃ SẢN PHẨM (product_id):</div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <code style="font-size:0.88rem; font-weight:800; color:#38bdf8;">${p.id}</code>
+                <button type="button" class="btn-action-copy" onclick="copyTextDirect('${p.id}')" style="padding:3px 8px; font-size:0.72rem;"><i class="fa-regular fa-copy"></i> Copy ID</button>
+              </div>
+            </div>
+            <div style="background:#0d131f; border:1px solid #1e293b; padding:10px; border-radius:6px;">
+              <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:4px;">BIẾN THỂ ĐANG CHỌN (variant_idx):</div>
+              <div style="font-size:0.85rem; font-weight:800; color:#10b981;">Index: ${vIdx} - ${escapeHtml(selVar.name || p.name)}</div>
+            </div>
+            <div style="background:#0d131f; border:1px solid #1e293b; padding:10px; border-radius:6px;">
+              <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:4px;">ĐƠN GIÁ & TỒN KHO API:</div>
+              <div style="font-size:0.85rem; font-weight:800; color:#fbbf24;">${formatVND(curPrice)} | Tồn: ${curStock} acc</div>
+            </div>
+          </div>
+
+          <!-- Bảng danh sách các biến thể nếu có nhiều biến thể -->
+          <div style="margin-top:10px;">
+            <div style="font-size:0.78rem; font-weight:700; color:#94a3b8; margin-bottom:6px;">DANH SÁCH BIẾN THỂ & CHỈ SỐ variant_idx ĐỂ TRUYỀN VÀO API:</div>
+            <div style="overflow-x:auto;">
+              <table style="width:100%; border-collapse:collapse; font-size:0.78rem; text-align:left;">
+                <thead>
+                  <tr style="background:#0f172a; border-bottom:1px solid #1e293b; color:#94a3b8;">
+                    <th style="padding:6px 12px; width:100px;">variant_idx</th>
+                    <th style="padding:6px 12px;">Tên Biến Thể</th>
+                    <th style="padding:6px 12px; width:110px;">Đơn Giá</th>
+                    <th style="padding:6px 12px; width:90px;">Tồn Kho</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${varRowsHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lệnh cURL gọi mua hàng -->
+        <div style="background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:14px; margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:8px;">
+            <span style="font-size:0.82rem; font-weight:700; color:#cbd5e1; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-terminal" style="color:#38bdf8;"></i> LỆNH cURL MẪU ĐẶT MUA SẢN PHẨM NÀY:
+            </span>
+            <button type="button" class="btn-action-copy" onclick="copyCurlSnippet()" style="padding:5px 12px; font-size:0.75rem; background:#10b981; color:#fff; border:none;">
+              <i class="fa-regular fa-copy"></i> Sao Chép Lệnh cURL
+            </button>
+          </div>
+          <pre id="dtlApiCurlSnippet" style="background:#0d131f; border:1px solid #1e293b; padding:12px; border-radius:6px; font-size:0.78rem; color:#38bdf8; font-family:monospace; line-height:1.6; margin:0; overflow-x:auto; white-space:pre;">${escapeHtml(curlCmd)}</pre>
+        </div>
+
+        <!-- Response Sample -->
+        <div style="background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:14px; margin-bottom:16px;">
+          <span style="font-size:0.82rem; font-weight:700; color:#cbd5e1; display:block; margin-bottom:8px;">
+            <i class="fa-solid fa-circle-check" style="color:#10b981;"></i> CẤU TRÚC JSON TRẢ VỀ (Response 200 OK):
+          </span>
+          <pre style="background:#0d131f; border:1px solid #1e293b; padding:12px; border-radius:6px; font-size:0.75rem; color:#10b981; font-family:monospace; line-height:1.5; margin:0; overflow-x:auto; white-space:pre;">${escapeHtml(responseSample)}</pre>
+        </div>
+
+        <!-- Call to Action Banner -->
+        <div style="background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:8px; padding:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+          <div style="font-size:0.82rem; color:#cbd5e1; line-height:1.5;">
+            💡 Bạn chưa có API Key hoặc cần nạp tiền vào tài khoản để gọi API?<br/>
+            <span style="font-size:0.76rem; color:#94a3b8;">Vui lòng truy cập <strong>Trang Cá Nhân &gt; Tài Liệu API</strong> để lấy API Key và xem hướng dẫn chi tiết đa ngôn ngữ.</span>
+          </div>
+          <button type="button" class="btn-action-copy" onclick="switchView('viewProfile'); switchProfileTab('tabProfApi');" style="background:#10b981; color:#fff; border:none; padding:8px 16px; border-radius:8px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+            <i class="fa-solid fa-key"></i> Lấy API Key Của Bạn
+          </button>
+        </div>
+      `;
+    }
+    window.renderProductApiTab = renderProductApiTab;
+
+    function copyCurlSnippet() {
+      const el = document.getElementById("dtlApiCurlSnippet");
+      if (el) {
+        copyTextDirect(el.innerText || el.textContent);
+        showToast("✅ Đã sao chép lệnh cURL gọi mua hàng!", "success");
+      }
+    }
+    window.copyCurlSnippet = copyCurlSnippet;
+
 
     // Dữ liệu đánh giá mặc định chất lượng cao cho sản phẩm MMO
     const DEFAULT_MMO_REVIEWS = [
@@ -14342,6 +14728,10 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
         if (commFooterEl) {
           commFooterEl.innerText = "$ Hoa hồng: " + commRate + "% (~" + formatVND(commVal) + ")";
         }
+      }
+      const secApi = document.getElementById("dtlTabSecApi");
+      if (secApi && secApi.style.display !== "none" && typeof renderProductApiTab === "function") {
+        renderProductApiTab();
       }
     }
     window.selectVariant = selectVariant;
