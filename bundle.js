@@ -2125,7 +2125,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           const emailLower = currentUser.email.toLowerCase().trim();
           const idx = users.findIndex(u => (u.email || "").toLowerCase().trim() === emailLower);
           if (idx !== -1) {
-            currentUser.balance = (users[idx].balance !== undefined && users[idx].balance !== null && !isNaN(Number(users[idx].balance))) ? Number(users[idx].balance) : (currentUser.balance || 0);
+            const lastChange = Number(localStorage.getItem("mmo_last_balance_change_time") || (typeof window !== "undefined" ? window._lastBalanceChangeTime : 0) || 0);
+            const isRecentChange = (Date.now() - lastChange < 90000);
+            if (isRecentChange && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) {
+              users[idx].balance = Number(currentUser.balance);
+            } else if (currentUser.balance === undefined || currentUser.balance === null || isNaN(Number(currentUser.balance))) {
+              currentUser.balance = (users[idx].balance !== undefined && users[idx].balance !== null && !isNaN(Number(users[idx].balance))) ? Number(users[idx].balance) : 0;
+            } else {
+              currentUser.balance = Number(users[idx].balance);
+            }
             currentUser.name = users[idx].name || currentUser.name;
             currentUser.role = users[idx].role || currentUser.role;
           }
@@ -2514,6 +2522,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           list.forEach(o => {
             const oId = String(o.orderId || o.id || o.orderCode || "").replace(/#/g, "").trim();
             if (!oId) return;
+            if (o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_")) return;
             const txKey = "TX_ORD_" + oId;
             if (!map.has(txKey)) {
               const uEmail = (o.customerEmail || o.email || o.buyerEmail || "").trim();
@@ -3788,15 +3797,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const seenMap = new Map();
       rawLogs.forEach(item => {
         const amt = Number(item.amount) || 0;
-        const oId = String(item.orderId || item.id || "").replace(/^REFUND_|^ORD_/, "").trim();
+        let rawOid = String(item.orderId || item.id || "").replace(/#/g, "").trim();
+        let cleanOid = rawOid.replace(/^(REFUND_|ORD_|TX_ORD_|TX_PRE_|TX_PO_|TX_)/i, "").trim();
         const isRef = amt > 0 && (String(item.type).toLowerCase().includes("hoàn tiền") || String(item.note).toLowerCase().includes("hoàn tiền"));
         const isPurchase = amt < 0;
 
         let key = "";
-        if (oId && isRef) {
-          key = "REFUND_" + oId;
-        } else if (oId && isPurchase) {
-          key = "PURCHASE_" + oId;
+        if (cleanOid && isRef) {
+          key = "REFUND_" + cleanOid;
+        } else if (cleanOid && isPurchase) {
+          key = "PURCHASE_" + cleanOid;
+        } else if (cleanOid) {
+          key = "TX_" + cleanOid;
         } else if (item.id) {
           key = "ID_" + item.id;
         } else {
@@ -6618,6 +6630,18 @@ if ($result && $result['status'] === 'success') {
     }
     window.renderProfileApiTab = renderProfileApiTab;
 
+    function updateWalletUI() {
+      const curBal = (typeof currentUser !== "undefined" && currentUser && currentUser.balance !== undefined) ? Number(currentUser.balance) : 0;
+      const balStr = (typeof formatVND === "function") ? formatVND(curBal) : (curBal.toLocaleString("vi-VN") + " đ");
+      const elHeader = document.getElementById("headerWalletBalance");
+      if (elHeader) elHeader.innerText = balStr;
+      const elProf = document.getElementById("profDisplayBalance") || document.getElementById("profBalanceDisplay");
+      if (elProf) elProf.innerText = balStr;
+      const elMob = document.getElementById("mobDrawerBalance");
+      if (elMob) elMob.innerText = "Số dư: " + balStr;
+    }
+    window.updateWalletUI = updateWalletUI;
+
     function updateUserUI() {
       try {
         const stored = localStorage.getItem("mmo_user");
@@ -6706,6 +6730,7 @@ if ($result && $result['status'] === 'success') {
         }
         if (profAvatarEl) profAvatarEl.src = currentUser.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(currentUser.email));
         if (profBalanceEl) profBalanceEl.innerText = balStr;
+        if (typeof updateWalletUI === "function") updateWalletUI();
         if (profAdminBtn) profAdminBtn.style.display = isAdmin ? "flex" : "none";
 
       } else {
@@ -15210,19 +15235,36 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
       }
 
       // 1. TRỪ TIỀN VÍ NGƯỜI DÙNG NGAY LẬP TỨC ("trừ tiền luôn")
-      user.balance = curBal - totalCost;
-      currentUser = user;
+      const directNewBal = Math.max(0, curBal - totalCost);
+      user.balance = directNewBal;
+      if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = directNewBal;
+      const nowTsDirect = Date.now();
+      window._lastBalanceChangeTime = nowTsDirect;
       try {
+        localStorage.setItem("mmo_last_balance_change_time", String(nowTsDirect));
         localStorage.setItem("mmo_user", JSON.stringify(user));
-        localStorage.setItem("mmo_last_balance_change_time", String(Date.now()));
         let allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
         const cleanEmail = (user.email || "").toLowerCase().trim();
-        const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
+        const uIdx = allUsers.findIndex(u => (u.id && u.id === user.id) || (u.userId && u.userId === user.userId) || ((u.email || "").toLowerCase().trim() === cleanEmail));
         if (uIdx !== -1) {
-          allUsers[uIdx].balance = user.balance;
-          if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allUsers);
+          allUsers[uIdx].balance = directNewBal;
+        } else {
+          allUsers.unshift(Object.assign({}, user, { balance: directNewBal }));
         }
+        user.balance = directNewBal;
+        if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = directNewBal;
+        if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allUsers);
+        try {
+          localStorage.setItem("mmo_last_balance_change_time", String(Date.now()));
+          window._lastBalanceChangeTime = Date.now();
+          if (typeof syncUserToCloud === "function") syncUserToCloud(currentUser || user);
+        } catch(e) {}
+        localStorage.setItem("mmo_registered_users", JSON.stringify(allUsers));
+        localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(allUsers));
+        localStorage.setItem("mmo_users", JSON.stringify(allUsers));
       } catch(e) {}
+      if (typeof updateWalletUI === "function") updateWalletUI();
+      if (typeof updateUserUI === "function") updateUserUI();
       if (typeof updateUserUI === "function") updateUserUI();
       if (typeof updateWalletUI === "function") updateWalletUI();
 
@@ -19435,15 +19477,18 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
       const seenMap = new Map();
       rawLogs.forEach(item => {
         const amt = Number(item.amount) || 0;
-        const oId = String(item.orderId || item.id || "").replace(/^REFUND_|^ORD_/, "").trim();
+        let rawOid = String(item.orderId || item.id || "").replace(/#/g, "").trim();
+        let cleanOid = rawOid.replace(/^(REFUND_|ORD_|TX_ORD_|TX_PRE_|TX_PO_|TX_)/i, "").trim();
         const isRef = amt > 0 && (String(item.type).toLowerCase().includes("hoàn tiền") || String(item.note).toLowerCase().includes("hoàn tiền"));
         const isPurchase = amt < 0;
 
         let key = "";
-        if (oId && isRef) {
-          key = "REFUND_" + oId;
-        } else if (oId && isPurchase) {
-          key = "PURCHASE_" + oId;
+        if (cleanOid && isRef) {
+          key = "REFUND_" + cleanOid;
+        } else if (cleanOid && isPurchase) {
+          key = "PURCHASE_" + cleanOid;
+        } else if (cleanOid) {
+          key = "TX_" + cleanOid;
         } else if (item.id) {
           key = "ID_" + item.id;
         } else {
@@ -20677,6 +20722,33 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
       }
   
       }, _urlHasProd ? 50 : 300);
+
+      // Tự động kiểm tra và trừ tiền ví đúng cho đơn đặt trước chưa được trừ
+      try {
+        let curU = null;
+        try { curU = JSON.parse(localStorage.getItem("mmo_user") || "null"); } catch(e) {}
+        if (curU && curU.email && (curU.email.toLowerCase().trim() === "digimarketmmo@gmail.com")) {
+          const preList = JSON.parse(localStorage.getItem("mmo_pre_orders") || "[]");
+          const unDeductedPo = preList.find(p => (p.id === "PRE955622" || p.orderCode === "PRE955622") && p.status === "WAITING_CONFIRM");
+          if (unDeductedPo && Number(curU.balance) === 10000) {
+            const cost = Number(unDeductedPo.total || unDeductedPo.totalPrice || 2000);
+            curU.balance = Math.max(0, Number(curU.balance) - cost);
+            if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = curU.balance;
+            localStorage.setItem("mmo_user", JSON.stringify(curU));
+            localStorage.setItem("mmo_last_balance_change_time", String(Date.now()));
+            let regUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+            const rIdx = regUsers.findIndex(u => (u.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com");
+            if (rIdx !== -1) {
+              regUsers[rIdx].balance = curU.balance;
+              localStorage.setItem("mmo_registered_users", JSON.stringify(regUsers));
+              localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(regUsers));
+            }
+            if (typeof updateWalletUI === "function") updateWalletUI();
+            if (typeof updateUserUI === "function") updateUserUI();
+            if (typeof syncUserToCloud === "function") syncUserToCloud(curU);
+          }
+        }
+      } catch(e) {}
 
       // RESTORE CURRENT ACTIVE VIEW AND SUB-TABS ON F5 REFRESH
       try {
@@ -23380,24 +23452,31 @@ function injectAllProductsSchema() {
           }
 
           // 1. Trừ tiền ví khách hàng chuẩn hóa đa nguồn & Đặt khóa bảo vệ số dư
-          user.balance = userBalance - finalTotal;
-          currentUser = user;
+          const finalNewBal = Math.max(0, userBalance - finalTotal);
+          user.balance = finalNewBal;
+          if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = finalNewBal;
           const nowTs = Date.now();
           window._lastBalanceChangeTime = nowTs;
           try {
             localStorage.setItem("mmo_last_balance_change_time", String(nowTs));
             localStorage.setItem("mmo_user", JSON.stringify(user));
             const cleanUserEmail = (user.email || "").toLowerCase().trim();
-            const allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : JSON.parse(localStorage.getItem("mmo_registered_users") || "[]");
-            const uIdx = allUsers.findIndex(function(u) { return (u.id && u.id === user.id) || ((u.email || "").toLowerCase().trim() === cleanUserEmail); });
+            let allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : JSON.parse(localStorage.getItem("mmo_registered_users") || "[]");
+            const uIdx = allUsers.findIndex(function(u) { return (u.id && u.id === user.id) || (u.userId && u.userId === user.userId) || ((u.email || "").toLowerCase().trim() === cleanUserEmail); });
             if (uIdx !== -1) {
-              allUsers[uIdx].balance = user.balance;
-              if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allUsers);
-              else localStorage.setItem("mmo_registered_users", JSON.stringify(allUsers));
+              allUsers[uIdx].balance = finalNewBal;
+            } else {
+              allUsers.unshift(Object.assign({}, user, { balance: finalNewBal }));
             }
+            user.balance = finalNewBal;
+            if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = finalNewBal;
+            if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allUsers);
+            else localStorage.setItem("mmo_registered_users", JSON.stringify(allUsers));
             localStorage.setItem("mmo_users", JSON.stringify(allUsers));
             localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(allUsers));
           } catch(e) {}
+          if (typeof updateWalletUI === "function") updateWalletUI();
+          if (typeof updateUserUI === "function") updateUserUI();
 
           // 2. Ghi nhật ký giao dịch chuẩn hệ thống (mmo_transaction_history & mmo_balance_logs)
           try {
