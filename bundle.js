@@ -6860,6 +6860,19 @@ if ($result && $result['status'] === 'success') {
             </button>
           `;
         }
+        // Đặt lại các thông tin hiển thị tại trang Cá Nhân để không lộ danh tính người khác khi chưa đăng nhập
+        const profNameEl = document.getElementById("profUserName");
+        if (profNameEl) profNameEl.innerText = "Chưa đăng nhập";
+        const profEmailEl = document.getElementById("profUserEmail");
+        if (profEmailEl) profEmailEl.innerText = "Vui lòng đăng nhập tài khoản";
+        const profRoleEl = document.getElementById("profUserBadge") || document.getElementById("profUserRole");
+        if (profRoleEl) profRoleEl.style.display = "none";
+        const profAvatarEl = document.getElementById("profUserAvatar");
+        if (profAvatarEl) profAvatarEl.src = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+        const profBalanceEl = document.getElementById("profDisplayBalance") || document.getElementById("profBalanceDisplay");
+        if (profBalanceEl) profBalanceEl.innerText = "0 đ";
+        const profAdminBtn = document.getElementById("profAdminShortcutBtn");
+        if (profAdminBtn) profAdminBtn.style.display = "none";
       }
     }
 
@@ -7546,26 +7559,30 @@ if ($result && $result['status'] === 'success') {
       enforceHeaderVisible();
 
       if (viewId === "viewProfile" || viewId === "viewDeposit" || viewId === "viewAdmin") {
-        let checkUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+        let checkUser = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser : null;
         if (!checkUser) {
           try {
             const stored = localStorage.getItem("mmo_user");
             if (stored) {
               checkUser = JSON.parse(stored);
-              currentUser = checkUser;
+              if (checkUser && checkUser.email) {
+                currentUser = checkUser;
+              } else {
+                checkUser = null;
+              }
             }
           } catch(e) {}
         }
 
-        if (!checkUser) {
-          showToast("🔒 Vui lòng đăng nhập để truy cập trang này!", "info");
+        if (!checkUser || !checkUser.email) {
+          if (typeof showToast === "function") showToast("🔒 Vui lòng đăng nhập để truy cập trang này!", "info");
           switchView("viewStore");
-          openAuthModal("login");
+          if (typeof openAuthModal === "function") openAuthModal("login");
           return;
         }
 
         if (viewId === "viewAdmin" && !isAdminUser(checkUser)) {
-          showToast("⚠️ Tài khoản [" + checkUser.email + "] không có quyền truy cập Quản Trị!", "warning");
+          if (typeof showToast === "function") showToast("⚠️ Tài khoản [" + checkUser.email + "] không có quyền truy cập Quản Trị!", "warning");
           switchView("viewStore");
           return;
         }
@@ -12870,6 +12887,11 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
       let userOrders = [];
       const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
       const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
+
+      // Khách chưa đăng nhập: Tuyệt đối không trả về bất kỳ đơn hàng nào của người khác
+      if (!cleanUserMail) {
+        return [];
+      }
 
       // 1. Quét toàn bộ các nguồn lưu trữ đơn hàng
       const scanKeys = ["mmo_user_orders", "mmo_orders", "mmo_all_orders"];
@@ -21390,13 +21412,29 @@ function injectAllProductsSchema() {
     }
     window.toggleMobileDrawer = toggleMobileDrawer;
 
-    function handleMobileUserNav() {
-      if (typeof currentUser !== "undefined" && currentUser) {
+    function handleNavProfileClick() {
+      let cur = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser : null;
+      if (!cur) {
+        try {
+          const stored = localStorage.getItem("mmo_user");
+          if (stored) {
+            cur = JSON.parse(stored);
+            if (cur && cur.email) currentUser = cur;
+            else cur = null;
+          }
+        } catch(e) {}
+      }
+      if (cur && cur.email) {
         switchView("viewProfile");
       } else {
-        if (typeof openAuthModal === "function") openAuthModal();
-        else switchView("viewProfile");
+        if (typeof showToast === "function") showToast("🔒 Vui lòng đăng nhập để xem thông tin tài khoản và đơn hàng!", "info");
+        if (typeof openAuthModal === "function") openAuthModal("login");
       }
+    }
+    window.handleNavProfileClick = handleNavProfileClick;
+
+    function handleMobileUserNav() {
+      handleNavProfileClick();
     }
     window.handleMobileUserNav = handleMobileUserNav;
 
@@ -23248,14 +23286,66 @@ function injectAllProductsSchema() {
                   pList[pIdx].isCancelled = true;
                   pList[pIdx].isRefunded = true;
                   pList[pIdx].cancelledBy = ev.data.cancelledBy || "CUSTOMER";
+                } else if (newSt === "COMPLETED") {
+                  pList[pIdx].statusText = "Đã giao hàng";
+                  if (ev.data.deliveredAccounts && ev.data.deliveredAccounts.length > 0) {
+                    pList[pIdx].deliveredAccounts = ev.data.deliveredAccounts;
+                  }
+                  if (ev.data.credentials) {
+                    pList[pIdx].credentials = ev.data.credentials;
+                  }
+                  pList[pIdx].completedAt = new Date().toLocaleString("vi-VN");
                 }
                 savePreOrders(pList);
+              }
+
+              // Cập nhật đa kho lưu trữ mmo_orders, mmo_user_orders, mmo_all_orders
+              if (newSt === "COMPLETED") {
+                ["mmo_orders", "mmo_user_orders", "mmo_all_orders"].forEach(function(k) {
+                  try {
+                    var raw = localStorage.getItem(k);
+                    if (!raw) return;
+                    var arr = JSON.parse(raw);
+                    if (!Array.isArray(arr)) return;
+                    var updated = false;
+                    arr.forEach(function(item) {
+                      if (!item) return;
+                      var iId = String(item.orderId || item.id || item.orderCode || "").replace(/#/g, "").trim().toLowerCase();
+                      if (iId === targetId) {
+                        item.status = "COMPLETED";
+                        item.statusText = "Đã giao hàng";
+                        if (ev.data.deliveredAccounts) item.deliveredAccounts = ev.data.deliveredAccounts;
+                        if (ev.data.credentials) item.credentials = ev.data.credentials;
+                        item.completedAt = new Date().toLocaleString("vi-VN");
+                        updated = true;
+                      }
+                    });
+                    if (updated) localStorage.setItem(k, JSON.stringify(arr));
+                  } catch(e) {}
+                });
+
+                // Thông báo tới khách nếu đang mở trang
+                try {
+                  const curU = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+                  const buyerEmail = (pIdx !== -1 && pList[pIdx]) ? (pList[pIdx].buyerEmail || pList[pIdx].email || "") : "";
+                  if (curU && buyerEmail && curU.email.toLowerCase().trim() === buyerEmail.toLowerCase().trim()) {
+                    if (typeof playNotificationSound === "function") playNotificationSound();
+                    if (typeof showToast === "function") showToast("🎉 Đơn đặt trước #" + targetId.toUpperCase() + " đã được giao tài khoản! Bấm vào để nhận tài khoản.", "success");
+                  }
+                } catch(e) {}
               }
             }
           } catch(e) {}
           _cachedPreOrdersList = null;
           _lastPreOrdersFetchTime = 0;
           triggerDebouncedAdminTablesRender();
+          if (typeof renderProfileOrders === "function") renderProfileOrders();
+          try {
+            var curV = localStorage.getItem("mmo_current_view");
+            if (curV === "viewPreOrderDetail" && typeof openPreOrderDetailView === "function" && ev && ev.data && ev.data.orderId) {
+              openPreOrderDetailView(ev.data.orderId);
+            }
+          } catch(e) {}
           if (typeof fetchAdminOrdersFromCloud === "function") {
             fetchAdminOrdersFromCloud(true);
           }
@@ -24744,6 +24834,7 @@ function injectAllProductsSchema() {
         fetch(TURSO_WORKER_URL + "/api/orders/sync", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          keepalive: true,
           body: JSON.stringify({
             orders: [{
               id: order.orderCode || order.id,
@@ -24761,7 +24852,43 @@ function injectAllProductsSchema() {
               createdAt: order.createdAt || order.date || new Date().toLocaleString("vi-VN")
             }]
           })
-        }).catch(function() {});
+        }).catch(function(err) {
+          console.warn("Lỗi đồng bộ Cloud Worker đơn bàn giao:", err);
+        });
+      } catch(e) {}
+
+      // Đồng bộ trạng thái lên Google Apps Script
+      try {
+        if (typeof callGasApi === "function") {
+          callGasApi("adminUpdateOrderStatus", {
+            orderId: cleanId,
+            status: "COMPLETED",
+            deliveredAccounts: lines,
+            credentials: lines.join(String.fromCharCode(10))
+          }).catch(function() {});
+        }
+      } catch(e) {}
+
+      // Phát sóng tức thì đa tab & đa cửa sổ qua BroadcastChannel
+      try {
+        if (typeof BroadcastChannel !== "undefined") {
+          new BroadcastChannel("mmo_preorders_channel").postMessage({
+            type: "PREORDERS_UPDATED",
+            orderId: cleanId,
+            orderCode: cleanId,
+            status: "COMPLETED",
+            statusText: "Đã giao hàng",
+            deliveredAccounts: lines,
+            credentials: lines.join(String.fromCharCode(10))
+          });
+          new BroadcastChannel("mmo_channel").postMessage({
+            action: "ORDER_FULFILLED",
+            orderId: cleanId,
+            status: "COMPLETED",
+            deliveredAccounts: lines,
+            credentials: lines.join(String.fromCharCode(10))
+          });
+        }
       } catch(e) {}
 
       // Nếu người dùng đang xem trang chi tiết đơn này, cập nhật ngay lập tức
@@ -24778,7 +24905,7 @@ function injectAllProductsSchema() {
       if (typeof renderProfileOrders === "function") renderProfileOrders();
       if (typeof updateUserUI === "function") updateUserUI();
       if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
-      try { window.dispatchEvent(new CustomEvent("mmo_preorders_changed", { detail: { orderCode: order.orderCode || order.id } })); } catch(e) {}
+      try { window.dispatchEvent(new CustomEvent("mmo_preorders_changed", { detail: { orderCode: order.orderCode || order.id, status: "COMPLETED" } })); } catch(e) {}
     }
     window.executeAdminFulfillPreOrder = executeAdminFulfillPreOrder;
 
