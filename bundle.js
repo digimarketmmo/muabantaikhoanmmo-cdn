@@ -6157,30 +6157,82 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // Subtab switcher for Profile Wallet
     
     // ============================================================
+    // ============================================================
     // [HỆ THỐNG THÔNG BÁO & CHUÔNG BÁO THỜI GIAN THỰC (NOTIFICATION BELL & AUDIO CHIME)]
     // ============================================================
+    let _sharedNotifAudioCtx = null;
+    function getNotifAudioContext() {
+      try {
+        if (!_sharedNotifAudioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) _sharedNotifAudioCtx = new AudioContext();
+        }
+        if (_sharedNotifAudioCtx && _sharedNotifAudioCtx.state === "suspended") {
+          _sharedNotifAudioCtx.resume();
+        }
+        return _sharedNotifAudioCtx;
+      } catch(e) {
+        return null;
+      }
+    }
+
+    if (typeof window !== "undefined") {
+      const unlockAudio = function() {
+        getNotifAudioContext();
+        window.removeEventListener("click", unlockAudio);
+        window.removeEventListener("keydown", unlockAudio);
+        window.removeEventListener("touchstart", unlockAudio);
+      };
+      window.addEventListener("click", unlockAudio, { passive: true });
+      window.addEventListener("keydown", unlockAudio, { passive: true });
+      window.addEventListener("touchstart", unlockAudio, { passive: true });
+    }
+
     function playNotificationSound() {
       try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
-        if (ctx.state === "suspended") {
-          ctx.resume();
-        }
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = "sine";
-        // Âm điệu chuông kép trong trẻo và chuyên nghiệp (D5 -> A5)
-        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.25, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.45);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.45);
+        const ctx = getNotifAudioContext();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+
+        // Âm điệu chuông cửa hàng 3 nốt ngân vang rõ ràng (C5 523Hz -> E5 659Hz -> G5 784Hz)
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = "sine";
+        osc1.frequency.setValueAtTime(523.25, now);
+        gain1.gain.setValueAtTime(0.28, now);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(659.25, now + 0.1);
+        gain2.gain.setValueAtTime(0.001, now);
+        gain2.gain.setValueAtTime(0.32, now + 0.1);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+        const osc3 = ctx.createOscillator();
+        const gain3 = ctx.createGain();
+        osc3.type = "sine";
+        osc3.frequency.setValueAtTime(783.99, now + 0.2);
+        gain3.gain.setValueAtTime(0.001, now);
+        gain3.gain.setValueAtTime(0.35, now + 0.2);
+        gain3.gain.exponentialRampToValueAtTime(0.001, now + 0.75);
+
+        osc1.connect(gain1);
+        gain1.connect(ctx.destination);
+        osc2.connect(gain2);
+        gain2.connect(ctx.destination);
+        osc3.connect(gain3);
+        gain3.connect(ctx.destination);
+
+        osc1.start(now);
+        osc1.stop(now + 0.36);
+        osc2.start(now + 0.1);
+        osc2.stop(now + 0.52);
+        osc3.start(now + 0.2);
+        osc3.stop(now + 0.76);
       } catch(e) {
-        // Fallback im lặng nếu trình duyệt chặn autoplay audio
+        console.warn("playNotificationSound err:", e);
       }
     }
     window.playNotificationSound = playNotificationSound;
@@ -6190,8 +6242,163 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       return "mmo_notifications_" + String(email).toLowerCase().trim().replace(/[^a-z0-9_]/gi, "_");
     }
 
+    // TỔNG HỢP TOÀN BỘ HOẠT ĐỘNG & THÔNG BÁO CỦA TẤT CẢ NGƯỜI DÙNG DÀNH CHO ADMIN
+    function getAdminSystemNotifications() {
+      try {
+        let adminNotifs = [];
+        const raw = localStorage.getItem("mmo_admin_notifications");
+        if (raw) {
+          try {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) adminNotifs = parsed;
+          } catch(e) {}
+        }
+
+        const readMap = {};
+        try {
+          const readRaw = localStorage.getItem("mmo_admin_notifications_read");
+          if (readRaw) Object.assign(readMap, JSON.parse(readRaw));
+        } catch(e) {}
+
+        const synthesized = [];
+        const existingIds = new Set(adminNotifs.map(n => n.id || n.orderId));
+
+        // 1. Tổng hợp từ danh sách Đơn Hàng của khách
+        let allOrders = [];
+        ["mmo_all_orders", "mmo_orders"].forEach(k => {
+          try {
+            const r = localStorage.getItem(k);
+            if (r) {
+              const arr = JSON.parse(r);
+              if (Array.isArray(arr)) {
+                arr.forEach(o => {
+                  if (o && !allOrders.some(x => (x.orderId || x.id) === (o.orderId || o.id))) {
+                    allOrders.push(o);
+                  }
+                });
+              }
+            }
+          } catch(e) {}
+        });
+
+        allOrders.forEach(o => {
+          const oId = o.orderId || o.id;
+          if (!oId) return;
+          const notifId = "ADMIN_ORDER_" + oId;
+          if (existingIds.has(notifId)) return;
+
+          const pName = o.productName || o.prodName || "Tài khoản MMO";
+          const qty = o.quantity || o.qty || 1;
+          const total = o.total || o.totalPrice || o.totalAmount || 0;
+          const buyer = o.buyerEmail || o.email || o.userEmail || "Khách mua hàng";
+          const isWarr = o.isWarranty || o.hasComplaint || (o.status && o.status.includes("Khiếu Nại"));
+          const totalStr = typeof formatVND === "function" ? formatVND(total) : (Number(total).toLocaleString("vi-VN") + " đ");
+
+          synthesized.push({
+            id: notifId,
+            title: isWarr ? ("🛡️ Khiếu nại & Bảo hành #" + oId) : ("🛒 Khách mua đơn hàng #" + oId),
+            message: "Khách " + buyer + " vừa mua " + qty + "x " + pName + " (" + totalStr + ")",
+            type: isWarr ? "WARRANTY" : "ORDER",
+            orderId: oId,
+            userEmail: buyer,
+            read: !!readMap[notifId],
+            time: o.time || (o.date ? o.date : new Date().toLocaleDateString("vi-VN")),
+            timestamp: o.timestamp || Date.now()
+          });
+        });
+
+        // 2. Tổng hợp từ danh sách Đơn Đặt Hàng Trước (Pre-Order)
+        let preOrders = [];
+        ["mmo_pre_orders", "mmo_all_pre_orders"].forEach(k => {
+          try {
+            const r = localStorage.getItem(k);
+            if (r) {
+              const arr = JSON.parse(r);
+              if (Array.isArray(arr)) {
+                arr.forEach(po => {
+                  if (po && !preOrders.some(x => (x.orderCode || x.id) === (po.orderCode || po.id))) {
+                    preOrders.push(po);
+                  }
+                });
+              }
+            }
+          } catch(e) {}
+        });
+
+        preOrders.forEach(po => {
+          const poCode = po.orderCode || po.id;
+          if (!poCode) return;
+          const notifId = "ADMIN_PREORDER_" + poCode;
+          if (existingIds.has(notifId)) return;
+
+          const pName = po.productName || "Sản phẩm đặt trước";
+          const qty = po.quantity || po.qty || 1;
+          const buyer = po.buyerEmail || po.email || po.userEmail || "Khách hàng";
+
+          synthesized.push({
+            id: notifId,
+            title: "⏳ Đơn đặt trước mới #" + poCode,
+            message: "Khách " + buyer + " vừa đặt trước " + qty + "x " + pName + ". Vui lòng gom hàng!",
+            type: "PRE_ORDER",
+            orderId: poCode,
+            userEmail: buyer,
+            read: (po.status === "Hoàn tất" || po.status === "Đã giao") ? true : !!readMap[notifId],
+            time: po.time || (po.date ? po.date : new Date().toLocaleDateString("vi-VN")),
+            timestamp: po.timestamp || Date.now()
+          });
+        });
+
+        // 3. Tổng hợp từ tin nhắn của khách hàng
+        if (typeof getAllChatMessages === "function") {
+          const chatMsgs = getAllChatMessages().filter(m => m.sender === "user" && m.userEmail !== "system");
+          const userLastChat = {};
+          chatMsgs.forEach(m => {
+            if (!userLastChat[m.userEmail] || (m.timestamp && m.timestamp > (userLastChat[m.userEmail].timestamp || 0))) {
+              userLastChat[m.userEmail] = m;
+            }
+          });
+
+          Object.values(userLastChat).forEach(m => {
+            const notifId = "ADMIN_CHAT_" + m.id;
+            if (existingIds.has(notifId)) return;
+            const previewText = (typeof formatChatSnippet === "function") ? formatChatSnippet(m.text) : m.text;
+            const snip = previewText.length > 50 ? (previewText.slice(0, 50) + "...") : previewText;
+
+            synthesized.push({
+              id: notifId,
+              title: "💬 Tin nhắn từ " + (m.senderName || m.userEmail),
+              message: snip,
+              type: "CHAT",
+              userEmail: m.userEmail,
+              read: m.isReadByAdmin !== false || !!readMap[notifId],
+              time: m.time || (m.date ? m.date : ""),
+              timestamp: m.timestamp || Date.now()
+            });
+          });
+        }
+
+        // Hợp nhất và sắp xếp tin mới nhất lên đầu
+        const merged = [...adminNotifs, ...synthesized];
+        merged.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+        merged.forEach(n => {
+          if (readMap[n.id]) n.read = true;
+        });
+
+        return merged.slice(0, 50);
+      } catch(err) {
+        console.warn("getAdminSystemNotifications error:", err);
+        return [];
+      }
+    }
+    window.getAdminSystemNotifications = getAdminSystemNotifications;
+
     function getStoredNotifications(userEmail) {
       try {
+        const isAdm = (typeof isAdminUser === "function" && isAdminUser());
+        if (isAdm && !userEmail) {
+          return getAdminSystemNotifications();
+        }
         const key = getUserNotificationsStorageKey(userEmail);
         const raw = localStorage.getItem(key);
         if (!raw) return [];
@@ -6210,6 +6417,80 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       } catch(e) {}
     }
 
+    // GỬI THÔNG BÁO VÀ PHÁT CHUÔNG CHO ADMIN
+    function notifyAdmin(opts) {
+      try {
+        const notif = {
+          id: opts.id || ("ADMIN_NOTIF_" + Date.now() + "_" + Math.floor(Math.random() * 1000)),
+          title: opts.title || "Thông báo hệ thống mới",
+          message: opts.message || "",
+          type: opts.type || "INFO", // ORDER, PRE_ORDER, DEPOSIT, CHAT, WARRANTY, INFO
+          orderId: opts.orderId || "",
+          userEmail: opts.userEmail || opts.email || "",
+          read: false,
+          time: opts.time || new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
+          timestamp: Date.now()
+        };
+
+        let adminNotifs = [];
+        try {
+          const raw = localStorage.getItem("mmo_admin_notifications");
+          if (raw) adminNotifs = JSON.parse(raw);
+          if (!Array.isArray(adminNotifs)) adminNotifs = [];
+        } catch(e) {}
+
+        const idx = adminNotifs.findIndex(n => n.id === notif.id);
+        if (idx === -1) {
+          adminNotifs.unshift(notif);
+        } else {
+          adminNotifs[idx] = Object.assign({}, adminNotifs[idx], notif);
+        }
+        localStorage.setItem("mmo_admin_notifications", JSON.stringify(adminNotifs.slice(0, 80)));
+
+        const isAdm = (typeof isAdminUser === "function" && isAdminUser());
+        if (isAdm) {
+          playNotificationSound();
+          if (typeof showToast === "function") {
+            showToast("🔔 " + notif.title + ": " + notif.message, "info");
+          }
+          renderHeaderNotifications();
+        }
+
+        // Phát sóng đa tab/cửa sổ cho Admin
+        try {
+          if (typeof BroadcastChannel !== "undefined") {
+            new BroadcastChannel("mmo_admin_notifications_channel").postMessage({
+              type: "NEW_ADMIN_NOTIFICATION",
+              notif: notif
+            });
+          }
+        } catch(e) {}
+
+        return notif;
+      } catch(e) {
+        console.warn("notifyAdmin error:", e);
+      }
+    }
+    window.notifyAdmin = notifyAdmin;
+
+    // Lắng nghe thông báo Admin qua BroadcastChannel
+    try {
+      if (typeof BroadcastChannel !== "undefined") {
+        const adminNotifChannel = new BroadcastChannel("mmo_admin_notifications_channel");
+        adminNotifChannel.onmessage = function(ev) {
+          if (ev && ev.data && ev.data.type === "NEW_ADMIN_NOTIFICATION") {
+            if (typeof isAdminUser === "function" && isAdminUser()) {
+              playNotificationSound();
+              renderHeaderNotifications();
+              if (typeof showToast === "function" && ev.data.notif) {
+                showToast("🔔 " + ev.data.notif.title + ": " + ev.data.notif.message, "info");
+              }
+            }
+          }
+        };
+      }
+    } catch(e) {}
+
     function addUserNotification(opts) {
       try {
         const userEmail = opts.email || (currentUser && currentUser.email ? currentUser.email : "");
@@ -6218,7 +6499,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           id: "NOTIF_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
           title: opts.title || "Thông báo mới",
           message: opts.message || "",
-          type: opts.type || "INFO", // PRE_ORDER, ORDER, DEPOSIT, WARRANTY, INFO
+          type: opts.type || "INFO", // PRE_ORDER, ORDER, DEPOSIT, WARRANTY, INFO, CHAT
           orderId: opts.orderId || "",
           link: opts.link || "",
           read: false,
@@ -6227,6 +6508,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         };
         notifs.unshift(newNotif);
         saveStoredNotifications(notifs, userEmail);
+
+        // ĐỒNG THỜI THÔNG BÁO CHO ADMIN
+        notifyAdmin({
+          id: "ADM_" + newNotif.id,
+          title: opts.title,
+          message: opts.message,
+          type: opts.type,
+          orderId: opts.orderId,
+          userEmail: userEmail,
+          time: newNotif.time
+        });
 
         // Phát âm thanh chuông thông báo nếu được phép
         if (opts.playSound !== false) {
@@ -6244,6 +6536,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function markAllNotificationsAsRead() {
       try {
+        const isAdm = (typeof isAdminUser === "function" && isAdminUser());
+        if (isAdm) {
+          const notifs = getAdminSystemNotifications();
+          const readMap = {};
+          notifs.forEach(n => {
+            n.read = true;
+            readMap[n.id] = true;
+          });
+          localStorage.setItem("mmo_admin_notifications", JSON.stringify(notifs));
+          localStorage.setItem("mmo_admin_notifications_read", JSON.stringify(readMap));
+          renderHeaderNotifications();
+          if (typeof showToast === "function") showToast("Đã đánh dấu tất cả thông báo hệ thống là đã đọc", "info");
+          return;
+        }
+
         const userEmail = currentUser && currentUser.email ? currentUser.email : "";
         const notifs = getStoredNotifications(userEmail);
         notifs.forEach(function(n) { n.read = true; });
@@ -6254,29 +6561,51 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.markAllNotificationsAsRead = markAllNotificationsAsRead;
 
+    var _lastKnownAdminNotifUnread = -1;
     function renderHeaderNotifications() {
       try {
+        const isAdm = (typeof isAdminUser === "function" && isAdminUser());
         const notifs = getStoredNotifications();
         const unreadCount = notifs.filter(function(n) { return !n.read; }).length;
 
         const badge = document.getElementById("headerNotifBadge");
+        const btn = document.querySelector(".btn-header-notif");
         if (badge) {
           if (unreadCount > 0) {
             badge.innerText = unreadCount > 99 ? "99+" : unreadCount;
             badge.style.display = "inline-flex";
+            if (btn) btn.classList.add("has-pulse");
           } else {
             badge.style.display = "none";
+            if (btn) btn.classList.remove("has-pulse");
           }
+        }
+
+        // Tự động phát chuông khi số lượng thông báo mới của Admin tăng lên
+        if (isAdm && _lastKnownAdminNotifUnread !== -1 && unreadCount > _lastKnownAdminNotifUnread) {
+          playNotificationSound();
+        }
+        if (isAdm) _lastKnownAdminNotifUnread = unreadCount;
+
+        const titleEl = document.querySelector("#headerNotifDropdown div[style*='font-weight:700']");
+        if (titleEl) {
+          titleEl.innerHTML = isAdm 
+            ? '<i class="fa-solid fa-bell" style="color:#10b981;"></i> Thông Báo Hệ Thống'
+            : '<i class="fa-solid fa-bell" style="color:#38bdf8;"></i> Thông Báo';
         }
 
         const listContainer = document.getElementById("headerNotifList");
         if (!listContainer) return;
 
         if (notifs.length === 0) {
+          const emptyTitle = isAdm ? "Bạn chưa có thông báo hệ thống nào" : "Bạn chưa có thông báo nào";
+          const emptyDesc = isAdm 
+            ? "Các đơn hàng mới, đặt trước, biến động số dư và yêu cầu hỗ trợ sẽ hiển thị ở đây."
+            : "Các cập nhật đơn hàng, đặt trước và biến động số dư sẽ hiển thị ở đây.";
           listContainer.innerHTML = '<div style="padding:28px 16px; text-align:center; color:#64748b;">' +
             '<i class="fa-regular fa-bell-slash" style="font-size:1.8rem; display:block; margin-bottom:8px; opacity:0.4;"></i>' +
-            '<div style="font-size:0.85rem; font-weight:600;">Bạn chưa có thông báo nào</div>' +
-            '<div style="font-size:0.75rem; color:#475569; margin-top:2px;">Các cập nhật đơn hàng, đặt trước và biến động số dư sẽ hiển thị ở đây.</div>' +
+            '<div style="font-size:0.85rem; font-weight:600;">' + emptyTitle + '</div>' +
+            '<div style="font-size:0.75rem; color:#475569; margin-top:2px;">' + emptyDesc + '</div>' +
           '</div>';
           return;
         }
@@ -6296,9 +6625,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           } else if (n.type === 'WARRANTY') {
             icon = '<i class="fa-solid fa-shield-halved" style="color:#ef4444;"></i>';
             iconBg = 'rgba(239,68,68,0.15)';
+          } else if (n.type === 'CHAT') {
+            icon = '<i class="fa-solid fa-comments" style="color:#38bdf8;"></i>';
+            iconBg = 'rgba(56,189,248,0.15)';
           }
 
-          const unreadDot = !n.read ? '<span style="width:8px; height:8px; border-radius:50%; background:#38bdf8; display:inline-block; flex-shrink:0;"></span>' : '';
+          const unreadDot = !n.read ? '<span style="width:8px; height:8px; border-radius:50%; background:#10b981; display:inline-block; flex-shrink:0; box-shadow:0 0 6px #10b981;"></span>' : '';
           const bgHover = !n.read ? 'background:#0f1a2e;' : 'background:transparent;';
 
           return '<div onclick="handleNotificationItemClick(\'' + n.id + '\', \'' + (n.orderId || '') + '\', \'' + (n.type || '') + '\')" style="padding:10px 14px; border-bottom:1px solid #1e293b; display:flex; align-items:flex-start; gap:10px; cursor:pointer; transition:background 0.2s; ' + bgHover + '" onmouseover="this.style.background=\'#162238\'" onmouseout="this.style.background=\'' + (!n.read ? '#0f1a2e' : 'transparent') + '\'">' +
@@ -6319,6 +6651,37 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function handleNotificationItemClick(notifId, orderId, notifType) {
       try {
+        const isAdm = (typeof isAdminUser === "function" && isAdminUser());
+        if (isAdm) {
+          const readMap = JSON.parse(localStorage.getItem("mmo_admin_notifications_read") || "{}");
+          readMap[notifId] = true;
+          localStorage.setItem("mmo_admin_notifications_read", JSON.stringify(readMap));
+
+          let adminNotifs = JSON.parse(localStorage.getItem("mmo_admin_notifications") || "[]");
+          const item = adminNotifs.find(n => n.id === notifId);
+          if (item) {
+            item.read = true;
+            localStorage.setItem("mmo_admin_notifications", JSON.stringify(adminNotifs));
+          }
+          renderHeaderNotifications();
+          toggleHeaderNotifDropdown(false);
+
+          if (typeof switchView === "function") switchView("viewAdmin");
+          if (notifType === "PRE_ORDER") {
+            if (typeof switchAdminTab === "function") switchAdminTab("tabAdmPreOrders");
+          } else if (notifType === "CHAT" || notifType === "WARRANTY") {
+            if (typeof switchAdminTab === "function") switchAdminTab("tabAdmChat");
+            if (item && item.userEmail && typeof selectAdminChatUser === "function") {
+              selectAdminChatUser(item.userEmail);
+            }
+          } else if (notifType === "ORDER") {
+            if (typeof switchAdminTab === "function") switchAdminTab("tabAdmOrders");
+          } else if (notifType === "DEPOSIT") {
+            if (typeof switchAdminTab === "function") switchAdminTab("tabAdmWallets");
+          }
+          return;
+        }
+
         const notifs = getStoredNotifications();
         const item = notifs.find(function(n) { return n.id === notifId; });
         if (item) {
@@ -6356,6 +6719,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
     }
     window.toggleHeaderNotifDropdown = toggleHeaderNotifDropdown;
+
+    // Định kỳ tự động cập nhật thông báo và kiểm tra chuông cho Admin mỗi 20 giây
+    setInterval(function() {
+      if (typeof isAdminUser === "function" && isAdminUser()) {
+        renderHeaderNotifications();
+      }
+    }, 20000);
 
     // Đóng dropdown thông báo khi nhấp ra ngoài
     document.addEventListener("click", function(e) {
@@ -18311,7 +18681,6 @@ function syncAllOpenViewsStock(changedProdId) {
     window.ITEMS_PER_PAGE = 10;
 
     var paginationState = {
-    admUsers: 1,
       admUsers: 1,
       admWithdraw: 1,
       admTx: 1,
@@ -20138,6 +20507,21 @@ function injectAllProductsSchema() {
       // Phát sóng đa kênh Realtime (Broadcast + Cloud SSE + GAS)
       broadcastChatMessage(newMsg);
 
+      // Báo chuông và thông báo hệ thống cho Admin
+      if (typeof notifyAdmin === "function") {
+        const isComplain = text.includes("KHIẾU NẠI") || text.includes("BẢO HÀNH") || (extraData && extraData.orderId);
+        const preview = (typeof formatChatSnippet === "function") ? formatChatSnippet(text) : text;
+        const snip = preview.length > 50 ? (preview.slice(0, 50) + "...") : preview;
+        notifyAdmin({
+          id: "ADMIN_CHAT_" + newMsg.id,
+          title: isComplain ? ("🛡️ Khiếu nại / Bảo hành từ " + userName) : ("💬 Tin nhắn từ " + userName),
+          message: snip,
+          type: isComplain ? "WARRANTY" : "CHAT",
+          orderId: (extraData && extraData.orderId) ? extraData.orderId : "",
+          userEmail: userEmail
+        });
+      }
+
       updateChatUnreadBadge();
       if (typeof renderAdminChatList === "function") renderAdminChatList();
 
@@ -20469,7 +20853,20 @@ function injectAllProductsSchema() {
           }
         } else if (isNew && msg.sender === "user") {
           if (playSound) playChatNotificationSound("receive");
-          if (typeof showToast === "function") {
+          if (typeof notifyAdmin === "function") {
+            const who = msg.senderName || msg.userEmail;
+            const isComplain = (msg.text && (msg.text.includes("KHIẾU NẠI") || msg.text.includes("BẢO HÀNH"))) || (msg.extraData && msg.extraData.orderId);
+            const preview = (typeof formatChatSnippet === "function") ? formatChatSnippet(msg.text) : msg.text;
+            const snip = preview.length > 50 ? (preview.slice(0, 50) + "...") : preview;
+            notifyAdmin({
+              id: "ADMIN_CHAT_" + msg.id,
+              title: isComplain ? ("🛡️ Khiếu nại / Bảo hành từ " + who) : ("💬 Tin nhắn mới từ " + who),
+              message: snip,
+              type: isComplain ? "WARRANTY" : "CHAT",
+              orderId: (msg.extraData && msg.extraData.orderId) ? msg.extraData.orderId : "",
+              userEmail: msg.userEmail
+            });
+          } else if (typeof showToast === "function") {
             const who = msg.senderName || msg.userEmail;
             const snip = msg.text.length > 35 ? (msg.text.slice(0, 35) + "...") : msg.text;
             showToast("🔔 Yêu cầu hỗ trợ mới từ " + who + ": " + snip, "info");
