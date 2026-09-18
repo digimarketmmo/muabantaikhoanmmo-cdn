@@ -1951,14 +1951,48 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function getRegisteredUsers() {
       try {
-        const stored = localStorage.getItem("mmo_registered_users");
-        let users = stored ? JSON.parse(stored) : null;
-        if (!Array.isArray(users) || users.length === 0) {
-          users = JSON.parse(JSON.stringify(DEFAULT_REGISTERED_USERS));
-          localStorage.setItem("mmo_registered_users", JSON.stringify(users));
+        let users = [];
+        try {
+          const stored = localStorage.getItem("mmo_registered_users");
+          if (stored) users = JSON.parse(stored) || [];
+        } catch(e) {}
+        if (!Array.isArray(users)) users = [];
+
+        // 1. Tự động phục hồi & hợp nhất từ kho lưu trữ vĩnh viễn mmo_persistent_cloud_users
+        try {
+          const backupStored = localStorage.getItem("mmo_persistent_cloud_users");
+          if (backupStored) {
+            const backupUsers = JSON.parse(backupStored);
+            if (Array.isArray(backupUsers)) {
+              backupUsers.forEach(bu => {
+                const bEmail = (bu.email || "").toLowerCase().trim();
+                if (bEmail && !users.some(u => (u.email || "").toLowerCase().trim() === bEmail)) {
+                  users.push(bu);
+                }
+              });
+            }
+          }
+        } catch(e) {}
+
+        // 2. Tự động hợp nhất từ danh sách tài khoản mặc định cốt lõi
+        if (typeof DEFAULT_REGISTERED_USERS !== "undefined" && Array.isArray(DEFAULT_REGISTERED_USERS)) {
+          DEFAULT_REGISTERED_USERS.forEach(defU => {
+            const defEmail = (defU.email || "").toLowerCase().trim();
+            const existing = users.find(u => (u.email || "").toLowerCase().trim() === defEmail);
+            if (!existing) {
+              users.push(JSON.parse(JSON.stringify(defU)));
+            } else {
+              if (existing.balance === undefined || existing.balance === null || isNaN(Number(existing.balance))) {
+                existing.balance = defU.balance;
+              }
+              if (defU.role === "Quản Trị Viên") {
+                existing.role = "Quản Trị Viên";
+              }
+            }
+          });
         }
 
-        // Tự động xoá sạch hoàn toàn tất cả khách hàng mẫu demo (Nguyễn Văn Hùng, Trần Minh Đức, Lê Hoàng Nam, Khách Hàng Mẫu...)
+        // 3. Tự động xoá sạch hoàn toàn tất cả khách hàng mẫu demo
         const DEMO_EMAILS = [
           "hungmmo88@gmail.com",
           "ductran.ads@gmail.com",
@@ -1967,7 +2001,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "khach@gmail.com",
           "test@gmail.com"
         ];
-        const prevCount = users.length;
         users = users.filter(u => {
           const em = (u.email || "").toLowerCase().trim();
           const nm = (u.name || "").toLowerCase().trim();
@@ -1976,27 +2009,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           return true;
         });
 
-        // BẢO VỆ & DUY TRÌ 100% CÁC THÀNH VIÊN THỰC CỐ ĐỊNH (KHÔNG BAO GIỜ MẤT DỮ LIỆU)
-        DEFAULT_REGISTERED_USERS.forEach(defU => {
-          const defEmail = (defU.email || "").toLowerCase().trim();
-          const existing = users.find(u => (u.email || "").toLowerCase().trim() === defEmail);
-          if (!existing) {
-            users.push(JSON.parse(JSON.stringify(defU)));
-          } else {
-            if (existing.balance === undefined || existing.balance === null || isNaN(Number(existing.balance))) {
-              existing.balance = defU.balance;
-            }
-            if (defU.role === "Quản Trị Viên") {
-              existing.role = "Quản Trị Viên";
-            }
-          }
-        });
-
-        // Tự động lưu lại bộ nhớ an toàn
-        try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
+        // 4. Lưu lại an toàn vào cả 2 kho lưu trữ
+        try {
+          localStorage.setItem("mmo_registered_users", JSON.stringify(users));
+          localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(users));
+        } catch(e) {}
 
         // Synchronize with currently active user session
-        if (currentUser && currentUser.email) {
+        if (typeof currentUser !== "undefined" && currentUser && currentUser.email) {
           const emailLower = currentUser.email.toLowerCase().trim();
           const idx = users.findIndex(u => (u.email || "").toLowerCase().trim() === emailLower);
           if (idx !== -1) {
@@ -2008,26 +2028,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         return users;
       } catch(e) {
-        return JSON.parse(JSON.stringify(DEFAULT_REGISTERED_USERS));
+        return (typeof DEFAULT_REGISTERED_USERS !== "undefined") ? JSON.parse(JSON.stringify(DEFAULT_REGISTERED_USERS)) : [];
       }
     }
     window.getRegisteredUsers = getRegisteredUsers;
 
     function saveRegisteredUsers(users) {
       try {
+        if (!Array.isArray(users)) return;
         localStorage.setItem("mmo_registered_users", JSON.stringify(users));
+        localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(users));
         if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
         const isEditingStock = (document.activeElement && (document.activeElement.id === "admStockBulkInput" || document.activeElement.id === "admStockCurrentView"));
-            if (!isEditingStock && typeof renderAdminDashboard === "function") {
-              renderAdminDashboard();
-            }
-            if (typeof injectAllProductsSchema === "function") injectAllProductsSchema();
+        if (!isEditingStock && typeof renderAdminDashboard === "function") {
+          renderAdminDashboard();
+        }
+        if (typeof injectAllProductsSchema === "function") injectAllProductsSchema();
       } catch(e) {}
     }
     window.saveRegisteredUsers = saveRegisteredUsers;
 
-
-    
     function loadStoredUser() {
       try {
         const stored = localStorage.getItem("mmo_user");
@@ -6000,6 +6020,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         closeModal("authModal");
         updateUserUI();
+        if (typeof ensureUserPersistedAndSynced === "function") ensureUserPersistedAndSynced(currentUser.email, currentUser.name, { avatar: currentUser.avatar, role: currentUser.role });
 
         showToast("🎉 Đăng nhập thành công tài khoản Google: " + (currentUser.name || email), "success");
         if ((isAdm || role === "Quản Trị Viên") && typeof switchView === "function") {
@@ -6092,6 +6113,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       localStorage.setItem("mmo_user", JSON.stringify(currentUser));
       updateUserUI();
       closeModal("authModal");
+      if (typeof ensureUserPersistedAndSynced === "function") ensureUserPersistedAndSynced(currentUser.email, currentUser.name, { avatar: currentUser.avatar, role: currentUser.role });
       showToast("🎉 Đăng nhập thành công! Chào mừng " + (currentUser.name || currentUser.email), "success");
       if (isAdm && typeof switchView === "function") {
         switchView("viewAdmin");
@@ -8256,6 +8278,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       },
 
       checkoutAccounts: async function(productId, variantIdx, qty, orderId, email, amount) {
+        if (email && typeof ensureUserPersistedAndSynced === "function") {
+          ensureUserPersistedAndSynced(email);
+        }
         const res = await fetch(this.getApiUrl() + "/api/orders/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -12080,15 +12105,78 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function syncUserToCloud(user) {
       if (!user || !user.email) return;
-      callGasApi("authEmail", {
-        mode: "register",
-        email: user.email,
-        name: user.name || user.email.split("@")[0],
-        password: user.password || "123456",
-        role: user.role || "Thành Viên"
-      }).catch(() => {});
+      const em = (user.email || "").trim().toLowerCase();
+      if (!em || !em.includes("@")) return;
+
+      const payload = {
+        email: em,
+        name: user.name || em.split("@")[0],
+        avatar: user.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(em)),
+        role: user.role || "Thành Viên",
+        balance: (user.balance !== undefined && !isNaN(Number(user.balance))) ? Number(user.balance) : 0
+      };
+
+      if (typeof callGasApi === "function") {
+        callGasApi("syncUser", payload).then(function(res) {
+          if (res && res.success && res.user) {
+            let users = getRegisteredUsers();
+            const idx = users.findIndex(u => (u.email || "").toLowerCase().trim() === em);
+            if (idx !== -1) {
+              if (res.user.userId) users[idx].userId = res.user.userId;
+              if (res.user.balance !== undefined && (users[idx].balance === undefined || users[idx].balance === 0)) {
+                users[idx].balance = Number(res.user.balance);
+              }
+              try {
+                localStorage.setItem("mmo_registered_users", JSON.stringify(users));
+                localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(users));
+              } catch(e) {}
+            }
+          }
+        }).catch(function(err) {
+          console.warn("syncUserToCloud error:", err);
+        });
+      }
     }
     window.syncUserToCloud = syncUserToCloud;
+
+    function ensureUserPersistedAndSynced(email, name, extraData = {}) {
+      if (!email || !email.includes("@")) return;
+      email = email.trim().toLowerCase();
+      let users = getRegisteredUsers();
+      let found = users.find(u => (u.email || "").toLowerCase().trim() === email);
+      const isAdm = (typeof isAdminUser === "function" && isAdminUser({ email: email })) || (email === (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL.toLowerCase() : "manhdongvtc@gmail.com"));
+
+      if (!found) {
+        const newUser = {
+          userId: extraData.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
+          name: name || extraData.name || email.split("@")[0],
+          email: email,
+          role: isAdm ? "Quản Trị Viên" : (extraData.role || "Thành Viên"),
+          balance: extraData.balance !== undefined ? Number(extraData.balance) : 0,
+          created: extraData.created || new Date().toLocaleDateString("vi-VN"),
+          createdAt: extraData.createdAt || new Date().toLocaleDateString("vi-VN"),
+          avatar: extraData.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email))
+        };
+        users.unshift(newUser);
+        saveRegisteredUsers(users);
+        syncUserToCloud(newUser);
+      } else {
+        let needSave = false;
+        if (name && (!found.name || found.name === email.split("@")[0])) {
+          found.name = name;
+          needSave = true;
+        }
+        if (isAdm && found.role !== "Quản Trị Viên") {
+          found.role = "Quản Trị Viên";
+          needSave = true;
+        }
+        if (needSave) {
+          saveRegisteredUsers(users);
+        }
+        syncUserToCloud(found);
+      }
+    }
+    window.ensureUserPersistedAndSynced = ensureUserPersistedAndSynced;
 
     async function fetchCloudUsers(showNotification = false) {
       const apiUrl = getBackendApiUrl();
@@ -12134,6 +12222,7 @@ function syncAllOpenViewsStock(changedProdId) {
             }
           });
           saveRegisteredUsers(localUsers);
+try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUsers)); } catch(e) {}
           if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
           if (typeof renderAdminDashboard === "function") renderAdminDashboard();
           if (showNotification) showToast("🎉 Đã đồng bộ thành công " + data.users.length + " thành viên từ Google Sheet!", "success");
@@ -19526,11 +19615,15 @@ function syncAllOpenViewsStock(changedProdId) {
           syncAdminEmailsFromCloud();
         }
 
-      // Tự động đồng bộ số dư & người dùng định kỳ và khi focus tab
+      // Tự động đồng bộ số dư & người dùng trên toàn mạng lưới blog ngay khi vào web
+      if (typeof fetchCloudUsers === "function") fetchCloudUsers(false);
+      if (typeof fetchCloudTransactions === "function") fetchCloudTransactions(false);
+      if (typeof fetchAdminOrdersFromCloud === "function") fetchAdminOrdersFromCloud(true);
+
       setTimeout(function() {
         if (typeof fetchCloudUsers === "function") fetchCloudUsers(false);
         if (typeof fetchCloudTransactions === "function") fetchCloudTransactions(false);
-      }, 500);
+      }, 1500);
 
       if (typeof window !== "undefined") {
         window.addEventListener("focus", function() {
@@ -19542,7 +19635,7 @@ function syncAllOpenViewsStock(changedProdId) {
             if (typeof fetchCloudUsers === "function") fetchCloudUsers(false);
             if (typeof fetchCloudTransactions === "function") fetchCloudTransactions(false);
           }
-        }, 45000);
+        }, 30000);
       }
   
       }, _urlHasProd ? 50 : 300);
@@ -23025,7 +23118,8 @@ function injectAllProductsSchema() {
       if (typeof savePreOrders === "function") {
         savePreOrders(preOrders);
       } else {
-        try { localStorage.setItem("mmo_pre_orders", JSON.stringify(preOrders)); } catch(e) {}
+        try { localStorage.setItem("mmo_pre_orders", JSON.stringify(preOrders));
+          if (po && (po.buyerEmail || po.email) && typeof ensureUserPersistedAndSynced === "function") ensureUserPersistedAndSynced(po.buyerEmail || po.email, po.buyerName || po.buyerUsername); } catch(e) {}
       }
 
       // Cập nhật đa kho
