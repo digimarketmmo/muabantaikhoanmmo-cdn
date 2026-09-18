@@ -3056,14 +3056,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             return {
               ...po,
               isPreOrderTask: true,
-              taskTypeBadge: '<span style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-weight:800; padding:2px 7px; border-radius:4px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px;"><i class=\"fa-solid fa-hourglass-half\"></i> ĐẶT TRƯỚC</span>'
+              taskTypeBadge: '<span style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-weight:800; padding:3px 8px; border-radius:4px; font-size:0.72rem; display:inline-flex; align-items:center; gap:5px; white-space:nowrap !important; flex-shrink:0;"><i class=\"fa-solid fa-hourglass-half\"></i> ĐẶT TRƯỚC</span>'
             };
           }),
           ...pendingWarrantyOrders.map(function(wo) {
             return {
               ...wo,
               isPreOrderTask: false,
-              taskTypeBadge: '<span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-weight:800; padding:2px 7px; border-radius:4px; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px;"><i class=\"fa-solid fa-shield-halved\"></i> KHIẾU NẠI</span>'
+              taskTypeBadge: '<span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-weight:800; padding:3px 8px; border-radius:4px; font-size:0.72rem; display:inline-flex; align-items:center; gap:5px; white-space:nowrap !important; flex-shrink:0;"><i class=\"fa-solid fa-shield-halved\"></i> KHIẾU NẠI</span>'
             };
           })
         ];
@@ -3140,14 +3140,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const startIdx = (curPage - 1) * pageSize;
             const pageOrders = pendingOrders.slice(startIdx, startIdx + pageSize);
 
-            let tableHtml = '<div style="overflow-x:auto;"><table class="admin-table" style="width:100%; font-size:0.8rem;">' +
+            let tableHtml = '<div style="overflow-x:auto;"><table class="admin-table" style="width:100%; min-width:680px; font-size:0.8rem;">' +
               '<thead><tr><th>Loại / Mã Đơn</th><th>Khách Hàng</th><th>Sản Phẩm</th><th>Số Tiền</th><th>Trạng Thái</th><th style="text-align:right;">Thao Tác</th></tr></thead><tbody>';
             pageOrders.forEach(function(item) {
               const orderId = item.orderCode || item.orderId || item.id || "DH";
               const userStr = item.buyerUsername || item.buyerEmail || item.userEmail || item.buyer || item.customer || "Khách hàng";
               const prodName = item.productName || item.prodName || item.name || "Sản phẩm";
               const amtStr = (typeof formatVND === "function") ? formatVND(item.total || item.totalPrice || item.price || 0) : ((item.total || 0) + " đ");
-              const badge = item.taskTypeBadge || '<span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:4px;">Khiếu nại</span>';
+              const badge = item.taskTypeBadge || '<span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:0.72rem; font-weight:800; padding:3px 8px; border-radius:4px; white-space:nowrap !important; display:inline-flex; align-items:center; gap:5px;">Khiếu nại</span>';
 
               let actionBtns = '';
               if (item.isPreOrderTask) {
@@ -3163,12 +3163,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               }
 
               tableHtml += '<tr>' +
-                '<td>' + badge + '<br/><strong style="color:#38bdf8; font-size:0.78rem;">#' + escapeHtml(orderId) + '</strong></td>' +
-                '<td><b>' + escapeHtml(userStr) + '</b></td>' +
+                '<td style="white-space:nowrap; vertical-align:middle;">' + badge + '<br/><strong style="color:#38bdf8; font-size:0.78rem;">#' + escapeHtml(orderId) + '</strong></td>' +
+                '<td style="white-space:nowrap; vertical-align:middle;"><b>' + escapeHtml(userStr) + '</b></td>' +
                 '<td><div style="font-weight:600; color:#fff;">' + escapeHtml(prodName) + '</div>' + (item.qty ? ('<span style="font-size:0.7rem; color:#94a3b8;">SL: ' + item.qty + '</span>') : '') + '</td>' +
-                '<td style="color:#10b981; font-weight:700;">' + amtStr + '</td>' +
-                '<td><span style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:0.7rem; font-weight:700; padding:2px 6px; border-radius:4px;">' + escapeHtml(item.statusText || item.status || "Chờ xử lý") + '</span></td>' +
-                '<td style="text-align:right;">' + actionBtns + '</td>' +
+                '<td style="color:#10b981; font-weight:700; white-space:nowrap; vertical-align:middle;">' + amtStr + '</td>' +
+                '<td style="white-space:nowrap; vertical-align:middle;"><span style="background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:0.72rem; font-weight:800; padding:3px 8px; border-radius:4px; white-space:nowrap !important; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-clock-rotate-left"></i> ' + escapeHtml(item.statusText || item.status || "Chờ xử lý") + '</span></td>' +
+                '<td style="text-align:right; white-space:nowrap; vertical-align:middle;">' + actionBtns + '</td>' +
               '</tr>';
             });
             tableHtml += '</tbody></table></div>';
@@ -3195,7 +3195,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const wStartIdx = (curWPage - 1) * wPageSize;
             const pageWithdraws = pendingWithdraws.slice(wStartIdx, wStartIdx + wPageSize);
 
-            let wTableHtml = '<div style="overflow-x:auto;"><table class="admin-table" style="width:100%; font-size:0.8rem;">' +
+            let wTableHtml = '<div style="overflow-x:auto;"><table class="admin-table" style="width:100%; min-width:620px; font-size:0.8rem;">' +
               '<thead><tr><th>Mã GD</th><th>Thành Viên</th><th>Số Tiền</th><th>Ngân Hàng</th><th style="text-align:right;">Hành Động</th></tr></thead><tbody>';
             pageWithdraws.forEach(function(item) {
               const id = item.id || "W";

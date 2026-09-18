@@ -4579,3 +4579,37 @@ html, body { overflow-x: clip !important; max-width: 100vw !important; }
     box-sizing: border-box !important;
   }
 }
+
+/* ==================== GLOBAL TABLE BADGES & PENDING ORDERS NOWRAP ==================== */
+.admin-table th,
+.admin-table td {
+  vertical-align: middle !important;
+}
+
+#ovwPendingOrdersContainer table,
+#ovwPendingWithdrawContainer table {
+  min-width: 680px !important;
+}
+
+#ovwPendingOrdersContainer table td:nth-child(1),
+#ovwPendingOrdersContainer table td:nth-child(2),
+#ovwPendingOrdersContainer table td:nth-child(4),
+#ovwPendingOrdersContainer table td:nth-child(5),
+#ovwPendingOrdersContainer table td:nth-child(6) {
+  white-space: nowrap !important;
+}
+
+#ovwPendingOrdersContainer table td:nth-child(3) {
+  white-space: normal !important;
+  min-width: 180px;
+}
+
+#ovwPendingOrdersContainer span,
+#ovwPendingWithdrawContainer span,
+.badge-trust,
+.badge-verified,
+.adm-table-badge {
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
