@@ -11,7 +11,7 @@
     // =========================================================================
     // UNIVERSAL MULTI-BLOG SELF-HEALING AUTO-UPDATER & CODE SYNC CORE
     // =========================================================================
-    const MMO_CURRENT_CODE_VERSION = "1.4.6";
+    const MMO_CURRENT_CODE_VERSION = "1.4.7";
     window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
     // TỰ ĐỘNG ĐẢM BẢO TAB MUA QUA API HIỂN THỊ TRÊN MỌI BLOG (KỂ CẢ THEME XML CŨ)
@@ -14939,7 +14939,380 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
     }
     window.applyCoupon = applyCoupon;
 
-    
+    // =========================================================================
+    // POPUP & TỰ ĐỘNG CHUYỂN ĐẶT TRƯỚC CHO ĐƠN HÀNG API VƯỢT QUÁ HẠN MỨC / TỒN KHO
+    // =========================================================================
+    function ensureApiPreOrderNoticeModalDom() {
+      try {
+        if (document.getElementById("apiPreOrderNoticeModal")) return;
+        const modalHtml = `
+          <div id="apiPreOrderNoticeModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; z-index:100005; background:rgba(0,0,0,0.85); backdrop-filter:blur(10px); align-items:center; justify-content:center; padding:16px;">
+            <div class="modal-content" style="background:#0b111e; border:1px solid rgba(245,158,11,0.4); box-shadow:0 15px 40px rgba(0,0,0,0.8), 0 0 30px rgba(245,158,11,0.2); border-radius:14px; max-width:520px; width:100%; overflow:hidden; position:relative; animation:modalPopIn 0.3s cubic-bezier(0.16,1,0.3,1);">
+              
+              <!-- Modal Header -->
+              <div style="background:linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(15,23,42,0.6) 100%); border-bottom:1px solid rgba(245,158,11,0.25); padding:16px 20px; display:flex; align-items:center; justify-content:space-between;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                  <span style="background:#f59e0b; color:#000; font-size:0.75rem; font-weight:900; padding:3px 8px; border-radius:4px; text-transform:uppercase; letter-spacing:0.5px;">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Đã Chuyển Đặt Trước
+                  </span>
+                  <span style="color:#cbd5e1; font-size:0.85rem; font-weight:600;" id="apiPoNoticeOrderCodeDisplay">Đơn hàng</span>
+                </div>
+                <button type="button" onclick="closeModal('apiPreOrderNoticeModal')" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer; width:32px; height:32px; border-radius:6px; display:flex; align-items:center; justify-content:center; transition:background 0.2s;">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+              <!-- Modal Body -->
+              <div style="padding:22px 20px; text-align:center;">
+                
+                <!-- Animated Icon -->
+                <div style="width:64px; height:64px; margin:0 auto 14px auto; background:rgba(245,158,11,0.12); border:2px solid rgba(245,158,11,0.4); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#f59e0b; font-size:1.8rem;">
+                  <i class="fa-solid fa-hourglass-half fa-spin-pulse"></i>
+                </div>
+
+                <h3 style="color:#f8fafc; font-size:1.2rem; font-weight:800; margin:0 0 8px 0; line-height:1.3;">
+                  Đơn Hàng Vượt Quá Tồn Kho Tức Thì
+                </h3>
+
+                <!-- Balance Deducted Pill -->
+                <div style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); color:#10b981; font-weight:700; padding:8px 14px; border-radius:8px; font-size:0.88rem; margin-bottom:16px; display:inline-flex; align-items:center; gap:8px;">
+                  <i class="fa-solid fa-circle-check"></i>
+                  <span>Đã trừ tiền Ví thành công: <strong id="apiPoNoticeTotalCost" style="color:#34d399; font-size:1rem;">0 đ</strong></span>
+                </div>
+
+                <!-- Info Box -->
+                <div style="background:#0f172a; border:1px solid #1e293b; border-radius:10px; padding:14px 16px; text-align:left; font-size:0.85rem; line-height:1.6; color:#cbd5e1; margin-bottom:20px;">
+                  <p style="margin:0 0 10px 0; color:#f1f5f9; font-weight:700; font-size:0.9rem;">
+                    ⚠️ Đơn hàng của bạn vượt quá số lượng tồn kho tức thì hoặc hạn mức tài khoản nguồn của Admin.
+                  </p>
+                  
+                  <div style="display:flex; flex-direction:column; gap:10px;">
+                    <div style="display:flex; align-items:flex-start; gap:10px;">
+                      <span style="background:rgba(56,189,248,0.2); color:#38bdf8; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; flex-shrink:0;">1</span>
+                      <div>
+                        <strong style="color:#38bdf8;">Mua lẻ tức thì:</strong> Vui lòng mua số lượng từ <strong style="color:#fff;">1 - 5 cái/lần</strong> để hệ thống xuất tài khoản ngay lập tức.
+                      </div>
+                    </div>
+
+                    <div style="display:flex; align-items:flex-start; gap:10px;">
+                      <span style="background:rgba(16,185,129,0.2); color:#10b981; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; flex-shrink:0;">2</span>
+                      <div>
+                        <strong style="color:#10b981;">Chờ đơn đặt trước:</strong> Đơn đặt trước <strong style="color:#38bdf8;" id="apiPoNoticeOrderCode">#PRE...</strong> dự kiến sẽ <strong style="color:#fbbf24;">có hàng sau 60 phút</strong>.
+                      </div>
+                    </div>
+
+                    <div style="display:flex; align-items:flex-start; gap:10px;">
+                      <span style="background:rgba(245,158,11,0.2); color:#f59e0b; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.75rem; font-weight:800; flex-shrink:0;">3</span>
+                      <div>
+                        <strong style="color:#f59e0b;">Quyền lợi của bạn:</strong> Bạn có thể bấm <strong style="color:#ef4444;">Hủy đặt trước</strong> bất kỳ lúc nào để nhận lại <strong style="color:#10b981;">100% tiền vào Ví</strong>, hoặc tiếp tục <strong style="color:#38bdf8;">chờ nhận hàng</strong>.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Product Summary Info Row -->
+                <div style="display:flex; justify-content:space-between; align-items:center; background:#141d2e; border:1px solid #1e293b; padding:10px 14px; border-radius:8px; margin-bottom:18px; font-size:0.8rem;">
+                  <div style="text-align:left; max-width:65%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                    <span style="color:#94a3b8; display:block; font-size:0.72rem;">Sản phẩm:</span>
+                    <strong style="color:#f8fafc;" id="apiPoNoticeProdName">Tài khoản</strong>
+                  </div>
+                  <div style="text-align:right;">
+                    <span style="color:#94a3b8; display:block; font-size:0.72rem;">Số lượng đặt:</span>
+                    <strong style="color:#38bdf8;" id="apiPoNoticeQty">1 cái</strong>
+                  </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                    <button type="button" onclick="handleApiPoNoticeViewOrder()" style="background:linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color:#fff; border:none; padding:10px 14px; border-radius:8px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 4px 14px rgba(2,132,199,0.3); transition:transform 0.15s;">
+                      <i class="fa-solid fa-receipt"></i> Xem Đơn &amp; Hủy
+                    </button>
+                    <button type="button" onclick="handleApiPoNoticeBuySmall()" style="background:linear-gradient(135deg, #059669 0%, #047857 100%); color:#fff; border:none; padding:10px 14px; border-radius:8px; font-weight:700; font-size:0.85rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; box-shadow:0 4px 14px rgba(5,150,105,0.3); transition:transform 0.15s;">
+                      <i class="fa-solid fa-bolt"></i> Mua Lẻ 1 - 5 Cái
+                    </button>
+                  </div>
+                  <button type="button" onclick="closeModal('apiPreOrderNoticeModal'); showToast('⏳ Đơn đặt trước đang được chuẩn bị. Bạn có thể theo dõi trong mục Đặt Trước!', 'info');" style="background:rgba(255,255,255,0.06); color:#94a3b8; border:1px solid #334155; padding:9px 14px; border-radius:8px; font-weight:600; font-size:0.82rem; cursor:pointer; transition:background 0.2s;">
+                    Đã Hiểu / Chờ Nhận Hàng (Sau 60 Phút)
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.insertAdjacentHTML("beforeend", modalHtml);
+      } catch(e) {
+        console.warn("ensureApiPreOrderNoticeModalDom error:", e);
+      }
+    }
+    window.ensureApiPreOrderNoticeModalDom = ensureApiPreOrderNoticeModalDom;
+
+    function openApiPreOrderNoticeModal(data) {
+      if (!data) return;
+      ensureApiPreOrderNoticeModalDom();
+      const modal = document.getElementById("apiPreOrderNoticeModal");
+      if (!modal) return;
+
+      window._lastApiPreOrderData = data;
+      const codeDisp = document.getElementById("apiPoNoticeOrderCodeDisplay");
+      const codeEl = document.getElementById("apiPoNoticeOrderCode");
+      const prodEl = document.getElementById("apiPoNoticeProdName");
+      const qtyEl = document.getElementById("apiPoNoticeQty");
+      const costEl = document.getElementById("apiPoNoticeTotalCost");
+
+      if (codeDisp) codeDisp.innerText = "Đơn #" + data.orderCode;
+      if (codeEl) codeEl.innerText = "#" + data.orderCode;
+      if (prodEl) prodEl.innerText = data.productName || "Sản phẩm";
+      if (qtyEl) qtyEl.innerText = data.qty + " cái";
+      if (costEl) costEl.innerText = (typeof formatVND === "function") ? formatVND(data.totalCost) : (data.totalCost.toLocaleString("vi-VN") + " đ");
+
+      modal.style.display = "flex";
+      modal.classList.remove("hidden");
+    }
+    window.openApiPreOrderNoticeModal = openApiPreOrderNoticeModal;
+
+    function handleApiPoNoticeViewOrder() {
+      const data = window._lastApiPreOrderData;
+      if (typeof closeModal === "function") closeModal("apiPreOrderNoticeModal");
+      if (data && data.orderCode) {
+        if (typeof viewPreOrderDetail === "function") {
+          viewPreOrderDetail(data.orderCode);
+        } else if (typeof switchView === "function") {
+          switchView("viewProfile");
+          if (typeof switchProfileTab === "function") switchProfileTab("orders");
+        }
+      }
+    }
+    window.handleApiPoNoticeViewOrder = handleApiPoNoticeViewOrder;
+
+    function handleApiPoNoticeBuySmall() {
+      const data = window._lastApiPreOrderData;
+      if (typeof closeModal === "function") closeModal("apiPreOrderNoticeModal");
+      const qtyInput = document.getElementById("dtlQtyInput");
+      if (qtyInput) {
+        qtyInput.value = 1;
+        qtyInput.focus();
+        qtyInput.scrollIntoView({ behavior: "smooth", block: "center" });
+        if (typeof showToast === "function") {
+          showToast("⚡ Đã điều chỉnh số lượng về 1 cái. Bấm 'MUA NGAY' để nhận tài khoản tức thì!", "info");
+        }
+      }
+    }
+    window.handleApiPoNoticeBuySmall = handleApiPoNoticeBuySmall;
+
+    async function handleConvertToApiPreOrder(opts) {
+      const p = opts.product;
+      const targetVar = opts.targetVar || {};
+      const vIdx = (opts.vIdx !== undefined && opts.vIdx !== null) ? Number(opts.vIdx) : 0;
+      const qty = Math.max(1, Number(opts.qty) || 1);
+      const unitPrice = Number(opts.unitPrice) || Number(targetVar.price || (p ? p.price : 0)) || 0;
+      const totalCost = Number(opts.totalCost) || (unitPrice * qty);
+      const providerKey = opts.providerKey || "nguyenlieummo";
+      const apiMap = opts.apiMap || {};
+      const customOrderId = opts.orderId || ("PRE" + Math.floor(100000 + Math.random() * 900000));
+      const reason = opts.reason || "Vượt quá số lượng tồn kho hoặc hạn mức tài khoản nguồn của admin";
+
+      const btnBuy = document.getElementById("btnDtlBuy");
+      if (btnBuy) {
+        if (!btnBuy.dataset) btnBuy.dataset = {};
+        btnBuy.dataset.submitting = "false";
+        btnBuy.innerHTML = "<i class='fa-solid fa-cart-shopping'></i> MUA NGAY";
+        btnBuy.style.opacity = "1";
+        btnBuy.style.pointerEvents = "auto";
+      }
+
+      // Đảm bảo user đã đăng nhập
+      let user = null;
+      try {
+        user = JSON.parse(localStorage.getItem("mmo_user") || "null");
+      } catch(e) {}
+      if (!user && typeof currentUser !== "undefined") user = currentUser;
+
+      if (!user) {
+        const guestEmail = "khach_" + Math.floor(1000 + Math.random() * 9000) + "@gmail.com";
+        user = {
+          userId: "GUEST_" + Math.floor(100000 + Math.random() * 900000),
+          name: "Khách Ẩn Danh",
+          email: guestEmail,
+          role: "Thành Viên",
+          balance: totalCost + 500000,
+          avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(guestEmail),
+          isGuest: true
+        };
+        currentUser = user;
+        try {
+          localStorage.setItem("mmo_user", JSON.stringify(user));
+          let allU = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+          allU.unshift(user);
+          if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allU);
+        } catch(e) {}
+        if (typeof updateUserUI === "function") updateUserUI();
+        if (typeof updateWalletUI === "function") updateWalletUI();
+      }
+
+      const curBal = Number(user.balance) || 0;
+      if (curBal < totalCost) {
+        const missing = totalCost - curBal;
+        const depositAmt = Math.max(10000, missing);
+        if (typeof showToast === "function") {
+          showToast("⚠️ Số dư ví không đủ để đặt trước (Hiện có: " + (typeof formatVND === "function" ? formatVND(curBal) : curBal) + " - Đơn hàng: " + (typeof formatVND === "function" ? formatVND(totalCost) : totalCost) + ")! Đang chuyển hướng sang nạp tiền...", "warning");
+        }
+        if (typeof selectDepositAmount === "function") {
+          if (typeof switchView === "function") switchView("viewDeposit");
+          selectDepositAmount(depositAmt);
+        }
+        return false;
+      }
+
+      // 1. TRỪ TIỀN VÍ NGƯỜI DÙNG NGAY LẬP TỨC ("trừ tiền luôn")
+      user.balance = curBal - totalCost;
+      currentUser = user;
+      try {
+        localStorage.setItem("mmo_user", JSON.stringify(user));
+        localStorage.setItem("mmo_last_balance_change_time", String(Date.now()));
+        let allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+        const cleanEmail = (user.email || "").toLowerCase().trim();
+        const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
+        if (uIdx !== -1) {
+          allUsers[uIdx].balance = user.balance;
+          if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allUsers);
+        }
+      } catch(e) {}
+      if (typeof updateUserUI === "function") updateUserUI();
+      if (typeof updateWalletUI === "function") updateWalletUI();
+
+      // 2. GHI NHẬN BIẾN ĐỘNG SỐ DƯ
+      const fullProdTitle = (p ? p.name : "Sản phẩm") + (targetVar.name && targetVar.name !== "Mặc định" ? " (" + targetVar.name + ")" : "");
+      const nowStr = new Date().toLocaleString("vi-VN");
+      try {
+        if (typeof recordTransaction === "function") {
+          recordTransaction(
+            user.email,
+            user.username || user.fullname || user.name || user.email.split("@")[0],
+            "Thanh toán đặt hàng trước",
+            -totalCost,
+            user.balance,
+            "Đặt trước " + qty + "x " + fullProdTitle + " - Mã đơn #" + customOrderId
+          );
+        }
+        const balanceLogs = JSON.parse(localStorage.getItem("mmo_balance_logs") || "[]");
+        balanceLogs.unshift({
+          id: "TX_PO_" + Date.now(),
+          orderId: customOrderId,
+          userId: user.id || user.email,
+          userEmail: user.email,
+          username: user.username || user.fullname || user.name || user.email.split("@")[0],
+          type: "PAYMENT",
+          typeText: "Thanh toán đặt hàng trước",
+          amount: -totalCost,
+          balanceAfter: user.balance,
+          time: nowStr,
+          timestamp: Date.now(),
+          note: "Đặt trước " + qty + "x " + fullProdTitle + " - Mã đơn #" + customOrderId
+        });
+        localStorage.setItem("mmo_balance_logs", JSON.stringify(balanceLogs));
+      } catch(e) {}
+
+      // 3. TẠO OBJECT ĐƠN HÀNG ĐẶT TRƯỚC
+      const newPreOrder = {
+        id: customOrderId,
+        orderCode: customOrderId,
+        orderId: customOrderId,
+        type: "PRE_ORDER",
+        status: "WAITING_CONFIRM",
+        statusText: "Đang chờ hàng (sau 60 phút)",
+        estimatedReadyTime: "Sau 60 phút",
+        buyerId: user.id || user.email,
+        buyerUsername: user.username || user.fullname || user.name || user.email.split("@")[0],
+        buyerEmail: user.email,
+        userEmail: user.email,
+        email: user.email,
+        userName: user.username || user.fullname || user.name || user.email.split("@")[0],
+        productId: p ? p.id : "",
+        productName: fullProdTitle,
+        variantName: targetVar.name || "",
+        variantIndex: vIdx,
+        unitPrice: unitPrice,
+        price: unitPrice,
+        qty: qty,
+        quantity: qty,
+        total: totalCost,
+        totalPrice: totalCost,
+        maxDays: 1,
+        estimatedHours: 1,
+        sourceProvider: providerKey,
+        sourceProdId: apiMap.sourceProdId || "",
+        customNotes: "Đơn hàng tự động chuyển sang đặt trước do vượt quá hạn mức/số dư tài khoản nguồn của admin. Dự kiến có hàng sau 60 phút.",
+        deliveredAccounts: [],
+        credentials: "",
+        date: nowStr,
+        createdAt: nowStr,
+        createdTimestamp: Date.now()
+      };
+
+      // 4. LƯU VÀO CÁC DANH SÁCH ĐƠN HÀNG
+      try {
+        const preOrders = (typeof getPreOrders === "function") ? getPreOrders(true) : JSON.parse(localStorage.getItem("mmo_pre_orders") || "[]");
+        preOrders.unshift(newPreOrder);
+        if (typeof savePreOrders === "function") savePreOrders(preOrders);
+        else localStorage.setItem("mmo_pre_orders", JSON.stringify(preOrders));
+
+        const userOrders = JSON.parse(localStorage.getItem("mmo_orders") || "[]");
+        userOrders.unshift(newPreOrder);
+        localStorage.setItem("mmo_orders", JSON.stringify(userOrders));
+
+        const allOrders = JSON.parse(localStorage.getItem("mmo_all_orders") || "[]");
+        allOrders.unshift(newPreOrder);
+        localStorage.setItem("mmo_all_orders", JSON.stringify(allOrders));
+
+        if (typeof _cachedPreOrdersList !== "undefined") _cachedPreOrdersList = null;
+        if (typeof _lastPreOrdersFetchTime !== "undefined") _lastPreOrdersFetchTime = 0;
+      } catch(e) {}
+
+      // 5. ĐỒNG BỘ LÊN GOOGLE APPS SCRIPT
+      if (typeof callGasApi === "function") {
+        callGasApi("payOrderByWallet", {
+          email: (user.email || "").trim(),
+          prodId: p ? p.id : "",
+          prodName: fullProdTitle,
+          qty: qty,
+          totalCost: totalCost,
+          orderId: customOrderId,
+          isPreOrder: true,
+          notes: "Đơn đặt trước API (chờ cấp hàng sau 60 phút)"
+        });
+      }
+
+      // 6. THÔNG BÁO VÀ PHÁT CHUÔNG
+      if (typeof addUserNotification === "function") {
+        addUserNotification({
+          title: "⏳ Đơn đặt trước #" + customOrderId,
+          message: "Đơn hàng " + qty + "x " + fullProdTitle + " đã được trừ tiền ví và chuyển sang Đặt Trước (Có hàng sau 60 phút).",
+          type: "PRE_ORDER",
+          orderId: customOrderId,
+          email: user.email,
+          playSound: true
+        });
+      } else if (typeof playNotificationSound === "function") {
+        playNotificationSound();
+      }
+
+      // 7. BẬT POPUP THÔNG BÁO CHO KHÁCH HÀNG
+      openApiPreOrderNoticeModal({
+        orderCode: customOrderId,
+        productName: fullProdTitle,
+        qty: qty,
+        unitPrice: unitPrice,
+        totalCost: totalCost,
+        prodId: p ? p.id : "",
+        vIdx: vIdx
+      });
+
+      return true;
+    }
+    window.handleConvertToApiPreOrder = handleConvertToApiPreOrder;
+
     // ==================== EXECUTE BUY NOW FLOW ====================
     async function executeBuyCurrentProduct() {
     const btnBuy = document.getElementById("btnDtlBuy");
@@ -15142,8 +15515,17 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
         const reqPrice = (Number(apiMap.sourcePrice) || 69) * qty;
         if (sourceBal < reqPrice) {
           restoreBtn();
-          showToast("⚠️ Hạn mức nguồn " + providerKey + " tạm dừng! Vui lòng liên hệ Admin.", "warning");
-          return;
+          return await handleConvertToApiPreOrder({
+            product: p,
+            targetVar: targetVar,
+            vIdx: vIdx,
+            qty: qty,
+            unitPrice: unitPrice,
+            totalCost: totalCost,
+            providerKey: providerKey,
+            apiMap: apiMap,
+            reason: "Vượt quá hạn mức/số dư tài khoản nguồn của admin"
+          });
         }
 
         try {
@@ -15160,13 +15542,31 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
             credsLines = buyRes.accounts;
           } else {
             restoreBtn();
-            showToast("⚠️ " + ((buyRes && buyRes.message) || "Không thể xuất tài khoản từ API nguồn") + ". Số dư chưa bị trừ!", "warning");
-            return;
+            return await handleConvertToApiPreOrder({
+              product: p,
+              targetVar: targetVar,
+              vIdx: vIdx,
+              qty: qty,
+              unitPrice: unitPrice,
+              totalCost: totalCost,
+              providerKey: providerKey,
+              apiMap: apiMap,
+              reason: (buyRes && buyRes.message) || "Tài khoản nguồn của admin không đủ tồn kho để xuất tức thì"
+            });
           }
         } catch(apiErr) {
           restoreBtn();
-          showToast("⚠️ Lỗi API nguồn: " + apiErr.message, "danger");
-          return;
+          return await handleConvertToApiPreOrder({
+            product: p,
+            targetVar: targetVar,
+            vIdx: vIdx,
+            qty: qty,
+            unitPrice: unitPrice,
+            totalCost: totalCost,
+            providerKey: providerKey,
+            apiMap: apiMap,
+            reason: "Lỗi kết nối API nguồn: " + apiErr.message
+          });
         }
       } else {
         // GIAO HÀNG TỰ ĐỘNG: Ưu tiên lấy trực tiếp từ Turso Cloud Database nếu đã kết nối
@@ -15461,18 +15861,53 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
 
     if (isApiOnDemand) {
       const providerKey = apiMap.provider || "mail72h";
+      const sourceBal = (typeof getSourceBalance === "function") ? getSourceBalance(providerKey) : 999999;
+      const reqPrice = (Number(apiMap.sourcePrice) || 69) * qty;
+      if (sourceBal < reqPrice && typeof handleConvertToApiPreOrder === "function") {
+        await handleConvertToApiPreOrder({
+          product: product,
+          targetVar: targetVar,
+          vIdx: vIdx,
+          qty: qty,
+          unitPrice: unitPrice,
+          totalCost: totalCost,
+          providerKey: providerKey,
+          apiMap: apiMap,
+          reason: "Vượt quá hạn mức/số dư tài khoản nguồn của admin"
+        });
+        return [];
+      }
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[providerKey]) ? API_SOURCES[providerKey] : { baseUrl: "https://mail72h.com", apiKey: "" };
-      const buyRes = await executeSourceApiCall("buyProduct", {
-        productId: apiMap.sourceProdId,
-        amount: qty,
-        provider: providerKey,
-        baseUrl: apiMap.baseUrl || pCfg.baseUrl,
-        apiKey: apiMap.apiKey || pCfg.apiKey,
-        targetProdId: product.id
-      });
+      let buyRes = null;
+      try {
+        buyRes = await executeSourceApiCall("buyProduct", {
+          productId: apiMap.sourceProdId,
+          amount: qty,
+          provider: providerKey,
+          baseUrl: apiMap.baseUrl || pCfg.baseUrl,
+          apiKey: apiMap.apiKey || pCfg.apiKey,
+          targetProdId: product.id
+        });
+      } catch(e) {
+        buyRes = { success: false, message: e.message };
+      }
       if (buyRes && buyRes.success && Array.isArray(buyRes.accounts) && buyRes.accounts.length >= qty) {
         credsLines = buyRes.accounts;
       } else {
+        if (typeof handleConvertToApiPreOrder === "function") {
+          await handleConvertToApiPreOrder({
+            product: product,
+            targetVar: targetVar,
+            vIdx: vIdx,
+            qty: qty,
+            unitPrice: unitPrice,
+            totalCost: totalCost,
+            providerKey: providerKey,
+            apiMap: apiMap,
+            reason: (buyRes && buyRes.message) || "Không thể xuất tài khoản từ API nguồn"
+          });
+          return [];
+        }
         throw new Error((buyRes && buyRes.message) || "Không thể xuất tài khoản từ API nguồn");
       }
     } else {
