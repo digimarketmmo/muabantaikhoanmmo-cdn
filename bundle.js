@@ -11,7 +11,7 @@
     // =========================================================================
     // UNIVERSAL MULTI-BLOG SELF-HEALING AUTO-UPDATER & CODE SYNC CORE
     // =========================================================================
-    const MMO_CURRENT_CODE_VERSION = "1.4.7";
+    const MMO_CURRENT_CODE_VERSION = "1.4.8";
     window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
     // TỰ ĐỘNG ĐẢM BẢO TAB MUA QUA API HIỂN THỊ TRÊN MỌI BLOG (KỂ CẢ THEME XML CŨ)
@@ -8485,6 +8485,16 @@ if ($result && $result['status'] === 'success') {
       }
     }
     window.refreshAllShopStockUI = refreshAllShopStockUI;
+    // Phiên bản debounce 150ms - dùng ở mọi nơi gọi nhanh nhiều lần liên tiếp
+    var _refreshStockUIDebounceTimer = null;
+    function refreshAllShopStockUIDebounced(targetProdId) {
+      if (_refreshStockUIDebounceTimer) clearTimeout(_refreshStockUIDebounceTimer);
+      _refreshStockUIDebounceTimer = setTimeout(function() {
+        _refreshStockUIDebounceTimer = null;
+        refreshAllShopStockUI(targetProdId);
+      }, 150);
+    }
+    window.refreshAllShopStockUIDebounced = refreshAllShopStockUIDebounced;
 
     
     // =========================================================================
@@ -12366,8 +12376,8 @@ function syncAllOpenViewsStock(changedProdId) {
         "sendPasswordResetOtp", "sendResetOtp", "resetPassword"
       ].includes(action);
 
-      // Timeout an toàn: Đột biến 10s, đọc dữ liệu 6s để tránh làm treo hoặc đơ trình duyệt
-      const timeoutMs = isMutation ? 30000 : 25000;
+      // Timeout an toàn: Đột biến 10s, đọc dữ liệu 8s để tránh làm treo hoặc đơ trình duyệt
+      const timeoutMs = isMutation ? 10000 : 8000;
       function createTimeoutSignal(ms) {
         if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
           return AbortSignal.timeout(ms);
@@ -15320,7 +15330,22 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
     if (btnBuy) {
       if (!btnBuy.dataset) btnBuy.dataset = {};
       if (btnBuy.dataset.submitting === "true") return;
+      // ⚡ Phản hồi tức thì: disable nút NGAY khi click để tránh double-click
+      btnBuy.dataset.submitting = "true";
+      prevBtnContent = btnBuy.innerHTML;
+      btnBuy.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang xử lý đơn hàng...";
+      btnBuy.style.opacity = "0.75";
+      btnBuy.style.pointerEvents = "none";
     }
+    const restoreBtn = () => {
+      if (btnBuy) {
+        if (!btnBuy.dataset) btnBuy.dataset = {};
+        btnBuy.dataset.submitting = "false";
+        btnBuy.innerHTML = prevBtnContent || "<i class='fa-solid fa-bolt'></i> MUA NGAY";
+        btnBuy.style.opacity = "1";
+        btnBuy.style.pointerEvents = "auto";
+      }
+    };
 
     // 0. Khôi phục sản phẩm đang xem
     let p = currentSelectedProduct;
@@ -15342,28 +15367,12 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
     const vIdxCheck = (typeof currentSelectedVariantIndex !== "undefined" && currentSelectedVariantIndex !== null) ? Number(currentSelectedVariantIndex) : 0;
     const currentStockCheck = (p && typeof getShopVariantStock === "function") ? getShopVariantStock(p, vIdxCheck) : (p ? (p.stock || 0) : 0);
     if (currentStockCheck <= 0) {
+      restoreBtn();
       if (typeof openPreOrderModal === "function") {
         openPreOrderModal();
       }
       return;
     }
-
-    if (btnBuy) {
-      btnBuy.dataset.submitting = "true";
-      prevBtnContent = btnBuy.innerHTML;
-      btnBuy.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang xử lý đơn hàng...";
-      btnBuy.style.opacity = "0.75";
-      btnBuy.style.pointerEvents = "none";
-    }
-    const restoreBtn = () => {
-      if (btnBuy) {
-        if (!btnBuy.dataset) btnBuy.dataset = {};
-        btnBuy.dataset.submitting = "false";
-        btnBuy.innerHTML = prevBtnContent || "<i class='fa-solid fa-bolt'></i> MUA NGAY";
-        btnBuy.style.opacity = "1";
-        btnBuy.style.pointerEvents = "auto";
-      }
-    };
 
     try {
       // 0. Khôi phục phiên đăng nhập nếu có
@@ -23194,6 +23203,19 @@ function injectAllProductsSchema() {
 
     // Thực hiện đặt hàng trước (Đọc trực tiếp từ form modal, tự động lưu vào tất cả các kho)
     function submitPreOrderAction() {
+      // Phản hồi tức thì: disable nút ngay lập tức để tránh double-click và báo hiệu đang xử lý
+      var _poSubmitBtn = document.getElementById("btnSubmitPreOrder");
+      if (_poSubmitBtn) {
+        _poSubmitBtn.disabled = true;
+        _poSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i>Đang xử lý...';
+      }
+      function _restorePoBtn() {
+        if (_poSubmitBtn) {
+          _poSubmitBtn.disabled = false;
+          _poSubmitBtn.innerHTML = '<i class="fa-solid fa-cart-shopping" style="margin-right:6px;"></i>Đặt Hàng Ngay';
+        }
+      }
+
       const fullProdTitle = (document.getElementById("poModalProdName") ? document.getElementById("poModalProdName").value : "").trim() || (document.getElementById("dtlTitle") ? document.getElementById("dtlTitle").innerText.trim() : "Sản phẩm đặt trước");
       const prodId = (document.getElementById("poModalProdId") ? document.getElementById("poModalProdId").value : "").trim() || (document.getElementById("dtlId") ? document.getElementById("dtlId").innerText.trim() : ("PROD_" + Date.now()));
       const varIdx = parseInt(document.getElementById("poModalVarIdx") ? document.getElementById("poModalVarIdx").value : 0) || 0;
@@ -23262,6 +23284,7 @@ function injectAllProductsSchema() {
         if (typeof showToast === "function") {
           showToast("Số dư ví không đủ! Cần: " + (typeof formatVND === "function" ? formatVND(finalTotal) : finalTotal.toLocaleString("vi-VN") + " đ") + ", Hiện có: " + (typeof formatVND === "function" ? formatVND(userBalance) : userBalance.toLocaleString("vi-VN") + " đ"), "error");
         }
+        _restorePoBtn();
         return;
       }
 
@@ -23430,6 +23453,7 @@ function injectAllProductsSchema() {
           })
         }).catch(function() {});
       } catch(e) {}
+      _restorePoBtn(); // Khôi phục nút trước khi chuyển trang (modal đóng nên không còn thấy nhưng cần reset)
       openPreOrderDetailView(orderCode);
     }
     window.submitPreOrderAction = submitPreOrderAction;
@@ -23703,16 +23727,29 @@ function injectAllProductsSchema() {
 
       // 4. Gọi Turso Cloud Worker ngay lập tức để đồng bộ trạng thái mới nhất
       var TURSO_WORKER_URL = (typeof TURSO_CONFIG !== "undefined" && TURSO_CONFIG.DEFAULT_API_URL) ? TURSO_CONFIG.DEFAULT_API_URL : "https://mmo-shop-api.manhdongvtc.workers.dev";
-      fetch(TURSO_WORKER_URL + "/api/orders?limit=300")
-        .then(function(r) { return r.json(); })
-        .then(function(d) {
-          if (d && d.success && Array.isArray(d.orders)) {
-            var found = d.orders.find(function(o) { return String(o.id || o.orderId || "").replace(/#/g, "").trim().toLowerCase() === cleanId.toLowerCase(); });
-            if (found) applyCloudPO(found);
-          }
-        }).catch(function(e) {});
+      // Fetch đúng 1 đơn theo ID thay vì tải 300 đơn → nhanh hơn ~30x
+      function fetchSinglePreOrder(id, cb) {
+        fetch(TURSO_WORKER_URL + "/api/orders/" + encodeURIComponent(id))
+          .then(function(r) { return r.json(); })
+          .then(function(d) {
+            if (d && (d.success || d.order)) {
+              cb(d.order || d);
+            } else {
+              // Fallback: tìm trong list nếu endpoint đơn chưa hỗ trợ
+              fetch(TURSO_WORKER_URL + "/api/orders?limit=100")
+                .then(function(r2) { return r2.json(); })
+                .then(function(d2) {
+                  if (d2 && d2.success && Array.isArray(d2.orders)) {
+                    var found = d2.orders.find(function(o) { return String(o.id || o.orderId || "").replace(/#/g, "").trim().toLowerCase() === id.toLowerCase(); });
+                    if (found) cb(found);
+                  }
+                }).catch(function(e) {});
+            }
+          }).catch(function(e) {});
+      }
+      fetchSinglePreOrder(cleanId, applyCloudPO);
 
-      // 5. Tự động kiểm tra chu kỳ 3 giây để cập nhật trạng thái thời gian thực khi Admin giao hàng
+      // 5. Tự động kiểm tra chu kỳ 8 giây để cập nhật trạng thái thời gian thực khi Admin giao hàng
       if (window._podPollingTimer) clearInterval(window._podPollingTimer);
       window._podPollingTimer = setInterval(function() {
         var curV = localStorage.getItem("mmo_current_view");
@@ -23724,20 +23761,15 @@ function injectAllProductsSchema() {
           clearInterval(window._podPollingTimer);
           return;
         }
-        fetch(TURSO_WORKER_URL + "/api/orders?limit=300")
-          .then(function(r) { return r.json(); })
-          .then(function(d) {
-            if (d && d.success && Array.isArray(d.orders)) {
-              var found = d.orders.find(function(o) { return String(o.id || o.orderId || "").replace(/#/g, "").trim().toLowerCase() === cleanId.toLowerCase(); });
-              if (found) {
-                applyCloudPO(found);
-                if (order.status === "COMPLETED" || order.status === "CANCELLED") {
-                  clearInterval(window._podPollingTimer);
-                }
-              }
+        fetchSinglePreOrder(cleanId, function(found) {
+          if (found) {
+            applyCloudPO(found);
+            if (order.status === "COMPLETED" || order.status === "CANCELLED") {
+              clearInterval(window._podPollingTimer);
             }
-          }).catch(function(e) {});
-      }, 3000);
+          }
+        });
+      }, 8000);
     }
     window.openPreOrderDetailView = openPreOrderDetailView;
 
