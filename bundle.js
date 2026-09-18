@@ -19732,6 +19732,7 @@ function injectAllProductsSchema() {
         if (icon) icon.className = "fa-solid fa-xmark";
         markCurrentUserMessagesAsRead();
         renderChatMessageList();
+        if (typeof setupChatPasteListeners === "function") setupChatPasteListeners();
         setTimeout(() => {
           const inp = document.getElementById("mmoChatInput");
           if (inp) inp.focus();
@@ -19836,6 +19837,270 @@ function injectAllProductsSchema() {
         }
       }
     }
+
+    // ==================== TÍNH NĂNG GỬI HÌNH ẢNH CHAT (KHÁCH & ADMIN) ====================
+    // 1. Nén ảnh Canvas Client-Side
+    function compressChatImage(file, maxDim = 1200, quality = 0.8) {
+      return new Promise((resolve, reject) => {
+        if (!file || !file.type || !file.type.startsWith("image/")) {
+          return reject(new Error("Tệp được chọn không phải là hình ảnh hợp lệ"));
+        }
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error("Không thể đọc tệp ảnh"));
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onerror = () => reject(new Error("Lỗi tải hình ảnh"));
+          img.onload = () => {
+            let width = img.naturalWidth || img.width;
+            let height = img.naturalHeight || img.height;
+            if (width > maxDim || height > maxDim) {
+              if (width > height) {
+                height = Math.round((height * maxDim) / width);
+                width = maxDim;
+              } else {
+                width = Math.round((width * maxDim) / height);
+                height = maxDim;
+              }
+            }
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const mimeType = "image/jpeg";
+            const dataUrl = canvas.toDataURL(mimeType, quality);
+            canvas.toBlob((blob) => {
+              resolve({
+                blob: blob || file,
+                dataUrl: dataUrl,
+                width: width,
+                height: height
+              });
+            }, mimeType, quality);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    window.compressChatImage = compressChatImage;
+
+    // 2. Tải ảnh lên CDN công khai (FreeImageHost với fallback DataUrl)
+    async function uploadChatImageFile(file) {
+      const compressed = await compressChatImage(file, 1200, 0.8);
+      try {
+        const formData = new FormData();
+        formData.append("key", "6d207e02198a847aa98d0a2a901485a5");
+        formData.append("action", "upload");
+        formData.append("source", compressed.blob, "chat_" + Date.now() + ".jpg");
+        formData.append("format", "json");
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+        const res = await fetch("https://freeimage.host/api/1/upload", {
+          method: "POST",
+          body: formData,
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+
+        const data = await res.json();
+        if (data && data.image && data.image.url) {
+          return data.image.url;
+        }
+      } catch (err) {
+        console.warn("Upload FreeImageHost error, fallback to compressed dataUrl:", err);
+      }
+      return compressed.dataUrl;
+    }
+    window.uploadChatImageFile = uploadChatImageFile;
+
+    // 3. Xử lý khi người dùng chọn ảnh hoặc dán ảnh (Khách & Admin)
+    async function handleChatImageSelect(event, role = "user") {
+      const file = event.target && event.target.files && event.target.files[0];
+      if (!file) return;
+      event.target.value = "";
+      await processAndSendChatImage(file, role);
+    }
+    window.handleChatImageSelect = handleChatImageSelect;
+
+    async function processAndSendChatImage(file, role = "user") {
+      if (!file || !file.type || !file.type.startsWith("image/")) {
+        if (typeof showToast === "function") showToast("⚠️ Vui lòng chọn tệp hình ảnh (PNG, JPG, WEBP)!", "warning");
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        if (typeof showToast === "function") showToast("⚠️ Kích thước ảnh quá lớn! Vui lòng chọn ảnh dưới 10MB.", "warning");
+        return;
+      }
+
+      if (role === "admin" && !currentAdminChatTargetEmail) {
+        if (typeof showToast === "function") showToast("⚠️ Vui lòng chọn một cuộc trò chuyện từ danh sách bên trái trước!", "warning");
+        return;
+      }
+
+      if (typeof showToast === "function") showToast("⏳ Đang nén và tải ảnh lên khung chat...", "info");
+
+      try {
+        const imageUrl = await uploadChatImageFile(file);
+        if (!imageUrl) throw new Error("Không thể tạo liên kết ảnh");
+
+        const imgMsg = "[IMG]" + imageUrl + "[/IMG]";
+
+        if (role === "admin") {
+          const inp = document.getElementById("admChatReplyInput");
+          const extraText = (inp ? inp.value : "").trim();
+          const finalMsg = extraText ? (extraText + "\n" + imgMsg) : imgMsg;
+          if (inp) inp.value = "";
+          sendAdminChatReply(finalMsg);
+        } else {
+          const inp = document.getElementById("mmoChatInput");
+          const extraText = (inp ? inp.value : "").trim();
+          const finalMsg = extraText ? (extraText + "\n" + imgMsg) : imgMsg;
+          if (inp) inp.value = "";
+          sendChatMessage(finalMsg);
+        }
+        if (typeof showToast === "function") showToast("🎉 Đã gửi hình ảnh thành công!", "success");
+      } catch (err) {
+        console.error("Lỗi gửi ảnh chat:", err);
+        if (typeof showToast === "function") showToast("❌ Lỗi khi gửi ảnh: " + (err.message || "Vui lòng thử lại!"), "danger");
+      }
+    }
+    window.processAndSendChatImage = processAndSendChatImage;
+
+    // 4. Hỗ trợ phím tắt dán ảnh Clipboard (Ctrl + V)
+    function setupChatPasteListeners() {
+      const userInp = document.getElementById("mmoChatInput");
+      if (userInp && !userInp._hasChatPasteListener) {
+        userInp._hasChatPasteListener = true;
+        userInp.addEventListener("paste", function(e) {
+          const items = (e.clipboardData || window.clipboardData)?.items;
+          if (!items) return;
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type && items[i].type.indexOf("image") !== -1) {
+              const file = items[i].getAsFile();
+              if (file) {
+                e.preventDefault();
+                processAndSendChatImage(file, "user");
+                break;
+              }
+            }
+          }
+        });
+      }
+
+      const admInp = document.getElementById("admChatReplyInput");
+      if (admInp && !admInp._hasChatPasteListener) {
+        admInp._hasChatPasteListener = true;
+        admInp.addEventListener("paste", function(e) {
+          const items = (e.clipboardData || window.clipboardData)?.items;
+          if (!items) return;
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type && items[i].type.indexOf("image") !== -1) {
+              const file = items[i].getAsFile();
+              if (file) {
+                e.preventDefault();
+                processAndSendChatImage(file, "admin");
+                break;
+              }
+            }
+          }
+        });
+      }
+    }
+    window.setupChatPasteListeners = setupChatPasteListeners;
+
+    // 5. Trình xem ảnh phóng to toàn màn hình (Lightbox)
+    function openChatLightbox(src) {
+      if (!src) return;
+      let modal = document.getElementById("chatImageLightbox");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "chatImageLightbox";
+        modal.className = "chat-lightbox-overlay";
+        modal.innerHTML = `
+          <div class="chat-lightbox-backdrop" onclick="closeChatLightbox()"></div>
+          <div class="chat-lightbox-content">
+            <button type="button" class="chat-lightbox-close" onclick="closeChatLightbox()" title="Đóng (Esc)">&times;</button>
+            <a id="chatLightboxDownloadBtn" href="" target="_blank" download="chat_image.jpg" class="chat-lightbox-btn" title="Mở ảnh gốc / Tải về"><i class="fa-solid fa-download"></i> Tải về</a>
+            <img id="chatLightboxImg" src="" alt="Hình ảnh phóng to" />
+          </div>
+        `;
+        document.body.appendChild(modal);
+
+        window.addEventListener("keydown", function(e) {
+          if (e.key === "Escape") closeChatLightbox();
+        });
+      }
+      const imgEl = document.getElementById("chatLightboxImg");
+      const dlBtn = document.getElementById("chatLightboxDownloadBtn");
+      if (imgEl) imgEl.src = src;
+      if (dlBtn) dlBtn.href = src;
+      modal.style.display = "flex";
+      document.body.style.overflow = "hidden";
+    }
+    window.openChatLightbox = openChatLightbox;
+
+    function closeChatLightbox() {
+      const modal = document.getElementById("chatImageLightbox");
+      if (modal) modal.style.display = "none";
+      document.body.style.overflow = "";
+    }
+    window.closeChatLightbox = closeChatLightbox;
+
+    // 6. Định dạng nội dung tin nhắn & bóc tách ảnh
+    function formatChatMessageContent(rawText, extraImage = "") {
+      if (!rawText && !extraImage) return "";
+      let t = rawText || "";
+      const imgRegex = /\[IMG\](.*?)\[\/IMG\]/gi;
+      const images = [];
+      let match;
+      while ((match = imgRegex.exec(t)) !== null) {
+        if (match[1]) images.push(match[1].trim());
+      }
+      if (extraImage && !images.includes(extraImage)) {
+        images.push(extraImage);
+      }
+
+      let cleanText = t.replace(imgRegex, "").trim();
+      let html = "";
+
+      if (cleanText) {
+        let s = escapeHtml(cleanText).replace(/\n/g, "<br/>");
+        s = s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}))/gi, function(mMatch, fullCode, cleanCode) {
+          const code = cleanCode || fullCode.replace('#', '');
+          return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để mở Lịch Sử Đơn Hàng &amp; Xử Lý Đổi Trả / Hoàn Tiền" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
+        });
+        html += '<div class="chat-text-wrap">' + s + '</div>';
+      }
+
+      if (images.length > 0) {
+        html += '<div class="chat-images-grid" style="display:flex; flex-direction:column; gap:6px; margin-top:' + (cleanText ? '6px' : '0') + ';">';
+        images.forEach(imgSrc => {
+          const safeSrc = escapeHtml(imgSrc);
+          html += '<div class="chat-media-attachment" onclick="openChatLightbox(\'' + safeSrc + '\')" title="Bấm để phóng to hình ảnh">';
+          html += '<img src="' + safeSrc + '" alt="Ảnh đính kèm" loading="lazy"/>';
+          html += '<span class="chat-media-zoom-badge"><i class="fa-solid fa-magnifying-glass-plus"></i> Xem ảnh</span>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      return html;
+    }
+    window.formatChatMessageContent = formatChatMessageContent;
+
+    function formatChatSnippet(rawText) {
+      if (!rawText) return "";
+      if (rawText.includes("[IMG]")) {
+        const textWithoutImg = rawText.replace(/\[IMG\].*?\[\/IMG\]/gi, "").trim();
+        return textWithoutImg ? (textWithoutImg + " 📷 [Ảnh]") : "📷 [Hình ảnh]";
+      }
+      return rawText;
+    }
+    window.formatChatSnippet = formatChatSnippet;
 
     // 4. GỬI TIN NHẮN TỪ PHÍA NGƯỜI DÙNG
     function sendChatMessage(presetText = "", extraData = null) {
@@ -20061,13 +20326,7 @@ function injectAllProductsSchema() {
         return "<div class='chat-msg-row " + rowClass + "'>" +
           "<div class='chat-msg-bubble " + bubbleClass + "'>" +
             senderLabel +
-              "<div>" + (function(t) {
-                let s = escapeHtml(t).replace(/\n/g, "<br/>");
-                return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}))/gi, function(match, fullCode, cleanCode) {
-                  const code = cleanCode || fullCode.replace('#', '');
-                  return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để mở Lịch Sử Đơn Hàng &amp; Xử Lý Đổi Trả / Hoàn Tiền" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
-                });
-              })(m.text) + "</div>" +
+            formatChatMessageContent(m.text, m.image) +
             "<span class='chat-msg-time'>" + (m.time || "") + "</span>" +
           "</div>" +
         "</div>";
@@ -20075,6 +20334,7 @@ function injectAllProductsSchema() {
 
       container.innerHTML = headerBanner + msgsHtml;
       container.scrollTop = container.scrollHeight;
+      if (typeof setupChatPasteListeners === "function") setupChatPasteListeners();
     }
 
     function markCurrentUserMessagesAsRead() {
@@ -20233,18 +20493,19 @@ function injectAllProductsSchema() {
 
       all.forEach(m => {
         if (m.userEmail === "system") return;
+        const previewText = (typeof formatChatSnippet === "function") ? formatChatSnippet(m.text) : m.text;
         if (!userMap[m.userEmail]) {
           userMap[m.userEmail] = {
             email: m.userEmail,
             name: m.senderName || m.userEmail,
-            lastMsg: m.text,
+            lastMsg: previewText,
             lastTime: m.time,
             lastDate: m.date,
             lastTimestamp: m.timestamp || 0,
             unreadCount: 0
           };
         } else {
-          userMap[m.userEmail].lastMsg = m.text;
+          userMap[m.userEmail].lastMsg = previewText;
           userMap[m.userEmail].lastTime = m.time;
           userMap[m.userEmail].lastDate = m.date;
           if (m.timestamp && m.timestamp > userMap[m.userEmail].lastTimestamp) {
@@ -20324,13 +20585,7 @@ function injectAllProductsSchema() {
           return "<div style='display:flex; gap:8px; align-items:flex-end; " + rowClass + "'>" +
             "<div style='max-width:80%; padding:10px 14px; border-radius:12px; font-size:0.85rem; line-height:1.45; " + bubbleBg + "'>" +
               "<strong style='font-size:0.7rem; opacity:0.85; display:block; margin-bottom:3px;'>" + senderTitle + "</strong>" +
-              "<div>" + (function(t) {
-                let s = escapeHtml(t).replace(/\n/g, "<br/>");
-                return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}))/gi, function(match, fullCode, cleanCode) {
-                  const code = cleanCode || fullCode.replace('#', '');
-                  return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để mở Lịch Sử Đơn Hàng &amp; Xử Lý Đổi Trả / Hoàn Tiền" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
-                });
-              })(m.text) + "</div>" +
+              formatChatMessageContent(m.text, m.image) +
               "<span style='font-size:0.65rem; opacity:0.7; display:block; margin-top:4px; text-align:right;'>" + (m.time || "") + "</span>" +
             "</div>" +
           "</div>";
@@ -20370,6 +20625,7 @@ function injectAllProductsSchema() {
       setTimeout(function() {
         const inp = document.getElementById("admChatReplyInput");
         if (inp) inp.focus();
+        if (typeof setupChatPasteListeners === "function") setupChatPasteListeners();
       }, 100);
     }
     window.selectAdminChatUser = selectAdminChatUser;
@@ -20383,16 +20639,17 @@ function injectAllProductsSchema() {
       // Ẩn bong bóng chat góc màn hình khi Admin đang ở tab Chat để không che nút Gửi
       const chatWidget = document.getElementById("mmoChatWidgetContainer");
       if (chatWidget) chatWidget.style.display = "none";
+      if (typeof setupChatPasteListeners === "function") setupChatPasteListeners();
     }
     window.renderAdminChatUI = renderAdminChatUI;
 
-    function sendAdminChatReply() {
+    function sendAdminChatReply(presetText = "") {
       if (!currentAdminChatTargetEmail) {
-        showToast("Vui lòng chọn một cuộc trò chuyện từ danh sách bên trái trước!", "warning");
+        if (typeof showToast === "function") showToast("Vui lòng chọn một cuộc trò chuyện từ danh sách bên trái trước!", "warning");
         return;
       }
       const inp = document.getElementById("admChatReplyInput");
-      const text = (inp ? inp.value : "").trim();
+      const text = (presetText || (inp ? inp.value : "")).trim();
       if (!text) return;
 
       const now = new Date();
@@ -20425,7 +20682,7 @@ function injectAllProductsSchema() {
       // Phát sóng đa kênh Realtime (Broadcast + Cloud SSE + GAS)
       broadcastChatMessage(newMsg);
 
-      showToast("Đã gửi phản hồi hỗ trợ cho khách!", "success");
+      if (typeof showToast === "function") showToast("Đã gửi phản hồi hỗ trợ cho khách!", "success");
     }
     window.sendAdminChatReply = sendAdminChatReply;
 
