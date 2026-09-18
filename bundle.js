@@ -14433,25 +14433,87 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
     window.switchProductDescTab = switchProductDescTab;
 
     // =========================================================================
+    // HÀM SAO CHÉP VÀO CLIPBOARD CHUẨN ĐA NỀN TẢNG (copyTextDirect)
+    // =========================================================================
+    function copyTextDirect(text, successMsg) {
+      if (!text) return;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(function() {
+          if (typeof showToast === "function") showToast(successMsg || "Đã sao chép vào bộ nhớ tạm!", "success");
+        }).catch(function() {
+          fallbackCopyText(text, successMsg);
+        });
+      } else {
+        fallbackCopyText(text, successMsg);
+      }
+    }
+    window.copyTextDirect = copyTextDirect;
+
+    function fallbackCopyText(text, successMsg) {
+      try {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        if (typeof showToast === "function") showToast(successMsg || "Đã sao chép vào bộ nhớ tạm!", "success");
+      } catch (err) {
+        if (typeof showToast === "function") showToast("Vui lòng chọn và sao chép thủ công!", "warning");
+      }
+    }
+    window.fallbackCopyText = fallbackCopyText;
+
+    // =========================================================================
     // RENDER TAB TÍCH HỢP MUA HÀNG QUA API TRÊN TRANG CHI TIẾT SẢN PHẨM
     // =========================================================================
     function renderProductApiTab() {
       const container = document.getElementById("dtlApiTabContent");
       if (!container) return;
 
-      const p = currentSelectedProduct;
+      var p = (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && currentSelectedProduct.id) 
+        ? currentSelectedProduct 
+        : (window.currentSelectedProduct || null);
+
       if (!p || !p.id) {
-        container.innerHTML = '<p style="color:#94a3b8; padding:20px; text-align:center;">Đang tải thông tin sản phẩm...</p>';
+        var dtlIdEl = document.getElementById("dtlId");
+        var dtlId = dtlIdEl ? dtlIdEl.innerText.trim() : "";
+        if (dtlId) {
+          var prods = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) ? MOCK_DATA.products : []);
+          p = prods.find(function(item) { return item && item.id === dtlId; });
+        }
+      }
+
+      if (!p || !p.id) {
+        var dtlTitleEl = document.getElementById("dtlTitle");
+        var dtlTitle = dtlTitleEl ? dtlTitleEl.innerText.trim() : "";
+        if (dtlTitle) {
+          var prods2 = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) ? MOCK_DATA.products : []);
+          p = prods2.find(function(item) { return item && item.name === dtlTitle; });
+        }
+      }
+
+      if (!p || !p.id) {
+        container.innerHTML = '<div style="color:#94a3b8; padding:30px; text-align:center;"><i class="fa-solid fa-spinner fa-spin" style="font-size:1.5rem; color:#10b981; margin-bottom:10px; display:block;"></i>Đang tải dữ liệu API của sản phẩm...</div>';
+        setTimeout(function() {
+          if (typeof renderProductApiTab === "function") renderProductApiTab();
+        }, 300);
         return;
       }
 
-      const vIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+      var vIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : (window.currentSelectedVariantIndex || 0);
       let variantsList = [];
       if (Array.isArray(p.variants) && p.variants.length > 0) {
         variantsList = p.variants;
       } else {
         variantsList = [{ name: p.name, price: p.price || 0, stock: p.stock || 0 }];
       }
+
+      if (vIdx < 0 || vIdx >= variantsList.length) vIdx = 0;
 
       const selVar = variantsList[vIdx] || variantsList[0] || { name: p.name, price: p.price || 0 };
       const curPrice = (selVar.price !== undefined) ? Number(selVar.price) : Number(p.price || 0);
@@ -14465,8 +14527,8 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
         varRowsHtml += `
           <tr style="border-bottom:1px solid rgba(255,255,255,0.06); ${isCur ? 'background:rgba(16,185,129,0.08); font-weight:700;' : ''}">
             <td style="padding:8px 12px; font-family:monospace; color:#38bdf8;">${i} ${isCur ? '<span style="color:#10b981; font-size:0.75rem;">(Đang chọn)</span>' : ''}</td>
-            <td style="padding:8px 12px; color:#f1f5f9;">${escapeHtml(v.name || ('Biến thể ' + (i + 1)))}</td>
-            <td style="padding:8px 12px; color:#10b981;">${formatVND(v.price || p.price || 0)}</td>
+            <td style="padding:8px 12px; color:#f1f5f9;">${(typeof escapeHtml === "function" ? escapeHtml(v.name || ('Biến thể ' + (i + 1))) : (v.name || ('Biến thể ' + (i + 1))))}</td>
+            <td style="padding:8px 12px; color:#10b981;">${(typeof formatVND === "function" ? formatVND(v.price || p.price || 0) : ((v.price || p.price || 0) + ' đ'))}</td>
             <td style="padding:8px 12px; color:${vStk > 0 ? '#38bdf8' : '#ef4444'};">${vStk} acc</td>
           </tr>
         `;
@@ -14486,9 +14548,9 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
   "message": "Mua hàng thành công",
   "order_id": "ORD-API-${Math.floor(100000 + Math.random() * 900000)}",
   "product_id": "${p.id}",
-  "product_name": "${escapeHtml(p.name)}",
+  "product_name": "${(typeof escapeHtml === "function" ? escapeHtml(p.name) : p.name)}",
   "variant_idx": ${vIdx},
-  "variant_name": "${escapeHtml(selVar.name || p.name)}",
+  "variant_name": "${(typeof escapeHtml === "function" ? escapeHtml(selVar.name || p.name) : (selVar.name || p.name))}",
   "quantity": 1,
   "unit_price": ${curPrice},
   "total_amount": ${curPrice},
@@ -14526,11 +14588,11 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
             </div>
             <div style="background:#0d131f; border:1px solid #1e293b; padding:10px; border-radius:6px;">
               <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:4px;">BIẾN THỂ ĐANG CHỌN (variant_idx):</div>
-              <div style="font-size:0.85rem; font-weight:800; color:#10b981;">Index: ${vIdx} - ${escapeHtml(selVar.name || p.name)}</div>
+              <div style="font-size:0.85rem; font-weight:800; color:#10b981;">Index: ${vIdx} - ${(typeof escapeHtml === "function" ? escapeHtml(selVar.name || p.name) : (selVar.name || p.name))}</div>
             </div>
             <div style="background:#0d131f; border:1px solid #1e293b; padding:10px; border-radius:6px;">
               <div style="font-size:0.72rem; color:#94a3b8; margin-bottom:4px;">ĐƠN GIÁ & TỒN KHO API:</div>
-              <div style="font-size:0.85rem; font-weight:800; color:#fbbf24;">${formatVND(curPrice)} | Tồn: ${curStock} acc</div>
+              <div style="font-size:0.85rem; font-weight:800; color:#fbbf24;">${(typeof formatVND === "function" ? formatVND(curPrice) : (curPrice + ' đ'))} | Tồn: ${curStock} acc</div>
             </div>
           </div>
 
@@ -14565,7 +14627,7 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
               <i class="fa-regular fa-copy"></i> Sao Chép Lệnh cURL
             </button>
           </div>
-          <pre id="dtlApiCurlSnippet" style="background:#0d131f; border:1px solid #1e293b; padding:12px; border-radius:6px; font-size:0.78rem; color:#38bdf8; font-family:monospace; line-height:1.6; margin:0; overflow-x:auto; white-space:pre;">${escapeHtml(curlCmd)}</pre>
+          <pre id="dtlApiCurlSnippet" style="background:#0d131f; border:1px solid #1e293b; padding:12px; border-radius:6px; font-size:0.78rem; color:#38bdf8; font-family:monospace; line-height:1.6; margin:0; overflow-x:auto; white-space:pre;">${(typeof escapeHtml === "function" ? escapeHtml(curlCmd) : curlCmd)}</pre>
         </div>
 
         <!-- Response Sample -->
@@ -14573,7 +14635,7 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
           <span style="font-size:0.82rem; font-weight:700; color:#cbd5e1; display:block; margin-bottom:8px;">
             <i class="fa-solid fa-circle-check" style="color:#10b981;"></i> CẤU TRÚC JSON TRẢ VỀ (Response 200 OK):
           </span>
-          <pre style="background:#0d131f; border:1px solid #1e293b; padding:12px; border-radius:6px; font-size:0.75rem; color:#10b981; font-family:monospace; line-height:1.5; margin:0; overflow-x:auto; white-space:pre;">${escapeHtml(responseSample)}</pre>
+          <pre style="background:#0d131f; border:1px solid #1e293b; padding:12px; border-radius:6px; font-size:0.75rem; color:#10b981; font-family:monospace; line-height:1.5; margin:0; overflow-x:auto; white-space:pre;">${(typeof escapeHtml === "function" ? escapeHtml(responseSample) : responseSample)}</pre>
         </div>
 
         <!-- Call to Action Banner -->
@@ -14593,8 +14655,7 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
     function copyCurlSnippet() {
       const el = document.getElementById("dtlApiCurlSnippet");
       if (el) {
-        copyTextDirect(el.innerText || el.textContent);
-        showToast("✅ Đã sao chép lệnh cURL gọi mua hàng!", "success");
+        copyTextDirect(el.innerText || el.textContent, "✅ Đã sao chép lệnh cURL gọi mua hàng!");
       }
     }
     window.copyCurlSnippet = copyCurlSnippet;
