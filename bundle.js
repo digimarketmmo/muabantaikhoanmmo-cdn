@@ -11,11 +11,49 @@
     // =========================================================================
     // UNIVERSAL MULTI-BLOG SELF-HEALING AUTO-UPDATER & CODE SYNC CORE
     // =========================================================================
-    const MMO_CURRENT_CODE_VERSION = "1.4.5";
+    const MMO_CURRENT_CODE_VERSION = "1.4.6";
     window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
+
+    // TỰ ĐỘNG ĐẢM BẢO TAB MUA QUA API HIỂN THỊ TRÊN MỌI BLOG (KỂ CẢ THEME XML CŨ)
+    function ensureProductApiTabDom() {
+      try {
+        let btnApi = document.getElementById("dtlTabBtnApi");
+        if (!btnApi) {
+          const header = document.querySelector(".detail-tabs-header") || (document.getElementById("dtlTabBtnDesc") && document.getElementById("dtlTabBtnDesc").parentElement);
+          if (header) {
+            btnApi = document.createElement("button");
+            btnApi.className = "detail-tab-btn";
+            btnApi.id = "dtlTabBtnApi";
+            btnApi.setAttribute("onclick", 'switchProductDescTab("api", this)');
+            btnApi.innerHTML = '<i class="fa-solid fa-code" style="color:#10b981;"></i> Mua Qua API';
+            header.appendChild(btnApi);
+          }
+        }
+        let secApi = document.getElementById("dtlTabSecApi");
+        if (!secApi) {
+          const secReviews = document.getElementById("dtlTabSecReviews");
+          const parent = secReviews ? secReviews.parentElement : (document.querySelector(".product-detail-card") || document.querySelector(".tab-content-body"));
+          if (parent) {
+            secApi = document.createElement("div");
+            secApi.id = "dtlTabSecApi";
+            secApi.style.display = "none";
+            secApi.innerHTML = '<div id="dtlApiTabContent"></div>';
+            if (secReviews && secReviews.nextSibling) {
+              parent.insertBefore(secApi, secReviews.nextSibling);
+            } else {
+              parent.appendChild(secApi);
+            }
+          }
+        }
+      } catch(e) {
+        console.warn("ensureProductApiTabDom error:", e);
+      }
+    }
+    window.ensureProductApiTabDom = ensureProductApiTabDom;
 
     function checkAndApplyNetworkUpdate() {
       try {
+        ensureProductApiTabDom();
         fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/v1/version?t=" + Date.now(), {
           cache: "no-store",
           headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" }
@@ -49,6 +87,7 @@
               nextScript.async = true;
               nextScript.onload = function() {
                 console.log("[MMO Universal Update] Đã nạp thành công code mới v" + data.version + " trên blog này!");
+                if (typeof ensureProductApiTabDom === "function") ensureProductApiTabDom();
               };
               document.body.appendChild(nextScript);
             }
@@ -60,11 +99,18 @@
     window.checkAndApplyNetworkUpdate = checkAndApplyNetworkUpdate;
 
     if (typeof window !== "undefined") {
-      setTimeout(checkAndApplyNetworkUpdate, 1500);
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", function() {
+          if (typeof ensureProductApiTabDom === "function") ensureProductApiTabDom();
+        });
+      } else {
+        if (typeof ensureProductApiTabDom === "function") ensureProductApiTabDom();
+      }
+      setTimeout(checkAndApplyNetworkUpdate, 500);
       window.addEventListener("focus", function() {
         checkAndApplyNetworkUpdate();
       });
-      setInterval(checkAndApplyNetworkUpdate, 300000);
+      setInterval(checkAndApplyNetworkUpdate, 120000);
     }
   
 
@@ -1280,7 +1326,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "name": "TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU",
     "category": "TikTok",
     "price": 5000,
-    "stock": 76,
+    "stock": 75,
     "sold": 33,
     "rating": 5,
     "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_brazil.png",
@@ -1290,7 +1336,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       {
         "name": "TIKTOK BRAZIL",
         "price": 5000,
-        "stock": 76
+        "stock": 75
       },
       {
         "name": "Tiktok   BRAZIL New",
@@ -9434,7 +9480,9 @@ if ($result && $result['status'] === 'success') {
       const refreshIconHtml = ' <span onclick="triggerLiveDetailStockSync(this)" class="stock-refresh-icon-btn" title="Bấm để đồng bộ tồn kho mới nhất" style="cursor:pointer; margin-left:6px; color:#38bdf8; font-size:0.85rem; padding:2px 4px; display:inline-flex; align-items:center; vertical-align:middle;"><i class="fa-solid fa-arrows-rotate" id="iconDtlLiveSync"></i></span>';
 
       let effectiveStock = (typeof stock === "number") ? stock : 0;
-      if (effectiveStock <= 0 && curP && typeof getShopVariantStock === "function") {
+      if (curP && Array.isArray(curP.variants) && curP.variants.length > 0 && typeof getShopVariantStock === "function") {
+        effectiveStock = getShopVariantStock(curP, curVIdx);
+      } else if (effectiveStock <= 0 && curP && typeof getShopVariantStock === "function") {
         effectiveStock = getShopVariantStock(curP, curVIdx);
       }
 
@@ -14170,6 +14218,7 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
       } catch(e) { console.warn("SEO update error:", e); }
 
       // Mặc định hiển thị tab Chi Tiết Sản Phẩm khi mở
+      if (typeof ensureProductApiTabDom === "function") ensureProductApiTabDom();
       switchProductDescTab("desc");
       switchView("viewProductDetail");
       if (typeof renderDetailRelatedProducts === "function") renderDetailRelatedProducts(p);
@@ -14455,6 +14504,7 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
     // CHUYỂN TAB THÔNG TIN CHI TIẾT SẢN PHẨM: CHI TIẾT, HƯỚNG DẪN, ĐÁNH GIÁ & API
     // =========================================================================
     function switchProductDescTab(tabKey, btnElement) {
+      if (typeof ensureProductApiTabDom === "function") ensureProductApiTabDom();
       const secDesc = document.getElementById("dtlTabSecDesc");
       const secGuide = document.getElementById("dtlTabSecGuide");
       const secReviews = document.getElementById("dtlTabSecReviews");
