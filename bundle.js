@@ -23049,10 +23049,33 @@ function injectAllProductsSchema() {
     try {
       if (typeof BroadcastChannel !== "undefined") {
         var _preOrderChannel = new BroadcastChannel("mmo_preorders_channel");
-        _preOrderChannel.onmessage = function() {
+        _preOrderChannel.onmessage = function(ev) {
+          try {
+            if (ev && ev.data && ev.data.orderId) {
+              var targetId = String(ev.data.orderId).replace(/#/g, "").trim().toLowerCase();
+              var newSt = ev.data.status || "CANCELLED";
+              var pList = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
+              var pIdx = pList.findIndex(function(p) {
+                return String(p.orderCode || p.id || p.orderId || "").replace(/#/g, "").trim().toLowerCase() === targetId;
+              });
+              if (pIdx !== -1) {
+                pList[pIdx].status = newSt;
+                if (newSt === "CANCELLED") {
+                  pList[pIdx].statusText = "Khách Hủy / Đã Hoàn Tiền";
+                  pList[pIdx].isCancelled = true;
+                  pList[pIdx].isRefunded = true;
+                  pList[pIdx].cancelledBy = ev.data.cancelledBy || "CUSTOMER";
+                }
+                savePreOrders(pList);
+              }
+            }
+          } catch(e) {}
           _cachedPreOrdersList = null;
           _lastPreOrdersFetchTime = 0;
           triggerDebouncedAdminTablesRender();
+          if (typeof fetchAdminOrdersFromCloud === "function") {
+            fetchAdminOrdersFromCloud(true);
+          }
         };
       }
     } catch(e) {}
@@ -23825,14 +23848,22 @@ function injectAllProductsSchema() {
       var TURSO_WORKER_URL = (typeof TURSO_CONFIG !== "undefined" && TURSO_CONFIG.DEFAULT_API_URL) ? TURSO_CONFIG.DEFAULT_API_URL : "https://mmo-shop-api.manhdongvtc.workers.dev";
       // Fetch đúng 1 đơn theo ID thay vì tải 300 đơn → nhanh hơn ~30x
       function fetchSinglePreOrder(id, cb) {
-        fetch(TURSO_WORKER_URL + "/api/orders/" + encodeURIComponent(id))
+        var bustUrl = TURSO_WORKER_URL + "/api/orders/" + encodeURIComponent(id) + "?_t=" + Date.now();
+        fetch(bustUrl, {
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache" }
+        })
           .then(function(r) { return r.json(); })
           .then(function(d) {
             if (d && (d.success || d.order)) {
               cb(d.order || d);
             } else {
               // Fallback: tìm trong list nếu endpoint đơn chưa hỗ trợ
-              fetch(TURSO_WORKER_URL + "/api/orders?limit=100")
+              var listUrl = TURSO_WORKER_URL + "/api/orders?limit=100&_t=" + Date.now();
+              fetch(listUrl, {
+                cache: "no-store",
+                headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache" }
+              })
                 .then(function(r2) { return r2.json(); })
                 .then(function(d2) {
                   if (d2 && d2.success && Array.isArray(d2.orders)) {
@@ -23978,7 +24009,8 @@ function injectAllProductsSchema() {
               cancelledBy: "CUSTOMER",
               refundedAt: order.refundedAt
             }]
-          })
+          }),
+          keepalive: true
         }).catch(function() {});
       } catch(e) {}
 
@@ -23996,7 +24028,7 @@ function injectAllProductsSchema() {
       // Phát sóng tức thì đa tab/cửa sổ qua BroadcastChannel
       try {
         if (typeof BroadcastChannel !== "undefined") {
-          new BroadcastChannel("mmo_preorders_channel").postMessage({ type: "PREORDERS_UPDATED", orderId: cleanCode, status: "CANCELLED" });
+          new BroadcastChannel("mmo_preorders_channel").postMessage({ type: "PREORDERS_UPDATED", orderId: cleanCode, status: "CANCELLED", cancelledBy: "CUSTOMER" });
         }
       } catch(e) {}
       try { window.dispatchEvent(new CustomEvent("mmo_preorders_changed", { detail: { orderCode: cleanCode } })); } catch(e) {}
@@ -24913,7 +24945,11 @@ function injectAllProductsSchema() {
 
       // 1. Tải tức thì từ Turso Cloud Worker (< 150ms)
       try {
-        const resp = await fetch(TURSO_WORKER_URL + "/api/orders?limit=300");
+        const bustUrl = TURSO_WORKER_URL + "/api/orders?limit=300&_t=" + Date.now();
+        const resp = await fetch(bustUrl, {
+          cache: "no-store",
+          headers: { "Cache-Control": "no-cache, no-store, must-revalidate", "Pragma": "no-cache" }
+        });
         if (resp.ok) {
           const data = await resp.json();
           if (data && data.success && Array.isArray(data.orders)) {
@@ -25161,7 +25197,7 @@ function injectAllProductsSchema() {
     }
     window.fetchAdminOrdersFromCloud = fetchAdminOrdersFromCloud;
 
-    // Tự động đồng bộ ngầm chu kỳ 15 giây (Auto background sync)
+    // Tự động đồng bộ ngầm chu kỳ 5 giây (Auto realtime background sync)
     if (!window._mmoCloudAutoSyncTimerStarted) {
       window._mmoCloudAutoSyncTimerStarted = true;
       setInterval(function() {
@@ -25171,7 +25207,18 @@ function injectAllProductsSchema() {
             fetchAdminOrdersFromCloud(true);
           }
         } catch(e) {}
-      }, 15000);
+      }, 5000);
+    }
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("focus", function() {
+        try {
+          const curView = localStorage.getItem("mmo_current_view");
+          if (curView === "viewAdmin" || curView === "viewProfile" || curView === "viewPreOrderDetail") {
+            fetchAdminOrdersFromCloud(true);
+          }
+        } catch(e) {}
+      });
     }
 
 
