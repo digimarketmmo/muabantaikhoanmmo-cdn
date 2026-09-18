@@ -4409,3 +4409,173 @@ html, body { overflow-x: clip !important; max-width: 100vw !important; }
   color: #fff;
   transform: translateY(-1px);
 }
+
+/* =========================================================================
+   RESPONSIVE MOBILE HEADER & NOTIFICATIONS & ADMIN LAYOUT (v1.4.1)
+   ========================================================================= */
+
+/* Ensure badge labels never wrap letter-by-letter */
+.badge-trust,
+.badge-verified,
+.adm-table-badge {
+  white-space: nowrap !important;
+  display: inline-block !important;
+}
+
+#admUsersTable {
+  min-width: 680px !important;
+}
+
+#admTxTable {
+  min-width: 720px !important;
+}
+
+/* Header Notification Dropdown standard styling */
+.header-notif-dropdown,
+#headerNotifDropdown {
+  display: none;
+  position: absolute;
+  top: 44px;
+  right: 0;
+  width: 330px;
+  max-width: 90vw;
+  background: #0b1320;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+  z-index: 99999;
+  overflow: hidden;
+}
+
+/* Mobile Header 1-Row Responsive (< 640px) */
+@media (max-width: 640px) {
+  .header-inner {
+    height: 54px !important;
+    padding: 0 8px !important;
+    gap: 6px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .header .logo,
+  header .logo,
+  .header-inner .logo {
+    margin-right: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .header .logo img,
+  header .logo img,
+  .header-inner .logo img {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .header .logo-text,
+  header .logo-text,
+  .header-inner .logo-text {
+    display: none !important;
+  }
+
+  .header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+    margin-left: auto !important;
+  }
+
+  .wallet-header-btn {
+    padding: 3px 6px !important;
+    font-size: 0.72rem !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+
+  .btn-header-notif {
+    width: 32px !important;
+    height: 32px !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Fixed full-width dropdown pinned to screen edges so it never overflows */
+  .header-notif-dropdown,
+  #headerNotifDropdown {
+    position: fixed !important;
+    top: 58px !important;
+    left: 8px !important;
+    right: 8px !important;
+    width: auto !important;
+    max-width: calc(100vw - 16px) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.95) !important;
+    border: 1px solid #334155 !important;
+    z-index: 999999 !important;
+  }
+
+  .header-user-pill {
+    padding: 3px 6px !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .header-user-name {
+    max-width: 65px !important;
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .mobile-menu-btn {
+    padding: 6px 8px !important;
+    font-size: 1rem !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+/* Extra small mobile (< 480px): hide user name text to guarantee 1-row layout */
+@media (max-width: 480px) {
+  .header-user-name {
+    display: none !important;
+  }
+  .header-user-pill {
+    padding: 3px 5px !important;
+  }
+  .wallet-header-btn span:last-child {
+    display: none !important;
+  }
+}
+
+/* Responsive Admin Stock & Forms Layout (< 900px) */
+@media (max-width: 900px) {
+  #stockSubTabManual > div,
+  .admin-stock-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+
+  #stockSubTabManual > div > div,
+  .admin-stock-grid > div {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  #tabAdmPayment form,
+  #tabAdmGeneral form {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+
+  #tabAdmPayment form > div,
+  #tabAdmGeneral form > div {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}

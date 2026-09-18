@@ -1809,7 +1809,56 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     const ROOT_ADMIN_EMAIL = "manhdongvtc@gmail.com";
     const DEFAULT_REGISTERED_USERS = [
-      { name: "Mạnh Đồng Official", email: "manhdongvtc@gmail.com", role: "Quản Trị Viên", balance: 0, created: "01/03/2026", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=manhdongvtc" }
+      {
+        userId: "USR_791847",
+        name: "muabantaikhoanmmo",
+        email: "muabantaikhoanmmo@gmail.com",
+        role: "Quản Trị Viên",
+        balance: 210000,
+        created: "15/9/2026",
+        createdAt: "15/9/2026",
+        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=muabantaikhoanmmo%40gmail.com"
+      },
+      {
+        userId: "USR_ADMIN_01",
+        name: "Mạnh Đồng Official",
+        email: "manhdongvtc@gmail.com",
+        role: "Quản Trị Viên",
+        balance: 220000,
+        created: "01/03/2026",
+        createdAt: "01/03/2026",
+        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=manhdongvtc"
+      },
+      {
+        userId: "USR_282891",
+        name: "digimarketmmo",
+        email: "digimarketmmo@gmail.com",
+        role: "Thành Viên",
+        balance: 12000,
+        created: "18/9/2026",
+        createdAt: "18/9/2026",
+        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=digimarketmmo%40gmail.com"
+      },
+      {
+        userId: "USR_880332",
+        name: "hoangtuananh0968",
+        email: "hoangtuananh0968@gmail.com",
+        role: "USER",
+        balance: 0,
+        created: "18/9/2026",
+        createdAt: "18/9/2026",
+        avatar: "https://lh3.googleusercontent.com/a/ACg8ocKn7NALyDWCAc_ePuncinqrhDoxOoywGoLTA3gE7hcraKZTkA=s96-c"
+      },
+      {
+        userId: "USR_916091",
+        name: "Mạnh Đông",
+        email: "manhdongvt2019@gmail.com",
+        role: "USER",
+        balance: 0,
+        created: "18/9/2026",
+        createdAt: "18/9/2026",
+        avatar: "https://lh3.googleusercontent.com/a/ACg8ocLnjx3wMD-b_VisaazO6GLP3w6YOtrlmLT9t9_edzz0Yx6Gj-0D=s96-c"
+      }
     ];
 
     // HÀM TỰ ĐỘNG XÓA SẠCH 100% DỮ LIỆU DEMO / ĐƠN ẢO / TỒN KHO ẢO KHI KHỞI ĐỘNG
@@ -1927,15 +1976,24 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           return true;
         });
 
-        // Đảm bảo Root Admin luôn tồn tại với vai trò Quản Trị Viên
-        if (!users.some(u => (u.email || "").toLowerCase().trim() === ROOT_ADMIN_EMAIL.toLowerCase().trim())) {
-          users.unshift(DEFAULT_REGISTERED_USERS[0]);
-        }
+        // BẢO VỆ & DUY TRÌ 100% CÁC THÀNH VIÊN THỰC CỐ ĐỊNH (KHÔNG BAO GIỜ MẤT DỮ LIỆU)
+        DEFAULT_REGISTERED_USERS.forEach(defU => {
+          const defEmail = (defU.email || "").toLowerCase().trim();
+          const existing = users.find(u => (u.email || "").toLowerCase().trim() === defEmail);
+          if (!existing) {
+            users.push(JSON.parse(JSON.stringify(defU)));
+          } else {
+            if (existing.balance === undefined || existing.balance === null || isNaN(Number(existing.balance))) {
+              existing.balance = defU.balance;
+            }
+            if (defU.role === "Quản Trị Viên") {
+              existing.role = "Quản Trị Viên";
+            }
+          }
+        });
 
-        // Tự động lưu lại bộ nhớ nếu vừa dọn dẹp các tài khoản mẫu
-        if (users.length !== prevCount) {
-          try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
-        }
+        // Tự động lưu lại bộ nhớ an toàn
+        try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
 
         // Synchronize with currently active user session
         if (currentUser && currentUser.email) {
@@ -2298,20 +2356,125 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
 
     // =========================================================================
-    // CORE SYSTEM: TRANSACTION LOGS & HISTORY
+    // CORE SYSTEM: IMMUTABLE TRANSACTION LOGS & CASH FLOW HISTORY
     // =========================================================================
     function getTransactionHistory() {
+      const map = new Map();
+
+      // 1. Nạp các giao dịch đã lưu trong mmo_transaction_history
       try {
         const stored = localStorage.getItem("mmo_transaction_history");
-        if (stored) return JSON.parse(stored);
+        if (stored) {
+          const arr = JSON.parse(stored);
+          if (Array.isArray(arr)) {
+            arr.forEach(tx => {
+              if (tx && (tx.id || tx.txId)) {
+                map.set(String(tx.id || tx.txId), tx);
+              }
+            });
+          }
+        }
       } catch(e) {}
-      return [];
+
+      // 2. Tự động phục hồi từ toàn bộ Đơn hàng hệ thống (Mua hàng, Nạp ví, Hoàn tiền)
+      try {
+        const orderKeys = ["mmo_all_orders", "mmo_orders", "mmo_user_orders"];
+        orderKeys.forEach(k => {
+          const raw = localStorage.getItem(k);
+          if (!raw) return;
+          let list = [];
+          try { list = JSON.parse(raw); } catch(err) {}
+          if (!Array.isArray(list)) return;
+
+          list.forEach(o => {
+            const oId = String(o.orderId || o.id || o.orderCode || "").replace(/#/g, "").trim();
+            if (!oId) return;
+            const txKey = "TX_ORD_" + oId;
+            if (!map.has(txKey)) {
+              const uEmail = (o.customerEmail || o.email || o.buyerEmail || "").trim();
+              const uName = o.customerName || o.buyerUsername || (uEmail ? uEmail.split("@")[0] : "Khách hàng");
+              const amt = Number(o.amount || o.totalPrice || o.price || 0);
+              const isRefund = !!(o.isRefunded || (o.status && String(o.status).toUpperCase().includes("REFUND")));
+              const isDeposit = (o.productId === "NAP_VI" || oId.startsWith("NAP") || (o.productName && String(o.productName).includes("Nạp tiền")));
+              
+              let tType = "Thanh toán mua hàng";
+              let realAmt = -Math.abs(amt);
+              if (isRefund) {
+                tType = "Hoàn tiền đơn hàng bảo hành";
+                realAmt = Math.abs(amt);
+              } else if (isDeposit) {
+                tType = "Nạp tiền ví VietQR / SePay";
+                realAmt = Math.abs(amt);
+              }
+
+              map.set(txKey, {
+                id: txKey,
+                txId: txKey,
+                userEmail: uEmail,
+                userName: uName,
+                type: tType,
+                amount: realAmt,
+                balanceAfter: "-",
+                note: "Đơn hàng #" + oId + " (" + (o.productName || "Sản phẩm") + ")",
+                time: o.createdAt || o.date || o.time || new Date().toLocaleString("vi-VN"),
+                timestamp: (typeof getOrderTimestamp === "function") ? getOrderTimestamp(o) : Date.now()
+              });
+            }
+          });
+        });
+      } catch(e) {}
+
+      // 3. Tự động phục hồi từ toàn bộ Đơn đặt hàng trước (Pre-Orders)
+      try {
+        const rawPre = localStorage.getItem("mmo_pre_orders");
+        if (rawPre) {
+          let preList = [];
+          try { preList = JSON.parse(rawPre); } catch(err) {}
+          if (Array.isArray(preList)) {
+            preList.forEach(po => {
+              const pId = String(po.orderCode || po.id || po.orderId || "").replace(/#/g, "").trim();
+              if (!pId) return;
+              const txKey = "TX_PRE_" + pId;
+              if (!map.has(txKey)) {
+                const uEmail = (po.buyerEmail || "").trim();
+                const uName = po.buyerUsername || (uEmail ? uEmail.split("@")[0] : "Khách hàng");
+                const amt = Number(po.totalPrice || 0);
+                const isRefund = !!po.isRefunded || po.status === "REFUNDED" || po.status === "CANCELLED";
+
+                map.set(txKey, {
+                  id: txKey,
+                  txId: txKey,
+                  userEmail: uEmail,
+                  userName: uName,
+                  type: isRefund ? "Hoàn tiền đặt trước" : "Thanh toán đặt hàng trước",
+                  amount: isRefund ? Math.abs(amt) : -Math.abs(amt),
+                  balanceAfter: "-",
+                  note: (isRefund ? "Hoàn tiền đơn đặt trước #" : "Đặt trước #") + pId + " (" + (po.productName || "") + ")",
+                  time: po.createdAt || po.orderDate || new Date().toLocaleString("vi-VN"),
+                  timestamp: po.orderTimestamp || Date.now()
+                });
+              }
+            });
+          }
+        }
+      } catch(e) {}
+
+      // Chuyển Map thành mảng danh sách và sắp xếp mới nhất lên đầu
+      const merged = Array.from(map.values());
+      merged.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+      // Tự động sao lưu lại vào cache
+      try {
+        localStorage.setItem("mmo_transaction_history", JSON.stringify(merged.slice(0, 500)));
+      } catch(e) {}
+
+      return merged;
     }
     window.getTransactionHistory = getTransactionHistory;
 
     function saveTransactionHistory(history) {
       try {
-        localStorage.setItem("mmo_transaction_history", JSON.stringify(history));
+        localStorage.setItem("mmo_transaction_history", JSON.stringify(history.slice(0, 500)));
       } catch(e) {}
     }
     window.saveTransactionHistory = saveTransactionHistory;
@@ -2332,11 +2495,25 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           amount: amount,
           balanceAfter: balanceAfter,
           note: note,
-          time: timeStr
+          time: timeStr,
+          timestamp: Date.now()
         };
 
         history.unshift(txObj);
         saveTransactionHistory(history);
+
+        // Đồng bộ tức thì lên Cloud Google Sheets
+        if (typeof callGasApi === "function") {
+          callGasApi("adminLogTransaction", {
+            txId: txId,
+            userEmail: userEmail,
+            userName: userName,
+            type: type,
+            amount: amount,
+            balanceAfter: balanceAfter,
+            note: note
+          }).catch(function() {});
+        }
       } catch(e) {
         console.error("recordTransaction error:", e);
       }
@@ -2389,7 +2566,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const isCurrent = currentUser && (currentUser.email || "").toLowerCase().trim() === emailLower;
         const displayBalance = isCurrent && currentUser.balance !== undefined ? Number(currentUser.balance) : (Number(u.balance) || 0);
         const isAdm = (emailLower === rootEmail || emailLower === "muabantaikhoanmmo@gmail.com" || (typeof isAdminUser === "function" && isAdminUser(u)) || u.role === "Quản Trị Viên");
-        const roleHtml = isAdm ? '<span class="badge-trust" style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4);">Quản Trị Viên</span>' : '<span class="badge-verified" style="font-size:0.7rem;">' + (u.role || "Thành Viên") + '</span>';
+        const roleHtml = isAdm ? '<span class="badge-trust" style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4); white-space:nowrap; display:inline-block;">Quản Trị Viên</span>' : '<span class="badge-verified" style="font-size:0.7rem; white-space:nowrap; display:inline-block;">' + (u.role || "Thành Viên") + '</span>';
         
         const isLocked = !!u.isLocked;
         const statusHtml = isLocked 
@@ -2408,7 +2585,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               '</div>' +
             '</div>' +
           '</td>' +
-          '<td style="font-size:0.8rem; color:#cbd5e1;">' + escapeHtml(u.email) + '</td>' +
+          '<td style="font-size:0.8rem; color:#cbd5e1; white-space:nowrap;">' + escapeHtml(u.email) + '</td>' +
           '<td>' + roleHtml + '</td>' +
           '<td style="color:#10b981; font-weight:800; font-size:0.9rem;">' + formatVND(displayBalance) + '</td>' +
           '<td><span style="font-size:0.75rem; color:#94a3b8;">' + (u.created || '01/03/2026') + '</span></td>' +
@@ -2467,15 +2644,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const amtHtml = isPlus ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(tx.amount) + '</span>' : '<span style="color:#ef4444; font-weight:800;">' + formatVND(tx.amount) + '</span>';
 
         return '<tr>' +
-          '<td style="font-family:monospace; font-weight:700; color:#38bdf8; font-size:0.78rem;">' + (tx.txId || tx.id) + '</td>' +
+          '<td style="font-family:monospace; font-weight:700; color:#38bdf8; font-size:0.78rem; white-space:nowrap;">' + (tx.txId || tx.id) + '</td>' +
           '<td>' +
             '<strong style="color:#fff; font-size:0.82rem;">' + escapeHtml(tx.userName || 'User') + '</strong><br/>' +
             '<span style="font-size:0.72rem; color:#94a3b8; font-family:monospace;">' + escapeHtml(tx.userEmail) + '</span>' +
           '</td>' +
-          '<td><span class="badge-verified" style="font-size:0.7rem;">' + escapeHtml(tx.type) + '</span></td>' +
-          '<td>' + amtHtml + '</td>' +
-          '<td style="font-family:monospace; color:#cbd5e1; font-size:0.8rem;">' + (typeof tx.balanceAfter === "number" ? formatVND(tx.balanceAfter) : tx.balanceAfter) + '</td>' +
-          '<td style="font-size:0.75rem; color:#94a3b8;">' + tx.time + '</td>' +
+          '<td><span class="badge-verified" style="font-size:0.7rem; white-space:nowrap; display:inline-block;">' + escapeHtml(tx.type) + '</span></td>' +
+          '<td style="white-space:nowrap;">' + amtHtml + '</td>' +
+          '<td style="font-family:monospace; color:#cbd5e1; font-size:0.8rem; white-space:nowrap;">' + (typeof tx.balanceAfter === "number" ? formatVND(tx.balanceAfter) : tx.balanceAfter) + '</td>' +
+          '<td style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">' + tx.time + '</td>' +
           '<td style="font-size:0.78rem; color:#cbd5e1;">' + escapeHtml(tx.note || '') + '</td>' +
         '</tr>';
       }).join("");
@@ -4453,24 +4630,53 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.openAdminAddUserModal = openAdminAddUserModal;
 
     function switchAdminUsersSubTab(tab) {
-      const btnAll = document.getElementById("btnAdmUsersSubAll");
-      const btnLocked = document.getElementById("btnAdmUsersSubLocked");
-      if (tab === "locked") {
-        if (btnAll) btnAll.style.background = "transparent";
-        if (btnLocked) btnLocked.style.background = "#ef4444";
+      const btnList = document.getElementById("subTabBtnUsersList");
+      const btnTx = document.getElementById("subTabBtnUsersTx");
+      const viewList = document.getElementById("adminSubTabUsersList");
+      const viewTx = document.getElementById("adminSubTabUsersTx");
+
+      if (tab === "tx") {
+        if (btnList) {
+          btnList.classList.remove("active");
+          btnList.style.background = "transparent";
+          btnList.style.color = "#94a3b8";
+        }
+        if (btnTx) {
+          btnTx.classList.add("active");
+          btnTx.style.background = "#10b981";
+          btnTx.style.color = "#fff";
+        }
+        if (viewList) viewList.style.display = "none";
+        if (viewTx) viewTx.style.display = "block";
+        if (typeof renderAdminTxTable === "function") renderAdminTxTable();
+        if (typeof fetchCloudTransactions === "function") fetchCloudTransactions(false);
       } else {
-        if (btnAll) btnAll.style.background = "#10b981";
-        if (btnLocked) btnLocked.style.background = "transparent";
+        if (btnList) {
+          btnList.classList.add("active");
+          btnList.style.background = "#10b981";
+          btnList.style.color = "#fff";
+        }
+        if (btnTx) {
+          btnTx.classList.remove("active");
+          btnTx.style.background = "transparent";
+          btnTx.style.color = "#94a3b8";
+        }
+        if (viewList) viewList.style.display = "block";
+        if (viewTx) viewTx.style.display = "none";
+        if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
+        if (typeof fetchCloudUsers === "function") fetchCloudUsers(false);
       }
-      if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
     }
     window.switchAdminUsersSubTab = switchAdminUsersSubTab;
 
     function clearTransactionHistoryPrompt() {
-      if (confirm("Bạn có chắc chắn muốn xóa sạch toàn bộ lịch sử biến động số dư trên thiết bị?")) {
+      const pin = prompt("XÁC THỰC BẢO MẬT: Nhập mã PIN Quản Trị để đặt lại bộ nhớ giao dịch tạm thời:");
+      if (pin === "888888") {
         localStorage.removeItem("mmo_transaction_history");
         if (typeof renderAdminTxTable === "function") renderAdminTxTable();
-        showToast("Đã xóa lịch sử giao dịch!", "success");
+        showToast("Đã làm mới dữ liệu lịch sử giao dịch!", "info");
+      } else if (pin !== null) {
+        showToast("Mã PIN Quản Trị không chính xác!", "danger");
       }
     }
     window.clearTransactionHistoryPrompt = clearTransactionHistoryPrompt;
@@ -4835,6 +5041,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       users.unshift(newUser);
       saveRegisteredUsers(users);
+      if (typeof syncUserToCloud === "function") {
+        syncUserToCloud(newUser);
+      }
+      if (bal > 0 && typeof callGasApi === "function") {
+        callGasApi("adminAdjustBalance", {
+          adminEmail: (currentUser && currentUser.email) || "manhdongvtc@gmail.com",
+          userEmail: email,
+          type: "ADD",
+          amount: bal,
+          reason: "Khởi tạo số dư ban đầu khi tạo tài khoản"
+        }).catch(function(e) { console.warn("adminAdjustBalance error:", e); });
+      }
       closeModal("adminAddUserModal");
       if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
       showToast("Đã thêm thành viên mới: " + email, "success");
@@ -6090,7 +6308,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 </button>
 
                 
-                <div id="headerNotifDropdown" style="display:none; position:absolute; right:0; top:42px; width:330px; max-width:90vw; background:#0b1320; border:1px solid #1e293b; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.7); z-index:9999; overflow:hidden;">
+                <div id="headerNotifDropdown" class="header-notif-dropdown" style="display:none; position:absolute; right:0; top:42px; width:330px; max-width:90vw; background:#0b1320; border:1px solid #1e293b; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.7); z-index:9999; overflow:hidden;">
                   <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#0f172a; border-bottom:1px solid #1e293b;">
                     <div style="font-weight:700; font-size:0.85rem; color:#fff; display:flex; align-items:center; gap:6px;">
                       <i class="fa-solid fa-bell" style="color:#38bdf8;"></i> Thông Báo
@@ -6104,9 +6322,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               </div>
 
               
-              <div style="display:flex; align-items:center; gap:8px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); padding:4px 10px; border-radius:20px; cursor:pointer;" onclick="switchView('viewProfile')">
+              <div class="header-user-pill" style="display:flex; align-items:center; gap:8px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); padding:4px 10px; border-radius:20px; cursor:pointer;" onclick="switchView('viewProfile')">
                 <img src="${avatarUrl}" style="width:26px; height:26px; border-radius:50%; object-fit:cover; border:1px solid #10b981;" />
-                <span style="font-size:0.82rem; font-weight:700; color:#fff; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(displayName)}</span>
+                <span class="header-user-name" style="font-size:0.82rem; font-weight:700; color:#fff; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(displayName)}</span>
                 <button onclick="event.stopPropagation(); logoutUser();" title="Đăng xuất" style="background:none; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer; padding:0 2px; margin-left:4px;">
                   <i class="fa-solid fa-right-from-bracket"></i>
                 </button>
@@ -6243,6 +6461,37 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
 
     // TỔNG HỢP TOÀN BỘ HOẠT ĐỘNG & THÔNG BÁO CỦA TẤT CẢ NGƯỜI DÙNG DÀNH CHO ADMIN
+    
+    function formatNotifTime(rawTime, timestamp) {
+      if (timestamp && typeof timestamp === 'number' && timestamp > 1000000000000) {
+        try {
+          const d = new Date(timestamp);
+          if (!isNaN(d.getTime()) && d.getFullYear() > 2000) {
+            return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+          }
+        } catch(e) {}
+      }
+      if (!rawTime) return 'Vừa xong';
+      let str = String(rawTime).trim();
+      if (str.includes('1899') || str.includes('1970') || str.includes('Invalid Date')) {
+        return 'Vừa xong';
+      }
+      if (str.length > 25 && str.includes('GMT')) {
+        try {
+          const parsed = new Date(str);
+          if (!isNaN(parsed.getTime()) && parsed.getFullYear() > 2000) {
+            return parsed.toLocaleDateString('vi-VN') + ' ' + parsed.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+          } else {
+            return 'Vừa xong';
+          }
+        } catch(e) {
+          return 'Vừa xong';
+        }
+      }
+      return str;
+    }
+    window.formatNotifTime = formatNotifTime;
+
     function getAdminSystemNotifications() {
       try {
         let adminNotifs = [];
@@ -6302,7 +6551,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             orderId: oId,
             userEmail: buyer,
             read: !!readMap[notifId],
-            time: o.time || (o.date ? o.date : new Date().toLocaleDateString("vi-VN")),
+            time: formatNotifTime(o.time || o.date, o.timestamp || o.createdTimestamp),
             timestamp: o.timestamp || Date.now()
           });
         });
@@ -6343,7 +6592,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             orderId: poCode,
             userEmail: buyer,
             read: (po.status === "Hoàn tất" || po.status === "Đã giao") ? true : !!readMap[notifId],
-            time: po.time || (po.date ? po.date : new Date().toLocaleDateString("vi-VN")),
+            time: formatNotifTime(po.time || po.date, po.timestamp || po.orderTimestamp),
             timestamp: po.timestamp || Date.now()
           });
         });
@@ -6371,7 +6620,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               type: "CHAT",
               userEmail: m.userEmail,
               read: m.isReadByAdmin !== false || !!readMap[notifId],
-              time: m.time || (m.date ? m.date : ""),
+              time: formatNotifTime(m.time || m.date, m.timestamp),
               timestamp: m.timestamp || Date.now()
             });
           });
@@ -6714,6 +6963,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (shouldOpen) {
         renderHeaderNotifications();
         dd.style.display = "block";
+        if (window.innerWidth > 640) {
+          const rect = dd.getBoundingClientRect();
+          if (rect.left < 10) {
+            dd.style.right = "auto";
+            dd.style.left = "0px";
+          } else {
+            dd.style.right = "0px";
+            dd.style.left = "auto";
+          }
+        }
       } else {
         dd.style.display = "none";
       }
@@ -7287,6 +7546,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
       if (tabId === "tabAdmUsers") {
         renderAdminUsersTable();
+        if (typeof fetchCloudUsers === "function") fetchCloudUsers(false);
+        if (typeof fetchCloudTransactions === "function") fetchCloudTransactions(false);
       }
       if (tabId === "tabAdmWithdrawals") {
         renderAdminWithdrawTable();
@@ -11883,6 +12144,53 @@ function syncAllOpenViewsStock(changedProdId) {
       }
     }
     window.fetchCloudUsers = fetchCloudUsers;
+
+    async function fetchCloudTransactions(showNotification = false) {
+      const apiUrl = getBackendApiUrl();
+      if (!apiUrl) return;
+      const adminEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "manhdongvtc@gmail.com";
+      try {
+        if (showNotification) showToast("Đang đồng bộ nhật ký biến động số dư từ Google Sheet...", "info");
+        const data = await callGasApi("adminGetTransactions", { adminEmail: adminEmail });
+        if (data && data.success && Array.isArray(data.transactions) && data.transactions.length > 0) {
+          let localTx = [];
+          try {
+            localTx = JSON.parse(localStorage.getItem("mmo_transaction_history") || "[]");
+          } catch(e) { localTx = []; }
+          let addedCount = 0;
+          data.transactions.forEach(cloudTx => {
+            if (!cloudTx || !cloudTx.id) return;
+            const existingIdx = localTx.findIndex(t => t.id === cloudTx.id);
+            if (existingIdx === -1) {
+              localTx.unshift({
+                id: cloudTx.id,
+                txId: cloudTx.id,
+                email: cloudTx.email || cloudTx.userEmail,
+                userEmail: cloudTx.email || cloudTx.userEmail,
+                userName: cloudTx.userName || cloudTx.name || (cloudTx.email ? cloudTx.email.split("@")[0] : "User"),
+                type: cloudTx.type,
+                amount: Number(cloudTx.amount) || 0,
+                before: Number(cloudTx.before) || 0,
+                balanceAfter: Number(cloudTx.after) || 0,
+                note: cloudTx.description || cloudTx.note || "",
+                time: cloudTx.createdAt || new Date().toLocaleString("vi-VN"),
+                timestamp: cloudTx.timestamp || Date.now()
+              });
+              addedCount++;
+            }
+          });
+          if (addedCount > 0) {
+            localStorage.setItem("mmo_transaction_history", JSON.stringify(localTx));
+            if (typeof renderAdminTxTable === "function") renderAdminTxTable();
+          }
+          if (showNotification) showToast("🎉 Đã đồng bộ thành công " + data.transactions.length + " giao dịch từ Google Sheet!", "success");
+        }
+      } catch(err) {
+        console.warn("fetchCloudTransactions error:", err);
+      }
+    }
+    window.fetchCloudTransactions = fetchCloudTransactions;
+
 
     // =========================================================================
     // 4. USER ORDERS & PROFILE ORDERS MANAGEMENT
@@ -18517,8 +18825,9 @@ function syncAllOpenViewsStock(changedProdId) {
       const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
       const targetEmail = (email || "").toLowerCase().trim();
 
-      if (targetEmail === rootEmail) {
-        showToast("Không thể xóa tài khoản Root Admin tối cao!", "warning");
+      const isProtected = targetEmail === rootEmail || targetEmail === "muabantaikhoanmmo@gmail.com";
+      if (isProtected) {
+        showToast("Không thể xóa tài khoản Quản Trị Viên cốt lõi của hệ thống!", "warning");
         return;
       }
       
@@ -19216,6 +19525,26 @@ function syncAllOpenViewsStock(changedProdId) {
         if (typeof syncAdminEmailsFromCloud === "function") {
           syncAdminEmailsFromCloud();
         }
+
+      // Tự động đồng bộ số dư & người dùng định kỳ và khi focus tab
+      setTimeout(function() {
+        if (typeof fetchCloudUsers === "function") fetchCloudUsers(false);
+        if (typeof fetchCloudTransactions === "function") fetchCloudTransactions(false);
+      }, 500);
+
+      if (typeof window !== "undefined") {
+        window.addEventListener("focus", function() {
+          if (typeof fetchCloudUsers === "function") fetchCloudUsers(false);
+          if (typeof fetchCloudTransactions === "function") fetchCloudTransactions(false);
+        });
+        setInterval(function() {
+          if (document.visibilityState === "visible") {
+            if (typeof fetchCloudUsers === "function") fetchCloudUsers(false);
+            if (typeof fetchCloudTransactions === "function") fetchCloudTransactions(false);
+          }
+        }, 45000);
+      }
+  
       }, _urlHasProd ? 50 : 300);
 
       // RESTORE CURRENT ACTIVE VIEW AND SUB-TABS ON F5 REFRESH
