@@ -2278,7 +2278,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     // ROOT_ADMIN_EMAIL already declared above
     const DEFAULT_ADMIN_EMAILS = [
-      ROOT_ADMIN_EMAIL
+      ROOT_ADMIN_EMAIL,
+      "muabantaikhoanmmo@gmail.com"
     ];
 
     function getAdminEmails() {
@@ -2286,10 +2287,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const stored = localStorage.getItem("mmo_admin_emails");
         if (stored !== null) {
           let list = JSON.parse(stored);
-          if (Array.isArray(list) && list.length > 0) return list;
+          if (Array.isArray(list) && list.length > 0) {
+            const root = (ROOT_ADMIN_EMAIL || "manhdongvtc@gmail.com").toLowerCase().trim();
+            const listLower = list.map(e => (e || "").toLowerCase().trim());
+            if (!listLower.includes(root)) list.unshift(root);
+            if (!listLower.includes("muabantaikhoanmmo@gmail.com")) list.push("muabantaikhoanmmo@gmail.com");
+            return list;
+          }
         }
       } catch (e) {}
-      const initial = [ROOT_ADMIN_EMAIL];
+      const initial = [ROOT_ADMIN_EMAIL, "muabantaikhoanmmo@gmail.com"];
       try { localStorage.setItem("mmo_admin_emails", JSON.stringify(initial)); } catch(e) {}
       return initial;
     }
@@ -2423,18 +2430,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!user || !user.email) return false;
       
       const userEmail = (user.email || "").toLowerCase().trim();
+      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" && ROOT_ADMIN_EMAIL) ? ROOT_ADMIN_EMAIL.toLowerCase().trim() : "manhdongvtc@gmail.com";
+      if (userEmail === rootEmail || userEmail === "muabantaikhoanmmo@gmail.com") return true;
+
       const adminList = (typeof getAdminEmails === "function") ? getAdminEmails().map(e => (e || "").toLowerCase().trim()) : [];
       if (adminList.includes(userEmail)) return true;
-
-      // Nếu người dùng không nằm trong danh sách Admin Email, tự động hạ quyền thành Thành Viên
-      if (user.role === "Quản Trị Viên" || user.role === "ADMIN" || user.role === "Admin") {
-        user.role = "Thành Viên";
-        if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === userEmail) {
-          currentUser.role = "Thành Viên";
-          try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
-          if (typeof updateUserUI === "function") updateUserUI();
-        }
-      }
 
       return false;
     }
