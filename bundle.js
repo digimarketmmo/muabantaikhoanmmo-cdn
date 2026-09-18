@@ -7,6 +7,65 @@
     window.adminOrdersSearchQuery = "";
     var adminOrdersStatusFilter = "ALL";
     window.adminOrdersStatusFilter = "ALL";
+
+    // =========================================================================
+    // UNIVERSAL MULTI-BLOG SELF-HEALING AUTO-UPDATER & CODE SYNC CORE
+    // =========================================================================
+    const MMO_CURRENT_CODE_VERSION = "1.4.5";
+    window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
+
+    function checkAndApplyNetworkUpdate() {
+      try {
+        fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/v1/version?t=" + Date.now(), {
+          cache: "no-store",
+          headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" }
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+          if (data && data.version && data.version !== MMO_CURRENT_CODE_VERSION) {
+            console.warn("[MMO Universal Update] Phát hiện bản code mới: v" + data.version + " (Hiện tại: v" + MMO_CURRENT_CODE_VERSION + ")");
+            localStorage.setItem("mmo_network_code_version", data.version);
+
+            // Cập nhật Theme CSS sang phiên bản mới
+            var curCss = document.getElementById("mmoCdnThemeCss");
+            var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/theme.min.css") + (data.theme_url && data.theme_url.includes("?") ? "" : ("?v=" + data.version));
+            if (curCss) {
+              curCss.href = newCssUrl;
+            } else {
+              var newL = document.createElement("link");
+              newL.id = "mmoCdnThemeCss";
+              newL.rel = "stylesheet";
+              newL.href = newCssUrl;
+              document.head.appendChild(newL);
+            }
+
+            // Tự động tải và kích hoạt Bundle JS mới
+            var existingNewScript = document.getElementById("mmoCdnBundleJs_latest");
+            if (!existingNewScript) {
+              var newJsUrl = (data.bundle_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js") + (data.bundle_url && data.bundle_url.includes("?") ? "" : ("?v=" + data.version + "&t=" + Date.now()));
+              var nextScript = document.createElement("script");
+              nextScript.id = "mmoCdnBundleJs_latest";
+              nextScript.src = newJsUrl;
+              nextScript.async = true;
+              nextScript.onload = function() {
+                console.log("[MMO Universal Update] Đã nạp thành công code mới v" + data.version + " trên blog này!");
+              };
+              document.body.appendChild(nextScript);
+            }
+          }
+        })
+        .catch(function(err) {});
+      } catch(e) {}
+    }
+    window.checkAndApplyNetworkUpdate = checkAndApplyNetworkUpdate;
+
+    if (typeof window !== "undefined") {
+      setTimeout(checkAndApplyNetworkUpdate, 1500);
+      window.addEventListener("focus", function() {
+        checkAndApplyNetworkUpdate();
+      });
+      setInterval(checkAndApplyNetworkUpdate, 300000);
+    }
   
 
 const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
