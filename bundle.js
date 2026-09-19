@@ -10984,9 +10984,10 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (document.getElementById("setGasUrl")) document.getElementById("setGasUrl").value = s.gasUrl || "";
-      ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'].forEach(function(p) {
+      var _aiProviders = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
+      _aiProviders.forEach(function(p) {
         var el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
-        if (el) el.value = localStorage.getItem('mmo_ai_key_' + p) || '';
+        if (el) el.value = localStorage.getItem('mmo_ai_key_' + p) || (s && s['ai_key_' + p]) || '';
       });
 
       // Logo URL & Preview
@@ -11013,40 +11014,56 @@ function syncAllOpenViewsStock(changedProdId) {
     function saveAllAiApiKeysFromSystem(silent) {
       var providers = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
       var savedCount = 0;
+      var s = {};
+      try { s = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}'); } catch(e) {}
+      
       providers.forEach(function(p) {
         var el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
         if (el) {
           var v = el.value.trim();
           if (v) {
             localStorage.setItem('mmo_ai_key_' + p, v);
+            s['ai_key_' + p] = v;
             savedCount++;
           } else {
             localStorage.removeItem('mmo_ai_key_' + p);
+            delete s['ai_key_' + p];
           }
         }
       });
 
       try {
-        var s = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}');
-        providers.forEach(function(p) {
-          var el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
-          if (el) s['ai_key_' + p] = el.value.trim();
-        });
         localStorage.setItem('mmo_system_settings', JSON.stringify(s));
         localStorage.setItem('mmo_general_settings', JSON.stringify(s));
       } catch(e) {}
 
       var statusEl = document.getElementById('aiSystemKeySaveStatus');
       if (statusEl) {
-        statusEl.innerHTML = '✅ Đã lưu thành công danh sách API Key AI (' + savedCount + ' key đang hoạt động)!';
-        setTimeout(function() { if (statusEl) statusEl.innerHTML = ''; }, 4000);
+        statusEl.innerHTML = '<span style="color:#10b981;font-weight:700;">✅ Đã lưu ' + savedCount + ' API Key AI thành công!</span>';
+        setTimeout(function() { if (statusEl) statusEl.innerHTML = ''; }, 4500);
       }
       if (!silent && typeof showToast === 'function') {
-        showToast('✅ Đã lưu danh sách API Key AI thành công (' + savedCount + ' key)!', 'success');
+        showToast('✅ Đã lưu ' + savedCount + ' API Key AI thành công!', 'success');
       }
-      if (typeof onAiProviderChange === 'function') onAiProviderChange();
+      if (typeof onAiProviderChange === 'function') {
+        try { onAiProviderChange(); } catch(e) {}
+      }
     }
     window.saveAllAiApiKeysFromSystem = saveAllAiApiKeysFromSystem;
+
+    function loadAiApiKeysIntoSystemUI() {
+      var providers = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
+      var s = {};
+      try { s = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}'); } catch(e) {}
+      providers.forEach(function(p) {
+        var el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
+        if (el) {
+          var val = localStorage.getItem('mmo_ai_key_' + p) || s['ai_key_' + p] || '';
+          el.value = val;
+        }
+      });
+    }
+    window.loadAiApiKeysIntoSystemUI = loadAiApiKeysIntoSystemUI;
 
     function handleSaveGeneralSettings(e) {
       if (e) {
@@ -11085,17 +11102,20 @@ function syncAllOpenViewsStock(changedProdId) {
           _lastSavedAt: Date.now()
         };
 
+        var _aiProviders = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
+        _aiProviders.forEach(function(p) {
+          var el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
+          var v = el ? el.value.trim() : (localStorage.getItem('mmo_ai_key_' + p) || '');
+          if (v) {
+            settings['ai_key_' + p] = v;
+            localStorage.setItem('mmo_ai_key_' + p, v);
+          } else {
+            localStorage.removeItem('mmo_ai_key_' + p);
+            delete settings['ai_key_' + p];
+          }
+        });
         if (typeof saveAllAiApiKeysFromSystem === "function") {
-          saveAllAiApiKeysFromSystem(true);
-        } else {
-          ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'].forEach(function(p) {
-            var el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
-            if (el) {
-              var v = el.value.trim();
-              if (v) localStorage.setItem('mmo_ai_key_' + p, v);
-              else localStorage.removeItem('mmo_ai_key_' + p);
-            }
-          });
+          try { saveAllAiApiKeysFromSystem(true); } catch(err) {}
         }
         localStorage.setItem("mmo_system_settings", JSON.stringify(settings));
         localStorage.setItem("mmo_general_settings", JSON.stringify(settings));
