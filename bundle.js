@@ -10984,6 +10984,10 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (document.getElementById("setGasUrl")) document.getElementById("setGasUrl").value = s.gasUrl || "";
+      ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'].forEach(function(p) {
+        var el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
+        if (el) el.value = localStorage.getItem('mmo_ai_key_' + p) || '';
+      });
 
       // Logo URL & Preview
       const logoUrl = s.brandLogo || "";
@@ -11043,6 +11047,14 @@ function syncAllOpenViewsStock(changedProdId) {
           _lastSavedAt: Date.now()
         };
 
+        ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'].forEach(function(p) {
+          var el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
+          if (el) {
+            var v = el.value.trim();
+            if (v) localStorage.setItem('mmo_ai_key_' + p, v);
+            else localStorage.removeItem('mmo_ai_key_' + p);
+          }
+        });
         localStorage.setItem("mmo_system_settings", JSON.stringify(settings));
         localStorage.setItem("mmo_general_settings", JSON.stringify(settings));
 
@@ -22221,8 +22233,46 @@ META: [Mô tả Meta Description 120-155 ký tự kích thích click chuột]
 LABELS: [3-5 nhãn danh mục/tag phân cách bằng dấu phẩy]
 ===SEO_META_END===`;
 
+  const FAILOVER_CHAIN = ["groq", "cerebras", "openrouter", "gemini", "mistral", "nvidia"];
+  let currentIdx = FAILOVER_CHAIN.indexOf(pKey);
+  if (currentIdx === -1) currentIdx = 0;
+
+  let rawText = "";
+  let successfulProv = prov;
+  let lastErr = null;
+
   try {
-    const rawText = await callAiChatService(pKey, modelId, prompt, "Bạn là chuyên gia SEO Content Marketing và Blogger tiếng Việt chuyên nghiệp.");
+    for (let attempt = 0; attempt < FAILOVER_CHAIN.length; attempt++) {
+      const tryKey = FAILOVER_CHAIN[(currentIdx + attempt) % FAILOVER_CHAIN.length];
+      const tryProv = AI_PROVIDERS[tryKey] || AI_PROVIDERS.groq;
+      const tryModel = (tryKey === pKey && modelId) ? modelId : tryProv.defaultModel;
+
+      let keyCheck = localStorage.getItem("mmo_ai_key_" + tryKey) || "";
+      if (!keyCheck && tryKey === "gemini") keyCheck = DEFAULT_GEMINI_API_KEY;
+      if (!keyCheck) continue;
+
+      try {
+        if (attempt > 0) {
+          if (statusEl) statusEl.innerHTML = `<span style="color:#f59e0b;">⚠️ Nền tảng trước bận/hết quota -> Đang tự động chuyển sang <b>${tryProv.name}</b> viết bài...</span>`;
+        }
+        rawText = await callAiChatService(tryKey, tryModel, prompt, "Bạn là chuyên gia SEO Content Marketing và Blogger tiếng Việt chuyên nghiệp.");
+        if (rawText) {
+          successfulProv = tryProv;
+          if (pSel && pSel.value !== tryKey) {
+            pSel.value = tryKey;
+            onAiProviderChange();
+          }
+          break;
+        }
+      } catch (err) {
+        console.warn(`⚠️ Auto-failover: ${tryProv.name} failed:`, err.message);
+        lastErr = err;
+      }
+    }
+
+    if (!rawText) {
+      throw (lastErr || new Error("Tất cả các nền tảng AI đều bận hoặc chưa cấu hình API Key trong Cài Đặt Hệ Thống!"));
+    }
 
     const seoStart = rawText.indexOf('===SEO_META_START===');
     const seoEnd = rawText.indexOf('===SEO_META_END===');
@@ -22251,8 +22301,8 @@ LABELS: [3-5 nhãn danh mục/tag phân cách bằng dấu phẩy]
       if (labelsEl && labelsMatch) labelsEl.value = labelsMatch[1].trim();
     }
 
-    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">✅ Đã tự động tạo bài viết & phân tích SEO thành công với ' + prov.name + '!</span>';
-    showToast('🎉 AI đã hoàn tất bài viết chuẩn SEO 100%!', 'success');
+    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">✅ Đã hoàn tất bài viết chuẩn SEO với ' + successfulProv.name + '!</span>';
+    showToast('🎉 AI ' + successfulProv.name + ' đã viết bài chuẩn SEO thành công!', 'success');
   } catch (err) {
     console.error('AI Writer error:', err);
     if (statusEl) statusEl.innerHTML = '<span style="color:#f87171;">❌ ' + (err.message || 'Lỗi không xác định') + '</span>';
