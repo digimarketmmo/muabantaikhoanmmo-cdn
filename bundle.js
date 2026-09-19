@@ -23344,13 +23344,11 @@ function injectAllProductsSchema() {
                     if (typeof showToast === "function") showToast("🛎️ Có đơn đặt trước mới: #" + (newPo.orderCode || newPo.id || nId).toUpperCase(), "info");
                   }
                 } catch(e) {}
-              }
-
-              // 2. Khi cập nhật trạng thái đơn (PREORDERS_UPDATED, ORDER_STATUS_CHANGED)
-              var targetId = ev.data.orderId || ev.data.orderCode;
-              if (targetId) {
+              } else if (ev.data.type !== "NEW_PREORDER" && (ev.data.orderId || ev.data.orderCode) && ev.data.status) {
+                // 2. Khi cập nhật trạng thái đơn (PREORDERS_UPDATED, ORDER_STATUS_CHANGED)
+                var targetId = ev.data.orderId || ev.data.orderCode;
                 targetId = String(targetId).replace(/#/g, "").trim().toLowerCase();
-                var newSt = ev.data.status || "CANCELLED";
+                var newSt = String(ev.data.status).toUpperCase().trim();
                 var pList = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
                 var pIdx = pList.findIndex(function(p) {
                   return String(p.orderCode || p.id || p.orderId || "").replace(/#/g, "").trim().toLowerCase() === targetId;
@@ -23428,7 +23426,7 @@ function injectAllProductsSchema() {
           } catch(e) {}
           _cachedPreOrdersList = null;
           _lastPreOrdersFetchTime = 0;
-          triggerDebouncedAdminTablesRender();
+          if (typeof triggerDebouncedAdminTablesRender === "function") triggerDebouncedAdminTablesRender();
           if (typeof renderProfileOrders === "function") renderProfileOrders();
           try {
             var curV = localStorage.getItem("mmo_current_view");
@@ -24202,8 +24200,8 @@ function injectAllProductsSchema() {
         }
         var credsStr = accLines.join(String.fromCharCode(10)) || (typeof cloudOrd.credentials === "string" ? cloudOrd.credentials : "") || "";
 
-        // KHÓA BẢO VỆ ĐƠN ĐÃ HỦY: Tuyệt đối không cho phép dữ liệu cũ từ Cloud ghi đè đơn đã hủy thành Chờ xác nhận!
-        if (order.status === "CANCELLED" && !isCanc) {
+        // KHÓA BẢO VỆ ĐƠN ĐÃ HỦY: Chỉ khóa khi chính khách hàng chủ động bấm hủy đơn
+        if (order.status === "CANCELLED" && order.cancelledBy === "CUSTOMER" && !isCanc) {
           renderPreOrderDetailUI(order);
           return true;
         }
@@ -25523,8 +25521,8 @@ function injectAllProductsSchema() {
               // A. Cập nhật mmo_all_orders
               const idx = localOrders.findIndex(function(o) { return String(o.orderId || o.id || "").replace(/#/g, "").trim().toLowerCase() === cIdLower; });
               if (idx !== -1) {
-                if (localOrders[idx].status === "CANCELLED" && !isCancelled) {
-                  // Giữ nguyên trạng thái CANCELLED
+                if (localOrders[idx].status === "CANCELLED" && localOrders[idx].cancelledBy === "CUSTOMER" && !isCancelled) {
+                  // Giữ nguyên trạng thái CANCELLED do khách hàng chủ động bấm hủy
                 } else {
                   localOrders[idx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
                   localOrders[idx].statusText = statusText;
@@ -25564,8 +25562,8 @@ function injectAllProductsSchema() {
               if (isPre) {
                 const pIdx = preOrders.findIndex(function(p) { return String(p.orderCode || p.id || p.orderId || "").replace(/#/g, "").trim().toLowerCase() === cIdLower; });
                 if (pIdx !== -1) {
-                  if (preOrders[pIdx].status === "CANCELLED" && !isCancelled) {
-                    // Giữ nguyên trạng thái CANCELLED, không để stale status từ Cloud ghi đè
+                  if (preOrders[pIdx].status === "CANCELLED" && preOrders[pIdx].cancelledBy === "CUSTOMER" && !isCancelled) {
+                    // Giữ nguyên trạng thái CANCELLED do khách hàng chủ động bấm hủy
                   } else {
                     preOrders[pIdx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
                     preOrders[pIdx].statusText = statusText;
@@ -25581,30 +25579,31 @@ function injectAllProductsSchema() {
                 } else {
                   preOrders.unshift({
                     id: cId,
-                    orderCode: cId,
                     orderId: cId,
-                    type: "PRE_ORDER",
-                    productId: cloudOrd.productId || "",
-                    productName: cloudOrd.productName || "Sản phẩm MMO",
-                    variantName: cloudOrd.variantName || "Mặc định",
-                    buyerUsername: cloudOrd.userName || "Khách Hàng",
-                    buyerEmail: cloudOrd.email || "",
-                    userEmail: cloudOrd.email || "",
-                    email: cloudOrd.email || "",
-                    userName: cloudOrd.userName || "Khách Hàng",
+                    orderCode: cId,
+                    productId: cloudOrd.productId,
+                    productName: cloudOrd.productName,
+                    variantName: cloudOrd.variantName,
+                    quantity: cloudOrd.quantity,
+                    qty: cloudOrd.quantity,
+                    unitPrice: cloudOrd.unitPrice,
+                    price: cloudOrd.unitPrice,
+                    total: cloudOrd.total,
+                    totalPrice: cloudOrd.total,
+                    createdAt: cloudOrd.createdAt,
+                    date: cloudOrd.createdAt,
                     status: isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus),
                     statusText: statusText,
-                    isCancelled: isCancelled,
-                    isRefunded: isCancelled,
-                    unitPrice: Number(cloudOrd.price || cloudOrd.unitPrice) || 0,
-                    qty: Number(cloudOrd.quantity || cloudOrd.qty) || 1,
-                    total: Number(cloudOrd.total || cloudOrd.totalPrice) || 0,
-                    maxDays: cloudOrd.maxDays || 7,
-                    deliveredAccounts: accLines,
                     credentials: credsStr,
-                    date: cloudOrd.date || cloudOrd.createdAt || new Date().toLocaleString("vi-VN"),
-                    createdAt: cloudOrd.createdAt || cloudOrd.date || new Date().toLocaleString("vi-VN"),
-                    createdTimestamp: (typeof getOrderTimestamp === "function") ? getOrderTimestamp(cloudOrd) : Date.now()
+                    accounts: credsStr,
+                    deliveredAccounts: accLines,
+                    buyerEmail: cloudOrd.email,
+                    email: cloudOrd.email,
+                    userEmail: cloudOrd.email,
+                    buyerUsername: cloudOrd.userName,
+                    userName: cloudOrd.userName,
+                    maxDays: 7,
+                    type: "PRE_ORDER"
                   });
                 }
               }
@@ -25613,8 +25612,8 @@ function injectAllProductsSchema() {
               [userOrders, mOrders].forEach(function(arr) {
                 const uIdx = arr.findIndex(function(o) { return String(o.orderId || o.id || o.orderCode || "").replace(/#/g, "").trim().toLowerCase() === cIdLower; });
                 if (uIdx !== -1) {
-                  if (arr[uIdx].status === "CANCELLED" && !isCancelled) {
-                    // Giữ nguyên trạng thái CANCELLED
+                  if (arr[uIdx].status === "CANCELLED" && arr[uIdx].cancelledBy === "CUSTOMER" && !isCancelled) {
+                    // Giữ nguyên trạng thái CANCELLED do khách hàng chủ động bấm hủy
                   } else {
                     arr[uIdx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
                     arr[uIdx].statusText = statusText;
