@@ -22877,6 +22877,9 @@ function injectAllProductsSchema() {
                 if (uIdx !== -1) {
                   arr[uIdx].status = isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus);
                   arr[uIdx].statusText = statusText;
+                  if (!arr[uIdx].createdTimestamp && cloudOrd.createdAt) {
+                    arr[uIdx].createdTimestamp = (typeof getOrderTimestamp === "function") ? getOrderTimestamp(cloudOrd) : 0;
+                  }
                   if (accLines.length > 0) {
                     arr[uIdx].deliveredAccounts = accLines;
                     arr[uIdx].credentials = credsStr;
@@ -22893,6 +22896,7 @@ function injectAllProductsSchema() {
                     total: cloudOrd.total,
                     date: cloudOrd.createdAt,
                     createdAt: cloudOrd.createdAt,
+                    createdTimestamp: (typeof getOrderTimestamp === "function") ? getOrderTimestamp(cloudOrd) : Date.now(),
                     status: isCompleted ? "COMPLETED" : (isCancelled ? "CANCELLED" : ordStatus),
                     statusText: statusText,
                     deliveredAccounts: accLines,
