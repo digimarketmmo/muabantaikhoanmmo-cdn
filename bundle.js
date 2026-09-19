@@ -12915,13 +12915,13 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
 
     function getUserOrders() {
       let userOrders = [];
-      const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
-      const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
-
-      // Khách chưa đăng nhập: Tuyệt đối không trả về bất kỳ đơn hàng nào của người khác
-      if (!cleanUserMail) {
-        return [];
+      let curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+      if (!curUser) {
+        try {
+          curUser = JSON.parse(localStorage.getItem("mmo_user") || "null");
+        } catch(e) {}
       }
+      const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
 
       // 1. Quét toàn bộ các nguồn lưu trữ đơn hàng
       const scanKeys = ["mmo_user_orders", "mmo_orders", "mmo_all_orders"];
@@ -13009,9 +13009,17 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
           });
 
           if (uIdx !== -1) {
-            userOrders[uIdx].status = po.status;
-            userOrders[uIdx].statusText = po.statusText;
-            userOrders[uIdx].deliveredAccounts = po.deliveredAccounts;
+            userOrders[uIdx].type = "PRE_ORDER";
+            if (po.productName && (!userOrders[uIdx].productName || userOrders[uIdx].productName === "Sản phẩm MMO")) {
+              userOrders[uIdx].productName = po.productName;
+            }
+            if (po.variantName && !userOrders[uIdx].variantName) {
+              userOrders[uIdx].variantName = po.variantName;
+              userOrders[uIdx].variant = po.variantName;
+            }
+            userOrders[uIdx].status = po.status || userOrders[uIdx].status;
+            userOrders[uIdx].statusText = po.statusText || userOrders[uIdx].statusText;
+            userOrders[uIdx].deliveredAccounts = po.deliveredAccounts || userOrders[uIdx].deliveredAccounts;
             if (po.deliveredAccounts && po.deliveredAccounts.length > 0) {
               userOrders[uIdx].credentials = Array.isArray(po.deliveredAccounts) ? po.deliveredAccounts.join("\n") : po.deliveredAccounts;
             }
