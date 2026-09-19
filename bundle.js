@@ -12922,6 +12922,28 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
         } catch(e) {}
       }
       const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
+      const cleanUserName = (curUser && (curUser.username || curUser.fullname || curUser.name)) ? String(curUser.username || curUser.fullname || curUser.name).toLowerCase().trim() : "";
+      const userMailPrefix = cleanUserMail.includes("@") ? cleanUserMail.split("@")[0] : cleanUserMail;
+
+      function isOrderBelongsToUser(o) {
+        if (!curUser) return true; // Chưa đăng nhập thì hiển thị các đơn trên trình duyệt này
+        const oEmail = String(o.userEmail || o.email || o.buyerEmail || "").toLowerCase().trim();
+        const oUser = String(o.buyerUsername || o.userName || o.username || o.user || "").toLowerCase().trim();
+
+        // Đơn không gắn email hoặc username thì mặc định thuộc phiên làm việc hiện tại
+        if (!oEmail && !oUser) return true;
+
+        if (cleanUserMail && oEmail && cleanUserMail === oEmail) return true;
+        if (cleanUserName && oUser && cleanUserName === oUser) return true;
+
+        const oMailPrefix = oEmail.includes("@") ? oEmail.split("@")[0] : oEmail;
+        if (userMailPrefix && oMailPrefix && userMailPrefix === oMailPrefix) return true;
+        if (cleanUserName && oMailPrefix && cleanUserName === oMailPrefix) return true;
+        if (userMailPrefix && oUser && userMailPrefix === oUser) return true;
+        if (cleanUserName && oEmail && cleanUserName === oEmail) return true;
+
+        return false;
+      }
 
       // 1. Quét toàn bộ các nguồn lưu trữ đơn hàng
       const scanKeys = ["mmo_user_orders", "mmo_orders", "mmo_all_orders"];
@@ -12934,9 +12956,8 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
 
           parsed.forEach(function(o) {
             if (!o) return;
-            const oEmail = String(o.userEmail || o.email || o.buyerEmail || "").toLowerCase().trim();
-            // Nếu đã đăng nhập, chỉ lấy đơn của tài khoản hiện tại (hoặc đơn không gắn email)
-            if (cleanUserMail && oEmail && oEmail !== cleanUserMail) return;
+            // Kiểm tra quyền sở hữu đơn hàng
+            if (!isOrderBelongsToUser(o)) return;
 
             const rawId = String(o.orderId || o.orderCode || o.id || "");
             if (!rawId) return;
@@ -12993,8 +13014,8 @@ try { localStorage.setItem("mmo_persistent_cloud_users", JSON.stringify(localUse
       try {
         const preOrders = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
         preOrders.forEach(function(po) {
-          const poEmail = String(po.buyerEmail || po.userEmail || po.email || "").toLowerCase().trim();
-          if (cleanUserMail && poEmail && poEmail !== cleanUserMail) return;
+          if (!po) return;
+          if (!isOrderBelongsToUser(po)) return;
 
           const pId = String(po.orderCode || po.id || po.orderId || "");
           if (!pId) return;
@@ -23204,21 +23225,28 @@ function injectAllProductsSchema() {
                 const oIsCancel = oSt === "CANCELLED" || oSt === "REFUNDED" || oStTxt.includes("hủy") || Boolean(o.isCancelled) || Boolean(o.isRefunded);
 
                 if (exIdx !== -1) {
-                  if (oIsCancel) {
-                    poList[exIdx].status = "CANCELLED";
-                    poList[exIdx].statusText = o.statusText || "Khách Hủy / Đã Hoàn Tiền";
-                    poList[exIdx].isCancelled = true;
-                    poList[exIdx].isRefunded = true;
-                  } else if (poList[exIdx].status === "CANCELLED") {
-                    // Giữ nguyên trạng thái CANCELLED
-                  } else if (o.status === "COMPLETED" || (Array.isArray(o.deliveredAccounts) && o.deliveredAccounts.length > 0)) {
+                  if (o.status === "COMPLETED" || (Array.isArray(o.deliveredAccounts) && o.deliveredAccounts.length > 0)) {
                     poList[exIdx].status = "COMPLETED";
                     poList[exIdx].statusText = o.statusText || "Đã giao hàng";
                     poList[exIdx].deliveredAccounts = o.deliveredAccounts || poList[exIdx].deliveredAccounts;
                     poList[exIdx].credentials = o.credentials || poList[exIdx].credentials;
-                  } else if (o.status === "PROCESSING" && poList[exIdx].status !== "COMPLETED") {
+                    poList[exIdx].isCancelled = false;
+                    poList[exIdx].isRefunded = false;
+                  } else if (o.status === "PROCESSING") {
                     poList[exIdx].status = "PROCESSING";
                     poList[exIdx].statusText = o.statusText || "Đang gom hàng";
+                    poList[exIdx].isCancelled = false;
+                    poList[exIdx].isRefunded = false;
+                  } else if (o.status === "WAITING_CONFIRM") {
+                    poList[exIdx].status = "WAITING_CONFIRM";
+                    poList[exIdx].statusText = o.statusText || "Chờ xác nhận";
+                    poList[exIdx].isCancelled = false;
+                    poList[exIdx].isRefunded = false;
+                  } else if (oIsCancel && (o.cancelledBy === "CUSTOMER" || o.cancelledBy === "ADMIN" || poList[exIdx].status === "CANCELLED")) {
+                    poList[exIdx].status = "CANCELLED";
+                    poList[exIdx].statusText = o.statusText || "Khách Hủy / Đã Hoàn Tiền";
+                    poList[exIdx].isCancelled = true;
+                    poList[exIdx].isRefunded = true;
                   }
                 } else {
                   let inferredStatus = o.status || "WAITING_CONFIRM";
@@ -24599,6 +24627,12 @@ function injectAllProductsSchema() {
       if (!tbody) return;
 
       const preOrders = getPreOrders(true);
+      if (preOrders.length === 0 && typeof fetchAdminOrdersFromCloud === "function" && !window._mmoIsFetchingCloudPreOrders) {
+        window._mmoIsFetchingCloudPreOrders = true;
+        fetchAdminOrdersFromCloud(true).finally(function() {
+          window._mmoIsFetchingCloudPreOrders = false;
+        });
+      }
       const countBadge = document.getElementById("admPreOrdersCountBadge");
       if (countBadge) countBadge.innerText = preOrders.length;
 
@@ -25246,12 +25280,15 @@ function injectAllProductsSchema() {
       // Render dữ liệu tương ứng
       if (subTab === "orders" || subTab === "warranty") {
         renderAdminOrdersTable();
+        if (typeof fetchAdminOrdersFromCloud === "function") fetchAdminOrdersFromCloud(true);
       } else if (subTab === "preOrders") {
         _cachedPreOrdersList = null;
         _lastPreOrdersFetchTime = 0;
         renderAdminPreOrdersTable();
+        if (typeof fetchAdminOrdersFromCloud === "function") fetchAdminOrdersFromCloud(true);
       } else if (subTab === "walletTx") {
         if (typeof renderAdminTxTable === "function") renderAdminTxTable();
+        if (typeof fetchAdminOrdersFromCloud === "function") fetchAdminOrdersFromCloud(true);
       }
 
       // Cập nhật số lượng huy hiệu (badge)
