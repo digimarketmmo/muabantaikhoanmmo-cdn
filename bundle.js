@@ -13232,6 +13232,56 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.openProductDetailById = openProductDetailById;
 
+    // GLOBAL REALTIME PREORDER LISTENER
+    try {
+      var poChan = new BroadcastChannel("mmo_preorders_channel");
+      poChan.onmessage = function(e) {
+        if (!e.data) return;
+        
+        var type = e.data.type;
+        if (type === "NEW_PREORDER" && e.data.order) {
+          var pOrd = e.data.order;
+          var poList = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
+          if (!poList.find(function(o) { return String(o.id) === String(pOrd.id) || String(o.orderCode) === String(pOrd.orderCode); })) {
+            poList.unshift(pOrd);
+            if (typeof savePreOrders === "function") savePreOrders(poList);
+          }
+          
+          if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
+          if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
+          if (typeof renderSystemOverview === "function") renderSystemOverview();
+          
+          // Show toast if admin
+          var isAdm = (typeof isAdminUser === "function" && isAdminUser()) || (typeof currentUser !== "undefined" && currentUser && (currentUser.role === "Quản Trị Viên" || currentUser.role === "Admin"));
+          if (isAdm && typeof showToast === "function") {
+            showToast("🔔 Đơn đặt trước mới #" + (pOrd.orderCode || pOrd.id), "info");
+            if (typeof playNotificationSound === "function") playNotificationSound();
+          }
+        }
+        else if (type === "PREORDERS_UPDATED" && e.data.orderId) {
+          var orderId = e.data.orderId;
+          var newStatus = e.data.status;
+          
+          var poList = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
+          var idx = poList.findIndex(function(o) { return String(o.id) === String(orderId) || String(o.orderCode) === String(orderId); });
+          if (idx !== -1) {
+            poList[idx].status = newStatus;
+            if (newStatus === "PROCESSING") poList[idx].statusText = "Đang xử lý";
+            if (typeof savePreOrders === "function") savePreOrders(poList);
+            
+            if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
+            if (typeof renderProfileOrders === "function") renderProfileOrders();
+            
+            var curView = localStorage.getItem("mmo_current_view") || "";
+            if (curView === "viewPreOrderDetail") {
+              if (typeof openPreOrderDetailView === "function") openPreOrderDetailView(orderId);
+            }
+          }
+        }
+      };
+    } catch(e) {}
+
+
     function openLiveSupport() {
       if (typeof toggleChatWidget === "function") {
         toggleChatWidget(true);
@@ -21331,6 +21381,26 @@ function injectAllProductsSchema() {
       if (typeof renderSystemOverview === "function") renderSystemOverview();
       if (typeof showToast === "function") showToast("🎉 Đặt hàng trước thành công! Mã đơn: #" + orderCode, "success");
       try { window.dispatchEvent(new CustomEvent("mmo_preorders_changed", { detail: { orderCode: orderCode } })); } catch(e) {}
+      
+      // BROADCAST REALTIME NEW PREORDER
+      try {
+        var chan = new BroadcastChannel("mmo_preorders_channel");
+        chan.postMessage({ type: "NEW_PREORDER", order: newPreOrder || { id: orderCode, orderCode: orderCode, status: "WAITING_CONFIRM" } });
+        var mainChan = new BroadcastChannel("mmo_channel");
+        mainChan.postMessage({ type: "NEW_PREORDER", order: newPreOrder || { id: orderCode, orderCode: orderCode, status: "WAITING_CONFIRM" } });
+      } catch(e) {}
+      
+      // SYNC TO CLOUD
+      if (typeof TURSO_CONFIG !== "undefined" && TURSO_CONFIG.DEFAULT_API_URL) {
+        try {
+          fetch(TURSO_CONFIG.DEFAULT_API_URL + "/api/orders/sync", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ order: newPreOrder || { id: orderCode, orderCode: orderCode, status: "WAITING_CONFIRM" } }),
+            keepalive: true
+          }).catch(function(e) {});
+        } catch(e) {}
+      }
 
       // 6. Chuyển sang xem đơn đặt trước (Hình 4)
       // Đồng bộ đơn đặt trước lên Turso Cloud Worker
@@ -22105,6 +22175,14 @@ function injectAllProductsSchema() {
             }]
           })
         }).catch(function() {});
+      } catch(e) {}
+
+      // BROADCAST REALTIME PREORDER UPDATE (Rule #4)
+      try {
+        var chan = new BroadcastChannel("mmo_preorders_channel");
+        chan.postMessage({ type: "PREORDERS_UPDATED", orderId: cleanId, status: "PROCESSING" });
+        var mainChan = new BroadcastChannel("mmo_channel");
+        mainChan.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "PROCESSING" });
       } catch(e) {}
 
       if (typeof showToast === "function") showToast("✅ Đã xác nhận đơn đặt trước #" + (order.orderCode || order.id) + " (Trạng thái: Đang gom hàng)!", "success");
