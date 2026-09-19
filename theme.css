@@ -3997,7 +3997,44 @@
 
 
 /* AI WRITER MODAL STYLES */
-#aiEditorContent { min-height:340px; }
+#aiWriterModal {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 2147483647 !important;
+  background: rgba(0, 0, 0, 0.88) !important;
+  backdrop-filter: blur(8px) !important;
+  display: none;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+}
+#aiWriterModal[style*="display: flex"],
+#aiWriterModal[style*="display:flex"],
+#aiWriterModal[style*="display: block"],
+#aiWriterModal[style*="display:block"] {
+  display: flex !important;
+}
+@media (max-width: 900px) {
+  #aiWriterModal {
+    padding: 8px !important;
+  }
+  #aiWriterModal .ai-modal-container {
+    height: calc(100vh - 16px) !important;
+    max-height: none !important;
+    border-radius: 12px !important;
+  }
+  #aiWriterModal .ai-modal-body {
+    grid-template-columns: 1fr !important;
+    overflow-y: auto !important;
+  }
+}
+#aiEditorContent { min-height: 220px; }
 #aiEditorContent:empty::before,
 #aiEditorContent[data-placeholder]:not([data-empty]):empty::before {
   content: attr(data-placeholder);

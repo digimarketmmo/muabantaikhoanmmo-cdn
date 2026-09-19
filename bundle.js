@@ -21913,7 +21913,7 @@ const BLOGGER_BLOG_ID_WRITER = '1442157221767603343';
 
 function openAiWriterModal() {
   const modal = document.getElementById('aiWriterModal');
-  if (modal) { modal.style.display = 'block'; document.body.style.overflow = 'hidden'; }
+  if (modal) { modal.style.setProperty('display', 'flex', 'important'); document.body.style.overflow = 'hidden'; }
   const savedKey = localStorage.getItem('mmo_gemini_api_key');
   const input = document.getElementById('aiCustomApiKey');
   const status = document.getElementById('aiKeyStatus');
@@ -21926,7 +21926,7 @@ function openAiWriterModal() {
 
 function closeAiWriterModal() {
   const modal = document.getElementById('aiWriterModal');
-  if (modal) { modal.style.display = 'none'; document.body.style.overflow = ''; }
+  if (modal) { modal.style.setProperty('display', 'none', 'important'); document.body.style.overflow = ''; }
 }
 
 function updateAiMetaCounter() {
