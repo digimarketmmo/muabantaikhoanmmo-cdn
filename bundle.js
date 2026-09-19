@@ -14739,15 +14739,23 @@ function syncAllOpenViewsStock(changedProdId) {
       }
       if (typeof renderAdminBlogsTable === "function") renderAdminBlogsTable();
 
-      // Nếu đang mở xem bài viết, tự động làm mới nội dung & đề xuất sản phẩm
+      // Chỉ tự động làm mới trang chi tiết bài viết NẾU người dùng đang thực sự xem bài viết hoặc URL có tham số bài viết
       try {
         var curView = localStorage.getItem("mmo_current_view");
         var urlParams = new URLSearchParams(window.location.search);
-        var curPostParam = urlParams.get("post") || urlParams.get("blog") || localStorage.getItem("mmo_current_blog_id");
+        var explicitPost = urlParams.get("post") || urlParams.get("blog");
         var path = (typeof window !== "undefined" && window.location) ? (window.location.pathname || "") : "";
-        if (curView === "viewBlogDetail" || curPostParam || (path.length > 5 && path.endsWith(".html"))) {
-          if (typeof openBlogDetail === "function") {
-            openBlogDetail(curPostParam);
+        var isDirectPostPath = (path.length > 5 && path.endsWith(".html"));
+
+        if (explicitPost || isDirectPostPath) {
+          var targetBlogId = explicitPost || localStorage.getItem("mmo_current_blog_id");
+          if (typeof openBlogDetail === "function" && targetBlogId) {
+            openBlogDetail(targetBlogId);
+          }
+        } else if (curView === "viewBlogDetail") {
+          var activeBlogId = localStorage.getItem("mmo_current_blog_id");
+          if (typeof openBlogDetail === "function" && activeBlogId) {
+            openBlogDetail(activeBlogId);
           }
         }
       } catch(e) {}
