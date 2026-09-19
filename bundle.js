@@ -2053,12 +2053,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           const storedU = localStorage.getItem("mmo_user");
           if (storedU) {
             const uObj = JSON.parse(storedU);
-            if (uObj && (uObj.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com" && Number(uObj.balance) === 12000) {
-              uObj.balance = 10000;
+            if (uObj && (uObj.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com") {
+              if (Number(uObj.balance) === 12000) uObj.balance = 10000;
+              uObj.role = "Thành Viên";
               localStorage.setItem("mmo_user", JSON.stringify(uObj));
               if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com") {
-                currentUser.balance = 10000;
+                if (Number(currentUser.balance) === 12000) currentUser.balance = 10000;
+                currentUser.role = "Thành Viên";
               }
+            }
+          }
+          // Gỡ quyền Admin của digimarketmmo trong danh sách admin_emails và registered_users
+          const rawAdms = localStorage.getItem("mmo_admin_emails");
+          if (rawAdms) {
+            let adms = JSON.parse(rawAdms);
+            if (Array.isArray(adms)) {
+              adms = adms.filter(e => (e || "").toLowerCase().trim() !== "digimarketmmo@gmail.com");
+              localStorage.setItem("mmo_admin_emails", JSON.stringify(adms));
             }
           }
           ["mmo_registered_users", "mmo_persistent_cloud_users", "mmo_users"].forEach(k => {
@@ -2068,8 +2079,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               if (Array.isArray(arr)) {
                 let mod = false;
                 arr.forEach(u => {
-                  if ((u.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com" && Number(u.balance) === 12000) {
-                    u.balance = 10000;
+                  if ((u.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com") {
+                    if (Number(u.balance) === 12000) u.balance = 10000;
+                    u.role = "Thành Viên";
                     mod = true;
                   }
                 });
@@ -2289,10 +2301,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           let list = JSON.parse(stored);
           if (Array.isArray(list) && list.length > 0) {
             const root = (ROOT_ADMIN_EMAIL || "manhdongvtc@gmail.com").toLowerCase().trim();
-            const listLower = list.map(e => (e || "").toLowerCase().trim());
-            if (!listLower.includes(root)) list.unshift(root);
-            if (!listLower.includes("muabantaikhoanmmo@gmail.com")) list.push("muabantaikhoanmmo@gmail.com");
-            return list;
+            let listLower = list.map(e => (e || "").toLowerCase().trim()).filter(e => e && e !== "digimarketmmo@gmail.com");
+            if (!listLower.includes(root)) listLower.unshift(root);
+            if (!listLower.includes("muabantaikhoanmmo@gmail.com")) listLower.push("muabantaikhoanmmo@gmail.com");
+            return listLower;
           }
         }
       } catch (e) {}
@@ -2430,6 +2442,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!user || !user.email) return false;
       
       const userEmail = (user.email || "").toLowerCase().trim();
+      if (userEmail === "digimarketmmo@gmail.com") return false;
+
       const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" && ROOT_ADMIN_EMAIL) ? ROOT_ADMIN_EMAIL.toLowerCase().trim() : "manhdongvtc@gmail.com";
       if (userEmail === rootEmail || userEmail === "muabantaikhoanmmo@gmail.com") return true;
 
@@ -2783,7 +2797,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const emailLower = (u.email || "").toLowerCase().trim();
         const isCurrent = currentUser && (currentUser.email || "").toLowerCase().trim() === emailLower;
         const displayBalance = isCurrent && currentUser.balance !== undefined ? Number(currentUser.balance) : (Number(u.balance) || 0);
-        const isAdm = (emailLower === rootEmail || emailLower === "muabantaikhoanmmo@gmail.com" || (typeof isAdminUser === "function" && isAdminUser(u)) || u.role === "Quản Trị Viên");
+        const isAdm = (typeof isAdminUser === "function") ? isAdminUser(u) : (emailLower === rootEmail || emailLower === "muabantaikhoanmmo@gmail.com");
         const roleHtml = isAdm ? '<span class="badge-trust" style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4); white-space:nowrap; display:inline-block;">Quản Trị Viên</span>' : '<span class="badge-verified" style="font-size:0.7rem; white-space:nowrap; display:inline-block;">' + (u.role || "Thành Viên") + '</span>';
         
         const isLocked = !!u.isLocked;
@@ -4079,7 +4093,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const btnTopup = document.getElementById("admDetailBtnTopup");
       const btnLock = document.getElementById("admDetailBtnLock");
 
-      const isAdm = (u.email === ROOT_ADMIN_EMAIL || (typeof getAdminEmails === "function" && getAdminEmails().map(e => (e||"").toLowerCase().trim()).includes((u.email||"").toLowerCase().trim())) || u.role === "Quản Trị Viên");
+      const isAdm = (typeof isAdminUser === "function") ? isAdminUser(u) : (u.email === ROOT_ADMIN_EMAIL);
       const isLocked = !!u.isLocked;
 
       if (avatarEl) avatarEl.src = u.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
@@ -6218,7 +6232,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         picture = picture || (existingUser && existingUser.avatar) || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email));
 
         const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : (email === ROOT_ADMIN_EMAIL.toLowerCase());
-        const role = isAdm ? "Quản Trị Viên" : ((existingUser && existingUser.role) || "Thành Viên");
+        const role = isAdm ? "Quản Trị Viên" : "Thành Viên";
         const initBalance = (existingUser && existingUser.balance !== undefined) ? Number(existingUser.balance) : 0;
 
         // Instant session
@@ -6251,7 +6265,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (typeof ensureUserPersistedAndSynced === "function") ensureUserPersistedAndSynced(currentUser.email, currentUser.name, { avatar: currentUser.avatar, role: currentUser.role });
 
         showToast("🎉 Đăng nhập thành công tài khoản Google: " + (currentUser.name || email), "success");
-        if ((isAdm || role === "Quản Trị Viên") && typeof switchView === "function") {
+        if (isAdm && typeof switchView === "function") {
           switchView("viewAdmin");
         }
 
@@ -6269,8 +6283,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               if (res.user.balance !== undefined) {
                 currentUser.balance = Number(res.user.balance);
               }
-              if (res.user.role === "ADMIN") {
+              if (res.user.role === "ADMIN" && (typeof isAdminUser === "function" ? isAdminUser(currentUser) : false)) {
                 currentUser.role = "Quản Trị Viên";
+              } else {
+                currentUser.role = "Thành Viên";
               }
               localStorage.setItem("mmo_user", JSON.stringify(currentUser));
               let latestUsers = getRegisteredUsers();
@@ -6325,7 +6341,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         userId: found?.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
         name: found?.name || (isAdm ? "Quản Trị Viên (Admin)" : email.split("@")[0]),
         email: email,
-        role: isAdm ? "Quản Trị Viên" : (found?.role || role),
+        role: isAdm ? "Quản Trị Viên" : "Thành Viên",
         balance: found?.balance !== undefined ? found.balance : 0,
         avatar: found?.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)),
         referredBy: found?.referredBy || refToAssign
@@ -6372,8 +6388,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             if (res.user.balance !== undefined) {
               currentUser.balance = Number(res.user.balance);
             }
-            if (res.user.role === "ADMIN") {
+            if (res.user.role === "ADMIN" && (typeof isAdminUser === "function" ? isAdminUser(currentUser) : false)) {
               currentUser.role = "Quản Trị Viên";
+            } else {
+              currentUser.role = "Thành Viên";
             }
             localStorage.setItem("mmo_user", JSON.stringify(currentUser));
             let latestUsers = getRegisteredUsers();
@@ -6437,7 +6455,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             userId: res.user.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
             name: res.user.name || name,
             email: res.user.email || email,
-            role: res.user.role === "ADMIN" ? "Quản Trị Viên" : (res.user.role || "MEMBER"),
+            role: (res.user.role === "ADMIN" && (typeof isAdminUser === "function" ? isAdminUser({ email: email }) : false)) ? "Quản Trị Viên" : "Thành Viên",
             balance: Number(res.user.balance) || 0,
             avatar: res.user.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)),
             referredBy: res.user.referredBy || refToAssign
@@ -6762,7 +6780,14 @@ if ($result && $result['status'] === 'success') {
           const found = uList.find(u => (u.email || "").toLowerCase().trim() === currentUser.email.toLowerCase().trim());
           if (found && found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
             currentUser.balance = Number(found.balance);
-            if (found.role) currentUser.role = found.role;
+            const isUserAdmin = isAdminUser(currentUser);
+            if (!isUserAdmin) {
+              currentUser.role = "Thành Viên";
+              if (found) found.role = "Thành Viên";
+            } else {
+              currentUser.role = "Quản Trị Viên";
+              if (found) found.role = "Quản Trị Viên";
+            }
             localStorage.setItem("mmo_user", JSON.stringify(currentUser));
           }
         }
@@ -6835,7 +6860,7 @@ if ($result && $result['status'] === 'success') {
         if (profNameEl) profNameEl.innerText = currentUser.name || currentUser.email.split("@")[0];
         if (profEmailEl) profEmailEl.innerText = currentUser.email;
         if (profRoleEl) {
-          profRoleEl.innerText = isAdmin ? "ADMIN" : (currentUser.role || "MEMBER");
+          profRoleEl.innerText = isAdmin ? "ADMIN" : "MEMBER";
           profRoleEl.className = isAdmin ? "profile-sidebar-badge admin" : "profile-sidebar-badge";
           profRoleEl.style.color = isAdmin ? "#10b981" : "#38bdf8";
         }
@@ -12674,6 +12699,9 @@ function syncAllOpenViewsStock(changedProdId) {
         if (isAdm && found.role !== "Quản Trị Viên") {
           found.role = "Quản Trị Viên";
           needSave = true;
+        } else if (!isAdm && (found.role === "Quản Trị Viên" || found.role === "ADMIN")) {
+          found.role = "Thành Viên";
+          needSave = true;
         }
         if (needSave) {
           saveRegisteredUsers(users);
@@ -12700,6 +12728,7 @@ function syncAllOpenViewsStock(changedProdId) {
           data.users.forEach(cloudU => {
             const cEmail = (cloudU.email || "").toLowerCase().trim();
             if (!cEmail) return;
+            const isCloudUserAdmin = (typeof isAdminUser === "function") ? isAdminUser({ email: cEmail }) : false;
             const found = localUsers.find(u => (u.email || "").toLowerCase().trim() === cEmail);
             if (found) {
               found.name = cloudU.name || found.name;
@@ -12722,15 +12751,16 @@ function syncAllOpenViewsStock(changedProdId) {
                   }
                 }
               }
-              if (cloudU.role === "ADMIN" || cloudU.role === "Quản Trị Viên" || (typeof isAdminUser === "function" && isAdminUser({ email: cEmail }))) {
+              if (isCloudUserAdmin) {
                 found.role = "Quản Trị Viên";
+              } else {
+                found.role = "Thành Viên";
               }
             } else {
-              const isAdm = (typeof isAdminUser === "function" && isAdminUser({ email: cEmail })) || cloudU.role === "ADMIN" || cloudU.role === "Quản Trị Viên";
               localUsers.push({
                 name: cloudU.name || cEmail.split("@")[0],
                 email: cEmail,
-                role: isAdm ? "Quản Trị Viên" : (cloudU.role || "Thành Viên"),
+                role: isCloudUserAdmin ? "Quản Trị Viên" : "Thành Viên",
                 balance: Number(cloudU.balance) || 0,
                 created: cloudU.createdAt || new Date().toLocaleDateString("vi-VN"),
                 avatar: cloudU.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
@@ -23958,7 +23988,7 @@ function injectAllProductsSchema() {
       var btnAdminFulfill = document.getElementById("btnPodAdminFulfill");
       var btnAdminCancel = document.getElementById("btnPodAdminCancel");
 
-      var isAdm = (typeof isAdminUser === "function" && isAdminUser()) || (typeof currentUser !== "undefined" && currentUser && (currentUser.role === "Quản Trị Viên" || currentUser.role === "Admin"));
+      var isAdm = (typeof isAdminUser === "function") ? isAdminUser(currentUser) : false;
 
       if (line12) line12.style.background = "#10b981";
 
@@ -24148,11 +24178,21 @@ function injectAllProductsSchema() {
       function applyCloudPO(cloudOrd) {
         if (!cloudOrd) return false;
         var cStatus = String(cloudOrd.status || cloudOrd.order_status || "").toUpperCase().trim();
-        var isComp = cStatus === "COMPLETED" || cStatus === "DELIVERED";
+        var isComp = cStatus === "COMPLETED" || cStatus === "DELIVERED" || cStatus.includes("GIAO");
         var isCanc = cStatus === "CANCELLED" || cStatus.includes("HỦY");
         var isProc = cStatus === "PROCESSING" || cStatus.includes("GOM");
-        var accLines = cloudOrd.accounts ? cloudOrd.accounts.split(String.fromCharCode(10)).map(function(l) { return l.trim(); }).filter(Boolean) : (cloudOrd.deliveredAccounts || []);
-        var credsStr = accLines.join(String.fromCharCode(10)) || cloudOrd.credentials || cloudOrd.accounts || "";
+
+        var accLines = [];
+        if (Array.isArray(cloudOrd.accounts)) {
+          accLines = cloudOrd.accounts.map(function(l) { return String(l).trim(); }).filter(Boolean);
+        } else if (typeof cloudOrd.accounts === "string" && cloudOrd.accounts.trim()) {
+          accLines = cloudOrd.accounts.split(String.fromCharCode(10)).map(function(l) { return l.trim(); }).filter(Boolean);
+        } else if (Array.isArray(cloudOrd.deliveredAccounts)) {
+          accLines = cloudOrd.deliveredAccounts.map(function(l) { return String(l).trim(); }).filter(Boolean);
+        } else if (typeof cloudOrd.credentials === "string" && cloudOrd.credentials.trim()) {
+          accLines = cloudOrd.credentials.split(String.fromCharCode(10)).map(function(l) { return l.trim(); }).filter(Boolean);
+        }
+        var credsStr = accLines.join(String.fromCharCode(10)) || (typeof cloudOrd.credentials === "string" ? cloudOrd.credentials : "") || "";
 
         // KHÓA BẢO VỆ ĐƠN ĐÃ HỦY: Tuyệt đối không cho phép dữ liệu cũ từ Cloud ghi đè đơn đã hủy thành Chờ xác nhận!
         if (order.status === "CANCELLED" && !isCanc) {
@@ -24161,10 +24201,20 @@ function injectAllProductsSchema() {
         }
 
         var oldStatus = order.status;
-        if (isComp) order.status = "COMPLETED";
-        else if (isCanc) order.status = "CANCELLED";
-        else if (isProc) order.status = "PROCESSING";
-        else order.status = cStatus || "WAITING_CONFIRM";
+        if (isComp || accLines.length > 0) {
+          order.status = "COMPLETED";
+          order.statusText = "Đã giao hàng";
+          order.completedAt = cloudOrd.completed_at || cloudOrd.completedAt || new Date().toLocaleString("vi-VN");
+        } else if (isCanc) {
+          order.status = "CANCELLED";
+          order.statusText = "Đã hủy / Hoàn tiền";
+        } else if (isProc) {
+          order.status = "PROCESSING";
+          order.statusText = "Đang gom hàng";
+        } else {
+          order.status = cStatus || "WAITING_CONFIRM";
+          order.statusText = "Chờ xác nhận";
+        }
 
         if (accLines.length > 0) {
           order.deliveredAccounts = accLines;
@@ -24176,14 +24226,43 @@ function injectAllProductsSchema() {
         var pIdx = pList.findIndex(function(p) { return String(p.orderCode || p.id || p.orderId || "").replace(/#/g, "").trim().toLowerCase() === cleanId.toLowerCase(); });
         if (pIdx !== -1) {
           pList[pIdx].status = order.status;
+          pList[pIdx].statusText = order.statusText;
           if (accLines.length > 0) {
             pList[pIdx].deliveredAccounts = accLines;
             pList[pIdx].credentials = credsStr;
           }
-          if (typeof savePreOrders === "function") savePreOrders(pList);
+          if (order.completedAt) pList[pIdx].completedAt = order.completedAt;
+          if (typeof savePreOrders === "function") savePreOrders(pList, true);
         }
 
+        // Cập nhật các kho mmo_orders, mmo_user_orders, mmo_all_orders
+        ["mmo_orders", "mmo_user_orders", "mmo_all_orders"].forEach(function(k) {
+          try {
+            var raw = localStorage.getItem(k);
+            if (!raw) return;
+            var arr = JSON.parse(raw);
+            if (!Array.isArray(arr)) return;
+            var mod = false;
+            arr.forEach(function(item) {
+              if (!item) return;
+              var iId = String(item.orderId || item.id || item.orderCode || "").replace(/#/g, "").trim().toLowerCase();
+              if (iId === cleanId.toLowerCase()) {
+                item.status = order.status;
+                item.statusText = order.statusText;
+                if (accLines.length > 0) {
+                  item.deliveredAccounts = accLines;
+                  item.credentials = credsStr;
+                }
+                if (order.completedAt) item.completedAt = order.completedAt;
+                mod = true;
+              }
+            });
+            if (mod) localStorage.setItem(k, JSON.stringify(arr));
+          } catch(e) {}
+        });
+
         renderPreOrderDetailUI(order);
+        if (typeof renderProfileOrders === "function") renderProfileOrders();
 
         // Nếu vừa chuyển sang COMPLETED, phát chuông báo & thông báo
         if (oldStatus !== "COMPLETED" && order.status === "COMPLETED") {
@@ -24225,11 +24304,11 @@ function injectAllProductsSchema() {
       }
       fetchSinglePreOrder(cleanId, applyCloudPO);
 
-      // 5. Tự động kiểm tra chu kỳ 8 giây để cập nhật trạng thái thời gian thực khi Admin giao hàng
+      // 5. Tự động kiểm tra chu kỳ 2.5 giây để cập nhật trạng thái thời gian thực khi Admin giao hàng
       if (window._podPollingTimer) clearInterval(window._podPollingTimer);
       window._podPollingTimer = setInterval(function() {
-        var curV = localStorage.getItem("mmo_current_view");
-        if (curV !== "viewPreOrderDetail") {
+        var podEl = document.getElementById("viewPreOrderDetail");
+        if (!podEl || podEl.style.display === "none") {
           clearInterval(window._podPollingTimer);
           return;
         }
@@ -24245,7 +24324,7 @@ function injectAllProductsSchema() {
             }
           }
         });
-      }, 8000);
+      }, 2500);
     }
     window.openPreOrderDetailView = openPreOrderDetailView;
 
@@ -25416,8 +25495,17 @@ function injectAllProductsSchema() {
               const ordStatus = String(cloudOrd.status || "WAITING_CONFIRM").toUpperCase();
               const isCompleted = ordStatus === "COMPLETED" || ordStatus === "DELIVERED" || ordStatus.includes("GIAO");
               const isCancelled = ordStatus === "CANCELLED" || ordStatus.includes("HỦY");
-              const accLines = cloudOrd.accounts ? cloudOrd.accounts.split(String.fromCharCode(10)).map(function(l) { return l.trim(); }).filter(Boolean) : (cloudOrd.deliveredAccounts || []);
-              const credsStr = accLines.join(String.fromCharCode(10)) || cloudOrd.credentials || cloudOrd.accounts || "";
+              let accLines = [];
+              if (Array.isArray(cloudOrd.accounts)) {
+                accLines = cloudOrd.accounts.map(function(l) { return String(l).trim(); }).filter(Boolean);
+              } else if (typeof cloudOrd.accounts === "string" && cloudOrd.accounts.trim()) {
+                accLines = cloudOrd.accounts.split(String.fromCharCode(10)).map(function(l) { return l.trim(); }).filter(Boolean);
+              } else if (Array.isArray(cloudOrd.deliveredAccounts)) {
+                accLines = cloudOrd.deliveredAccounts.map(function(l) { return String(l).trim(); }).filter(Boolean);
+              } else if (typeof cloudOrd.credentials === "string" && cloudOrd.credentials.trim()) {
+                accLines = cloudOrd.credentials.split(String.fromCharCode(10)).map(function(l) { return l.trim(); }).filter(Boolean);
+              }
+              const credsStr = accLines.join(String.fromCharCode(10)) || (typeof cloudOrd.credentials === "string" ? cloudOrd.credentials : "") || (typeof cloudOrd.accounts === "string" ? cloudOrd.accounts : "") || "";
 
               let statusText = "Chờ xác nhận";
               if (isCompleted) statusText = "Đã giao hàng";
