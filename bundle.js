@@ -8049,7 +8049,7 @@ if ($result && $result['status'] === 'success') {
         tabAdmWithdrawals: "tabBtnAdmWithdrawals",
         tabAdmTxLogs: "tabBtnAdmTxLogs",
         tabAdmOrders: "tabBtnAdmOrders",
-        tabAdmPreOrders: "tabBtnAdmOrders",
+        tabAdmPreOrders: "tabBtnAdmPreOrders",
         tabAdmPayment: "tabBtnAdmPayment",
         tabAdmGeneral: "tabBtnAdmGeneral",
         tabAdmAdmins: "tabBtnAdmAdmins",
@@ -23353,6 +23353,8 @@ function injectAllProductsSchema() {
               if (ev.data.type === "NEW_PREORDER" && ev.data.order) {
                 var newPo = ev.data.order;
                 var nId = String(newPo.orderCode || newPo.id || newPo.orderId || "").replace(/#/g, "").trim().toLowerCase();
+                _cachedPreOrdersList = null;
+                _lastPreOrdersFetchTime = 0;
                 var pList = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
                 var exist = pList.some(function(p) {
                   return String(p.orderCode || p.id || p.orderId || "").replace(/#/g, "").trim().toLowerCase() === nId;
@@ -23371,10 +23373,15 @@ function injectAllProductsSchema() {
                     } catch(e) {}
                   });
                 }
+                if (typeof window.paginationState === "undefined") window.paginationState = {};
+                window.paginationState.admPreOrders = 1;
+                _cachedPreOrdersList = null;
+                _lastPreOrdersFetchTime = 0;
                 if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
-                if (typeof triggerDebouncedAdminTablesRender === "function") triggerDebouncedAdminTablesRender();
                 if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
+                if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
                 if (typeof renderProfileOrders === "function") renderProfileOrders();
+                if (typeof renderHeaderNotifications === "function") renderHeaderNotifications();
                 try {
                   var curU = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
                   if (curU && typeof isAdminUser === "function" && isAdminUser(curU)) {
@@ -23737,9 +23744,9 @@ function injectAllProductsSchema() {
       // 1. Phản hồi tức thì: disable nút ngay lập tức và hiển thị hiệu ứng xoay vòng xoay tròn rõ nét
       var _poSubmitBtn = document.getElementById("btnSubmitPreOrder");
       if (_poSubmitBtn) {
-        if (_poSubmitBtn.disabled || _poSubmitBtn.dataset.submitting === "true") return;
+        if (_poSubmitBtn.disabled || (_poSubmitBtn.dataset && _poSubmitBtn.dataset.submitting === "true")) return;
         _poSubmitBtn.disabled = true;
-        _poSubmitBtn.dataset.submitting = "true";
+        if (_poSubmitBtn.dataset) _poSubmitBtn.dataset.submitting = "true";
         _poSubmitBtn.style.opacity = "0.75";
         _poSubmitBtn.style.pointerEvents = "none";
         _poSubmitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right:8px; font-size:1.05rem;"></i>Đang xử lý đặt hàng...';
@@ -23748,16 +23755,14 @@ function injectAllProductsSchema() {
       function _restorePoBtn() {
         if (_poSubmitBtn) {
           _poSubmitBtn.disabled = false;
-          _poSubmitBtn.dataset.submitting = "false";
+          if (_poSubmitBtn.dataset) _poSubmitBtn.dataset.submitting = "false";
           _poSubmitBtn.style.opacity = "1";
           _poSubmitBtn.style.pointerEvents = "auto";
           _poSubmitBtn.innerHTML = '<i class="fa-solid fa-check" style="margin-right:6px;"></i>Đặt Hàng Ngay';
         }
       }
 
-      // Cho trình duyệt thời gian hiển thị hiệu ứng xoay tròn và người dùng thấy rõ ràng đang xử lý
-      setTimeout(function() {
-        try {
+      try {
           const fullProdTitle = (document.getElementById("poModalProdName") ? document.getElementById("poModalProdName").value : "").trim() || (document.getElementById("dtlTitle") ? document.getElementById("dtlTitle").innerText.trim() : "Sản phẩm đặt trước");
           const prodId = (document.getElementById("poModalProdId") ? document.getElementById("poModalProdId").value : "").trim() || (document.getElementById("dtlId") ? document.getElementById("dtlId").innerText.trim() : ("PROD_" + Date.now()));
           const varIdx = parseInt(document.getElementById("poModalVarIdx") ? document.getElementById("poModalVarIdx").value : 0) || 0;
@@ -23975,8 +23980,12 @@ function injectAllProductsSchema() {
             syncUserToCloud(user);
           }
 
-          // 5. Đóng modal & Cập nhật UI ví và Admin NGAY LẬP TỨC (như bản trước theo đúng yêu cầu)
+          // 5. Đóng modal & Cập nhật UI ví và Admin NGAY LẬP TỨC (0ms)
           closePreOrderModal();
+          if (typeof window.paginationState === "undefined") window.paginationState = {};
+          window.paginationState.admPreOrders = 1;
+          _cachedPreOrdersList = null;
+          _lastPreOrdersFetchTime = 0;
           if (typeof updateUserUI === "function") updateUserUI();
           if (typeof updateWalletUI === "function") updateWalletUI();
           if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
@@ -23984,6 +23993,18 @@ function injectAllProductsSchema() {
           if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
           if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
           if (typeof renderSystemOverview === "function") renderSystemOverview();
+          if (typeof notifyAdmin === "function") {
+            notifyAdmin({
+              id: "ADM_PRE_" + orderCode,
+              title: "⏳ Đơn đặt trước mới #" + orderCode,
+              message: "Khách " + (user.email || user.name || "Khách hàng") + " vừa đặt trước " + qty + "x " + fullProdTitle + ". Vui lòng gom hàng!",
+              type: "PRE_ORDER",
+              orderId: orderCode,
+              userEmail: user.email,
+              time: nowStr
+            });
+          }
+          if (typeof renderHeaderNotifications === "function") renderHeaderNotifications();
           if (typeof _viewDirty !== "undefined") {
             _viewDirty["viewAdmin"] = true;
             _viewDirty["viewProfile"] = true;
@@ -24037,7 +24058,6 @@ function injectAllProductsSchema() {
           _restorePoBtn();
           if (typeof showToast === "function") showToast("Có lỗi xảy ra: " + (err && err.message ? err.message : err), "error");
         }
-      }, 600);
     }
     window.submitPreOrderAction = submitPreOrderAction;
 
@@ -25517,14 +25537,20 @@ function injectAllProductsSchema() {
 
       // Render dữ liệu tương ứng
       if (subTab === "orders" || subTab === "warranty") {
+        try { localStorage.setItem("mmo_admin_tab", "tabAdmOrders"); } catch(e) {}
         renderAdminOrdersTable();
         if (typeof fetchAdminOrdersFromCloud === "function") fetchAdminOrdersFromCloud(true);
       } else if (subTab === "preOrders") {
+        try { localStorage.setItem("mmo_admin_tab", "tabAdmPreOrders"); } catch(e) {}
+        document.querySelectorAll(".adm-sidebar-btn").forEach(function(b) { b.classList.remove("active"); });
+        const sideBtn = document.getElementById("tabBtnAdmPreOrders");
+        if (sideBtn) sideBtn.classList.add("active");
         _cachedPreOrdersList = null;
         _lastPreOrdersFetchTime = 0;
         renderAdminPreOrdersTable();
         if (typeof fetchAdminOrdersFromCloud === "function") fetchAdminOrdersFromCloud(true);
       } else if (subTab === "walletTx") {
+        try { localStorage.setItem("mmo_admin_tab", "tabAdmTxLogs"); } catch(e) {}
         if (typeof renderAdminTxTable === "function") renderAdminTxTable();
         if (typeof fetchAdminOrdersFromCloud === "function") fetchAdminOrdersFromCloud(true);
       }
@@ -25536,13 +25562,20 @@ function injectAllProductsSchema() {
 
     function updateAdminPreOrdersBadge() {
       try {
-        const preOrders = (typeof getPreOrders === "function") ? getPreOrders() : [];
+        const preOrders = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
         const waitingCount = preOrders.filter(o => o.status === "WAITING_CONFIRM" || o.status === "PROCESSING").length;
         const countBadge = document.getElementById("admPreOrdersCountBadge");
         if (countBadge) {
           countBadge.innerText = preOrders.length;
           countBadge.style.background = waitingCount > 0 ? "#f59e0b" : "#1e293b";
           countBadge.style.color = waitingCount > 0 ? "#0b111e" : "#cbd5e1";
+        }
+        const sidebarBadge = document.getElementById("admSidebarPreOrdersCountBadge");
+        if (sidebarBadge) {
+          sidebarBadge.innerText = preOrders.length;
+          sidebarBadge.style.display = preOrders.length > 0 ? "inline-block" : "none";
+          sidebarBadge.style.background = waitingCount > 0 ? "#f59e0b" : "#1e293b";
+          sidebarBadge.style.color = waitingCount > 0 ? "#0b111e" : "#cbd5e1";
         }
       } catch(e) {}
     }
@@ -25877,7 +25910,8 @@ function injectAllProductsSchema() {
                     buyerUsername: cloudOrd.userName,
                     userName: cloudOrd.userName,
                     maxDays: 7,
-                    type: "PRE_ORDER"
+                    type: "PRE_ORDER",
+                    createdTimestamp: (typeof getOrderTimestamp === "function") ? getOrderTimestamp(cloudOrd) : (Date.parse(cloudOrd.createdAt) || Date.now())
                   });
                 }
               }
