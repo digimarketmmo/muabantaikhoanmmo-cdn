@@ -6504,7 +6504,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       }
 
       // 1. TỨC THÌ 0MS: Chuyển đổi hiển thị view
-      const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
+      const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewApiDocs"];
       views.forEach(function(v) {
         const el = document.getElementById(v);
         if (el) el.style.display = (v === viewId) ? "block" : "none";
@@ -13257,6 +13257,17 @@ function syncAllOpenViewsStock(changedProdId) {
 
       // Mặc định hiển thị tab Chi Tiết Sản Phẩm khi mở
       switchProductDescTab("desc");
+      // Populate API purchase tab data
+      const apiProdIdEl = document.getElementById("dtlApiProdIdDisplay");
+      if (apiProdIdEl) apiProdIdEl.innerText = p.id;
+      const apiCurlEl = document.getElementById("dtlApiCurlPre");
+      if (apiCurlEl) {
+        var reqBody = JSON.stringify({ product_id: p.id, variant_idx: 0, quantity: 1 }, null, 2);
+        apiCurlEl.textContent = "curl -X POST https://mmo-shop-api.manhdongvtc.workers.dev/api/buy \\\n" +
+          "  -H \"Content-Type: application/json\" \\\n" +
+          "  -H \"Authorization: Bearer YOUR_API_KEY\" \\\n" +
+          "  -d '" + reqBody + "'";
+      }
       switchView("viewProductDetail");
       if (typeof renderDetailRelatedProducts === "function") renderDetailRelatedProducts(p);
       if (typeof renderBestSellers === "function") renderBestSellers();
@@ -13594,16 +13605,19 @@ function syncAllOpenViewsStock(changedProdId) {
       const secDesc = document.getElementById("dtlTabSecDesc");
       const secGuide = document.getElementById("dtlTabSecGuide");
       const secReviews = document.getElementById("dtlTabSecReviews");
+      const secApi = document.getElementById("dtlTabSecApi");
 
       if (secDesc) secDesc.style.display = (tabKey === "desc") ? "block" : "none";
       if (secGuide) secGuide.style.display = (tabKey === "guide") ? "block" : "none";
       if (secReviews) secReviews.style.display = (tabKey === "reviews") ? "block" : "none";
+      if (secApi) secApi.style.display = (tabKey === "api") ? "block" : "none";
 
       const btnDesc = document.getElementById("dtlTabBtnDesc");
       const btnGuide = document.getElementById("dtlTabBtnGuide");
       const btnReviews = document.getElementById("dtlTabBtnReviews");
+      const btnApi = document.getElementById("dtlTabBtnApi");
 
-      [btnDesc, btnGuide, btnReviews].forEach(b => {
+      [btnDesc, btnGuide, btnReviews, btnApi].forEach(b => {
         if (b) b.classList.remove("active");
       });
 
@@ -13613,12 +13627,24 @@ function syncAllOpenViewsStock(changedProdId) {
         if (tabKey === "desc" && btnDesc) btnDesc.classList.add("active");
         if (tabKey === "guide" && btnGuide) btnGuide.classList.add("active");
         if (tabKey === "reviews" && btnReviews) btnReviews.classList.add("active");
+        if (tabKey === "api" && btnApi) btnApi.classList.add("active");
       }
 
       if (tabKey === "reviews") {
         renderProductReviews();
       }
     }
+    window.switchProductDescTab = switchProductDescTab;
+
+    window.copyDtlApiCurlSnippet = function() {
+      const curlPre = document.getElementById("dtlApiCurlPre");
+      if (curlPre && curlPre.innerText) {
+        copyTextToClipboard(curlPre.innerText, "Đã sao chép lệnh cURL mua hàng!");
+      }
+    };
+    window.openApiDocsModal = function() {
+      if (typeof switchView === "function") switchView("viewApiDocs");
+    };
     window.switchProductDescTab = switchProductDescTab;
 
     // Dữ liệu đánh giá mặc định chất lượng cao cho sản phẩm MMO
@@ -14814,21 +14840,30 @@ function syncAllOpenViewsStock(changedProdId) {
       // Tương thích ngược callback cũ
       window.handleBloggerFeedJsonp = window.handleBloggerFeedMasterJsonp;
 
-      // SCRIPT 1: Nạp feed trung tâm từ muabantaikhoanmmo.com (BẮT BUỘC cho tất cả blog trong mạng lưới)
+      // SCRIPT 1: Nạp feed trung tâm từ blog chủ (Ưu tiên muabantaikhoanmmo68.blogspot.com - trực tiếp máy chủ Google Blogger không độ trễ)
       var oldMaster = document.getElementById("bloggerJsonpMasterScript");
       if (oldMaster) oldMaster.remove();
       var scriptMaster = document.createElement("script");
       scriptMaster.id = "bloggerJsonpMasterScript";
-      scriptMaster.src = "https://www.muabantaikhoanmmo.com/feeds/posts/default?alt=json-in-script&callback=handleBloggerFeedMasterJsonp&max-results=50&_t=" + Date.now();
+      scriptMaster.src = "https://muabantaikhoanmmo68.blogspot.com/feeds/posts/default?alt=json-in-script&callback=handleBloggerFeedMasterJsonp&max-results=50&_t=" + Date.now();
       scriptMaster.onerror = function() {
-        _isFetchingBloggerFeed = false;
-        console.warn("Không thể tải feed bài đăng từ muabantaikhoanmmo.com");
+        // Fallback sang tên miền thương hiệu www.muabantaikhoanmmo.com
+        var oldFb = document.getElementById("bloggerJsonpFallbackScript");
+        if (oldFb) oldFb.remove();
+        var scriptFb = document.createElement("script");
+        scriptFb.id = "bloggerJsonpFallbackScript";
+        scriptFb.src = "https://www.muabantaikhoanmmo.com/feeds/posts/default?alt=json-in-script&callback=handleBloggerFeedMasterJsonp&max-results=50&_t=" + Date.now();
+        scriptFb.onerror = function() {
+          _isFetchingBloggerFeed = false;
+          console.warn("Không thể tải feed bài đăng từ blog chính (muabantaikhoanmmo68.blogspot.com / muabantaikhoanmmo.com)");
+        };
+        document.head.appendChild(scriptFb);
       };
       document.head.appendChild(scriptMaster);
 
       // SCRIPT 2: Nếu blog hiện tại là blog vệ tinh khác domain chính, đồng thời tải thêm bài đăng cục bộ
       var curHost = (typeof window !== "undefined" && window.location) ? (window.location.hostname || "").toLowerCase() : "";
-      if (curHost && curHost !== "www.muabantaikhoanmmo.com" && curHost !== "muabantaikhoanmmo.com" && curHost !== "localhost" && curHost !== "127.0.0.1") {
+      if (curHost && curHost !== "www.muabantaikhoanmmo.com" && curHost !== "muabantaikhoanmmo.com" && curHost !== "muabantaikhoanmmo68.blogspot.com" && curHost !== "localhost" && curHost !== "127.0.0.1") {
         var oldLocal = document.getElementById("bloggerJsonpLocalScript");
         if (oldLocal) oldLocal.remove();
         var scriptLocal = document.createElement("script");
@@ -19793,8 +19828,32 @@ function injectAllProductsSchema() {
     function handleAllProdFilter() {
       allProdCurrentPage = 1;
       renderAllProductsPage();
+      if (typeof window !== "undefined" && window.innerWidth <= 992) {
+        var sb = document.getElementById("allProdSidebar");
+        var badge = document.getElementById("allProdSidebarToggleBadge");
+        if (sb && sb.classList.contains("expanded")) {
+          sb.classList.remove("expanded");
+          if (badge) badge.textContent = "▼ Bộ Lọc";
+        }
+        var gridEl = document.getElementById("allProdsGrid");
+        if (gridEl) {
+          try {
+            gridEl.scrollIntoView({ behavior: "smooth", block: "start" });
+          } catch(e) {}
+        }
+      }
     }
     window.handleAllProdFilter = handleAllProdFilter;
+
+    window.toggleAllProdSidebarOnMobile = function() {
+      var sb = document.getElementById("allProdSidebar");
+      var badge = document.getElementById("allProdSidebarToggleBadge");
+      if (!sb) return;
+      sb.classList.toggle("expanded");
+      if (badge) {
+        badge.textContent = sb.classList.contains("expanded") ? "▲ Thu gọn" : "▼ Bộ Lọc";
+      }
+    };
 
     function resetAllProdFilter() {
       const sInp = document.getElementById("allProdSearchInp");

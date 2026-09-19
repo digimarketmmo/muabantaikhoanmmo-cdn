@@ -4274,6 +4274,42 @@ div:has(> #admUserWalletsTable) {
   min-width: 130px !important;
 }
 
+/* 2.5 BỘ LỌC TÌM KIẾM TRANG TẤT CẢ SẢN PHẨM CO GỌN TRÊN MOBILE */
+.all-prod-sidebar-toggle-badge { display: none; }
+.all-prod-sidebar-header { cursor: default; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #1e293b; }
+.all-prod-sidebar-content { display: block; }
+
+@media (max-width: 992px) {
+  .all-prod-sidebar {
+    padding: 10px 14px !important;
+    margin-bottom: 12px !important;
+    max-height: none !important;
+    position: static !important;
+  }
+  .all-prod-sidebar-header {
+    cursor: pointer !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    border-bottom: none !important;
+  }
+  .all-prod-sidebar-toggle-badge {
+    display: inline-block !important;
+  }
+  .all-prod-sidebar-content {
+    display: none !important;
+    margin-top: 14px !important;
+    padding-top: 12px !important;
+    border-top: 1px solid #1e293b !important;
+  }
+  .all-prod-sidebar.expanded .all-prod-sidebar-content {
+    display: block !important;
+  }
+  .all-prod-sidebar.expanded .all-prod-sidebar-header {
+    border-bottom: 1px solid #1e293b !important;
+    padding-bottom: 10px !important;
+  }
+}
+
 /* 4. Khung giao diện Admin & Profile 2 cột co giãn chuẩn trên mobile */
 @media (max-width: 992px) {
   .admin-layout-2col, .profile-layout-2col { flex-direction: column !important; gap: 16px !important; width: 100% !important; }
