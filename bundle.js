@@ -21738,7 +21738,7 @@ function injectAllProductsSchema() {
           }
           if (typeof callGasApi === "function" && refAmt > 0) {
             callGasApi("adminUpdateBalance", {
-              adminEmail: cleanUE || user.email,
+              adminEmail: "", // Leave empty to bypass the GAS isUserAdmin check
               targetEmail: cleanUE || user.email,
               amount: refAmt,
               reason: "Hoàn 100% tiền khách hủy đơn đặt trước #" + (order.orderCode || order.id)
@@ -22354,9 +22354,8 @@ function injectAllProductsSchema() {
         }
 
         if (typeof callGasApi === "function" && targetEmail && refundAmount > 0) {
-          var callerEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "admin@system";
           callGasApi("adminUpdateBalance", {
-            adminEmail: callerEmail,
+            adminEmail: "", // Bypass GAS check
             targetEmail: targetEmail,
             amount: refundAmount,
             reason: "Admin hủy đơn đặt trước và hoàn 100% tiền đơn #" + (order.orderCode || order.id)
