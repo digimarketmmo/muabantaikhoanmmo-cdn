@@ -23438,14 +23438,27 @@ function injectAllProductsSchema() {
                 // Thông báo tới khách nếu đang mở trang
                 try {
                   const curU = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
-                  const buyerEmail = (pIdx !== -1 && pList[pIdx]) ? (pList[pIdx].buyerEmail || pList[pIdx].email || "") : "";
-                  if (curU && buyerEmail && curU.email.toLowerCase().trim() === buyerEmail.toLowerCase().trim()) {
+                  const poItem = (pIdx !== -1 && pList[pIdx]) ? pList[pIdx] : { buyerEmail: ev.data.buyerEmail || "" };
+                  const isMatchUser = (typeof isOrderBelongsToUser === "function") ? isOrderBelongsToUser(poItem) : Boolean(curU && poItem.buyerEmail && curU.email && curU.email.toLowerCase().trim() === poItem.buyerEmail.toLowerCase().trim());
+                  if (curU && isMatchUser) {
                     if (newSt === "PROCESSING") {
                       if (typeof playNotificationSound === "function") playNotificationSound();
                       if (typeof showToast === "function") showToast("⚙️ Đơn đặt trước #" + targetId.toUpperCase() + " đã được xác nhận: Đang gom hàng!", "info");
                     } else if (newSt === "COMPLETED") {
                       if (typeof playNotificationSound === "function") playNotificationSound();
                       if (typeof showToast === "function") showToast("🎉 Đơn đặt trước #" + targetId.toUpperCase() + " đã được giao tài khoản! Bấm vào để nhận tài khoản.", "success");
+                    } else if (newSt === "CANCELLED") {
+                      if (typeof playNotificationSound === "function") playNotificationSound();
+                      var refMsg = ev.data.refundAmount ? (" Đã hoàn " + (typeof formatVND === "function" ? formatVND(ev.data.refundAmount) : (ev.data.refundAmount.toLocaleString("vi-VN") + " đ")) + " vào ví.") : " Đã hoàn tiền vào ví.";
+                      if (typeof showToast === "function") showToast("ℹ️ Đơn đặt trước #" + targetId.toUpperCase() + " đã bị hủy." + refMsg, "info");
+                      if (ev.data.refundAmount) {
+                        var curB = Number(curU.balance) || 0;
+                        curU.balance = curB + Number(ev.data.refundAmount);
+                        try { localStorage.setItem("mmo_user", JSON.stringify(curU)); } catch(e) {}
+                        if (typeof updateWalletUI === "function") updateWalletUI();
+                        if (typeof updateUserUI === "function") updateUserUI();
+                        if (typeof renderUserBalanceLogs === "function") renderUserBalanceLogs();
+                      }
                     }
                   }
                 } catch(e) {}
@@ -24449,6 +24462,26 @@ function injectAllProductsSchema() {
             recordTransaction(cleanUE || user.email, user.username || user.fullname || user.email.split("@")[0], "Hoàn tiền khách hủy đơn đặt trước", +refAmt, finalBal, "Hoàn 100% tiền khách hủy đơn đặt trước #" + (order.orderCode || order.id) + " (" + (order.productName || "Sản phẩm đặt trước") + ")");
           }
         } catch(e) {}
+
+        // Ghi biến động số dư hoàn tiền (mmo_balance_logs)
+        try {
+          const balanceLogs = JSON.parse(localStorage.getItem("mmo_balance_logs") || "[]");
+          balanceLogs.unshift({
+            id: "TX_PO_REFUND_" + Date.now(),
+            orderId: order.orderCode || order.id,
+            userId: user.id || user.email,
+            userEmail: user.email,
+            username: user.username || user.fullname || user.email.split("@")[0],
+            type: "REFUND",
+            typeText: "Hoàn tiền hủy đơn đặt trước",
+            amount: +refAmt,
+            balanceAfter: finalBal,
+            time: new Date().toLocaleString("vi-VN"),
+            timestamp: Date.now(),
+            note: "Hoàn 100% tiền khách hủy đơn đặt trước #" + (order.orderCode || order.id) + " (" + (order.productName || "Sản phẩm đặt trước") + ")"
+          });
+          localStorage.setItem("mmo_balance_logs", JSON.stringify(balanceLogs));
+        } catch(e) {}
       }
 
       // Cập nhật trạng thái đơn
@@ -24469,6 +24502,31 @@ function injectAllProductsSchema() {
         preOrders.unshift(order);
         savePreOrders(preOrders);
       }
+
+      // Cập nhật trạng thái đơn hủy trên toàn bộ các kho lưu trữ (mmo_orders, mmo_user_orders, mmo_all_orders)
+      ["mmo_orders", "mmo_user_orders", "mmo_all_orders"].forEach(function(k) {
+        try {
+          var raw = localStorage.getItem(k);
+          if (!raw) return;
+          var arr = JSON.parse(raw);
+          if (!Array.isArray(arr)) return;
+          var updated = false;
+          arr.forEach(function(item) {
+            if (!item) return;
+            var iId = String(item.orderId || item.id || item.orderCode || "").replace(/#/g, "").trim().toLowerCase();
+            if (iId === cleanCode.toLowerCase()) {
+              item.status = "CANCELLED";
+              item.statusText = "Khách Hủy / Đã Hoàn Tiền";
+              item.isCancelled = true;
+              item.isRefunded = true;
+              item.cancelledBy = "CUSTOMER";
+              item.refundedAt = order.refundedAt;
+              updated = true;
+            }
+          });
+          if (updated) localStorage.setItem(k, JSON.stringify(arr));
+        } catch(e) {}
+      });
 
       // ĐỒNG BỘ ĐƠN HỦY LÊN TURSO CLOUD WORKER NGAY LẬP TỨC
       var TURSO_WORKER_URL = (typeof TURSO_CONFIG !== "undefined" && TURSO_CONFIG.DEFAULT_API_URL) ? TURSO_CONFIG.DEFAULT_API_URL : "https://mmo-shop-api.manhdongvtc.workers.dev";
@@ -24498,15 +24556,33 @@ function injectAllProductsSchema() {
           callGasApi("adminUpdateOrderStatus", {
             orderId: cleanCode,
             status: "CANCELLED",
+            statusText: "Khách Hủy / Đã Hoàn Tiền",
             note: "Khách hủy đơn đặt trước và nhận hoàn tiền 100%"
           }).catch(function() {});
         } catch(e) {}
       }
 
-      // Phát sóng tức thì đa tab/cửa sổ qua BroadcastChannel
+      // Phát sóng tức thì đa tab/cửa sổ qua BroadcastChannel kèm refundAmount
       try {
         if (typeof BroadcastChannel !== "undefined") {
-          new BroadcastChannel("mmo_preorders_channel").postMessage({ type: "PREORDERS_UPDATED", orderId: cleanCode, status: "CANCELLED", cancelledBy: "CUSTOMER" });
+          var refAmtToBroadcast = Number(order.total || order.totalPrice || 0);
+          new BroadcastChannel("mmo_preorders_channel").postMessage({
+            type: "PREORDERS_UPDATED",
+            orderId: cleanCode,
+            orderCode: cleanCode,
+            status: "CANCELLED",
+            statusText: "Khách Hủy / Đã Hoàn Tiền",
+            cancelledBy: "CUSTOMER",
+            refundAmount: refAmtToBroadcast,
+            buyerEmail: user ? user.email : ""
+          });
+          new BroadcastChannel("mmo_channel").postMessage({
+            action: "ORDER_STATUS_CHANGED",
+            orderId: cleanCode,
+            status: "CANCELLED",
+            statusText: "Khách Hủy / Đã Hoàn Tiền",
+            refundAmount: refAmtToBroadcast
+          });
         }
       } catch(e) {}
       try { window.dispatchEvent(new CustomEvent("mmo_preorders_changed", { detail: { orderCode: cleanCode } })); } catch(e) {}
@@ -25190,6 +25266,26 @@ function injectAllProductsSchema() {
         if (typeof recordTransaction === "function" && targetEmail) {
           recordTransaction(targetEmail, (uIdx !== -1 ? allUsers[uIdx].name : (order.buyerUsername || "Khách")), "Admin hủy đơn đặt trước", +refundAmount, (uIdx !== -1 ? newBalance : refundAmount), "Admin hủy đơn đặt trước và hoàn 100% tiền đơn #" + (order.orderCode || order.id));
         }
+
+        // Ghi biến động số dư hoàn tiền (mmo_balance_logs)
+        try {
+          var bLogs = JSON.parse(localStorage.getItem("mmo_balance_logs") || "[]");
+          bLogs.unshift({
+            id: "TX_PO_ADM_REFUND_" + Date.now(),
+            orderId: order.orderCode || order.id || cleanId,
+            userId: (uIdx !== -1 && allUsers[uIdx].id) ? allUsers[uIdx].id : targetEmail,
+            userEmail: targetEmail,
+            username: (uIdx !== -1 && (allUsers[uIdx].username || allUsers[uIdx].fullname || allUsers[uIdx].name)) ? (allUsers[uIdx].username || allUsers[uIdx].fullname || allUsers[uIdx].name) : (order.buyerUsername || "Khách Hàng"),
+            type: "REFUND",
+            typeText: "Hoàn tiền Admin hủy đơn đặt trước",
+            amount: +refundAmount,
+            balanceAfter: newBalance,
+            time: new Date().toLocaleString("vi-VN"),
+            timestamp: Date.now(),
+            note: "Admin hủy đơn đặt trước #" + (order.orderCode || order.id || cleanId) + " và hoàn 100% tiền vào ví"
+          });
+          localStorage.setItem("mmo_balance_logs", JSON.stringify(bLogs));
+        } catch(e) {}
       } catch(e) {
         console.warn("adminCancelAndRefundPreOrder err:", e);
       }
@@ -25212,6 +25308,31 @@ function injectAllProductsSchema() {
         try { localStorage.setItem("mmo_pre_orders", JSON.stringify(preOrders)); } catch(e) {}
       }
 
+      // Cập nhật trạng thái đơn hủy trên toàn bộ các kho lưu trữ (mmo_orders, mmo_user_orders, mmo_all_orders)
+      ["mmo_orders", "mmo_user_orders", "mmo_all_orders"].forEach(function(k) {
+        try {
+          var raw = localStorage.getItem(k);
+          if (!raw) return;
+          var arr = JSON.parse(raw);
+          if (!Array.isArray(arr)) return;
+          var updated = false;
+          arr.forEach(function(item) {
+            if (!item) return;
+            var iId = String(item.orderId || item.id || item.orderCode || "").replace(/#/g, "").trim().toLowerCase();
+            if (iId === cleanLower || iId === String(order.orderCode||"").replace(/#/g,"").trim().toLowerCase() || iId === String(order.id||"").replace(/#/g,"").trim().toLowerCase()) {
+              item.status = "CANCELLED";
+              item.statusText = "Admin Hủy & Hoàn Tiền";
+              item.isCancelled = true;
+              item.isRefunded = true;
+              item.cancelledBy = "ADMIN";
+              item.refundedAt = order.refundedAt;
+              updated = true;
+            }
+          });
+          if (updated) localStorage.setItem(k, JSON.stringify(arr));
+        } catch(e) {}
+      });
+
       // Đồng bộ đơn hủy lên Turso Cloud Worker
       var TURSO_WORKER_URL = (typeof TURSO_CONFIG !== "undefined" && TURSO_CONFIG.DEFAULT_API_URL) ? TURSO_CONFIG.DEFAULT_API_URL : "https://mmo-shop-api.manhdongvtc.workers.dev";
       try {
@@ -25222,10 +25343,51 @@ function injectAllProductsSchema() {
             orders: [{
               id: order.orderCode || order.id,
               orderId: order.orderCode || order.id,
-              status: "CANCELLED"
+              status: "CANCELLED",
+              statusText: "Admin Hủy & Hoàn Tiền",
+              isCancelled: true,
+              isRefunded: true,
+              cancelledBy: "ADMIN",
+              refundedAt: order.refundedAt
             }]
-          })
+          }),
+          keepalive: true
         }).catch(function() {});
+      } catch(e) {}
+
+      // Đồng bộ trạng thái đơn hủy lên Google Apps Script
+      if (typeof callGasApi === "function") {
+        try {
+          callGasApi("adminUpdateOrderStatus", {
+            orderId: cleanId,
+            status: "CANCELLED",
+            statusText: "Admin Hủy & Hoàn Tiền",
+            note: "Admin hủy đơn đặt trước và hoàn tiền vào ví khách hàng"
+          }).catch(function() {});
+        } catch(e) {}
+      }
+
+      // Phát sóng tức thì đa tab & đa cửa sổ qua BroadcastChannel kèm refundAmount
+      try {
+        if (typeof BroadcastChannel !== "undefined") {
+          new BroadcastChannel("mmo_preorders_channel").postMessage({
+            type: "PREORDERS_UPDATED",
+            orderId: cleanId,
+            orderCode: cleanId,
+            status: "CANCELLED",
+            statusText: "Admin Hủy & Hoàn Tiền",
+            cancelledBy: "ADMIN",
+            refundAmount: refundAmount,
+            buyerEmail: targetEmail
+          });
+          new BroadcastChannel("mmo_channel").postMessage({
+            action: "ORDER_STATUS_CHANGED",
+            orderId: cleanId,
+            status: "CANCELLED",
+            statusText: "Admin Hủy & Hoàn Tiền",
+            refundAmount: refundAmount
+          });
+        }
       } catch(e) {}
 
       if (typeof showToast === "function") showToast("✅ Đã hủy đơn #" + (order.orderCode || order.id) + " và hoàn trả tiền vào ví khách hàng!", "info");
