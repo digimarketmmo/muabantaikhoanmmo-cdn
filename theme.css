@@ -3996,6 +3996,23 @@
   }
 
 
+/* AI WRITER MODAL STYLES */
+#aiEditorContent { min-height:340px; }
+#aiEditorContent:empty::before,
+#aiEditorContent[data-placeholder]:not([data-empty]):empty::before {
+  content: attr(data-placeholder);
+  color: #475569;
+  pointer-events: none;
+  display: block;
+  font-style: italic;
+}
+#aiEditorContent h2 { color: #c4b5fd; font-size: 1.3em; margin: 1em 0 .4em; }
+#aiEditorContent h3 { color: #a5b4fc; font-size: 1.1em; margin: .8em 0 .3em; }
+#aiEditorContent strong { color: #fbbf24; }
+#aiEditorContent a { color: #38bdf8; }
+#aiEditorContent ul, #aiEditorContent ol { padding-left: 1.5em; }
+
+
 
 /* ==========================================================================
    BALANCED FULL-HEIGHT STICKY SIDEBARS (ALL VIEWS: STORE, DETAIL, BLOG, ALLPROD)
