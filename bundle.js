@@ -24987,6 +24987,144 @@ function getTopicIllustrativeImages(topicTitle, cleanUrl) {
   ];
 }
 
+
+// HÀM KIỂM TRA SỰ TỒN TẠI VÀ KÍCH THƯỚC ẢNH QUA BROWSER IMAGE PROBE
+function probeBrowserImage(url, timeoutMs = 3000) {
+  if (!url || typeof url !== 'string') return Promise.resolve(null);
+  return new Promise((resolve) => {
+    const img = new Image();
+    let timer = setTimeout(() => {
+      img.onload = null;
+      img.onerror = null;
+      resolve(null);
+    }, timeoutMs);
+    img.onload = () => {
+      clearTimeout(timer);
+      if (img.naturalWidth > 60 && img.naturalHeight > 50) {
+        resolve({ url: url, width: img.naturalWidth, height: img.naturalHeight });
+      } else {
+        resolve(null);
+      }
+    };
+    img.onerror = () => {
+      clearTimeout(timer);
+      // Thử lại 1 lần qua weserv proxy để tránh trường hợp CDN bị chặn cục bộ
+      const proxyUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(url) + '&w=300';
+      const imgProxy = new Image();
+      let pTimer = setTimeout(() => {
+        imgProxy.onload = null;
+        imgProxy.onerror = null;
+        resolve(null);
+      }, 2200);
+      imgProxy.onload = () => {
+        clearTimeout(pTimer);
+        if (imgProxy.naturalWidth > 50) {
+          resolve({ url: url, width: imgProxy.naturalWidth, height: imgProxy.naturalHeight });
+        } else {
+          resolve(null);
+        }
+      };
+      imgProxy.onerror = () => {
+        clearTimeout(pTimer);
+        resolve(null);
+      };
+      imgProxy.src = proxyUrl;
+    };
+    img.src = url;
+  });
+}
+
+// BỘ THU THẬP HÌNH ẢNH HƯỚNG DẪN THỰC TẾ THEO NỀN TẢNG (FPTSHOP, TGDD, DIENMAYXANH, BLOGS...)
+async function harvestPlatformRealImages(cleanUrl, fallbackTitle) {
+  const images = [];
+  const seenUrls = new Set();
+  const lowerUrl = (cleanUrl || '').toLowerCase();
+
+  // 1. FPTSHOP.COM.VN
+  if (lowerUrl.includes('fptshop.com.vn')) {
+    let artId = '';
+    let slug = '';
+    const m = cleanUrl.match(new RegExp("[-_](\\d{4,9})(?:\\.html|/|$|\\?)")) || cleanUrl.match(new RegExp("tin-tuc/.*?-(\\d{4,9})")) || cleanUrl.match(new RegExp("(\\d{5,9})"));
+    if (m) artId = m[1];
+    try {
+      const u = new URL(cleanUrl);
+      const segs = u.pathname.split('/').filter(Boolean);
+      let lastSeg = segs.pop() || '';
+      slug = lastSeg.replace(new RegExp("[-_]\\d{4,9}$"), "").replace(/\.html$/, "");
+    } catch(e) {}
+
+    if (artId) {
+      const candidates = [];
+      for (let i = 1; i <= 30; i++) {
+        candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/Originals/' + i + '.jpg' });
+        if (slug) {
+          candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/Originals/' + slug + '-' + i + '.jpg' });
+        }
+        candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/' + i + '.jpg' });
+        if (slug) {
+          candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/' + slug + '-' + i + '.jpg' });
+        }
+        candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/Originals/' + i + '.png' });
+        if (slug) {
+          candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/Originals/' + slug + '-' + i + '.png' });
+        }
+      }
+
+      // Quét song song bằng probeBrowserImage
+      const probes = candidates.map(c => probeBrowserImage(c.url, 2800).then(res => {
+        if (res) return { step: c.step, url: c.url };
+        return null;
+      }));
+
+      const results = (await Promise.all(probes)).filter(Boolean);
+      results.sort((a, b) => a.step - b.step);
+
+      results.forEach(r => {
+        if (!seenUrls.has(r.url)) {
+          seenUrls.add(r.url);
+          images.push({
+            url: r.url,
+            alt: (fallbackTitle || 'Hướng dẫn') + ' - Bước ' + r.step,
+            selected: true
+          });
+        }
+      });
+    }
+  }
+
+  // 2. THEGIOIDIDONG.COM & DIENMAYXANH.COM
+  if (lowerUrl.includes('thegioididong.com') || lowerUrl.includes('dienmayxanh.com')) {
+    let artId = '';
+    const m = cleanUrl.match(new RegExp("[-_](\\d{4,9})(?:\\.html|/|$|\\?)"));
+    if (m) artId = m[1];
+    if (artId) {
+      const candidates = [];
+      for (let i = 1; i <= 20; i++) {
+        candidates.push({ step: i, url: 'https://cdn.tgdd.vn/Files/News/' + artId + '/' + i + '.jpg' });
+        candidates.push({ step: i, url: 'https://cdn.tgdd.vn/Files/' + artId + '/' + i + '.jpg' });
+      }
+      const probes = candidates.map(c => probeBrowserImage(c.url, 2800).then(res => {
+        if (res) return { step: c.step, url: c.url };
+        return null;
+      }));
+      const results = (await Promise.all(probes)).filter(Boolean);
+      results.sort((a, b) => a.step - b.step);
+      results.forEach(r => {
+        if (!seenUrls.has(r.url)) {
+          seenUrls.add(r.url);
+          images.push({
+            url: r.url,
+            alt: (fallbackTitle || 'Hướng dẫn') + ' - Bước ' + r.step,
+            selected: true
+          });
+        }
+      });
+    }
+  }
+
+  return images;
+}
+
 async function fetchSampleArticleData(sampleUrl) {
   if (!sampleUrl || typeof sampleUrl !== 'string') return null;
   let cleanUrl = sampleUrl.trim();
@@ -25307,6 +25445,110 @@ function addCustomSampleArticleImage() {
 }
 window.addCustomSampleArticleImage = addCustomSampleArticleImage;
 
+// Modal dán nhiều link ảnh cùng lúc
+function openBulkPasteImagesModal() {
+  let modal = document.getElementById('bulkPasteImagesModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'bulkPasteImagesModal';
+    modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; display:flex; align-items:center; justify-content:center; padding:16px; box-sizing:border-box; backdrop-filter:blur(5px);';
+    document.body.appendChild(modal);
+  }
+
+  modal.innerHTML = `
+    <div style="background:#0f172a; border:1px solid #334155; border-radius:12px; max-width:600px; width:100%; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7);">
+      <div style="padding:14px 18px; border-bottom:1px solid #1e293b; display:flex; align-items:center; justify-content:space-between; background:#1e1e38;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <i class="fa-solid fa-paste" style="color:#38bdf8; font-size:16px;"></i>
+          <span style="font-size:14px; font-weight:700; color:#f8fafc;">Dán nhiều link ảnh cùng lúc (Mỗi dòng 1 link)</span>
+        </div>
+        <button type="button" onclick="closeBulkPasteImagesModal()" style="background:transparent; border:none; color:#94a3b8; font-size:18px; cursor:pointer; padding:4px 8px; line-height:1;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#94a3b8'">✕</button>
+      </div>
+      <div style="padding:16px 18px; background:#020617; display:flex; flex-direction:column; gap:10px;">
+        <div style="font-size:11px; color:#94a3b8; line-height:1.5;">
+          💡 Dán danh sách link ảnh bài viết hướng dẫn vào khung bên dưới (mỗi link 1 dòng hoặc cách nhau bằng dấu cách). Hệ thống sẽ tự động thêm tất cả ảnh vào bài viết và áp dụng tính năng <b>Crop viền 5% chống quét bản quyền DMCA / Google</b>.
+        </div>
+        <textarea id="bulkPasteImagesInput" rows="7" placeholder="https://cdn.example.com/anh-buoc-1.jpg&#10;https://cdn.example.com/anh-buoc-2.jpg&#10;https://cdn.example.com/anh-buoc-3.jpg" style="width:100%; box-sizing:border-box; background:#0f172a; border:1px solid #334155; border-radius:8px; color:#e2e8f0; font-family:monospace; font-size:12px; padding:10px; outline:none; resize:vertical;" onfocus="this.style.borderColor='#38bdf8'" onblur="this.style.borderColor='#334155'"></textarea>
+      </div>
+      <div style="padding:12px 18px; border-top:1px solid #1e293b; display:flex; justify-content:flex-end; gap:8px; background:#1e1e38;">
+        <button type="button" onclick="closeBulkPasteImagesModal()" style="background:#334155; color:#e2e8f0; border:none; padding:7px 16px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;">
+          Hủy bỏ
+        </button>
+        <button type="button" onclick="submitBulkPasteImages()" style="background:linear-gradient(135deg,#0284c7,#38bdf8); color:#fff; border:none; padding:7px 18px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(56,189,248,0.3);">
+          <i class="fa-solid fa-check"></i> Thêm tất cả ảnh vào bài
+        </button>
+      </div>
+    </div>
+  `;
+  modal.onclick = (e) => {
+    if (e.target === modal) closeBulkPasteImagesModal();
+  };
+  modal.style.display = 'flex';
+  const ta = document.getElementById('bulkPasteImagesInput');
+  if (ta) ta.focus();
+}
+window.openBulkPasteImagesModal = openBulkPasteImagesModal;
+
+function closeBulkPasteImagesModal() {
+  const modal = document.getElementById('bulkPasteImagesModal');
+  if (modal) modal.style.display = 'none';
+}
+window.closeBulkPasteImagesModal = closeBulkPasteImagesModal;
+
+function submitBulkPasteImages() {
+  const ta = document.getElementById('bulkPasteImagesInput');
+  if (!ta) return;
+  const raw = ta.value.trim();
+  if (!raw) {
+    if (typeof showToast === 'function') showToast('⚠️ Vui lòng dán ít nhất 1 link ảnh!', 'warn');
+    return;
+  }
+
+  const matches = raw.match(/https?:\/\/[^\s,"'\)\>]+/gi);
+  if (!matches || matches.length === 0) {
+    if (typeof showToast === 'function') showToast('⚠️ Không tìm thấy link ảnh hợp lệ (bắt đầu bằng https://)!', 'warn');
+    return;
+  }
+
+  if (!window.currentSampleArticleData) {
+    window.currentSampleArticleData = {
+      success: true,
+      url: '',
+      title: 'Bài viết SEO',
+      images: [],
+      textSnippet: ''
+    };
+  }
+  if (!Array.isArray(window.currentSampleArticleData.images)) {
+    window.currentSampleArticleData.images = [];
+  }
+
+  const seen = new Set(window.currentSampleArticleData.images.map(im => im.url));
+  let addedCount = 0;
+
+  matches.forEach(u => {
+    let cleanU = u.trim();
+    if (!seen.has(cleanU)) {
+      seen.add(cleanU);
+      addedCount++;
+      window.currentSampleArticleData.images.push({
+        url: cleanU,
+        alt: 'Ảnh hướng dẫn thực tế - Bước ' + (window.currentSampleArticleData.images.length + 1),
+        selected: true
+      });
+    }
+  });
+
+  closeBulkPasteImagesModal();
+  renderSampleArticlePreviewUI(window.currentSampleArticleData);
+
+  if (typeof showToast === 'function') {
+    showToast('✅ Đã thêm thành công ' + addedCount + ' ảnh vào bài viết!', 'success');
+  }
+}
+window.submitBulkPasteImages = submitBulkPasteImages;
+
+
 // Hàm hiển thị giao diện xem trước đầy đủ danh sách ảnh với nút xóa X & nút phóng to
 function renderSampleArticlePreviewUI(data) {
   const statusEl = document.getElementById('aiSampleArticleStatus');
@@ -25359,6 +25601,9 @@ function renderSampleArticlePreviewUI(data) {
           <input id="addCustomImageUrlInput" type="url" placeholder="Dán thêm link ảnh bất kỳ (https://...)..." style="flex:1; background:#0f172a; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:5px 9px; font-size:11px; outline:none;" onfocus="this.style.borderColor='#38bdf8'" onblur="this.style.borderColor='#334155'" />
           <button type="button" onclick="addCustomSampleArticleImage()" style="background:#0284c7; color:#fff; border:none; border-radius:6px; padding:5px 12px; font-size:11px; font-weight:600; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:4px;">
             <i class="fa-solid fa-plus"></i> Thêm ảnh
+          </button>
+          <button type="button" onclick="openBulkPasteImagesModal()" style="background:#334155; color:#38bdf8; border:1px solid #475569; border-radius:6px; padding:5px 12px; font-size:11px; font-weight:600; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:4px;" title="Dán nhiều link ảnh cùng lúc (mỗi dòng 1 link)">
+            <i class="fa-solid fa-paste"></i> Dán nhiều ảnh
           </button>
         </div>
       </div>
@@ -25821,7 +26066,7 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
       // Tự động chèn tất cả ảnh thật vào bài viết nếu AI chưa phân bổ đủ
       const uninsertedImgs = activeImages.filter(im => !htmlContent.includes(im.url));
       if (uninsertedImgs.length > 0) {
-        const allH2 = [...htmlContent.matchAll(/<\/h2>/gi)];
+        const insertionPoints = [...htmlContent.matchAll(/<\/(h2|h3)>/gi)];
         uninsertedImgs.forEach((img, uIdx) => {
           const imgHtml = `\n<div class="separator" style="clear:both; text-align:center; margin:22px 0;">\n  <img src="${img.url}" alt="${img.alt || effectiveTopic}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25);" loading="lazy" />\n  <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">${img.alt || effectiveTopic}</p>\n</div>\n`;
           if (uIdx === 0) {
@@ -25831,8 +26076,8 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
             } else {
               htmlContent = imgHtml + htmlContent;
             }
-          } else if (allH2.length > uIdx) {
-            const pos = allH2[uIdx].index + 5;
+          } else if (insertionPoints.length > uIdx) {
+            const pos = insertionPoints[uIdx].index + insertionPoints[uIdx][0].length;
             htmlContent = htmlContent.slice(0, pos) + imgHtml + htmlContent.slice(pos);
           } else {
             htmlContent = htmlContent + imgHtml;
