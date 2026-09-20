@@ -4533,7 +4533,15 @@ div:has(> .admin-table) {
   }
   
   .header-user-name {
-    display: none !important;
+    display: inline-block !important;
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    max-width: 75px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
   }
   
   .mobile-menu-btn {
@@ -4713,7 +4721,7 @@ div:has(> .admin-table) {
 }
 
 @media (max-width: 600px) {
-  /* HEADER CHIA ĐỀU CÂN ĐỐI TRÊN MOBILE */
+  /* HEADER CÂN ĐỐI TRÊN MOBILE: VÍ KẾ QUẢ CHUÔNG, HIỆN TÊN TÀI KHOẢN */
   .header-inner {
     display: flex !important;
     align-items: center !important;
@@ -4725,39 +4733,65 @@ div:has(> .admin-table) {
   .header-actions {
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
-    flex: 1 !important;
-    margin-left: 12px !important;
-    gap: 4px !important;
+    justify-content: flex-end !important;
+    margin-left: auto !important;
+    gap: 7px !important;
+    flex: none !important;
     min-width: 0 !important;
   }
   .wallet-header-btn {
-    padding: 5px 8px !important;
-    font-size: 0.74rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
     gap: 4px !important;
+    padding: 4px 7px !important;
+    font-size: 0.74rem !important;
     flex-shrink: 0 !important;
+  }
+  .wallet-header-btn span:last-child {
+    display: none !important; /* An chu + Nap */
   }
   .wallet-header-btn span#headerWalletBalance {
     font-size: 0.74rem !important;
+    font-weight: 700 !important;
     white-space: nowrap !important;
-  }
-  .btn-header-notif {
-    width: 34px !important;
-    height: 34px !important;
-    min-width: 34px !important;
-    flex-shrink: 0 !important;
   }
   #authArea {
     flex-shrink: 0 !important;
   }
+  #authArea > div {
+    display: flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+  }
+  .btn-header-notif {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    flex-shrink: 0 !important;
+  }
   .user-header-pill {
-    padding: 2px 6px 2px 2px !important;
-    gap: 4px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    padding: 3px 8px 3px 4px !important;
+    border-radius: 18px !important;
+    flex-shrink: 0 !important;
+  }
+  .header-user-name {
+    display: inline-block !important;
+    font-size: 0.76rem !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    max-width: 75px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
   }
   .mobile-menu-btn {
-    width: 34px !important;
-    height: 34px !important;
-    min-width: 34px !important;
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
     flex-shrink: 0 !important;
     margin: 0 !important;
   }
