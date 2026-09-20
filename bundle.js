@@ -6476,7 +6476,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
         if (!checkUser) {
           showToast("🔒 Vui lòng đăng nhập để truy cập trang này!", "info");
-          switchView("viewStore");
           openAuthModal("login");
           return;
         }
@@ -6612,28 +6611,55 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       // PERSIST VIEW ACROSS F5 & REFRESH & CLEAN URL PARAMETERS
       try {
         localStorage.setItem("mmo_current_view", viewId);
-        if (typeof window !== "undefined" && window.location && window.history && window.history.replaceState) {
-          if (viewId === "viewStore") {
-            // Khi về Trang Chủ: Xóa sạch ?prod, ?product, ?post, ?blog, ?ref và hash #viewStore để URL sạch 100%
-            try { localStorage.removeItem("mmo_last_viewed_prod"); } catch(e) {}
-            const cleanUrl = window.location.origin + window.location.pathname;
-            window.history.replaceState(null, "", cleanUrl);
-          } else if (viewId === "viewProductDetail") {
-            // Đang xem chi tiết sản phẩm: URL sẽ do openProductDetailById quản lý (?prod=...)
-          } else {
-            // Các trang khác (viewAllProducts, viewBlog, viewTools, viewProfile, viewDeposit, viewAdmin):
-            // Giữ hash tương ứng và xóa sạch ?prod, ?product
-            const url = new URL(window.location.href);
-            url.searchParams.delete("prod");
-            url.searchParams.delete("product");
-            if (viewId !== "viewBlogDetail") {
-              url.searchParams.delete("post");
-              url.searchParams.delete("blog");
-            }
-            url.hash = "#" + viewId;
-            const newUrl = url.searchParams.toString() ? (url.pathname + "?" + url.searchParams.toString() + url.hash) : (url.pathname + url.hash);
-            window.history.replaceState(null, "", newUrl);
+        // Remove anti-flash style immediately on view switch
+        var afStyle = document.getElementById("mmoAntiFlashStyle");
+        if (afStyle) afStyle.remove();
+
+        if (typeof window !== "undefined" && window.location && window.history) {
+          const url = new URL(window.location.href);
+          url.searchParams.delete("prod");
+          url.searchParams.delete("product");
+          url.searchParams.delete("view");
+          url.hash = "";
+          if (viewId !== "viewBlogDetail") {
+            url.searchParams.delete("post");
+            url.searchParams.delete("blog");
           }
+          if (viewId !== "viewStore") {
+            url.searchParams.set("view", viewId);
+          } else {
+            try { localStorage.removeItem("mmo_last_viewed_prod"); } catch(e) {}
+          }
+          const cleanUrl = url.searchParams.toString() ? (url.pathname + "?" + url.searchParams.toString()) : url.pathname;
+          try {
+            if (window.history.pushState) {
+              window.history.pushState({ view: viewId }, "", cleanUrl);
+            } else if (window.history.replaceState) {
+              window.history.replaceState({ view: viewId }, "", cleanUrl);
+            }
+          } catch(e) {}
+        }
+
+        // Single-page application back/forward popstate listener
+        if (typeof window !== "undefined" && !window._mmoPopstateBound) {
+          window._mmoPopstateBound = true;
+          window.addEventListener("popstate", function(ev) {
+            try {
+              var u = new URLSearchParams(window.location.search);
+              var v = u.get("view");
+              var p = u.get("prod") || u.get("product");
+              var b = u.get("post") || u.get("blog");
+              if (p && typeof openProductDetailById === "function") {
+                openProductDetailById(p);
+              } else if (b && typeof openBlogDetail === "function") {
+                openBlogDetail(b);
+              } else if (v && typeof switchView === "function") {
+                switchView(v);
+              } else if (typeof switchView === "function") {
+                switchView("viewStore");
+              }
+            } catch(e) {}
+          });
         }
       } catch(e) {}
 
@@ -19520,7 +19546,7 @@ function syncAllOpenViewsStock(changedProdId) {
         const hasProdParam = !!(urlParams.get("prod") || urlParams.get("product") || (hash.startsWith("product_")));
         const hasBlogParam = !!(urlParams.get("post") || urlParams.get("blog"));
         
-        const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
+        const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewPreOrderDetail", "viewApiDocs"];
         const viewParam = urlParams.get("view");
         if (hasProdParam) {
           targetView = "viewProductDetail";
@@ -19575,7 +19601,7 @@ function syncAllOpenViewsStock(changedProdId) {
     if (typeof window !== "undefined") {
       window.addEventListener("hashchange", function() {
         const hash = (window.location.hash || "").replace("#", "").trim();
-        const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewTools", "viewProfile", "viewDeposit", "viewAdmin"];
+        const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewPreOrderDetail", "viewApiDocs"];
         if (hash && validViews.includes(hash)) {
           switchView(hash);
         }
