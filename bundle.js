@@ -13594,8 +13594,10 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       }
 
+      window.currentViewingBlog = b;
       renderArticleSidebarTop(b.id);
-      renderArticleSidebarProducts();
+      renderArticleSidebarProducts(b);
+      renderArticleRelatedProducts(b);
       renderArticleRelatedGrid(b);
 
       switchView("viewBlogDetail");
@@ -13693,20 +13695,165 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.renderArticleSidebarTop = renderArticleSidebarTop;
 
-    function renderArticleSidebarProducts() {
+    // HÀM LỌC ĐỀ XUẤT SẢN PHẨM THÔNG MINH CHO BÀI VIẾT BLOG (THEO TIÊU ĐỀ HOẶC RANDOM F5)
+    function getRecommendedProductsForArticle(currentBlog) {
+      const allProds = (typeof getVisibleProducts === 'function') 
+        ? getVisibleProducts() 
+        : ((MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.filter(p => !p.isDeleted) : []);
+      
+      if (!allProds || allProds.length === 0) {
+        return { products: [], isSpecific: false, matchKeyword: '' };
+      }
+
+      const title = ((currentBlog && currentBlog.title) ? currentBlog.title : (document.getElementById('articleHeadline')?.innerText || '')).toLowerCase();
+
+      // Các nhóm từ khóa chuyên biệt theo chủ đề sản phẩm MMO
+      const KEYWORD_GROUPS = [
+        { key: 'Gmail', terms: ['gmail', 'google workspace', 'google drive', 'gg mail', 'mail cổ', 'mail new', 'mail khôi phục', 'mail thuê'] },
+        { key: 'TikTok', terms: ['tiktok', 'tik tok', 'tik-tok', 'douyin', 'beta us', 'tiktok shop'] },
+        { key: 'Facebook / Via', terms: ['facebook', 'fb', 'via', 'clone', 'fanpage', 'bm', 'meta', 'page kháng', 'profile'] },
+        { key: 'AI / Tool', terms: ['kling', 'kling ai', 'chatgpt', 'openai', 'gemini', 'canva', 'capcut', 'midjourney', 'suno', 'luma', 'runway', 'ai'] },
+        { key: 'Proxy / VPN', terms: ['proxy', 'vpn', 'ip v4', 'ip v6', 'residential', 'sock5', 'socks5'] },
+        { key: 'Telegram', terms: ['telegram', 'tele', 'session', 'tdata'] },
+        { key: 'YouTube', terms: ['youtube', 'ytb', 'view youtube', 'sub youtube'] },
+        { key: 'Zalo', terms: ['zalo'] },
+        { key: 'Twitter / X', terms: ['twitter', 'x.com'] },
+        { key: 'Instagram', terms: ['instagram', 'insta', 'ig'] }
+      ];
+
+      // 1. Kiểm tra xem tiêu đề có chứa từ khóa chuyên biệt không
+      let matchedGroup = null;
+      for (const group of KEYWORD_GROUPS) {
+        const foundTerm = group.terms.find(term => {
+          if (term.length <= 2) {
+            const regex = new RegExp('\\b' + term + '\\b', 'i');
+            return regex.test(title);
+          }
+          return title.includes(term);
+        });
+        if (foundTerm) {
+          matchedGroup = group;
+          break;
+        }
+      }
+
+      // NẾU CÓ TỪ KHÓA LIÊN QUAN TIÊU ĐỀ: CHỈ ĐỀ XUẤT SẢN PHẨM GIỐNG TIÊU ĐỀ ĐÓ!
+      if (matchedGroup) {
+        const matchedProducts = allProds.filter(p => {
+          const pName = (p.name || '').toLowerCase();
+          const pCat = (p.category || '').toLowerCase();
+          const combined = pName + ' ' + pCat;
+          return matchedGroup.terms.some(t => {
+            if (t.length <= 2) {
+              const regex = new RegExp('\\b' + t + '\\b', 'i');
+              return regex.test(combined);
+            }
+            return combined.includes(t);
+          });
+        });
+
+        if (matchedProducts.length > 0) {
+          // Xáo trộn ngẫu nhiên trong nhóm sản phẩm liên quan mỗi lần F5
+          const shuffled = [...matchedProducts].sort(() => 0.5 - Math.random());
+          return {
+            products: shuffled.slice(0, 4),
+            isSpecific: true,
+            matchKeyword: matchedGroup.key
+          };
+        }
+      }
+
+      // 2. NẾU KHÔNG LIÊN QUAN: ĐỀ XUẤT NGẪU NHIÊN CÁC SẢN PHẨM KHÁC NHAU (MỖI LẦN F5 RA SẢN PHẨM KHÁC)
+      const randomShuffled = [...allProds].sort(() => 0.5 - Math.random());
+      return {
+        products: randomShuffled.slice(0, 4),
+        isSpecific: false,
+        matchKeyword: 'HOT'
+      };
+    }
+    window.getRecommendedProductsForArticle = getRecommendedProductsForArticle;
+
+    // RENDER KHỐI "ĐỀ XUẤT CHO BẠN" DƯỚI BÀI VIẾT BLOG
+    function renderArticleRelatedProducts(currentBlog) {
+      const container = document.getElementById("articleRelatedProductsGrid");
+      const badgeEl = document.getElementById("articleRelatedProductsBadge");
+      if (!container) return;
+
+      const blogData = currentBlog || window.currentViewingBlog;
+      const res = getRecommendedProductsForArticle(blogData);
+      const prods = res.products;
+
+      if (badgeEl) {
+        if (res.isSpecific) {
+          badgeEl.innerText = "🎯 Khuyên dùng cho bài viết (" + res.matchKeyword + ")";
+          badgeEl.style.color = "#10b981";
+          badgeEl.style.borderColor = "rgba(16,185,129,0.3)";
+          badgeEl.style.background = "rgba(16,185,129,0.12)";
+        } else {
+          badgeEl.innerText = "🎲 Đề xuất ngẫu nhiên (F5 đổi mới)";
+          badgeEl.style.color = "#38bdf8";
+          badgeEl.style.borderColor = "rgba(56,189,248,0.3)";
+          badgeEl.style.background = "rgba(56,189,248,0.12)";
+        }
+      }
+
+      if (!prods || prods.length === 0) {
+        container.innerHTML = '<div style="color:#64748b; font-size:0.85rem; grid-column:1/-1; text-align:center; padding:16px;">Đang cập nhật sản phẩm...</div>';
+        return;
+      }
+
+      container.innerHTML = prods.map(p => {
+        const pPrice = (typeof getProductPriceDisplay === 'function') 
+          ? getProductPriceDisplay(p) 
+          : (typeof formatVND === 'function' ? formatVND(p.price) : (p.price || 0).toLocaleString('vi-VN') + ' đ');
+        const pStock = (typeof getVariantStockCount === 'function') 
+          ? getVariantStockCount(p) 
+          : (p.stock !== undefined ? p.stock : 10);
+        const stockBadge = (pStock > 0)
+          ? '<span style="font-size:0.68rem; background:rgba(16,185,129,0.15); color:#10b981; padding:2px 6px; border-radius:4px; font-weight:700;">Còn ' + pStock + ' acc</span>'
+          : '<span style="font-size:0.68rem; background:rgba(239,68,68,0.15); color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:700;">Đặt trước</span>';
+
+        return '<div onclick="openProductDetailById(\'' + escapeHtml(p.id) + '\')" style="background:#090e18; border:1px solid #1e293b; border-radius:10px; padding:12px; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; transition:all 0.2s; box-shadow:0 4px 12px rgba(0,0,0,0.25);" onmouseover="this.style.borderColor=\'#38bdf8\'; this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.borderColor=\'#1e293b\'; this.style.transform=\'\'">' +
+          '<div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">' +
+            '<img src="' + escapeHtml(p.image || 'https://iili.io/nFV4Rln.png') + '" alt="' + escapeHtml(p.name) + '" style="width:48px; height:48px; border-radius:8px; object-fit:cover; flex-shrink:0; background:#141f33; border:1px solid #1e293b;" onerror="this.src=\'https://iili.io/nFV4Rln.png\'" />' +
+            '<div style="flex:1; overflow:hidden;">' +
+              '<div style="font-size:0.83rem; font-weight:700; color:#fff; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.35;" title="' + escapeHtml(p.name) + '">' +
+                escapeHtml(p.name) +
+              '</div>' +
+              '<div style="margin-top:3px;">' + stockBadge + '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; padding-top:6px; border-top:1px dashed #1e293b;">' +
+            '<span style="font-size:0.95rem; font-weight:800; color:#10b981;">' + pPrice + '</span>' +
+            '<button type="button" onclick="event.stopPropagation(); openProductDetailById(\'' + escapeHtml(p.id) + '\')" style="background:linear-gradient(135deg,#0284c7,#38bdf8); color:#fff; border:none; padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer; box-shadow:0 2px 6px rgba(56,189,248,0.3);">' +
+              'MUA NGAY' +
+            '</button>' +
+          '</div>' +
+        '</div>';
+      }).join('');
+    }
+    window.renderArticleRelatedProducts = renderArticleRelatedProducts;
+
+    // RENDER SẢN PHẨM THANH BÊN (DỊCH VỤ HOT NHẤT) ĐỒNG BỘ THEO TIÊU ĐỀ HOẶC RANDOM F5
+    function renderArticleSidebarProducts(currentBlog) {
       const container = document.getElementById("articleSidebarProdList");
       if (!container) return;
-      const prods = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.slice(0, 3) : [];
-      container.innerHTML = prods.map(p => 
-        '<div onclick="openProductDetailById(\'' + p.id + '\')" style="display:flex; gap:10px; align-items:center; cursor:pointer; background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:8px;">' +
-          '<img src="' + p.image + '" style="width:44px; height:44px; border-radius:6px; object-fit:cover; flex-shrink:0;" />' +
+      const blogData = currentBlog || window.currentViewingBlog;
+      const res = getRecommendedProductsForArticle(blogData);
+      const prods = res.products.slice(0, 3);
+      container.innerHTML = prods.map(p => {
+        const pPrice = (typeof getProductPriceDisplay === 'function') 
+          ? getProductPriceDisplay(p) 
+          : (typeof formatVND === 'function' ? formatVND(p.price) : (p.price || 0).toLocaleString('vi-VN') + ' đ');
+        return '<div onclick="openProductDetailById(\'' + p.id + '\')" style="display:flex; gap:10px; align-items:center; cursor:pointer; background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:8px; transition:all 0.2s;" onmouseover="this.style.borderColor=\'#38bdf8\'" onmouseout="this.style.borderColor=\'#1e293b\'">' +
+          '<img src="' + p.image + '" style="width:44px; height:44px; border-radius:6px; object-fit:cover; flex-shrink:0;" onerror="this.src=\'https://iili.io/nFV4Rln.png\'" />' +
           '<div style="flex:1; overflow:hidden;">' +
-            '<div style="font-size:0.78rem; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + escapeHtml(p.name) + '</div>' +
-            '<div style="font-size:0.8rem; font-weight:800; color:#10b981;">' + formatVND(p.price) + '</div>' +
+            '<div style="font-size:0.78rem; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</div>' +
+            '<div style="font-size:0.8rem; font-weight:800; color:#10b981;">' + pPrice + '</div>' +
           '</div>' +
-          '<button type="button" style="background:#0284c7; color:#fff; border:none; border-radius:4px; padding:4px 8px; font-size:0.7rem; font-weight:700; cursor:pointer;">Mua</button>' +
-        '</div>'
-      ).join("");
+          '<button type="button" onclick="event.stopPropagation(); openProductDetailById(\'' + p.id + '\')" style="background:#0284c7; color:#fff; border:none; border-radius:4px; padding:4px 8px; font-size:0.7rem; font-weight:700; cursor:pointer;">Mua</button>' +
+        '</div>';
+      }).join("");
     }
     window.renderArticleSidebarProducts = renderArticleSidebarProducts;
 
@@ -23957,6 +24104,260 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
   }
 }
 window.generateAiArticle = generateAiArticle;
+
+
+// ============================================================
+// HỆ THỐNG COPY HTML & SEO BÀI VIẾT (CHUẨN BẢO MẬT & TƯƠNG THÍCH 100%)
+// ============================================================
+
+function copyAiHtml(btnEl) {
+  const editor = document.getElementById('aiEditorContent');
+  const statusEl = document.getElementById('aiCopyStatus');
+  if (!editor) return;
+  const html = editor.innerHTML;
+  if (!html || html.trim() === '' || html === '<br>') {
+    if (typeof showToast === 'function') showToast('⚠️ Chưa có nội dung bài viết để copy!', 'warn');
+    return;
+  }
+
+  const btn = btnEl || document.getElementById('btnCopyAiHtml') || document.querySelector("button[onclick*='copyAiHtml']");
+  const origText = btn ? btn.innerHTML : '';
+
+  const markSuccess = () => {
+    if (btn) {
+      btn.innerHTML = '✅ Đã Copy HTML!';
+      btn.style.background = '#059669';
+      btn.style.borderColor = '#10b981';
+      btn.style.color = '#ffffff';
+      setTimeout(() => {
+        btn.innerHTML = origText || '<i class="fa-solid fa-code"></i> Copy HTML';
+        btn.style.background = '';
+        btn.style.borderColor = '';
+        btn.style.color = '';
+      }, 2500);
+    }
+    if (statusEl) {
+      statusEl.innerHTML = '<span style="color:#10b981;font-weight:700;">✅ Đã copy toàn bộ mã nguồn HTML bài viết vào bộ nhớ tạm!</span>';
+      setTimeout(() => { if (statusEl) statusEl.innerHTML = ''; }, 3500);
+    }
+    if (typeof showToast === 'function') showToast('✅ Đã copy mã HTML bài viết thành công!', 'success');
+  };
+
+  // Phương pháp 1: Textarea đồng bộ trong viewport chống lỗi bảo mật Chrome/Safari
+  let execSuccess = false;
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = html;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '0';
+    ta.style.left = '0';
+    ta.style.width = '2px';
+    ta.style.height = '2px';
+    ta.style.padding = '0';
+    ta.style.border = 'none';
+    ta.style.outline = 'none';
+    ta.style.boxShadow = 'none';
+    ta.style.background = 'transparent';
+    ta.style.opacity = '0.01';
+    ta.style.zIndex = '-1';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, ta.value.length);
+    execSuccess = document.execCommand('copy');
+    document.body.removeChild(ta);
+  } catch(e) {
+    execSuccess = false;
+  }
+
+  if (execSuccess) {
+    markSuccess();
+    return;
+  }
+
+  // Phương pháp 2: Navigator Clipboard API
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(html).then(markSuccess).catch(() => {
+      fallbackCopyAiHtml(html, markSuccess);
+    });
+  } else {
+    fallbackCopyAiHtml(html, markSuccess);
+  }
+}
+window.copyAiHtml = copyAiHtml;
+
+function fallbackCopyAiHtml(html, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = html;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.top = '0';
+  ta.style.left = '0';
+  ta.style.opacity = '0.01';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  ta.setSelectionRange(0, ta.value.length);
+  try {
+    document.execCommand('copy');
+    if (cb) cb();
+  } catch(e) {
+    if (typeof showToast === 'function') showToast('❌ Không thể copy tự động, vui lòng bôi đen để copy thủ công.', 'error');
+  }
+  document.body.removeChild(ta);
+}
+window.fallbackCopyAiHtml = fallbackCopyAiHtml;
+
+function openBloggerWithAiContent() {
+  copyAiHtml();
+  const bloggerUrl = 'https://draft.blogger.com/blog/posts/1442157221767603343?hl=vi';
+  setTimeout(() => {
+    window.open(bloggerUrl, '_blank');
+    const statusEl = document.getElementById('aiCopyStatus');
+    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;font-weight:600;">📋 Đã copy HTML bài viết! Đang mở trang bài đăng Blogger...</span>';
+    if (typeof showToast === 'function') showToast('📋 Đã copy HTML bài viết & Mở Blogger!', 'success');
+  }, 300);
+}
+window.openBloggerWithAiContent = openBloggerWithAiContent;
+
+function copyAiField(fieldId, labelName, btnEl) {
+  const el = document.getElementById(fieldId);
+  const val = (el ? (el.value || el.innerText || '') : '').trim();
+  if (!val) {
+    if (typeof showToast === 'function') showToast('⚠️ Ô ' + labelName + ' đang trống!', 'warn');
+    return;
+  }
+  const origHtml = btnEl ? btnEl.innerHTML : '';
+  const onDone = () => {
+    if (typeof showToast === 'function') showToast('✅ Đã copy ' + labelName + '!', 'success');
+    if (btnEl) {
+      btnEl.innerHTML = '✅ Đã chép!';
+      btnEl.style.background = '#059669';
+      btnEl.style.borderColor = '#10b981';
+      btnEl.style.color = '#ffffff';
+      setTimeout(() => {
+        btnEl.innerHTML = origHtml;
+        btnEl.style.background = '';
+        btnEl.style.borderColor = '';
+        btnEl.style.color = '';
+      }, 2000);
+    }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).then(onDone).catch(() => {
+      fallbackCopyText(val, onDone);
+    });
+  } else {
+    fallbackCopyText(val, onDone);
+  }
+}
+window.copyAiField = copyAiField;
+
+function fallbackCopyText(text, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.top = '0';
+  ta.style.left = '0';
+  ta.style.opacity = '0.01';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    if (cb) cb();
+  } catch(e) {
+    if (typeof showToast === 'function') showToast('❌ Không thể tự copy, vui lòng copy thủ công', 'error');
+  }
+  document.body.removeChild(ta);
+}
+window.fallbackCopyText = fallbackCopyText;
+
+function copyAllAiSeo(btnEl) {
+  const title = (document.getElementById('aiSeoTitle') || {}).value || '';
+  const meta = (document.getElementById('aiSeoMeta') || {}).value || '';
+  const labels = (document.getElementById('aiSeoLabels') || {}).value || '';
+  if (!title && !meta && !labels) {
+    if (typeof showToast === 'function') showToast('⚠️ Chưa có dữ liệu SEO để copy!', 'warn');
+    return;
+  }
+  const allText = `Tiêu đề (H1):\n${title}\n\nMô tả tìm kiếm (Meta Description):\n${meta}\n\nNhãn (Labels):\n${labels}`;
+  const origHtml = btnEl ? btnEl.innerHTML : '';
+  const onDone = () => {
+    if (typeof showToast === 'function') showToast('✅ Đã copy tất cả SEO (Title, Meta, Tags)!', 'success');
+    if (btnEl) {
+      btnEl.innerHTML = '✅ Đã chép tất cả!';
+      btnEl.style.background = '#059669';
+      btnEl.style.borderColor = '#10b981';
+      btnEl.style.color = '#ffffff';
+      setTimeout(() => {
+        btnEl.innerHTML = origHtml;
+        btnEl.style.background = '';
+        btnEl.style.borderColor = '';
+        btnEl.style.color = '';
+      }, 2000);
+    }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(allText).then(onDone).catch(() => {
+      fallbackCopyText(allText, onDone);
+    });
+  } else {
+    fallbackCopyText(allText, onDone);
+  }
+}
+window.copyAllAiSeo = copyAllAiSeo;
+
+function saveAiArticleDraft() {
+  const topic = (document.getElementById('aiTopic') || {}).value || 'Chưa đặt tên';
+  const html = (document.getElementById('aiEditorContent') || {}).innerHTML || '';
+  const title = (document.getElementById('aiSeoTitle') || {}).value || '';
+  const meta = (document.getElementById('aiSeoMeta') || {}).value || '';
+  const labels = (document.getElementById('aiSeoLabels') || {}).value || '';
+  if (!html || html === '<br>') { showToast('⚠️ Không có nội dung để lưu!', 'warn'); return; }
+  let drafts = [];
+  try { drafts = JSON.parse(localStorage.getItem('mmo_ai_drafts') || '[]'); } catch(e) { drafts = []; }
+  const draft = { id: 'draft_' + Date.now(), topic, title, meta, labels, html, savedAt: new Date().toLocaleString('vi-VN') };
+  drafts.unshift(draft);
+  if (drafts.length > 20) drafts = drafts.slice(0, 20);
+  localStorage.setItem('mmo_ai_drafts', JSON.stringify(drafts));
+  showToast('💾 Đã lưu nháp: ' + topic, 'success');
+}
+window.saveAiArticleDraft = saveAiArticleDraft;
+
+function loadAiDraftList() {
+  const listEl = document.getElementById('aiDraftList');
+  if (!listEl) return;
+  let drafts = [];
+  try { drafts = JSON.parse(localStorage.getItem('mmo_ai_drafts') || '[]'); } catch(e) { drafts = []; }
+  if (drafts.length === 0) { listEl.style.display = 'block'; listEl.innerHTML = '<div style="color:#64748b;font-size:11px;text-align:center;padding:8px;">Chưa có nháp nào.</div>'; return; }
+  listEl.style.display = 'block';
+  listEl.innerHTML = drafts.map((d) => `<div style='background:#1e1e3f;border:1px solid #2d2d5e;border-radius:7px;padding:10px;margin-bottom:6px;cursor:pointer;' onclick='loadAiDraft("${d.id}")' ><div style='color:#e2e8f0;font-size:12px;font-weight:600;'>${d.topic}</div><div style='color:#64748b;font-size:10px;margin-top:3px;'>${d.savedAt}</div></div>`).join('');
+}
+window.loadAiDraftList = loadAiDraftList;
+
+function loadAiDraft(draftId) {
+  let drafts = [];
+  try { drafts = JSON.parse(localStorage.getItem('mmo_ai_drafts') || '[]'); } catch(e) { return; }
+  const draft = drafts.find(d => d.id === draftId);
+  if (!draft) return;
+  const topicEl = document.getElementById('aiTopic');
+  const editorEl = document.getElementById('aiEditorContent');
+  const titleEl = document.getElementById('aiSeoTitle');
+  const metaEl = document.getElementById('aiSeoMeta');
+  const labelsEl = document.getElementById('aiSeoLabels');
+  if (topicEl) topicEl.value = draft.topic || '';
+  if (editorEl) editorEl.innerHTML = draft.html || '';
+  if (titleEl) titleEl.value = draft.title || '';
+  if (metaEl) { metaEl.value = draft.meta || ''; updateAiMetaCounter(); }
+  if (labelsEl) labelsEl.value = draft.labels || '';
+  document.getElementById('aiDraftList').style.display = 'none';
+  showToast('📂 Đã tải nháp: ' + draft.topic, 'success');
+}
+window.loadAiDraft = loadAiDraft;
+
 window.applyAiCmd = applyAiCmd;
 window.clearAiEditor = clearAiEditor;
 window.copyAiHtml = copyAiHtml;

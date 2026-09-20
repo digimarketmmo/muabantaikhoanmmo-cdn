@@ -1508,9 +1508,10 @@
 
     
     /* ==================== VIEW: ARTICLE NEWSPAPER LAYOUT (TRANG BÀI BÁO) ==================== */
-    .article-page-container {
-      max-width: 1180px !important;
-      width: 94% !important;
+    .article-page-container,
+    #viewBlogDetail {
+      max-width: 70% !important;
+      width: 70% !important;
       margin: 20px auto 60px !important;
       padding: 0 !important;
       box-sizing: border-box;
