@@ -2371,7 +2371,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       const sSel = document.getElementById("admProdApiSourceSelect");
       const info = document.getElementById("admProdApiSourceInfo");
       if (!sSel || !info) return;
-      const opt = sSel.selectedOptions[0];
+      const opt = (sSel.selectedOptions && sSel.selectedOptions[0]) ? sSel.selectedOptions[0] : (sSel.options ? sSel.options[sSel.selectedIndex] : null);
       if (opt && opt.value) {
         const price = opt.getAttribute("data-price") || 0;
         const stock = opt.getAttribute("data-stock") || 0;
@@ -8978,7 +8978,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (!sel) return;
 
       const prodId = sel.value;
-      const opt = sel.selectedOptions[0];
+      const opt = (sel.selectedOptions && sel.selectedOptions[0]) ? sel.selectedOptions[0] : (sel.options ? sel.options[sel.selectedIndex] : null);
       const prodName = opt ? opt.innerText : "Sản phẩm " + prodId;
       const price = opt ? Number(opt.getAttribute("data-price") || 0) : 0;
       const provider = opt ? (opt.getAttribute("data-provider") || "sellmmo") : "sellmmo";
