@@ -11754,52 +11754,82 @@ function syncAllOpenViewsStock(changedProdId) {
     // =========================================================================
     function getOrderTimestamp(o) {
       if (!o) return 0;
-      var ts = o.createdTimestamp || o.timestamp;
-      if (typeof ts === "number" && ts > 0) return ts < 10000000000 ? ts * 1000 : ts;
-      if (typeof o.createdAt === "number" && o.createdAt > 0) return o.createdAt < 10000000000 ? o.createdAt * 1000 : o.createdAt;
-      
+      var rawNum = o.createdTimestamp || o.timestamp;
+      if (typeof rawNum === "number" && rawNum > 0) {
+        return (rawNum < 10000000000) ? rawNum * 1000 : rawNum;
+      }
+      if (typeof o.createdAt === "number" && o.createdAt > 0) {
+        return (o.createdAt < 10000000000) ? o.createdAt * 1000 : o.createdAt;
+      }
+
       var dateStr = String(o.createdAt || o.date || o.time || "").trim();
       if (dateStr) {
-        if (/^\d{10,13}$/.test(dateStr)) {
+        if (/^[0-9]{10,13}$/.test(dateStr)) {
           var n = Number(dateStr);
-          return n < 10000000000 ? n * 1000 : n;
+          return (n < 10000000000) ? n * 1000 : n;
         }
-        
-        // Try standard Date.parse (may fail for DD/MM/YYYY)
-        var parsed = Date.parse(dateStr.replace(" ", "T"));
-        if (!isNaN(parsed) && parsed > 0) return parsed < 10000000000 ? parsed * 1000 : parsed;
-        
-        parsed = Date.parse(dateStr);
-        if (!isNaN(parsed) && parsed > 0) return parsed < 10000000000 ? parsed * 1000 : parsed;
 
-        // Custom parser for DD/MM/YYYY (with optional HH:mm:ss)
-        var parts = dateStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{1,2}):(\d{1,2}))?/);
-        if (parts) {
-          var d = parseInt(parts[1], 10), m = parseInt(parts[2], 10) - 1, y = parseInt(parts[3], 10);
-          var h = parts[4] ? parseInt(parts[4], 10) : 0;
-          var min = parts[5] ? parseInt(parts[5], 10) : 0;
-          var s = parts[6] ? parseInt(parts[6], 10) : 0;
-          var dObj = new Date(y, m, d, h, min, s);
+        // Chuẩn hóa chuỗi ngày tháng: loại bỏ khoảng trắng đặc biệt (NNBSP), dấu phẩy
+        var cleanStr = dateStr.replace(/[\u202f\u00a0]/g, " ").replace(/,/g, " ").replace(/\s+/g, " ").trim();
+
+        // Định dạng 1: Giờ:Phút[:Giây] Ngày/Tháng/Năm (vd: "22:28 20/09/2026", "22:28:15 20/9/2026")
+        var mTimeDate = cleanStr.match(/(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?\s+(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (mTimeDate) {
+          var h = parseInt(mTimeDate[1], 10) || 0;
+          var min = parseInt(mTimeDate[2], 10) || 0;
+          var sec = parseInt(mTimeDate[3], 10) || 0;
+          var day = parseInt(mTimeDate[4], 10);
+          var mon = parseInt(mTimeDate[5], 10) - 1;
+          var yr = parseInt(mTimeDate[6], 10);
+          var dObj = new Date(yr, mon, day, h, min, sec);
           if (!isNaN(dObj.getTime())) return dObj.getTime();
         }
 
-        // Try HH:mm:ss DD/MM/YYYY
-        var parts2 = dateStr.match(/(\d{1,2}):(\d{1,2}):(\d{1,2})\s+(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-        if (parts2) {
-          var h2 = parseInt(parts2[1], 10), min2 = parseInt(parts2[2], 10), s2 = parseInt(parts2[3], 10);
-          var d2 = parseInt(parts2[4], 10), m2 = parseInt(parts2[5], 10) - 1, y2 = parseInt(parts2[6], 10);
-          var dObj2 = new Date(y2, m2, d2, h2, min2, s2);
+        // Định dạng 2: Ngày/Tháng/Năm [Giờ:Phút[:Giây]] (vd: "20/09/2026 22:28", "12/9/2026 12:41:30", "11/9/2026")
+        var mDateTime = cleanStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+        if (mDateTime) {
+          var day2 = parseInt(mDateTime[1], 10);
+          var mon2 = parseInt(mDateTime[2], 10) - 1;
+          var yr2 = parseInt(mDateTime[3], 10);
+          var h2 = mDateTime[4] ? parseInt(mDateTime[4], 10) : 0;
+          var min2 = mDateTime[5] ? parseInt(mDateTime[5], 10) : 0;
+          var sec2 = mDateTime[6] ? parseInt(mDateTime[6], 10) : 0;
+          var dObj2 = new Date(yr2, mon2, day2, h2, min2, sec2);
           if (!isNaN(dObj2.getTime())) return dObj2.getTime();
         }
+
+        // Định dạng 3: ISO 8601 YYYY-MM-DD[THH:mm:ss]
+        var mIso = cleanStr.match(/(\d{4})-(\d{1,2})-(\d{1,2})(?:[T\s](\d{1,2}):(\d{1,2})(?::(\d{1,2}))?)?/);
+        if (mIso) {
+          var yr3 = parseInt(mIso[1], 10);
+          var mon3 = parseInt(mIso[2], 10) - 1;
+          var day3 = parseInt(mIso[3], 10);
+          var h3 = mIso[4] ? parseInt(mIso[4], 10) : 0;
+          var min3 = mIso[5] ? parseInt(mIso[5], 10) : 0;
+          var sec3 = mIso[6] ? parseInt(mIso[6], 10) : 0;
+          var dObj3 = new Date(yr3, mon3, day3, h3, min3, sec3);
+          if (!isNaN(dObj3.getTime())) return dObj3.getTime();
+        }
+
+        // Fallback Date.parse chỉ khi không khớp định dạng ngày Việt Nam
+        var parsed = Date.parse(cleanStr);
+        if (!isNaN(parsed) && parsed > 0) return (parsed < 10000000000) ? parsed * 1000 : parsed;
       }
 
       var idStr = String(o.id || o.orderId || o.orderCode || "");
-      var numMatch = idStr.match(/\d{10,13}/);
+      var numMatch = idStr.match(/[0-9]{10,13}/);
       if (numMatch) {
         var t = Number(numMatch[0]);
         if (t < 10000000000) t *= 1000;
         if (t > 1500000000000) return t;
       }
+
+      // Nếu đơn hàng vừa mua trong phiên này, ưu tiên timestamp hiện tại
+      var cleanOid = idStr.replace("#", "").trim();
+      if (cleanOid && (cleanOid === window.lastDeliveredOrderId || cleanOid === window.currentThankYouOrderId)) {
+        return Date.now();
+      }
+
       return 0;
     }
     window.getOrderTimestamp = getOrderTimestamp;
@@ -11823,6 +11853,9 @@ function syncAllOpenViewsStock(changedProdId) {
       let userOrders = [];
       const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
       const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
+      const lastDeliveredId = window.lastDeliveredOrderId || window.currentThankYouOrderId || "";
+      let storedLastId = "";
+      try { storedLastId = localStorage.getItem("mmo_last_order_id") || ""; } catch(e) {}
 
       // 1. Quét toàn bộ các nguồn lưu trữ đơn hàng
       const scanKeys = ["mmo_user_orders", "mmo_orders", "mmo_all_orders"];
@@ -11835,19 +11868,35 @@ function syncAllOpenViewsStock(changedProdId) {
 
           parsed.forEach(function(o) {
             if (!o) return;
-            const oEmail = String(o.userEmail || o.email || o.buyerEmail || "").toLowerCase().trim();
-            // Nếu đã đăng nhập, chỉ lấy đơn của tài khoản hiện tại (hoặc đơn không gắn email)
-            if (cleanUserMail && oEmail && oEmail !== cleanUserMail) return;
-
             const rawId = String(o.orderId || o.orderCode || o.id || "");
             if (!rawId) return;
+            const cleanId = rawId.startsWith("#") ? rawId.replace("#", "").trim() : rawId;
 
             // Bỏ qua bản ghi TX_PO_ rác nếu không có tài khoản và total <= 0
             if (rawId.startsWith("TX_PO_") && (!o.credentials && !o.deliveredAccounts) && (!o.total || o.total <= 0)) {
               return;
             }
 
-            const cleanId = rawId.startsWith("#") ? rawId.replace("#", "").trim() : rawId;
+            const oEmail = String(o.userEmail || o.email || o.buyerEmail || "").toLowerCase().trim();
+            
+            // Bộ lọc quyền sở hữu đơn hàng thông minh:
+            // 1. Khớp chính xác email tài khoản đang đăng nhập
+            // 2. HOẶC là đơn hàng vừa mua trong phiên duyệt web này (cleanId khớp lastDeliveredId / storedLastId)
+            // 3. HOẶC đơn nằm trong mmo_user_orders (kho riêng của người dùng trên trình duyệt này)
+            // 4. HOẶC đơn không gắn email nào hoặc là khách vãng lai
+            if (cleanUserMail) {
+              const isMineByEmail = (oEmail === cleanUserMail);
+              const isRecentSession = (cleanId && (cleanId === lastDeliveredId || cleanId === storedLastId));
+              const isPersonalStore = (k === "mmo_user_orders");
+              const isGuestOrEmpty = (!oEmail || oEmail.startsWith("guest_") || oEmail.startsWith("khach_"));
+
+              if (!isMineByEmail && !isRecentSession && !isPersonalStore) {
+                if (oEmail && oEmail !== cleanUserMail) {
+                  return;
+                }
+              }
+            }
+
             const ts = getOrderTimestamp(o);
             const formattedDate = formatOrderDate(o.date || o.createdAt || o.time, ts);
 
@@ -11862,8 +11911,8 @@ function syncAllOpenViewsStock(changedProdId) {
                 orderId: cleanId,
                 orderCode: cleanId,
                 date: formattedDate,
-                createdAt: formattedDate,
-                createdTimestamp: ts
+                createdAt: (typeof o.createdAt === "number" && o.createdAt > 0) ? o.createdAt : formattedDate,
+                createdTimestamp: (typeof o.createdTimestamp === "number" && o.createdTimestamp > 0) ? o.createdTimestamp : ts
               }));
             } else {
               // Cập nhật thông tin mới nhất và trạng thái bảo hành / đổi trả
@@ -11935,7 +11984,7 @@ function syncAllOpenViewsStock(changedProdId) {
               total: po.total || po.totalPrice || 0,
               totalPrice: po.total || po.totalPrice || 0,
               date: formattedDate,
-              createdAt: formattedDate,
+              createdAt: (typeof po.createdAt === "number" && po.createdAt > 0) ? po.createdAt : formattedDate,
               createdTimestamp: ts,
               credentials: Array.isArray(po.deliveredAccounts) ? po.deliveredAccounts.join("\n") : (po.deliveredAccounts || ""),
               deliveredAccounts: po.deliveredAccounts || [],
@@ -11955,6 +12004,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       return userOrders;
     }
+    window.getUserOrders = getUserOrders;
 
     function saveUserOrders(orders, shouldRender = true) {
       try {
@@ -11965,24 +12015,11 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.saveUserOrders = saveUserOrders;
 
-    var _previousView = "viewStore";
-
-    function goBackToPreviousView() {
-      const prev = _previousView || "viewStore";
-      if (prev === "viewProfile") {
-        if (typeof goToMyOrders === "function") goToMyOrders();
-        else switchView("viewProfile");
-      } else if (prev === "viewAdmin") {
-        switchView("viewAdmin");
-      } else {
-        switchView(prev || "viewStore");
-      }
-    }
-    window.goBackToPreviousView = goBackToPreviousView;
-
     function goToMyOrders() {
       if (typeof switchView === "function") switchView("viewProfile");
+      if (typeof filterProfileOrdersTab === "function") filterProfileOrdersTab("ALL");
       if (typeof switchProfileTab === "function") switchProfileTab("tabProfOrders");
+      if (typeof renderProfileOrders === "function") renderProfileOrders();
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
     window.goToMyOrders = goToMyOrders;
@@ -14099,38 +14136,63 @@ function syncAllOpenViewsStock(changedProdId) {
         localStorage.setItem("mmo_wallet_transactions", JSON.stringify(mmoTxs));
       } catch(e) {}
 
-      // GHI NHẬN ĐƠN HÀNG
+      // GHI NHẬN ĐƠN HÀNG HOÀN TOÀN MỚI
       const credsText = credsLines.join("\n");
       window.lastDeliveredCredentials = credsText;
       window.lastDeliveredOrderId = orderId;
       window.currentThankYouOrderId = orderId;
+      try {
+        localStorage.setItem("mmo_last_order_id", orderId);
+        localStorage.setItem("mmo_last_credentials", credsText);
+      } catch(e) {}
+
+      const nowTs = Date.now();
+      const formattedNow = formatOrderDate(null, nowTs);
 
       const orderObj = {
         id: orderId,
+        orderId: orderId,
+        orderCode: orderId,
         userEmail: cleanEmail,
+        email: cleanEmail,
+        buyerEmail: cleanEmail,
+        username: (currentUser ? (currentUser.username || currentUser.name || cleanEmail) : cleanEmail) || "Khách Hàng",
+        buyerUsername: (currentUser ? (currentUser.username || currentUser.name || cleanEmail) : cleanEmail) || "Khách Hàng",
         productId: p.id,
         productName: p.name,
-        variantName: targetVar.name || "Mặc định",
+        variant: (targetVar && targetVar.name) ? targetVar.name : "Mặc định",
+        variantName: (targetVar && targetVar.name) ? targetVar.name : "Mặc định",
         quantity: qty,
+        qty: qty,
         price: unitPrice,
         total: totalCost,
+        totalPrice: totalCost,
         discount: window.currentAppliedDiscount || 0,
         credentials: credsText,
-        createdAt: Date.now(),
-        date: new Date().toLocaleString("vi-VN"),
-        status: "COMPLETED"
+        deliveredAccounts: credsLines,
+        accounts: credsLines,
+        createdTimestamp: nowTs,
+        createdAt: nowTs,
+        date: formattedNow,
+        status: "COMPLETED",
+        statusText: "Hoàn thành"
       };
 
       try {
         let orders = JSON.parse(localStorage.getItem("mmo_orders") || "[]");
-        orders = orders.filter(o => o.id !== orderObj.id);
+        orders = orders.filter(o => (o.id !== orderId && o.orderId !== orderId));
         orders.unshift(orderObj);
         localStorage.setItem("mmo_orders", JSON.stringify(orders));
 
         let userOrders = JSON.parse(localStorage.getItem("mmo_user_orders") || "[]");
-        userOrders = userOrders.filter(o => o.id !== orderObj.id);
+        userOrders = userOrders.filter(o => (o.id !== orderId && o.orderId !== orderId));
         userOrders.unshift(orderObj);
         localStorage.setItem("mmo_user_orders", JSON.stringify(userOrders));
+
+        let allOrders = JSON.parse(localStorage.getItem("mmo_all_orders") || "[]");
+        allOrders = allOrders.filter(o => (o.id !== orderId && o.orderId !== orderId));
+        allOrders.unshift(orderObj);
+        localStorage.setItem("mmo_all_orders", JSON.stringify(allOrders));
 
         try {
           if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof TURSO_CLIENT.recordOrder === "function") {
@@ -14352,27 +14414,59 @@ function syncAllOpenViewsStock(changedProdId) {
     window.lastDeliveredCredentials = credsText;
     window.lastDeliveredOrderId = orderId;
     window.currentThankYouOrderId = orderId;
+    try {
+      localStorage.setItem("mmo_last_order_id", orderId);
+      localStorage.setItem("mmo_last_credentials", credsText);
+    } catch(e) {}
+
+    const nowTs = Date.now();
+    const formattedNow = formatOrderDate(null, nowTs);
 
     const orderObj = {
       id: orderId,
+      orderId: orderId,
+      orderCode: orderId,
       userEmail: buyerEmail,
+      email: buyerEmail,
+      buyerEmail: buyerEmail,
+      username: (typeof currentUser !== "undefined" && currentUser ? (currentUser.username || currentUser.name || buyerEmail) : buyerEmail) || "Khách Hàng",
+      buyerUsername: (typeof currentUser !== "undefined" && currentUser ? (currentUser.username || currentUser.name || buyerEmail) : buyerEmail) || "Khách Hàng",
       productId: product.id,
       productName: product.name,
-      variantName: targetVar.name || "Mặc định",
+      variant: (targetVar && targetVar.name) ? targetVar.name : "Mặc định",
+      variantName: (targetVar && targetVar.name) ? targetVar.name : "Mặc định",
       quantity: qty,
+      qty: qty,
       price: unitPrice,
       total: totalCost,
+      totalPrice: totalCost,
       discount: window.currentAppliedDiscount || 0,
       credentials: credsText,
-      createdAt: Date.now(),
-      date: new Date().toLocaleString("vi-VN"),
-      status: "COMPLETED"
+      deliveredAccounts: credsLines,
+      accounts: credsLines,
+      createdTimestamp: nowTs,
+      createdAt: nowTs,
+      date: formattedNow,
+      status: "COMPLETED",
+      statusText: "Hoàn thành"
     };
 
     try {
       let orders = JSON.parse(localStorage.getItem("mmo_orders") || "[]");
+      orders = orders.filter(o => (o.id !== orderId && o.orderId !== orderId));
       orders.unshift(orderObj);
       localStorage.setItem("mmo_orders", JSON.stringify(orders));
+
+      let userOrders = JSON.parse(localStorage.getItem("mmo_user_orders") || "[]");
+      userOrders = userOrders.filter(o => (o.id !== orderId && o.orderId !== orderId));
+      userOrders.unshift(orderObj);
+      localStorage.setItem("mmo_user_orders", JSON.stringify(userOrders));
+
+      let allOrders = JSON.parse(localStorage.getItem("mmo_all_orders") || "[]");
+      allOrders = allOrders.filter(o => (o.id !== orderId && o.orderId !== orderId));
+      allOrders.unshift(orderObj);
+      localStorage.setItem("mmo_all_orders", JSON.stringify(allOrders));
+
       if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
         TURSO_CLIENT.recordOrder(orderObj).catch(e => console.error("Turso recordOrder error:", e));
       }
