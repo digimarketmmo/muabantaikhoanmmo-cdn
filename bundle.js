@@ -25554,6 +25554,10 @@ function renderSampleArticlePreviewUI(data) {
   const statusEl = document.getElementById('aiSampleArticleStatus');
   if (!statusEl || !data) return;
 
+  // Lưu lại chính xác vị trí cuộn ngang hiện tại trước khi vẽ lại
+  const oldGalleryScroll = document.getElementById('aiSampleImgGalleryScroll');
+  const savedScrollLeft = oldGalleryScroll ? oldGalleryScroll.scrollLeft : 0;
+
   const totalImages = (data.images && Array.isArray(data.images)) ? data.images.length : 0;
   const selectedCount = (data.images && Array.isArray(data.images)) ? data.images.filter(im => im.selected !== false).length : 0;
   
@@ -25569,7 +25573,7 @@ function renderSampleArticlePreviewUI(data) {
             Xóa hết ảnh
           </button>
         </div>
-        <div style="display:flex; gap:10px; overflow-x:auto; padding:6px 2px 10px 2px; scrollbar-width:thin; max-width:100%; -webkit-overflow-scrolling:touch;">
+        <div id="aiSampleImgGalleryScroll" style="display:flex; gap:10px; overflow-x:auto; padding:6px 2px 10px 2px; scrollbar-width:thin; max-width:100%; -webkit-overflow-scrolling:touch; scroll-behavior:auto;">
           ${data.images.map((img, idx) => {
             const isSelected = img.selected !== false;
             return `
@@ -25634,6 +25638,16 @@ function renderSampleArticlePreviewUI(data) {
     <div style="color:#38bdf8; font-size:11px; margin-top:2px;"><b>Hình ảnh:</b> Tìm thấy ${totalImages} ảnh minh họa thật sẵn sàng crop 5% và chèn vào bài.</div>
     ${imgGalleryHtml}
   `;
+
+  // Khôi phục lại vị trí cuộn ngang chính xác để không bị nhảy về đầu khi xóa ảnh
+  if (savedScrollLeft > 0) {
+    requestAnimationFrame(() => {
+      const newGalleryScroll = document.getElementById('aiSampleImgGalleryScroll');
+      if (newGalleryScroll) {
+        newGalleryScroll.scrollLeft = savedScrollLeft;
+      }
+    });
+  }
 }
 
 // Xóa 1 ảnh rác hoặc quảng cáo
@@ -25926,15 +25940,21 @@ ${imgListText}
    - Bài viết BẮT BUỘC xoay quanh trực diện vấn đề/chủ đề: "${effectiveTopic}".
    - Bám sát từng bước hướng dẫn cụ thể, các thủ thuật thực tế, phân tích chuyên sâu.
    - TUYỆT ĐỐI KHÔNG viết lan man, không viết nhầm sang các chủ đề hoặc dịch vụ không liên quan.
-4. CHÈN HÌNH ẢNH MINH HOẠ THẬT ĐÃ CHỌN VÀO BÀI VIẾT:
-   ${activeImages.length > 0 ? `- Bạn BẮT BUỘC phải chèn các hình ảnh trong danh sách trên vào các vị trí thích hợp tương ứng với từng phần đề mục trong bài viết.
-   - Mỗi hình ảnh BẮT BUỘC định dạng bằng thẻ HTML:
-     <div class="separator" style="clear:both; text-align:center; margin:24px 0;">
-       <img src="[URL_HÌNH_ẢNH_TỪ_DANH_SÁCH]" alt="[Mô tả ảnh chuẩn SEO chứa từ khóa]" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25);" loading="lazy" />
-       <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">[Chú thích hình ảnh chuẩn SEO]</p>
-     </div>
-   - Phân bổ đều các hình ảnh sau các thẻ <h2> hoặc <h3>. CHỈ ĐƯỢC DÙNG link ảnh từ danh sách trên, TUYỆT ĐỐI KHÔNG tự bịa link ảnh ảo!` : '- Không có ảnh minh họa nào được chọn. Hãy tập trung viết nội dung bài hướng dẫn chuyên sâu.'}
+4. QUY TẮC CHÈN HÌNH ẢNH MINH HỌA HƯỚNG DẪN (ĐỒNG BỘ 100%):
+   ${activeImages.length > 0 ? `- Bạn TUYỆT ĐỐI KHÔNG CẦN viết thẻ <img> hay <div class="separator"> dài dòng.
+   - Bạn CHỈ CẦN ĐẶT DUY NHẤT CÁC PLACEHOLDER: [HINH_ANH_1], [HINH_ANH_2], ..., [HINH_ANH_${activeImages.length}] ngay dưới đoạn văn hướng dẫn của Bước 1, Bước 2... tương ứng.
+   - Mỗi bước hướng dẫn có đúng 1 placeholder ảnh đi kèm, nội dung bài hướng dẫn phải mô tả chính xác thao tác trong ảnh đó!` : '- Không có ảnh minh họa nào được chọn. Hãy tập trung viết nội dung bài hướng dẫn chuyên sâu.'}
 `;
+  }
+
+    let dynamicStepsGuidance = '';
+  if (activeImages.length > 0) {
+    dynamicStepsGuidance = `3. <h2>2. [Hướng dẫn chi tiết từng bước thực hiện từ A-Z]</h2>
+- BẮT BUỘC PHẢI TẠO ĐỦ ${activeImages.length} BƯỚC THỰC HIỆN CHI TIẾT TƯƠNG ỨNG VỚI ${activeImages.length} HÌNH ẢNH HƯỚNG DẪN THỰC TẾ (BƯỚC 1 ĐẾN BƯỚC ${activeImages.length}):
+${activeImages.map((im, i) => `  - <h3>Bước ${i + 1}: [Tên thao tác cụ thể của bước ${i + 1}]</h3>\n    (Viết 2-4 câu hướng dẫn rõ ràng người đọc cần bấm gì, nhập gì, kiểm tra gì trên màn hình. Sau đó BẮT BUỘC đặt placeholder: [HINH_ANH_${i + 1}] ngay dưới đoạn văn này)`).join('\n')}
+- <h3>Lưu ý kỹ thuật quan trọng & Cách phòng tránh lỗi</h3>`;
+  } else {
+    dynamicStepsGuidance = `${dynamicStepsGuidance}`;
   }
 
   const prompt = `Bạn là một chuyên gia SEO Content Marketing & Copywriting hàng đầu (Google Helpful Content & E-E-A-T Chuẩn SEO 2026).
@@ -26045,10 +26065,77 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
     let htmlContent = seoStart > -1 ? rawText.slice(0, seoStart).trim() : rawText.trim();
     htmlContent = convertMarkdownToCleanHtml(htmlContent);
 
-    // XỬ LÝ CROP CHÍNH XÁC 5% CHỐNG BẢN QUYỀN GOOGLE & DMCA VÀ CHÈN TẤT CẢ HÌNH ẢNH ĐÃ CHỌN
+    // XỬ LÝ CHÈN ẢNH VÀ CROP 5% CHỐNG BẢN QUYỀN GOOGLE/DMCA AN TOÀN TUYỆT ĐỐI (KHÔNG CẮT GHÉP CHUỖI VỠ THẺ)
     if (activeImages.length > 0) {
+      if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-images"></i> Đang đồng bộ hình ảnh vào từng bước hướng dẫn...</span>';
+
+      // 1. Thay thế trực tiếp các placeholder [HINH_ANH_1], [HINH_ANH_2]... thành khối ảnh HTML hoàn chỉnh
+      activeImages.forEach((img, i) => {
+        const phRegex = new RegExp('\\\[(HINH_ANH|IMAGE|ANH)_' + (i + 1) + '\\\]', 'gi');
+        const imgBlock = `\n<div class="separator" style="clear:both; text-align:center; margin:24px 0;">\n  <img src="${img.url}" alt="${img.alt || effectiveTopic}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25); display:inline-block;" loading="lazy" />\n  <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">${img.alt || effectiveTopic}</p>\n</div>\n`;
+        if (phRegex.test(htmlContent)) {
+          htmlContent = htmlContent.replace(phRegex, imgBlock);
+        }
+      });
+
+      // 2. Nếu còn ảnh nào chưa có trong bài viết (AI quên đặt placeholder), chèn an toàn qua DOMParser (100% không vỡ thẻ)
+      const uninsertedImgs = activeImages.filter(im => !htmlContent.includes(im.url));
+      if (uninsertedImgs.length > 0 && typeof DOMParser !== 'undefined') {
+        try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(htmlContent, 'text/html');
+          const stepHeadings = [...doc.querySelectorAll('h3, h2')];
+
+          uninsertedImgs.forEach((img, uIdx) => {
+            const div = doc.createElement('div');
+            div.className = 'separator';
+            div.style.cssText = 'clear:both; text-align:center; margin:24px 0;';
+
+            const imgEl = doc.createElement('img');
+            imgEl.src = img.url;
+            imgEl.alt = img.alt || effectiveTopic;
+            imgEl.style.cssText = 'max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25); display:inline-block;';
+            imgEl.loading = 'lazy';
+
+            const caption = doc.createElement('p');
+            caption.style.cssText = 'font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;';
+            caption.textContent = img.alt || effectiveTopic;
+
+            div.appendChild(imgEl);
+            div.appendChild(caption);
+
+            // Tìm heading bước thực hiện phù hợp
+            let target = null;
+            if (stepHeadings.length > (uIdx + 1)) {
+              target = stepHeadings[uIdx + 1];
+            } else if (stepHeadings.length > 0) {
+              target = stepHeadings[stepHeadings.length - 1];
+            }
+
+            if (target && target.parentNode) {
+              if (target.nextElementSibling && target.nextElementSibling.tagName.toLowerCase() === 'p') {
+                target.nextElementSibling.insertAdjacentElement('afterend', div);
+              } else {
+                target.insertAdjacentElement('afterend', div);
+              }
+            } else {
+              doc.body.appendChild(div);
+            }
+          });
+
+          htmlContent = doc.body.innerHTML;
+        } catch(domErr) {
+          console.warn('DOMParser image insertion notice:', domErr);
+        }
+      }
+
+      // 3. Quét dọn triệt để bất kỳ mảnh vỡ CSS rác nào nếu còn sót
+      htmlContent = htmlContent.replace(/(t-size:\d+px;[^<>\n]*font-st[a-z:]*)/gi, '');
+      htmlContent = htmlContent.replace(/(order-radius:\d+px;[^<>\n]*loading="lazy"\s*\/>)/gi, '');
+      htmlContent = htmlContent.replace(/(argin:\d+px\s+0;)/gi, '');
+
+      // 4. XỬ LÝ CROP 5% VIỀN CHỐNG BẢN QUYỀN GOOGLE & DMCA
       if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-crop"></i> Đang tự động crop viền 5% chống quét trùng lặp bản quyền Google & DMCA...</span>';
-      
       const imagesToProcess = activeImages.slice(0, 8);
       for (let i = 0; i < imagesToProcess.length; i++) {
         const targetImg = imagesToProcess[i];
@@ -26061,28 +26148,6 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
         } catch(cropErr) {
           console.warn('Lỗi crop ảnh chống bản quyền:', cropErr);
         }
-      }
-
-      // Tự động chèn tất cả ảnh thật vào bài viết nếu AI chưa phân bổ đủ
-      const uninsertedImgs = activeImages.filter(im => !htmlContent.includes(im.url));
-      if (uninsertedImgs.length > 0) {
-        const insertionPoints = [...htmlContent.matchAll(/<\/(h2|h3)>/gi)];
-        uninsertedImgs.forEach((img, uIdx) => {
-          const imgHtml = `\n<div class="separator" style="clear:both; text-align:center; margin:22px 0;">\n  <img src="${img.url}" alt="${img.alt || effectiveTopic}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25);" loading="lazy" />\n  <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">${img.alt || effectiveTopic}</p>\n</div>\n`;
-          if (uIdx === 0) {
-            const pCloseIdx = htmlContent.indexOf('</p>');
-            if (pCloseIdx > -1) {
-              htmlContent = htmlContent.slice(0, pCloseIdx + 4) + imgHtml + htmlContent.slice(pCloseIdx + 4);
-            } else {
-              htmlContent = imgHtml + htmlContent;
-            }
-          } else if (insertionPoints.length > uIdx) {
-            const pos = insertionPoints[uIdx].index + insertionPoints[uIdx][0].length;
-            htmlContent = htmlContent.slice(0, pos) + imgHtml + htmlContent.slice(pos);
-          } else {
-            htmlContent = htmlContent + imgHtml;
-          }
-        });
       }
     }
 
