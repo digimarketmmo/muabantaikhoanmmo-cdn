@@ -14776,24 +14776,6 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (typeof renderBlogPage === "function") renderBlogPage();
       if (typeof renderSidebarBlogs === "function") renderSidebarBlogs();
-      if (typeof fetchBloggerFeedPosts === "function") {
-        setTimeout(function() { fetchBloggerFeedPosts(false); }, 150);
-      }
-      if (!window._mmoBlogSyncInterval) {
-        window._mmoBlogSyncInterval = setInterval(function() {
-          if (typeof fetchBloggerFeedPosts === "function" && document.visibilityState === "visible") {
-            fetchBloggerFeedPosts(false);
-          }
-        }, 45000);
-      }
-      if (!window._mmoBlogFocusBound) {
-        window._mmoBlogFocusBound = true;
-        window.addEventListener("focus", function() {
-          if (typeof fetchBloggerFeedPosts === "function") {
-            fetchBloggerFeedPosts(false);
-          }
-        });
-      }
       if (typeof renderAdminBlogsTable === "function") renderAdminBlogsTable();
 
       // Chỉ tự động làm mới trang chi tiết bài viết NẾU người dùng đang thực sự xem bài viết hoặc URL có tham số bài viết
@@ -19524,6 +19506,24 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof renderRecommended === "function") renderRecommended();
       if (typeof renderProductGrid === "function") renderProductGrid();
       if (typeof renderSidebarBlogs === "function") renderSidebarBlogs();
+      if (typeof fetchBloggerFeedPosts === "function") {
+        setTimeout(function() { fetchBloggerFeedPosts(false); }, 150);
+      }
+      if (!window._mmoBlogSyncInterval) {
+        window._mmoBlogSyncInterval = setInterval(function() {
+          if (typeof fetchBloggerFeedPosts === "function" && document.visibilityState === "visible") {
+            fetchBloggerFeedPosts(false);
+          }
+        }, 45000);
+      }
+      if (!window._mmoBlogFocusBound) {
+        window._mmoBlogFocusBound = true;
+        window.addEventListener("focus", function() {
+          if (typeof fetchBloggerFeedPosts === "function") {
+            fetchBloggerFeedPosts(false);
+          }
+        });
+      }
       if (typeof _viewRendered !== "undefined") _viewRendered["viewStore"] = true;
       if (typeof updateLiveRealTimeClock === "function") updateLiveRealTimeClock();
       if (typeof initGoogleAuth === "function") initGoogleAuth();
