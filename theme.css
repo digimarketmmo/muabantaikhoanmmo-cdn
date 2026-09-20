@@ -4559,3 +4559,206 @@ div:has(> .admin-table) {
     padding-bottom: 85px !important;
   }
 }
+
+
+/* ==================== CỐ ĐỊNH CHỮ CHÂN TRANG & CÔNG CỤ MMO VUỐT NGANG & HEADER CHIA ĐỀU ==================== */
+.footer-brand-text {
+  display: inline-block !important;
+  font-size: 1.15rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  letter-spacing: 0.3px !important;
+  text-transform: lowercase !important;
+}
+
+/* TOOLS DASHBOARD STYLES */
+.tools-page-container {
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin: 16px auto 60px !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+}
+.tools-layout-2col {
+  display: grid !important;
+  grid-template-columns: 280px minmax(0, 1fr) !important;
+  gap: 20px !important;
+  align-items: start !important;
+  width: 100% !important;
+}
+.tools-sidebar-nav {
+  background: #0b111e !important;
+  border: 1px solid #1e293b !important;
+  border-radius: 12px !important;
+  padding: 14px !important;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 80px !important;
+  z-index: 10 !important;
+  box-sizing: border-box !important;
+}
+.tools-sidebar-header {
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+  color: #94a3b8 !important;
+  letter-spacing: 0.5px !important;
+  padding: 4px 6px 10px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  margin-bottom: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.tools-nav-vertical {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  width: 100% !important;
+}
+.tools-nav-vertical .tool-tab-btn {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 10px 12px !important;
+  border-radius: 10px !important;
+  text-align: left !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  background: #070a12 !important;
+  border: 1px solid #1e293b !important;
+  color: #cbd5e1 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+.tools-nav-vertical .tool-tab-btn:hover {
+  background: #111827 !important;
+  border-color: #334155 !important;
+  color: #fff !important;
+}
+.tools-nav-vertical .tool-tab-btn.active {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.25)) !important;
+  border-color: #10b981 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25) !important;
+}
+.tool-btn-text {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+.tool-btn-title {
+  font-size: 0.85rem !important;
+  font-weight: 700 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  white-space: nowrap !important;
+}
+.tool-btn-desc {
+  font-size: 0.72rem !important;
+  color: #64748b !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.tools-nav-vertical .tool-tab-btn.active .tool-btn-desc {
+  color: #a7f3d0 !important;
+}
+
+@media (max-width: 900px) {
+  .tools-layout-2col {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+  .tools-sidebar-nav {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 12px 10px !important;
+    overflow: visible !important;
+  }
+  .tools-nav-vertical {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x !important;
+    gap: 8px !important;
+    padding-bottom: 8px !important;
+    width: 100% !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #10b981 transparent !important;
+  }
+  .tools-nav-vertical::-webkit-scrollbar {
+    height: 4px !important;
+  }
+  .tools-nav-vertical::-webkit-scrollbar-thumb {
+    background: #10b981 !important;
+    border-radius: 4px !important;
+  }
+  .tools-nav-vertical .tool-tab-btn {
+    width: auto !important;
+    min-width: 180px !important;
+    max-width: 230px !important;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+  }
+}
+
+@media (max-width: 600px) {
+  /* HEADER CHIA ĐỀU CÂN ĐỐI TRÊN MOBILE */
+  .header-inner {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    padding: 0 10px !important;
+    box-sizing: border-box !important;
+  }
+  .header-actions {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex: 1 !important;
+    margin-left: 12px !important;
+    gap: 4px !important;
+    min-width: 0 !important;
+  }
+  .wallet-header-btn {
+    padding: 5px 8px !important;
+    font-size: 0.74rem !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+  }
+  .wallet-header-btn span#headerWalletBalance {
+    font-size: 0.74rem !important;
+    white-space: nowrap !important;
+  }
+  .btn-header-notif {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    flex-shrink: 0 !important;
+  }
+  #authArea {
+    flex-shrink: 0 !important;
+  }
+  .user-header-pill {
+    padding: 2px 6px 2px 2px !important;
+    gap: 4px !important;
+  }
+  .mobile-menu-btn {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    flex-shrink: 0 !important;
+    margin: 0 !important;
+  }
+}
