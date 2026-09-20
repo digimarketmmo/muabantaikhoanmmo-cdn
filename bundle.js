@@ -13218,9 +13218,24 @@ function syncAllOpenViewsStock(changedProdId) {
 
     
     // ==================== NEWSPAPER BLOG FUNCTIONS ====================
+    // ==================== MASTER DOMAIN VERIFICATION & ANTI-REVERSE SYNC ====================
+    function isMasterDomain() {
+      try {
+        const host = (window.location && window.location.hostname ? window.location.hostname : "").toLowerCase();
+        return host === "www.muabantaikhoanmmo.com" ||
+               host === "muabantaikhoanmmo.com" ||
+               host === "muabantaikhoanmmo68.blogspot.com" ||
+               host === "localhost" ||
+               host === "127.0.0.1";
+      } catch(e) { return true; }
+    }
+    window.isMasterDomain = isMasterDomain;
+
     // Check for admin saved blogs in localStorage
     try {
-      const savedAdminBlogs = localStorage.getItem("mmo_admin_blogs");
+      const isMaster = isMasterDomain();
+      const masterSaved = localStorage.getItem("mmo_master_admin_blogs");
+      const savedAdminBlogs = (isMaster && masterSaved) ? masterSaved : (localStorage.getItem("mmo_admin_blogs") || masterSaved);
       if (savedAdminBlogs) {
         const parsed = JSON.parse(savedAdminBlogs);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -13265,11 +13280,13 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.cleanBloggerContentForDarkTheme = cleanBloggerContentForDarkTheme;
 
-    // ==================== ROBUST JSONP BLOGGER FEED SYNC ====================
+    // ==================== ROBUST JSONP BLOGGER FEED SYNC (ANTI-REVERSE SYNC) ====================
     function fetchBloggerFeedPosts(isManual) {
       if (typeof isManual === "undefined") isManual = false;
       if (!isManual && window._bloggerFeedFetched) return;
       window._bloggerFeedFetched = true;
+
+      const isMaster = (typeof isMasterDomain === "function") ? isMasterDomain() : true;
 
       // Global JSONP callback
       window.handleBloggerFeedJsonp = function(json) {
@@ -13277,7 +13294,8 @@ function syncAllOpenViewsStock(changedProdId) {
           const entries = (json && json.feed && json.feed.entry) ? json.feed.entry : [];
           if (entries.length === 0) {
             if (isManual) {
-              if (typeof showNotification === "function") showNotification("Chưa tìm thấy bài đăng nào trên Blogger.");
+              if (typeof showToast === "function") showToast("Chưa tìm thấy bài đăng nào trên Blogger.", "warning");
+              else if (typeof showNotification === "function") showNotification("Chưa tìm thấy bài đăng nào trên Blogger.");
               else alert("Chưa tìm thấy bài đăng nào trên Blogger.");
             }
             return;
@@ -13285,11 +13303,10 @@ function syncAllOpenViewsStock(changedProdId) {
 
           const bloggerPosts = entries.map(function(entry, index) {
             const title = (entry.title && entry.title.$t) ? entry.title.$t : "Bài viết không có tiêu đề";
-            
             const cats = (entry.category || []).map(function(c) { return c.term; });
             const category = cats.length > 0 ? cats[0] : "Tin tức";
 
-            let image = "https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&auto=format&fit=crop&q=80";
+            let image = "https://iili.io/nFV4Rln.png";
             if (entry.media$thumbnail && entry.media$thumbnail.url) {
               image = entry.media$thumbnail.url.replace(/\/s[0-9]+-c\//, "/s1600/");
             } else if (entry.content && entry.content.$t) {
@@ -13298,9 +13315,11 @@ function syncAllOpenViewsStock(changedProdId) {
             }
 
             let dateStr = "Vừa xong";
+            let publishTime = Date.now();
             if (entry.published && entry.published.$t) {
               try {
                 const d = new Date(entry.published.$t);
+                publishTime = d.getTime();
                 dateStr = String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
               } catch(e) {}
             }
@@ -13321,6 +13340,7 @@ function syncAllOpenViewsStock(changedProdId) {
               title: title,
               category: category,
               date: dateStr,
+              publishTime: publishTime,
               views: "1.5k",
               image: image,
               snippet: snippet || title,
@@ -13328,20 +13348,49 @@ function syncAllOpenViewsStock(changedProdId) {
             };
           });
 
-          // Prepend Blogger feed posts to MOCK_DATA.blogs, avoiding duplicate titles
-          const existingTitles = new Set();
-          bloggerPosts.forEach(function(p) {
-            existingTitles.add(p.title.toLowerCase().trim());
+          // CHỐNG ĐỒNG BỘ NGƯỢC: CẤM DỮ LIỆU CŨ / RỖNG GHI ĐÈ LÊN DỮ LIỆU MỚI
+          const currentBlogs = (MOCK_DATA && MOCK_DATA.blogs && Array.isArray(MOCK_DATA.blogs)) ? MOCK_DATA.blogs : [];
+          
+          // Tạo Map bài viết hiện tại để so sánh timestamp chống dữ liệu cũ
+          const blogMap = new Map();
+          currentBlogs.forEach(function(b) {
+            const key = (b.id || b.title || "").toLowerCase().trim();
+            if (key) blogMap.set(key, b);
           });
 
-          const nonDuplicateBlogs = (MOCK_DATA.blogs || []).filter(function(b) {
-            return !existingTitles.has(b.title.toLowerCase().trim());
+          bloggerPosts.forEach(function(newPost) {
+            const keyById = (newPost.id || "").toLowerCase().trim();
+            const keyByTitle = (newPost.title || "").toLowerCase().trim();
+            const existing = blogMap.get(keyById) || blogMap.get(keyByTitle);
+
+            if (!existing) {
+              blogMap.set(keyById || keyByTitle, newPost);
+            } else {
+              // CẤM DỮ LIỆU CŨ GHI ĐÈ DỮ LIỆU MỚI: Chỉ cập nhật nếu bài mới có thời gian mới hơn hoặc nội dung dài hơn
+              const existingTime = existing.publishTime || (existing.date ? new Date(existing.date).getTime() : 0);
+              const newTime = newPost.publishTime || (newPost.date ? new Date(newPost.date).getTime() : 0);
+              const existingContentLen = (existing.content || "").length;
+              const newContentLen = (newPost.content || "").length;
+
+              if (newTime >= existingTime || (newContentLen > existingContentLen && existingContentLen < 300)) {
+                blogMap.set(keyById || keyByTitle, Object.assign({}, existing, newPost));
+              }
+            }
           });
 
-          MOCK_DATA.blogs = bloggerPosts.concat(nonDuplicateBlogs);
+          const mergedBlogs = Array.from(blogMap.values());
+          mergedBlogs.sort(function(a, b) {
+            return (b.publishTime || 0) - (a.publishTime || 0);
+          });
+
+          MOCK_DATA.blogs = mergedBlogs;
 
           try {
             localStorage.setItem("mmo_admin_blogs", JSON.stringify(MOCK_DATA.blogs));
+            if (isMaster) {
+              localStorage.setItem("mmo_master_admin_blogs", JSON.stringify(MOCK_DATA.blogs));
+              localStorage.setItem("mmo_master_blog_updated_at", String(Date.now()));
+            }
           } catch(e) {}
 
           bloggerPosts.forEach(function(p) {
@@ -13355,8 +13404,9 @@ function syncAllOpenViewsStock(changedProdId) {
           if (typeof renderAdminBlogsTable === "function") renderAdminBlogsTable();
 
           if (isManual) {
-            const msg = "Đã đồng bộ thành công " + bloggerPosts.length + " bài đăng từ Blogger lên nền đen!";
-            if (typeof showNotification === "function") showNotification(msg);
+            const msg = "Đã đồng bộ thành công " + bloggerPosts.length + " bài đăng chuẩn đẹp!";
+            if (typeof showToast === "function") showToast(msg, "success");
+            else if (typeof showNotification === "function") showNotification(msg);
             else alert(msg);
           }
         } catch(err) {
@@ -13365,24 +13415,33 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       };
 
-      // Load via dynamic script tag (JSONP)
+      // XÁC ĐỊNH NGUỒN FEED CHUẨN:
+      // Web chính: nạp trực tiếp feed của chính nó (/feeds/posts/default hoặc https://muabantaikhoanmmo68.blogspot.com)
+      // Blog vệ tinh: BẮT BUỘC nạp từ blog chính https://muabantaikhoanmmo68.blogspot.com (dự phòng https://www.muabantaikhoanmmo.com)
+      let primaryFeedUrl = "/feeds/posts/default?alt=json-in-script&callback=handleBloggerFeedJsonp&max-results=50&_t=" + Date.now();
+      let fallbackFeedUrl = "https://muabantaikhoanmmo68.blogspot.com/feeds/posts/default?alt=json-in-script&callback=handleBloggerFeedJsonp&max-results=50&_t=" + Date.now();
+
+      if (!isMaster) {
+        primaryFeedUrl = "https://muabantaikhoanmmo68.blogspot.com/feeds/posts/default?alt=json-in-script&callback=handleBloggerFeedJsonp&max-results=50&_t=" + Date.now();
+        fallbackFeedUrl = "https://www.muabantaikhoanmmo.com/feeds/posts/default?alt=json-in-script&callback=handleBloggerFeedJsonp&max-results=50&_t=" + Date.now();
+      }
+
       const oldScript = document.getElementById("bloggerJsonpScript");
       if (oldScript) oldScript.remove();
 
       const script = document.createElement("script");
       script.id = "bloggerJsonpScript";
-      script.src = "/feeds/posts/default?alt=json-in-script&callback=handleBloggerFeedJsonp&max-results=50&_t=" + Date.now();
+      script.src = primaryFeedUrl;
 
       script.onerror = function() {
-        // Fallback to absolute domain URL
         const oldFbScript = document.getElementById("bloggerJsonpFallback");
         if (oldFbScript) oldFbScript.remove();
 
         const scriptFallback = document.createElement("script");
         scriptFallback.id = "bloggerJsonpFallback";
-        scriptFallback.src = "https://www.muabantaikhoanmmo.com/feeds/posts/default?alt=json-in-script&callback=handleBloggerFeedJsonp&max-results=50&_t=" + Date.now();
+        scriptFallback.src = fallbackFeedUrl;
         scriptFallback.onerror = function() {
-          if (isManual) alert("Không thể kết nối đến feed bài đăng của Blogger.");
+          if (isManual) alert("Không thể kết nối đến feed bài đăng của Blogger chính.");
         };
         document.head.appendChild(scriptFallback);
       };
@@ -23582,3 +23641,69 @@ window.loadAiDraft = loadAiDraft;
 window.updateAiMetaCounter = updateAiMetaCounter;
 window.onAiEditorInput = onAiEditorInput;
 window.fallbackCopyAiHtml = fallbackCopyAiHtml;
+// ============================================================
+// SEO METADATA COPY HELPERS (COPY TIÊU ĐỀ, MÔ TẢ, TAGS, TẤT CẢ)
+// ============================================================
+function copyAiField(fieldId, fieldLabel) {
+  fieldLabel = fieldLabel || 'Nội dung';
+  const el = document.getElementById(fieldId);
+  const text = (el ? el.value : '').trim();
+  if (!text) {
+    if (typeof showToast === 'function') showToast('⚠️ Chưa có ' + fieldLabel.toLowerCase() + ' để sao chép!', 'warning');
+    else alert('Chưa có ' + fieldLabel.toLowerCase() + ' để sao chép!');
+    return;
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      if (typeof showToast === 'function') showToast('✅ Đã sao chép ' + fieldLabel.toLowerCase() + '!', 'success');
+    }).catch(function() {
+      fallbackCopyFieldText(text, fieldLabel);
+    });
+  } else {
+    fallbackCopyFieldText(text, fieldLabel);
+  }
+}
+
+function fallbackCopyFieldText(text, fieldLabel) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    if (typeof showToast === 'function') showToast('✅ Đã sao chép ' + (fieldLabel || '').toLowerCase() + '!', 'success');
+  } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+function copyAllSeoFields() {
+  const title = ((document.getElementById('aiSeoTitle') || {}).value || '').trim();
+  const meta = ((document.getElementById('aiSeoMeta') || {}).value || '').trim();
+  const tags = ((document.getElementById('aiSeoLabels') || {}).value || '').trim();
+
+  if (!title && !meta && !tags) {
+    if (typeof showToast === 'function') showToast('⚠️ Chưa có dữ liệu SEO để sao chép!', 'warning');
+    return;
+  }
+
+  const lines = [];
+  if (title) lines.push('Tiêu đề: ' + title);
+  if (meta) lines.push('Mô tả: ' + meta);
+  if (tags) lines.push('Tags / Nhãn: ' + tags);
+  const text = lines.join('\n\n');
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      if (typeof showToast === 'function') showToast('✅ Đã sao chép toàn bộ SEO Metadata!', 'success');
+    }).catch(function() {
+      fallbackCopyFieldText(text, 'toàn bộ SEO');
+    });
+  } else {
+    fallbackCopyFieldText(text, 'toàn bộ SEO');
+  }
+}
+
+window.copyAiField = copyAiField;
+window.copyAllSeoFields = copyAllSeoFields;

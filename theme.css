@@ -4856,3 +4856,24 @@ table.adm-table td,
   gap: 4px !important;
   flex-shrink: 0 !important;
 }
+
+/* ============================================================
+   DEPOSIT / TOP-UP CONTAINER - NORMAL VIEWPORT (NOT FULL WIDTH)
+   ============================================================ */
+#viewDeposit,
+.deposit-view-wrapper {
+  width: 92% !important;
+  max-width: 1040px !important;
+  margin: 0 auto !important;
+  padding: 24px 16px 40px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 768px) {
+  #viewDeposit,
+  .deposit-view-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 16px 12px 30px !important;
+  }
+}
