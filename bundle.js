@@ -5625,11 +5625,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     function renderSingleCard(p, isSponsored = false) {
       const displaySold = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p).toLocaleString("vi-VN") : (p.buffSold || p.sold || 0);
       const totalStock = typeof getProductStockCount === "function" ? getProductStockCount(p) : (p.stock !== undefined ? p.stock : 0);
+      const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p));
 
       let stockHtml = '';
       let badgeWarningHtml = '';
+      let apiBadgeHtml = '';
 
-      if (totalStock === 0) {
+      if (isApi) {
+        apiBadgeHtml = '<span class="badge-api-corner" style="position:absolute; top:8px; right:8px; background:linear-gradient(135deg, #06b6d4, #0284c7); color:#fff; font-size:0.68rem; font-weight:800; padding:2px 8px; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.5); z-index:2; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-bolt"></i> Mua qua API</span>';
+        stockHtml = '<span style="color:#06b6d4; font-weight:700;"><i class="fa-solid fa-bolt"></i> Mua qua API (' + (totalStock > 0 ? (totalStock > 99 ? '99+' : totalStock) : 'Sẵn sàng') + ')</span>';
+      } else if (totalStock === 0) {
         stockHtml = '<span style="color:#ef4444; font-weight:700;"><i class="fa-solid fa-circle-xmark"></i> Hết hàng</span>';
         badgeWarningHtml = '<span style="position:absolute; top:8px; left:8px; background:#ef4444; color:#fff; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.5); z-index:2;"><i class="fa-solid fa-ban"></i> Hết hàng</span>';
       } else if (totalStock < 5) {
@@ -5653,6 +5658,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       return '<div class="product-card" onclick="openProductDetailById(\'' + p.id + '\')">' +
         '<div class="product-img-wrap" style="position:relative;">' +
           badgeWarningHtml +
+          apiBadgeHtml +
           '<img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" loading="lazy" />' +
         '</div>' +
         '<div class="product-body">' +
@@ -7445,7 +7451,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       }
 
       if (btnBuy) {
-        if (effectiveStock > 0) {
+        const isApiNow = (curP && (curP.deliveryType === "api" || curP.delivery_type === "api")) || (typeof isProductApi === "function" && isProductApi(curP));
+        if (isApiNow) {
+          btnBuy.disabled = false;
+          btnBuy.classList.remove("btn-pre-order");
+          btnBuy.innerHTML = '<i class="fa-solid fa-bolt"></i> MUA NGAY QUA API';
+          btnBuy.style.background = "linear-gradient(135deg, #06b6d4, #0284c7)";
+          btnBuy.style.color = "#fff";
+          btnBuy.style.opacity = "1";
+          btnBuy.style.cursor = "pointer";
+          btnBuy.style.boxShadow = "0 4px 15px rgba(6,182,212,0.4)";
+          btnBuy.onclick = function() {
+            if (typeof executeBuyCurrentProduct === "function") executeBuyCurrentProduct();
+            else if (typeof handleDirectBuyProduct === "function") handleDirectBuyProduct();
+          };
+        } else if (effectiveStock > 0) {
           btnBuy.disabled = false;
           btnBuy.classList.remove("btn-pre-order");
           btnBuy.innerHTML = '<i class="fa-solid fa-bolt"></i> MUA NGAY';
@@ -7456,20 +7476,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           btnBuy.style.boxShadow = "0 4px 15px rgba(16,185,129,0.35)";
           btnBuy.onclick = function() {
             if (typeof executeBuyCurrentProduct === "function") executeBuyCurrentProduct();
-            else if (typeof handleDetailBuyAction === "function") handleDetailBuyAction();
+            else if (typeof handleDirectBuyProduct === "function") handleDirectBuyProduct();
           };
         } else {
           btnBuy.disabled = false;
           btnBuy.classList.add("btn-pre-order");
-          btnBuy.innerHTML = '<i class="fa-solid fa-calendar-check"></i> ĐẶT TRƯỚC';
+          btnBuy.innerHTML = '<i class="fa-solid fa-clock"></i> ĐẶT TRƯỚC';
           btnBuy.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
-          btnBuy.style.color = "#000";
-          btnBuy.style.fontWeight = "800";
+          btnBuy.style.color = "#fff";
           btnBuy.style.opacity = "1";
           btnBuy.style.cursor = "pointer";
           btnBuy.style.boxShadow = "0 4px 15px rgba(245,158,11,0.35)";
           btnBuy.onclick = function() {
-            if (typeof openPreOrderModal === "function") openPreOrderModal();
+            if (typeof openPreOrderModal === "function") openPreOrderModal(curP, curVIdx);
           };
         }
       }
@@ -11756,7 +11775,33 @@ function syncAllOpenViewsStock(changedProdId) {
       }
       const dtlDeliveryType = document.getElementById("dtlDeliveryType") || document.querySelector(".dtl-delivery-type");
       if (dtlDeliveryType) {
-        dtlDeliveryType.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-bolt"></i> Tự động</span>';
+        if (isProdApi) {
+          const provName = (apiMapInfo && apiMapInfo.provider) ? apiMapInfo.provider : "On-Demand";
+          dtlDeliveryType.innerHTML = '<span style="color:#06b6d4; font-weight:800; background:rgba(6,182,212,0.15); padding:3px 10px; border-radius:6px; border:1px solid rgba(6,182,212,0.35); display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-bolt"></i> Mua qua API tự động</span>';
+        } else {
+          dtlDeliveryType.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-box"></i> Kho nội bộ</span>';
+        }
+      }
+
+      // Huy hiệu Mua qua API nổi bật ngay dưới giá
+      let apiBadgeEl = document.getElementById("dtlApiSourceBadge");
+      if (!apiBadgeEl) {
+        const priceRow = document.querySelector(".detail-price-row");
+        if (priceRow) {
+          apiBadgeEl = document.createElement("div");
+          apiBadgeEl.id = "dtlApiSourceBadge";
+          apiBadgeEl.style.cssText = "margin-top:6px; margin-bottom:10px;";
+          priceRow.parentNode.insertBefore(apiBadgeEl, priceRow.nextSibling);
+        }
+      }
+      if (apiBadgeEl) {
+        if (isProdApi) {
+          const provName = (apiMapInfo && apiMapInfo.provider) ? apiMapInfo.provider : "Tự Động 24/7";
+          apiBadgeEl.style.display = "inline-flex";
+          apiBadgeEl.innerHTML = '<span style="background:rgba(6,182,212,0.12); color:#06b6d4; border:1px solid rgba(6,182,212,0.35); padding:4px 10px; border-radius:6px; font-size:0.78rem; font-weight:700; display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-bolt"></i> SẢN PHẨM MUA QUA API TỰ ĐỘNG (' + provName.toUpperCase() + ') - GIAO TỨC THÌ 24/7</span>';
+        } else {
+          apiBadgeEl.style.display = "none";
+        }
       }
 
       const dtlStock = document.getElementById("dtlStock");

@@ -4122,3 +4122,213 @@ html, body { overflow-x: clip !important; max-width: 100vw !important; }
   .detail-col-left { display: none !important; }
   .detail-container-3col { grid-template-columns: 1fr !important; }
 }
+
+/* ==========================================================================
+   CHẾ ĐỘ MOBILE ĐỈNH CAO: KHÔNG CHỒNG CHÉO, ẨN CHỮ HEADER, CHI TIẾT SẢN PHẨM 1 CỘT DỌC
+   ========================================================================== */
+.logo .logo-text,
+#headerSiteName,
+.header-site-name {
+  display: none !important;
+}
+.logo {
+  display: inline-flex !important;
+  align-items: center !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+}
+.logo-img {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  display: block !important;
+}
+
+@media (max-width: 850px) {
+  #viewProductDetail {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 10px 12px 100px 12px !important;
+    box-sizing: border-box !important;
+  }
+  .detail-container-3col {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    margin: 0 !important;
+    gap: 12px !important;
+  }
+  .detail-col-left,
+  .detail-col-right {
+    display: none !important;
+  }
+  .detail-col-center {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .detail-card-center {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    padding: 14px !important;
+    gap: 16px !important;
+    box-sizing: border-box !important;
+    border-radius: 12px !important;
+  }
+  .detail-img-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: #080d1a !important;
+    border-radius: 10px !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+  }
+  .detail-img-box img {
+    width: 100% !important;
+    max-width: 280px !important;
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+    object-fit: contain !important;
+    margin: 0 auto !important;
+    border-radius: 8px !important;
+  }
+  .detail-info-col {
+    width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .detail-title {
+    font-size: 1.2rem !important;
+    line-height: 1.4 !important;
+    margin-bottom: 8px !important;
+    word-break: break-word !important;
+  }
+  .detail-meta-rating-row {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-bottom: 10px !important;
+    font-size: 0.78rem !important;
+  }
+  .detail-seller-box {
+    padding: 8px 12px !important;
+    margin-bottom: 12px !important;
+  }
+  .detail-price-row {
+    margin-bottom: 8px !important;
+  }
+  .detail-big-price {
+    font-size: 1.5rem !important;
+  }
+  .detail-specs-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    width: 100% !important;
+    margin-bottom: 12px !important;
+  }
+  .spec-item {
+    min-width: 0 !important;
+    padding: 8px 10px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+  .spec-label {
+    font-size: 0.72rem !important;
+    display: block !important;
+    margin-bottom: 2px !important;
+  }
+  .spec-val {
+    font-size: 0.78rem !important;
+    word-break: break-word !important;
+    white-space: normal !important;
+  }
+  .detail-warranty-alert {
+    padding: 10px 12px !important;
+    font-size: 0.78rem !important;
+    margin-bottom: 12px !important;
+    line-height: 1.4 !important;
+  }
+  .variant-section {
+    margin-bottom: 14px !important;
+    width: 100% !important;
+  }
+  .variant-pills-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  .variant-pill-option {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 10px 12px !important;
+    font-size: 0.82rem !important;
+  }
+  .detail-action-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+    width: 100% !important;
+    margin-bottom: 14px !important;
+  }
+  .detail-action-row .qty-counter {
+    width: 100% !important;
+    justify-content: center !important;
+    height: 42px !important;
+  }
+  .detail-action-row .coupon-box-wrap {
+    width: 100% !important;
+    height: 42px !important;
+  }
+  .detail-action-row .coupon-box-wrap input {
+    height: 42px !important;
+    font-size: 0.82rem !important;
+  }
+  .detail-action-row .coupon-apply-btn {
+    height: 42px !important;
+    padding: 0 16px !important;
+    font-size: 0.78rem !important;
+  }
+  .detail-action-row .btn-big-buy {
+    width: 100% !important;
+    height: 48px !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    border-radius: 8px !important;
+  }
+  .detail-tabs-nav {
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  .detail-tab-btn {
+    white-space: nowrap !important;
+    padding: 8px 14px !important;
+    font-size: 0.8rem !important;
+  }
+  .detail-tab-content {
+    padding: 14px !important;
+    font-size: 0.85rem !important;
+    line-height: 1.6 !important;
+    border-radius: 12px !important;
+  }
+  .chat-widget-btn,
+  #chatFloatingBtn,
+  .mmo-chat-trigger {
+    bottom: 75px !important;
+    right: 14px !important;
+    width: 48px !important;
+    height: 48px !important;
+    z-index: 99 !important;
+  }
+}
