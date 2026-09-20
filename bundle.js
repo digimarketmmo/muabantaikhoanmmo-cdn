@@ -12027,6 +12027,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       // Mặc định hiển thị tab Chi Tiết Sản Phẩm khi mở
       switchProductDescTab("desc");
+      if (typeof renderProductApiIntegration === "function") renderProductApiIntegration();
       switchView("viewProductDetail");
       if (typeof renderDetailRelatedProducts === "function") renderDetailRelatedProducts(p);
       if (typeof renderBestSellers === "function") renderBestSellers();
@@ -12275,16 +12276,19 @@ function syncAllOpenViewsStock(changedProdId) {
       const secDesc = document.getElementById("dtlTabSecDesc");
       const secGuide = document.getElementById("dtlTabSecGuide");
       const secReviews = document.getElementById("dtlTabSecReviews");
+      const secApi = document.getElementById("dtlTabSecApi");
 
       if (secDesc) secDesc.style.display = (tabKey === "desc") ? "block" : "none";
       if (secGuide) secGuide.style.display = (tabKey === "guide") ? "block" : "none";
       if (secReviews) secReviews.style.display = (tabKey === "reviews") ? "block" : "none";
+      if (secApi) secApi.style.display = (tabKey === "api") ? "block" : "none";
 
       const btnDesc = document.getElementById("dtlTabBtnDesc");
       const btnGuide = document.getElementById("dtlTabBtnGuide");
       const btnReviews = document.getElementById("dtlTabBtnReviews");
+      const btnApi = document.getElementById("dtlTabBtnApi");
 
-      [btnDesc, btnGuide, btnReviews].forEach(b => {
+      [btnDesc, btnGuide, btnReviews, btnApi].forEach(b => {
         if (b) b.classList.remove("active");
       });
 
@@ -12294,10 +12298,13 @@ function syncAllOpenViewsStock(changedProdId) {
         if (tabKey === "desc" && btnDesc) btnDesc.classList.add("active");
         if (tabKey === "guide" && btnGuide) btnGuide.classList.add("active");
         if (tabKey === "reviews" && btnReviews) btnReviews.classList.add("active");
+        if (tabKey === "api" && btnApi) btnApi.classList.add("active");
       }
 
       if (tabKey === "reviews") {
         renderProductReviews();
+      } else if (tabKey === "api") {
+        if (typeof renderProductApiIntegration === "function") renderProductApiIntegration();
       }
     }
     window.switchProductDescTab = switchProductDescTab;
@@ -22745,3 +22752,91 @@ async function confirmRefundOrder() {
       }
     }
     window.updateVariantSelectForProduct = updateVariantSelectForProduct;
+
+    // =========================================================================
+    // TÍCH HỢP API & TÀI LIỆU API MUA HÀNG CHO KHÁCH & ĐỐI TÁC RESELLER
+    // =========================================================================
+    function renderProductApiIntegration() {
+      const p = currentSelectedProduct;
+      if (!p) return;
+      const codeEl = document.getElementById("dtlApiProdCode");
+      if (codeEl) codeEl.innerText = p.id || "";
+      const curVIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+      
+      const jsonPayloadEl = document.getElementById("dtlApiJsonPayload");
+      if (jsonPayloadEl) {
+        jsonPayloadEl.innerText = JSON.stringify({
+          apiKey: "YOUR_API_KEY",
+          productId: p.id || "PROD_ID",
+          variantIndex: curVIdx,
+          quantity: 1
+        }, null, 2);
+      }
+
+      const curlEl = document.getElementById("dtlApiCurlCode");
+      if (curlEl) {
+        curlEl.innerText = 'curl -X POST "https://mmo-shop-api.manhdongvtc.workers.dev/api/orders/checkout" \\\n  -H "Content-Type: application/json" \\\n  -d \'{"apiKey":"YOUR_API_KEY","productId":"' + (p.id || 'PROD_ID') + '","variantIndex":' + curVIdx + ',"quantity":1}\'';
+      }
+    }
+    window.renderProductApiIntegration = renderProductApiIntegration;
+
+    function copyApiCode(elementId, btn) {
+      const el = document.getElementById(elementId);
+      if (!el) return;
+      const text = el.innerText || el.textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function() {
+          if (typeof showToast === "function") showToast("✅ Đã sao chép mã thành công!", "success");
+          if (btn) {
+            const oldHtml = btn.innerHTML;
+            btn.innerHTML = "<i class='fa-solid fa-check'></i> Đã chép";
+            setTimeout(function() { btn.innerHTML = oldHtml; }, 2000);
+          }
+        }).catch(function() {
+          fallbackCopyText(text, btn);
+        });
+      } else {
+        fallbackCopyText(text, btn);
+      }
+    }
+    window.copyApiCode = copyApiCode;
+
+    function fallbackCopyText(text, btn) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand("copy");
+        if (typeof showToast === "function") showToast("✅ Đã sao chép thành công!", "success");
+        if (btn) {
+          const oldHtml = btn.innerHTML;
+          btn.innerHTML = "<i class='fa-solid fa-check'></i> Đã chép";
+          setTimeout(function() { btn.innerHTML = oldHtml; }, 2000);
+        }
+      } catch(e) {
+        if (typeof showToast === "function") showToast("⚠️ Vui lòng bôi đen và bấm Ctrl+C để sao chép.", "warning");
+      }
+      document.body.removeChild(ta);
+    }
+
+    function openApiDocsModal() {
+      const modal = document.getElementById("apiDocsModal");
+      if (modal) {
+        modal.style.display = "flex";
+        modal.style.zIndex = "9999999";
+        document.body.style.overflow = "hidden";
+      }
+    }
+    window.openApiDocsModal = openApiDocsModal;
+
+    function closeApiDocsModal() {
+      const modal = document.getElementById("apiDocsModal");
+      if (modal) {
+        modal.style.display = "none";
+        document.body.style.overflow = "";
+      }
+    }
+    window.closeApiDocsModal = closeApiDocsModal;
