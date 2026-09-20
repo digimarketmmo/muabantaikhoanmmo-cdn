@@ -25815,7 +25815,7 @@ window.copyAiField = copyAiField;
 window.copyAllSeoFields = copyAllSeoFields;
 
 // =========================================================================
-// TÍCH HỢP API & TÀI LIỆU API MUA HÀNG (v2.1.5)
+// TÍCH HỢP API & TÀI LIỆU API MUA HÀNG & THÔNG BÁO TOÀN DIỆN (v2.1.6)
 // =========================================================================
 function openApiDocsModal() {
   var modal = document.getElementById("apiDocsModal");
@@ -25886,6 +25886,242 @@ function renderProductApiIntegration() {
 }
 window.renderProductApiIntegration = renderProductApiIntegration;
 
+// =========================================================================
+// ĐỘNG CƠ THỐNG KÊ & TỔNG HỢP TOÀN BỘ THÔNG BÁO CHO CHUÔNG THÔNG BÁO (v2.1.6)
+// =========================================================================
+function getStoredNotifications(userEmail) {
+  var notifs = [];
+  var seenIds = {};
+
+  function addNotifItem(item) {
+    if (!item || !item.id || seenIds[item.id]) return;
+    seenIds[item.id] = true;
+    notifs.push(item);
+  }
+
+  try {
+    // 1. Lấy thông báo lưu thủ công trong localStorage
+    var email = userEmail || (typeof currentUser !== "undefined" && currentUser && currentUser.email ? currentUser.email : "guest");
+    var key = "mmo_notifications_" + String(email).toLowerCase().trim().replace(/[^a-z0-9_]/gi, "_");
+    var raw = localStorage.getItem(key);
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        parsed.forEach(function(n) { addNotifItem(n); });
+      }
+    }
+  } catch(e) {}
+
+  try {
+    // 2. Tự động tổng hợp từ Lịch Sử Đơn Hàng Mua (mmo_orders / mmo_user_orders)
+    var ordersRaw = localStorage.getItem("mmo_user_orders") || localStorage.getItem("mmo_orders");
+    if (ordersRaw) {
+      var orders = JSON.parse(ordersRaw);
+      if (Array.isArray(orders)) {
+        orders.slice(0, 15).forEach(function(o) {
+          var oid = o.id || o.orderId || "";
+          var pName = o.productName || o.productTitle || (o.items && o.items[0] && o.items[0].name) || "Sản phẩm";
+          var q = o.quantity || 1;
+          var totalVnd = (typeof formatVND === "function") ? formatVND(o.total || o.finalTotal || 0) : (o.total || 0).toLocaleString("vi-VN") + " đ";
+          var isPre = !!(o.isPreOrder || o.type === "PRE_ORDER" || String(oid).startsWith("POD_"));
+          addNotifItem({
+            id: "ORD_NOTIF_" + oid,
+            title: isPre ? ("Đơn đặt trước #" + oid) : ("Đơn hàng #" + oid + " thành công"),
+            message: "Mua " + pName + " (x" + q + ") - " + totalVnd + (isPre ? (" - Trạng thái: " + (o.status || "Đang xử lý")) : " - Đã giao tài khoản"),
+            type: isPre ? "PRE_ORDER" : "ORDER",
+            orderId: oid,
+            read: true,
+            time: o.date || o.createdAt || (new Date().toLocaleDateString("vi-VN")),
+            timestamp: o.timestamp || Date.now()
+          });
+        });
+      }
+    }
+  } catch(e) {}
+
+  try {
+    // 3. Tự động tổng hợp từ Đơn Đặt Trước (mmo_pre_orders)
+    var preOrdersRaw = localStorage.getItem("mmo_pre_orders");
+    if (preOrdersRaw) {
+      var preOrders = JSON.parse(preOrdersRaw);
+      if (Array.isArray(preOrders)) {
+        preOrders.slice(0, 10).forEach(function(po) {
+          var poid = po.id || po.orderId || "";
+          var st = po.status || "WAITING_CONFIRM";
+          var stLabel = (st === "PROCESSING") ? "Đang gom hàng" : (st === "COMPLETED" ? "Đã giao hàng" : (st === "CANCELLED" ? "Đã hủy & Hoàn tiền" : "Chờ xác nhận"));
+          addNotifItem({
+            id: "POD_NOTIF_" + poid + "_" + st,
+            title: "Cập nhật đặt trước #" + poid,
+            message: (po.productName || "Sản phẩm") + " - Trạng thái hiện tại: [" + stLabel + "]",
+            type: "PRE_ORDER",
+            orderId: poid,
+            read: (st === "COMPLETED" || st === "CANCELLED"),
+            time: po.date || po.createdAt || (new Date().toLocaleDateString("vi-VN")),
+            timestamp: po.timestamp || Date.now()
+          });
+        });
+      }
+    }
+  } catch(e) {}
+
+  try {
+    // 4. Tự động tổng hợp từ Biến Động Số Dư (mmo_balance_logs)
+    var logsRaw = localStorage.getItem("mmo_balance_logs");
+    if (logsRaw) {
+      var logs = JSON.parse(logsRaw);
+      if (Array.isArray(logs)) {
+        logs.slice(0, 8).forEach(function(lg, idx) {
+          var amt = Number(lg.amount || lg.diff || 0);
+          var sign = amt > 0 ? "+" : "";
+          var amtStr = sign + ((typeof formatVND === "function") ? formatVND(amt) : amt.toLocaleString("vi-VN") + " đ");
+          addNotifItem({
+            id: "BAL_NOTIF_" + (lg.id || idx),
+            title: "Biến động số dư: " + amtStr,
+            message: lg.reason || lg.description || lg.type || "Giao dịch ví thành công",
+            type: "DEPOSIT",
+            read: true,
+            time: lg.time || lg.date || (new Date().toLocaleDateString("vi-VN")),
+            timestamp: lg.timestamp || Date.now()
+          });
+        });
+      }
+    }
+  } catch(e) {}
+
+  // 5. Luôn bổ sung các thông báo hệ thống và chính sách quan trọng
+  var systemDefaults = [
+    {
+      id: "SYS_NOTIF_WELCOME",
+      title: "Chào mừng bạn đến với MUABANTAIKHOANMMO",
+      message: "Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook uy tín số 1. Giao dịch tự động 24/7 tức thì.",
+      type: "INFO",
+      read: true,
+      time: "Hệ thống",
+      timestamp: 1
+    },
+    {
+      id: "SYS_NOTIF_SECURITY",
+      title: "Khuyến cáo bảo mật tài khoản",
+      message: "Sau khi nhận bàn giao, quý khách vui lòng đổi mật khẩu và cập nhật email khôi phục ngay để bảo vệ tài khoản.",
+      type: "WARRANTY",
+      read: true,
+      time: "Hệ thống",
+      timestamp: 2
+    },
+    {
+      id: "SYS_NOTIF_DEPOSIT",
+      title: "Nạp tiền tự động SePay 24/7",
+      message: "Hỗ trợ nạp tiền qua quét mã QR ngân hàng. Tiền tự động cộng vào ví trong vòng 10-30 giây.",
+      type: "DEPOSIT",
+      read: true,
+      time: "Hệ thống",
+      timestamp: 3
+    },
+    {
+      id: "SYS_NOTIF_WARRANTY",
+      title: "Chính sách bảo hành 1-đổi-1",
+      message: "Bảo hành 1 đổi 1 ngay lập tức nếu tài khoản có lỗi đăng nhập lần đầu. Hỗ trợ kỹ thuật 24/7 qua Zalo/Telegram.",
+      type: "WARRANTY",
+      read: true,
+      time: "Hệ thống",
+      timestamp: 4
+    }
+  ];
+
+  systemDefaults.forEach(function(sd) { addNotifItem(sd); });
+
+  // Sắp xếp thông báo mới nhất lên đầu
+  notifs.sort(function(a, b) {
+    return (b.timestamp || 0) - (a.timestamp || 0);
+  });
+
+  return notifs;
+}
+window.getStoredNotifications = getStoredNotifications;
+
+function renderHeaderNotifications() {
+  try {
+    var notifs = getStoredNotifications();
+    var unreadCount = notifs.filter(function(n) { return !n.read; }).length;
+
+    var badge = document.getElementById("headerNotifBadge");
+    if (badge) {
+      if (unreadCount > 0) {
+        badge.innerText = unreadCount > 99 ? "99+" : unreadCount;
+        badge.style.display = "inline-flex";
+      } else {
+        badge.style.display = "none";
+      }
+    }
+
+    var listContainer = document.getElementById("headerNotifList");
+    if (!listContainer) return;
+
+    if (notifs.length === 0) {
+      listContainer.innerHTML = '<div style="padding:28px 16px; text-align:center; color:#64748b;">' +
+        '<i class="fa-regular fa-bell-slash" style="font-size:1.8rem; display:block; margin-bottom:8px; opacity:0.4;"></i>' +
+        '<div style="font-size:0.85rem; font-weight:600;">Bạn chưa có thông báo nào</div>' +
+      '</div>';
+      return;
+    }
+
+    listContainer.innerHTML = notifs.map(function(n) {
+      var icon = '<i class="fa-solid fa-bell" style="color:#38bdf8;"></i>';
+      var iconBg = 'rgba(56,189,248,0.12)';
+      if (n.type === 'PRE_ORDER') {
+        icon = '<i class="fa-solid fa-hourglass-half" style="color:#f59e0b;"></i>';
+        iconBg = 'rgba(245,158,11,0.15)';
+      } else if (n.type === 'ORDER') {
+        icon = '<i class="fa-solid fa-bag-shopping" style="color:#10b981;"></i>';
+        iconBg = 'rgba(16,185,129,0.15)';
+      } else if (n.type === 'DEPOSIT') {
+        icon = '<i class="fa-solid fa-wallet" style="color:#10b981;"></i>';
+        iconBg = 'rgba(16,185,129,0.15)';
+      } else if (n.type === 'WARRANTY') {
+        icon = '<i class="fa-solid fa-shield-halved" style="color:#ef4444;"></i>';
+        iconBg = 'rgba(239,68,68,0.15)';
+      }
+
+      var unreadDot = !n.read ? '<span style="width:8px; height:8px; border-radius:50%; background:#38bdf8; display:inline-block; flex-shrink:0;"></span>' : '';
+      var bgHover = !n.read ? 'background:#0f1a2e;' : 'background:transparent;';
+
+      return '<div onclick="handleNotificationItemClick(\'' + (n.id || '') + '\', \'' + (n.orderId || '') + '\', \'' + (n.type || '') + '\')" style="padding:10px 14px; border-bottom:1px solid #1e293b; display:flex; align-items:flex-start; gap:10px; cursor:pointer; transition:background 0.2s; ' + bgHover + '" onmouseover="this.style.background=\'#162238\'" onmouseout="this.style.background=\'' + (!n.read ? '#0f1a2e' : 'transparent') + '\'">' +
+        '<div style="width:32px; height:32px; border-radius:8px; background:' + iconBg + '; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">' + icon + '</div>' +
+        '<div style="flex:1; min-width:0;">' +
+          '<div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">' +
+            '<strong style="font-size:0.82rem; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + (n.title || '') + '</strong>' +
+            unreadDot +
+          '</div>' +
+          '<div style="font-size:0.75rem; color:#94a3b8; margin-top:2px; line-height:1.35;">' + (n.message || '') + '</div>' +
+          '<div style="font-size:0.68rem; color:#64748b; margin-top:4px;">' + (n.time || '') + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  } catch(e) {}
+}
+window.renderHeaderNotifications = renderHeaderNotifications;
+
+function handleNotificationItemClick(notifId, orderId, notifType) {
+  try {
+    toggleHeaderNotifDropdown(false);
+
+    if (notifType === "PRE_ORDER" && orderId) {
+      if (typeof openPreOrderDetailView === "function") openPreOrderDetailView(orderId);
+      else if (typeof goToMyOrders === "function") goToMyOrders();
+      else switchView("viewProfile");
+    } else if (notifType === "ORDER" || notifType === "WARRANTY") {
+      if (typeof goToMyOrders === "function") goToMyOrders();
+      else switchView("viewProfile");
+    } else if (notifType === "DEPOSIT") {
+      switchView("viewProfile");
+      if (typeof switchProfileTab === "function") switchProfileTab("history");
+    } else {
+      switchView("viewStore");
+    }
+  } catch(e) {}
+}
+window.handleNotificationItemClick = handleNotificationItemClick;
+
 function ensureUniversalComponentsExist(currentProd) {
   try {
     var tabsHeader = document.querySelector(".detail-tabs-header");
@@ -25915,7 +26151,7 @@ function ensureUniversalComponentsExist(currentProd) {
         "<div style='background:#070a13; border:1px solid #1e293b; border-radius:8px; padding:12px; margin-bottom:12px;'>" +
         "<div style='display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;'>" +
         "  <span style='font-size:0.8rem; color:#94a3b8;'>Mã sản phẩm (productId):</span>" +
-        "  <div style='display:flex; align-items:center; gap:6px;'> shelter" +
+        "  <div style='display:flex; align-items:center; gap:6px;'>" +
         "    <code id='dtlApiProdCode' style='color:#10b981; font-weight:800; font-size:0.85rem; background:rgba(0,0,0,0.5); padding:2px 8px; border-radius:4px; border:1px solid rgba(16,185,129,0.3);'>PROD_...</code>" +
         "    <button type='button' onclick='copyApiCode(\"dtlApiProdCode\", this)' style='background:#1e293b; color:#cbd5e1; border:none; padding:3px 8px; border-radius:4px; font-size:0.72rem; font-weight:600; cursor:pointer;'><i class='fa-regular fa-copy'></i> Chép</button>" +
         "  </div>" +
@@ -25930,23 +26166,23 @@ function ensureUniversalComponentsExist(currentProd) {
         "  <span style='font-size:0.78rem; font-weight:700; color:#cbd5e1;'><i class='fa-solid fa-paper-plane' style='color:#38bdf8;'></i> Request Body (JSON):</span>" +
         "  <button type='button' onclick='copyApiCode(\"dtlApiJsonPayload\", this)' style='background:none; border:none; color:#38bdf8; font-size:0.72rem; font-weight:700; cursor:pointer;'><i class='fa-regular fa-copy'></i> Sao chép JSON</button>" +
         "</div>" +
-        "<pre class='api-code-block' id='dtlApiJsonPayload'>{\n  \"apiKey\": \"YOUR_API_KEY\",\n  \"productId\": \"PROD_...\",\n  \"variantIndex\": 0,\n  \"quantity\": 1\n}</pre>" +
+        "<pre class='api-code-block' id='dtlApiJsonPayload'>{\n  &quot;apiKey&quot;: &quot;YOUR_API_KEY&quot;,\n  &quot;productId&quot;: &quot;PROD_...&quot;,\n  &quot;variantIndex&quot;: 0,\n  &quot;quantity&quot;: 1\n}</pre>" +
         "</div>" +
         "<div style='margin-bottom:12px;'>" +
         "<div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;'>" +
         "  <span style='font-size:0.78rem; font-weight:700; color:#cbd5e1;'><i class='fa-solid fa-terminal' style='color:#10b981;'></i> Lệnh cURL chạy thử:</span>" +
         "  <button type='button' onclick='copyApiCode(\"dtlApiCurlCode\", this)' style='background:none; border:none; color:#10b981; font-size:0.72rem; font-weight:700; cursor:pointer;'><i class='fa-regular fa-copy'></i> Sao chép cURL</button>" +
         "</div>" +
-        "<pre class='api-code-block' id='dtlApiCurlCode'>curl -X POST \"https://mmo-shop-api.manhdongvtc.workers.dev/api/orders/checkout\"</pre>" +
+        "<pre class='api-code-block' id='dtlApiCurlCode'>curl -X POST &quot;https://mmo-shop-api.manhdongvtc.workers.dev/api/orders/checkout&quot;</pre>" +
         "</div>" +
-        "<div style='font-size:0.78rem; color:#94a3b8; line-height:1.6; background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.2); border-radius:8px; padding:10px 12px;'> " +
+        "<div style='font-size:0.78rem; color:#94a3b8; line-height:1.6; background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.2); border-radius:8px; padding:10px 12px;'>" +
         "  <div><i class='fa-solid fa-circle-check' style='color:#10b981;'></i> <strong>Tự động 100%:</strong> Tài khoản trả về trực tiếp trong mảng <code>accounts</code> sau 1 giây.</div>" +
         "  <div style='margin-top:4px;'><i class='fa-solid fa-key' style='color:#f59e0b;'></i> <strong>Lấy API Key:</strong> Đăng nhập &gt; Trang cá nhân hoặc nạp tiền ví để nhận API Key.</div>" +
         "</div>";
       tabBody.appendChild(sec);
     }
 
-    // Clean up any duplicate footerApiDocsLink if present
+    // Clean up duplicate footerApiDocsLink if present in DOM
     var oldFooterLink = document.getElementById("footerApiDocsLink");
     if (oldFooterLink && oldFooterLink.parentElement) {
       oldFooterLink.parentElement.remove();
@@ -25963,8 +26199,14 @@ window.ensureUniversalComponentsExist = ensureUniversalComponentsExist;
 
 if (typeof document !== "undefined") {
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function() { ensureUniversalComponentsExist(); });
+    document.addEventListener("DOMContentLoaded", function() {
+      ensureUniversalComponentsExist();
+      renderHeaderNotifications();
+    });
   } else {
-    setTimeout(ensureUniversalComponentsExist, 100);
+    setTimeout(function() {
+      ensureUniversalComponentsExist();
+      renderHeaderNotifications();
+    }, 100);
   }
 }

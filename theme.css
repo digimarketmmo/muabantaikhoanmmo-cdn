@@ -4335,9 +4335,7 @@ div:has(> .admin-table) {
     gap: 4px !important;
     flex-shrink: 0 !important;
   }
-  .header-user-name {
-    display: none !important;
-  }
+  
   .mobile-menu-btn {
     width: 32px !important;
     height: 32px !important;
@@ -4359,5 +4357,42 @@ div:has(> .admin-table) {
   #viewProfile,
   #viewAdmin {
     padding-bottom: 85px !important;
+  }
+}
+
+/* ==========================================================================
+   HEADER LOGO COMPACT, FULL USER NAME & PRESERVED FOOTER BRAND (v2.1.6)
+   ========================================================================== */
+.header .logo .logo-text,
+.header .logo-text {
+  display: none !important;
+}
+
+.footer-col-1 .logo-text,
+footer .logo .logo-text,
+footer .logo-text {
+  display: block !important;
+}
+
+.header-user-name {
+  display: inline-block !important;
+  max-width: 140px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  vertical-align: middle !important;
+}
+
+@media (max-width: 600px) {
+  .header .logo .logo-text,
+  .header .logo-text {
+    display: none !important;
+  }
+  .header-user-name {
+    display: inline-block !important;
+    max-width: 105px !important;
   }
 }
