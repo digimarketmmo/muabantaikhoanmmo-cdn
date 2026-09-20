@@ -466,8 +466,41 @@
     @media (max-width: 900px) {
       body { padding-top: 60px !important; }
       .header { height: 60px !important; }
-      .home-main-layout { grid-template-columns: 1fr; }
-      .home-sidebar-left { display: none; }
+      .home-main-layout {
+        display: block !important;
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 0 20px 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+      }
+      .home-sidebar-left,
+      .home-sidebar-right {
+        display: none !important;
+      }
+      .home-main-center {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+      }
+      .all-products-layout {
+        display: block !important;
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        max-width: 100% !important;
+      }
+      .all-prod-sidebar {
+        display: none !important;
+      }
+      .all-prod-main {
+        width: 100% !important;
+        max-width: 100% !important;
+      }
     }
 
     /* CỐ ĐỊNH VÀ KÉO DÀI CÂN BẰNG 2 THANH BÊN (BALANCED FULL-HEIGHT SIDEBARS) - TRƯỢT MƯỢT KHÔNG KHOẢNG TRỐNG */
