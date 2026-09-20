@@ -4651,3 +4651,31 @@ footer .logo-text {
     padding-bottom: 80px !important;
   }
 }
+
+/* 3 NGUỒN 1 HÀNG TRÊN MÁY TÍNH - TỰ CO GIÃN THEO THIẾT BỊ */
+.api-sources-grid,
+#apiSourcesGridContainer {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 14px !important;
+  margin-bottom: 18px !important;
+}
+
+@media (max-width: 1150px) {
+  .api-sources-grid,
+  #apiSourcesGridContainer {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 700px) {
+  .api-sources-grid,
+  #apiSourcesGridContainer {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+#quickTestProdSelect {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
