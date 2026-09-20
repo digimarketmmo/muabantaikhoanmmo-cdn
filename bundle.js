@@ -1,3 +1,30 @@
+
+    // KHAI BÁO BIẾN TOÀN CỤC SẢN PHẨM NGUỒN AN TOÀN
+    var initialSourceProducts = [
+      {"id":"1","name":"72h  ( ID : 1  )","price":400,"amount":8885,"category":"Cho Thuê","provider":"shop1989nd"},{"id":"5","name":"24h  ( ID : 5  )","price":169,"amount":57478,"category":"Cho Thuê","provider":"shop1989nd"},{"id":"9","name":"12h  ramdom  ( ID : 9  )","price":100,"amount":37213,"category":"Cho Thuê","provider":"shop1989nd"},{"id":"13","name":"24h  ( ID : 13 )","price":169,"amount":12129,"category":"Cho Thuê","provider":"shop1989nd"},{"id":"25","name":"24h     ( ID : 25 )","price":169,"amount":7247,"category":"Cho Thuê","provider":"shop1989nd"},{"id":"2980","name":"7 ngày  ( ID : 2980 )","price":679,"amount":2961,"category":"Cho Thuê","provider":"shop1989nd"},{"id":"19524","name":"live 1h .us Vi ( ID : 19524)","price":56,"amount":127903,"category":"Cho Thuê","provider":"shop1989nd"},{"id":"19525","name":"live 24h  .us Vi ( ID : 19525 )","price":169,"amount":102054,"category":"Cho Thuê","provider":"shop1989nd"},{"id":"19077","name":"Outlook.fr Trusted Oauth2 - [Imap/Pop3] Live 12-36  Month","price":260,"amount":49086,"category":"Mail Trusted","provider":"shop1989nd"},{"id":"19080","name":"Outlook Trusted -  OAuth2 [IMAP/POP3]   Đã Thêm Mail Khôi Phục Smvmail.com Sống Vĩnh Viễn ( Zin 100% )","price":338,"amount":0,"category":"Mail Trusted","provider":"shop1989nd"},{"id":"19083","name":"Hotmail Trusted - OAuth2 [IMAP/POP3/GRAPH]  Đã Thêm Mail Khôi Phục fviainboxes.com Sống Vĩnh Viễn ( Zin 100% )","price":258.7,"amount":16383,"category":"Mail Trusted","provider":"shop1989nd"},{"id":"19084","name":"Outlook Trusted - OAuth2 [Graph] Live 12 - 36 Months ( Còn Skip 7 Ngày  )","price":188.5,"amount":38220,"category":"Mail Trusted","provider":"shop1989nd"},{"id":"19087","name":"Outlook Trusted 2025 - Oauth2 [ Graph ] Live 12-72 Month ( Outlook Sản Xuất Năm 2025 )","price":188.5,"amount":0,"category":"Mail Trusted","provider":"shop1989nd"},{"id":"19091","name":"Hotmail Trusted  - OAuth2  [ IMAP/POP3/GRAPH] Live 12-36 Months Zin 100% Còn Skip 7 Ngày","price":325,"amount":88249,"category":"Mail Trusted","provider":"shop1989nd"},{"id":"19092","name":"Hotmail Trusted  - OAuth2 [Graph]  Live 12 - 36 Months","price":201.5,"amount":39673,"category":"Mail Trusted","provider":"shop1989nd"},{"id":"19417","name":"Việt new reg app trắng thông tin","price":900,"amount":0,"category":"TikTok","provider":"shop1989nd"},{"id":"19418","name":"Việt qua folo nhẹ trên 2 tháng","price":1500,"amount":5678,"category":"TikTok","provider":"shop1989nd"},
+      {"id":"13840","name":"Hotmail Trusted - OAuth2 [Graph] Live [ID 13840]","price":110,"amount":10235,"category":"Hotmail","provider":"nguyenlieummo"},
+      {"id":"180","name":"10 Phút – 99 per [ ID 180 ]","price":48,"amount":999999,"category":"Hotmail","provider":"sellmmo"},
+      {"id":"712","name":"24h [ ID 712 ]","price":179,"amount":81995,"category":"Hotmail","provider":"sellmmo"},
+      {"id":"769","name":"2h-4h -No [ ID 769 ]","price":99,"amount":999999,"category":"Hotmail","provider":"sellmmo"},
+      {"id":"716","name":"7 D [ ID 716 ]","price":579,"amount":18917,"category":"Hotmail","provider":"sellmmo"},
+      {"id":"718","name":"14[ ID 718 ]","price":999,"amount":56633,"category":"Hotmail","provider":"sellmmo"},
+      {"id":"717","name":"30 ngày [ ID 717 ]","price":1799,"amount":41229,"category":"Hotmail","provider":"sellmmo"},
+      {"id":"17723","name":"GMAIL DOMAIN 1 NGÀY TÊN VIỆT","price":2200,"amount":200,"category":"Gmail","provider":"sellmmo"},
+      {"id":"119284","name":"TÀI KHOẢN KLING AI 65 CREDIT","price":15000,"amount":299,"category":"AI & Video","provider":"nguyenlieummo"}
+    ];
+
+    var cachedSourceProducts = (function() {
+      try {
+        const stored = localStorage.getItem("mmo_cached_source_products");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        }
+      } catch(e) {}
+      return initialSourceProducts;
+    })();
+    window.cachedSourceProducts = cachedSourceProducts;
+
 // GLOBAL CORE CONSTANTS
     var ITEMS_PER_PAGE = 10;
     window.ITEMS_PER_PAGE = 10;
@@ -2233,17 +2260,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       const pSel = document.getElementById("admProdApiProvider");
       const sSel = document.getElementById("admProdApiSourceSelect");
       if (!pSel || !sSel) return;
-      const provider = pSel.value || "sellmmo";
-      const prods = (typeof cachedSourceProducts !== "undefined") ? cachedSourceProducts : [];
+      const provider = pSel.value || "shop1989nd";
+      const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+        ? window.cachedSourceProducts
+        : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+      
       const filtered = prods.filter(s => !s.provider || s.provider === provider);
 
-      sSel.innerHTML = '<option value="">-- Chọn sản phẩm nguồn --</option>' + filtered.map(s => {
+      sSel.innerHTML = '<option value="">-- Chọn sản phẩm nguồn --</option>' + filtered.map(function(s) {
         return '<option value="' + s.id + '" data-price="' + s.price + '" data-stock="' + s.amount + '">' +
-          '[' + escapeHtml(s.category || provider) + '] ' + escapeHtml(s.name) + ' - ' + formatVND(s.price) + ' (Tồn: ' + (s.amount || 0).toLocaleString() + ')' +
+          '[' + (s.category || provider) + '] ' + s.name + ' - ' + (typeof formatVND === "function" ? formatVND(s.price) : s.price) + ' (Tồn: ' + (Number(s.amount) || 0).toLocaleString() + ')' +
         '</option>';
-      }).join("");
-
-      handleAdmModalSourceChange();
+      }).join('');
     }
     window.handleAdmModalProviderChange = handleAdmModalProviderChange;
 
@@ -8116,74 +8144,88 @@ function syncAllOpenViewsStock(changedProdId) {
 
     async function fetchApiSourceProducts(isManual = false) {
       try {
-        if (typeof callGasApi === "function") {
-          const [resSelltainguyenmmo, resSellmmo, resNguyenLieu] = await Promise.allSettled([
-            executeSourceApiCall("getProducts", { provider: "selltainguyenmmo", baseUrl: API_SOURCES.selltainguyenmmo.baseUrl, apiKey: API_SOURCES.selltainguyenmmo.apiKey }),
-            executeSourceApiCall("getProducts", { provider: "sellmmo", baseUrl: API_SOURCES.sellmmo.baseUrl, apiKey: API_SOURCES.sellmmo.apiKey }),
-            executeSourceApiCall("getProducts", { provider: "nguyenlieummo", baseUrl: API_SOURCES.nguyenlieummo.baseUrl, apiKey: API_SOURCES.nguyenlieummo.apiKey })
-          ]);
+        const [resShop1989, resSelltainguyenmmo, resSellmmo, resNguyenLieu] = await Promise.allSettled([
+          executeSourceApiCall("getProducts", { provider: "shop1989nd", baseUrl: API_SOURCES.shop1989nd.baseUrl, username: API_SOURCES.shop1989nd.username, password: API_SOURCES.shop1989nd.password }),
+          executeSourceApiCall("getProducts", { provider: "selltainguyenmmo", baseUrl: API_SOURCES.selltainguyenmmo.baseUrl, apiKey: API_SOURCES.selltainguyenmmo.apiKey }),
+          executeSourceApiCall("getProducts", { provider: "sellmmo", baseUrl: API_SOURCES.sellmmo.baseUrl, apiKey: API_SOURCES.sellmmo.apiKey }),
+          executeSourceApiCall("getProducts", { provider: "nguyenlieummo", baseUrl: API_SOURCES.nguyenlieummo.baseUrl, apiKey: API_SOURCES.nguyenlieummo.apiKey })
+        ]);
 
-          let freshProducts = [];
-          if (resSelltainguyenmmo.status === "fulfilled" && resSelltainguyenmmo.value && resSelltainguyenmmo.value.success && Array.isArray(resSelltainguyenmmo.value.categories)) {
-            resSelltainguyenmmo.value.categories.forEach(function(cat) {
-              (cat.products || []).forEach(function(p) {
-                freshProducts.push({
-                  id: String(p.id),
-                  name: p.name,
-                  price: Number(p.price) || 0,
-                  amount: Number(p.amount) || 0,
-                  category: cat.name,
-                  provider: "sellmmo"
-                });
+        let freshProducts = [];
+
+        // shop1989nd
+        if (resShop1989.status === "fulfilled" && resShop1989.value && resShop1989.value.success && Array.isArray(resShop1989.value.categories)) {
+          resShop1989.value.categories.forEach(function(cat) {
+            (cat.products || cat.accounts || []).forEach(function(p) {
+              freshProducts.push({
+                id: String(p.id),
+                name: p.name,
+                price: Number(p.price) || 0,
+                amount: Number(p.amount || p.accounts) || 0,
+                category: cat.name,
+                provider: "shop1989nd"
               });
             });
-          }
+          });
+        }
 
-          if (resSellmmo.status === "fulfilled" && resSellmmo.value && resSellmmo.value.success && Array.isArray(resSellmmo.value.categories)) {
-            resSellmmo.value.categories.forEach(function(cat) {
-              (cat.products || []).forEach(function(p) {
-                freshProducts.push({
-                  id: String(p.id),
-                  name: p.name,
-                  price: Math.round(Number(p.price) || 0),
-                  amount: Number(p.amount) || 0,
-                  category: cat.name,
-                  provider: "sellmmo"
-                });
+        // selltainguyenmmo
+        if (resSelltainguyenmmo.status === "fulfilled" && resSelltainguyenmmo.value && resSelltainguyenmmo.value.success && Array.isArray(resSelltainguyenmmo.value.categories)) {
+          resSelltainguyenmmo.value.categories.forEach(function(cat) {
+            (cat.products || []).forEach(function(p) {
+              freshProducts.push({
+                id: String(p.id),
+                name: p.name,
+                price: Number(p.price) || 0,
+                amount: Number(p.amount) || 0,
+                category: cat.name,
+                provider: "selltainguyenmmo"
               });
             });
-          }
+          });
+        }
 
-          if (resNguyenLieu && resNguyenLieu.status === "fulfilled" && resNguyenLieu.value && resNguyenLieu.value.success && Array.isArray(resNguyenLieu.value.categories)) {
-            resNguyenLieu.value.categories.forEach(function(cat) {
-              (cat.products || []).forEach(function(p) {
-                freshProducts.push({
-                  id: String(p.id),
-                  name: p.name,
-                  price: Math.round(Number(p.price) || 0),
-                  amount: Number(p.amount) || 0,
-                  category: cat.name,
-                  provider: "nguyenlieummo"
-                });
+        // sellmmo
+        if (resSellmmo.status === "fulfilled" && resSellmmo.value && resSellmmo.value.success && Array.isArray(resSellmmo.value.categories)) {
+          resSellmmo.value.categories.forEach(function(cat) {
+            (cat.products || []).forEach(function(p) {
+              freshProducts.push({
+                id: String(p.id),
+                name: p.name,
+                price: Math.round(Number(p.price) || 0),
+                amount: Number(p.amount) || 0,
+                category: cat.name,
+                provider: "sellmmo"
               });
             });
-          }
+          });
+        }
 
-          if (freshProducts.length > 0) {
-            cachedSourceProducts = freshProducts;
-            try { localStorage.setItem("mmo_cached_source_products", JSON.stringify(freshProducts)); } catch(e) {}
-          }
+        // nguyenlieummo
+        if (resNguyenLieu.status === "fulfilled" && resNguyenLieu.value && resNguyenLieu.value.success && Array.isArray(resNguyenLieu.value.categories)) {
+          resNguyenLieu.value.categories.forEach(function(cat) {
+            (cat.products || []).forEach(function(p) {
+              freshProducts.push({
+                id: String(p.id),
+                name: p.name,
+                price: Math.round(Number(p.price) || 0),
+                amount: Number(p.amount) || 0,
+                category: cat.name,
+                provider: "nguyenlieummo"
+              });
+            });
+          });
+        }
+
+        if (freshProducts.length > 0) {
+          window.cachedSourceProducts = freshProducts;
+          cachedSourceProducts = freshProducts;
+          try { localStorage.setItem("mmo_cached_source_products", JSON.stringify(freshProducts)); } catch(e) {}
+          if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+          if (typeof handleAdmModalProviderChange === "function") handleAdmModalProviderChange();
         }
       } catch(e) {
         console.warn("fetchApiSourceProducts error:", e);
-      }
-
-      renderApiProductMappingsTable();
-      populateQuickTestSelect();
-      syncAllProductsStockFromSource(false);
-
-      if (isManual && typeof showToast === "function") {
-        showToast("Đã nạp " + cachedSourceProducts.length + " sản phẩm từ cả 3 nguồn (sellmmo, nguyenlieummo & selltainguyenmmo)!", "success");
       }
     }
     window.fetchApiSourceProducts = fetchApiSourceProducts;
@@ -8194,8 +8236,19 @@ function syncAllOpenViewsStock(changedProdId) {
       const tbody = document.getElementById("apiProductMappingsTableBody");
       if (!tbody) return;
 
-      const prods = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products : [];
-      const mappings = getApiProductMappings();
+      let prods = [];
+      if (typeof getVisibleProducts === "function") {
+        prods = getVisibleProducts();
+      }
+      if ((!prods || prods.length === 0) && MOCK_DATA && Array.isArray(MOCK_DATA.products)) {
+        prods = MOCK_DATA.products;
+      }
+      if (!Array.isArray(prods)) prods = [];
+
+      const mappings = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+      const sourceProds = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+        ? window.cachedSourceProducts
+        : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
 
       if (prods.length === 0) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#64748b;">Chưa có sản phẩm nào trên website.</td></tr>';
@@ -8208,9 +8261,12 @@ function syncAllOpenViewsStock(changedProdId) {
       let filteredProds = prods;
       const searchInput = document.getElementById("apiMappingsSearchInput");
       if (searchInput && searchInput.value.trim()) {
-        const q = normApiText(searchInput.value);
+        const q = (typeof normApiText === "function") ? normApiText(searchInput.value) : searchInput.value.toLowerCase().trim();
         filteredProds = prods.filter(function(p) {
-          return normApiText(p.name).includes(q) || normApiText(p.id).includes(q) || normApiText(p.category).includes(q);
+          const n = (p && p.name) ? p.name.toLowerCase() : "";
+          const id = (p && p.id) ? p.id.toLowerCase() : "";
+          const cat = (p && p.category) ? p.category.toLowerCase() : "";
+          return n.includes(q) || id.includes(q) || cat.includes(q);
         });
       }
 
@@ -8233,13 +8289,15 @@ function syncAllOpenViewsStock(changedProdId) {
       const pageProds = filteredProds.slice(startIndex, startIndex + PAGE_SIZE);
 
       tbody.innerHTML = pageProds.map(function(p) {
-        const map = mappings[p.id] || { enabled: false, provider: "sellmmo", sourceProdId: "" };
+        const map = mappings[p.id] || { enabled: false, provider: "shop1989nd", sourceProdId: "" };
         const isEnabled = !!map.enabled;
-        const curProvider = map.provider || "sellmmo";
+        const curProvider = map.provider || "shop1989nd";
 
-        // Dropdown Nguồn Hàng (Cột 2)
+        // Dropdown Nguồn Hàng (Cột 2) - ĐỦ 5 NGUỒN
         let providerSelectHtml = '<select id="mapProvider_' + p.id + '" onchange="handleProviderChange(\'' + p.id + '\')" style="width:100%; background:#0d121f; border:1px solid #1e293b; padding:6px 8px; border-radius:6px; color:#fff; font-size:0.78rem;">';
-        providerSelectHtml += '<option value="selltainguyenmmo">selltainguyenmmo.com</option>';
+        providerSelectHtml += '<option value="shop1989nd"' + (curProvider === 'shop1989nd' ? ' selected="selected"' : '') + '>shop1989nd.com</option>';
+        providerSelectHtml += '<option value="selltainguyenmmo"' + (curProvider === 'selltainguyenmmo' ? ' selected="selected"' : '') + '>selltainguyenmmo.com</option>';
+        providerSelectHtml += '<option value="mail72h"' + (curProvider === 'mail72h' ? ' selected="selected"' : '') + '>mail72h.com</option>';
         providerSelectHtml += '<option value="sellmmo"' + (curProvider === 'sellmmo' ? ' selected="selected"' : '') + '>sellmmo.vn</option>';
         providerSelectHtml += '<option value="nguyenlieummo"' + (curProvider === 'nguyenlieummo' ? ' selected="selected"' : '') + '>nguyenlieummo.com.vn</option>';
         providerSelectHtml += '</select>';
@@ -8248,61 +8306,84 @@ function syncAllOpenViewsStock(changedProdId) {
         let sourceStockDisplay = "--";
         let sourcePriceDisplay = "";
         if (map.sourceProdId) {
-          const src = cachedSourceProducts.find(s => String(s.id) === String(map.sourceProdId));
+          const src = sourceProds.find(s => String(s.id) === String(map.sourceProdId));
           if (src) {
-            sourceStockDisplay = '<span style="color:#10b981; font-weight:800;">' + src.amount.toLocaleString() + ' acc</span>';
-            sourcePriceDisplay = '<span style="font-size:0.75rem; color:#f59e0b;">(Giá nhập: ' + formatVND(src.price) + ')</span>';
+            sourceStockDisplay = '<span style="color:#10b981; font-weight:800;">' + (Number(src.amount) || 0).toLocaleString() + ' acc</span>';
+            sourcePriceDisplay = '<span style="font-size:0.75rem; color:#f59e0b;">(Giá nhập: ' + (typeof formatVND === "function" ? formatVND(src.price) : src.price) + ')</span>';
           }
         }
 
         let selectHtml = '<select id="mapSelect_' + p.id + '" onchange="handleMappingChange(\'' + p.id + '\')" style="width:100%; background:#0d121f; border:1px solid #1e293b; padding:6px 10px; border-radius:6px; color:#fff; font-size:0.78rem;">';
         selectHtml += '<option value="">-- Không liên kết (Bán từ kho thủ công) --</option>';
         
-        const filtered = cachedSourceProducts.filter(s => !s.provider || s.provider === curProvider);
+        const filtered = sourceProds.filter(s => !s.provider || s.provider === curProvider);
         filtered.forEach(function(src) {
           const isSelected = String(src.id) === String(map.sourceProdId) ? ' selected="selected"' : '';
+          const pName = (typeof escapeHtml === "function") ? escapeHtml(src.name) : src.name;
+          const pCat = (typeof escapeHtml === "function") ? escapeHtml(src.category || curProvider) : (src.category || curProvider);
+          const pPrice = (typeof formatVND === "function") ? formatVND(src.price) : src.price;
+          const pStock = (Number(src.amount) || 0).toLocaleString();
           selectHtml += '<option value="' + src.id + '" data-price="' + src.price + '" data-stock="' + src.amount + '" data-provider="' + (src.provider || curProvider) + '"' + isSelected + '>' +
-            '[' + escapeHtml(src.category || curProvider) + '] ' + escapeHtml(src.name) + ' - ' + formatVND(src.price) + ' (Tồn: ' + src.amount.toLocaleString() + ')' +
+            '[' + pCat + '] ' + pName + ' - ' + pPrice + ' (Tồn: ' + pStock + ')' +
           '</option>';
         });
         selectHtml += '</select>';
 
         return '<tr style="border-bottom:1px solid #162035;">' +
-          '' +
-          '<td>' +
+          '<td style="padding:10px 12px;">' +
             '<div style="display:flex; align-items:center; gap:8px;">' +
-              '<img src="' + (p.image || '') + '" style="width:32px; height:32px; border-radius:4px; object-fit:cover;" />' +
+              '<img src="' + (p.image || '') + '" style="width:32px; height:32px; border-radius:4px; object-fit:cover;" onerror="this.style.display=\'none\'" />' +
               '<div>' +
-                '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#fff; text-decoration:none;" onmouseover="this.style.color=\'#10b981\'" onmouseout="this.style.color=\'#fff\'" title="Mở xem chi tiết sản phẩm trong tab mới"><strong style="font-size:0.8rem;">' + escapeHtml(p.name) + '</strong> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem; color:#38bdf8;"></i></a><br/>' +
-                '<span style="font-size:0.72rem; color:#64748b; font-family:monospace;">' + p.id + ' | Giá bán: ' + formatVND(p.price) + '</span>' +
+                '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#fff; font-weight:700; text-decoration:none; font-size:0.82rem;">' + (typeof escapeHtml === "function" ? escapeHtml(p.name) : p.name) + '</a>' +
+                '<div style="font-size:0.72rem; color:#64748b;">Mã SP: ' + p.id + ' | Giá bán: ' + (typeof formatVND === "function" ? formatVND(p.price) : p.price) + '</div>' +
               '</div>' +
             '</div>' +
           '</td>' +
-          '' +
-          '<td>' + providerSelectHtml + '</td>' +
-          '' +
-          '<td>' + selectHtml + '<div id="mapPriceDisplay_' + p.id + '" style="margin-top:2px;">' + sourcePriceDisplay + '</div></td>' +
-          '' +
-          '<td style="text-align:center;">' +
-            '<label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:0.78rem;">' +
-              '<input type="checkbox" id="mapEnable_' + p.id + '" onchange="handleMappingToggle(\'' + p.id + '\')"' + (isEnabled ? ' checked="checked"' : '') + ' />' +
-              '<span id="mapEnableLabel_' + p.id + '" style="color:' + (isEnabled ? '#10b981' : '#64748b') + '; font-weight:700;">' + (isEnabled ? 'BẬT API' : 'TẮT') + '</span>' +
+          '<td style="padding:10px 12px; width:160px;">' + providerSelectHtml + '</td>' +
+          '<td style="padding:10px 12px; min-width:280px;">' + selectHtml + '</td>' +
+          '<td style="padding:10px 12px; text-align:center; width:110px;">' +
+            '<label class="switch" style="margin:0 auto;">' +
+              '<input type="checkbox" id="mapToggle_' + p.id + '" onchange="handleMappingToggle(\'' + p.id + '\')"' + (isEnabled ? ' checked="checked"' : '') + '>' +
+              '<span class="slider round"></span>' +
             '</label>' +
-          '</td>' +
-          '' +
-          '<td style="text-align:center;" id="mapStockCell_' + p.id + '">' + sourceStockDisplay + '</td>' +
-          '' +
-          '<td style="text-align:center;">' +
-            '<div style="display:flex; gap:6px; justify-content:center;">' +
-              '<button type="button" class="btn-action-copy" onclick="saveSingleMapping(\'' + p.id + '\')" style="padding:4px 10px; font-size:0.75rem; background:rgba(16,185,129,0.15); color:#10b981; border-color:rgba(16,185,129,0.3); font-weight:700;" title="Lưu liên kết này"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>' +
-              '<button type="button" class="btn-copy-small" onclick="testBuyForProduct(\'' + p.id + '\')" style="padding:4px 8px; font-size:0.72rem;" title="Mua thử 1 tài khoản từ nguồn"><i class="fa-solid fa-vial"></i> Test</button>' +
+            '<div id="mapStatusText_' + p.id + '" style="font-size:0.7rem; margin-top:4px; font-weight:700; color:' + (isEnabled ? '#10b981' : '#64748b') + ';">' +
+              (isEnabled ? 'BẬT (API)' : 'TẮT') +
             '</div>' +
+          '</td>' +
+          '<td style="padding:10px 12px; text-align:center; width:110px;" id="mapStockDisplay_' + p.id + '">' +
+            sourceStockDisplay +
+            (sourcePriceDisplay ? '<br/>' + sourcePriceDisplay : '') +
+          '</td>' +
+          '<td style="padding:10px 12px; text-align:center; width:90px;">' +
+            '<button type="button" class="btn-auth" onclick="saveSingleApiMapping(\'' + p.id + '\')" style="font-size:0.72rem; padding:5px 10px; background:#3b82f6; border:none; border-radius:4px; color:#fff;" title="Lưu liên kết sản phẩm này"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>' +
           '</td>' +
         '</tr>';
       }).join("");
 
-      if (typeof renderPaginationUI === "function") {
-        renderPaginationUI("apiProductMappingsPagination", curPage, filteredProds.length, "changeApiMappingsPage", PAGE_SIZE);
+      // Render Pagination
+      const pag = document.getElementById("apiProductMappingsPagination");
+      if (pag) {
+        let pagHtml = '<span style="font-size:0.75rem; color:#94a3b8; margin-right:12px;">Trang ' + curPage + ' / ' + totalPages + ' (' + filteredProds.length + ' sản phẩm)</span>';
+        if (totalPages > 1) {
+          pagHtml += '<div style="display:inline-flex; gap:4px;">';
+          if (curPage > 1) {
+            pagHtml += '<button type="button" class="btn-tool-secondary" onclick="changeApiMappingsPage(' + (curPage - 1) + ')" style="padding:4px 8px; font-size:0.75rem;"><i class="fa-solid fa-chevron-left"></i></button>';
+          }
+          for (let i = 1; i <= totalPages; i++) {
+            if (i === curPage) {
+              pagHtml += '<span style="background:#3b82f6; color:#fff; padding:4px 8px; border-radius:4px; font-size:0.75rem; font-weight:700;">' + i + '</span>';
+            } else if (i === 1 || i === totalPages || (i >= curPage - 1 && i <= curPage + 1)) {
+              pagHtml += '<button type="button" class="btn-tool-secondary" onclick="changeApiMappingsPage(' + i + ')" style="padding:4px 8px; font-size:0.75rem;">' + i + '</button>';
+            } else if (i === curPage - 2 || i === curPage + 2) {
+              pagHtml += '<span style="color:#64748b; padding:4px 2px; font-size:0.75rem;">...</span>';
+            }
+          }
+          if (curPage < totalPages) {
+            pagHtml += '<button type="button" class="btn-tool-secondary" onclick="changeApiMappingsPage(' + (curPage + 1) + ')" style="padding:4px 8px; font-size:0.75rem;"><i class="fa-solid fa-chevron-right"></i></button>';
+          }
+          pagHtml += '</div>';
+        }
+        pag.innerHTML = pagHtml;
       }
     }
     window.renderApiProductMappingsTable = renderApiProductMappingsTable;
