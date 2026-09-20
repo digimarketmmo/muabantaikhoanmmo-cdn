@@ -15065,7 +15065,9 @@ function syncAllOpenViewsStock(changedProdId) {
             var wrap = document.createElement("div");
             wrap.id = "articleRelatedProductsWrap";
             wrap.style.cssText = "margin-top:32px;padding:20px;background:#0f172a;border-radius:12px;border:1px solid #1e293b;";
-            wrap.innerHTML = "<div style=\"display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #1c263c;\"><h3 style=\"margin:0;font-size:1.05rem;font-weight:800;color:#fff;\">SẢN PHẨM ĐỀ XUẤT CHO BẠN</h3><a onclick=\"switchView('viewStore')\" style=\"font-size:0.8rem;color:#38bdf8;cursor:pointer;\">Xem tất cả <i class=\"fa-solid fa-arrow-right\"></i></a></div><div id=\"articleRelatedProdList\" style=\"display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;\"></div>";
+            wrap.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #1c263c;"><h3 style="margin:0;font-size:1.05rem;font-weight:800;color:#fff;">SẢN PHẨM ĐỀ XUẤT CHO BẠN</h3><a id="btnArtRelViewAll" style="font-size:0.8rem;color:#38bdf8;cursor:pointer;">Xem tất cả &rarr;</a></div><div id="articleRelatedProdList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;"></div>';
+            var vAll = wrap.querySelector("#btnArtRelViewAll");
+            if (vAll) vAll.onclick = function() { if (typeof switchView === "function") switchView("viewStore"); };
             artEl.appendChild(wrap);
           }
         }
@@ -26282,6 +26284,94 @@ async function confirmRefundOrder() {
             firstEl.appendChild(bg);
           }
         }
+
+        // 5. UNIVERSAL SATELLITE DOM SANITIZER (v1.8.0)
+        // Tự động dọn dẹp và chuẩn hóa 100% cho hàng trăm blog vệ tinh chạy XML cũ:
+        // A. Thay tác giả "Ban Biên Tập MUABANTAIKHOANMMO" thành "admin"
+        var authorEl = document.getElementById("articleAuthorName");
+        if (authorEl) authorEl.textContent = "admin";
+        var metaElements = document.querySelectorAll(".article-author-info, .article-meta-bar, .article-header, .article-main-content");
+        metaElements.forEach(function(container) {
+          container.querySelectorAll("*").forEach(function(el) {
+            if (el.childNodes && el.childNodes.length) {
+              el.childNodes.forEach(function(node) {
+                if (node.nodeType === 3 && node.textContent && node.textContent.indexOf("Ban Biên Tập") !== -1) {
+                  node.textContent = "admin";
+                }
+              });
+            }
+          });
+        });
+
+        // B. Xóa hoàn toàn khối "MUABANTAIKHOANMMO Editorial Team" (Hình 2)
+        document.querySelectorAll("div").forEach(function(el) {
+          if (el.textContent && (
+            el.textContent.indexOf("MUABANTAIKHOANMMO Editorial Team") !== -1 ||
+            el.textContent.indexOf("Chuyên trang tổng hợp tin tức, cẩm nang thủ thuật MMO") !== -1
+          )) {
+            var card = el;
+            while (card && card.parentElement && 
+                   card.parentElement.className !== "article-main-content" && 
+                   card.parentElement.id !== "viewBlogDetail" &&
+                   card.parentElement !== document.body) {
+              card = card.parentElement;
+            }
+            if (card && card !== document.body && card.parentElement) {
+              card.remove();
+            }
+          }
+        });
+
+        // C. Xóa khối Bottom CTA Box cũ ("Cần Nguyên Liệu Tài Khoản Để Thực Chiến Ngay?")
+        document.querySelectorAll(".article-footer-cta, .bottom-cta-box").forEach(function(el) { el.remove(); });
+
+        // D. Tự động tiêm SẢN PHẨM ĐỀ XUẤT CHO BẠN (#articleRelatedProductsWrap)
+        if (!document.getElementById("articleRelatedProductsWrap")) {
+          var artMain = document.querySelector(".article-main-content");
+          if (artMain) {
+            var wrap = document.createElement("div");
+            wrap.id = "articleRelatedProductsWrap";
+            wrap.style.cssText = "margin-top:32px;padding:20px;background:#0f172a;border-radius:12px;border:1px solid #1e293b;";
+            wrap.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #1c263c;"><h3 style="margin:0;font-size:1.05rem;font-weight:800;color:#fff;">SẢN PHẨM ĐỀ XUẤT CHO BẠN</h3><a id="btnArtRelViewAll" style="font-size:0.8rem;color:#38bdf8;cursor:pointer;">Xem tất cả &rarr;</a></div><div id="articleRelatedProdList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;"></div>';
+            artMain.appendChild(wrap);
+            if (typeof renderArticleRelatedProducts === "function") {
+              var curBlogId = localStorage.getItem("mmo_current_blog_id");
+              var allBlogs = (typeof MOCK_DATA !== "undefined" && MOCK_DATA.blogs) ? MOCK_DATA.blogs : [];
+              var curBlog = allBlogs.find(function(b) { return b && b.id === curBlogId; }) || allBlogs[0];
+              if (curBlog) renderArticleRelatedProducts(curBlog);
+            }
+          }
+        }
+
+        // E. Đồng bộ đầy đủ các nút bấm trên thanh Header Nav nếu thiếu
+        var nav = document.querySelector(".header-nav");
+        if (nav) {
+          if (!document.getElementById("navBlog")) {
+            var aBlog = document.createElement("a");
+            aBlog.className = "nav-link";
+            aBlog.id = "navBlog";
+            aBlog.onclick = function() { switchView("viewBlog"); };
+            aBlog.innerHTML = "<i class='fa-solid fa-newspaper'></i> Blog";
+            nav.appendChild(aBlog);
+          }
+          if (!document.getElementById("navTools")) {
+            var aTools = document.createElement("a");
+            aTools.className = "nav-link";
+            aTools.id = "navTools";
+            aTools.onclick = function() { switchView("viewTools"); };
+            aTools.innerHTML = "<i class='fa-solid fa-screwdriver-wrench'></i> Công Cụ MMO";
+            nav.appendChild(aTools);
+          }
+          if (!document.getElementById("navProfile")) {
+            var aProf = document.createElement("a");
+            aProf.className = "nav-link";
+            aProf.id = "navProfile";
+            aProf.onclick = function() { switchView("viewProfile"); };
+            aProf.innerHTML = "<i class='fa-solid fa-user'></i> Tài Khoản";
+            nav.appendChild(aProf);
+          }
+        }
+
       } catch(err) {
         console.warn("ensureUniversalComponentsExist error:", err);
       }
@@ -26295,4 +26385,17 @@ async function confirmRefundOrder() {
       } else {
         ensureUniversalComponentsExist();
       }
+      // Khởi động MutationObserver tự động quét trong 8 giây đầu sau khi trang tải
+      try {
+        if (typeof MutationObserver !== "undefined" && !window._satCleanupObserverActive) {
+          window._satCleanupObserverActive = true;
+          var _satObserver = new MutationObserver(function() {
+            ensureUniversalComponentsExist();
+          });
+          if (document.body) {
+            _satObserver.observe(document.body, { childList: true, subtree: true });
+            setTimeout(function() { _satObserver.disconnect(); }, 8000);
+          }
+        }
+      } catch(e) {}
     }
