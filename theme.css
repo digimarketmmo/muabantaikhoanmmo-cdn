@@ -4361,11 +4361,11 @@ div:has(> .admin-table) {
 }
 
 /* ==========================================================================
-   HEADER LOGO COMPACT, FULL USER NAME & PRESERVED FOOTER BRAND (v2.1.6)
+   HEADER LOGO & BRAND TITLE: DESKTOP DISPLAY FULL, MOBILE HIDE TEXT (v2.1.7)
    ========================================================================== */
 .header .logo .logo-text,
 .header .logo-text {
-  display: none !important;
+  display: block !important;
 }
 
 .footer-col-1 .logo-text,
@@ -4386,10 +4386,15 @@ footer .logo-text {
   vertical-align: middle !important;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .header .logo .logo-text,
   .header .logo-text {
     display: none !important;
+  }
+  .header .logo-img {
+    display: block !important;
+    width: 38px !important;
+    height: 38px !important;
   }
   .header-user-name {
     display: inline-block !important;
