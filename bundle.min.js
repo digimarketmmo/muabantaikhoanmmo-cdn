@@ -25946,15 +25946,10 @@ function ensureUniversalComponentsExist(currentProd) {
       tabBody.appendChild(sec);
     }
 
-    if (!document.getElementById("footerApiDocsLink")) {
-      var footerCols = document.querySelectorAll(".footer-links-list");
-      if (footerCols && footerCols.length > 0) {
-        var targetCol = footerCols[footerCols.length - 1];
-        var li = document.createElement("li");
-        li.className = "footer-link-item";
-        li.innerHTML = "<a id='footerApiDocsLink' onclick='openApiDocsModal()' href='javascript:void(0)' style='cursor:pointer; color:#10b981; font-weight:700;'><i class='fa-solid fa-code' style='color:#10b981; margin-right:4px;'></i> Tài liệu API</a>";
-        targetCol.appendChild(li);
-      }
+    // Clean up any duplicate footerApiDocsLink if present
+    var oldFooterLink = document.getElementById("footerApiDocsLink");
+    if (oldFooterLink && oldFooterLink.parentElement) {
+      oldFooterLink.parentElement.remove();
     }
 
     if (currentProd) {
