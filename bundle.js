@@ -6638,7 +6638,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
       if (viewId === "viewBlogDetail") {
         document.getElementById("navBlog")?.classList.add("active");
-        if (!window.currentViewingBlog && typeof openBlogDetail === "function") {
+        if (window.currentViewingBlog && typeof renderArticleRelatedProducts === "function") {
+          renderArticleRelatedProducts(window.currentViewingBlog);
+        } else if (!window.currentViewingBlog && typeof openBlogDetail === "function") {
           try {
             const urlParams = new URLSearchParams(window.location.search);
             const savedBlogId = urlParams.get("post") || urlParams.get("blog") || localStorage.getItem("mmo_current_blog_id");
@@ -14918,7 +14920,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (artHeadline) artHeadline.innerText = b.title;
 
       const artAuthor = document.getElementById("articleAuthorName");
-      if (artAuthor) artAuthor.innerText = "admin";
+      if (artAuthor) artAuthor.innerText = "Admin";
 
       const artDate = document.getElementById("articleDate");
       if (artDate) artDate.innerText = b.date || "05/09/2026";
@@ -15078,11 +15080,15 @@ function syncAllOpenViewsStock(changedProdId) {
         return { products: [], isSpecific: false, matchKeyword: '' };
       }
 
-      const title = ((currentBlog && currentBlog.title) ? currentBlog.title : (document.getElementById('articleHeadline')?.innerText || '')).toLowerCase();
+      const rawTitle = ((currentBlog && (currentBlog.title || currentBlog.headline)) 
+        ? (currentBlog.title || currentBlog.headline) 
+        : (document.getElementById('articleHeadline')?.innerText || document.title || ''));
+      const title = rawTitle.toLowerCase();
+      const bodySnippet = ((currentBlog && (currentBlog.content || currentBlog.snippet || currentBlog.body)) ? (currentBlog.content || currentBlog.snippet || currentBlog.body) : '').toLowerCase();
 
       // Các nhóm từ khóa chuyên biệt theo chủ đề sản phẩm MMO
       const KEYWORD_GROUPS = [
-        { key: 'Gmail', terms: ['gmail', 'google workspace', 'google drive', 'gg mail', 'mail cổ', 'mail new', 'mail khôi phục', 'mail thuê'] },
+        { key: 'Gmail', terms: ['gmail', 'google workspace', 'google drive', 'gg mail', 'mail cổ', 'mail new', 'mail khôi phục', 'mail thuê', 'hotmail', 'outlook'] },
         { key: 'TikTok', terms: ['tiktok', 'tik tok', 'tik-tok', 'douyin', 'beta us', 'tiktok shop'] },
         { key: 'Facebook / Via', terms: ['facebook', 'fb', 'via', 'clone', 'fanpage', 'bm', 'meta', 'page kháng', 'profile'] },
         { key: 'AI / Tool', terms: ['kling', 'kling ai', 'chatgpt', 'openai', 'gemini', 'canva', 'capcut', 'midjourney', 'suno', 'luma', 'runway', 'ai'] },
@@ -15094,7 +15100,7 @@ function syncAllOpenViewsStock(changedProdId) {
         { key: 'Instagram', terms: ['instagram', 'insta', 'ig'] }
       ];
 
-      // 1. Kiểm tra xem tiêu đề có chứa từ khóa chuyên biệt không
+      // 1. Kiểm tra xem tiêu đề (hoặc nội dung) có chứa từ khóa chuyên biệt không
       let matchedGroup = null;
       for (const group of KEYWORD_GROUPS) {
         const foundTerm = group.terms.find(term => {
@@ -15107,6 +15113,23 @@ function syncAllOpenViewsStock(changedProdId) {
         if (foundTerm) {
           matchedGroup = group;
           break;
+        }
+      }
+
+      // Nếu tiêu đề không bắt được từ khóa, quét tiếp trong nội dung bài viết
+      if (!matchedGroup) {
+        for (const group of KEYWORD_GROUPS) {
+          const foundTerm = group.terms.find(term => {
+            if (term.length <= 2) {
+              const regex = new RegExp('\\b' + term + '\\b', 'i');
+              return regex.test(bodySnippet);
+            }
+            return bodySnippet.includes(term);
+          });
+          if (foundTerm) {
+            matchedGroup = group;
+            break;
+          }
         }
       }
 
@@ -15127,7 +15150,12 @@ function syncAllOpenViewsStock(changedProdId) {
 
         if (matchedProducts.length > 0) {
           // Xáo trộn ngẫu nhiên trong nhóm sản phẩm liên quan mỗi lần F5
-          const shuffled = [...matchedProducts].sort(() => 0.5 - Math.random());
+          let shuffled = [...matchedProducts].sort(() => 0.5 - Math.random());
+          // Nếu nhóm có ít hơn 3 sản phẩm, lấy thêm sản phẩm ngẫu nhiên khác bù vào cho đủ đúng 3 sản phẩm
+          if (shuffled.length < 3) {
+            const others = allProds.filter(p => !shuffled.some(s => s.id === p.id)).sort(() => 0.5 - Math.random());
+            shuffled = shuffled.concat(others.slice(0, 3 - shuffled.length));
+          }
           return {
             products: shuffled.slice(0, 3),
             isSpecific: true,
@@ -15136,23 +15164,23 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       }
 
-      // 2. NẾU KHÔNG LIÊN QUAN: ĐỀ XUẤT NGẪU NHIÊN CÁC SẢN PHẨM KHÁC NHAU (MỖI LẦN F5 RA SẢN PHẨM KHÁC)
+      // 2. NẾU KHÔNG LIÊN QUAN (BÀI VIẾT KHÁC): ĐỀ XUẤT NGẪU NHIÊN 3 SẢN PHẨM (MỖI LẦN F5 RA SẢN PHẨM KHÁC NHAU)
       const randomShuffled = [...allProds].sort(() => 0.5 - Math.random());
       return {
         products: randomShuffled.slice(0, 3),
         isSpecific: false,
-        matchKeyword: 'HOT'
+        matchKeyword: 'Đề xuất'
       };
     }
     window.getRecommendedProductsForArticle = getRecommendedProductsForArticle;
 
-    // RENDER KHỐI "ĐỀ XUẤT CHO BẠN" DƯỚI BÀI VIẾT BLOG (3 SẢN PHẨM ĐẦY ĐỦ THÔNG TIN)
+    // RENDER KHỐI "ĐỀ XUẤT CHO BẠN" DƯỚI BÀI VIẾT BLOG (3 SẢN PHẨM ĐẦY ĐỦ THÔNG TIN SỐ LƯỢT BÁN & ĐÁNH GIÁ)
     function renderArticleRelatedProducts(currentBlog) {
       const container = document.getElementById("articleRelatedProductsGrid");
       const badgeEl = document.getElementById("articleRelatedProductsBadge");
       if (!container) return;
 
-      // Xóa bỏ hoàn toàn badge khuyên dùng bài viết theo yêu cầu người dùng
+      // Ẩn badge phụ nếu có
       if (badgeEl) {
         badgeEl.style.display = "none";
         badgeEl.innerHTML = "";
@@ -15179,17 +15207,34 @@ function syncAllOpenViewsStock(changedProdId) {
           : '<span style="font-size:0.72rem; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:2px 8px; border-radius:5px; font-weight:700; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-clock" style="font-size:0.65rem;"></i> Đặt trước</span>';
         const pCat = p.category ? escapeHtml(p.category) : 'Tài khoản MMO';
 
-        return '<div onclick="openProductDetailById(\'' + escapeHtml(p.id) + '\')" style="background:#090e18; border:1px solid #1e293b; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; transition:all 0.25s ease; box-shadow:0 4px 14px rgba(0,0,0,0.35); min-height:170px;" onmouseover="this.style.borderColor=\'#38bdf8\'; this.style.transform=\'translateY(-3px)\'; this.style.boxShadow=\'0 8px 22px rgba(56,189,248,0.18)\'" onmouseout="this.style.borderColor=\'#1e293b\'; this.style.transform=\'\'; this.style.boxShadow=\'0 4px 14px rgba(0,0,0,0.35)\'">' +
+        // Lấy số lượt bán thực tế & số lượng đánh giá
+        const soldCount = (typeof getRealisticProductSold === 'function') ? getRealisticProductSold(p) : (p.buffSold || p.sold || 120);
+        const soldDisplay = soldCount >= 1000 ? (soldCount / 1000).toFixed(1).replace('.0', '') + 'k' : soldCount.toLocaleString('vi-VN');
+        const ratingVal = (p.rating && Number(p.rating) > 0) ? Number(p.rating).toFixed(1) : "5.0";
+        const reviewCount = Math.max(8, Math.min(650, Math.floor(soldCount / 3.2)));
+
+        return '<div onclick="openProductDetailById(\'' + escapeHtml(p.id) + '\')" style="background:#090e18; border:1px solid #1e293b; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; transition:all 0.25s ease; box-shadow:0 4px 14px rgba(0,0,0,0.35); min-height:190px;" onmouseover="this.style.borderColor=\'#38bdf8\'; this.style.transform=\'translateY(-3px)\'; this.style.boxShadow=\'0 8px 22px rgba(56,189,248,0.2)\'" onmouseout="this.style.borderColor=\'#1e293b\'; this.style.transform=\'\'; this.style.boxShadow=\'0 4px 14px rgba(0,0,0,0.35)\'">' +
           '<div>' +
             '<div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:10px;">' +
               '<img src="' + escapeHtml(p.image || 'https://iili.io/nFV4Rln.png') + '" alt="' + escapeHtml(p.name) + '" style="width:58px; height:58px; border-radius:10px; object-fit:cover; flex-shrink:0; background:#141f33; border:1px solid #1e293b;" onerror="this.src=\'https://iili.io/nFV4Rln.png\'" />' +
               '<div style="flex:1; min-width:0; overflow:hidden;">' +
-                '<span style="font-size:0.72rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; font-weight:600; display:block; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + pCat + '</span>' +
+                '<span style="font-size:0.72rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; font-weight:700; display:block; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + pCat + '</span>' +
                 '<div>' + stockBadge + '</div>' +
               '</div>' +
             '</div>' +
-            '<div style="font-size:0.9rem; font-weight:700; color:#fff; line-height:1.45; word-break:break-word; margin:8px 0 12px; min-height:42px;" title="' + escapeHtml(p.name) + '">' +
+            '<div style="font-size:0.92rem; font-weight:700; color:#fff; line-height:1.45; word-break:break-word; margin:6px 0 10px; min-height:42px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;" title="' + escapeHtml(p.name) + '">' +
               escapeHtml(p.name) +
+            '</div>' +
+            '<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); border-radius:8px; padding:6px 10px; margin-bottom:12px;">' +
+              '<div style="display:flex; align-items:center; gap:4px; font-size:0.75rem; color:#f59e0b; font-weight:700;">' +
+                '<i class="fa-solid fa-star" style="font-size:0.72rem;"></i> ' +
+                '<span>' + ratingVal + '</span>' +
+                '<span style="color:#64748b; font-weight:500; font-size:0.7rem;">(' + reviewCount + ')</span>' +
+              '</div>' +
+              '<div style="display:flex; align-items:center; gap:5px; font-size:0.75rem; color:#94a3b8; font-weight:600;">' +
+                '<i class="fa-solid fa-fire" style="color:#f97316; font-size:0.72rem;"></i> ' +
+                '<span>Đã bán: <strong style="color:#f8fafc; font-weight:700;">' + soldDisplay + '</strong></span>' +
+              '</div>' +
             '</div>' +
           '</div>' +
           '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06);">' +

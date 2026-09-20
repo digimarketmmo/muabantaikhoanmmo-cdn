@@ -1476,8 +1476,8 @@
     
     /* ==================== VIEW: ARTICLE NEWSPAPER LAYOUT (TRANG BÀI BÁO) ==================== */
     .article-page-container {
-      max-width: 1180px !important;
-      width: 94% !important;
+      max-width: 85% !important;
+      width: 85% !important;
       margin: 20px auto 60px !important;
       padding: 0 !important;
       box-sizing: border-box;
@@ -4819,4 +4819,57 @@ header.header {
     gap: 4px !important;
   }
 }
+
+/* ==========================================================================
+   THU NHỎ TRANG XEM BÀI VIẾT BLOG 15% & GRID 3 SẢN PHẨM ĐỀ XUẤT (v2.2.2)
+   ========================================================================== */
+.article-page-container,
+#viewBlogDetail {
+  width: 85% !important;
+  max-width: 85% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+@media (max-width: 992px) {
+  .article-page-container,
+  #viewBlogDetail {
+    width: 94% !important;
+    max-width: 94% !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .article-page-container,
+  #viewBlogDetail {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 8px !important;
+  }
+}
+
+#articleRelatedProductsGrid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 16px !important;
+}
+
+@media (max-width: 900px) {
+  #articleRelatedProductsGrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  #articleRelatedProductsGrid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+}
+
 
