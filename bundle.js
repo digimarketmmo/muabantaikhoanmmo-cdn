@@ -2394,8 +2394,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       if (document.getElementById("admProdName")) document.getElementById("admProdName").value = p.name;
       
       // Đồng bộ Loại Nguồn Hàng (Kho Nội Bộ vs API)
-      const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
-      const isApi = !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
+      const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null);
+      const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
       const radioLocal = document.getElementById("admProdTypeLocal");
       const radioApi = document.getElementById("admProdTypeApi");
       if (radioLocal && radioApi) {
@@ -2403,16 +2403,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         radioApi.checked = isApi;
       }
       if (typeof toggleAdmProductSourceFields === "function") toggleAdmProductSourceFields();
-      if (isApi && existingMap) {
+      if (isApi) {
+        const prov = (existingMap && existingMap.provider) ? existingMap.provider : "shop1989nd";
+        const srcId = (existingMap && existingMap.sourceProdId) ? String(existingMap.sourceProdId) : "";
         const pSel = document.getElementById("admProdApiProvider");
-        if (pSel && existingMap.provider) {
-          pSel.value = existingMap.provider;
-          if (typeof handleAdmModalProviderChange === "function") handleAdmModalProviderChange();
+        if (pSel) {
+          pSel.value = prov;
+        }
+        if (typeof filterAdmModalSourceProducts === "function") {
+          filterAdmModalSourceProducts("");
         }
         const sSel = document.getElementById("admProdApiSourceSelect");
-        if (sSel && existingMap.sourceProdId) {
-          sSel.value = String(existingMap.sourceProdId);
-          if (typeof handleAdmModalSourceChange === "function") handleAdmModalSourceChange();
+        if (sSel && srcId) {
+          sSel.value = srcId;
+        }
+        if (typeof handleAdmModalSourceChange === "function") {
+          handleAdmModalSourceChange();
         }
       }
       populateCategorySelects(p.category);
@@ -3095,14 +3101,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
               // Bảo vệ tồn kho nếu sản phẩm đang bật On-Demand API
               // QUAN TRỌNG: Không check balance ở đây — balance chỉ cần check khi mua hàng
               // Non-admin không có balance thật → không được dùng balance để ẩn tồn kho
-              const existingApiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(currentProd.id) : null;
-              if (existingApiMap && existingApiMap.enabled && existingApiMap.sourceProdId) {
-                // Luôn dùng sourceStock từ mapping nếu có — bất kể balance ví
-                if (existingApiMap.sourceStock !== undefined && existingApiMap.sourceStock !== null && Number(existingApiMap.sourceStock) > 0) {
-                  serverProd.stock = Number(existingApiMap.sourceStock);
-                } else if (typeof getProductStockCount === "function") {
-                  const localStock = getProductStockCount(currentProd);
-                  if (localStock > 0) serverProd.stock = localStock;
+              const isApiTypeGas = (serverProd.deliveryType === 'api' || serverProd.delivery_type === 'api' || currentProd.deliveryType === 'api' || currentProd.delivery_type === 'api' || (typeof isProductApi === 'function' && isProductApi(currentProd)));
+              const existingApiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(currentProd.id) : (currentProd.apiMapping || null);
+              if (isApiTypeGas || (existingApiMap && existingApiMap.enabled && existingApiMap.sourceProdId)) {
+                currentProd.deliveryType = 'api';
+                serverProd.deliveryType = 'api';
+                currentProd.delivery_type = 'api';
+                serverProd.delivery_type = 'api';
+                let apiStock = 999;
+                if (existingApiMap && existingApiMap.sourceStock !== undefined && Number(existingApiMap.sourceStock) > 0) {
+                  apiStock = Number(existingApiMap.sourceStock);
+                } else if (typeof getShopVariantStock === 'function') {
+                  apiStock = getShopVariantStock(currentProd, 0);
+                }
+                serverProd.stock = apiStock;
+                currentProd.stock = apiStock;
+                if (Array.isArray(serverProd.variants)) {
+                  serverProd.variants.forEach(v => { v.stock = apiStock; });
+                }
+                if (Array.isArray(currentProd.variants)) {
+                  currentProd.variants.forEach(v => { v.stock = apiStock; });
                 }
               }
 
@@ -3700,7 +3718,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       if (priceHiddenInput) priceHiddenInput.value = effectivePrice;
 
       const isApiSelected = document.getElementById("admProdTypeApi")?.checked;
-      const apiProviderVal = document.getElementById("admProdApiProvider")?.value || "sellmmo";
+      const apiProviderVal = document.getElementById("admProdApiProvider")?.value || "shop1989nd";
       const apiSourceProdIdVal = document.getElementById("admProdApiSourceSelect")?.value || "";
 
       let totalCalculatedStock = 0;
@@ -3711,11 +3729,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       }
 
       let liveSourceStock = 0;
+      let liveSourcePrice = 0;
+      let liveSourceName = "";
       if (isApiSelected && apiSourceProdIdVal) {
-        const prodsSrc = (typeof cachedSourceProducts !== "undefined") ? cachedSourceProducts : [];
-        const foundSrc = prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal));
-        if (foundSrc && typeof foundSrc.amount === "number") {
-          liveSourceStock = foundSrc.amount;
+        const prodsSrc = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+          ? window.cachedSourceProducts
+          : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+        const foundSrc = prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal) && (!apiProviderVal || s.provider === apiProviderVal))
+          || prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal));
+        if (foundSrc) {
+          liveSourceStock = (typeof foundSrc.amount === "number") ? foundSrc.amount : (parseInt(foundSrc.amount) || 999);
+          liveSourcePrice = (typeof foundSrc.price === "number") ? foundSrc.price : (parseInt(foundSrc.price) || 0);
+          liveSourceName = foundSrc.name || "";
         } else {
           liveSourceStock = 999;
         }
@@ -3738,6 +3763,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         description: description,
         variants: variants,
         deliveryType: isApiSelected ? "api" : "local",
+        delivery_type: isApiSelected ? "api" : "local",
         _lastEditedAt: Date.now()
       };
 
@@ -3746,31 +3772,41 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
         if (isApiSelected && apiSourceProdIdVal) {
           const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[apiProviderVal]) ? API_SOURCES[apiProviderVal] : { baseUrl: "https://sellmmo.vn", apiKey: "" };
-          const prodsSrc = (typeof cachedSourceProducts !== "undefined") ? cachedSourceProducts : [];
-          const srcItem = prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal));
-          const liveSrcStock = (srcItem && typeof srcItem.amount === "number") ? srcItem.amount : 999;
-          const liveSrcPrice = (srcItem && typeof srcItem.price === "number") ? srcItem.price : 100;
-          maps[actualTargetId] = {
+          const mapItem = {
             enabled: true,
             provider: apiProviderVal,
             baseUrl: pCfg.baseUrl,
             apiKey: pCfg.apiKey,
-            sourceProdId: apiSourceProdIdVal,
-            sourceProdName: srcItem ? srcItem.name : ("Sản phẩm " + apiSourceProdIdVal),
-            sourcePrice: liveSrcPrice,
-            sourceStock: liveSrcStock,
+            sourceProdId: String(apiSourceProdIdVal),
+            sourceProdName: liveSourceName || ("Sản phẩm #" + apiSourceProdIdVal),
+            sourcePrice: liveSourcePrice,
+            sourceStock: liveSourceStock,
             targetProdId: actualTargetId,
             targetProdName: name
           };
-          prodData.apiMapping = maps[actualTargetId];
-          prodData.stock = liveSrcStock;
+          maps[actualTargetId] = mapItem;
+          // Map toàn bộ biến thể
+          variants.forEach((v, vIdx) => {
+            maps[actualTargetId + '__VAR__' + vIdx] = mapItem;
+            if (v.name) maps[v.name] = mapItem;
+          });
+          prodData.apiMapping = mapItem;
+          prodData.stock = liveSourceStock;
           if (Array.isArray(prodData.variants)) {
-            prodData.variants.forEach(v => { if (v) v.stock = liveSrcStock; });
+            prodData.variants.forEach(v => { if (v) v.stock = liveSourceStock; });
           }
         } else {
           delete maps[actualTargetId];
+          variants.forEach((v, vIdx) => {
+            delete maps[actualTargetId + '__VAR__' + vIdx];
+            if (v.name) delete maps[v.name];
+          });
         }
-        if (typeof saveApiProductMappings === "function") saveApiProductMappings(maps);
+        if (typeof saveApiProductMappings === "function") {
+          saveApiProductMappings(maps);
+        } else {
+          localStorage.setItem("mmo_api_product_mappings", JSON.stringify(maps));
+        }
       } catch(e) {}
 
       // Nếu sản phẩm này từng nằm trong danh sách đã xóa, gỡ bỏ khỏi blacklist
@@ -6140,22 +6176,45 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       const prod = (typeof prodOrId === "object") ? prodOrId : findShopProduct(prodOrId);
       if (!prod) return 0;
 
-      // Nếu sản phẩm cấu hình API on-demand
-      if (typeof getApiProductMapping === "function") {
-        const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
-        const varIdxNum = (vIdx !== null && vIdx !== undefined && vIdx !== "ALL" && vIdx !== "") ? Number(vIdx) : 0;
-        const vName = (hasVars && prod.variants[varIdxNum]) ? prod.variants[varIdxNum].name : "";
+      // 1. Kiểm tra nếu sản phẩm có cấu hình API on-demand
+      const isApiDelivery = (prod.deliveryType === "api" || prod.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(prod));
+      const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
+      const varIdxNum = (vIdx !== null && vIdx !== undefined && vIdx !== "ALL" && vIdx !== "") ? Number(vIdx) : 0;
+      const vName = (hasVars && prod.variants[varIdxNum]) ? prod.variants[varIdxNum].name : "";
 
-        // Ưu tiên tra cứu: 1. Theo tên biến thể (nếu có) -> 2. Theo ID sản phẩm -> 3. Theo apiMapping gắn trên object
-        let apiMap = null;
+      let apiMap = null;
+      if (typeof getApiProductMapping === "function") {
         if (vName) apiMap = getApiProductMapping(vName);
         if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
           apiMap = getApiProductMapping(prod) || (prod && prod.apiMapping);
         }
+      } else if (prod && prod.apiMapping) {
+        apiMap = prod.apiMapping;
+      }
 
-        if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
-          return (apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) ? Math.max(0, Number(apiMap.sourceStock)) : 0;
+      if ((apiMap && apiMap.enabled && apiMap.sourceProdId) || isApiDelivery) {
+        let st = 0;
+        if (apiMap && apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) {
+          st = Number(apiMap.sourceStock);
         }
+        if (st <= 0) {
+          const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+            ? window.cachedSourceProducts
+            : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+          if (apiMap && apiMap.sourceProdId && prods && prods.length > 0) {
+            const inSrc = prods.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
+              || prods.find(s => String(s.id) === String(apiMap.sourceProdId));
+            if (inSrc && typeof inSrc.amount === "number" && inSrc.amount > 0) {
+              st = inSrc.amount;
+              apiMap.sourceStock = st;
+            }
+          }
+        }
+        if (st <= 0 && typeof prod.stock === "number" && prod.stock > 0) {
+          st = prod.stock;
+        }
+        if (st <= 0) st = 999;
+        return st;
       }
 
       // ROM & Tools software
@@ -6164,7 +6223,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         return typeof prod.stock === "number" ? prod.stock : 0;
       }
 
-      const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
       if (!hasVars) {
         if (Array.isArray(prod.accounts) && prod.accounts.length > 0) return prod.accounts.length;
         if (typeof prod.stock === "number" && prod.stock > 0) return prod.stock;
@@ -6188,8 +6246,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       if (!v) return (typeof prod.stock === "number") ? prod.stock : 0;
       if (Array.isArray(v.accounts) && v.accounts.length > 0) return v.accounts.length;
       if (typeof v.stock === "number" && v.stock > 0) return v.stock;
-      // Fallback: nếu variant không có stock riêng nhưng prod.stock > 0,
-      // dùng prod.stock (tránh mất tồn kho khi variant chưa được gán stock)
       if (typeof prod.stock === "number" && prod.stock > 0) return prod.stock;
       if (Array.isArray(v.accounts)) return v.accounts.length;
       return typeof v.stock === "number" ? v.stock : (typeof prod.stock === "number" ? prod.stock : 0);
@@ -6947,14 +7003,24 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
             const isLocallyFresh = !!(cur._lastEditedAt && (Date.now() - cur._lastEditedAt < 900000));
             if (!isLocallyFresh) {
               const updatedPrice = Number(tp.price) || cur.price;
-              const isApiType = (tp.delivery_type === 'api' || tp.deliveryType === 'api' || cur.deliveryType === 'api');
+              const isApiType = (tp.delivery_type === 'api' || tp.deliveryType === 'api' || cur.deliveryType === 'api' || cur.delivery_type === 'api' || (typeof isProductApi === 'function' && isProductApi(cur)));
               let updatedStock = cur.stock;
+              const effectiveMapping = cur.apiMapping || (typeof getApiProductMapping === 'function' ? getApiProductMapping(cur) : null);
+              
               if (!isApiType) {
                 updatedStock = (tp.stock !== undefined) ? Number(tp.stock) : cur.stock;
               } else {
-                const m = cur.apiMapping || (typeof getApiProductMapping === 'function' ? getApiProductMapping(cur) : null);
-                if (m && m.sourceStock) updatedStock = m.sourceStock;
-                if (Array.isArray(variants)) variants.forEach(v => { if (!v.stock || v.stock === 0) v.stock = updatedStock; });
+                cur.deliveryType = 'api';
+                cur.delivery_type = 'api';
+                if (effectiveMapping && effectiveMapping.sourceStock) {
+                  updatedStock = effectiveMapping.sourceStock;
+                } else if (typeof getShopVariantStock === 'function') {
+                  updatedStock = getShopVariantStock(cur, 0);
+                } else {
+                  updatedStock = 999;
+                }
+                if (Array.isArray(variants)) variants.forEach(v => { v.stock = updatedStock; });
+                if (Array.isArray(cur.variants)) cur.variants.forEach(v => { v.stock = updatedStock; });
               }
               if (cur.stock !== updatedStock || cur.price !== updatedPrice || cur.name !== tp.name) {
                 hasNewOrUpdated = true;
@@ -6965,7 +7031,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
                 price: updatedPrice,
                 stock: updatedStock,
                 deliveryType: isApiType ? 'api' : 'local',
-                apiMapping: cur.apiMapping || (typeof getApiProductMapping === 'function' ? getApiProductMapping(cur) : null),
+                delivery_type: isApiType ? 'api' : 'local',
+                apiMapping: effectiveMapping,
                 image: img,
                 description: tp.description || cur.description,
                 warranty: tp.warranty || cur.warranty,
@@ -6973,13 +7040,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
               });
             }
           } else {
-            // Sản phẩm mới từ Turso (hiển thị ngay lập tức cho khách ẩn danh / chưa đăng nhập)
+            // Sản phẩm mới từ Turso
+            const isApiTypeNew = (tp.delivery_type === 'api' || tp.deliveryType === 'api');
+            let newStock = Number(tp.stock) || 0;
+            if (isApiTypeNew && newStock <= 0) newStock = 999;
             MOCK_DATA.products.push({
               id: tp.id,
               name: tp.name,
               category: tp.category || "Tài Khoản Khác",
               price: Number(tp.price) || 0,
-              stock: Number(tp.stock) || 0,
+              stock: newStock,
               sold: Number(tp.sold) || 0,
               buffSold: 0,
               rating: tp.rating || 4.9,
@@ -6987,7 +7057,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
               warranty: tp.warranty || "Bảo Hành 1 Đổi 1",
               description: tp.description || "",
               variants: variants,
-              deliveryType: tp.delivery_type || tp.deliveryType || "local"
+              deliveryType: isApiTypeNew ? "api" : "local",
+              delivery_type: isApiTypeNew ? "api" : "local"
             });
             hasNewOrUpdated = true;
           }
@@ -8323,6 +8394,135 @@ function syncAllOpenViewsStock(changedProdId) {
     window.fetchApiSourceProducts = fetchApiSourceProducts;
 
     // fetchApiSourceProducts only runs when Admin opens mapping tab or clicks reload
+
+    // ============================================================================
+    // LIÊN KẾT SẢN PHẨM ON-DEMAND API (MAPPING ENGINE v1.9.3)
+    // ============================================================================
+    function getApiProductMappings() {
+      try {
+        const stored = localStorage.getItem("mmo_api_product_mappings");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && typeof parsed === "object") return parsed;
+        }
+      } catch(e) {}
+      return {};
+    }
+    window.getApiProductMappings = getApiProductMappings;
+
+    function saveApiProductMappings(maps) {
+      try {
+        localStorage.setItem("mmo_api_product_mappings", JSON.stringify(maps || {}));
+        if (typeof callGasApi === "function") {
+          callGasApi("adminSaveSettings", {
+            settings: {
+              API_PRODUCT_MAPPINGS: JSON.stringify(maps || {})
+            }
+          }).catch(function() {});
+        }
+      } catch(e) {}
+    }
+    window.saveApiProductMappings = saveApiProductMappings;
+
+    function normApiText(str) {
+      return String(str || '').toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .replace(/[đĐ]/g, 'd')
+        .replace(/[^a-z0-9]/g, ' ')
+        .replace(/\s+/g, ' ').trim();
+    }
+    window.normApiText = normApiText;
+
+    function isProductApi(productOrId) {
+      if (!productOrId) return false;
+      const prod = (typeof productOrId === "object") ? productOrId : (typeof findShopProduct === "function" ? findShopProduct(productOrId) : null);
+      if (prod && (prod.deliveryType === "api" || prod.delivery_type === "api")) return true;
+      if (prod && prod.apiMapping && prod.apiMapping.enabled && prod.apiMapping.sourceProdId) return true;
+      const pId = typeof productOrId === "string" ? productOrId : (prod ? prod.id : "");
+      if (typeof getApiProductMapping === "function") {
+        const map = getApiProductMapping(pId || prod);
+        if (map && map.enabled && map.sourceProdId) return true;
+      }
+      return false;
+    }
+    window.isProductApi = isProductApi;
+
+    function getApiProductMapping(productOrId) {
+      if (!productOrId) return null;
+      const prodId = typeof productOrId === "string" ? productOrId.trim() : (productOrId.id || "").trim();
+      const prodObj = typeof productOrId === "object" ? productOrId : ((typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) ? MOCK_DATA.products.find(p => p && (String(p.id) === String(prodId) || (p.name && typeof normApiText === "function" && normApiText(p.name) === normApiText(prodId)))) : null);
+      const prodName = prodObj ? (prodObj.name || "") : (typeof productOrId === "string" ? productOrId.trim() : "");
+
+      const maps = getApiProductMappings();
+
+      function enrichMapping(m) {
+        if (!m || !m.enabled || !m.sourceProdId) return null;
+        const res = Object.assign({}, m);
+        let stock = (res.sourceStock !== undefined && res.sourceStock !== null) ? Number(res.sourceStock) : 0;
+        const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+          ? window.cachedSourceProducts
+          : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+        if (prods && prods.length > 0) {
+          const inSrc = prods.find(s => String(s.id) === String(res.sourceProdId) && (!res.provider || s.provider === res.provider))
+            || prods.find(s => String(s.id) === String(res.sourceProdId));
+          if (inSrc && typeof inSrc.amount === "number" && inSrc.amount > 0) {
+            stock = inSrc.amount;
+            res.sourceStock = stock;
+            if (inSrc.price) res.sourcePrice = inSrc.price;
+            if (inSrc.name) res.sourceProdName = inSrc.name;
+          }
+        }
+        if (stock <= 0) stock = 999;
+        res.sourceStock = stock;
+        return res;
+      }
+
+      // 1. Kiểm tra cấu hình explicitly bị tắt
+      if (prodId && maps[prodId] && maps[prodId].enabled === false) {
+        return null;
+      }
+
+      // 2. Tra cứu trực tiếp theo ID sản phẩm trong bảng maps (ưu tiên cao nhất)
+      if (prodId && maps[prodId] && maps[prodId].enabled && maps[prodId].sourceProdId) {
+        return enrichMapping(maps[prodId]);
+      }
+      if (prodObj && prodObj.id && maps[prodObj.id] && maps[prodObj.id].enabled && maps[prodObj.id].sourceProdId) {
+        return enrichMapping(maps[prodObj.id]);
+      }
+
+      // 3. Tra cứu theo apiMapping gắn trực tiếp trên đối tượng sản phẩm
+      if (prodObj && prodObj.apiMapping && prodObj.apiMapping.enabled && prodObj.apiMapping.sourceProdId) {
+        return enrichMapping(prodObj.apiMapping);
+      }
+
+      // 4. Tra cứu theo tên biến thể hoặc tên sản phẩm
+      if (prodName) {
+        if (maps[prodName] && maps[prodName].enabled && maps[prodName].sourceProdId) {
+          return enrichMapping(maps[prodName]);
+        }
+        const normN = normApiText(prodName);
+        for (const k of Object.keys(maps)) {
+          const m = maps[k];
+          if (m && m.enabled && m.sourceProdId) {
+            if (normApiText(k) === normN) return enrichMapping(m);
+            if (m.targetProdName && normApiText(m.targetProdName) === normN) return enrichMapping(m);
+          }
+        }
+      }
+
+      // 5. Nếu đối tượng có deliveryType === 'api', tra cứu alias hoặc key con
+      if (prodObj && (prodObj.deliveryType === 'api' || prodObj.delivery_type === 'api')) {
+        for (const k of Object.keys(maps)) {
+          const m = maps[k];
+          if (m && m.enabled && m.sourceProdId) {
+            if (k.startsWith(prodObj.id)) return enrichMapping(m);
+          }
+        }
+      }
+
+      return null;
+    }
+    window.getApiProductMapping = getApiProductMapping;
 
     function renderApiProductMappingsTable() {
       const tbody = document.getElementById("apiProductMappingsTableBody");
@@ -11537,13 +11737,24 @@ function syncAllOpenViewsStock(changedProdId) {
       if (dtlCategory) dtlCategory.innerText = (p.category || "").replace(/&amp;/g, '&');
 
       // Cập nhật loại giao hàng và nguồn cung trên trang chi tiết
-      const isProdApi = (p.deliveryType === "api") || ((typeof isProductApi === "function") ? isProductApi(p) : false);
-      const apiMapInfo = isProdApi ? ((p && p.apiMapping) || getApiProductMapping(p)) : null;
-      if (isProdApi && apiMapInfo) {
+      const isProdApi = (p.deliveryType === "api" || p.delivery_type === "api") || ((typeof isProductApi === "function") ? isProductApi(p) : false);
+      const apiMapInfo = isProdApi ? ((p && p.apiMapping) || (typeof getApiProductMapping === "function" ? getApiProductMapping(p) : null)) : null;
+      if (isProdApi) {
         p.deliveryType = "api";
-        p.apiMapping = apiMapInfo;
+        p.delivery_type = "api";
+        if (apiMapInfo) {
+          p.apiMapping = apiMapInfo;
+          if (apiMapInfo.sourceStock && typeof getShopVariantStock === "function") {
+            p.stock = apiMapInfo.sourceStock;
+          }
+        }
+        setTimeout(function() {
+          if (typeof triggerLiveDetailStockSync === "function") {
+            triggerLiveDetailStockSync(null);
+          }
+        }, 50);
       }
-            const dtlDeliveryType = document.getElementById("dtlDeliveryType") || document.querySelector(".dtl-delivery-type");
+      const dtlDeliveryType = document.getElementById("dtlDeliveryType") || document.querySelector(".dtl-delivery-type");
       if (dtlDeliveryType) {
         dtlDeliveryType.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-bolt"></i> Tự động</span>';
       }
