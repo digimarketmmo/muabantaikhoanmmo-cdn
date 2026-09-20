@@ -6541,30 +6541,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         _previousView = currentActiveView;
       }
 
-      // Đảm bảo cuộn về đầu trang ngay lập tức và giữ Header luôn hiển thị
+      // Cuộn về đầu trang tức thì 0ms
       try {
-        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-      } catch(e) {
         window.scrollTo(0, 0);
-      }
-      if (document.documentElement) document.documentElement.scrollTop = 0;
-      if (document.body) document.body.scrollTop = 0;
-
-      function enforceHeaderVisible() {
-        const topHeader = document.querySelector(".header");
-        if (topHeader) {
-          topHeader.style.setProperty("display", "block", "important");
-          topHeader.style.setProperty("visibility", "visible", "important");
-          topHeader.style.setProperty("opacity", "1", "important");
-          topHeader.style.setProperty("position", "fixed", "important");
-          topHeader.style.setProperty("top", "0", "important");
-          topHeader.style.setProperty("left", "0", "important");
-          topHeader.style.setProperty("right", "0", "important");
-          topHeader.style.setProperty("width", "100%", "important");
-          topHeader.style.setProperty("z-index", "99999", "important");
-        }
-      }
-      enforceHeaderVisible();
+      } catch(e) {}
 
       if (viewId === "viewProfile" || viewId === "viewDeposit" || viewId === "viewAdmin") {
         let checkUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
@@ -6698,22 +6678,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         }
       }
 
-      // Đảm bảo cuộn lên đầu và kích hoạt lại Header sau khi DOM đã render
-      if (typeof requestAnimationFrame === "function") {
-        requestAnimationFrame(function() {
-          try { window.scrollTo({ top: 0, left: 0, behavior: "instant" }); } catch(e) { window.scrollTo(0, 0); }
-          if (document.documentElement) document.documentElement.scrollTop = 0;
-          if (document.body) document.body.scrollTop = 0;
-          enforceHeaderVisible();
-        });
-      }
-
-      setTimeout(function() {
-        try { window.scrollTo(0, 0); } catch(e) {}
-        if (document.documentElement) document.documentElement.scrollTop = 0;
-        if (document.body) document.body.scrollTop = 0;
-        enforceHeaderVisible();
-      }, 30);
+      // Cuộn lên đầu tức thì 0ms khi chuyển view
+      try { window.scrollTo(0, 0); } catch(e) {}
 
       // PERSIST VIEW ACROSS F5 & REFRESH & CLEAN URL PARAMETERS
       try {
@@ -8332,14 +8298,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           });
         }
 
-        saveProductsToStorage();
         refreshAllShopStockUI();
-        if (typeof renderCategories === "function") renderCategories();
-        if (typeof renderProductGrid === "function") renderProductGrid();
-        if (typeof renderBestSellers === "function") renderBestSellers();
-        if (typeof renderRecommended === "function") renderRecommended();
-        if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
-        if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+        if (hasNewOrUpdated) {
+          saveProductsToStorage();
+          if (typeof renderCategories === "function") renderCategories();
+          if (typeof renderProductGrid === "function") renderProductGrid();
+          if (typeof renderBestSellers === "function") renderBestSellers();
+          if (typeof renderRecommended === "function") renderRecommended();
+          if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
+          if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+        }
       } catch(e) {
         console.warn("syncTursoProductsToLocalUI error:", e);
       }
@@ -14976,7 +14944,7 @@ function syncAllOpenViewsStock(changedProdId) {
       renderArticleRelatedGrid(b);
 
       switchView("viewBlogDetail");
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo(0, 0);
     }
     window.openBlogDetail = openBlogDetail;
 

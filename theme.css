@@ -1476,8 +1476,8 @@
     
     /* ==================== VIEW: ARTICLE NEWSPAPER LAYOUT (TRANG BÀI BÁO) ==================== */
     .article-page-container {
-      max-width: 80% !important;
-      width: 80% !important;
+      max-width: 1250px !important;
+      width: 95% !important;
       margin: 20px auto 60px !important;
       padding: 0 !important;
       box-sizing: border-box;
@@ -4821,12 +4821,12 @@ header.header {
 }
 
 /* ==========================================================================
-   THU NHỎ TRANG XEM BÀI VIẾT BLOG TRÊN MÁY TÍNH CÂN ĐỐI (80%), RỘNG HƠN 5% ĐẸP MẮT (v2.2.8)
+   TRANG XEM BÀI VIẾT BLOG: CỠ CHUẨN TĂNG THÊM 5% (1250PX, 95% WIDTH) CÂN ĐỐI TỰ NHIÊN
    ========================================================================== */
 .article-page-container,
 #viewBlogDetail {
-  width: 80% !important;
-  max-width: 80% !important;
+  width: 95% !important;
+  max-width: 1250px !important;
   margin-left: auto !important;
   margin-right: auto !important;
   padding-left: 0 !important;
@@ -4835,12 +4835,11 @@ header.header {
   overflow: visible !important;
 }
 
-@media (max-width: 1200px) {
-  .article-page-container,
-  #viewBlogDetail {
-    width: 86% !important;
-    max-width: 86% !important;
-  }
+/* TỐI ƯU HÓA ĐỘ PHẢN HỒI CLICK / CHẠM 0MS - LOẠI BỎ ĐỘ TRỄ 300MS & CHỐNG LAG */
+a, button, [onclick], .nav-link, .product-card, .blog-item, .category-card, .sidebar-blog-item, .detail-tab-btn, .variant-pill-option, .modal-close-btn, .blog-card-full {
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+  cursor: pointer !important;
 }
 
 /* TỐI ƯU HIỂN THỊ HÌNH ẢNH BÀI VIẾT: SẮC NÉT, CHỐNG MỜ VỠ ẢNH */
@@ -4858,29 +4857,13 @@ header.header {
   display: block !important;
 }
 
-@media (max-width: 992px) {
-  .article-page-container,
-  #viewBlogDetail {
-    width: 88% !important;
-    max-width: 88% !important;
-  }
-}
-
 @media (max-width: 768px) {
   .article-page-container,
   #viewBlogDetail {
     width: 100% !important;
     max-width: 100% !important;
-    padding: 0 8px !important;
-  }
-}
-
-@media (max-width: 600px) {
-  .article-page-container,
-  #viewBlogDetail {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 0 8px !important;
+    padding: 0 10px !important;
+    margin: 12px auto 40px !important;
   }
 }
 
