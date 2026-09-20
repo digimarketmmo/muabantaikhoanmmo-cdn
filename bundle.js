@@ -7698,12 +7698,24 @@ function syncAllOpenViewsStock(changedProdId) {
           const target = bUrl + "/api/GetBalance.php?username=" + encodeURIComponent(uname) + "&password=" + encodeURIComponent(upass);
           try {
             const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target));
-            const json = await resp.json();
+            const rawText = await resp.text();
             let money = 0;
-            if (json.status === "success" && json.data) {
-              money = Number(json.data.balance || json.data.money || json.data.Balance || 0);
+            let isOk = false;
+            try {
+              const json = JSON.parse(rawText);
+              if (json && (json.status === "success" || json.data)) {
+                money = Number(json.data.balance || json.data.money || json.data.Balance || json.money || 0);
+                isOk = true;
+              }
+            } catch(jsonErr) {
+              // Phản hồi text thô: "43.174Coin" -> bóc tách lấy 43174
+              const digits = rawText.replace(/\D/g, '');
+              if (digits) {
+                money = parseInt(digits, 10);
+                isOk = true;
+              }
             }
-            return { success: json.status === "success", data: { money: money }, provider: provider, raw: json };
+            return { success: isOk, data: { money: money }, provider: provider, raw: rawText };
           } catch(e) {
             console.warn("shop1989nd getProfile error:", e);
             return { success: false, data: { money: 0 }, provider: provider };
@@ -7906,6 +7918,18 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.executeSourceApiCall = executeSourceApiCall;
 
+    
+    // Khởi tạo bộ nhớ tạm số dư an toàn chống ReferenceError
+    if (typeof window.cachedSourceBalances === "undefined" || !window.cachedSourceBalances) {
+      window.cachedSourceBalances = {};
+      try {
+        var _storedB = localStorage.getItem("mmo_source_balances");
+        if (_storedB) window.cachedSourceBalances = JSON.parse(_storedB) || {};
+      } catch(e) {}
+    }
+    var cachedSourceBalances = window.cachedSourceBalances;
+    var cachedSourceMoney = window.cachedSourceMoney || 0;
+
     async function fetchSingleSourceProfile(providerKey = "sellmmo", isManual = false) {
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[providerKey]) ? API_SOURCES[providerKey] : null;
       if (!pCfg) return;
@@ -7915,37 +7939,43 @@ function syncAllOpenViewsStock(changedProdId) {
         moneyEl.innerHTML = "<i class='fa-solid fa-spinner fa-spin' style='font-size:0.9rem;'></i>";
       }
 
-      let moneyVal = (cachedSourceBalances && typeof cachedSourceBalances[providerKey] === "number") ? cachedSourceBalances[providerKey] : 0;
+      if (typeof window.cachedSourceBalances === "undefined" || !window.cachedSourceBalances) {
+        window.cachedSourceBalances = {};
+      }
+
+      let moneyVal = (typeof window.cachedSourceBalances[providerKey] === "number") ? window.cachedSourceBalances[providerKey] : 0;
       let isSuccess = false;
 
       try {
-        if (typeof callGasApi === "function") {
-          const res = await executeSourceApiCall("getProfile", { provider: providerKey, baseUrl: pCfg.baseUrl, apiKey: pCfg.apiKey });
+        const res = await executeSourceApiCall("getProfile", { 
+          provider: providerKey, 
+          baseUrl: pCfg.baseUrl, 
+          apiKey: pCfg.apiKey 
+        });
 
-          if (res && res.success && res.data) {
-            if (typeof res.data.money !== "undefined") {
-              moneyVal = Math.round(Number(res.data.money) || 0);
-              isSuccess = true;
-            }
+        if (res && res.success && res.data) {
+          if (typeof res.data.money !== "undefined") {
+            moneyVal = Math.round(Number(res.data.money) || 0);
+            isSuccess = true;
           }
         }
       } catch(e) {
         console.warn("fetchSingleSourceProfile error for " + providerKey + ":", e);
       }
 
-      if (!cachedSourceBalances) cachedSourceBalances = {};
-      cachedSourceBalances[providerKey] = moneyVal;
+      window.cachedSourceBalances[providerKey] = moneyVal;
+      cachedSourceBalances = window.cachedSourceBalances;
       try {
-        localStorage.setItem("mmo_source_balances", JSON.stringify(cachedSourceBalances));
+        localStorage.setItem("mmo_source_balances", JSON.stringify(window.cachedSourceBalances));
       } catch(e) {}
-
-      if (providerKey === "selltainguyenmmo") cachedSourceMoney = moneyVal;
 
       if (moneyEl) {
         moneyEl.innerText = formatVND(moneyVal);
       }
 
-      renderSourceBalanceWarning();
+      if (typeof renderSourceBalanceWarning === "function") {
+        try { renderSourceBalanceWarning(); } catch(e) {}
+      }
 
       if (isManual && typeof showToast === "function") {
         if (isSuccess) {
