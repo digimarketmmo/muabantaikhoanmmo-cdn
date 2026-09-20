@@ -6432,7 +6432,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
     // VIEW SWITCHER WITH ADMIN SECURITY GUARD & ZERO-LAG CACHING
     function switchView(viewId) {
-      if (typeof ensureUniversalComponentsExist === "function" && (viewId === "viewApiDocs" || viewId === "viewProductDetail")) {
+      if (typeof ensureUniversalComponentsExist === "function") {
         ensureUniversalComponentsExist();
       }
       const currentActiveView = localStorage.getItem("mmo_current_view") || "viewStore";
@@ -14876,7 +14876,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (oldMaster) oldMaster.remove();
       var scriptMaster = document.createElement("script");
       scriptMaster.id = "bloggerJsonpMasterScript";
-      scriptMaster.src = "https://muabantaikhoanmmo68.blogspot.com/feeds/posts/default?alt=json-in-script&callback=handleBloggerFeedMasterJsonp&max-results=50&_t=" + Date.now();
+      scriptMaster.src = "https://www.muabantaikhoanmmo.com/feeds/posts/default?alt=json-in-script&callback=handleBloggerFeedMasterJsonp&max-results=50&_t=" + Date.now();
       scriptMaster.onerror = function() {
         // Fallback sang tên miền thương hiệu www.muabantaikhoanmmo.com
         var oldFb = document.getElementById("bloggerJsonpFallbackScript");
@@ -26159,15 +26159,86 @@ async function confirmRefundOrder() {
     window.updateVariantSelectForProduct = updateVariantSelectForProduct;
 
     // ============================================================================
-    // UNIVERSAL AUTO-INJECTION ENGINE (v1.7.9)
-    // Tự động kiểm tra và tiêm các thành phần mới (Tab API, Docs, Footer Link, Filter)
-    // vào DOM cho TOÀN BỘ Blog vệ tinh mà không cần người dùng dán lại XML!
+    // UNIVERSAL AUTO-INJECTION & 0MS SPA ENGINE (v1.8.1)
+    // - ZERO RECURSION / ZERO LOOP / ZERO CPU OVERHEAD
+    // - DIRECT SPA SWITCHING: NO HOMEPAGE FLASH, NO REDIRECT TO HOME FIRST
+    // - UNIVERSAL DATA SYNC: SATELLITE BLOGS RECEIVE ALL MAIN ARTICLES & CLEAN DOM
     // ============================================================================
     var API_DOCS_INLINE_HTML = "<section class='container policy-view-wrapper' id='viewApiDocs' style='display:none; max-width:1440px; margin-top:20px; margin-bottom:50px;'> <div style='background:#0d131f; border:1px solid #1e293b; border-radius:14px; padding:28px; margin-bottom:24px;'> <div style='display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; border-bottom:1px solid #1e293b; padding-bottom:18px; margin-bottom:24px;'> <div> <div style='font-size:0.8rem; color:#64748b; margin-bottom:6px; display:flex; align-items:center; gap:6px;'> <a onclick='switchView(\"viewStore\")' style='color:#10b981; cursor:pointer; text-decoration:none;'><i class='fa-solid fa-house'></i> Trang Chủ</a> <span>/</span> <span>Chính Sách &amp; Hỗ Trợ</span> <span>/</span> <span style='color:#94a3b8;'>Tài Liệu API Mua Hàng</span> </div> <h1 style='font-size:1.7rem; color:#fff; font-weight:800; margin:0; display:flex; align-items:center; gap:10px;'> <i class='fa-solid fa-code' style='color:#10b981;'></i> TÀI LIỆU API &amp; HƯỚNG DẪN MUA HÀNG TỰ ĐỘNG </h1> </div> <div style='display:flex; gap:10px; flex-wrap:wrap;'> <button onclick='switchView(\"viewStore\")' style='background:#131d2e; color:#94a3b8; font-weight:700; padding:8px 16px; border-radius:8px; border:1px solid #1e293b; cursor:pointer; font-size:0.85rem; display:flex; align-items:center; gap:6px;'> <i class='fa-solid fa-store'></i> Xem Sản Phẩm </button> <a class='mmo-zalo-link' href='https://zalo.me/0968033451' target='_blank' style='background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:700; padding:8px 16px; border-radius:8px; text-decoration:none; font-size:0.85rem; display:flex; align-items:center; gap:6px;'> <i class='fa-solid fa-headset'></i> Hỗ Trợ Tích Hợp API </a> </div> </div> <div style='background:rgba(16,185,129,0.08); border-left:4px solid #10b981; border-radius:0 10px 10px 0; padding:16px 20px; margin-bottom:28px;'> <div style='font-weight:700; color:#10b981; font-size:0.95rem; margin-bottom:6px; display:flex; align-items:center; gap:8px;'> <i class='fa-solid fa-bolt'></i> TỔNG QUAN HỆ THỐNG API </div> <div style='color:#cbd5e1; font-size:0.88rem; line-height:1.6;'> Hệ thống API RESTful của <strong>MUABANTAIKHOANMMO.COM</strong> cho phép các đại lý, chủ shop vệ tinh, bot Telegram, phần mềm tự động (tool MMO) tra cứu sản phẩm, kiểm tra tồn kho thời gian thực và thực hiện đặt mua tài khoản tự động 24/7 với thời gian phản hồi siêu tốc <strong>&lt; 500ms</strong>. </div> </div> <div style='color:#cbd5e1; font-size:0.92rem; line-height:1.75;'> <div style='margin-bottom:30px;'> <h2 style='color:#fff; font-size:1.2rem; font-weight:800; margin:0 0 12px 0; display:flex; align-items:center; gap:8px; border-bottom:1px dashed #1e293b; padding-bottom:8px;'> <span style='background:#10b981; color:#000; font-size:0.75rem; padding:2px 8px; border-radius:4px; font-weight:900;'>1</span> THÔNG TIN KẾT NỐI &amp; XÁC THỰC (AUTHENTICATION) </h2> <p style='color:#94a3b8; font-size:0.88rem; margin-bottom:12px;'> Tất cả yêu cầu gửi tới máy chủ API đều phải sử dụng giao thức <code>HTTPS</code> an toàn. Định dạng dữ liệu yêu cầu và phản hồi mặc định là <code>JSON (application/json)</code>. </p> <div style='display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:14px; margin-bottom:16px;'> <div style='background:#070a12; border:1px solid #1e293b; border-radius:10px; padding:14px;'> <span style='font-size:0.75rem; color:#94a3b8; text-transform:uppercase; font-weight:700; display:block; margin-bottom:4px;'>Base URL Máy Chủ API</span> <code style='color:#38bdf8; font-weight:800; font-size:0.88rem; font-family:monospace; word-break:break-all;'>https://mmo-shop-api.manhdongvtc.workers.dev</code> </div> <div style='background:#070a12; border:1px solid #1e293b; border-radius:10px; padding:14px;'> <span style='font-size:0.75rem; color:#94a3b8; text-transform:uppercase; font-weight:700; display:block; margin-bottom:4px;'>Phương thức xác thực (Auth Header)</span> <code style='color:#10b981; font-weight:700; font-size:0.84rem; font-family:monospace; word-break:break-all;'>Authorization: Bearer YOUR_API_KEY</code> </div> </div> <div style='background:#131d2e; border:1px solid #1e293b; border-radius:8px; padding:12px 16px; font-size:0.85rem; color:#94a3b8;'> <i class='fa-solid fa-key' style='color:#fbbf24; margin-right:6px;'></i> <strong>Cách lấy API Key:</strong> Đăng nhập tài khoản của bạn trên website &rarr; Bấm vào biểu tượng Avatar góc phải &rarr; Chọn <strong>Tài khoản của tôi</strong> &rarr; Mục <strong>API Key</strong> để sao chép khóa bí mật của bạn. Hãy giữ bí mật API Key và không chia sẻ cho bất kỳ ai. </div> </div> <div style='margin-bottom:30px;'> <h2 style='color:#fff; font-size:1.2rem; font-weight:800; margin:0 0 16px 0; display:flex; align-items:center; gap:8px; border-bottom:1px dashed #1e293b; padding-bottom:8px;'> <span style='background:#10b981; color:#000; font-size:0.75rem; padding:2px 8px; border-radius:4px; font-weight:900;'>2</span> DANH SÁCH ENDPOINTS CHI TIẾT </h2> <div style='background:#070a12; border:1px solid #1e293b; border-radius:10px; padding:18px; margin-bottom:18px;'> <div style='display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;'> <span style='background:#0284c7; color:#fff; font-weight:800; font-size:0.75rem; padding:3px 8px; border-radius:4px;'>GET</span> <code style='color:#38bdf8; font-size:0.95rem; font-weight:700; font-family:monospace;'>/api/profile</code> <span style='color:#94a3b8; font-size:0.82rem;'>&mdash; Kiểm tra thông tin tài khoản &amp; số dư ví khả dụng</span> </div> <p style='color:#94a3b8; font-size:0.84rem; margin-bottom:10px;'> Truyền API Key qua Header <code>Authorization: Bearer &lt;KEY&gt;</code> hoặc tham số URL <code>?api_key=&lt;KEY&gt;</code>. </p> <div style='background:#040711; border:1px solid #1e293b; border-radius:6px; padding:12px;'> <span style='font-size:0.75rem; color:#64748b; display:block; margin-bottom:4px; font-weight:700;'>Phản hồi mẫu thành công (HTTP 200):</span> <pre style='margin:0; color:#38bdf8; font-size:0.82rem; font-family:monospace; line-height:1.4;'>{ &quot;status&quot;: &quot;success&quot;, &quot;data&quot;: { &quot;email&quot;: &quot;khachhang@gmail.com&quot;, &quot;name&quot;: &quot;Nguyễn Văn A&quot;, &quot;balance&quot;: 500000, &quot;role&quot;: &quot;Thành viên&quot;, &quot;total_spent&quot;: 1250000 } }</pre> </div> </div> <div style='background:#070a12; border:1px solid #1e293b; border-radius:10px; padding:18px; margin-bottom:18px;'> <div style='display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;'> <span style='background:#0284c7; color:#fff; font-weight:800; font-size:0.75rem; padding:3px 8px; border-radius:4px;'>GET</span> <code style='color:#38bdf8; font-size:0.95rem; font-weight:700; font-family:monospace;'>/api/products</code> <span style='color:#94a3b8; font-size:0.82rem;'>&mdash; Lấy danh sách toàn bộ 50+ sản phẩm, danh mục, giá bán và tồn kho live</span> </div> <p style='color:#94a3b8; font-size:0.84rem; margin-bottom:10px;'> Endpoint công khai, không bắt buộc API Key. Dữ liệu được đồng bộ trực tiếp từ Turso SQLite thời gian thực. </p> <div style='background:#040711; border:1px solid #1e293b; border-radius:6px; padding:12px;'> <span style='font-size:0.75rem; color:#64748b; display:block; margin-bottom:4px; font-weight:700;'>Phản hồi mẫu thành công (HTTP 200):</span> <pre style='margin:0; color:#10b981; font-size:0.82rem; font-family:monospace; line-height:1.4;'>{ &quot;status&quot;: &quot;success&quot;, &quot;data&quot;: [ { &quot;id&quot;: &quot;PROD_MU5PWT7PP7&quot;, &quot;name&quot;: &quot;TÀI KHOẢN KLING AI 65 CREDIT&quot;, &quot;price&quot;: 10000, &quot;stock&quot;: 299, &quot;category&quot;: &quot;Tài Khoản AI&quot;, &quot;variants&quot;: [ { &quot;name&quot;: &quot;kling ai&quot;, &quot;price&quot;: 10000, &quot;stock&quot;: 299 } ] } ] }</pre> </div> </div> <div style='background:#070a12; border:1px solid #1e293b; border-radius:10px; padding:18px; margin-bottom:18px;'> <div style='display:flex; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;'> <span style='background:#10b981; color:#000; font-weight:900; font-size:0.75rem; padding:3px 8px; border-radius:4px;'>POST</span> <code style='color:#10b981; font-size:0.95rem; font-weight:700; font-family:monospace;'>/api/buy</code> <span style='color:#94a3b8; font-size:0.82rem;'>&mdash; Đặt mua sản phẩm tự động &amp; bóc tách tài khoản tức thì</span> </div> <p style='color:#94a3b8; font-size:0.84rem; margin-bottom:10px;'> Thực hiện trừ tiền ví và khóa kho nguyên tử chống bán trùng (Atomic Lock). Nếu giao dịch thành công, mảng tài khoản <code>accounts</code> sẽ được trả về ngay lập tức. </p> <table style='width:100%; border-collapse:collapse; font-size:0.82rem; margin-bottom:12px;'> <thead> <tr style='background:#131d2e; color:#94a3b8; text-align:left;'> <th style='padding:8px 10px; border:1px solid #1e293b;'>Tham số Body</th> <th style='padding:8px 10px; border:1px solid #1e293b;'>Kiểu</th> <th style='padding:8px 10px; border:1px solid #1e293b;'>Bắt buộc</th> <th style='padding:8px 10px; border:1px solid #1e293b;'>Mô tả</th> </tr> </thead> <tbody> <tr> <td style='padding:8px 10px; border:1px solid #1e293b;'><code style='color:#38bdf8;'>api_key</code></td> <td style='padding:8px 10px; border:1px solid #1e293b;'>string</td> <td style='padding:8px 10px; border:1px solid #1e293b; color:#10b981;'>Có (hoặc qua Header)</td> <td style='padding:8px 10px; border:1px solid #1e293b;'>Khóa bí mật API của bạn</td> </tr> <tr> <td style='padding:8px 10px; border:1px solid #1e293b;'><code style='color:#38bdf8;'>product_id</code></td> <td style='padding:8px 10px; border:1px solid #1e293b;'>string</td> <td style='padding:8px 10px; border:1px solid #1e293b; color:#10b981;'>Có</td> <td style='padding:8px 10px; border:1px solid #1e293b;'>Mã sản phẩm (ví dụ: PROD_MU5PWT7PP7)</td> </tr> <tr> <td style='padding:8px 10px; border:1px solid #1e293b;'><code style='color:#38bdf8;'>variant_idx</code></td> <td style='padding:8px 10px; border:1px solid #1e293b;'>number</td> <td style='padding:8px 10px; border:1px solid #1e293b; color:#94a3b8;'>Không (mặc định 0)</td> <td style='padding:8px 10px; border:1px solid #1e293b;'>Chỉ số biến thể gói cần mua (0, 1, 2...)</td> </tr> <tr> <td style='padding:8px 10px; border:1px solid #1e293b;'><code style='color:#38bdf8;'>quantity</code></td> <td style='padding:8px 10px; border:1px solid #1e293b;'>number</td> <td style='padding:8px 10px; border:1px solid #1e293b; color:#10b981;'>Có</td> <td style='padding:8px 10px; border:1px solid #1e293b;'>Số lượng tài khoản cần mua (tối thiểu 1)</td> </tr> </tbody> </table> <div style='background:#040711; border:1px solid #1e293b; border-radius:6px; padding:12px;'> <span style='font-size:0.75rem; color:#64748b; display:block; margin-bottom:4px; font-weight:700;'>Phản hồi mẫu đặt hàng thành công (HTTP 200):</span> <pre style='margin:0; color:#fbbf24; font-size:0.82rem; font-family:monospace; line-height:1.4;'>{ &quot;status&quot;: &quot;success&quot;, &quot;order_id&quot;: &quot;ORD_1726850000000_A1B2&quot;, &quot;product_id&quot;: &quot;PROD_MU5PWT7PP7&quot;, &quot;product_name&quot;: &quot;TÀI KHOẢN KLING AI 65 CREDIT&quot;, &quot;quantity&quot;: 1, &quot;unit_price&quot;: 10000, &quot;total_price&quot;: 10000, &quot;accounts&quot;: [ &quot;user_kling_01@domain.com|passKling123456&quot; ], &quot;remaining_balance&quot;: 490000 }</pre> </div> </div> </div> <div style='margin-bottom:30px;'> <h2 style='color:#fff; font-size:1.2rem; font-weight:800; margin:0 0 16px 0; display:flex; align-items:center; gap:8px; border-bottom:1px dashed #1e293b; padding-bottom:8px;'> <span style='background:#10b981; color:#000; font-size:0.75rem; padding:2px 8px; border-radius:4px; font-weight:900;'>3</span> MÃ NGUỒN MẪU TÍCH HỢP (CODE SAMPLES) </h2> <div style='margin-bottom:16px;'> <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;'> <span style='font-size:0.85rem; font-weight:700; color:#e2e8f0;'><i class='fa-solid fa-terminal' style='color:#38bdf8; margin-right:6px;'></i> 1. Lệnh cURL (Bash / Command Line)</span> <button class='btn-action-copy' onclick='copyTextToClipboard(document.getElementById(\"apiCurlSamplePre\").innerText, \"Đã chép cURL!\")' style='font-size:0.75rem; padding:3px 8px;'><i class='fa-solid fa-copy'></i> Sao chép</button> </div> <pre id='apiCurlSamplePre' style='background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:14px; color:#a5f3fc; font-family:Consolas, Monaco, monospace; font-size:0.82rem; line-height:1.45; overflow-x:auto; margin:0;'>curl -X POST https://mmo-shop-api.manhdongvtc.workers.dev/api/buy \\ -H &quot;Content-Type: application/json&quot; \\ -H &quot;Authorization: Bearer YOUR_API_KEY&quot; \\ -d '{ &quot;product_id&quot;: &quot;PROD_MU5PWT7PP7&quot;, &quot;variant_idx&quot;: 0, &quot;quantity&quot;: 1 }'</pre> </div> <div style='margin-bottom:16px;'> <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;'> <span style='font-size:0.85rem; font-weight:700; color:#e2e8f0;'><i class='fa-brands fa-php' style='color:#a855f7; margin-right:6px;'></i> 2. Ngôn ngữ PHP (cURL Client)</span> <button class='btn-action-copy' onclick='copyTextToClipboard(document.getElementById(\"apiPhpSamplePre\").innerText, \"Đã chép PHP!\")' style='font-size:0.75rem; padding:3px 8px;'><i class='fa-solid fa-copy'></i> Sao chép</button> </div> <pre id='apiPhpSamplePre' style='background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:14px; color:#e9d5ff; font-family:Consolas, Monaco, monospace; font-size:0.82rem; line-height:1.45; overflow-x:auto; margin:0;'>&lt;?php $apiKey = &quot;YOUR_API_KEY&quot;; $url = &quot;https://mmo-shop-api.manhdongvtc.workers.dev/api/buy&quot;; $data = [ &quot;product_id&quot; =&gt; &quot;PROD_MU5PWT7PP7&quot;, &quot;variant_idx&quot; =&gt; 0, &quot;quantity&quot; =&gt; 1 ]; $ch = curl_init($url); curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); curl_setopt($ch, CURLOPT_POST, true); curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data)); curl_setopt($ch, CURLOPT_HTTPHEADER, [ &quot;Content-Type: application/json&quot;, &quot;Authorization: Bearer &quot; . $apiKey ]); $response = curl_exec($ch); curl_close($ch); $result = json_decode($response, true); if ($result &amp;&amp; isset($result[&quot;status&quot;]) &amp;&amp; $result[&quot;status&quot;] === &quot;success&quot;) { echo &quot;Mua hàng thành công! Đơn hàng: &quot; . $result[&quot;order_id&quot;] . &quot;\\n&quot;; foreach ($result[&quot;accounts&quot;] as $acc) { echo &quot;Tài khoản: &quot; . $acc . &quot;\\n&quot;; } } else { echo &quot;Lỗi mua hàng: &quot; . ($result[&quot;error&quot;] ?? &quot;Không xác định&quot;); } ?&gt;</pre> </div> <div style='margin-bottom:16px;'> <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;'> <span style='font-size:0.85rem; font-weight:700; color:#e2e8f0;'><i class='fa-brands fa-python' style='color:#facc15; margin-right:6px;'></i> 3. Ngôn ngữ Python (requests)</span> <button class='btn-action-copy' onclick='copyTextToClipboard(document.getElementById(\"apiPySamplePre\").innerText, \"Đã chép Python!\")' style='font-size:0.75rem; padding:3px 8px;'><i class='fa-solid fa-copy'></i> Sao chép</button> </div> <pre id='apiPySamplePre' style='background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:14px; color:#fef08a; font-family:Consolas, Monaco, monospace; font-size:0.82rem; line-height:1.45; overflow-x:auto; margin:0;'>import requests API_KEY = \"YOUR_API_KEY\" URL = \"https://mmo-shop-api.manhdongvtc.workers.dev/api/buy\" payload = { \"product_id\": \"PROD_MU5PWT7PP7\", \"variant_idx\": 0, \"quantity\": 1 } headers = { \"Content-Type\": \"application/json\", \"Authorization\": f\"Bearer {API_KEY}\" } res = requests.post(URL, json=payload, headers=headers) data = res.json() if data.get(\"status\") == \"success\": print(\"Mua thành công! Mã đơn:\", data.get(\"order_id\")) for acc in data.get(\"accounts\", []): print(\"Tài khoản bàn giao:\", acc) else: print(\"Lỗi:\", data.get(\"error\"))</pre> </div> <div style='margin-bottom:16px;'> <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;'> <span style='font-size:0.85rem; font-weight:700; color:#e2e8f0;'><i class='fa-brands fa-node-js' style='color:#22c55e; margin-right:6px;'></i> 4. JavaScript / NodeJS (fetch)</span> <button class='btn-action-copy' onclick='copyTextToClipboard(document.getElementById(\"apiJsSamplePre\").innerText, \"Đã chép Node.js!\")' style='font-size:0.75rem; padding:3px 8px;'><i class='fa-solid fa-copy'></i> Sao chép</button> </div> <pre id='apiJsSamplePre' style='background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:14px; color:#bbf7d0; font-family:Consolas, Monaco, monospace; font-size:0.82rem; line-height:1.45; overflow-x:auto; margin:0;'>const apiKey = \"YOUR_API_KEY\"; async function buyProductMmo() { const res = await fetch(\"https://mmo-shop-api.manhdongvtc.workers.dev/api/buy\", { method: \"POST\", headers: { \"Content-Type\": \"application/json\", \"Authorization\": \"Bearer \" + apiKey }, body: JSON.stringify({ product_id: \"PROD_MU5PWT7PP7\", variant_idx: 0, quantity: 1 }) }); const data = await res.json(); if (data.status === \"success\") { console.log(\"Mua thành công!\", data.order_id); console.log(\"Danh sách tài khoản:\", data.accounts); } else { console.error(\"Lỗi:\", data.error); } } buyProductMmo();</pre> </div> </div> <div style='margin-bottom:30px;'> <h2 style='color:#fff; font-size:1.2rem; font-weight:800; margin:0 0 16px 0; display:flex; align-items:center; gap:8px; border-bottom:1px dashed #1e293b; padding-bottom:8px;'> <span style='background:#10b981; color:#000; font-size:0.75rem; padding:2px 8px; border-radius:4px; font-weight:900;'>4</span> BẢNG MÃ TRẠNG THÁI &amp; LỖI (HTTP STATUS CODES) </h2> <table style='width:100%; border-collapse:collapse; font-size:0.82rem;'> <thead> <tr style='background:#131d2e; color:#94a3b8; text-align:left;'> <th style='padding:8px 10px; border:1px solid #1e293b; width:120px;'>Mã HTTP</th> <th style='padding:8px 10px; border:1px solid #1e293b; width:180px;'>Trạng thái</th> <th style='padding:8px 10px; border:1px solid #1e293b;'>Ý nghĩa &amp; Cách xử lý</th> </tr> </thead> <tbody> <tr> <td style='padding:8px 10px; border:1px solid #1e293b;'><span style='background:rgba(16,185,129,0.2); color:#10b981; font-weight:800; padding:2px 6px; border-radius:4px;'>200 OK</span></td> <td style='padding:8px 10px; border:1px solid #1e293b; color:#fff; font-weight:600;'>Thành công (Success)</td> <td style='padding:8px 10px; border:1px solid #1e293b;'>Yêu cầu được thực thi trọn vẹn, tài khoản đã được xuất kho.</td> </tr> <tr> <td style='padding:8px 10px; border:1px solid #1e293b;'><span style='background:rgba(239,68,68,0.2); color:#ef4444; font-weight:800; padding:2px 6px; border-radius:4px;'>400 Bad Request</span></td> <td style='padding:8px 10px; border:1px solid #1e293b; color:#fff; font-weight:600;'>Dữ liệu không hợp lệ</td> <td style='padding:8px 10px; border:1px solid #1e293b;'>Thiếu trường bắt buộc (product_id, quantity) hoặc quantity &lt; 1.</td> </tr> <tr> <td style='padding:8px 10px; border:1px solid #1e293b;'><span style='background:rgba(239,68,68,0.2); color:#ef4444; font-weight:800; padding:2px 6px; border-radius:4px;'>401 Unauthorized</span></td> <td style='padding:8px 10px; border:1px solid #1e293b; color:#fff; font-weight:600;'>Chưa xác thực</td> <td style='padding:8px 10px; border:1px solid #1e293b;'>API Key không chính xác, hết hạn hoặc chưa được gửi lên.</td> </tr> <tr> <td style='padding:8px 10px; border:1px solid #1e293b;'><span style='background:rgba(245,158,11,0.2); color:#f59e0b; font-weight:800; padding:2px 6px; border-radius:4px;'>402 Payment Required</span></td> <td style='padding:8px 10px; border:1px solid #1e293b; color:#fff; font-weight:600;'>Số dư không đủ</td> <td style='padding:8px 10px; border:1px solid #1e293b;'>Số dư ví của bạn không đủ để thanh toán. Vui lòng nạp thêm tiền vào tài khoản.</td> </tr> <tr> <td style='padding:8px 10px; border:1px solid #1e293b;'><span style='background:rgba(239,68,68,0.2); color:#ef4444; font-weight:800; padding:2px 6px; border-radius:4px;'>404 Not Found</span></td> <td style='padding:8px 10px; border:1px solid #1e293b; color:#fff; font-weight:600;'>Không tìm thấy SP</td> <td style='padding:8px 10px; border:1px solid #1e293b;'>Mã sản phẩm (product_id) không tồn tại trong hệ thống.</td> </tr> <tr> <td style='padding:8px 10px; border:1px solid #1e293b;'><span style='background:rgba(245,158,11,0.2); color:#f59e0b; font-weight:800; padding:2px 6px; border-radius:4px;'>409 Conflict</span></td> <td style='padding:8px 10px; border:1px solid #1e293b; color:#fff; font-weight:600;'>Hết hàng trong kho</td> <td style='padding:8px 10px; border:1px solid #1e293b;'>Sản phẩm hoặc biến thể được chọn hiện đang tạm hết tài khoản sẵn có.</td> </tr> </tbody> </table> </div> <div style='background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.25); border-radius:10px; padding:18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;'> <div> <h4 style='color:#38bdf8; font-size:0.95rem; margin:0 0 4px 0;'><i class='fa-solid fa-headset'></i> Cần hỗ trợ kỹ thuật tích hợp API riêng?</h4> <p style='color:#94a3b8; font-size:0.84rem; margin:0;'>Đội ngũ kỹ sư hỗ trợ sẵn sàng hướng dẫn cấu hình webhook, chiết khấu đại lý qua Zalo hoặc Telegram.</p> </div> <a class='mmo-zalo-link' href='https://zalo.me/0968033451' target='_blank' style='background:#0284c7; color:#fff; font-weight:700; padding:8px 16px; border-radius:8px; text-decoration:none; font-size:0.82rem;'> Liên hệ Zalo Kỹ Thuật </a> </div> </div> </div> </section>";
 
-    function ensureUniversalComponentsExist(currentProd) {
+    // 1. TOP-LEVEL ANTI-FLASH: Hide viewStore immediately if URL specifies another view
+    (function() {
       try {
-        // 1. KIỂM TRA VÀ TIÊM TAB "TÍCH HỢP API" TRONG CHI TIẾT SẢN PHẨM
+        var sp = new URLSearchParams(window.location.search);
+        var v = sp.get("view");
+        var p = sp.get("prod") || sp.get("product");
+        var b = sp.get("post") || sp.get("blog");
+        var h = (window.location.hash || "").replace("#", "").trim();
+        var target = p ? "viewProductDetail" : (b ? "viewBlogDetail" : (v || h));
+        if (target && target !== "viewStore") {
+          var s = document.createElement("style");
+          s.id = "mmoAntiHomeFlashStyle";
+          s.textContent = "#viewStore { display: none !important; } #" + target + " { display: block !important; }";
+          (document.head || document.documentElement).appendChild(s);
+        }
+      } catch(e) {}
+    })();
+
+    // 2. UNIVERSAL CLICK INTERCEPTOR: Pure 0ms SPA Switching without page reload or redirect
+    if (typeof document !== "undefined" && !window._mmoClickInterceptorBound) {
+      window._mmoClickInterceptorBound = true;
+      document.addEventListener("click", function(e) {
+        var a = e.target.closest("a");
+        if (!a) return;
+        if (e.ctrlKey || e.metaKey || e.shiftKey || a.target === "_blank") return;
+
+        var href = a.getAttribute("href");
+        if (!href || href.startsWith("#") || href.startsWith("javascript:") || href.startsWith("tel:") || href.startsWith("mailto:")) return;
+
+        try {
+          var url = new URL(href, window.location.origin);
+          var isInternal = (url.hostname === window.location.hostname || url.hostname.includes("muabantaikhoanmmo.com") || url.hostname.includes("blogspot.com"));
+          if (isInternal) {
+            var v = url.searchParams.get("view");
+            var p = url.searchParams.get("prod") || url.searchParams.get("product");
+            var b = url.searchParams.get("post") || url.searchParams.get("blog");
+
+            if (p && typeof openProductDetailById === "function") {
+              e.preventDefault();
+              openProductDetailById(p);
+              return;
+            }
+            if (b && typeof openBlogDetail === "function") {
+              e.preventDefault();
+              openBlogDetail(b);
+              return;
+            }
+            if (v && typeof switchView === "function") {
+              e.preventDefault();
+              switchView(v);
+              return;
+            }
+            if (url.pathname === "/" && !url.search && typeof switchView === "function") {
+              e.preventDefault();
+              switchView("viewStore");
+              return;
+            }
+          }
+        } catch(err) {}
+      }, true);
+    }
+
+    // 3. MUTEX-GUARDED UNIVERSAL DOM SANITIZER (ZERO INFINITE LOOP)
+    var _isEnsuringUniversal = false;
+    function ensureUniversalComponentsExist(currentProd) {
+      if (_isEnsuringUniversal) return;
+      _isEnsuringUniversal = true;
+      try {
+        // Remove anti-home flash style once ready
+        var af = document.getElementById("mmoAntiHomeFlashStyle");
+        if (af) af.remove();
+
+        // A. KIỂM TRA VÀ TIÊM TAB "TÍCH HỢP API" TRONG CHI TIẾT SẢN PHẨM
         var tabsHeader = document.querySelector(".detail-tabs-header");
         if (tabsHeader && !document.getElementById("dtlTabBtnApi")) {
           var btnApi = document.createElement("button");
@@ -26191,7 +26262,7 @@ async function confirmRefundOrder() {
             "</h4>" +
             "<p style='color:#94a3b8; font-size:0.82rem; margin:0;'>Kết nối API trực tiếp từ hệ thống của bạn (Shop tự động, Bot Telegram, Web con, Tool) để mua sản phẩm này 24/7.</p>" +
             "</div>" +
-            "<button class='btn-action-copy' onclick='switchView(\"viewApiDocs\")' style='background:#10b981; color:#000; font-weight:800; border:none; padding:8px 14px; border-radius:8px; cursor:pointer;'>" +
+            "<button class='btn-action-copy' id='btnOpenApiFromTab' style='background:#10b981; color:#000; font-weight:800; border:none; padding:8px 14px; border-radius:8px; cursor:pointer;'>" +
             "<i class='fa-solid fa-book'></i> Xem Toàn Bộ Tài Liệu API" +
             "</button>" +
             "</div>" +
@@ -26201,7 +26272,7 @@ async function confirmRefundOrder() {
             "<span style='font-size:0.75rem; color:#94a3b8; text-transform:uppercase; font-weight:700; display:block; margin-bottom:4px;'>Mã Sản Phẩm (product_id)</span>" +
             "<div style='display:flex; align-items:center; justify-content:space-between; gap:8px;'>" +
             "<code id='dtlApiProdIdDisplay' style='color:#38bdf8; font-weight:800; font-size:0.95rem; font-family:monospace;'>PROD_...</code>" +
-            "<button class='btn-action-copy' onclick='copyTextToClipboard(document.getElementById(\"dtlApiProdIdDisplay\").textContent, \"Đã sao chép Product ID!\")' style='padding:3px 8px; font-size:0.75rem;'><i class='fa-solid fa-copy'></i> Chép ID</button>" +
+            "<button class='btn-action-copy' id='btnCopyProdIdTab' style='padding:3px 8px; font-size:0.75rem;'><i class='fa-solid fa-copy'></i> Chép ID</button>" +
             "</div>" +
             "</div>" +
             "<div style='background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:12px;'>" +
@@ -26221,9 +26292,30 @@ async function confirmRefundOrder() {
             "</div>" +
             "<div>" +
             "<span style='font-size:0.82rem; font-weight:700; color:#e2e8f0; display:block; margin-bottom:6px;'><i class='fa-solid fa-check-double' style='color:#10b981; margin-right:6px;'></i> Dữ Liệu Phản Hồi Trả Về (JSON):</span>" +
-            "<pre style='background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:12px; color:#cbd5e1; font-family:Consolas, Monaco, monospace; font-size:0.8rem; line-height:1.45; overflow-x:auto; margin:0;'>{\n  \"status\": \"success\",\n  \"order_id\": \"ORD_1726850000000_A1B2\",\n  \"product_name\": \"Tài Khoản...\",\n  \"quantity\": 1,\n  \"total_price\": 50000,\n  \"accounts\": [\n    \"user@gmail.com|password123|2fa_code\"\n  ],\n  \"remaining_balance\": 450000\n}</pre>" +
+            "<pre id='dtlApiJsonSample' style='background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:12px; color:#cbd5e1; font-family:Consolas, Monaco, monospace; font-size:0.8rem; line-height:1.45; overflow-x:auto; margin:0;'></pre>" +
             "</div>";
           tabBody.appendChild(secApi);
+
+          var bOpen = secApi.querySelector("#btnOpenApiFromTab");
+          if (bOpen) bOpen.onclick = function() { switchView("viewApiDocs"); };
+          var bCopyId = secApi.querySelector("#btnCopyProdIdTab");
+          if (bCopyId) bCopyId.onclick = function() {
+            var idEl = document.getElementById("dtlApiProdIdDisplay");
+            if (idEl && typeof copyTextToClipboard === "function") copyTextToClipboard(idEl.textContent, "Đã sao chép Product ID!");
+          };
+
+          var preSample = secApi.querySelector("#dtlApiJsonSample");
+          if (preSample) {
+            preSample.textContent = JSON.stringify({
+              status: "success",
+              order_id: "ORD_1726850000000_A1B2",
+              product_name: "Tài Khoản...",
+              quantity: 1,
+              total_price: 50000,
+              accounts: ["user@gmail.com|password123|2fa_code"],
+              remaining_balance: 450000
+            }, null, 2);
+          }
         }
 
         // Cập nhật thông số API nếu có sản phẩm đang mở
@@ -26233,14 +26325,16 @@ async function confirmRefundOrder() {
           var apiCurlEl = document.getElementById("dtlApiCurlPre");
           if (apiCurlEl) {
             var reqBody = JSON.stringify({ product_id: currentProd.id, variant_idx: 0, quantity: 1 }, null, 2);
-            apiCurlEl.textContent = "curl -X POST https://mmo-shop-api.manhdongvtc.workers.dev/api/buy \\n" +
-              "  -H \"Content-Type: application/json\" \\n" +
-              "  -H \"Authorization: Bearer YOUR_API_KEY\" \\n" +
-              "  -d '" + reqBody + "'";
+            apiCurlEl.textContent = [
+              'curl -X POST https://mmo-shop-api.manhdongvtc.workers.dev/api/buy',
+              '  -H "Content-Type: application/json"',
+              '  -H "Authorization: Bearer YOUR_API_KEY"',
+              '  -d ' + String.fromCharCode(39) + reqBody + String.fromCharCode(39)
+            ].join(String.fromCharCode(10));
           }
         }
 
-        // 2. KIỂM TRA VÀ TIÊM VIEW TÀI LIỆU API (#viewApiDocs) NẾU CHƯA CÓ TRONG DOM
+        // B. KIỂM TRA VÀ TIÊM VIEW TÀI LIỆU API (#viewApiDocs) NẾU CHƯA CÓ TRONG DOM
         if (!document.getElementById("viewApiDocs") && API_DOCS_INLINE_HTML) {
           var dummyWrap = document.createElement("div");
           dummyWrap.innerHTML = API_DOCS_INLINE_HTML;
@@ -26253,7 +26347,7 @@ async function confirmRefundOrder() {
           }
         }
 
-        // 3. KIỂM TRA VÀ TIÊM NÚT "TÀI LIỆU API" Ở CHÂN TRANG FOOTER NẾU CHƯA CÓ
+        // C. KIỂM TRA VÀ TIÊM NÚT "TÀI LIỆU API" Ở CHÂN TRANG FOOTER NẾU CHƯA CÓ
         if (!document.getElementById("footerApiDocsLink")) {
           var footerCol = document.querySelector(".footer-col-3");
           if (footerCol) {
@@ -26262,140 +26356,110 @@ async function confirmRefundOrder() {
             if (targetUl) {
               var li = document.createElement("li");
               li.className = "footer-link-item";
-              li.innerHTML = "<a id='footerApiDocsLink' href='javascript:void(0)' onclick='event.preventDefault(); switchView(\"viewApiDocs\"); return false;' style='color:#10b981; font-weight:700; cursor:pointer;'><i class='fa-solid fa-code' style='margin-right:4px;'></i> Tài liệu API</a>";
+              var aApi = document.createElement("a");
+              aApi.id = "footerApiDocsLink";
+              aApi.href = "javascript:void(0)";
+              aApi.style.cssText = "color:#10b981; font-weight:700; cursor:pointer;";
+              aApi.innerHTML = "<i class='fa-solid fa-code' style='margin-right:4px;'></i> Tài liệu API";
+              aApi.onclick = function(e) { e.preventDefault(); switchView("viewApiDocs"); return false; };
+              li.appendChild(aApi);
               targetUl.appendChild(li);
             }
           }
         }
 
-        // 4. KIỂM TRA VÀ BẬT BỘ LỌC THU GỌN DI ĐỘNG NẾU CẦN
-        var sb = document.getElementById("allProdSidebar") || document.querySelector(".all-prod-sidebar");
-        if (sb && !document.getElementById("allProdSidebarToggleBadge")) {
-          sb.id = "allProdSidebar";
-          var firstEl = sb.firstElementChild;
-          if (firstEl && !firstEl.classList.contains("all-prod-sidebar-header")) {
-            firstEl.className = "all-prod-sidebar-header";
-            firstEl.onclick = function() { if (typeof toggleAllProdSidebarOnMobile === "function") toggleAllProdSidebarOnMobile(); };
-            firstEl.style.cursor = "pointer";
-            var bg = document.createElement("span");
-            bg.className = "all-prod-sidebar-toggle-badge";
-            bg.id = "allProdSidebarToggleBadge";
-            bg.textContent = "▼ Bộ Lọc";
-            firstEl.appendChild(bg);
-          }
-        }
-
-        // 5. UNIVERSAL SATELLITE DOM SANITIZER (v1.8.0)
-        // Tự động dọn dẹp và chuẩn hóa 100% cho hàng trăm blog vệ tinh chạy XML cũ:
-        // A. Thay tác giả "Ban Biên Tập MUABANTAIKHOANMMO" thành "admin"
-        var authorEl = document.getElementById("articleAuthorName");
-        if (authorEl) authorEl.textContent = "admin";
-        var metaElements = document.querySelectorAll(".article-author-info, .article-meta-bar, .article-header, .article-main-content");
-        metaElements.forEach(function(container) {
-          container.querySelectorAll("*").forEach(function(el) {
-            if (el.childNodes && el.childNodes.length) {
-              el.childNodes.forEach(function(node) {
-                if (node.nodeType === 3 && node.textContent && node.textContent.indexOf("Ban Biên Tập") !== -1) {
-                  node.textContent = "admin";
-                }
-              });
+        // D. KIỂM TRA VÀ ĐỒNG BỘ THANH ĐIỀU HƯỚNG HEADER CHO CÁC BLOG VỆ TINH CŨ
+        var headerNav = document.querySelector(".header-nav");
+        if (headerNav) {
+          var requiredNavs = [
+            { id: "navStore", text: "Trang Chủ", icon: "fa-house", view: "viewStore" },
+            { id: "navProducts", text: "Sản Phẩm", icon: "fa-box-open", view: "viewAllProducts" },
+            { id: "navBlog", text: "Blog", icon: "fa-newspaper", view: "viewBlog" },
+            { id: "navTools", text: "Công Cụ MMO", icon: "fa-screwdriver-wrench", view: "viewTools" },
+            { id: "navProfile", text: "Tài Khoản", icon: "fa-user", view: "viewProfile" }
+          ];
+          requiredNavs.forEach(function(item) {
+            var existing = document.getElementById(item.id);
+            if (!existing) {
+              var newA = document.createElement("a");
+              newA.className = "nav-link";
+              newA.id = item.id;
+              newA.href = "javascript:void(0)";
+              newA.innerHTML = "<i class='fa-solid " + item.icon + "'></i> " + item.text;
+              newA.onclick = function(e) { e.preventDefault(); switchView(item.view); return false; };
+              headerNav.appendChild(newA);
+            } else {
+              existing.href = "javascript:void(0)";
+              existing.onclick = function(e) { e.preventDefault(); switchView(item.view); return false; };
             }
           });
-        });
-
-        // B. Xóa hoàn toàn khối "MUABANTAIKHOANMMO Editorial Team" (Hình 2)
-        document.querySelectorAll("div").forEach(function(el) {
-          if (el.textContent && (
-            el.textContent.indexOf("MUABANTAIKHOANMMO Editorial Team") !== -1 ||
-            el.textContent.indexOf("Chuyên trang tổng hợp tin tức, cẩm nang thủ thuật MMO") !== -1
-          )) {
-            var card = el;
-            while (card && card.parentElement && 
-                   card.parentElement.className !== "article-main-content" && 
-                   card.parentElement.id !== "viewBlogDetail" &&
-                   card.parentElement !== document.body) {
-              card = card.parentElement;
-            }
-            if (card && card !== document.body && card.parentElement) {
-              card.remove();
-            }
-          }
-        });
-
-        // C. Xóa khối Bottom CTA Box cũ ("Cần Nguyên Liệu Tài Khoản Để Thực Chiến Ngay?")
-        document.querySelectorAll(".article-footer-cta, .bottom-cta-box").forEach(function(el) { el.remove(); });
-
-        // D. Tự động tiêm SẢN PHẨM ĐỀ XUẤT CHO BẠN (#articleRelatedProductsWrap)
-        if (!document.getElementById("articleRelatedProductsWrap")) {
-          var artMain = document.querySelector(".article-main-content");
-          if (artMain) {
-            var wrap = document.createElement("div");
-            wrap.id = "articleRelatedProductsWrap";
-            wrap.style.cssText = "margin-top:32px;padding:20px;background:#0f172a;border-radius:12px;border:1px solid #1e293b;";
-            wrap.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #1c263c;"><h3 style="margin:0;font-size:1.05rem;font-weight:800;color:#fff;">SẢN PHẨM ĐỀ XUẤT CHO BẠN</h3><a id="btnArtRelViewAll" style="font-size:0.8rem;color:#38bdf8;cursor:pointer;">Xem tất cả &rarr;</a></div><div id="articleRelatedProdList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;"></div>';
-            artMain.appendChild(wrap);
-            if (typeof renderArticleRelatedProducts === "function") {
-              var curBlogId = localStorage.getItem("mmo_current_blog_id");
-              var allBlogs = (typeof MOCK_DATA !== "undefined" && MOCK_DATA.blogs) ? MOCK_DATA.blogs : [];
-              var curBlog = allBlogs.find(function(b) { return b && b.id === curBlogId; }) || allBlogs[0];
-              if (curBlog) renderArticleRelatedProducts(curBlog);
-            }
-          }
         }
 
-        // E. Đồng bộ đầy đủ các nút bấm trên thanh Header Nav nếu thiếu
-        var nav = document.querySelector(".header-nav");
-        if (nav) {
-          if (!document.getElementById("navBlog")) {
-            var aBlog = document.createElement("a");
-            aBlog.className = "nav-link";
-            aBlog.id = "navBlog";
-            aBlog.onclick = function() { switchView("viewBlog"); };
-            aBlog.innerHTML = "<i class='fa-solid fa-newspaper'></i> Blog";
-            nav.appendChild(aBlog);
+        // E. UNIVERSAL SATELLITE DOM SANITIZER (SCOPED STRICTLY TO #viewBlogDetail)
+        var viewBlogDetailEl = document.getElementById("viewBlogDetail");
+        if (viewBlogDetailEl) {
+          // 1. Thay tác giả "Ban Biên Tập MUABANTAIKHOANMMO" thành "admin"
+          var authorEl = document.getElementById("articleAuthorName");
+          if (authorEl) authorEl.textContent = "admin";
+          var metaEl = viewBlogDetailEl.querySelector(".article-author-info, .article-meta-bar");
+          if (metaEl) {
+            metaEl.querySelectorAll("*").forEach(function(el) {
+              if (el.childNodes && el.childNodes.length) {
+                el.childNodes.forEach(function(node) {
+                  if (node.nodeType === 3 && node.textContent && node.textContent.indexOf("Ban Biên Tập") !== -1) {
+                    node.textContent = "admin";
+                  }
+                });
+              }
+            });
           }
-          if (!document.getElementById("navTools")) {
-            var aTools = document.createElement("a");
-            aTools.className = "nav-link";
-            aTools.id = "navTools";
-            aTools.onclick = function() { switchView("viewTools"); };
-            aTools.innerHTML = "<i class='fa-solid fa-screwdriver-wrench'></i> Công Cụ MMO";
-            nav.appendChild(aTools);
-          }
-          if (!document.getElementById("navProfile")) {
-            var aProf = document.createElement("a");
-            aProf.className = "nav-link";
-            aProf.id = "navProfile";
-            aProf.onclick = function() { switchView("viewProfile"); };
-            aProf.innerHTML = "<i class='fa-solid fa-user'></i> Tài Khoản";
-            nav.appendChild(aProf);
+
+          // 2. Xóa hoàn toàn khối "MUABANTAIKHOANMMO Editorial Team"
+          viewBlogDetailEl.querySelectorAll("div").forEach(function(el) {
+            if (el.textContent && el.textContent.indexOf("Editorial Team") !== -1 && el.textContent.indexOf("Chuyên trang") !== -1) {
+              var card = el.closest("div[style*='border']") || el;
+              if (card && card !== viewBlogDetailEl && card.parentElement) {
+                card.remove();
+              }
+            }
+          });
+
+          // 3. Xóa khối Bottom CTA Box cũ
+          viewBlogDetailEl.querySelectorAll(".article-footer-cta, .bottom-cta-box").forEach(function(el) { el.remove(); });
+
+          // 4. Tự động tiêm SẢN PHẨM ĐỀ XUẤT CHO BẠN (#articleRelatedProductsWrap)
+          if (!document.getElementById("articleRelatedProductsWrap")) {
+            var artMain = viewBlogDetailEl.querySelector(".article-main-content");
+            if (artMain) {
+              var wrap = document.createElement("div");
+              wrap.id = "articleRelatedProductsWrap";
+              wrap.style.cssText = "margin-top:32px;padding:20px;background:#0f172a;border-radius:12px;border:1px solid #1e293b;";
+              wrap.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid #1c263c;"><h3 style="margin:0;font-size:1.05rem;font-weight:800;color:#fff;">SẢN PHẨM ĐỀ XUẤT CHO BẠN</h3><a id="btnArtRelViewAll" style="font-size:0.8rem;color:#38bdf8;cursor:pointer;">Xem tất cả &rarr;</a></div><div id="articleRelatedProdList" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;"></div>';
+              var vAll = wrap.querySelector("#btnArtRelViewAll");
+              if (vAll) vAll.onclick = function() { if (typeof switchView === "function") switchView("viewStore"); };
+              artMain.appendChild(wrap);
+              if (typeof renderArticleRelatedProducts === "function") {
+                var curBlogId = localStorage.getItem("mmo_current_blog_id");
+                var allBlogs = (typeof MOCK_DATA !== "undefined" && MOCK_DATA.blogs) ? MOCK_DATA.blogs : [];
+                var curBlog = allBlogs.find(function(b) { return b && b.id === curBlogId; }) || allBlogs[0];
+                if (curBlog) renderArticleRelatedProducts(curBlog);
+              }
+            }
           }
         }
 
       } catch(err) {
         console.warn("ensureUniversalComponentsExist error:", err);
+      } finally {
+        _isEnsuringUniversal = false;
       }
     }
     window.ensureUniversalComponentsExist = ensureUniversalComponentsExist;
 
-    // Tự động khởi chạy tiêm DOM ngay khi script nạp xong hoặc DOMContentLoaded
     if (typeof document !== "undefined") {
       if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", function() { ensureUniversalComponentsExist(); });
       } else {
         ensureUniversalComponentsExist();
       }
-      // Khởi động MutationObserver tự động quét trong 8 giây đầu sau khi trang tải
-      try {
-        if (typeof MutationObserver !== "undefined" && !window._satCleanupObserverActive) {
-          window._satCleanupObserverActive = true;
-          var _satObserver = new MutationObserver(function() {
-            ensureUniversalComponentsExist();
-          });
-          if (document.body) {
-            _satObserver.observe(document.body, { childList: true, subtree: true });
-            setTimeout(function() { _satObserver.disconnect(); }, 8000);
-          }
-        }
-      } catch(e) {}
     }
