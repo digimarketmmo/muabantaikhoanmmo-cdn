@@ -19469,7 +19469,9 @@ function syncAllOpenViewsStock(changedProdId) {
     window.updateLiveRealTimeClock = updateLiveRealTimeClock;
     updateLiveRealTimeClock();
 
-    document.addEventListener("DOMContentLoaded", function() {
+    function bootMMOApplicationCore() {
+      if (window._mmoApplicationBooted) return;
+      window._mmoApplicationBooted = true;
       const gBtn = document.getElementById("btnGoogleCustom");
       if (gBtn) {
         gBtn.addEventListener("click", function(e) {
@@ -19593,7 +19595,17 @@ function syncAllOpenViewsStock(changedProdId) {
           }
         }
       } catch(e) {}
-    });
+    }
+    window.bootMMOApplicationCore = bootMMOApplicationCore;
+
+    if (typeof document !== "undefined") {
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", bootMMOApplicationCore);
+      } else {
+        bootMMOApplicationCore();
+      }
+      window.addEventListener("load", bootMMOApplicationCore);
+    }
 
     if (typeof window !== "undefined") {
       window.addEventListener("resize", function() {
