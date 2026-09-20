@@ -1864,6 +1864,26 @@
       margin: 16px 0 !important;
     }
 
+    /* ==================== KHỐI ĐỀ XUẤT CHO BẠN: LƯỚI 3 CỘT ĐẦY ĐỦ THÔNG TIN ==================== */
+    #articleRelatedProductsGrid,
+    .article-related-grid {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 16px !important;
+    }
+    @media (max-width: 960px) {
+      #articleRelatedProductsGrid,
+      .article-related-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+    }
+    @media (max-width: 600px) {
+      #articleRelatedProductsGrid,
+      .article-related-grid {
+        grid-template-columns: 1fr !important;
+      }
+    }
+
     .article-body-content {
       color: #cbd5e1 !important;
       font-size: 1.02rem;
@@ -1920,7 +1940,6 @@
     .article-body-content b {
       color: #ffffff !important;
       font-weight: 700 !important;
-    }
     }
     .article-body-content ul, .article-body-content ol {
       margin-bottom: 18px;

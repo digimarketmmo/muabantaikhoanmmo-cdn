@@ -13554,6 +13554,9 @@ function syncAllOpenViewsStock(changedProdId) {
       const artHeadline = document.getElementById("articleHeadline");
       if (artHeadline) artHeadline.innerText = b.title;
 
+      const artAuthor = document.getElementById("articleAuthorName");
+      if (artAuthor) artAuthor.innerText = "admin";
+
       const artDate = document.getElementById("articleDate");
       if (artDate) artDate.innerText = b.date || "05/09/2026";
 
@@ -13756,7 +13759,7 @@ function syncAllOpenViewsStock(changedProdId) {
           // Xáo trộn ngẫu nhiên trong nhóm sản phẩm liên quan mỗi lần F5
           const shuffled = [...matchedProducts].sort(() => 0.5 - Math.random());
           return {
-            products: shuffled.slice(0, 4),
+            products: shuffled.slice(0, 3),
             isSpecific: true,
             matchKeyword: matchedGroup.key
           };
@@ -13766,39 +13769,31 @@ function syncAllOpenViewsStock(changedProdId) {
       // 2. NẾU KHÔNG LIÊN QUAN: ĐỀ XUẤT NGẪU NHIÊN CÁC SẢN PHẨM KHÁC NHAU (MỖI LẦN F5 RA SẢN PHẨM KHÁC)
       const randomShuffled = [...allProds].sort(() => 0.5 - Math.random());
       return {
-        products: randomShuffled.slice(0, 4),
+        products: randomShuffled.slice(0, 3),
         isSpecific: false,
         matchKeyword: 'HOT'
       };
     }
     window.getRecommendedProductsForArticle = getRecommendedProductsForArticle;
 
-    // RENDER KHỐI "ĐỀ XUẤT CHO BẠN" DƯỚI BÀI VIẾT BLOG
+    // RENDER KHỐI "ĐỀ XUẤT CHO BẠN" DƯỚI BÀI VIẾT BLOG (3 SẢN PHẨM ĐẦY ĐỦ THÔNG TIN)
     function renderArticleRelatedProducts(currentBlog) {
       const container = document.getElementById("articleRelatedProductsGrid");
       const badgeEl = document.getElementById("articleRelatedProductsBadge");
       if (!container) return;
 
+      // Xóa bỏ hoàn toàn badge khuyên dùng bài viết theo yêu cầu người dùng
+      if (badgeEl) {
+        badgeEl.style.display = "none";
+        badgeEl.innerHTML = "";
+      }
+
       const blogData = currentBlog || window.currentViewingBlog;
       const res = getRecommendedProductsForArticle(blogData);
       const prods = res.products;
 
-      if (badgeEl) {
-        if (res.isSpecific) {
-          badgeEl.innerText = "🎯 Khuyên dùng cho bài viết (" + res.matchKeyword + ")";
-          badgeEl.style.color = "#10b981";
-          badgeEl.style.borderColor = "rgba(16,185,129,0.3)";
-          badgeEl.style.background = "rgba(16,185,129,0.12)";
-        } else {
-          badgeEl.innerText = "🎲 Đề xuất ngẫu nhiên (F5 đổi mới)";
-          badgeEl.style.color = "#38bdf8";
-          badgeEl.style.borderColor = "rgba(56,189,248,0.3)";
-          badgeEl.style.background = "rgba(56,189,248,0.12)";
-        }
-      }
-
       if (!prods || prods.length === 0) {
-        container.innerHTML = '<div style="color:#64748b; font-size:0.85rem; grid-column:1/-1; text-align:center; padding:16px;">Đang cập nhật sản phẩm...</div>';
+        container.innerHTML = '<div style="color:#64748b; font-size:0.85rem; grid-column:1/-1; text-align:center; padding:20px;">Đang cập nhật sản phẩm đề xuất...</div>';
         return;
       }
 
@@ -13810,23 +13805,30 @@ function syncAllOpenViewsStock(changedProdId) {
           ? getVariantStockCount(p) 
           : (p.stock !== undefined ? p.stock : 10);
         const stockBadge = (pStock > 0)
-          ? '<span style="font-size:0.68rem; background:rgba(16,185,129,0.15); color:#10b981; padding:2px 6px; border-radius:4px; font-weight:700;">Còn ' + pStock + ' acc</span>'
-          : '<span style="font-size:0.68rem; background:rgba(239,68,68,0.15); color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:700;">Đặt trước</span>';
+          ? '<span style="font-size:0.72rem; background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:2px 8px; border-radius:5px; font-weight:700; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-check-circle" style="font-size:0.65rem;"></i> Còn ' + pStock + ' acc</span>'
+          : '<span style="font-size:0.72rem; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:2px 8px; border-radius:5px; font-weight:700; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-clock" style="font-size:0.65rem;"></i> Đặt trước</span>';
+        const pCat = p.category ? escapeHtml(p.category) : 'Tài khoản MMO';
 
-        return '<div onclick="openProductDetailById(\'' + escapeHtml(p.id) + '\')" style="background:#090e18; border:1px solid #1e293b; border-radius:10px; padding:12px; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; transition:all 0.2s; box-shadow:0 4px 12px rgba(0,0,0,0.25);" onmouseover="this.style.borderColor=\'#38bdf8\'; this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.borderColor=\'#1e293b\'; this.style.transform=\'\'">' +
-          '<div style="display:flex; gap:10px; align-items:center; margin-bottom:8px;">' +
-            '<img src="' + escapeHtml(p.image || 'https://iili.io/nFV4Rln.png') + '" alt="' + escapeHtml(p.name) + '" style="width:48px; height:48px; border-radius:8px; object-fit:cover; flex-shrink:0; background:#141f33; border:1px solid #1e293b;" onerror="this.src=\'https://iili.io/nFV4Rln.png\'" />' +
-            '<div style="flex:1; overflow:hidden;">' +
-              '<div style="font-size:0.83rem; font-weight:700; color:#fff; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; line-height:1.35;" title="' + escapeHtml(p.name) + '">' +
-                escapeHtml(p.name) +
+        return '<div onclick="openProductDetailById(\'' + escapeHtml(p.id) + '\')" style="background:#090e18; border:1px solid #1e293b; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; transition:all 0.25s ease; box-shadow:0 4px 14px rgba(0,0,0,0.35); min-height:170px;" onmouseover="this.style.borderColor=\'#38bdf8\'; this.style.transform=\'translateY(-3px)\'; this.style.boxShadow=\'0 8px 22px rgba(56,189,248,0.18)\'" onmouseout="this.style.borderColor=\'#1e293b\'; this.style.transform=\'\'; this.style.boxShadow=\'0 4px 14px rgba(0,0,0,0.35)\'">' +
+          '<div>' +
+            '<div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:10px;">' +
+              '<img src="' + escapeHtml(p.image || 'https://iili.io/nFV4Rln.png') + '" alt="' + escapeHtml(p.name) + '" style="width:58px; height:58px; border-radius:10px; object-fit:cover; flex-shrink:0; background:#141f33; border:1px solid #1e293b;" onerror="this.src=\'https://iili.io/nFV4Rln.png\'" />' +
+              '<div style="flex:1; min-width:0; overflow:hidden;">' +
+                '<span style="font-size:0.72rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; font-weight:600; display:block; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + pCat + '</span>' +
+                '<div>' + stockBadge + '</div>' +
               '</div>' +
-              '<div style="margin-top:3px;">' + stockBadge + '</div>' +
+            '</div>' +
+            '<div style="font-size:0.9rem; font-weight:700; color:#fff; line-height:1.45; word-break:break-word; margin:8px 0 12px; min-height:42px;" title="' + escapeHtml(p.name) + '">' +
+              escapeHtml(p.name) +
             '</div>' +
           '</div>' +
-          '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px; padding-top:6px; border-top:1px dashed #1e293b;">' +
-            '<span style="font-size:0.95rem; font-weight:800; color:#10b981;">' + pPrice + '</span>' +
-            '<button type="button" onclick="event.stopPropagation(); openProductDetailById(\'' + escapeHtml(p.id) + '\')" style="background:linear-gradient(135deg,#0284c7,#38bdf8); color:#fff; border:none; padding:5px 12px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer; box-shadow:0 2px 6px rgba(56,189,248,0.3);">' +
-              'MUA NGAY' +
+          '<div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06);">' +
+            '<div style="display:flex; flex-direction:column;">' +
+              '<span style="font-size:0.68rem; color:#64748b; font-weight:600;">Đơn giá</span>' +
+              '<span style="font-size:1.08rem; font-weight:800; color:#10b981;">' + pPrice + '</span>' +
+            '</div>' +
+            '<button type="button" onclick="event.stopPropagation(); openProductDetailById(\'' + escapeHtml(p.id) + '\')" style="background:linear-gradient(135deg,#0284c7,#38bdf8); color:#fff; border:none; padding:7px 14px; border-radius:7px; font-size:0.78rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(56,189,248,0.25); transition:all 0.2s;" onmouseover="this.style.filter=\'brightness(1.15)\'" onmouseout="this.style.filter=\'\'">' +
+              '<i class="fa-solid fa-cart-shopping" style="font-size:0.72rem;"></i> MUA NGAY' +
             '</button>' +
           '</div>' +
         '</div>';
