@@ -24756,13 +24756,15 @@ function onAiEditorInput() {
   }
 }
 
-async function callAiChatService(pKey, modelId, promptText, sysPrompt) {
+async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens = 4096) {
   const prov = AI_PROVIDERS[pKey] || AI_PROVIDERS.groq;
   let apiKey = localStorage.getItem('mmo_ai_key_' + pKey) || '';
   if (!apiKey && pKey === 'gemini') { apiKey = DEFAULT_GEMINI_API_KEY; }
   if (!apiKey) {
     throw new Error('Chưa có API Key cho ' + prov.name + '. Vui lòng nhập key hoặc bấm link lấy key miễn phí bên dưới!');
   }
+
+  const effectiveMaxTokens = maxTokens || 4096;
 
   if (prov.isOpenAiFormat) {
     const headers = {
@@ -24780,7 +24782,7 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt) {
           { role: 'user', content: promptText }
         ],
         temperature: 0.7,
-        max_tokens: 4096
+        max_tokens: effectiveMaxTokens
       })
     });
     if (!res.ok) {
@@ -24799,7 +24801,7 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
-        generationConfig: { maxOutputTokens: 4096, temperature: 0.7 }
+        generationConfig: { maxOutputTokens: effectiveMaxTokens, temperature: 0.7 }
       })
     });
     if (!res.ok) {
@@ -24958,58 +24960,62 @@ function isCloudflareChallenge(str) {
          s.includes('403 forbidden') || s.includes('error 1027') || s.includes('rate limit');
 }
 
-// BỘ HÌNH ẢNH MINH HỌA CHUẨN ĐÚNG CHỦ ĐỀ CHO CÁC BÀI VIẾT BỊ CHẶN WAF / THIẾU ẢNH
+// BỘ HÌNH ẢNH MINH HỌA FULL HD SIÊU NÉT ĐÚNG CHỦ ĐỀ CHO CÁC BÀI VIẾT THIẾU ẢNH
 function getTopicIllustrativeImages(topicTitle, cleanUrl) {
   const s = ((topicTitle || '') + ' ' + (cleanUrl || '')).toLowerCase();
   
   if (s.includes('tiktok')) {
     return [
-      { url: 'https://images.unsplash.com/photo-1611605698335-8b1569810432?w=800&auto=format&fit=crop&q=80', alt: 'Giao diện ứng dụng TikTok kiếm tiền online', selected: true },
-      { url: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&auto=format&fit=crop&q=80', alt: 'Quản lý tài khoản sáng tạo TikTok Creator', selected: true },
-      { url: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&auto=format&fit=crop&q=80', alt: 'Sáng tạo nội dung video ngắn kiếm tiền TikTok', selected: true },
-      { url: 'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?w=800&auto=format&fit=crop&q=80', alt: 'Kênh TikTok tiếp thị liên kết Affiliate Marketing', selected: true },
-      { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&auto=format&fit=crop&q=80', alt: 'Nhận hoa hồng và doanh thu từ TikTok Shop', selected: true }
+      { url: 'https://images.unsplash.com/photo-1611605698335-8b1569810432?w=1600&auto=format&fit=crop&q=95', alt: 'Giao diện ứng dụng TikTok kiếm tiền online', selected: true },
+      { url: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1600&auto=format&fit=crop&q=95', alt: 'Quản lý tài khoản sáng tạo TikTok Creator', selected: true },
+      { url: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&auto=format&fit=crop&q=95', alt: 'Sáng tạo nội dung video ngắn kiếm tiền TikTok', selected: true },
+      { url: 'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?w=1600&auto=format&fit=crop&q=95', alt: 'Kênh TikTok tiếp thị liên kết Affiliate Marketing', selected: true },
+      { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1600&auto=format&fit=crop&q=95', alt: 'Nhận hoa hồng và doanh thu từ TikTok Shop', selected: true },
+      { url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1600&auto=format&fit=crop&q=95', alt: 'Chiến lược tăng lượt xem và follow trên TikTok', selected: true }
     ];
   }
   if (s.includes('facebook') || s.includes('fb') || s.includes('meta')) {
     return [
-      { url: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&auto=format&fit=crop&q=80', alt: 'Quản lý trang Fanpage Facebook kiếm tiền', selected: true },
-      { url: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&auto=format&fit=crop&q=80', alt: 'Chạy quảng cáo Facebook Ads bán hàng', selected: true },
-      { url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&auto=format&fit=crop&q=80', alt: 'Kinh doanh online qua Facebook Reels', selected: true }
+      { url: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=1600&auto=format&fit=crop&q=95', alt: 'Quản lý trang Fanpage Facebook kiếm tiền', selected: true },
+      { url: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=1600&auto=format&fit=crop&q=95', alt: 'Chạy quảng cáo Facebook Ads bán hàng', selected: true },
+      { url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1600&auto=format&fit=crop&q=95', alt: 'Kinh doanh online qua Facebook Reels', selected: true },
+      { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1600&auto=format&fit=crop&q=95', alt: 'Phát triển nhóm cộng đồng Facebook sinh lời', selected: true }
     ];
   }
   if (s.includes('youtube') || s.includes('video')) {
     return [
-      { url: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&auto=format&fit=crop&q=80', alt: 'Kênh YouTube sáng tạo video bật kiếm tiền', selected: true },
-      { url: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&auto=format&fit=crop&q=80', alt: 'Sản xuất video YouTube Shorts kiếm doanh thu', selected: true },
-      { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&auto=format&fit=crop&q=80', alt: 'Doanh thu quảng cáo Google AdSense YouTube', selected: true }
+      { url: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=1600&auto=format&fit=crop&q=95', alt: 'Kênh YouTube sáng tạo video bật kiếm tiền', selected: true },
+      { url: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=1600&auto=format&fit=crop&q=95', alt: 'Sản xuất video YouTube Shorts kiếm doanh thu', selected: true },
+      { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1600&auto=format&fit=crop&q=95', alt: 'Doanh thu quảng cáo Google AdSense YouTube', selected: true },
+      { url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1600&auto=format&fit=crop&q=95', alt: 'Chiến lược tối ưu SEO video lên top YouTube', selected: true }
     ];
   }
   if (s.includes('gmail') || s.includes('mail') || s.includes('google')) {
     return [
-      { url: 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=800&auto=format&fit=crop&q=80', alt: 'Hộp thư Gmail phục vụ công việc Marketing', selected: true },
-      { url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&auto=format&fit=crop&q=80', alt: 'Hệ thống Email Doanh Nghiệp uy tín', selected: true }
+      { url: 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=1600&auto=format&fit=crop&q=95', alt: 'Hộp thư Gmail phục vụ công việc Marketing', selected: true },
+      { url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1600&auto=format&fit=crop&q=95', alt: 'Hệ thống Email Doanh Nghiệp uy tín', selected: true },
+      { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1600&auto=format&fit=crop&q=95', alt: 'Bảo mật và quản lý tài khoản Google an toàn', selected: true }
     ];
   }
   if (s.includes('shopee') || s.includes('lazada') || s.includes('affiliate') || s.includes('ban hang') || s.includes('shop')) {
     return [
-      { url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&auto=format&fit=crop&q=80', alt: 'Mô hình tiếp thị liên kết Affiliate Marketing', selected: true },
-      { url: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=800&auto=format&fit=crop&q=80', alt: 'Thương mại điện tử bán hàng trực tuyến', selected: true },
-      { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&auto=format&fit=crop&q=80', alt: 'Tạo nguồn thu nhập thụ động qua Affiliate', selected: true }
+      { url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1600&auto=format&fit=crop&q=95', alt: 'Mô hình tiếp thị liên kết Affiliate Marketing', selected: true },
+      { url: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=1600&auto=format&fit=crop&q=95', alt: 'Thương mại điện tử bán hàng trực tuyến', selected: true },
+      { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1600&auto=format&fit=crop&q=95', alt: 'Tạo nguồn thu nhập thụ động qua Affiliate', selected: true }
     ];
   }
   if (s.includes('chatgpt') || s.includes('ai') || s.includes('openai') || s.includes('midjourney')) {
     return [
-      { url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&auto=format&fit=crop&q=80', alt: 'Ứng dụng Trí tuệ nhân tạo AI tạo nội dung', selected: true },
-      { url: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80', alt: 'Tự động hóa kiếm tiền bằng ChatGPT và AI', selected: true }
+      { url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1600&auto=format&fit=crop&q=95', alt: 'Ứng dụng Trí tuệ nhân tạo AI tạo nội dung', selected: true },
+      { url: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1600&auto=format&fit=crop&q=95', alt: 'Tự động hóa kiếm tiền bằng ChatGPT và AI', selected: true }
     ];
   }
   
   // Mặc định cho MMO / Kiếm tiền online
   return [
-    { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&auto=format&fit=crop&q=80', alt: 'Cách kiếm tiền online MMO bền vững', selected: true },
-    { url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&auto=format&fit=crop&q=80', alt: 'Phát triển nguồn thu nhập trực tuyến 2026', selected: true },
-    { url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&auto=format&fit=crop&q=80', alt: 'Chiến lược kinh doanh MMO thực chiến', selected: true }
+    { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=1600&auto=format&fit=crop&q=95', alt: 'Cách kiếm tiền online MMO bền vững', selected: true },
+    { url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1600&auto=format&fit=crop&q=95', alt: 'Phát triển nguồn thu nhập trực tuyến 2026', selected: true },
+    { url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=1600&auto=format&fit=crop&q=95', alt: 'Chiến lược kinh doanh MMO thực chiến', selected: true }
   ];
 }
 
@@ -25022,6 +25028,7 @@ async function fetchSampleArticleData(sampleUrl) {
   const fallbackTitle = extractTitleFromUrl(cleanUrl);
   let title = '';
   let textSnippet = '';
+  let headings = [];
   const images = [];
   const seenUrls = new Set();
   let isWafProtected = false;
@@ -25037,27 +25044,48 @@ async function fetchSampleArticleData(sampleUrl) {
     if (lower.includes('avatar') || lower.includes('favicon') || lower.includes('pixel') || 
         lower.includes('1x1') || lower.includes('track') || lower.includes('gravatar') || 
         lower.includes('share') || lower.includes('icon') || lower.includes('banner-ads') ||
-        lower.includes('logo') || lower.startsWith('data:') || lower.endsWith('.svg')) {
+        lower.includes('badge') || lower.includes('emoji') || lower.includes('logo') || 
+        lower.startsWith('data:') || lower.endsWith('.svg')) {
       return;
     }
-    const baseClean = src.split('?')[0];
+
+    // Loại bỏ query thu nhỏ thumbnail để giữ nguyên ảnh Full HD sắc nét
+    let cleanSrc = src;
+    try {
+      const uObj = new URL(src);
+      ['w', 'width', 'h', 'height', 'resize', 'size', 'fit'].forEach(p => {
+        if (uObj.searchParams.has(p)) {
+          const val = parseInt(uObj.searchParams.get(p) || '0', 10);
+          if (val > 0 && val < 600) uObj.searchParams.delete(p);
+        }
+      });
+      cleanSrc = uObj.href;
+    } catch(e) {}
+
+    // Bỏ hậu tố -300x200 hoặc tương tự trong tên file
+    cleanSrc = cleanSrc.replace(/-\d{2,4}x\d{2,4}(\.[a-zA-Z]{3,4})/i, '$1');
+
+    const baseClean = cleanSrc.split('?')[0];
     if (!seenUrls.has(baseClean)) {
       seenUrls.add(baseClean);
       images.push({
-        url: src,
+        url: cleanSrc,
         alt: (alt && alt.trim()) ? alt.trim() : (title || fallbackTitle || 'Hình ảnh minh hoạ bài viết'),
         selected: true
       });
     }
   }
 
-  // 1. Thử qua Microlink API (CORS-friendly, có thể chạy trực tiếp trên trình duyệt)
+  // 1. Thử qua Microlink API với custom data selector lấy toàn bộ ảnh, headings và bodyText
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
-    const mRes = await fetch(`https://api.microlink.io/?url=${encodeURIComponent(cleanUrl)}`, {
-      signal: controller.signal
-    });
+    const timeoutId = setTimeout(() => controller.abort(), 9000);
+    const mUrl = `https://api.microlink.io/?url=${encodeURIComponent(cleanUrl)}` +
+      `&data.images=${encodeURIComponent(JSON.stringify({ selectorAll: 'article img, .post-content img, .entry-content img, .content img, main img, figure img, img', attr: 'src' }))}` +
+      `&data.headings=${encodeURIComponent(JSON.stringify({ selectorAll: 'h2, h3, h4', attr: 'text' }))}` +
+      `&data.bodyText=${encodeURIComponent(JSON.stringify({ selector: 'article, .post-content, .entry-content, main, body', attr: 'text' }))}`;
+    
+    const mRes = await fetch(mUrl, { signal: controller.signal });
     clearTimeout(timeoutId);
     if (mRes.ok) {
       const mJson = await mRes.json();
@@ -25066,10 +25094,21 @@ async function fetchSampleArticleData(sampleUrl) {
         if (isCloudflareChallenge(mTitle) || mJson.statusCode === 403) {
           isWafProtected = true;
         } else {
-          title = mTitle.replace(/\s*[\-\|]\s*.*$/, '').trim();
-          if (mJson.data.description) textSnippet = mJson.data.description;
+          if (mTitle) title = mTitle.replace(/\s*[\-\|]\s*.*$/, '').trim();
+          if (mJson.data.description && !textSnippet) textSnippet = mJson.data.description;
+          if (mJson.data.bodyText && mJson.data.bodyText.length > textSnippet.length) {
+            textSnippet = mJson.data.bodyText.slice(0, 10000);
+          }
+          if (Array.isArray(mJson.data.headings) && mJson.data.headings.length > 0) {
+            headings = mJson.data.headings.map(h => String(h).trim()).filter(h => h && h.length > 3 && !/đăng nhập|bình luận|bài viết liên quan|menu/i.test(h));
+          }
           if (mJson.data.image && mJson.data.image.url) {
             addImg(mJson.data.image.url, title);
+          }
+          if (Array.isArray(mJson.data.images)) {
+            mJson.data.images.forEach((imgUrl, i) => {
+              if (imgUrl) addImg(imgUrl, `${title} - Hình ${i + 1}`);
+            });
           }
         }
       }
@@ -25078,18 +25117,17 @@ async function fetchSampleArticleData(sampleUrl) {
     console.warn('Microlink reader notice:', e);
   }
 
-  // 2. Thử đọc HTML đầy đủ qua các proxy nếu chưa bị WAF chặn
-  let html = '';
-  if (!isWafProtected) {
+  // 2. Thử qua các proxy HTML nếu chưa lấy đủ dữ liệu
+  if (!textSnippet || textSnippet.length < 500 || images.length < 2) {
     const proxies = [
-      `https://mmo-api-proxy.manhdongvtc.workers.dev?url=${encodeURIComponent(cleanUrl)}`,
-      `https://api.allorigins.win/get?url=${encodeURIComponent(cleanUrl)}`
+      `https://api.allorigins.win/get?url=${encodeURIComponent(cleanUrl)}`,
+      `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(cleanUrl)}`
     ];
 
     for (const pUrl of proxies) {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000);
+        const timeoutId = setTimeout(() => controller.abort(), 7000);
         const res = await fetch(pUrl, {
           signal: controller.signal,
           headers: { 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' }
@@ -25104,8 +25142,56 @@ async function fetchSampleArticleData(sampleUrl) {
               candidate = j.contents || '';
             } catch(ej) {}
           }
-          if (candidate && candidate.length > 300 && !isCloudflareChallenge(candidate)) {
-            html = candidate;
+          if (candidate && candidate.length > 500 && !isCloudflareChallenge(candidate)) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(candidate, 'text/html');
+
+            if (!title) {
+              const ogTitle = doc.querySelector("meta[property='og:title']");
+              if (ogTitle && ogTitle.content) title = ogTitle.content.trim();
+              if (!title) {
+                const h1 = doc.querySelector('article h1, main h1, .post-title, .entry-title, h1');
+                if (h1 && h1.textContent) title = h1.textContent.trim();
+              }
+              if (!title && doc.title) title = doc.title.trim();
+              if (title) title = title.replace(/\s*[\-\|]\s*.*$/, '').trim();
+            }
+
+            const ogImg = doc.querySelector("meta[property='og:image']");
+            if (ogImg && ogImg.content) addImg(ogImg.content, title);
+
+            const contentScope = doc.querySelector('article, .post-body, .entry-content, .post-content, main, .content, #content') || doc.body;
+            const imgNodes = contentScope ? contentScope.querySelectorAll('img') : doc.querySelectorAll('img');
+            imgNodes.forEach(node => {
+              let src = node.getAttribute('src') || node.getAttribute('data-src') || node.getAttribute('data-original') || node.getAttribute('data-lazy-src') || '';
+              if (!src && node.getAttribute('srcset')) {
+                const parts = node.getAttribute('srcset').split(',');
+                if (parts.length > 0) src = parts[0].trim().split(' ')[0];
+              }
+              const alt = node.getAttribute('alt') || node.getAttribute('title') || '';
+              addImg(src, alt);
+            });
+
+            if (headings.length === 0 && contentScope) {
+              const hNodes = contentScope.querySelectorAll('h2, h3');
+              hNodes.forEach(hn => {
+                const ht = hn.textContent.trim();
+                if (ht && ht.length > 3 && !/đăng nhập|bình luận|liên quan/i.test(ht)) {
+                  headings.push(ht);
+                }
+              });
+            }
+
+            if (!textSnippet || textSnippet.length < 500) {
+              const cleanDoc = doc.cloneNode(true);
+              const elementsToRemove = cleanDoc.querySelectorAll('script, style, nav, header, footer, aside, noscript, iframe, .sidebar, .comments, .related-posts, .menu, .ads');
+              elementsToRemove.forEach(el => el.remove());
+              const targetBody = cleanDoc.querySelector('article, .post-body, .entry-content, .post-content, main, .content') || cleanDoc.body;
+              let text = targetBody ? (targetBody.innerText || targetBody.textContent || '') : '';
+              text = text.replace(/\s+/g, ' ').trim();
+              if (text.length > 100) textSnippet = text.slice(0, 10000);
+            }
+
             break;
           }
         }
@@ -25113,62 +25199,13 @@ async function fetchSampleArticleData(sampleUrl) {
     }
   }
 
-  // 3. Nếu lấy được HTML sạch, phân tích DOM để bóc tách tiêu đề và toàn bộ ảnh
-  if (html && !isCloudflareChallenge(html)) {
-    try {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-
-      if (!title) {
-        const ogTitle = doc.querySelector("meta[property='og:title']");
-        if (ogTitle && ogTitle.content) title = ogTitle.content.trim();
-        if (!title) {
-          const h1 = doc.querySelector('article h1, main h1, .post-title, .entry-title, h1');
-          if (h1 && h1.textContent) title = h1.textContent.trim();
-        }
-        if (!title && doc.title) title = doc.title.trim();
-        if (title) title = title.replace(/\s*[\-\|]\s*.*$/, '').trim();
-      }
-
-      // Quét ảnh OG Image
-      const ogImg = doc.querySelector("meta[property='og:image']");
-      if (ogImg && ogImg.content) addImg(ogImg.content, title);
-
-      // Quét các ảnh trong nội dung bài viết
-      const contentScope = doc.querySelector('article, .post-body, .entry-content, .post-content, main, .content, #content') || doc.body;
-      const imgNodes = contentScope ? contentScope.querySelectorAll('img') : doc.querySelectorAll('img');
-      imgNodes.forEach(node => {
-        let src = node.getAttribute('src') || node.getAttribute('data-src') || node.getAttribute('data-original') || node.getAttribute('data-lazy-src') || '';
-        if (!src && node.getAttribute('srcset')) {
-          const parts = node.getAttribute('srcset').split(',');
-          if (parts.length > 0) src = parts[0].trim().split(' ')[0];
-        }
-        const alt = node.getAttribute('alt') || node.getAttribute('title') || '';
-        addImg(src, alt);
-      });
-
-      if (!textSnippet) {
-        const cleanDoc = doc.cloneNode(true);
-        const elementsToRemove = cleanDoc.querySelectorAll('script, style, nav, header, footer, aside, noscript, iframe, .sidebar, .comments, .related-posts, .menu, .ads');
-        elementsToRemove.forEach(el => el.remove());
-        const targetBody = cleanDoc.querySelector('article, .post-body, .entry-content, .post-content, main, .content') || cleanDoc.body;
-        let text = targetBody ? (targetBody.innerText || targetBody.textContent || '') : '';
-        text = text.replace(/\s+/g, ' ').trim();
-        textSnippet = text.slice(0, 3200);
-      }
-    } catch(eDom) {
-      console.warn('DOM parser warning:', eDom);
-    }
-  }
-
-  // 4. Nếu không lấy được title hoặc trang bị chặn bởi WAF/Captcha, tự động khôi phục từ URL slug
+  // 3. Nếu không lấy được title hoặc trang bị chặn bởi WAF/Captcha, tự động khôi phục từ URL slug
   if (!title || isCloudflareChallenge(title)) {
     title = fallbackTitle || 'Hướng Dẫn Chi Tiết MMO 2026';
     isWafProtected = true;
   }
 
-  // QUAN TRỌNG: Nếu danh sách ảnh đang trống (do web có WAF chặn bot hoặc ít ảnh),
-  // TỰ ĐỘNG CẤP BỘ HÌNH ẢNH CHUẨN ĐÚNG CHỦ ĐỀ để bài viết luôn có đầy đủ ảnh minh họa thực tế!
+  // 4. Nếu danh sách ảnh đang trống, tự động cấp bộ ảnh Full HD cực nét đúng chủ đề
   if (images.length === 0) {
     const topicImgs = getTopicIllustrativeImages(title, cleanUrl);
     topicImgs.forEach(im => {
@@ -25183,13 +25220,14 @@ async function fetchSampleArticleData(sampleUrl) {
   }
 
   if (!textSnippet) {
-    textSnippet = `Bài viết hướng dẫn thực chiến chuyên sâu về ${title}, cung cấp đầy đủ các bước thực hiện, phân tích ưu nhược điểm, kinh nghiệm thực tế và giải đáp thắc mắc chuẩn SEO E-E-A-T 2026.`;
+    textSnippet = `Bài viết hướng dẫn thực chiến chuyên sâu về ${title}, cung cấp đầy đủ các bước thực hiện chi tiết, các phương pháp kiếm tiền, điều kiện bật kiếm tiền, phân tích ưu nhược điểm, kinh nghiệm thực tế và giải đáp thắc mắc chuẩn SEO E-E-A-T 2026.`;
   }
 
   return {
     success: true,
     url: cleanUrl,
     title: title,
+    headings: headings,
     images: images.slice(0, 30),
     textSnippet: textSnippet,
     isWafProtected: isWafProtected
@@ -25466,7 +25504,7 @@ window.fetchAndPreviewSampleArticle = fetchAndPreviewSampleArticle;
 window.fetchSampleArticleData = fetchSampleArticleData;
 window.renderSampleArticlePreviewUI = renderSampleArticlePreviewUI;
 
-// Cơ chế Crop chính xác 5% viền ảnh & Re-encode chống vi phạm bản quyền Google & DMCA
+// Cơ chế Crop chính xác 5% viền ảnh & Re-encode chống vi phạm bản quyền Google & DMCA (Full HD 95% siêu nét)
 async function cropAndUploadUniqueImage(rawImgUrl, altText) {
   if (!rawImgUrl || typeof rawImgUrl !== 'string') return rawImgUrl;
   
@@ -25476,7 +25514,8 @@ async function cropAndUploadUniqueImage(rawImgUrl, altText) {
 
   const urlsToTry = [
     rawImgUrl,
-    `https://images.weserv.nl/?url=${encodeURIComponent(rawImgUrl)}`,
+    `https://images.weserv.nl/?url=${encodeURIComponent(rawImgUrl)}&output=jpg&q=95&we=1`,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(rawImgUrl)}`,
     `https://mmo-api-proxy.manhdongvtc.workers.dev?url=${encodeURIComponent(rawImgUrl)}`
   ];
 
@@ -25486,7 +25525,7 @@ async function cropAndUploadUniqueImage(rawImgUrl, altText) {
       img.crossOrigin = 'anonymous';
       
       await new Promise((resolve, reject) => {
-        const timer = setTimeout(() => reject(new Error('Timeout load ảnh')), 6000);
+        const timer = setTimeout(() => reject(new Error('Timeout load ảnh')), 7000);
         img.onload = () => { clearTimeout(timer); resolve(); };
         img.onerror = () => { clearTimeout(timer); reject(new Error('Lỗi tải ảnh')); };
         img.src = pUrl;
@@ -25504,11 +25543,12 @@ async function cropAndUploadUniqueImage(rawImgUrl, altText) {
       const cropW = origW - (cropX * 2);
       const cropH = origH - (cropY * 2);
 
+      // Nâng cấp độ phân giải tối đa lên Full HD 1600px để ảnh luôn sắc nét, chống vỡ mờ
       let targetW = cropW;
       let targetH = cropH;
-      if (targetW > 1200) {
-        targetH = Math.round(targetH * 1200 / targetW);
-        targetW = 1200;
+      if (targetW > 1600) {
+        targetH = Math.round(targetH * 1600 / targetW);
+        targetW = 1600;
       }
 
       const canvas = document.createElement('canvas');
@@ -25519,12 +25559,13 @@ async function cropAndUploadUniqueImage(rawImgUrl, altText) {
       ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, targetW, targetH);
 
+      // Xuất ảnh JPEG chất lượng 0.95 siêu nét
       const blob = await new Promise((resolve) => {
-        canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.88);
+        canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.95);
       });
 
       if (!blob) {
-        return canvas.toDataURL('image/jpeg', 0.82);
+        return canvas.toDataURL('image/jpeg', 0.95);
       }
 
       // Tải ảnh mới lên CDN FreeImageHost để tạo link vĩnh viễn https://iili.io/
@@ -25535,7 +25576,7 @@ async function cropAndUploadUniqueImage(rawImgUrl, altText) {
       fd.append('format', 'json');
 
       const controller = new AbortController();
-      const uploadTimer = setTimeout(() => controller.abort(), 8000);
+      const uploadTimer = setTimeout(() => controller.abort(), 9000);
       const upRes = await fetch('https://freeimage.host/api/1/upload', {
         method: 'POST',
         body: fd,
@@ -25548,7 +25589,7 @@ async function cropAndUploadUniqueImage(rawImgUrl, altText) {
         return json.image.url;
       }
       
-      return canvas.toDataURL('image/jpeg', 0.82);
+      return canvas.toDataURL('image/jpeg', 0.95);
     } catch (err) {
       // Tiếp tục thử URL kế tiếp
     }
@@ -25563,7 +25604,7 @@ async function generateAiArticle() {
   const topic = (document.getElementById('aiTopic') || {}).value || '';
   const keywords = (document.getElementById('aiKeywords') || {}).value || '';
   const postType = (document.getElementById('aiPostType') || {}).value || 'huong_dan';
-  const wordCount = (document.getElementById('aiWordCount') || {}).value || '1200';
+  const wordCount = (document.getElementById('aiWordCount') || {}).value || '2000';
   const tone = (document.getElementById('aiTone') || {}).value || 'than_thien';
   const pSel = document.getElementById('aiProviderSelect');
   const mSel = document.getElementById('aiModelSelect');
@@ -25606,11 +25647,31 @@ async function generateAiArticle() {
   const postTypeMap = { huong_dan: 'hướng dẫn chi tiết từng bước', review: 'bài review/đánh giá chuyên sâu', list: 'bài danh sách top-N', tin_tuc: 'bài tin tức/cập nhật', so_sanh: 'bài so sánh', qa: 'bài hỏi đáp FAQ' };
   const toneMap = { chuyen_nghiep: 'chuyên nghiệp, súc tích, tin cậy', than_thien: 'thân thiện, dễ đọc, gần gũi', vui_tuoi: 'vui tươi, trẻ trung, sáng tạo', hoc_thuat: 'học thuật, chuyên sâu, nhiều dữ liệu' };
 
-  const postTypeLabel = postTypeMap[postType] || 'hướng dẫn';
+  const postTypeLabel = postTypeMap[postType] || 'hướng dẫn chi tiết';
   const toneLabel = toneMap[tone] || 'thân thiện';
   const kwInstruction = keywords.trim()
     ? `TỪ KHÓA SEO ĐÃ CUNG CẤP: ${keywords.trim()}`
     : `TỪ KHÓA SEO: BẠN HÃY TỰ ĐỘNG PHÂN TÍCH CHỦ ĐỀ VÀ XÁC ĐỊNH BỘ TỪ KHÓA SEO TỐI ƯU NHẤT (1 từ khóa chính và 2-3 từ khóa phụ LSI).`;
+
+  // Thiết lập số lượng từ & Max tokens theo lựa chọn của người dùng
+  let wordCountDesc = '';
+  let targetMaxTokens = 4096;
+  if (wordCount === '6000') {
+    wordCountDesc = 'Tối thiểu 5000 đến 6000 chữ (Bài viết đại bách khoa toàn thư cực kỳ chi tiết, phân tích thấu đáo từng khía cạnh, mở rộng tối đa mọi mục, không bỏ sót bất kỳ chi tiết hay bước nào)';
+    targetMaxTokens = 8192;
+  } else if (wordCount === '4000') {
+    wordCountDesc = 'Tối thiểu 3500 đến 4000 chữ (Bài viết chi tiết chuẩn E-E-A-T từ A-Z, chuyên sâu, mở rộng tối đa các luận điểm và hướng dẫn cụ thể)';
+    targetMaxTokens = 8192;
+  } else if (wordCount === 'tuong_duong') {
+    const sampleWordCount = (sampleData && sampleData.textSnippet) ? sampleData.textSnippet.split(/\s+/).length : 2500;
+    const estWords = Math.max(2500, Math.min(6000, Math.round(sampleWordCount * 1.5)));
+    wordCountDesc = `Ít nhất ${estWords} chữ hoặc tương đương độ dài đầy đủ của bài viết mẫu (Bao quát 100% tất cả các ý, các bước, các đề mục như bài viết mẫu, tuyệt đối không được viết sơ sài tóm tắt)`;
+    targetMaxTokens = 8192;
+  } else {
+    // 2000 hoặc mặc định
+    wordCountDesc = 'Tối thiểu 2000 đến 2500 chữ (Bài viết chuẩn SEO chuyên sâu, hướng dẫn bài bản, phân tích kỹ lưỡng, giàu thông tin thực tế)';
+    targetMaxTokens = 4096;
+  }
 
   // Lọc chỉ lấy những ảnh đã được người dùng tích chọn (selected !== false)
   const activeImages = (sampleData && Array.isArray(sampleData.images))
@@ -25623,11 +25684,16 @@ async function generateAiArticle() {
       ? activeImages.map((im, i) => `Ảnh ${i + 1}: ${im.url} (Mô tả gốc: ${im.alt || effectiveTopic})`).join('\n')
       : 'Không có ảnh minh họa nào được chọn';
 
+    const headingsText = (sampleData.headings && sampleData.headings.length > 0)
+      ? `\nDANH SÁCH CÁC ĐỀ MỤC GỐC TỪ BÀI VIẾT MẪU (BẮT BUỘC PHẢI BAO QUÁT ĐẦY ĐỦ CÁC Ý NÀY TRONG BÀI VIẾT MỚI):\n` + sampleData.headings.map(h => `- ${h}`).join('\n')
+      : '';
+
     sampleInstruction = `
 === THÔNG TIN BÀI VIẾT MẪU ĐỂ HỌC HỎI & BÁM SÁT (BẮT BUỘC TUÂN THỦ 100%) ===
 Link bài mẫu: ${sampleData.url}
 Tiêu đề bài mẫu: ${sampleData.title}
-Tóm tắt nội dung/định hướng bài mẫu:
+${headingsText}
+Nội dung chi tiết/định hướng từ bài mẫu:
 """
 ${sampleData.textSnippet}
 """
@@ -25635,15 +25701,19 @@ ${sampleData.textSnippet}
 DANH SÁCH ${activeImages.length} HÌNH ẢNH THẬT ĐÃ ĐƯỢC CHỌN ĐỂ CHÈN VÀO BÀI:
 ${imgListText}
 
-🚨 QUY TẮC BẮT BUỘC ĐỐI VỚI BÀI VIẾT (TUÂN THỦ TUYỆT ĐỐI):
-1. TỰ ĐỘNG ĐỔI TIÊU ĐỀ MỚI 100% (TUYỆT ĐỐI KHÔNG COPY LẠI TIÊU ĐỀ BÀI MẪU):
+🚨 QUY TẮC BẮT BUỘC ĐỐI VỚI BÀI VIẾT (TUÂN THỦ TUYỆT ĐỐI 100%):
+1. BÁM SÁT 100% NỘI DUNG VÀ TẤT CẢ CÁC Ý CỦA BÀI MẪU - TUYỆT ĐỐI KHÔNG VIẾT SƠ SÀI:
+   - Bài viết mẫu có những luận điểm, điều kiện, bước thực hiện, thủ thuật, bảng biểu hoặc quy trình gì -> Bạn BẮT BUỘC phải đưa vào bài viết mới và giải thích cặn kẽ hơn nữa!
+   - TUYỆT ĐỐI KHÔNG tóm tắt qua loa hay bỏ sót ý quan trọng. Với mỗi bước hướng dẫn, phải giải thích rõ ràng: "Chuẩn bị gì?", "Cách thực hiện chi tiết từng thao tác", "Các lỗi thường gặp và cách khắc phục để không bị khóa tài khoản".
+   - Đảm bảo tính chuyên sâu E-E-A-T 2026, cung cấp đầy đủ thông tin thực chiến hữu ích nhất.
+2. TỰ ĐỘNG ĐỔI TIÊU ĐỀ MỚI 100% (TUYỆT ĐỐI KHÔNG COPY LẠI TIÊU ĐỀ BÀI MẪU):
    - Bạn BẮT BUỘC phải sáng tạo một TIÊU ĐỀ MỚI HOÀN TOÀN, giật tít hấp dẫn, kích thích tò mò, CTR cao, chuẩn SEO 2026.
    - Tiêu đề mới phải chứa từ khóa chính, dưới 65 ký tự, độc nhất vô nhị (Unique 100%), không được trùng với tiêu đề bài mẫu gốc.
-2. BÁM SÁT 100% CHỦ ĐỀ & TUYỆT ĐỐI TRÁNH VIẾT LẠC ĐỀ:
+3. BÁM SÁT 100% CHỦ ĐỀ & TUYỆT ĐỐI TRÁNH VIẾT LẠC ĐỀ:
    - Bài viết BẮT BUỘC xoay quanh trực diện vấn đề/chủ đề: "${effectiveTopic}".
    - Bám sát từng bước hướng dẫn cụ thể, các thủ thuật thực tế, phân tích chuyên sâu.
    - TUYỆT ĐỐI KHÔNG viết lan man, không viết nhầm sang các chủ đề hoặc dịch vụ không liên quan.
-3. CHÈN HÌNH ẢNH MINH HOẠ THẬT ĐÃ CHỌN VÀO BÀI VIẾT:
+4. CHÈN HÌNH ẢNH MINH HOẠ THẬT ĐÃ CHỌN VÀO BÀI VIẾT:
    ${activeImages.length > 0 ? `- Bạn BẮT BUỘC phải chèn các hình ảnh trong danh sách trên vào các vị trí thích hợp tương ứng với từng phần đề mục trong bài viết.
    - Mỗi hình ảnh BẮT BUỘC định dạng bằng thẻ HTML:
      <div class="separator" style="clear:both; text-align:center; margin:24px 0;">
@@ -25659,8 +25729,9 @@ Hãy viết một bài blog chuyên sâu, chất lượng cao, hữu ích tuyệ
 
 CHỦ ĐỀ BÀI VIẾT: ${effectiveTopic}
 ${kwInstruction}
-ĐỘ DÀI: khoảng ${wordCount} chữ
+ĐỘ DÀI BẮT BUỘC: ${wordCountDesc}
 GIỌNG VĂN: ${toneLabel}
+HÌNH THỨC BÀI: ${postTypeLabel}
 ${sampleInstruction}
 
 === BẮT BUỘC TUÂN THỦ CẤU TRÚC BÀI BLOG CHUẨN SEO 2026 SAU ĐÂY ===
@@ -25737,7 +25808,7 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
         if (attempt > 0) {
           if (statusEl) statusEl.innerHTML = `<span style="color:#f59e0b;">⚠️ Nền tảng trước bận/hết quota -> Đang tự động chuyển sang <b>${tryProv.name}</b> viết bài...</span>`;
         }
-        rawText = await callAiChatService(tryKey, tryModel, prompt, "Bạn là chuyên gia SEO Content Marketing và Blogger tiếng Việt chuyên nghiệp.");
+        rawText = await callAiChatService(tryKey, tryModel, prompt, "Bạn là chuyên gia SEO Content Marketing và Blogger tiếng Việt chuyên nghiệp.", targetMaxTokens);
         if (rawText) {
           successfulProv = tryProv;
           if (pSel && pSel.value !== tryKey) {
@@ -25761,11 +25832,11 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
     let htmlContent = seoStart > -1 ? rawText.slice(0, seoStart).trim() : rawText.trim();
     htmlContent = convertMarkdownToCleanHtml(htmlContent);
 
-    // XỬ LÝ CROP CHÍNH XÁC 5% CHỐNG BẢN QUYỀN GOOGLE & DMCA VÀ CHÈN HÌNH ẢNH ĐÃ CHỌN
+    // XỬ LÝ CROP CHÍNH XÁC 5% CHỐNG BẢN QUYỀN GOOGLE & DMCA VÀ CHÈN TẤT CẢ HÌNH ẢNH ĐÃ CHỌN
     if (activeImages.length > 0) {
       if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-crop"></i> Đang tự động crop viền 5% chống quét trùng lặp bản quyền Google & DMCA...</span>';
       
-      const imagesToProcess = activeImages.slice(0, 4);
+      const imagesToProcess = activeImages.slice(0, 8);
       for (let i = 0; i < imagesToProcess.length; i++) {
         const targetImg = imagesToProcess[i];
         try {
@@ -25779,27 +25850,26 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
         }
       }
 
-      // Tự động chèn ảnh thật vào bài viết nếu AI chưa phân bổ đủ
+      // Tự động chèn tất cả ảnh thật vào bài viết nếu AI chưa phân bổ đủ
       const uninsertedImgs = activeImages.filter(im => !htmlContent.includes(im.url));
       if (uninsertedImgs.length > 0) {
-        const firstImg = uninsertedImgs[0];
-        const leadImgHtml = `\n<div class="separator" style="clear:both; text-align:center; margin:22px 0;">\n  <img src="${firstImg.url}" alt="${firstImg.alt || effectiveTopic}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25);" loading="lazy" />\n  <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">${firstImg.alt || effectiveTopic}</p>\n</div>\n`;
-        const pCloseIdx = htmlContent.indexOf('</p>');
-        if (pCloseIdx > -1) {
-          htmlContent = htmlContent.slice(0, pCloseIdx + 4) + leadImgHtml + htmlContent.slice(pCloseIdx + 4);
-        } else {
-          htmlContent = leadImgHtml + htmlContent;
-        }
-
-        if (uninsertedImgs.length > 1) {
-          const secondImg = uninsertedImgs[1];
-          const secondImgHtml = `\n<div class="separator" style="clear:both; text-align:center; margin:22px 0;">\n  <img src="${secondImg.url}" alt="${secondImg.alt || effectiveTopic}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25);" loading="lazy" />\n  <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">${secondImg.alt || effectiveTopic}</p>\n</div>\n`;
-          const allH2 = [...htmlContent.matchAll(/<\/h2>/gi)];
-          if (allH2.length >= 2) {
-            const pos = allH2[1].index + 5;
-            htmlContent = htmlContent.slice(0, pos) + secondImgHtml + htmlContent.slice(pos);
+        const allH2 = [...htmlContent.matchAll(/<\/h2>/gi)];
+        uninsertedImgs.forEach((img, uIdx) => {
+          const imgHtml = `\n<div class="separator" style="clear:both; text-align:center; margin:22px 0;">\n  <img src="${img.url}" alt="${img.alt || effectiveTopic}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25);" loading="lazy" />\n  <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">${img.alt || effectiveTopic}</p>\n</div>\n`;
+          if (uIdx === 0) {
+            const pCloseIdx = htmlContent.indexOf('</p>');
+            if (pCloseIdx > -1) {
+              htmlContent = htmlContent.slice(0, pCloseIdx + 4) + imgHtml + htmlContent.slice(pCloseIdx + 4);
+            } else {
+              htmlContent = imgHtml + htmlContent;
+            }
+          } else if (allH2.length > uIdx) {
+            const pos = allH2[uIdx].index + 5;
+            htmlContent = htmlContent.slice(0, pos) + imgHtml + htmlContent.slice(pos);
+          } else {
+            htmlContent = htmlContent + imgHtml;
           }
-        }
+        });
       }
     }
 

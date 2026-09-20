@@ -1476,8 +1476,8 @@
     
     /* ==================== VIEW: ARTICLE NEWSPAPER LAYOUT (TRANG BÀI BÁO) ==================== */
     .article-page-container {
-      max-width: 75% !important;
-      width: 75% !important;
+      max-width: 80% !important;
+      width: 80% !important;
       margin: 20px auto 60px !important;
       padding: 0 !important;
       box-sizing: border-box;
@@ -4821,12 +4821,12 @@ header.header {
 }
 
 /* ==========================================================================
-   THU NHỎ TRANG XEM BÀI VIẾT BLOG TRÊN MÁY TÍNH THÊM 5% (CÒN 75%), ĐIỆN THOẠI GIỮ NGUYÊN 100% (v2.2.4)
+   THU NHỎ TRANG XEM BÀI VIẾT BLOG TRÊN MÁY TÍNH CÂN ĐỐI (80%), RỘNG HƠN 5% ĐẸP MẮT (v2.2.8)
    ========================================================================== */
 .article-page-container,
 #viewBlogDetail {
-  width: 75% !important;
-  max-width: 75% !important;
+  width: 80% !important;
+  max-width: 80% !important;
   margin-left: auto !important;
   margin-right: auto !important;
   padding-left: 0 !important;
@@ -4838,9 +4838,24 @@ header.header {
 @media (max-width: 1200px) {
   .article-page-container,
   #viewBlogDetail {
-    width: 82% !important;
-    max-width: 82% !important;
+    width: 86% !important;
+    max-width: 86% !important;
   }
+}
+
+/* TỐI ƯU HIỂN THỊ HÌNH ẢNH BÀI VIẾT: SẮC NÉT, CHỐNG MỜ VỠ ẢNH */
+.separator img,
+.article-main-content img,
+#viewBlogDetail img,
+#aiEditorContent img {
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 10px;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  margin: 18px auto !important;
+  display: block !important;
 }
 
 @media (max-width: 992px) {
