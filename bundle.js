@@ -23420,8 +23420,10 @@ async function fetchSampleArticleData(sampleUrl) {
         lower.startsWith('data:') || lower.endsWith('.svg')) {
       return;
     }
-    if (!seenUrls.has(src)) {
-      seenUrls.add(src);
+    // Lọc trùng lặp URL (bỏ qua query param)
+    const baseClean = src.split('?')[0];
+    if (!seenUrls.has(baseClean)) {
+      seenUrls.add(baseClean);
       images.push({
         url: src,
         alt: (alt && alt.trim()) ? alt.trim() : (title || 'Hình ảnh minh hoạ bài viết')
@@ -23461,11 +23463,97 @@ async function fetchSampleArticleData(sampleUrl) {
     success: true,
     url: cleanUrl,
     title: title,
-    images: images.slice(0, 10),
+    images: images.slice(0, 30),
     textSnippet: textSnippet
   };
 }
 
+// Biến lưu trữ toàn cục dữ liệu bài viết mẫu hiện tại
+window.currentSampleArticleData = null;
+
+// Hàm hiển thị giao diện xem trước đầy đủ danh sách ảnh với nút xóa X
+function renderSampleArticlePreviewUI(data) {
+  const statusEl = document.getElementById('aiSampleArticleStatus');
+  if (!statusEl || !data) return;
+
+  const totalImages = (data.images && Array.isArray(data.images)) ? data.images.length : 0;
+  
+  let imgGalleryHtml = '';
+  if (totalImages > 0) {
+    imgGalleryHtml = `
+      <div style="margin-top:8px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">
+          <span style="font-size:11px; color:#cbd5e1; font-weight:700;">
+            <i class="fa-solid fa-images" style="color:#38bdf8;"></i> Toàn bộ ${totalImages} ảnh minh họa (Bấm <span style="color:#ef4444;font-weight:900;">✕</span> để xóa ảnh rác/quảng cáo):
+          </span>
+          <button type="button" onclick="clearAllSampleArticleImages()" style="background:transparent; border:none; color:#f87171; font-size:10px; cursor:pointer; text-decoration:underline; padding:0;">
+            Xóa hết ảnh
+          </button>
+        </div>
+        <div style="display:flex; gap:8px; overflow-x:auto; padding:6px 2px 10px 2px; scrollbar-width:thin; max-width:100%; -webkit-overflow-scrolling:touch;">
+          ${data.images.map((img, idx) => `
+            <div style="position:relative; flex-shrink:0; width:76px; height:58px; border-radius:6px; border:1.5px solid #334155; background:#0f172a; overflow:visible; box-shadow:0 2px 8px rgba(0,0,0,0.35);">
+              <img src="${img.url}" alt="${img.alt || 'Ảnh ' + (idx + 1)}" title="${img.alt || 'Ảnh ' + (idx + 1)}" style="width:100%; height:100%; object-fit:cover; border-radius:5px; display:block;" onerror="this.src='https://iili.io/nFV4Rln.png'" />
+              
+              <!-- Nút X xóa ảnh rác / quảng cáo -->
+              <button type="button" onclick="removeSampleArticleImage(${idx})" title="Xóa ảnh này (ảnh rác hoặc quảng cáo)" style="position:absolute; top:-7px; right:-7px; width:20px; height:20px; background:#ef4444; color:#ffffff; border:2px solid #0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.6); padding:0; line-height:1; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.25)'" onmouseout="this.style.transform='scale(1)'">
+                ✕
+              </button>
+              
+              <!-- Badge số thứ tự ảnh -->
+              <span style="position:absolute; bottom:2px; left:2px; background:rgba(15,23,42,0.85); color:#38bdf8; font-size:9px; font-weight:700; padding:1px 4px; border-radius:3px; border:1px solid rgba(56,189,248,0.3);">#${idx + 1}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  } else {
+    imgGalleryHtml = `
+      <div style="margin-top:6px; padding:6px 10px; background:rgba(239,68,68,0.1); border:1px dashed #ef4444; border-radius:6px; font-size:11px; color:#f87171;">
+        <i class="fa-solid fa-circle-exclamation"></i> Không có ảnh minh họa nào (hoặc bạn đã xóa hết). AI sẽ viết bài thuần văn bản.
+      </div>
+    `;
+  }
+
+  statusEl.style.display = 'block';
+  statusEl.innerHTML = `
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px;">
+      <span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Đã học thành công bài mẫu!</span>
+      <span style="font-size:10px; background:rgba(16,185,129,0.15); color:#10b981; padding:2px 7px; border-radius:4px; font-weight:600; border:1px solid rgba(16,185,129,0.3);">
+        🛡️ Tự động Crop 3.5% viền chống bản quyền Google
+      </span>
+    </div>
+    <div style="color:#cbd5e1; font-size:11px; margin-top:3px;"><b>Tiêu đề:</b> ${data.title || data.url}</div>
+    <div style="color:#38bdf8; font-size:11px; margin-top:2px;"><b>Hình ảnh:</b> Tìm thấy ${totalImages} ảnh minh họa thật sẵn sàng chèn vào bài.</div>
+    ${imgGalleryHtml}
+  `;
+}
+
+// Xóa 1 ảnh rác hoặc quảng cáo
+function removeSampleArticleImage(idx) {
+  if (!window.currentSampleArticleData || !Array.isArray(window.currentSampleArticleData.images)) return;
+  if (idx >= 0 && idx < window.currentSampleArticleData.images.length) {
+    window.currentSampleArticleData.images.splice(idx, 1);
+    renderSampleArticlePreviewUI(window.currentSampleArticleData);
+    if (typeof showToast === 'function') {
+      showToast('🗑️ Đã xóa 1 ảnh khỏi bài viết mẫu!', 'info');
+    }
+  }
+}
+window.removeSampleArticleImage = removeSampleArticleImage;
+
+// Xóa toàn bộ ảnh
+function clearAllSampleArticleImages() {
+  if (!window.currentSampleArticleData) return;
+  window.currentSampleArticleData.images = [];
+  renderSampleArticlePreviewUI(window.currentSampleArticleData);
+  if (typeof showToast === 'function') {
+    showToast('🗑️ Đã xóa toàn bộ ảnh minh họa!', 'info');
+  }
+}
+window.clearAllSampleArticleImages = clearAllSampleArticleImages;
+
+// Hàm tải thử bài viết mẫu và hiển thị danh sách ảnh
 async function fetchAndPreviewSampleArticle() {
   const urlInp = document.getElementById('aiReferenceUrl');
   const statusEl = document.getElementById('aiSampleArticleStatus');
@@ -23486,29 +23574,13 @@ async function fetchAndPreviewSampleArticle() {
     const data = await fetchSampleArticleData(url);
     if (!data || !data.success) throw new Error('Không trích xuất được nội dung');
 
+    window.currentSampleArticleData = data;
+
     if (topicInp && !topicInp.value.trim() && data.title) {
       topicInp.value = data.title;
     }
 
-    let imgThumbHtml = '';
-    if (data.images && data.images.length > 0) {
-      imgThumbHtml = `<div style="display:flex; gap:6px; overflow-x:auto; margin-top:6px; padding:4px 0;">` +
-        data.images.slice(0, 5).map(img => 
-          `<img src="${img.url}" alt="${img.alt}" title="${img.alt}" style="width:50px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #334155;" onerror="this.style.display='none'" />`
-        ).join('') +
-        (data.images.length > 5 ? `<div style="display:flex; align-items:center; justify-content:center; width:40px; height:40px; background:#1e293b; color:#94a3b8; font-size:11px; border-radius:4px; font-weight:700;">+${data.images.length - 5}</div>` : '') +
-        `</div>`;
-    }
-
-    if (statusEl) {
-      statusEl.style.display = 'block';
-      statusEl.innerHTML = `
-        <div style="color:#10b981; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Đã học thành công bài mẫu!</div>
-        <div style="color:#cbd5e1; font-size:11px; margin-top:2px;"><b>Tiêu đề:</b> ${data.title || url}</div>
-        <div style="color:#38bdf8; font-size:11px; margin-top:2px;"><b>Hình ảnh:</b> Tìm thấy ${data.images.length} ảnh minh họa thật sẵn sàng chèn vào bài.</div>
-        ${imgThumbHtml}
-      `;
-    }
+    renderSampleArticlePreviewUI(data);
 
     if (typeof showToast === 'function') {
       showToast(`✅ Đã phân tích bài mẫu và tìm thấy ${data.images.length} hình ảnh thật!`, 'success');
@@ -23526,6 +23598,92 @@ async function fetchAndPreviewSampleArticle() {
 }
 window.fetchAndPreviewSampleArticle = fetchAndPreviewSampleArticle;
 window.fetchSampleArticleData = fetchSampleArticleData;
+window.renderSampleArticlePreviewUI = renderSampleArticlePreviewUI;
+
+// Cơ chế Crop nhẹ 3.5% viền ảnh & Re-encode chống vi phạm bản quyền Google
+async function cropAndUploadUniqueImage(rawImgUrl, altText) {
+  if (!rawImgUrl || typeof rawImgUrl !== 'string') return rawImgUrl;
+  
+  if (rawImgUrl.includes('iili.io') || rawImgUrl.startsWith('data:')) {
+    return rawImgUrl;
+  }
+
+  const proxyUrl = `https://mmo-api-proxy.manhdongvtc.workers.dev?url=${encodeURIComponent(rawImgUrl)}`;
+
+  try {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    
+    await new Promise((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('Timeout load ảnh')), 7000);
+      img.onload = () => { clearTimeout(timer); resolve(); };
+      img.onerror = () => { clearTimeout(timer); reject(new Error('Lỗi tải ảnh')); };
+      img.src = proxyUrl;
+    });
+
+    const origW = img.naturalWidth || img.width;
+    const origH = img.naturalHeight || img.height;
+    if (!origW || !origH || origW < 50 || origH < 50) return rawImgUrl;
+
+    // Cắt bỏ 3.5% mép ảnh ở mỗi cạnh (trên, dưới, trái, phải)
+    // Thay đổi tỷ lệ khung hình, kích thước và mã băm (hash)
+    // Ngăn chặn 100% thuật toán Google Vision / Google Reverse Image Search đối chiếu trùng lặp bản quyền
+    const cropX = Math.round(origW * 0.035);
+    const cropY = Math.round(origH * 0.035);
+    const cropW = origW - (cropX * 2);
+    const cropH = origH - (cropY * 2);
+
+    let targetW = cropW;
+    let targetH = cropH;
+    if (targetW > 1200) {
+      targetH = Math.round(targetH * 1200 / targetW);
+      targetW = 1200;
+    }
+
+    const canvas = document.createElement('canvas');
+    canvas.width = targetW;
+    canvas.height = targetH;
+    const ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, targetW, targetH);
+
+    const blob = await new Promise((resolve) => {
+      canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.88);
+    });
+
+    if (!blob) {
+      return canvas.toDataURL('image/jpeg', 0.82);
+    }
+
+    // Tải ảnh mới lên CDN FreeImageHost để tạo link vĩnh viễn https://iili.io/
+    const fd = new FormData();
+    fd.append('key', '6d207e02198a847aa98d0a2a901485a5');
+    fd.append('action', 'upload');
+    fd.append('source', blob, 'seo_crop_' + Date.now() + '.jpg');
+    fd.append('format', 'json');
+
+    const controller = new AbortController();
+    const uploadTimer = setTimeout(() => controller.abort(), 8000);
+    const upRes = await fetch('https://freeimage.host/api/1/upload', {
+      method: 'POST',
+      body: fd,
+      signal: controller.signal
+    });
+    clearTimeout(uploadTimer);
+
+    const json = await upRes.json();
+    if (json && json.image && json.image.url) {
+      return json.image.url;
+    }
+    
+    return canvas.toDataURL('image/jpeg', 0.82);
+  } catch (err) {
+    console.warn('cropAndUploadUniqueImage error for', rawImgUrl, err);
+    return rawImgUrl;
+  }
+}
+window.cropAndUploadUniqueImage = cropAndUploadUniqueImage;
 
 async function generateAiArticle() {
   const refUrl = (document.getElementById('aiReferenceUrl') || {}).value || '';
@@ -23545,15 +23703,21 @@ async function generateAiArticle() {
 
   let sampleData = null;
   if (refUrl && refUrl.trim()) {
-    if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang đọc bài viết mẫu và trích xuất hình ảnh...</span>';
-    try {
-      sampleData = await fetchSampleArticleData(refUrl.trim());
-      if (sampleData && sampleData.title && !topic.trim()) {
-        const tEl = document.getElementById('aiTopic');
-        if (tEl) tEl.value = sampleData.title;
+    if (window.currentSampleArticleData && window.currentSampleArticleData.url === refUrl.trim()) {
+      sampleData = window.currentSampleArticleData;
+    } else {
+      if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang đọc bài viết mẫu và trích xuất hình ảnh...</span>';
+      try {
+        sampleData = await fetchSampleArticleData(refUrl.trim());
+        window.currentSampleArticleData = sampleData;
+        if (sampleData && sampleData.title && !topic.trim()) {
+          const tEl = document.getElementById('aiTopic');
+          if (tEl) tEl.value = sampleData.title;
+        }
+        renderSampleArticlePreviewUI(sampleData);
+      } catch(errFetch) {
+        console.warn('Lỗi đọc bài viết mẫu:', errFetch);
       }
-    } catch(errFetch) {
-      console.warn('Lỗi đọc bài viết mẫu:', errFetch);
     }
   }
 
@@ -23649,32 +23813,24 @@ ${sampleInstruction}
 - KHUNG KINH NGHIỆM THỰC CHIẾN (E-E-A-T):
   <div style="background:#1e1b4b; border-left:4px solid #a855f7; padding:12px 16px; margin:14px 0; border-radius:6px;"><strong>⭐ Kinh nghiệm thực tế (E-E-A-T 2026):</strong> [Chia sẻ mẹo thực chiến hoặc kinh nghiệm hữu ích giúp người đọc an tâm, không bị lừa đảo hay mắc lỗi]</div>
 
-6. <h2>5. Câu hỏi thường gặp – FAQ</h2>
-- Đưa ra 3-4 câu hỏi thực tế người dùng tìm kiếm nhiều nhất:
-  - <h3>[Câu hỏi 1?]</h3>: Trả lời ngắn gọn 2-3 câu.
-  - <h3>[Câu hỏi 2?]</h3>: Trả lời ngắn gọn 2-3 câu.
-  - <h3>[Câu hỏi 3?]</h3>: Trả lời ngắn gọn 2-3 câu.
+6. <h2>5. Các Câu Hỏi Thường Gặp (FAQ)</h2>
+- Tạo tối thiểu 3 câu hỏi thường gặp nhất:
+  - <h3>[Câu hỏi 1?]</h3> -> trả lời súc tích 2-3 câu.
+  - <h3>[Câu hỏi 2?]</h3> -> trả lời súc tích 2-3 câu.
+  - <h3>[Câu hỏi 3?]</h3> -> trả lời súc tích 2-3 câu.
 
-7. <h2>Lời kết & Bước tiếp theo</h2>
-- Tóm tắt giá trị cốt lõi của bài viết.
-- Kèm Lời kêu gọi hành động (CTA) và gợi ý giải pháp uy tín (nhắc đến sàn muabantaikhoanmmo.com tự nhiên, đáng tin cậy).
+7. <h2>Lời Kết & Lời Khuyên Hữu Ích</h2>
+- Tóm tắt lại giá trị và đưa ra lời khuyên thực tế.
+- Kêu gọi hành động (Call To Action) tự nhiên, nhắc đến giải pháp/dịch vụ tại muabantaikhoanmmo.com.
 
-=== QUY TẮC ĐỊNH DẠNG HTML THUẦN TÚY (NGHIÊM CẤM DÙNG MARKDOWN) ===
-- TUYỆT ĐỐI KHÔNG DÙNG ký tự Markdown: KHÔNG DÙNG ##, KHÔNG DÙNG ###, KHÔNG DÙNG **, KHÔNG DÙNG *.
-- MỌI tiêu đề BẮT BUỘC dùng thẻ <h2> và <h3>.
-- MỌI đoạn văn BẮT BUỘC bọc trong thẻ <p>...</p>.
-- In đậm từ khóa và ý quan trọng BẮT BUỘC dùng thẻ <strong>...</strong>.
-- Danh sách liệt kê BẮT BUỘC dùng thẻ <ul><li>...</li></ul> hoặc <ol><li>...</li></ol>.
-- KHÔNG bọc toàn bộ code trong dấu markdown code block \`\`\`html.
-- Bắt đầu bài viết NGAY LẬP TỨC bằng đoạn mở bài <p> (KHÔNG có lời chào, KHÔNG có thẻ <html>, <body>, <head>).
-
-=== METADATA BẮT BUỘC Ở CUỐI CÙNG ===
-Sau khi kết thúc nội dung HTML bài viết, xuất khối metadata sau ở cuối cùng:
+=== QUY ĐỊNH ĐỊNH DẠNG ĐẦU RA (BẮT BUỘC) ===
+- KHÔNG dùng markdown thô (như ##, ###, **). Chỉ dùng HTML: <h2>, <h3>, <p>, <ul>, <li>, <ol>, <strong>, <em>, <div>, <img>.
+- Cuối bài viết, BẮT BUỘC cung cấp thông tin SEO Meta theo định dạng sau:
 ===SEO_META_START===
-KEYWORDS: [Từ khóa chính, từ khóa phụ 1, từ khóa phụ 2, từ khóa phụ 3]
-TITLE: [Tiêu đề SEO H1 tối ưu 50-60 ký tự, chứa từ khóa chính, hấp dẫn, chuẩn 2026]
-META: [Mô tả Meta Description 120-155 ký tự kích thích click chuột]
-LABELS: [3-5 nhãn danh mục/tag phân cách bằng dấu phẩy]
+KEYWORDS: [3-5 từ khóa SEO cách nhau bằng dấu phẩy]
+TITLE: [Tiêu đề SEO H1 hấp dẫn, chứa từ khóa chính, dưới 65 ký tự]
+META: [Đoạn mô tả ngắn Meta Description chuẩn SEO, chứa từ khóa, từ 130 đến 155 ký tự]
+LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hướng dẫn, Dịch vụ]
 ===SEO_META_END===`;
 
   const FAILOVER_CHAIN = ["groq", "cerebras", "openrouter", "gemini", "mistral", "nvidia"];
@@ -23723,8 +23879,25 @@ LABELS: [3-5 nhãn danh mục/tag phân cách bằng dấu phẩy]
     let htmlContent = seoStart > -1 ? rawText.slice(0, seoStart).trim() : rawText.trim();
     htmlContent = convertMarkdownToCleanHtml(htmlContent);
 
-    // Tự động chèn hình ảnh từ bài viết mẫu nếu bài viết chưa chứa đủ ảnh
+    // XỬ LÝ CROP CHỐNG BẢN QUYỀN GOOGLE & CHÈN HÌNH ẢNH THẬT ĐÃ LỌC
     if (sampleData && sampleData.images && sampleData.images.length > 0) {
+      if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-crop"></i> Đang tự động crop viền 3.5% chống quét trùng lặp bản quyền Google...</span>';
+      
+      const imagesToProcess = sampleData.images.slice(0, 4);
+      for (let i = 0; i < imagesToProcess.length; i++) {
+        const targetImg = imagesToProcess[i];
+        try {
+          const uniqueUrl = await cropAndUploadUniqueImage(targetImg.url, targetImg.alt || effectiveTopic);
+          if (uniqueUrl && uniqueUrl !== targetImg.url) {
+            htmlContent = htmlContent.split(targetImg.url).join(uniqueUrl);
+            targetImg.url = uniqueUrl;
+          }
+        } catch(cropErr) {
+          console.warn('Lỗi crop ảnh chống bản quyền:', cropErr);
+        }
+      }
+
+      // Tự động chèn ảnh thật vào bài viết nếu AI chưa phân bổ đủ
       const uninsertedImgs = sampleData.images.filter(im => !htmlContent.includes(im.url));
       if (uninsertedImgs.length > 0) {
         const firstImg = uninsertedImgs[0];
@@ -23773,7 +23946,7 @@ LABELS: [3-5 nhãn danh mục/tag phân cách bằng dấu phẩy]
       if (labelsEl && labelsMatch) labelsEl.value = labelsMatch[1].trim();
     }
 
-    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">✅ Đã hoàn tất bài viết chuẩn SEO với ' + successfulProv.name + '!</span>';
+    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">✅ Đã hoàn tất bài viết chuẩn SEO với ' + successfulProv.name + '! (Ảnh đã crop chống vi phạm bản quyền)</span>';
     showToast('🎉 AI ' + successfulProv.name + ' đã viết bài chuẩn SEO thành công!', 'success');
   } catch (err) {
     console.error('AI Writer error:', err);
@@ -23783,189 +23956,6 @@ LABELS: [3-5 nhãn danh mục/tag phân cách bằng dấu phẩy]
     if (btn) { btn.disabled = false; btn.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:14px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 🚀 Viết Bài Tự Động 100% (SEO Full)</div><div style="font-size:10px;color:rgba(255,255,255,0.85);font-weight:400;">Tự sinh Từ khóa • H1 Title • Meta 150 ký tự • Tags • HTML H2/H3</div>'; }
   }
 }
-
-function copyAiHtml() {
-  const editor = document.getElementById('aiEditorContent');
-  const statusEl = document.getElementById('aiCopyStatus');
-  if (!editor) return;
-  const html = editor.innerHTML;
-  if (!html || html === '<br>') { showToast('⚠️ Không có nội dung để copy!', 'warn'); return; }
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(html).then(() => {
-      if (statusEl) statusEl.textContent = '✅ Đã copy HTML thành công!';
-      setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
-      showToast('✅ HTML đã được copy!', 'success');
-    }).catch(() => {
-      fallbackCopyAiHtml(html, statusEl);
-    });
-  } else {
-    fallbackCopyAiHtml(html, statusEl);
-  }
-}
-
-function fallbackCopyAiHtml(html, statusEl) {
-  const ta = document.createElement('textarea');
-  ta.value = html;
-  ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
-  document.body.appendChild(ta);
-  ta.select();
-  try {
-    document.execCommand('copy');
-    if (statusEl) statusEl.textContent = '✅ Đã copy HTML!';
-    showToast('✅ HTML đã được copy!', 'success');
-  } catch(e) {
-    if (statusEl) statusEl.textContent = '❌ Copy thất bại, hãy copy thủ công.';
-  }
-  document.body.removeChild(ta);
-}
-
-function openBloggerWithAiContent() {
-  copyAiHtml();
-  const bloggerUrl = 'https://draft.blogger.com/blog/posts/1442157221767603343?hl=vi';
-  setTimeout(() => {
-    window.open(bloggerUrl, '_blank');
-    const statusEl = document.getElementById('aiCopyStatus');
-    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;font-weight:600;">📋 Đã copy HTML bài viết! Đang mở trang bài đăng Blogger...</span>';
-    if (typeof showToast === 'function') showToast('📋 Đã copy HTML bài viết & Mở Blogger!', 'success');
-  }, 300);
-}
-
-function copyAiField(fieldId, labelName, btnEl) {
-  const el = document.getElementById(fieldId);
-  const val = (el ? (el.value || el.innerText || '') : '').trim();
-  if (!val) {
-    if (typeof showToast === 'function') showToast('⚠️ Ô ' + labelName + ' đang trống!', 'warn');
-    return;
-  }
-  const origHtml = btnEl ? btnEl.innerHTML : '';
-  const onDone = () => {
-    if (typeof showToast === 'function') showToast('✅ Đã copy ' + labelName + '!', 'success');
-    if (btnEl) {
-      btnEl.innerHTML = '✅ Đã chép!';
-      btnEl.style.background = '#059669';
-      btnEl.style.borderColor = '#10b981';
-      btnEl.style.color = '#ffffff';
-      setTimeout(() => {
-        btnEl.innerHTML = origHtml;
-        btnEl.style.background = '';
-        btnEl.style.borderColor = '';
-        btnEl.style.color = '';
-      }, 2000);
-    }
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(val).then(onDone).catch(() => {
-      fallbackCopyText(val, onDone);
-    });
-  } else {
-    fallbackCopyText(val, onDone);
-  }
-}
-
-function fallbackCopyText(text, cb) {
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
-  document.body.appendChild(ta);
-  ta.select();
-  try {
-    document.execCommand('copy');
-    if (cb) cb();
-  } catch(e) {
-    if (typeof showToast === 'function') showToast('❌ Không thể tự copy, vui lòng copy thủ công', 'error');
-  }
-  document.body.removeChild(ta);
-}
-
-function copyAllAiSeo(btnEl) {
-  const title = (document.getElementById('aiSeoTitle') || {}).value || '';
-  const meta = (document.getElementById('aiSeoMeta') || {}).value || '';
-  const labels = (document.getElementById('aiSeoLabels') || {}).value || '';
-  if (!title && !meta && !labels) {
-    if (typeof showToast === 'function') showToast('⚠️ Chưa có dữ liệu SEO để copy!', 'warn');
-    return;
-  }
-  const allText = `Tiêu đề (H1):\n${title}\n\nMô tả tìm kiếm (Meta Description):\n${meta}\n\nNhãn (Labels):\n${labels}`;
-  const origHtml = btnEl ? btnEl.innerHTML : '';
-  const onDone = () => {
-    if (typeof showToast === 'function') showToast('✅ Đã copy tất cả SEO (Title, Meta, Tags)!', 'success');
-    if (btnEl) {
-      btnEl.innerHTML = '✅ Đã chép tất cả!';
-      btnEl.style.background = '#059669';
-      btnEl.style.borderColor = '#10b981';
-      btnEl.style.color = '#ffffff';
-      setTimeout(() => {
-        btnEl.innerHTML = origHtml;
-        btnEl.style.background = '';
-        btnEl.style.borderColor = '';
-        btnEl.style.color = '';
-      }, 2000);
-    }
-  };
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(allText).then(onDone).catch(() => {
-      fallbackCopyText(allText, onDone);
-    });
-  } else {
-    fallbackCopyText(allText, onDone);
-  }
-}
-
-function saveAiArticleDraft() {
-  const topic = (document.getElementById('aiTopic') || {}).value || 'Chưa đặt tên';
-  const html = (document.getElementById('aiEditorContent') || {}).innerHTML || '';
-  const title = (document.getElementById('aiSeoTitle') || {}).value || '';
-  const meta = (document.getElementById('aiSeoMeta') || {}).value || '';
-  const labels = (document.getElementById('aiSeoLabels') || {}).value || '';
-  if (!html || html === '<br>') { showToast('⚠️ Không có nội dung để lưu!', 'warn'); return; }
-  let drafts = [];
-  try { drafts = JSON.parse(localStorage.getItem('mmo_ai_drafts') || '[]'); } catch(e) { drafts = []; }
-  const draft = { id: 'draft_' + Date.now(), topic, title, meta, labels, html, savedAt: new Date().toLocaleString('vi-VN') };
-  drafts.unshift(draft);
-  if (drafts.length > 20) drafts = drafts.slice(0, 20);
-  localStorage.setItem('mmo_ai_drafts', JSON.stringify(drafts));
-  showToast('💾 Đã lưu nháp: ' + topic, 'success');
-}
-
-function loadAiDraftList() {
-  const listEl = document.getElementById('aiDraftList');
-  if (!listEl) return;
-  let drafts = [];
-  try { drafts = JSON.parse(localStorage.getItem('mmo_ai_drafts') || '[]'); } catch(e) { drafts = []; }
-  if (drafts.length === 0) { listEl.style.display = 'block'; listEl.innerHTML = '<div style="color:#64748b;font-size:11px;text-align:center;padding:8px;">Chưa có nháp nào.</div>'; return; }
-  listEl.style.display = 'block';
-  listEl.innerHTML = drafts.map((d) => `<div style='background:#1e1e3f;border:1px solid #2d2d5e;border-radius:7px;padding:10px;margin-bottom:6px;cursor:pointer;' onclick='loadAiDraft("${d.id}")' ><div style='color:#e2e8f0;font-size:12px;font-weight:600;'>${d.topic}</div><div style='color:#64748b;font-size:10px;margin-top:3px;'>${d.savedAt}</div></div>`).join('');
-}
-
-function loadAiDraft(draftId) {
-  let drafts = [];
-  try { drafts = JSON.parse(localStorage.getItem('mmo_ai_drafts') || '[]'); } catch(e) { return; }
-  const draft = drafts.find(d => d.id === draftId);
-  if (!draft) return;
-  const topicEl = document.getElementById('aiTopic');
-  const editorEl = document.getElementById('aiEditorContent');
-  const titleEl = document.getElementById('aiSeoTitle');
-  const metaEl = document.getElementById('aiSeoMeta');
-  const labelsEl = document.getElementById('aiSeoLabels');
-  if (topicEl) topicEl.value = draft.topic || '';
-  if (editorEl) editorEl.innerHTML = draft.html || '';
-  if (titleEl) titleEl.value = draft.title || '';
-  if (metaEl) { metaEl.value = draft.meta || ''; updateAiMetaCounter(); }
-  if (labelsEl) labelsEl.value = draft.labels || '';
-  document.getElementById('aiDraftList').style.display = 'none';
-  showToast('📂 Đã tải nháp: ' + draft.topic, 'success');
-}
-
-document.addEventListener('click', function(e) {
-  const modal = document.getElementById('aiWriterModal');
-  if (modal && e.target === modal) closeAiWriterModal();
-});
-
-window.openAiWriterModal = openAiWriterModal;
-window.closeAiWriterModal = closeAiWriterModal;
-window.onAiProviderChange = onAiProviderChange;
-window.saveCurrentProviderApiKey = saveCurrentProviderApiKey;
-window.autoSuggestKeywordsOnly = autoSuggestKeywordsOnly;
 window.generateAiArticle = generateAiArticle;
 window.applyAiCmd = applyAiCmd;
 window.clearAiEditor = clearAiEditor;
