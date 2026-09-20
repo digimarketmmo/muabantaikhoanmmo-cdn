@@ -4401,3 +4401,253 @@ footer .logo-text {
     max-width: 105px !important;
   }
 }
+
+/* ==========================================================================
+   COMPREHENSIVE MOBILE RESPONSIVE FIX (v2.1.8)
+   SỬA TOÀN DIỆN HIỂN THỊ TRÊN ĐIỆN THOẠI - CHỐNG CHỒNG CHÉO, CHỐNG CO ÉP
+   ========================================================================== */
+
+/* 1. TRANG CHI TIẾT SẢN PHẨM TRÊN MOBILE (< 900px) */
+@media (max-width: 900px) {
+  #viewProductDetail {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 8px !important;
+    box-sizing: border-box !important;
+  }
+  .detail-container-3col {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .detail-col-left,
+  .detail-col-right {
+    display: none !important;
+  }
+  .detail-col-center {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  .detail-card-center {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    padding: 14px 12px !important;
+    gap: 14px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .detail-img-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 340px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #090e17 !important;
+    border-radius: 10px !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+  }
+  .detail-img-box img {
+    width: auto !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: 300px !important;
+    object-fit: contain !important;
+    border-radius: 8px !important;
+  }
+  .detail-info-col {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+  .detail-title {
+    font-size: 1.15rem !important;
+    line-height: 1.35 !important;
+    margin-bottom: 8px !important;
+  }
+  .detail-specs-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin: 12px 0 !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .detail-specs-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* 2. ADMIN CÀI ĐẶT HỆ THỐNG & GOOGLE (#tabAdmGeneral) */
+@media (max-width: 900px) {
+  #tabAdmGeneral form {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+  #tabAdmGeneral form > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  #tabAdmGeneral div[style*="grid-template-columns: 1fr 1fr"],
+  #tabAdmGeneral div[style*="grid-template-columns:1fr 1fr"] {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+  #tabAdmGeneral .btn-big-buy {
+    width: 100% !important;
+    height: 44px !important;
+    white-space: nowrap !important;
+    font-size: 0.88rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* 3. ADMIN CÀI ĐẶT THANH TOÁN & NGÂN HÀNG (#tabAdmPayment) */
+@media (max-width: 900px) {
+  #tabAdmPayment form {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+  }
+  #tabAdmPayment form > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* 4. ADMIN HỖ TRỢ & CHAT BẢO HÀNH (#tabAdmChat) */
+@media (max-width: 900px) {
+  #tabAdmChat > div {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    border-radius: 12px !important;
+    overflow: visible !important;
+  }
+  #tabAdmChat > div > div:first-child {
+    width: 100% !important;
+    height: 220px !important;
+    max-height: 240px !important;
+    border-right: none !important;
+    border-bottom: 1px solid #1e293b !important;
+    flex-shrink: 0 !important;
+  }
+  #tabAdmChat > div > div:last-child {
+    width: 100% !important;
+    height: 480px !important;
+    min-height: 400px !important;
+    flex: 1 !important;
+  }
+  #admChatConvHeader {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    padding: 10px 12px !important;
+  }
+  #admChatConvHeader > div:last-child {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    margin-top: 4px !important;
+  }
+  #admChatConvHeader button {
+    font-size: 0.72rem !important;
+    padding: 5px 8px !important;
+    white-space: nowrap !important;
+  }
+  #admChatReplyInput {
+    font-size: 0.82rem !important;
+    padding: 9px 12px !important;
+  }
+}
+
+/* 5. ADMIN QUẢN LÝ KHO & CẤU HÌNH API NGUỒN */
+@media (max-width: 900px) {
+  #stockSubTabManual > div,
+  .admin-stock-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+    grid-template-columns: 1fr !important;
+  }
+  #stockSubTabManual > div > div,
+  .admin-stock-grid > div {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  #stockSubTabTurso div[style*="grid-template-columns"],
+  #stockSubTabApi div[style*="grid-template-columns"] {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+}
+
+/* 6. POPUP AI VIẾT BÀI SEO MODAL (.ai-modal-body) */
+@media (max-width: 900px) {
+  .ai-modal-body,
+  #aiWriterModal .ai-modal-body {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+    max-height: calc(100vh - 120px) !important;
+    overflow-y: auto !important;
+  }
+  .ai-modal-body > div:first-child {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-right: none !important;
+    border-bottom: 1px solid #1e293b !important;
+  }
+  .ai-modal-body > div:last-child {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* 7. NÚT CHAT BONG BÓNG VÀ PADDING ĐÁY CHO MOBILE TRÁNH CHÈ NÚT */
+@media (max-width: 768px) {
+  #mmoChatWidgetContainer {
+    bottom: 72px !important;
+    right: 12px !important;
+  }
+  #mmoChatBubbleBtn {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 1.2rem !important;
+  }
+  body, .site-main, .container, .detail-container-3col {
+    padding-bottom: 80px !important;
+  }
+}
