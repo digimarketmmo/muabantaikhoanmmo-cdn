@@ -4889,4 +4889,37 @@ header.header {
   }
 }
 
+/* ==========================================================================
+   GRID 4 BÀI VIẾT ĐỀ XUẤT CHO TRANG BÀI VIẾT BLOG
+   ========================================================================== */
+#articleRelatedGrid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 16px !important;
+}
+
+#articleRelatedGrid .blog-card-img {
+  height: 160px !important;
+}
+
+#articleRelatedGrid .blog-card-heading {
+  font-size: 0.95rem !important;
+  line-height: 1.4 !important;
+}
+
+@media (max-width: 1024px) {
+  #articleRelatedGrid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 14px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  #articleRelatedGrid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+}
+
+
 
