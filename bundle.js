@@ -23353,23 +23353,216 @@ function convertMarkdownToCleanHtml(str) {
   return html;
 }
 
+async function fetchSampleArticleData(sampleUrl) {
+  if (!sampleUrl || typeof sampleUrl !== 'string') return null;
+  let cleanUrl = sampleUrl.trim();
+  if (!cleanUrl) return null;
+  if (!/^https?:\/\//i.test(cleanUrl)) cleanUrl = 'https://' + cleanUrl;
+
+  const proxies = [
+    `https://mmo-api-proxy.manhdongvtc.workers.dev?url=${encodeURIComponent(cleanUrl)}`,
+    cleanUrl
+  ];
+
+  let html = '';
+  let lastErr = null;
+  for (const pUrl of proxies) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+      const res = await fetch(pUrl, {
+        signal: controller.signal,
+        headers: { 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' }
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        html = await res.text();
+        if (html && html.length > 200) break;
+      }
+    } catch(err) {
+      lastErr = err;
+    }
+  }
+
+  if (!html) {
+    throw (lastErr || new Error('Không thể tải bài viết từ link mẫu'));
+  }
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  // 1. Trích xuất tiêu đề bài viết
+  let title = '';
+  const ogTitle = doc.querySelector("meta[property='og:title']");
+  if (ogTitle && ogTitle.content) title = ogTitle.content.trim();
+  if (!title) {
+    const h1 = doc.querySelector('article h1, main h1, .post-title, .entry-title, h1');
+    if (h1 && h1.textContent) title = h1.textContent.trim();
+  }
+  if (!title && doc.title) title = doc.title.trim();
+  title = title.replace(/\s*[\-\|]\s*.*$/, '').trim();
+
+  // 2. Trích xuất các URL hình ảnh có thật trong bài viết mẫu
+  const images = [];
+  const seenUrls = new Set();
+
+  function addImg(src, alt) {
+    if (!src || typeof src !== 'string') return;
+    src = src.trim();
+    if (src.startsWith('//')) src = 'https:' + src;
+    else if (!src.startsWith('http://') && !src.startsWith('https://')) {
+      try { src = new URL(src, cleanUrl).href; } catch(e) { return; }
+    }
+    const lower = src.toLowerCase();
+    if (lower.includes('avatar') || lower.includes('favicon') || lower.includes('pixel') || 
+        lower.includes('1x1') || lower.includes('track') || lower.includes('gravatar') || 
+        lower.includes('share') || lower.includes('icon') || lower.includes('banner-ads') ||
+        lower.startsWith('data:') || lower.endsWith('.svg')) {
+      return;
+    }
+    if (!seenUrls.has(src)) {
+      seenUrls.add(src);
+      images.push({
+        url: src,
+        alt: (alt && alt.trim()) ? alt.trim() : (title || 'Hình ảnh minh hoạ bài viết')
+      });
+    }
+  }
+
+  // A. Ảnh đại diện OG Image
+  const ogImg = doc.querySelector("meta[property='og:image']");
+  if (ogImg && ogImg.content) addImg(ogImg.content, title);
+
+  // B. Quét các ảnh trong nội dung bài viết
+  const contentScope = doc.querySelector('article, .post-body, .entry-content, .post-content, main, .content, #content') || doc.body;
+  const imgNodes = contentScope ? contentScope.querySelectorAll('img') : doc.querySelectorAll('img');
+  
+  imgNodes.forEach(node => {
+    let src = node.getAttribute('src') || node.getAttribute('data-src') || node.getAttribute('data-original') || node.getAttribute('data-lazy-src') || '';
+    if (!src && node.getAttribute('srcset')) {
+      const parts = node.getAttribute('srcset').split(',');
+      if (parts.length > 0) src = parts[0].trim().split(' ')[0];
+    }
+    const alt = node.getAttribute('alt') || node.getAttribute('title') || '';
+    addImg(src, alt);
+  });
+
+  // 3. Trích xuất nội dung văn bản chính để AI học hỏi cấu trúc
+  const cleanDoc = doc.cloneNode(true);
+  const elementsToRemove = cleanDoc.querySelectorAll('script, style, nav, header, footer, aside, noscript, iframe, .sidebar, .comments, .related-posts, .menu, .ads');
+  elementsToRemove.forEach(el => el.remove());
+
+  const targetBody = cleanDoc.querySelector('article, .post-body, .entry-content, .post-content, main, .content') || cleanDoc.body;
+  let text = targetBody ? (targetBody.innerText || targetBody.textContent || '') : '';
+  text = text.replace(/\s+/g, ' ').trim();
+  const textSnippet = text.slice(0, 3200);
+
+  return {
+    success: true,
+    url: cleanUrl,
+    title: title,
+    images: images.slice(0, 10),
+    textSnippet: textSnippet
+  };
+}
+
+async function fetchAndPreviewSampleArticle() {
+  const urlInp = document.getElementById('aiReferenceUrl');
+  const statusEl = document.getElementById('aiSampleArticleStatus');
+  const topicInp = document.getElementById('aiTopic');
+  
+  const url = urlInp ? urlInp.value.trim() : '';
+  if (!url) {
+    if (typeof showToast === 'function') showToast('⚠️ Vui lòng dán link bài viết mẫu vào ô!', 'warn');
+    return;
+  }
+
+  if (statusEl) {
+    statusEl.style.display = 'block';
+    statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải và phân tích dữ liệu từ bài viết mẫu...</span>';
+  }
+
+  try {
+    const data = await fetchSampleArticleData(url);
+    if (!data || !data.success) throw new Error('Không trích xuất được nội dung');
+
+    if (topicInp && !topicInp.value.trim() && data.title) {
+      topicInp.value = data.title;
+    }
+
+    let imgThumbHtml = '';
+    if (data.images && data.images.length > 0) {
+      imgThumbHtml = `<div style="display:flex; gap:6px; overflow-x:auto; margin-top:6px; padding:4px 0;">` +
+        data.images.slice(0, 5).map(img => 
+          `<img src="${img.url}" alt="${img.alt}" title="${img.alt}" style="width:50px; height:40px; object-fit:cover; border-radius:4px; border:1px solid #334155;" onerror="this.style.display='none'" />`
+        ).join('') +
+        (data.images.length > 5 ? `<div style="display:flex; align-items:center; justify-content:center; width:40px; height:40px; background:#1e293b; color:#94a3b8; font-size:11px; border-radius:4px; font-weight:700;">+${data.images.length - 5}</div>` : '') +
+        `</div>`;
+    }
+
+    if (statusEl) {
+      statusEl.style.display = 'block';
+      statusEl.innerHTML = `
+        <div style="color:#10b981; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Đã học thành công bài mẫu!</div>
+        <div style="color:#cbd5e1; font-size:11px; margin-top:2px;"><b>Tiêu đề:</b> ${data.title || url}</div>
+        <div style="color:#38bdf8; font-size:11px; margin-top:2px;"><b>Hình ảnh:</b> Tìm thấy ${data.images.length} ảnh minh họa thật sẵn sàng chèn vào bài.</div>
+        ${imgThumbHtml}
+      `;
+    }
+
+    if (typeof showToast === 'function') {
+      showToast(`✅ Đã phân tích bài mẫu và tìm thấy ${data.images.length} hình ảnh thật!`, 'success');
+    }
+  } catch(err) {
+    console.error('fetchAndPreviewSampleArticle error:', err);
+    if (statusEl) {
+      statusEl.style.display = 'block';
+      statusEl.innerHTML = `<span style="color:#ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Lỗi đọc link mẫu: ${err.message || 'Không thể kết nối'}. Bạn vẫn có thể bấm Viết bài để AI thử lại qua proxy.</span>`;
+    }
+    if (typeof showToast === 'function') {
+      showToast('⚠️ Không thể đọc tự động link mẫu. Vui lòng kiểm tra lại URL.', 'warn');
+    }
+  }
+}
+window.fetchAndPreviewSampleArticle = fetchAndPreviewSampleArticle;
+window.fetchSampleArticleData = fetchSampleArticleData;
+
 async function generateAiArticle() {
+  const refUrl = (document.getElementById('aiReferenceUrl') || {}).value || '';
   const topic = (document.getElementById('aiTopic') || {}).value || '';
   const keywords = (document.getElementById('aiKeywords') || {}).value || '';
   const postType = (document.getElementById('aiPostType') || {}).value || 'huong_dan';
   const wordCount = (document.getElementById('aiWordCount') || {}).value || '1200';
   const tone = (document.getElementById('aiTone') || {}).value || 'than_thien';
-  const outline = (document.getElementById('aiOutline') || {}).value || '';
   const pSel = document.getElementById('aiProviderSelect');
   const mSel = document.getElementById('aiModelSelect');
   const pKey = pSel ? pSel.value : 'groq';
   const modelId = mSel ? mSel.value : '';
   const prov = AI_PROVIDERS[pKey] || AI_PROVIDERS.groq;
 
-  if (!topic.trim()) { showToast('⚠️ Vui lòng nhập chủ đề bài viết!', 'warn'); return; }
-
   const btn = document.getElementById('aiGenerateBtn');
   const statusEl = document.getElementById('aiGenerateStatus');
+
+  let sampleData = null;
+  if (refUrl && refUrl.trim()) {
+    if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang đọc bài viết mẫu và trích xuất hình ảnh...</span>';
+    try {
+      sampleData = await fetchSampleArticleData(refUrl.trim());
+      if (sampleData && sampleData.title && !topic.trim()) {
+        const tEl = document.getElementById('aiTopic');
+        if (tEl) tEl.value = sampleData.title;
+      }
+    } catch(errFetch) {
+      console.warn('Lỗi đọc bài viết mẫu:', errFetch);
+    }
+  }
+
+  const effectiveTopic = (document.getElementById('aiTopic') || {}).value || (sampleData ? sampleData.title : '') || '';
+  if (!effectiveTopic.trim()) {
+    showToast('⚠️ Vui lòng nhập chủ đề bài viết hoặc dán link bài viết mẫu!', 'warn');
+    return;
+  }
+
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang phân tích SEO 2026 & viết bài tự động...'; }
   if (statusEl) statusEl.innerHTML = '<span style="color:#a855f7;">⏳ ' + prov.name + ' đang phân tích Search Intent và tạo cấu trúc SEO 2026...</span>';
 
@@ -23378,19 +23571,51 @@ async function generateAiArticle() {
 
   const postTypeLabel = postTypeMap[postType] || 'hướng dẫn';
   const toneLabel = toneMap[tone] || 'thân thiện';
-  const outlinePart = outline ? ("DÀN Ý / YÊU CẦU THÊM TỪ NGƯỜI DÙNG: " + outline) : "";
   const kwInstruction = keywords.trim()
     ? `TỪ KHÓA SEO ĐÃ CUNG CẤP: ${keywords.trim()}`
     : `TỪ KHÓA SEO: BẠN HÃY TỰ ĐỘNG PHÂN TÍCH CHỦ ĐỀ VÀ XÁC ĐỊNH BỘ TỪ KHÓA SEO TỐI ƯU NHẤT (1 từ khóa chính và 2-3 từ khóa phụ LSI).`;
 
+  let sampleInstruction = '';
+  if (sampleData && sampleData.success) {
+    const imgListText = (sampleData.images && sampleData.images.length > 0)
+      ? sampleData.images.map((im, i) => `Ảnh ${i + 1}: ${im.url} (Mô tả gốc: ${im.alt})`).join('\n')
+      : 'Không có ảnh';
+
+    sampleInstruction = `
+=== THÔNG TIN BÀI VIẾT MẪU ĐỂ HỌC HỎI & BÁM SÁT (BẮT BUỘC TUÂN THỦ 100%) ===
+Link bài mẫu: ${sampleData.url}
+Tiêu đề bài mẫu: ${sampleData.title}
+Tóm tắt nội dung bài mẫu:
+"""
+${sampleData.textSnippet}
+"""
+
+DANH SÁCH ${sampleData.images.length} HÌNH ẢNH CÓ THẬT TRÍCH XUẤT TỪ BÀI VIẾT MẪU:
+${imgListText}
+
+🚨 QUY TẮC BẮT BUỘC ĐỐI VỚI BÀI VIẾT MẪU:
+1. BÁM SÁT NỘI DUNG BÀI MẪU & TUYỆT ĐỐI KHÔNG LẠC ĐỀ:
+   - Học hỏi phong cách, phân tích cấu trúc, đề mục và các bước hướng dẫn từ BÀI VIẾT MẪU ở trên để viết bài mới chuẩn SEO Tiếng Việt chuyên nghiệp, đúng trọng tâm.
+   - TUYỆT ĐỐI KHÔNG VIẾT LẠC ĐỀ, không viết nhầm sang chủ đề hoặc dịch vụ khác. Bám sát 100% ngữ cảnh của bài mẫu.
+2. CHÈN HÌNH ẢNH MINH HOẠ THẬT TỪ BÀI VIẾT MẪU:
+   - Bạn BẮT BUỘC phải chèn các hình ảnh trong danh sách "DANH SÁCH HÌNH ẢNH CÓ THẬT TRÍCH XUẤT TỪ BÀI VIẾT MẪU" vào các vị trí thích hợp tương ứng với từng phần đề mục trong bài viết.
+   - Mỗi hình ảnh BẮT BUỘC định dạng bằng thẻ HTML:
+     <div class="separator" style="clear:both; text-align:center; margin:24px 0;">
+       <img src="[URL_HÌNH_ẢNH_TỪ_DANH_SÁCH]" alt="[Mô tả ảnh chuẩn SEO chứa từ khóa]" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25);" loading="lazy" />
+       <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">[Chú thích hình ảnh]</p>
+     </div>
+   - Phân bổ đều các hình ảnh sau các thẻ <h2> hoặc <h3>. CHỈ ĐƯỢC DÙNG link ảnh từ danh sách trên, TUYỆT ĐỐI KHÔNG tự bịa link ảnh ảo!
+`;
+  }
+
   const prompt = `Bạn là một chuyên gia SEO Content Marketing & Copywriting hàng đầu (Google Helpful Content & E-E-A-T Chuẩn SEO 2026).
 Hãy viết một bài blog chuyên sâu, chất lượng cao, hữu ích tuyệt đối cho người đọc về chủ đề sau:
 
-CHỦ ĐỀ BÀI VIẾT: ${topic}
+CHỦ ĐỀ BÀI VIẾT: ${effectiveTopic}
 ${kwInstruction}
 ĐỘ DÀI: khoảng ${wordCount} chữ
 GIỌNG VĂN: ${toneLabel}
-${outlinePart}
+${sampleInstruction}
 
 === BẮT BUỘC TUÂN THỦ CẤU TRÚC BÀI BLOG CHUẨN SEO 2026 SAU ĐÂY ===
 
@@ -23497,6 +23722,31 @@ LABELS: [3-5 nhãn danh mục/tag phân cách bằng dấu phẩy]
     const seoEnd = rawText.indexOf('===SEO_META_END===');
     let htmlContent = seoStart > -1 ? rawText.slice(0, seoStart).trim() : rawText.trim();
     htmlContent = convertMarkdownToCleanHtml(htmlContent);
+
+    // Tự động chèn hình ảnh từ bài viết mẫu nếu bài viết chưa chứa đủ ảnh
+    if (sampleData && sampleData.images && sampleData.images.length > 0) {
+      const uninsertedImgs = sampleData.images.filter(im => !htmlContent.includes(im.url));
+      if (uninsertedImgs.length > 0) {
+        const firstImg = uninsertedImgs[0];
+        const leadImgHtml = `\n<div class="separator" style="clear:both; text-align:center; margin:22px 0;">\n  <img src="${firstImg.url}" alt="${firstImg.alt || effectiveTopic}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25);" loading="lazy" />\n  <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">${firstImg.alt || effectiveTopic}</p>\n</div>\n`;
+        const pCloseIdx = htmlContent.indexOf('</p>');
+        if (pCloseIdx > -1) {
+          htmlContent = htmlContent.slice(0, pCloseIdx + 4) + leadImgHtml + htmlContent.slice(pCloseIdx + 4);
+        } else {
+          htmlContent = leadImgHtml + htmlContent;
+        }
+
+        if (uninsertedImgs.length > 1) {
+          const secondImg = uninsertedImgs[1];
+          const secondImgHtml = `\n<div class="separator" style="clear:both; text-align:center; margin:22px 0;">\n  <img src="${secondImg.url}" alt="${secondImg.alt || effectiveTopic}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25);" loading="lazy" />\n  <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">${secondImg.alt || effectiveTopic}</p>\n</div>\n`;
+          const allH2 = [...htmlContent.matchAll(/<\/h2>/gi)];
+          if (allH2.length >= 2) {
+            const pos = allH2[1].index + 5;
+            htmlContent = htmlContent.slice(0, pos) + secondImgHtml + htmlContent.slice(pos);
+          }
+        }
+      }
+    }
 
     const editor = document.getElementById('aiEditorContent');
     if (editor) {
