@@ -19308,6 +19308,13 @@ function syncAllOpenViewsStock(changedProdId) {
     updateLiveRealTimeClock();
 
     document.addEventListener("DOMContentLoaded", function() {
+      if (window._mmoCdnAppBooted) {
+        if (typeof ensureUniversalComponentsExist === "function") ensureUniversalComponentsExist();
+        if (typeof renderHeaderNotifications === "function") renderHeaderNotifications();
+        return;
+      }
+      window._mmoCdnAppBooted = true;
+
       const gBtn = document.getElementById("btnGoogleCustom");
       if (gBtn) {
         gBtn.addEventListener("click", function(e) {
@@ -19349,9 +19356,11 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof initGoogleAuth === "function") initGoogleAuth();
       if (typeof initTursoUI === "function") initTursoUI();
       if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
-        syncTursoProductsToLocalUI().then(() => {
-          return syncTursoStockToLocalUI();
-        }).catch(e => console.error("Turso init sync error:", e));
+        setTimeout(function() {
+          syncTursoProductsToLocalUI().then(() => {
+            return syncTursoStockToLocalUI();
+          }).catch(e => console.error("Turso init sync error:", e));
+        }, 150);
       }
       // Tự động tải sản phẩm mới nhất từ máy chủ để mọi người xem được ngay
       const _urlHasProd = window.location.search && (window.location.search.includes("prod=") || window.location.search.includes("product=") || window.location.search.includes("view=viewProductDetail"));
@@ -19362,7 +19371,7 @@ function syncAllOpenViewsStock(changedProdId) {
         if (typeof syncAdminEmailsFromCloud === "function") {
           syncAdminEmailsFromCloud();
         }
-      }, _urlHasProd ? 50 : 300);
+      }, _urlHasProd ? 200 : 1500);
 
       // RESTORE CURRENT ACTIVE VIEW AND SUB-TABS ON F5 REFRESH
       try {
