@@ -16282,21 +16282,21 @@ function syncAllOpenViewsStock(changedProdId) {
         const isAdminTopup = tLow.includes("thủ công") || (tx.id && String(tx.id).includes("ADMIN_TOPUP")) || (tx.content && String(tx.content).includes("ADMIN_TOPUP"));
         const isRefund = tLow.includes("hoàn tiền");
 
-        let typeBadge = '<span class="badge-verified" style="font-size:0.72rem;">' + escapeHtml(tx.type || 'Nạp tiền VietQR') + '</span>';
+        let typeBadge = '<span class="badge-verified" style="font-size:0.72rem; white-space:nowrap; display:inline-flex; align-items:center;">' + escapeHtml(tx.type || 'Nạp tiền VietQR') + '</span>';
         if (isWithdraw) {
-          typeBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(239,68,68,0.15); color:#ef4444;">' + escapeHtml(tx.type || 'Rút tiền') + '</span>';
+          typeBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(239,68,68,0.15); color:#ef4444; white-space:nowrap; display:inline-flex; align-items:center;">' + escapeHtml(tx.type || 'Rút tiền') + '</span>';
         } else if (isRefund) {
-          typeBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4);"><i class="fa-solid fa-rotate-left"></i> Hoàn tiền bảo hành</span>';
+          typeBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4); white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-rotate-left"></i> Hoàn tiền bảo hành</span>';
         } else if (isAdminTopup) {
-          typeBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4);">Nạp thủ công Admin</span>';
+          typeBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4); white-space:nowrap; display:inline-flex; align-items:center;">Nạp thủ công Admin</span>';
         }
 
         return '<tr>' +
           '<td style="font-size:0.78rem; color:#94a3b8; white-space:nowrap;">' + (tx.time || tx.date || '') + '</td>' +
-          '<td>' + typeBadge + '</td>' +
-          '<td>' + amtHtml + '</td>' +
-          '<td><span class="badge-trust" style="font-size:0.7rem; background:rgba(16,185,129,0.15); color:#10b981;">' + escapeHtml(tx.status || 'Thành công') + '</span></td>' +
-          '<td style="font-size:0.78rem; color:#cbd5e1;">' + escapeHtml(tx.note || tx.content || '') + '</td>' +
+          '<td style="white-space:nowrap;">' + typeBadge + '</td>' +
+          '<td style="white-space:nowrap;">' + amtHtml + '</td>' +
+          '<td style="white-space:nowrap;"><span class="badge-trust" style="font-size:0.7rem; background:rgba(16,185,129,0.15); color:#10b981; white-space:nowrap; display:inline-flex; align-items:center;">' + escapeHtml(tx.status || 'Thành công') + '</span></td>' +
+          '<td style="font-size:0.78rem; color:#cbd5e1; white-space:nowrap;">' + escapeHtml(tx.note || tx.content || '') + '</td>' +
         '</tr>';
       }).join("");
     }
@@ -16344,15 +16344,15 @@ function syncAllOpenViewsStock(changedProdId) {
 
           let typeHtml = "";
           if (isRefund) {
-            typeHtml = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền đơn hàng bảo hành</span>';
+            typeHtml = '<span style="color:#10b981; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền đơn hàng bảo hành</span>';
           } else if (isPurchase) {
-            typeHtml = '<span style="color:#f87171; font-weight:700;"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
+            typeHtml = '<span style="color:#f87171; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
           } else if (tLow.includes("rút")) {
-            typeHtml = '<span style="color:#fbbf24; font-weight:700;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Rút tiền</span>';
+            typeHtml = '<span style="color:#fbbf24; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Rút tiền</span>';
           } else if (tLow.includes("thủ công") || nLow.includes("thủ công")) {
-            typeHtml = '<span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-user-shield"></i> Nạp tiền ví</span>';
+            typeHtml = '<span style="color:#38bdf8; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-user-shield"></i> Nạp tiền ví</span>';
           } else {
-            typeHtml = '<span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
+            typeHtml = '<span style="color:#38bdf8; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
           }
 
           let displayNote = tx.note || "";
@@ -16362,10 +16362,10 @@ function syncAllOpenViewsStock(changedProdId) {
 
           return '<tr>' +
             '<td style="font-size:0.78rem; color:#94a3b8; white-space:nowrap;">' + (tx.time || tx.date || '') + '</td>' +
-            '<td>' + typeHtml + '</td>' +
-            '<td>' + amtHtml + '</td>' +
+            '<td style="white-space:nowrap;">' + typeHtml + '</td>' +
+            '<td style="white-space:nowrap;">' + amtHtml + '</td>' +
             '<td style="font-size:0.85rem; font-weight:700; color:#38bdf8; font-family:monospace; white-space:nowrap;">' + balAfterStr + '</td>' +
-            '<td style="font-size:0.78rem; color:#cbd5e1;">' + escapeHtml(displayNote) + '</td>' +
+            '<td style="font-size:0.78rem; color:#cbd5e1; white-space:nowrap;">' + escapeHtml(displayNote) + '</td>' +
           '</tr>';
         }).join("");
         return;
@@ -16578,13 +16578,13 @@ function syncAllOpenViewsStock(changedProdId) {
 
         let typeHtml = "";
         if (isRefund) {
-          typeHtml = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền đơn hàng bảo hành</span>';
+          typeHtml = '<span style="color:#10b981; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền đơn hàng bảo hành</span>';
         } else if (isPurchase) {
-          typeHtml = '<span style="color:#f87171; font-weight:700;"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
+          typeHtml = '<span style="color:#f87171; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
         } else if (tLow.includes("rút")) {
-          typeHtml = '<span style="color:#fbbf24; font-weight:700;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Rút tiền</span>';
+          typeHtml = '<span style="color:#fbbf24; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Rút tiền</span>';
         } else {
-          typeHtml = '<span style="color:#38bdf8; font-weight:700;"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
+          typeHtml = '<span style="color:#38bdf8; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
         }
 
         let displayNote = tx.note || "";
@@ -16594,10 +16594,10 @@ function syncAllOpenViewsStock(changedProdId) {
 
         return '<tr>' +
           '<td style="font-size:0.78rem; color:#94a3b8; white-space:nowrap;">' + (tx.time || tx.date || '') + '</td>' +
-          '<td>' + typeHtml + '</td>' +
-          '<td>' + amtHtml + '</td>' +
+          '<td style="white-space:nowrap;">' + typeHtml + '</td>' +
+          '<td style="white-space:nowrap;">' + amtHtml + '</td>' +
           '<td style="font-size:0.85rem; font-weight:700; color:#38bdf8; font-family:monospace; white-space:nowrap;">' + balAfterStr + '</td>' +
-          '<td style="font-size:0.78rem; color:#cbd5e1;">' + escapeHtml(displayNote) + '</td>' +
+          '<td style="font-size:0.78rem; color:#cbd5e1; white-space:nowrap;">' + escapeHtml(displayNote) + '</td>' +
         '</tr>';
       }).join("");
     }
@@ -22840,3 +22840,745 @@ async function confirmRefundOrder() {
       }
     }
     window.closeApiDocsModal = closeApiDocsModal;
+
+// AI VIẾT BÀI SEO — Multi-Provider AI Engine (Groq, Cerebras, OpenRouter, Gemini, NVIDIA, Mistral)
+// ============================================================
+const DEFAULT_GEMINI_API_KEY = atob('QVEuQWI4Uk42S0VNaDJYNjA0VTBwQVFUTWRxaDAyRjFiSGZWNUVTVjVpb3dpQlZOTWVRSHc=');
+const AI_PROVIDERS = {
+  groq: {
+    name: 'Groq',
+    badge: 'Miễn phí / Siêu tốc',
+    endpoint: 'https://api.groq.com/openai/v1/chat/completions',
+    isOpenAiFormat: true,
+    keyLink: 'https://console.groq.com/keys',
+    defaultModel: 'llama-3.3-70b-versatile',
+    models: [
+      { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B Versatile (Khuyên dùng)' },
+      { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B Instant (Siêu nhanh)' },
+      { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7B (Đa ngôn ngữ)' }
+    ]
+  },
+  openrouter: {
+    name: 'OpenRouter.ai',
+    badge: 'Nhiều model free',
+    endpoint: 'https://openrouter.ai/api/v1/chat/completions',
+    isOpenAiFormat: true,
+    extraHeaders: { 'HTTP-Referer': 'https://muabantaikhoanmmo.com', 'X-Title': 'MMO Blog AI Writer' },
+    keyLink: 'https://openrouter.ai/keys',
+    defaultModel: 'meta-llama/llama-3.3-70b-instruct:free',
+    models: [
+      { id: 'meta-llama/llama-3.3-70b-instruct:free', name: 'Llama 3.3 70B (Free)' },
+      { id: 'google/gemini-2.0-flash-exp:free', name: 'Gemini 2.0 Flash Exp (Free)' },
+      { id: 'mistralai/mistral-7b-instruct:free', name: 'Mistral 7B Instruct (Free)' },
+      { id: 'qwen/qwen-2.5-72b-instruct:free', name: 'Qwen 2.5 72B Instruct (Free)' }
+    ]
+  },
+  cerebras: {
+    name: 'Cerebras AI',
+    badge: '2.000 tokens/s',
+    endpoint: 'https://api.cerebras.ai/v1/chat/completions',
+    isOpenAiFormat: true,
+    keyLink: 'https://cloud.cerebras.ai',
+    defaultModel: 'llama3.3-70b',
+    models: [
+      { id: 'llama3.3-70b', name: 'Llama 3.3 70B (Cực nhanh & chuẩn)' },
+      { id: 'llama3.1-8b', name: 'Llama 3.1 8B' }
+    ]
+  },
+  nvidia: {
+    name: 'NVIDIA NIM',
+    badge: 'Cloud NVIDIA',
+    endpoint: 'https://integrate.api.nvidia.com/v1/chat/completions',
+    isOpenAiFormat: true,
+    keyLink: 'https://build.nvidia.com',
+    defaultModel: 'meta/llama-3.3-70b-instruct',
+    models: [
+      { id: 'meta/llama-3.3-70b-instruct', name: 'Meta Llama 3.3 70B Instruct' },
+      { id: 'mistralai/mistral-large-2-instruct', name: 'Mistral Large 2 Instruct' }
+    ]
+  },
+  mistral: {
+    name: 'Mistral AI',
+    badge: 'Mistral AI',
+    endpoint: 'https://api.mistral.ai/v1/chat/completions',
+    isOpenAiFormat: true,
+    keyLink: 'https://console.mistral.ai/api-keys',
+    defaultModel: 'mistral-small-latest',
+    models: [
+      { id: 'mistral-small-latest', name: 'Mistral Small Latest' },
+      { id: 'open-mistral-7b', name: 'Open Mistral 7B' }
+    ]
+  },
+  gemini: {
+    name: 'Google Gemini',
+    badge: 'Có key sẵn',
+    endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={KEY}',
+    isOpenAiFormat: false,
+    keyLink: 'https://aistudio.google.com/app/apikey',
+    defaultModel: 'gemini-3.1-flash-lite',
+    models: [
+      { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash-Lite (Miễn phí & Cực nhanh)' },
+      { id: 'gemini-3.5-flash-lite', name: 'Gemini 3.5 Flash-Lite (Phiên bản mới)' },
+      { id: 'gemini-3.1-pro-preview', name: 'Gemini 3.1 Pro (Cần gói trả phí Billing)' }
+    ]
+  },
+};
+
+function onAiProviderChange() {
+  const pSel = document.getElementById('aiProviderSelect');
+  const mSel = document.getElementById('aiModelSelect');
+  const mBadge = document.getElementById('aiModelBadge');
+  const keyInput = document.getElementById('aiCustomApiKey');
+  const keyStatus = document.getElementById('aiKeyStatus');
+  const keyLink = document.getElementById('aiKeyHelpLink');
+  const keyLabel = document.getElementById('aiKeyLabel');
+  const keyDefaultHint = document.getElementById('aiKeyDefaultHint');
+  const pKey = pSel ? pSel.value : 'groq';
+  const prov = AI_PROVIDERS[pKey] || AI_PROVIDERS.groq;
+  localStorage.setItem('mmo_ai_selected_provider', pKey);
+
+  if (mSel && prov.models) {
+    mSel.innerHTML = prov.models.map(m => `<option value="${m.id}" ${m.id === prov.defaultModel ? "selected='selected'" : ""}>${m.name}</option>`).join("");
+  }
+  if (mBadge) mBadge.textContent = prov.badge || "AI";
+  if (keyLabel) keyLabel.textContent = "🔑 " + prov.name + " API Key";
+  if (keyLink) { keyLink.href = prov.keyLink; keyLink.textContent = "👉 Lấy " + prov.name + " API Key"; }
+
+  const savedKey = localStorage.getItem('mmo_ai_key_' + pKey) || '';
+  if (keyInput) keyInput.value = savedKey;
+  if (keyDefaultHint) {
+    keyDefaultHint.style.display = (pKey === 'gemini') ? 'inline' : 'none';
+  }
+  if (keyStatus) {
+    if (savedKey) {
+      keyStatus.textContent = 'Đã lưu key riêng';
+      keyStatus.style.color = '#38bdf8';
+    } else if (pKey === 'gemini') {
+      keyStatus.textContent = 'Key mặc định sẵn';
+      keyStatus.style.color = '#10b981';
+    } else {
+      keyStatus.textContent = 'Chưa nhập key';
+      keyStatus.style.color = '#f59e0b';
+    }
+  }
+}
+
+function saveCurrentProviderApiKey() {
+  const pSel = document.getElementById('aiProviderSelect');
+  const keyInput = document.getElementById('aiCustomApiKey');
+  const pKey = pSel ? pSel.value : 'groq';
+  const prov = AI_PROVIDERS[pKey] || AI_PROVIDERS.groq;
+  const val = keyInput ? keyInput.value.trim() : '';
+  if (val) {
+    localStorage.setItem('mmo_ai_key_' + pKey, val);
+    showToast('✅ Đã lưu API Key cho ' + prov.name + '!', 'success');
+  } else {
+    localStorage.removeItem('mmo_ai_key_' + pKey);
+    showToast('🔄 Đã xóa API Key cho ' + prov.name + '!', 'info');
+  }
+  onAiProviderChange();
+}
+
+const BLOGGER_BLOG_ID_WRITER = '1442157221767603343';
+
+function openAiWriterModal() {
+  const modal = document.getElementById('aiWriterModal');
+  if (modal) { modal.style.setProperty('display', 'flex', 'important'); document.body.style.overflow = 'hidden'; }
+  const savedPKey = localStorage.getItem('mmo_ai_selected_provider') || 'groq';
+  const pSel = document.getElementById('aiProviderSelect');
+  if (pSel) { pSel.value = savedPKey; }
+  onAiProviderChange();
+}
+
+function closeAiWriterModal() {
+  const modal = document.getElementById('aiWriterModal');
+  if (modal) { modal.style.setProperty('display', 'none', 'important'); document.body.style.overflow = ''; }
+}
+
+function updateAiMetaCounter() {
+  const meta = document.getElementById('aiSeoMeta');
+  const counter = document.getElementById('aiMetaCounter');
+  if (!meta || !counter) return;
+  const len = meta.value.length;
+  counter.textContent = '(' + len + '/160)';
+  counter.style.color = len > 155 ? '#22c55e' : len > 120 ? '#f59e0b' : '#64748b';
+}
+
+function applyAiCmd(cmd, val) {
+  const el = document.getElementById('aiEditorContent');
+  if (!el) return;
+  el.focus();
+  if (val !== undefined && val !== null) {
+    document.execCommand(cmd, false, val);
+  } else {
+    document.execCommand(cmd, false, null);
+  }
+}
+
+function clearAiEditor() {
+  const el = document.getElementById('aiEditorContent');
+  if (el && confirm('Xóa toàn bộ nội dung bài viết?')) el.innerHTML = '';
+}
+
+function onAiEditorInput() {
+  const el = document.getElementById('aiEditorContent');
+  if (!el) return;
+  if (el.innerHTML === '' || el.innerHTML === '<br>') {
+    el.setAttribute('data-empty', 'true');
+  } else {
+    el.removeAttribute('data-empty');
+  }
+}
+
+async function callAiChatService(pKey, modelId, promptText, sysPrompt) {
+  const prov = AI_PROVIDERS[pKey] || AI_PROVIDERS.groq;
+  let apiKey = localStorage.getItem('mmo_ai_key_' + pKey) || '';
+  if (!apiKey && pKey === 'gemini') { apiKey = DEFAULT_GEMINI_API_KEY; }
+  if (!apiKey) {
+    throw new Error('Chưa có API Key cho ' + prov.name + '. Vui lòng nhập key hoặc bấm link lấy key miễn phí bên dưới!');
+  }
+
+  if (prov.isOpenAiFormat) {
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + apiKey
+    };
+    if (prov.extraHeaders) Object.assign(headers, prov.extraHeaders);
+    const res = await fetch(prov.endpoint, {
+      method: 'POST',
+      headers: headers,
+      body: JSON.stringify({
+        model: modelId || prov.defaultModel,
+        messages: [
+          { role: 'system', content: sysPrompt || 'Bạn là chuyên gia SEO Content Writer tiếng Việt hàng đầu.' },
+          { role: 'user', content: promptText }
+        ],
+        temperature: 0.7,
+        max_tokens: 4096
+      })
+    });
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(prov.name + ' Error ' + res.status + ': ' + errText.slice(0, 220));
+    }
+    const json = await res.json();
+    const reply = json.choices && json.choices[0] && json.choices[0].message ? json.choices[0].message.content : '';
+    if (!reply) throw new Error(prov.name + ' không phản hồi nội dung.');
+    return reply;
+  } else {
+    const activeModel = modelId || 'gemini-3.1-flash-lite';
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${apiKey}`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
+        generationConfig: { maxOutputTokens: 4096, temperature: 0.7 }
+      })
+    });
+    if (!res.ok) {
+      if (activeModel !== 'gemini-3.1-flash-lite') {
+        const retryUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`;
+        try {
+          const retryRes = await fetch(retryUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
+              generationConfig: { maxOutputTokens: 4096, temperature: 0.7 }
+            })
+          });
+          if (retryRes.ok) {
+            const rJson = await retryRes.json();
+            const rReply = rJson.candidates && rJson.candidates[0] && rJson.candidates[0].content && rJson.candidates[0].content.parts && rJson.candidates[0].content.parts[0] ? rJson.candidates[0].content.parts[0].text : '';
+            if (rReply) return rReply;
+          }
+        } catch(e) {}
+      }
+      const errText = await res.text();
+      throw new Error('Gemini Error ' + res.status + ': ' + errText.slice(0, 220));
+    }
+    const json = await res.json();
+    const reply = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] ? json.candidates[0].content.parts[0].text : '';
+    if (!reply) throw new Error('Gemini không phản hồi nội dung.');
+    return reply;
+  }
+}
+
+async function autoSuggestKeywordsOnly() {
+  const topic = (document.getElementById('aiTopic') || {}).value || '';
+  if (!topic.trim()) { showToast('⚠️ Vui lòng nhập Chủ Đề bài viết trước!', 'warn'); return; }
+  const kwInput = document.getElementById('aiKeywords');
+  const statusEl = document.getElementById('aiGenerateStatus');
+  const pSel = document.getElementById('aiProviderSelect');
+  const mSel = document.getElementById('aiModelSelect');
+  const pKey = pSel ? pSel.value : 'groq';
+  const modelId = mSel ? mSel.value : '';
+
+  if (statusEl) statusEl.innerHTML = '<span style="color:#a855f7;">⏳ Đang phân tích từ khóa SEO tối ưu...</span>';
+  try {
+    const prompt = `Phân tích chủ đề sau: "${topic}". Hãy trích xuất và đề xuất bộ 3-5 từ khóa SEO quan trọng nhất (bao gồm 1 từ khóa chính và 2-4 từ khóa phụ LSI liên quan chặt chẽ), phân cách bằng dấu phẩy. Chỉ trả về các từ khóa phân cách bằng dấu phẩy, không thêm bất kỳ lời dẫn hay dấu ngoặc nào.`;
+    const resText = await callAiChatService(pKey, modelId, prompt, "Bạn là chuyên gia nghiên cứu từ khóa SEO Google tiếng Việt.");
+    const cleaned = resText.replace(/^[\r\n\s]+|[\r\n\s]+$/g, '').replace(/^(Từ khóa|Keywords):\s*/i, '');
+    if (kwInput) {
+      kwInput.value = cleaned;
+      kwInput.setAttribute('data-auto-generated', 'true');
+    }
+    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">✅ Đã gợi ý từ khóa SEO thành công!</span>';
+    showToast('✨ Đã gợi ý từ khóa SEO!', 'success');
+  } catch (err) {
+    console.error('Keyword suggest error:', err);
+    if (statusEl) statusEl.innerHTML = '<span style="color:#f87171;">❌ ' + (err.message || 'Lỗi gợi ý') + '</span>';
+    showToast('❌ Lỗi: ' + (err.message || 'Không thể gợi ý từ khóa'), 'error');
+  }
+}
+
+function convertMarkdownToCleanHtml(str) {
+  if (!str) return '';
+  let s = str.trim();
+  s = s.replace(/^`{3}(html)?\s*/i, '').replace(/`{3}\s*$/i, '').trim();
+  s = s.replace(/^(Chào bạn|Dưới đây là|Sau đây là|Đây là bài viết|Tuyệt vời|Dưới đây là nội dung)[^\n]*\n+/i, '');
+  s = s.replace(/\*\*\*([^*]+)\*\*\*/g, '<strong><em>$1</em></strong>');
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+  s = s.replace(/(^|[^\*])\*([^\*\n]+)\*([^\*]|$)/g, '$1<em>$2</em>$3');
+  s = s.replace(/([^\n])\s+##\s+/g, '$1\n\n## ');
+  s = s.replace(/([^\n])\s+###\s+/g, '$1\n\n### ');
+  s = s.replace(/([^\n])\s+\*\s+\*\*/g, '$1\n* **');
+  s = s.replace(/([^\n])\s+-\s+\*\*/g, '$1\n- **');
+  const lines = s.split(/\r?\n/);
+  const out = [];
+  let inList = null;
+  let currentP = [];
+  function flushP() {
+    if (currentP.length > 0) {
+      const text = currentP.join(' ').trim();
+      if (text) {
+        if (/^<(div|blockquote|table|h[1-6])/i.test(text)) {
+          out.push(text);
+        } else {
+          out.push('<p>' + text + '</p>');
+        }
+      }
+      currentP = [];
+    }
+  }
+  function flushList() {
+    if (inList) {
+      out.push('</' + inList + '>');
+      inList = null;
+    }
+  }
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i].trim();
+    if (!line) {
+      flushP(); flushList(); continue;
+    }
+    const h4Match = line.match(/^####\s+(.+)$/);
+    if (h4Match) { flushP(); flushList(); out.push("<h4>" + h4Match[1].trim() + "</h4>"); continue; }
+    const h3Match = line.match(/^###\s+(.+)$/);
+    if (h3Match) { flushP(); flushList(); out.push("<h3>" + h3Match[1].trim() + "</h3>"); continue; }
+    const h2Match = line.match(/^##?\s+(.+)$/);
+    if (h2Match) { flushP(); flushList(); out.push("<h2>" + h2Match[1].trim() + "</h2>"); continue; }
+    if (line.startsWith('>')) { flushP(); flushList(); out.push('<blockquote>' + line.replace(/^>\s*/, '').trim() + '</blockquote>'); continue; }
+    const olMatch = line.match(/^[0-9]+\.\s+(.+)$/);
+    if (olMatch) {
+      flushP();
+      if (inList !== 'ol') { flushList(); out.push('<ol>'); inList = 'ol'; }
+      out.push('  <li>' + olMatch[1].trim() + '</li>');
+      continue;
+    }
+    const ulMatch = line.match(/^[\*\-•]\s+(.+)$/);
+    if (ulMatch) {
+      flushP();
+      if (inList !== 'ul') { flushList(); out.push('<ul>'); inList = 'ul'; }
+      out.push('  <li>' + ulMatch[1].trim() + '</li>');
+      continue;
+    }
+    if (/^<(h[1-6]|ul|ol|div|blockquote|table|p)/i.test(line)) {
+      flushP(); flushList(); out.push(line); continue;
+    }
+    flushList();
+    currentP.push(line);
+  }
+  flushP(); flushList();
+  let html = out.join('\n');
+  html = html.replace(/#{2,6}\s*/g, '');
+  html = html.replace(/\*{2,3}/g, '');
+  return html;
+}
+
+async function generateAiArticle() {
+  const topic = (document.getElementById('aiTopic') || {}).value || '';
+  const keywords = (document.getElementById('aiKeywords') || {}).value || '';
+  const postType = (document.getElementById('aiPostType') || {}).value || 'huong_dan';
+  const wordCount = (document.getElementById('aiWordCount') || {}).value || '1200';
+  const tone = (document.getElementById('aiTone') || {}).value || 'than_thien';
+  const outline = (document.getElementById('aiOutline') || {}).value || '';
+  const pSel = document.getElementById('aiProviderSelect');
+  const mSel = document.getElementById('aiModelSelect');
+  const pKey = pSel ? pSel.value : 'groq';
+  const modelId = mSel ? mSel.value : '';
+  const prov = AI_PROVIDERS[pKey] || AI_PROVIDERS.groq;
+
+  if (!topic.trim()) { showToast('⚠️ Vui lòng nhập chủ đề bài viết!', 'warn'); return; }
+
+  const btn = document.getElementById('aiGenerateBtn');
+  const statusEl = document.getElementById('aiGenerateStatus');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang phân tích SEO 2026 & viết bài tự động...'; }
+  if (statusEl) statusEl.innerHTML = '<span style="color:#a855f7;">⏳ ' + prov.name + ' đang phân tích Search Intent và tạo cấu trúc SEO 2026...</span>';
+
+  const postTypeMap = { huong_dan: 'hướng dẫn chi tiết từng bước', review: 'bài review/đánh giá chuyên sâu', list: 'bài danh sách top-N', tin_tuc: 'bài tin tức/cập nhật', so_sanh: 'bài so sánh', qa: 'bài hỏi đáp FAQ' };
+  const toneMap = { chuyen_nghiep: 'chuyên nghiệp, súc tích, tin cậy', than_thien: 'thân thiện, dễ đọc, gần gũi', vui_tuoi: 'vui tươi, trẻ trung, sáng tạo', hoc_thuat: 'học thuật, chuyên sâu, nhiều dữ liệu' };
+
+  const postTypeLabel = postTypeMap[postType] || 'hướng dẫn';
+  const toneLabel = toneMap[tone] || 'thân thiện';
+  const outlinePart = outline ? ("DÀN Ý / YÊU CẦU THÊM TỪ NGƯỜI DÙNG: " + outline) : "";
+  const kwInstruction = keywords.trim()
+    ? `TỪ KHÓA SEO ĐÃ CUNG CẤP: ${keywords.trim()}`
+    : `TỪ KHÓA SEO: BẠN HÃY TỰ ĐỘNG PHÂN TÍCH CHỦ ĐỀ VÀ XÁC ĐỊNH BỘ TỪ KHÓA SEO TỐI ƯU NHẤT (1 từ khóa chính và 2-3 từ khóa phụ LSI).`;
+
+  const prompt = `Bạn là một chuyên gia SEO Content Marketing & Copywriting hàng đầu (Google Helpful Content & E-E-A-T Chuẩn SEO 2026).
+Hãy viết một bài blog chuyên sâu, chất lượng cao, hữu ích tuyệt đối cho người đọc về chủ đề sau:
+
+CHỦ ĐỀ BÀI VIẾT: ${topic}
+${kwInstruction}
+ĐỘ DÀI: khoảng ${wordCount} chữ
+GIỌNG VĂN: ${toneLabel}
+${outlinePart}
+
+=== BẮT BUỘC TUÂN THỦ CẤU TRÚC BÀI BLOG CHUẨN SEO 2026 SAU ĐÂY ===
+
+1. ĐOẠN MỞ BÀI (100–180 từ):
+- Đi thẳng vào vấn đề/nhu cầu tìm kiếm (Search Intent) người đọc đang gặp ngay từ câu đầu tiên. Tuyệt đối KHÔNG dùng các câu sáo rỗng như "Trong thời đại 4.0...", "Ngày nay...", "Trong thế giới công nghệ...".
+- KHUNG TRẢ LỜI NHANH (QUICK ANSWER): Đưa ngay câu trả lời cốt lõi trong khung HTML nổi bật:
+  <div style="background:#0f172a; border-left:4px solid #38bdf8; padding:12px 16px; margin:14px 0; border-radius:6px;"><strong>💡 Trả lời nhanh / Kết quả chính:</strong> [Câu trả lời ngắn gọn, trực diện, giải quyết ngay nhu cầu của người đọc]</div>
+- Giới thiệu ngắn gọn bài viết sẽ giúp người đọc giải quyết vấn đề như thế nào.
+
+2. <h2>1. [Chủ đề chính / Định nghĩa & Bản chất vấn đề]</h2>
+- Đưa câu trả lời súc tích ngay sau H2, sau đó chia nhỏ thành các H3:
+  - <h3>Khái niệm & Bản chất cốt lõi</h3>: giải thích dễ hiểu, trực quan.
+  - <h3>Khi nào cần sử dụng? / Vì sao quan trọng?</h3>
+  - <h3>Những điều quan trọng cần biết</h3>
+
+3. <h2>2. [Hướng dẫn chi tiết từng bước / Giải pháp thực tế từ A-Z]</h2>
+- Chia nhỏ thành các bước thực hành rõ ràng:
+  - <h3>Bước 1: [Tên bước 1 - Chuẩn bị]</h3>
+  - <h3>Bước 2: [Tên bước 2 - Thực hiện chi tiết]</h3>
+  - <h3>Bước 3: [Tên bước 3 - Hoàn tất & Kiểm tra]</h3>
+  - <h3>Lưu ý kỹ thuật quan trọng</h3>
+
+4. <h2>3. [So sánh / Phân tích ưu nhược điểm & Đánh giá]</h2>
+- <h3>Ưu điểm nổi bật</h3>: dùng thẻ <ul><li> liệt kê súc tích.
+- <h3>Nhược điểm & Hạn chế cần biết</h3>: dùng thẻ <ul><li> liệt kê khách quan.
+- <h3>Trường hợp / Đối tượng nên chọn</h3>
+
+5. <h2>4. [Các lỗi thường gặp & Cách xử lý triệt để]</h2>
+- <h3>Lỗi / Thách thức 1 & Cách xử lý</h3>
+- <h3>Lỗi / Thách thức 2 & Cách xử lý</h3>
+- KHUNG KINH NGHIỆM THỰC CHIẾN (E-E-A-T):
+  <div style="background:#1e1b4b; border-left:4px solid #a855f7; padding:12px 16px; margin:14px 0; border-radius:6px;"><strong>⭐ Kinh nghiệm thực tế (E-E-A-T 2026):</strong> [Chia sẻ mẹo thực chiến hoặc kinh nghiệm hữu ích giúp người đọc an tâm, không bị lừa đảo hay mắc lỗi]</div>
+
+6. <h2>5. Câu hỏi thường gặp – FAQ</h2>
+- Đưa ra 3-4 câu hỏi thực tế người dùng tìm kiếm nhiều nhất:
+  - <h3>[Câu hỏi 1?]</h3>: Trả lời ngắn gọn 2-3 câu.
+  - <h3>[Câu hỏi 2?]</h3>: Trả lời ngắn gọn 2-3 câu.
+  - <h3>[Câu hỏi 3?]</h3>: Trả lời ngắn gọn 2-3 câu.
+
+7. <h2>Lời kết & Bước tiếp theo</h2>
+- Tóm tắt giá trị cốt lõi của bài viết.
+- Kèm Lời kêu gọi hành động (CTA) và gợi ý giải pháp uy tín (nhắc đến sàn muabantaikhoanmmo.com tự nhiên, đáng tin cậy).
+
+=== QUY TẮC ĐỊNH DẠNG HTML THUẦN TÚY (NGHIÊM CẤM DÙNG MARKDOWN) ===
+- TUYỆT ĐỐI KHÔNG DÙNG ký tự Markdown: KHÔNG DÙNG ##, KHÔNG DÙNG ###, KHÔNG DÙNG **, KHÔNG DÙNG *.
+- MỌI tiêu đề BẮT BUỘC dùng thẻ <h2> và <h3>.
+- MỌI đoạn văn BẮT BUỘC bọc trong thẻ <p>...</p>.
+- In đậm từ khóa và ý quan trọng BẮT BUỘC dùng thẻ <strong>...</strong>.
+- Danh sách liệt kê BẮT BUỘC dùng thẻ <ul><li>...</li></ul> hoặc <ol><li>...</li></ol>.
+- KHÔNG bọc toàn bộ code trong dấu markdown code block \`\`\`html.
+- Bắt đầu bài viết NGAY LẬP TỨC bằng đoạn mở bài <p> (KHÔNG có lời chào, KHÔNG có thẻ <html>, <body>, <head>).
+
+=== METADATA BẮT BUỘC Ở CUỐI CÙNG ===
+Sau khi kết thúc nội dung HTML bài viết, xuất khối metadata sau ở cuối cùng:
+===SEO_META_START===
+KEYWORDS: [Từ khóa chính, từ khóa phụ 1, từ khóa phụ 2, từ khóa phụ 3]
+TITLE: [Tiêu đề SEO H1 tối ưu 50-60 ký tự, chứa từ khóa chính, hấp dẫn, chuẩn 2026]
+META: [Mô tả Meta Description 120-155 ký tự kích thích click chuột]
+LABELS: [3-5 nhãn danh mục/tag phân cách bằng dấu phẩy]
+===SEO_META_END===`;
+
+  const FAILOVER_CHAIN = ["groq", "cerebras", "openrouter", "gemini", "mistral", "nvidia"];
+  let currentIdx = FAILOVER_CHAIN.indexOf(pKey);
+  if (currentIdx === -1) currentIdx = 0;
+
+  let rawText = "";
+  let successfulProv = prov;
+  let lastErr = null;
+
+  try {
+    for (let attempt = 0; attempt < FAILOVER_CHAIN.length; attempt++) {
+      const tryKey = FAILOVER_CHAIN[(currentIdx + attempt) % FAILOVER_CHAIN.length];
+      const tryProv = AI_PROVIDERS[tryKey] || AI_PROVIDERS.groq;
+      const tryModel = (tryKey === pKey && modelId) ? modelId : tryProv.defaultModel;
+
+      let keyCheck = localStorage.getItem("mmo_ai_key_" + tryKey) || "";
+      if (!keyCheck && tryKey === "gemini") keyCheck = DEFAULT_GEMINI_API_KEY;
+      if (!keyCheck) continue;
+
+      try {
+        if (attempt > 0) {
+          if (statusEl) statusEl.innerHTML = `<span style="color:#f59e0b;">⚠️ Nền tảng trước bận/hết quota -> Đang tự động chuyển sang <b>${tryProv.name}</b> viết bài...</span>`;
+        }
+        rawText = await callAiChatService(tryKey, tryModel, prompt, "Bạn là chuyên gia SEO Content Marketing và Blogger tiếng Việt chuyên nghiệp.");
+        if (rawText) {
+          successfulProv = tryProv;
+          if (pSel && pSel.value !== tryKey) {
+            pSel.value = tryKey;
+            onAiProviderChange();
+          }
+          break;
+        }
+      } catch (err) {
+        console.warn(`⚠️ Auto-failover: ${tryProv.name} failed:`, err.message);
+        lastErr = err;
+      }
+    }
+
+    if (!rawText) {
+      throw (lastErr || new Error("Tất cả các nền tảng AI đều bận hoặc chưa cấu hình API Key trong Cài Đặt Hệ Thống!"));
+    }
+
+    const seoStart = rawText.indexOf('===SEO_META_START===');
+    const seoEnd = rawText.indexOf('===SEO_META_END===');
+    let htmlContent = seoStart > -1 ? rawText.slice(0, seoStart).trim() : rawText.trim();
+    htmlContent = convertMarkdownToCleanHtml(htmlContent);
+
+    const editor = document.getElementById('aiEditorContent');
+    if (editor) {
+      editor.innerHTML = htmlContent;
+      if (typeof onAiEditorInput === 'function') onAiEditorInput();
+    }
+
+    if (seoStart > -1 && seoEnd > seoStart) {
+      const seoBlock = rawText.slice(seoStart, seoEnd);
+      const kwMatch = seoBlock.match(/^KEYWORDS:\s*(.+)$/m);
+      const titleMatch = seoBlock.match(/^TITLE:\s*(.+)$/m);
+      const metaMatch = seoBlock.match(/^META:\s*(.+)$/m);
+      const labelsMatch = seoBlock.match(/^LABELS:\s*(.+)$/m);
+      const kwEl = document.getElementById('aiKeywords');
+      const titleEl = document.getElementById('aiSeoTitle');
+      const metaEl = document.getElementById('aiSeoMeta');
+      const labelsEl = document.getElementById('aiSeoLabels');
+      if (kwEl && kwMatch && (!kwEl.value.trim() || kwEl.getAttribute("data-auto-generated") === "true")) {
+        kwEl.value = kwMatch[1].trim();
+        kwEl.setAttribute("data-auto-generated", "true");
+      }
+      if (titleEl && titleMatch) titleEl.value = titleMatch[1].trim();
+      if (metaEl && metaMatch) { metaEl.value = metaMatch[1].trim(); updateAiMetaCounter(); }
+      if (labelsEl && labelsMatch) labelsEl.value = labelsMatch[1].trim();
+    }
+
+    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">✅ Đã hoàn tất bài viết chuẩn SEO với ' + successfulProv.name + '!</span>';
+    showToast('🎉 AI ' + successfulProv.name + ' đã viết bài chuẩn SEO thành công!', 'success');
+  } catch (err) {
+    console.error('AI Writer error:', err);
+    if (statusEl) statusEl.innerHTML = '<span style="color:#f87171;">❌ ' + (err.message || 'Lỗi không xác định') + '</span>';
+    showToast('❌ ' + (err.message || 'Lỗi kết nối AI'), 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:14px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 🚀 Viết Bài Tự Động 100% (SEO Full)</div><div style="font-size:10px;color:rgba(255,255,255,0.85);font-weight:400;">Tự sinh Từ khóa • H1 Title • Meta 150 ký tự • Tags • HTML H2/H3</div>'; }
+  }
+}
+
+function copyAiHtml() {
+  const editor = document.getElementById('aiEditorContent');
+  const statusEl = document.getElementById('aiCopyStatus');
+  if (!editor) return;
+  const html = editor.innerHTML;
+  if (!html || html === '<br>') { showToast('⚠️ Không có nội dung để copy!', 'warn'); return; }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(html).then(() => {
+      if (statusEl) statusEl.textContent = '✅ Đã copy HTML thành công!';
+      setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 3000);
+      showToast('✅ HTML đã được copy!', 'success');
+    }).catch(() => {
+      fallbackCopyAiHtml(html, statusEl);
+    });
+  } else {
+    fallbackCopyAiHtml(html, statusEl);
+  }
+}
+
+function fallbackCopyAiHtml(html, statusEl) {
+  const ta = document.createElement('textarea');
+  ta.value = html;
+  ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    if (statusEl) statusEl.textContent = '✅ Đã copy HTML!';
+    showToast('✅ HTML đã được copy!', 'success');
+  } catch(e) {
+    if (statusEl) statusEl.textContent = '❌ Copy thất bại, hãy copy thủ công.';
+  }
+  document.body.removeChild(ta);
+}
+
+function openBloggerWithAiContent() {
+  copyAiHtml();
+  const bloggerUrl = 'https://draft.blogger.com/blog/posts/1442157221767603343?hl=vi';
+  setTimeout(() => {
+    window.open(bloggerUrl, '_blank');
+    const statusEl = document.getElementById('aiCopyStatus');
+    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;font-weight:600;">📋 Đã copy HTML bài viết! Đang mở trang bài đăng Blogger...</span>';
+    if (typeof showToast === 'function') showToast('📋 Đã copy HTML bài viết & Mở Blogger!', 'success');
+  }, 300);
+}
+
+function copyAiField(fieldId, labelName, btnEl) {
+  const el = document.getElementById(fieldId);
+  const val = (el ? (el.value || el.innerText || '') : '').trim();
+  if (!val) {
+    if (typeof showToast === 'function') showToast('⚠️ Ô ' + labelName + ' đang trống!', 'warn');
+    return;
+  }
+  const origHtml = btnEl ? btnEl.innerHTML : '';
+  const onDone = () => {
+    if (typeof showToast === 'function') showToast('✅ Đã copy ' + labelName + '!', 'success');
+    if (btnEl) {
+      btnEl.innerHTML = '✅ Đã chép!';
+      btnEl.style.background = '#059669';
+      btnEl.style.borderColor = '#10b981';
+      btnEl.style.color = '#ffffff';
+      setTimeout(() => {
+        btnEl.innerHTML = origHtml;
+        btnEl.style.background = '';
+        btnEl.style.borderColor = '';
+        btnEl.style.color = '';
+      }, 2000);
+    }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(val).then(onDone).catch(() => {
+      fallbackCopyText(val, onDone);
+    });
+  } else {
+    fallbackCopyText(val, onDone);
+  }
+}
+
+function fallbackCopyText(text, cb) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0;';
+  document.body.appendChild(ta);
+  ta.select();
+  try {
+    document.execCommand('copy');
+    if (cb) cb();
+  } catch(e) {
+    if (typeof showToast === 'function') showToast('❌ Không thể tự copy, vui lòng copy thủ công', 'error');
+  }
+  document.body.removeChild(ta);
+}
+
+function copyAllAiSeo(btnEl) {
+  const title = (document.getElementById('aiSeoTitle') || {}).value || '';
+  const meta = (document.getElementById('aiSeoMeta') || {}).value || '';
+  const labels = (document.getElementById('aiSeoLabels') || {}).value || '';
+  if (!title && !meta && !labels) {
+    if (typeof showToast === 'function') showToast('⚠️ Chưa có dữ liệu SEO để copy!', 'warn');
+    return;
+  }
+  const allText = `Tiêu đề (H1):\n${title}\n\nMô tả tìm kiếm (Meta Description):\n${meta}\n\nNhãn (Labels):\n${labels}`;
+  const origHtml = btnEl ? btnEl.innerHTML : '';
+  const onDone = () => {
+    if (typeof showToast === 'function') showToast('✅ Đã copy tất cả SEO (Title, Meta, Tags)!', 'success');
+    if (btnEl) {
+      btnEl.innerHTML = '✅ Đã chép tất cả!';
+      btnEl.style.background = '#059669';
+      btnEl.style.borderColor = '#10b981';
+      btnEl.style.color = '#ffffff';
+      setTimeout(() => {
+        btnEl.innerHTML = origHtml;
+        btnEl.style.background = '';
+        btnEl.style.borderColor = '';
+        btnEl.style.color = '';
+      }, 2000);
+    }
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(allText).then(onDone).catch(() => {
+      fallbackCopyText(allText, onDone);
+    });
+  } else {
+    fallbackCopyText(allText, onDone);
+  }
+}
+
+function saveAiArticleDraft() {
+  const topic = (document.getElementById('aiTopic') || {}).value || 'Chưa đặt tên';
+  const html = (document.getElementById('aiEditorContent') || {}).innerHTML || '';
+  const title = (document.getElementById('aiSeoTitle') || {}).value || '';
+  const meta = (document.getElementById('aiSeoMeta') || {}).value || '';
+  const labels = (document.getElementById('aiSeoLabels') || {}).value || '';
+  if (!html || html === '<br>') { showToast('⚠️ Không có nội dung để lưu!', 'warn'); return; }
+  let drafts = [];
+  try { drafts = JSON.parse(localStorage.getItem('mmo_ai_drafts') || '[]'); } catch(e) { drafts = []; }
+  const draft = { id: 'draft_' + Date.now(), topic, title, meta, labels, html, savedAt: new Date().toLocaleString('vi-VN') };
+  drafts.unshift(draft);
+  if (drafts.length > 20) drafts = drafts.slice(0, 20);
+  localStorage.setItem('mmo_ai_drafts', JSON.stringify(drafts));
+  showToast('💾 Đã lưu nháp: ' + topic, 'success');
+}
+
+function loadAiDraftList() {
+  const listEl = document.getElementById('aiDraftList');
+  if (!listEl) return;
+  let drafts = [];
+  try { drafts = JSON.parse(localStorage.getItem('mmo_ai_drafts') || '[]'); } catch(e) { drafts = []; }
+  if (drafts.length === 0) { listEl.style.display = 'block'; listEl.innerHTML = '<div style="color:#64748b;font-size:11px;text-align:center;padding:8px;">Chưa có nháp nào.</div>'; return; }
+  listEl.style.display = 'block';
+  listEl.innerHTML = drafts.map((d) => `<div style='background:#1e1e3f;border:1px solid #2d2d5e;border-radius:7px;padding:10px;margin-bottom:6px;cursor:pointer;' onclick='loadAiDraft("${d.id}")' ><div style='color:#e2e8f0;font-size:12px;font-weight:600;'>${d.topic}</div><div style='color:#64748b;font-size:10px;margin-top:3px;'>${d.savedAt}</div></div>`).join('');
+}
+
+function loadAiDraft(draftId) {
+  let drafts = [];
+  try { drafts = JSON.parse(localStorage.getItem('mmo_ai_drafts') || '[]'); } catch(e) { return; }
+  const draft = drafts.find(d => d.id === draftId);
+  if (!draft) return;
+  const topicEl = document.getElementById('aiTopic');
+  const editorEl = document.getElementById('aiEditorContent');
+  const titleEl = document.getElementById('aiSeoTitle');
+  const metaEl = document.getElementById('aiSeoMeta');
+  const labelsEl = document.getElementById('aiSeoLabels');
+  if (topicEl) topicEl.value = draft.topic || '';
+  if (editorEl) editorEl.innerHTML = draft.html || '';
+  if (titleEl) titleEl.value = draft.title || '';
+  if (metaEl) { metaEl.value = draft.meta || ''; updateAiMetaCounter(); }
+  if (labelsEl) labelsEl.value = draft.labels || '';
+  document.getElementById('aiDraftList').style.display = 'none';
+  showToast('📂 Đã tải nháp: ' + draft.topic, 'success');
+}
+
+document.addEventListener('click', function(e) {
+  const modal = document.getElementById('aiWriterModal');
+  if (modal && e.target === modal) closeAiWriterModal();
+});
+
+window.openAiWriterModal = openAiWriterModal;
+window.closeAiWriterModal = closeAiWriterModal;
+window.onAiProviderChange = onAiProviderChange;
+window.saveCurrentProviderApiKey = saveCurrentProviderApiKey;
+window.autoSuggestKeywordsOnly = autoSuggestKeywordsOnly;
+window.generateAiArticle = generateAiArticle;
+window.applyAiCmd = applyAiCmd;
+window.clearAiEditor = clearAiEditor;
+window.copyAiHtml = copyAiHtml;
+window.openBloggerWithAiContent = openBloggerWithAiContent;
+window.saveAiArticleDraft = saveAiArticleDraft;
+window.loadAiDraftList = loadAiDraftList;
+window.loadAiDraft = loadAiDraft;
+window.updateAiMetaCounter = updateAiMetaCounter;
+window.onAiEditorInput = onAiEditorInput;
+window.fallbackCopyAiHtml = fallbackCopyAiHtml;

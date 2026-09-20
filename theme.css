@@ -4796,3 +4796,63 @@ div:has(> .admin-table) {
     margin: 0 !important;
   }
 }
+
+/* ============================================================
+   TABLE RESPONSIVE & HORIZONTAL SWIPE WITHOUT TEXT WRAPPING
+   ============================================================ */
+.table-responsive,
+.admin-table-wrap,
+#profWalletSubDeposit > div,
+#profWalletSubLogs > div,
+div:has(> table.admin-table),
+div:has(> table.adm-table),
+div:has(> #profDepositHistoryTableBody),
+div:has(> #profBalanceLogsTableBody),
+div:has(> #admPreOrdersTable),
+div:has(> #admOrdersTable),
+div:has(> #admProductsTable),
+div:has(> #admTxTable),
+div:has(> #admUserWalletsTable) {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-x !important;
+  scrollbar-width: thin !important;
+}
+
+table.admin-table,
+table.adm-table,
+#profWalletSubDeposit table,
+#profWalletSubLogs table {
+  min-width: 620px !important;
+  width: 100% !important;
+  border-collapse: collapse !important;
+}
+
+table.admin-table th,
+table.admin-table td,
+table.adm-table th,
+table.adm-table td,
+#profWalletSubDeposit table th,
+#profWalletSubDeposit table td,
+#profWalletSubLogs table th,
+#profWalletSubLogs table td {
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+  padding: 10px 12px !important;
+}
+
+.badge-trust,
+.badge-verified,
+.badge,
+.badge-success,
+.badge-info,
+.badge-warning,
+.badge-danger {
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  flex-shrink: 0 !important;
+}
