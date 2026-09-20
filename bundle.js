@@ -25813,3 +25813,163 @@ function copyAllSeoFields() {
 
 window.copyAiField = copyAiField;
 window.copyAllSeoFields = copyAllSeoFields;
+
+// =========================================================================
+// TÍCH HỢP API & TÀI LIỆU API MUA HÀNG (v2.1.5)
+// =========================================================================
+function openApiDocsModal() {
+  var modal = document.getElementById("apiDocsModal");
+  if (modal) {
+    modal.style.display = "flex";
+    modal.style.zIndex = "9999999";
+    document.body.style.overflow = "hidden";
+  } else {
+    if (typeof switchView === "function") switchView("viewApiDocs");
+  }
+}
+window.openApiDocsModal = openApiDocsModal;
+
+function closeApiDocsModal() {
+  var modal = document.getElementById("apiDocsModal");
+  if (modal) {
+    modal.style.display = "none";
+    document.body.style.overflow = "";
+  }
+}
+window.closeApiDocsModal = closeApiDocsModal;
+
+function copyApiCode(elementId, btn) {
+  var el = document.getElementById(elementId);
+  if (!el) return;
+  var text = el.innerText || el.textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function() {
+      if (typeof showToast === "function") showToast("Đã sao chép mã thành công!", "success");
+      if (btn) {
+        var oldHtml = btn.innerHTML;
+        btn.innerHTML = "<i class='fa-solid fa-check'></i> Đã chép";
+        setTimeout(function() { btn.innerHTML = oldHtml; }, 2000);
+      }
+    }).catch(function() {
+      if (typeof fallbackCopyText === "function") fallbackCopyText(text, btn);
+    });
+  } else {
+    if (typeof fallbackCopyText === "function") fallbackCopyText(text, btn);
+  }
+}
+window.copyApiCode = copyApiCode;
+
+function renderProductApiIntegration() {
+  var p = (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) ? currentSelectedProduct : null;
+  if (!p) return;
+  var codeEl = document.getElementById("dtlApiProdCode");
+  if (codeEl) codeEl.innerText = p.id || "";
+  var curVIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+  
+  var jsonPayloadEl = document.getElementById("dtlApiJsonPayload");
+  var payloadObj = {
+    apiKey: "YOUR_API_KEY",
+    productId: p.id || "PROD_ID",
+    variantIndex: curVIdx,
+    quantity: 1
+  };
+  if (jsonPayloadEl) {
+    jsonPayloadEl.innerText = JSON.stringify(payloadObj, null, 2);
+  }
+
+  var curlEl = document.getElementById("dtlApiCurlCode");
+  if (curlEl) {
+    curlEl.innerText = 'curl -X POST "https://mmo-shop-api.manhdongvtc.workers.dev/api/orders/checkout" \\\n' +
+      '  -H "Content-Type: application/json" \\\n' +
+      '  -d \'' + JSON.stringify(payloadObj) + '\'';
+  }
+}
+window.renderProductApiIntegration = renderProductApiIntegration;
+
+function ensureUniversalComponentsExist(currentProd) {
+  try {
+    var tabsHeader = document.querySelector(".detail-tabs-header");
+    if (tabsHeader && !document.getElementById("dtlTabBtnApi")) {
+      var btn = document.createElement("button");
+      btn.className = "detail-tab-btn";
+      btn.id = "dtlTabBtnApi";
+      btn.onclick = function() { switchProductDescTab("api", this); };
+      btn.innerHTML = "<i class='fa-solid fa-code' style='color:#38bdf8;'></i> <span class='tab-text-full'>Tích Hợp API</span><span class='tab-text-short'>API</span>";
+      tabsHeader.appendChild(btn);
+    }
+
+    var tabBody = document.getElementById("dtlTabContentBody");
+    if (tabBody && !document.getElementById("dtlTabSecApi")) {
+      var sec = document.createElement("div");
+      sec.id = "dtlTabSecApi";
+      sec.style.display = "none";
+      sec.innerHTML = "<div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px; border-bottom:1px solid rgba(255,255,255,0.06); padding-bottom:8px;'>" +
+        "<div style='display:flex; align-items:center; gap:8px;'>" +
+        "  <span style='color:#38bdf8; font-size:1.1rem;'><i class='fa-solid fa-code'></i></span>" +
+        "  <span style='font-size:0.9rem; font-weight:800; color:#fff;'>KẾT NỐI API MUA SẢN PHẨM NÀY</span>" +
+        "</div>" +
+        "<button type='button' onclick='openApiDocsModal()' style='padding:5px 12px; background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px;'>" +
+        "  <i class='fa-solid fa-book'></i> Xem Toàn Bộ Tài Liệu API" +
+        "</button>" +
+        "</div>" +
+        "<div style='background:#070a13; border:1px solid #1e293b; border-radius:8px; padding:12px; margin-bottom:12px;'>" +
+        "<div style='display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;'>" +
+        "  <span style='font-size:0.8rem; color:#94a3b8;'>Mã sản phẩm (productId):</span>" +
+        "  <div style='display:flex; align-items:center; gap:6px;'> shelter" +
+        "    <code id='dtlApiProdCode' style='color:#10b981; font-weight:800; font-size:0.85rem; background:rgba(0,0,0,0.5); padding:2px 8px; border-radius:4px; border:1px solid rgba(16,185,129,0.3);'>PROD_...</code>" +
+        "    <button type='button' onclick='copyApiCode(\"dtlApiProdCode\", this)' style='background:#1e293b; color:#cbd5e1; border:none; padding:3px 8px; border-radius:4px; font-size:0.72rem; font-weight:600; cursor:pointer;'><i class='fa-regular fa-copy'></i> Chép</button>" +
+        "  </div>" +
+        "</div>" +
+        "<div style='display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-top:8px;'>" +
+        "  <span style='font-size:0.8rem; color:#94a3b8;'>Endpoint Mua Hàng:</span>" +
+        "  <code style='color:#38bdf8; font-size:0.78rem; word-break:break-all;'>POST /api/orders/checkout</code>" +
+        "</div>" +
+        "</div>" +
+        "<div style='margin-bottom:12px;'>" +
+        "<div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;'>" +
+        "  <span style='font-size:0.78rem; font-weight:700; color:#cbd5e1;'><i class='fa-solid fa-paper-plane' style='color:#38bdf8;'></i> Request Body (JSON):</span>" +
+        "  <button type='button' onclick='copyApiCode(\"dtlApiJsonPayload\", this)' style='background:none; border:none; color:#38bdf8; font-size:0.72rem; font-weight:700; cursor:pointer;'><i class='fa-regular fa-copy'></i> Sao chép JSON</button>" +
+        "</div>" +
+        "<pre class='api-code-block' id='dtlApiJsonPayload'>{\n  \"apiKey\": \"YOUR_API_KEY\",\n  \"productId\": \"PROD_...\",\n  \"variantIndex\": 0,\n  \"quantity\": 1\n}</pre>" +
+        "</div>" +
+        "<div style='margin-bottom:12px;'>" +
+        "<div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;'>" +
+        "  <span style='font-size:0.78rem; font-weight:700; color:#cbd5e1;'><i class='fa-solid fa-terminal' style='color:#10b981;'></i> Lệnh cURL chạy thử:</span>" +
+        "  <button type='button' onclick='copyApiCode(\"dtlApiCurlCode\", this)' style='background:none; border:none; color:#10b981; font-size:0.72rem; font-weight:700; cursor:pointer;'><i class='fa-regular fa-copy'></i> Sao chép cURL</button>" +
+        "</div>" +
+        "<pre class='api-code-block' id='dtlApiCurlCode'>curl -X POST \"https://mmo-shop-api.manhdongvtc.workers.dev/api/orders/checkout\"</pre>" +
+        "</div>" +
+        "<div style='font-size:0.78rem; color:#94a3b8; line-height:1.6; background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.2); border-radius:8px; padding:10px 12px;'> " +
+        "  <div><i class='fa-solid fa-circle-check' style='color:#10b981;'></i> <strong>Tự động 100%:</strong> Tài khoản trả về trực tiếp trong mảng <code>accounts</code> sau 1 giây.</div>" +
+        "  <div style='margin-top:4px;'><i class='fa-solid fa-key' style='color:#f59e0b;'></i> <strong>Lấy API Key:</strong> Đăng nhập &gt; Trang cá nhân hoặc nạp tiền ví để nhận API Key.</div>" +
+        "</div>";
+      tabBody.appendChild(sec);
+    }
+
+    if (!document.getElementById("footerApiDocsLink")) {
+      var footerCols = document.querySelectorAll(".footer-links-list");
+      if (footerCols && footerCols.length > 0) {
+        var targetCol = footerCols[footerCols.length - 1];
+        var li = document.createElement("li");
+        li.className = "footer-link-item";
+        li.innerHTML = "<a id='footerApiDocsLink' onclick='openApiDocsModal()' href='javascript:void(0)' style='cursor:pointer; color:#10b981; font-weight:700;'><i class='fa-solid fa-code' style='color:#10b981; margin-right:4px;'></i> Tài liệu API</a>";
+        targetCol.appendChild(li);
+      }
+    }
+
+    if (currentProd) {
+      renderProductApiIntegration();
+    }
+  } catch(e) {
+    console.warn("ensureUniversalComponentsExist error:", e);
+  }
+}
+window.ensureUniversalComponentsExist = ensureUniversalComponentsExist;
+
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", function() { ensureUniversalComponentsExist(); });
+  } else {
+    setTimeout(ensureUniversalComponentsExist, 100);
+  }
+}
