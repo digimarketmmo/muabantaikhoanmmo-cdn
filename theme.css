@@ -4084,6 +4084,43 @@ html, body { overflow-x: clip !important; max-width: 100vw !important; }
   scrollbar-color: #1e293b transparent !important;
 }
 
+/* ==========================================================================
+   PERFECT RESPONSIVE GRID FOR STORE PRODUCTS (IDENTICAL ACROSS ALL SATELLITE BLOGS)
+   ========================================================================== */
+.recommended-grid,
+#productGrid,
+.product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+@media (max-width: 1300px) {
+  .recommended-grid,
+  #productGrid,
+  .product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+}
+@media (max-width: 992px) {
+  .recommended-grid,
+  #productGrid,
+  .product-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+}
+@media (max-width: 768px) {
+  .recommended-grid,
+  #productGrid,
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+  }
+}
+
 /* ẨN HOÀN TOÀN NÚT ĐĂNG NHẬP ẨN DANH TRONG MODAL */
 .btn-guest-login, #btnGuestLoginCustom {
   display: none !important;
