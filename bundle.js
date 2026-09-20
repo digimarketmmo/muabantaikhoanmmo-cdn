@@ -7907,9 +7907,11 @@ async function executeSourceApiCall(action, payload) {
 
     async function fetchBothSourceBalances(isManual = false) {
       await Promise.allSettled([
-        fetchSingleSourceProfile("selltainguyenmmo", isManual),
+        fetchSingleSourceProfile("mail72h", isManual),
         fetchSingleSourceProfile("sellmmo", isManual),
-        fetchSingleSourceProfile("nguyenlieummo", isManual)
+        fetchSingleSourceProfile("nguyenlieummo", isManual),
+        fetchSingleSourceProfile("selltainguyenmmo", isManual),
+        fetchSingleSourceProfile("shop1989nd", isManual)
       ]);
     }
     window.fetchBothSourceBalances = fetchBothSourceBalances;
@@ -8636,7 +8638,7 @@ async function executeSourceApiCall(action, payload) {
       if (!sel || !inp) return;
       const prov = sel.value;
       if (API_SOURCES[prov]) {
-        inp.value = API_SOURCES[prov].apiKey || "";
+        inp.value = API_SOURCES[prov].apiKey || (API_SOURCES[prov].password ? API_SOURCES[prov].username + ":" + API_SOURCES[prov].password : "");
       }
     }
     window.handleProviderKeyChange = handleProviderKeyChange;
@@ -8683,9 +8685,11 @@ async function executeSourceApiCall(action, payload) {
           }
         }).catch(function(e) { console.log("Proxy sync to sheet:", e); });
       }
-      fetchSingleSourceProfile("selltainguyenmmo", true);
+      fetchSingleSourceProfile("mail72h", true);
       fetchSingleSourceProfile("sellmmo", true);
       fetchSingleSourceProfile("nguyenlieummo", true);
+      fetchSingleSourceProfile("selltainguyenmmo", true);
+      fetchSingleSourceProfile("shop1989nd", true);
     }
     window.saveSourceProxyUrl = saveSourceProxyUrl;
 
