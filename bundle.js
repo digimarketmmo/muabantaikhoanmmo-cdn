@@ -9080,6 +9080,15 @@ function syncAllOpenViewsStock(changedProdId) {
     // NGUỒN HÀNG TỰ ĐỘNG QUA API: SELLMMO.VN, NGUYENLIEUMMO.COM.VN & SELLTAINGUYENMMO.COM (ĐA NGUỒN ON-DEMAND)
     // =========================================================================
         const API_SOURCES = {
+  mail72h: {
+    id: "mail72h",
+    name: "mail72h.com",
+    badgeColor: "#10b981",
+    baseUrl: "https://mail72h.com",
+    apiKey: "83636705f8a17c6c48fcd8b7c8a32f10",
+    username: "manhdong",
+    rechargeUrl: "https://mail72h.com/client/recharge"
+  },
   sellmmo: {
     id: "sellmmo",
     name: "sellmmo.vn",
