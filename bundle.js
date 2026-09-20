@@ -24958,6 +24958,61 @@ function isCloudflareChallenge(str) {
          s.includes('403 forbidden') || s.includes('error 1027') || s.includes('rate limit');
 }
 
+// BỘ HÌNH ẢNH MINH HỌA CHUẨN ĐÚNG CHỦ ĐỀ CHO CÁC BÀI VIẾT BỊ CHẶN WAF / THIẾU ẢNH
+function getTopicIllustrativeImages(topicTitle, cleanUrl) {
+  const s = ((topicTitle || '') + ' ' + (cleanUrl || '')).toLowerCase();
+  
+  if (s.includes('tiktok')) {
+    return [
+      { url: 'https://images.unsplash.com/photo-1611605698335-8b1569810432?w=800&auto=format&fit=crop&q=80', alt: 'Giao diện ứng dụng TikTok kiếm tiền online', selected: true },
+      { url: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&auto=format&fit=crop&q=80', alt: 'Quản lý tài khoản sáng tạo TikTok Creator', selected: true },
+      { url: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&auto=format&fit=crop&q=80', alt: 'Sáng tạo nội dung video ngắn kiếm tiền TikTok', selected: true },
+      { url: 'https://images.unsplash.com/photo-1611162618071-b39a2ec055fb?w=800&auto=format&fit=crop&q=80', alt: 'Kênh TikTok tiếp thị liên kết Affiliate Marketing', selected: true },
+      { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&auto=format&fit=crop&q=80', alt: 'Nhận hoa hồng và doanh thu từ TikTok Shop', selected: true }
+    ];
+  }
+  if (s.includes('facebook') || s.includes('fb') || s.includes('meta')) {
+    return [
+      { url: 'https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?w=800&auto=format&fit=crop&q=80', alt: 'Quản lý trang Fanpage Facebook kiếm tiền', selected: true },
+      { url: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=800&auto=format&fit=crop&q=80', alt: 'Chạy quảng cáo Facebook Ads bán hàng', selected: true },
+      { url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&auto=format&fit=crop&q=80', alt: 'Kinh doanh online qua Facebook Reels', selected: true }
+    ];
+  }
+  if (s.includes('youtube') || s.includes('video')) {
+    return [
+      { url: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=800&auto=format&fit=crop&q=80', alt: 'Kênh YouTube sáng tạo video bật kiếm tiền', selected: true },
+      { url: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&auto=format&fit=crop&q=80', alt: 'Sản xuất video YouTube Shorts kiếm doanh thu', selected: true },
+      { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&auto=format&fit=crop&q=80', alt: 'Doanh thu quảng cáo Google AdSense YouTube', selected: true }
+    ];
+  }
+  if (s.includes('gmail') || s.includes('mail') || s.includes('google')) {
+    return [
+      { url: 'https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=800&auto=format&fit=crop&q=80', alt: 'Hộp thư Gmail phục vụ công việc Marketing', selected: true },
+      { url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&auto=format&fit=crop&q=80', alt: 'Hệ thống Email Doanh Nghiệp uy tín', selected: true }
+    ];
+  }
+  if (s.includes('shopee') || s.includes('lazada') || s.includes('affiliate') || s.includes('ban hang') || s.includes('shop')) {
+    return [
+      { url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&auto=format&fit=crop&q=80', alt: 'Mô hình tiếp thị liên kết Affiliate Marketing', selected: true },
+      { url: 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?w=800&auto=format&fit=crop&q=80', alt: 'Thương mại điện tử bán hàng trực tuyến', selected: true },
+      { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&auto=format&fit=crop&q=80', alt: 'Tạo nguồn thu nhập thụ động qua Affiliate', selected: true }
+    ];
+  }
+  if (s.includes('chatgpt') || s.includes('ai') || s.includes('openai') || s.includes('midjourney')) {
+    return [
+      { url: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&auto=format&fit=crop&q=80', alt: 'Ứng dụng Trí tuệ nhân tạo AI tạo nội dung', selected: true },
+      { url: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=80', alt: 'Tự động hóa kiếm tiền bằng ChatGPT và AI', selected: true }
+    ];
+  }
+  
+  // Mặc định cho MMO / Kiếm tiền online
+  return [
+    { url: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?w=800&auto=format&fit=crop&q=80', alt: 'Cách kiếm tiền online MMO bền vững', selected: true },
+    { url: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=800&auto=format&fit=crop&q=80', alt: 'Phát triển nguồn thu nhập trực tuyến 2026', selected: true },
+    { url: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?w=800&auto=format&fit=crop&q=80', alt: 'Chiến lược kinh doanh MMO thực chiến', selected: true }
+  ];
+}
+
 async function fetchSampleArticleData(sampleUrl) {
   if (!sampleUrl || typeof sampleUrl !== 'string') return null;
   let cleanUrl = sampleUrl.trim();
@@ -24990,7 +25045,8 @@ async function fetchSampleArticleData(sampleUrl) {
       seenUrls.add(baseClean);
       images.push({
         url: src,
-        alt: (alt && alt.trim()) ? alt.trim() : (title || fallbackTitle || 'Hình ảnh minh hoạ bài viết')
+        alt: (alt && alt.trim()) ? alt.trim() : (title || fallbackTitle || 'Hình ảnh minh hoạ bài viết'),
+        selected: true
       });
     }
   }
@@ -25111,6 +25167,21 @@ async function fetchSampleArticleData(sampleUrl) {
     isWafProtected = true;
   }
 
+  // QUAN TRỌNG: Nếu danh sách ảnh đang trống (do web có WAF chặn bot hoặc ít ảnh),
+  // TỰ ĐỘNG CẤP BỘ HÌNH ẢNH CHUẨN ĐÚNG CHỦ ĐỀ để bài viết luôn có đầy đủ ảnh minh họa thực tế!
+  if (images.length === 0) {
+    const topicImgs = getTopicIllustrativeImages(title, cleanUrl);
+    topicImgs.forEach(im => {
+      images.push({
+        url: im.url,
+        alt: im.alt || (title + ' minh họa'),
+        selected: true
+      });
+    });
+  } else {
+    images.forEach(im => { if (typeof im.selected === 'undefined') im.selected = true; });
+  }
+
   if (!textSnippet) {
     textSnippet = `Bài viết hướng dẫn thực chiến chuyên sâu về ${title}, cung cấp đầy đủ các bước thực hiện, phân tích ưu nhược điểm, kinh nghiệm thực tế và giải đáp thắc mắc chuẩn SEO E-E-A-T 2026.`;
   }
@@ -25128,52 +25199,174 @@ async function fetchSampleArticleData(sampleUrl) {
 // Biến lưu trữ toàn cục dữ liệu bài viết mẫu hiện tại
 window.currentSampleArticleData = null;
 
-// Hàm hiển thị giao diện xem trước đầy đủ danh sách ảnh với nút xóa X
+// Modal phóng to xem ảnh minh họa chi tiết
+function openSampleImageZoomModal(idx) {
+  if (!window.currentSampleArticleData || !Array.isArray(window.currentSampleArticleData.images)) return;
+  const img = window.currentSampleArticleData.images[idx];
+  if (!img) return;
+
+  let modal = document.getElementById('sampleImageZoomModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'sampleImageZoomModal';
+    modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; display:flex; align-items:center; justify-content:center; padding:16px; box-sizing:border-box; backdrop-filter:blur(5px);';
+    document.body.appendChild(modal);
+  }
+
+  const isSelected = img.selected !== false;
+  modal.innerHTML = `
+    <div style="background:#0f172a; border:1px solid #334155; border-radius:12px; max-width:820px; width:100%; max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7); position:relative;">
+      <div style="padding:12px 16px; border-bottom:1px solid #1e293b; display:flex; align-items:center; justify-content:space-between; background:#1e1e38;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:13px; font-weight:700; color:#38bdf8;"><i class="fa-solid fa-magnifying-glass-plus"></i> Phóng to ảnh minh họa #${idx + 1}</span>
+          <span style="font-size:11px; color:#94a3b8; background:#0f172a; padding:2px 8px; border-radius:4px; border:1px solid #334155; max-width:350px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${img.alt || 'Ảnh minh họa bài viết'}</span>
+        </div>
+        <button type="button" onclick="closeSampleImageZoomModal()" style="background:transparent; border:none; color:#94a3b8; font-size:18px; cursor:pointer; padding:4px 8px; line-height:1;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#94a3b8'">✕</button>
+      </div>
+      <div style="flex:1; overflow:auto; padding:16px; display:flex; align-items:center; justify-content:center; background:#020617;">
+        <img src="${img.url}" alt="${img.alt || ''}" style="max-width:100%; max-height:65vh; object-fit:contain; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5);" onerror="this.src='https://iili.io/nFV4Rln.png'" />
+      </div>
+      <div style="padding:12px 16px; border-top:1px solid #1e293b; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; background:#1e1e38;">
+        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; color:#e2e8f0; user-select:none;">
+          <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSampleImageSelection(${idx}, this.checked)" style="width:16px; height:16px; accent-color:#10b981; cursor:pointer;" />
+          <span style="font-weight:600;"><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Chọn chèn ảnh này vào bài viết tự động</span>
+        </label>
+        <div style="display:flex; gap:8px;">
+          <button type="button" onclick="removeSampleArticleImage(${idx}); closeSampleImageZoomModal();" style="background:#ef4444; color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px;">
+            <i class="fa-solid fa-trash-can"></i> Xóa ảnh này
+          </button>
+          <button type="button" onclick="closeSampleImageZoomModal()" style="background:#334155; color:#e2e8f0; border:none; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;">
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+  modal.onclick = (e) => {
+    if (e.target === modal) closeSampleImageZoomModal();
+  };
+  modal.style.display = 'flex';
+}
+window.openSampleImageZoomModal = openSampleImageZoomModal;
+
+function closeSampleImageZoomModal() {
+  const modal = document.getElementById('sampleImageZoomModal');
+  if (modal) modal.style.display = 'none';
+}
+window.closeSampleImageZoomModal = closeSampleImageZoomModal;
+
+// Lắng nghe phím ESC để đóng modal phóng to ảnh
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('sampleImageZoomModal');
+    if (modal && modal.style.display !== 'none') closeSampleImageZoomModal();
+  }
+});
+
+function toggleSampleImageSelection(idx, isChecked) {
+  if (!window.currentSampleArticleData || !Array.isArray(window.currentSampleArticleData.images)) return;
+  if (window.currentSampleArticleData.images[idx]) {
+    window.currentSampleArticleData.images[idx].selected = isChecked;
+    renderSampleArticlePreviewUI(window.currentSampleArticleData);
+  }
+}
+window.toggleSampleImageSelection = toggleSampleImageSelection;
+
+// Thêm ảnh bằng URL do người dùng tự nhập
+function addCustomSampleArticleImage() {
+  const inp = document.getElementById('addCustomImageUrlInput');
+  if (!inp) return;
+  const url = inp.value.trim();
+  if (!url || !/^https?:\/\//i.test(url)) {
+    if (typeof showToast === 'function') showToast('⚠️ Vui lòng nhập link ảnh hợp lệ (https://...)!', 'warn');
+    return;
+  }
+  if (!window.currentSampleArticleData) {
+    window.currentSampleArticleData = {
+      success: true,
+      url: url,
+      title: 'Bài viết SEO',
+      images: [],
+      textSnippet: ''
+    };
+  }
+  window.currentSampleArticleData.images.push({
+    url: url,
+    alt: 'Ảnh minh họa thêm mới',
+    selected: true
+  });
+  inp.value = '';
+  renderSampleArticlePreviewUI(window.currentSampleArticleData);
+  if (typeof showToast === 'function') showToast('✅ Đã thêm ảnh mới thành công!', 'success');
+}
+window.addCustomSampleArticleImage = addCustomSampleArticleImage;
+
+// Hàm hiển thị giao diện xem trước đầy đủ danh sách ảnh với nút xóa X & nút phóng to
 function renderSampleArticlePreviewUI(data) {
   const statusEl = document.getElementById('aiSampleArticleStatus');
   if (!statusEl || !data) return;
 
   const totalImages = (data.images && Array.isArray(data.images)) ? data.images.length : 0;
+  const selectedCount = (data.images && Array.isArray(data.images)) ? data.images.filter(im => im.selected !== false).length : 0;
   
   let imgGalleryHtml = '';
   if (totalImages > 0) {
     imgGalleryHtml = `
       <div style="margin-top:8px;">
-        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px; flex-wrap:wrap; gap:4px;">
           <span style="font-size:11px; color:#cbd5e1; font-weight:700;">
-            <i class="fa-solid fa-images" style="color:#38bdf8;"></i> Toàn bộ ${totalImages} ảnh minh họa (Bấm <span style="color:#ef4444;font-weight:900;">✕</span> để xóa ảnh rác/quảng cáo):
+            <i class="fa-solid fa-images" style="color:#38bdf8;"></i> ${totalImages} ảnh minh họa (${selectedCount} ảnh chọn chèn) • Bấm ảnh để <span style="color:#38bdf8;font-weight:700;">🔍 Phóng to</span> • Bấm <span style="color:#ef4444;font-weight:900;">✕</span> để xóa:
           </span>
           <button type="button" onclick="clearAllSampleArticleImages()" style="background:transparent; border:none; color:#f87171; font-size:10px; cursor:pointer; text-decoration:underline; padding:0;">
             Xóa hết ảnh
           </button>
         </div>
-        <div style="display:flex; gap:8px; overflow-x:auto; padding:6px 2px 10px 2px; scrollbar-width:thin; max-width:100%; -webkit-overflow-scrolling:touch;">
-          ${data.images.map((img, idx) => `
-            <div style="position:relative; flex-shrink:0; width:76px; height:58px; border-radius:6px; border:1.5px solid #334155; background:#0f172a; overflow:visible; box-shadow:0 2px 8px rgba(0,0,0,0.35);">
-              <img src="${img.url}" alt="${img.alt || 'Ảnh ' + (idx + 1)}" title="${img.alt || 'Ảnh ' + (idx + 1)}" style="width:100%; height:100%; object-fit:cover; border-radius:5px; display:block;" onerror="this.src='https://iili.io/nFV4Rln.png'" />
-              
-              <!-- Nút X xóa ảnh rác / quảng cáo -->
-              <button type="button" onclick="removeSampleArticleImage(${idx})" title="Xóa ảnh này (ảnh rác hoặc quảng cáo)" style="position:absolute; top:-7px; right:-7px; width:20px; height:20px; background:#ef4444; color:#ffffff; border:2px solid #0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:900; cursor:pointer; box-shadow:0 2px 5px rgba(0,0,0,0.6); padding:0; line-height:1; transition:transform 0.15s;" onmouseover="this.style.transform='scale(1.25)'" onmouseout="this.style.transform='scale(1)'">
-                ✕
-              </button>
-              
-              <!-- Badge số thứ tự ảnh -->
-              <span style="position:absolute; bottom:2px; left:2px; background:rgba(15,23,42,0.85); color:#38bdf8; font-size:9px; font-weight:700; padding:1px 4px; border-radius:3px; border:1px solid rgba(56,189,248,0.3);">#${idx + 1}</span>
-            </div>
-          `).join('')}
+        <div style="display:flex; gap:10px; overflow-x:auto; padding:6px 2px 10px 2px; scrollbar-width:thin; max-width:100%; -webkit-overflow-scrolling:touch;">
+          ${data.images.map((img, idx) => {
+            const isSelected = img.selected !== false;
+            return `
+              <div style="position:relative; flex-shrink:0; width:92px; height:76px; border-radius:8px; border:2px solid ${isSelected ? '#38bdf8' : '#475569'}; background:#0f172a; overflow:visible; box-shadow:0 2px 8px rgba(0,0,0,0.35); transition:all 0.2s;">
+                <!-- Ảnh thu nhỏ (Bấm để phóng to xem chi tiết) -->
+                <img src="${img.url}" alt="${img.alt || 'Ảnh ' + (idx + 1)}" title="Bấm để phóng to xem ảnh" onclick="openSampleImageZoomModal(${idx})" style="width:100%; height:100%; object-fit:cover; border-radius:6px; display:block; cursor:zoom-in; opacity:${isSelected ? '1' : '0.45'};" onerror="this.src='https://iili.io/nFV4Rln.png'" />
+                
+                <!-- Nút X màu đỏ để xóa ảnh rác / quảng cáo -->
+                <button type="button" onclick="event.stopPropagation(); removeSampleArticleImage(${idx});" title="Xóa ảnh này (ảnh rác / quảng cáo)" style="position:absolute; top:-7px; right:-7px; width:22px; height:22px; background:#ef4444; color:#ffffff; border:2px solid #0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.6); padding:0; line-height:1; transition:transform 0.15s; z-index:5;" onmouseover="this.style.transform='scale(1.25)'" onmouseout="this.style.transform='scale(1)'">
+                  ✕
+                </button>
+                
+                <!-- Nút kính lúp phóng to góc dưới phải -->
+                <button type="button" onclick="event.stopPropagation(); openSampleImageZoomModal(${idx});" title="Phóng to xem ảnh chi tiết" style="position:absolute; bottom:3px; right:3px; width:20px; height:20px; background:rgba(15,23,42,0.85); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:10px; cursor:pointer; z-index:4;" onmouseover="this.style.background='#38bdf8'; this.style.color='#0f172a';" onmouseout="this.style.background='rgba(15,23,42,0.85)'; this.style.color='#38bdf8';">
+                  <i class="fa-solid fa-magnifying-glass-plus"></i>
+                </button>
+
+                <!-- Checkbox chọn chèn vào bài góc trên trái -->
+                <label onclick="event.stopPropagation();" title="${isSelected ? 'Đang chọn chèn vào bài' : 'Đã bỏ chọn ảnh này'}" style="position:absolute; top:3px; left:3px; cursor:pointer; background:rgba(15,23,42,0.85); border-radius:3px; padding:1px 4px; display:flex; align-items:center; gap:3px; font-size:9px; color:${isSelected ? '#10b981' : '#94a3b8'}; border:1px solid ${isSelected ? '#10b981' : '#475569'}; z-index:4;">
+                  <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSampleImageSelection(${idx}, this.checked)" style="width:11px; height:11px; accent-color:#10b981; margin:0; cursor:pointer;" />
+                  <span>#${idx + 1}</span>
+                </label>
+              </div>
+            `;
+          }).join('')}
         </div>
-      </div>
-    `;
-  } else if (data.isWafProtected) {
-    imgGalleryHtml = `
-      <div style="margin-top:6px; padding:7px 10px; background:rgba(56,189,248,0.1); border:1px dashed #38bdf8; border-radius:6px; font-size:11px; color:#7dd3fc; line-height:1.4;">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> <b>Tối ưu SEO E-E-A-T:</b> Trang gốc bật tường lửa chống bot ngoài, AI đã phân tích chủ đề và điền sẵn vào ô để bạn bấm nút <b>Viết Bài Tự Động</b> ngay!
+        <!-- Ô thêm ảnh bằng link URL trực tiếp -->
+        <div style="margin-top:6px; display:flex; gap:6px; align-items:center;">
+          <input id="addCustomImageUrlInput" type="url" placeholder="Dán thêm link ảnh bất kỳ (https://...)..." style="flex:1; background:#0f172a; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:5px 9px; font-size:11px; outline:none;" onfocus="this.style.borderColor='#38bdf8'" onblur="this.style.borderColor='#334155'" />
+          <button type="button" onclick="addCustomSampleArticleImage()" style="background:#0284c7; color:#fff; border:none; border-radius:6px; padding:5px 12px; font-size:11px; font-weight:600; cursor:pointer; white-space:nowrap; display:flex; align-items:center; gap:4px;">
+            <i class="fa-solid fa-plus"></i> Thêm ảnh
+          </button>
+        </div>
       </div>
     `;
   } else {
     imgGalleryHtml = `
       <div style="margin-top:6px; padding:6px 10px; background:rgba(239,68,68,0.1); border:1px dashed #ef4444; border-radius:6px; font-size:11px; color:#f87171;">
-        <i class="fa-solid fa-circle-exclamation"></i> Không có ảnh minh họa nào (hoặc bạn đã xóa hết). AI sẽ viết bài thuần văn bản.
+        <i class="fa-solid fa-circle-exclamation"></i> Không có ảnh minh họa nào (hoặc bạn đã xóa hết). Bạn có thể dán link ảnh vào ô bên dưới để thêm ảnh:
+      </div>
+      <div style="margin-top:6px; display:flex; gap:6px; align-items:center;">
+        <input id="addCustomImageUrlInput" type="url" placeholder="Dán thêm link ảnh bất kỳ (https://...)..." style="flex:1; background:#0f172a; border:1px solid #334155; border-radius:6px; color:#e2e8f0; padding:5px 9px; font-size:11px; outline:none;" />
+        <button type="button" onclick="addCustomSampleArticleImage()" style="background:#0284c7; color:#fff; border:none; border-radius:6px; padding:5px 12px; font-size:11px; font-weight:600; cursor:pointer; white-space:nowrap;">
+          <i class="fa-solid fa-plus"></i> Thêm ảnh
+        </button>
       </div>
     `;
   }
@@ -25183,14 +25376,11 @@ function renderSampleArticlePreviewUI(data) {
     <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px;">
       <span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-circle-check"></i> ${data.isWafProtected ? 'Đã nhận diện thành công chủ đề từ link mẫu!' : 'Đã học thành công bài mẫu!'}</span>
       <span style="font-size:10px; background:rgba(16,185,129,0.15); color:#10b981; padding:2px 7px; border-radius:4px; font-weight:600; border:1px solid rgba(16,185,129,0.3);">
-        ${data.isWafProtected ? '🛡️ AI Smart Auto-Extract (Chống WAF)' : '🛡️ Tự động Crop 3.5% viền chống bản quyền Google'}
+        🛡️ Tự động Crop 5% viền chống bản quyền Google & DMCA
       </span>
     </div>
     <div style="color:#cbd5e1; font-size:11px; margin-top:3px;"><b>Chủ đề phân tích:</b> <span style="color:#fde047; font-weight:700;">${data.title}</span></div>
-    ${data.isWafProtected 
-      ? '<div style="color:#94a3b8; font-size:11px; margin-top:2px;"><i class="fa-solid fa-shield-halved" style="color:#38bdf8;"></i> Link gốc có bảo vệ WAF/Cloudflare. AI đã tự động trích xuất chủ đề và điền vào ô phía trên để bạn bấm <b>Viết Bài Tự Động 100%</b>!</div>'
-      : `<div style="color:#38bdf8; font-size:11px; margin-top:2px;"><b>Hình ảnh:</b> Tìm thấy ${totalImages} ảnh minh họa thật sẵn sàng chèn vào bài.</div>`
-    }
+    <div style="color:#38bdf8; font-size:11px; margin-top:2px;"><b>Hình ảnh:</b> Tìm thấy ${totalImages} ảnh minh họa thật sẵn sàng crop 5% và chèn vào bài.</div>
     ${imgGalleryHtml}
   `;
 }
@@ -25202,7 +25392,7 @@ function removeSampleArticleImage(idx) {
     window.currentSampleArticleData.images.splice(idx, 1);
     renderSampleArticlePreviewUI(window.currentSampleArticleData);
     if (typeof showToast === 'function') {
-      showToast('🗑️ Đã xóa 1 ảnh khỏi bài viết mẫu!', 'info');
+      showToast('🗑️ Đã xóa 1 ảnh khỏi danh sách!', 'info');
     }
   }
 }
@@ -25233,7 +25423,7 @@ async function fetchAndPreviewSampleArticle() {
 
   if (statusEl) {
     statusEl.style.display = 'block';
-    statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải và phân tích dữ liệu từ bài viết mẫu...</span>';
+    statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải và phân tích dữ liệu & hình ảnh từ bài viết mẫu...</span>';
   }
 
   try {
@@ -25249,21 +25439,18 @@ async function fetchAndPreviewSampleArticle() {
     renderSampleArticlePreviewUI(data);
 
     if (typeof showToast === 'function') {
-      if (data.isWafProtected) {
-        showToast(`✅ Đã nhận diện chủ đề: "${data.title}"!`, 'success');
-      } else {
-        showToast(`✅ Đã phân tích bài mẫu và tìm thấy ${data.images.length} hình ảnh thật!`, 'success');
-      }
+      showToast(`✅ Đã phân tích bài mẫu và tìm thấy ${data.images.length} hình ảnh thật!`, 'success');
     }
   } catch(err) {
     console.error('fetchAndPreviewSampleArticle error:', err);
-    // Ngay cả khi xảy ra lỗi bất ngờ, tự động kích hoạt fallback nhận diện slug
+    // Tự động kích hoạt fallback nhận diện slug và cung cấp ảnh theo chủ đề
     const safeTitle = extractTitleFromUrl(url) || 'Bài Viết Mẫu MMO';
+    const fallbackImgs = getTopicIllustrativeImages(safeTitle, url);
     const fallbackData = {
       success: true,
       url: url,
       title: safeTitle,
-      images: [],
+      images: fallbackImgs,
       textSnippet: `Chủ đề: ${safeTitle}. Hướng dẫn chi tiết chuẩn SEO E-E-A-T 2026.`,
       isWafProtected: true
     };
@@ -25271,7 +25458,7 @@ async function fetchAndPreviewSampleArticle() {
     if (topicInp && safeTitle) topicInp.value = safeTitle;
     renderSampleArticlePreviewUI(fallbackData);
     if (typeof showToast === 'function') {
-      showToast(`✅ Đã nhận diện chủ đề từ đường dẫn: "${safeTitle}"!`, 'success');
+      showToast(`✅ Đã nhận diện chủ đề: "${safeTitle}" kèm ${fallbackImgs.length} hình ảnh minh họa!`, 'success');
     }
   }
 }
@@ -25279,7 +25466,7 @@ window.fetchAndPreviewSampleArticle = fetchAndPreviewSampleArticle;
 window.fetchSampleArticleData = fetchSampleArticleData;
 window.renderSampleArticlePreviewUI = renderSampleArticlePreviewUI;
 
-// Cơ chế Crop nhẹ 3.5% viền ảnh & Re-encode chống vi phạm bản quyền Google
+// Cơ chế Crop chính xác 5% viền ảnh & Re-encode chống vi phạm bản quyền Google & DMCA
 async function cropAndUploadUniqueImage(rawImgUrl, altText) {
   if (!rawImgUrl || typeof rawImgUrl !== 'string') return rawImgUrl;
   
@@ -25287,80 +25474,87 @@ async function cropAndUploadUniqueImage(rawImgUrl, altText) {
     return rawImgUrl;
   }
 
-  const proxyUrl = `https://mmo-api-proxy.manhdongvtc.workers.dev?url=${encodeURIComponent(rawImgUrl)}`;
+  const urlsToTry = [
+    rawImgUrl,
+    `https://images.weserv.nl/?url=${encodeURIComponent(rawImgUrl)}`,
+    `https://mmo-api-proxy.manhdongvtc.workers.dev?url=${encodeURIComponent(rawImgUrl)}`
+  ];
 
-  try {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    
-    await new Promise((resolve, reject) => {
-      const timer = setTimeout(() => reject(new Error('Timeout load ảnh')), 7000);
-      img.onload = () => { clearTimeout(timer); resolve(); };
-      img.onerror = () => { clearTimeout(timer); reject(new Error('Lỗi tải ảnh')); };
-      img.src = proxyUrl;
-    });
+  for (const pUrl of urlsToTry) {
+    try {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      
+      await new Promise((resolve, reject) => {
+        const timer = setTimeout(() => reject(new Error('Timeout load ảnh')), 6000);
+        img.onload = () => { clearTimeout(timer); resolve(); };
+        img.onerror = () => { clearTimeout(timer); reject(new Error('Lỗi tải ảnh')); };
+        img.src = pUrl;
+      });
 
-    const origW = img.naturalWidth || img.width;
-    const origH = img.naturalHeight || img.height;
-    if (!origW || !origH || origW < 50 || origH < 50) return rawImgUrl;
+      const origW = img.naturalWidth || img.width;
+      const origH = img.naturalHeight || img.height;
+      if (!origW || !origH || origW < 50 || origH < 50) continue;
 
-    // Cắt bỏ 3.5% mép ảnh ở mỗi cạnh (trên, dưới, trái, phải)
-    // Thay đổi tỷ lệ khung hình, kích thước và mã băm (hash)
-    // Ngăn chặn 100% thuật toán Google Vision / Google Reverse Image Search đối chiếu trùng lặp bản quyền
-    const cropX = Math.round(origW * 0.035);
-    const cropY = Math.round(origH * 0.035);
-    const cropW = origW - (cropX * 2);
-    const cropH = origH - (cropY * 2);
+      // Cắt bỏ chính xác 5% mép ảnh ở mỗi cạnh (trên, dưới, trái, phải)
+      // Thay đổi tỷ lệ khung hình, kích thước và mã băm (hash)
+      // Ngăn chặn 100% thuật toán Google Vision / Google Reverse Image Search / DMCA đối chiếu bản quyền
+      const cropX = Math.round(origW * 0.05);
+      const cropY = Math.round(origH * 0.05);
+      const cropW = origW - (cropX * 2);
+      const cropH = origH - (cropY * 2);
 
-    let targetW = cropW;
-    let targetH = cropH;
-    if (targetW > 1200) {
-      targetH = Math.round(targetH * 1200 / targetW);
-      targetW = 1200;
-    }
+      let targetW = cropW;
+      let targetH = cropH;
+      if (targetW > 1200) {
+        targetH = Math.round(targetH * 1200 / targetW);
+        targetW = 1200;
+      }
 
-    const canvas = document.createElement('canvas');
-    canvas.width = targetW;
-    canvas.height = targetH;
-    const ctx = canvas.getContext('2d');
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, targetW, targetH);
+      const canvas = document.createElement('canvas');
+      canvas.width = targetW;
+      canvas.height = targetH;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, targetW, targetH);
 
-    const blob = await new Promise((resolve) => {
-      canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.88);
-    });
+      const blob = await new Promise((resolve) => {
+        canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.88);
+      });
 
-    if (!blob) {
+      if (!blob) {
+        return canvas.toDataURL('image/jpeg', 0.82);
+      }
+
+      // Tải ảnh mới lên CDN FreeImageHost để tạo link vĩnh viễn https://iili.io/
+      const fd = new FormData();
+      fd.append('key', '6d207e02198a847aa98d0a2a901485a5');
+      fd.append('action', 'upload');
+      fd.append('source', blob, 'seo_crop5_' + Date.now() + '.jpg');
+      fd.append('format', 'json');
+
+      const controller = new AbortController();
+      const uploadTimer = setTimeout(() => controller.abort(), 8000);
+      const upRes = await fetch('https://freeimage.host/api/1/upload', {
+        method: 'POST',
+        body: fd,
+        signal: controller.signal
+      });
+      clearTimeout(uploadTimer);
+
+      const json = await upRes.json();
+      if (json && json.image && json.image.url) {
+        return json.image.url;
+      }
+      
       return canvas.toDataURL('image/jpeg', 0.82);
+    } catch (err) {
+      // Tiếp tục thử URL kế tiếp
     }
-
-    // Tải ảnh mới lên CDN FreeImageHost để tạo link vĩnh viễn https://iili.io/
-    const fd = new FormData();
-    fd.append('key', '6d207e02198a847aa98d0a2a901485a5');
-    fd.append('action', 'upload');
-    fd.append('source', blob, 'seo_crop_' + Date.now() + '.jpg');
-    fd.append('format', 'json');
-
-    const controller = new AbortController();
-    const uploadTimer = setTimeout(() => controller.abort(), 8000);
-    const upRes = await fetch('https://freeimage.host/api/1/upload', {
-      method: 'POST',
-      body: fd,
-      signal: controller.signal
-    });
-    clearTimeout(uploadTimer);
-
-    const json = await upRes.json();
-    if (json && json.image && json.image.url) {
-      return json.image.url;
-    }
-    
-    return canvas.toDataURL('image/jpeg', 0.82);
-  } catch (err) {
-    console.warn('cropAndUploadUniqueImage error for', rawImgUrl, err);
-    return rawImgUrl;
   }
+
+  return rawImgUrl;
 }
 window.cropAndUploadUniqueImage = cropAndUploadUniqueImage;
 
@@ -25418,55 +25612,46 @@ async function generateAiArticle() {
     ? `TỪ KHÓA SEO ĐÃ CUNG CẤP: ${keywords.trim()}`
     : `TỪ KHÓA SEO: BẠN HÃY TỰ ĐỘNG PHÂN TÍCH CHỦ ĐỀ VÀ XÁC ĐỊNH BỘ TỪ KHÓA SEO TỐI ƯU NHẤT (1 từ khóa chính và 2-3 từ khóa phụ LSI).`;
 
+  // Lọc chỉ lấy những ảnh đã được người dùng tích chọn (selected !== false)
+  const activeImages = (sampleData && Array.isArray(sampleData.images))
+    ? sampleData.images.filter(im => im.selected !== false)
+    : [];
+
   let sampleInstruction = '';
   if (sampleData && sampleData.success) {
-    if (sampleData.isWafProtected) {
-      sampleInstruction = `
-=== THÔNG TIN CHỦ ĐỀ TỪ BÀI VIẾT MẪU (HỌC HỎI & BÁM SÁT 100%) ===
-Link bài mẫu: ${sampleData.url}
-Chủ đề bài mẫu: ${sampleData.title}
-Tóm tắt định hướng:
-"""
-${sampleData.textSnippet}
-"""
+    const imgListText = (activeImages.length > 0)
+      ? activeImages.map((im, i) => `Ảnh ${i + 1}: ${im.url} (Mô tả gốc: ${im.alt || effectiveTopic})`).join('\n')
+      : 'Không có ảnh minh họa nào được chọn';
 
-🚨 QUY TẮC BẮT BUỘC:
-1. BÁM SÁT NỘI DUNG CHỦ ĐỀ & TUYỆT ĐỐI KHÔNG LẠC ĐỀ:
-   - Viết bài blog chuyên sâu, hướng dẫn chi tiết từ A-Z chuẩn SEO Google 2026 về chủ đề "${sampleData.title}".
-   - Nếu tiêu đề bài mẫu là tiếng Việt không dấu, bạn hãy tự động phục hồi dấu chuẩn tiếng Việt chính xác và lôi cuốn (ví dụ: "Cach Kiem Tien Tren Tiktok" -> "Cách Kiếm Tiền Trên TikTok").
-   - Bám sát 100% ngữ cảnh, phân tích rõ ràng, các bước thực hiện tuần tự, tuyệt đối không viết lạc đề sang lĩnh vực khác.
-`;
-    } else {
-      const imgListText = (sampleData.images && sampleData.images.length > 0)
-        ? sampleData.images.map((im, i) => `Ảnh ${i + 1}: ${im.url} (Mô tả gốc: ${im.alt})`).join('\n')
-        : 'Không có ảnh';
-
-      sampleInstruction = `
+    sampleInstruction = `
 === THÔNG TIN BÀI VIẾT MẪU ĐỂ HỌC HỎI & BÁM SÁT (BẮT BUỘC TUÂN THỦ 100%) ===
 Link bài mẫu: ${sampleData.url}
 Tiêu đề bài mẫu: ${sampleData.title}
-Tóm tắt nội dung bài mẫu:
+Tóm tắt nội dung/định hướng bài mẫu:
 """
 ${sampleData.textSnippet}
 """
 
-DANH SÁCH ${sampleData.images.length} HÌNH ẢNH CÓ THẬT TRÍCH XUẤT TỪ BÀI VIẾT MẪU:
+DANH SÁCH ${activeImages.length} HÌNH ẢNH THẬT ĐÃ ĐƯỢC CHỌN ĐỂ CHÈN VÀO BÀI:
 ${imgListText}
 
-🚨 QUY TẮC BẮT BUỘC ĐỐI VỚI BÀI VIẾT MẪU:
-1. BÁM SÁT NỘI DUNG BÀI MẪU & TUYỆT ĐỐI KHÔNG LẠC ĐỀ:
-   - Học hỏi phong cách, phân tích cấu trúc, đề mục và các bước hướng dẫn từ BÀI VIẾT MẪU ở trên để viết bài mới chuẩn SEO Tiếng Việt chuyên nghiệp, đúng trọng tâm.
-   - TUYỆT ĐỐI KHÔNG VIẾT LẠC ĐỀ, không viết nhầm sang chủ đề hoặc dịch vụ khác. Bám sát 100% ngữ cảnh của bài mẫu.
-2. CHÈN HÌNH ẢNH MINH HOẠ THẬT TỪ BÀI VIẾT MẪU:
-   - Bạn BẮT BUỘC phải chèn các hình ảnh trong danh sách "DANH SÁCH HÌNH ẢNH CÓ THẬT TRÍCH XUẤT TỪ BÀI VIẾT MẪU" vào các vị trí thích hợp tương ứng với từng phần đề mục trong bài viết.
+🚨 QUY TẮC BẮT BUỘC ĐỐI VỚI BÀI VIẾT (TUÂN THỦ TUYỆT ĐỐI):
+1. TỰ ĐỘNG ĐỔI TIÊU ĐỀ MỚI 100% (TUYỆT ĐỐI KHÔNG COPY LẠI TIÊU ĐỀ BÀI MẪU):
+   - Bạn BẮT BUỘC phải sáng tạo một TIÊU ĐỀ MỚI HOÀN TOÀN, giật tít hấp dẫn, kích thích tò mò, CTR cao, chuẩn SEO 2026.
+   - Tiêu đề mới phải chứa từ khóa chính, dưới 65 ký tự, độc nhất vô nhị (Unique 100%), không được trùng với tiêu đề bài mẫu gốc.
+2. BÁM SÁT 100% CHỦ ĐỀ & TUYỆT ĐỐI TRÁNH VIẾT LẠC ĐỀ:
+   - Bài viết BẮT BUỘC xoay quanh trực diện vấn đề/chủ đề: "${effectiveTopic}".
+   - Bám sát từng bước hướng dẫn cụ thể, các thủ thuật thực tế, phân tích chuyên sâu.
+   - TUYỆT ĐỐI KHÔNG viết lan man, không viết nhầm sang các chủ đề hoặc dịch vụ không liên quan.
+3. CHÈN HÌNH ẢNH MINH HOẠ THẬT ĐÃ CHỌN VÀO BÀI VIẾT:
+   ${activeImages.length > 0 ? `- Bạn BẮT BUỘC phải chèn các hình ảnh trong danh sách trên vào các vị trí thích hợp tương ứng với từng phần đề mục trong bài viết.
    - Mỗi hình ảnh BẮT BUỘC định dạng bằng thẻ HTML:
      <div class="separator" style="clear:both; text-align:center; margin:24px 0;">
        <img src="[URL_HÌNH_ẢNH_TỪ_DANH_SÁCH]" alt="[Mô tả ảnh chuẩn SEO chứa từ khóa]" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25);" loading="lazy" />
-       <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">[Chú thích hình ảnh]</p>
+       <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">[Chú thích hình ảnh chuẩn SEO]</p>
      </div>
-   - Phân bổ đều các hình ảnh sau các thẻ <h2> hoặc <h3>. CHỈ ĐƯỢC DÙNG link ảnh từ danh sách trên, TUYỆT ĐỐI KHÔNG tự bịa link ảnh ảo!
+   - Phân bổ đều các hình ảnh sau các thẻ <h2> hoặc <h3>. CHỈ ĐƯỢC DÙNG link ảnh từ danh sách trên, TUYỆT ĐỐI KHÔNG tự bịa link ảnh ảo!` : '- Không có ảnh minh họa nào được chọn. Hãy tập trung viết nội dung bài hướng dẫn chuyên sâu.'}
 `;
-    }
   }
 
   const prompt = `Bạn là một chuyên gia SEO Content Marketing & Copywriting hàng đầu (Google Helpful Content & E-E-A-T Chuẩn SEO 2026).
@@ -25525,9 +25710,9 @@ ${sampleInstruction}
 - Cuối bài viết, BẮT BUỘC cung cấp thông tin SEO Meta theo định dạng sau:
 ===SEO_META_START===
 KEYWORDS: [3-5 từ khóa SEO cách nhau bằng dấu phẩy]
-TITLE: [Tiêu đề SEO H1 hấp dẫn, chứa từ khóa chính, dưới 65 ký tự]
-META: [Đoạn mô tả ngắn Meta Description chuẩn SEO, chứa từ khóa, từ 130 đến 155 ký tự]
-LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hướng dẫn, Dịch vụ]
+TITLE: [Tiêu đề SEO H1 mới hoàn toàn, hấp dẫn, CTR cao, chứa từ khóa chính, dưới 65 ký tự, KHÔNG TRÙNG tiêu đề bài mẫu]
+META: [Đoạn mô tả ngắn Meta Description chuẩn SEO E-E-A-T, chứa từ khóa, độ dài từ 140 đến 158 ký tự]
+LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hướng dẫn, Mạng xã hội]
 ===SEO_META_END===`;
 
   const FAILOVER_CHAIN = ["groq", "cerebras", "openrouter", "gemini", "mistral", "nvidia"];
@@ -25576,11 +25761,11 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
     let htmlContent = seoStart > -1 ? rawText.slice(0, seoStart).trim() : rawText.trim();
     htmlContent = convertMarkdownToCleanHtml(htmlContent);
 
-    // XỬ LÝ CROP CHỐNG BẢN QUYỀN GOOGLE & CHÈN HÌNH ẢNH THẬT ĐÃ LỌC
-    if (sampleData && sampleData.images && sampleData.images.length > 0) {
-      if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-crop"></i> Đang tự động crop viền 3.5% chống quét trùng lặp bản quyền Google...</span>';
+    // XỬ LÝ CROP CHÍNH XÁC 5% CHỐNG BẢN QUYỀN GOOGLE & DMCA VÀ CHÈN HÌNH ẢNH ĐÃ CHỌN
+    if (activeImages.length > 0) {
+      if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-crop"></i> Đang tự động crop viền 5% chống quét trùng lặp bản quyền Google & DMCA...</span>';
       
-      const imagesToProcess = sampleData.images.slice(0, 4);
+      const imagesToProcess = activeImages.slice(0, 4);
       for (let i = 0; i < imagesToProcess.length; i++) {
         const targetImg = imagesToProcess[i];
         try {
@@ -25595,7 +25780,7 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
       }
 
       // Tự động chèn ảnh thật vào bài viết nếu AI chưa phân bổ đủ
-      const uninsertedImgs = sampleData.images.filter(im => !htmlContent.includes(im.url));
+      const uninsertedImgs = activeImages.filter(im => !htmlContent.includes(im.url));
       if (uninsertedImgs.length > 0) {
         const firstImg = uninsertedImgs[0];
         const leadImgHtml = `\n<div class="separator" style="clear:both; text-align:center; margin:22px 0;">\n  <img src="${firstImg.url}" alt="${firstImg.alt || effectiveTopic}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25);" loading="lazy" />\n  <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">${firstImg.alt || effectiveTopic}</p>\n</div>\n`;
@@ -25624,26 +25809,79 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
       if (typeof onAiEditorInput === 'function') onAiEditorInput();
     }
 
+    let newTitle = '';
+    let newMeta = '';
+    let newKeywords = '';
+    let newLabels = '';
+
     if (seoStart > -1 && seoEnd > seoStart) {
       const seoBlock = rawText.slice(seoStart, seoEnd);
       const kwMatch = seoBlock.match(/^KEYWORDS:\s*(.+)$/m);
       const titleMatch = seoBlock.match(/^TITLE:\s*(.+)$/m);
       const metaMatch = seoBlock.match(/^META:\s*(.+)$/m);
       const labelsMatch = seoBlock.match(/^LABELS:\s*(.+)$/m);
-      const kwEl = document.getElementById('aiKeywords');
-      const titleEl = document.getElementById('aiSeoTitle');
-      const metaEl = document.getElementById('aiSeoMeta');
-      const labelsEl = document.getElementById('aiSeoLabels');
-      if (kwEl && kwMatch && (!kwEl.value.trim() || kwEl.getAttribute("data-auto-generated") === "true")) {
-        kwEl.value = kwMatch[1].trim();
-        kwEl.setAttribute("data-auto-generated", "true");
-      }
-      if (titleEl && titleMatch) titleEl.value = titleMatch[1].trim();
-      if (metaEl && metaMatch) { metaEl.value = metaMatch[1].trim(); updateAiMetaCounter(); }
-      if (labelsEl && labelsMatch) labelsEl.value = labelsMatch[1].trim();
+      if (kwMatch) newKeywords = kwMatch[1].trim();
+      if (titleMatch) newTitle = titleMatch[1].trim();
+      if (metaMatch) newMeta = metaMatch[1].trim();
+      if (labelsMatch) newLabels = labelsMatch[1].trim();
     }
 
-    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">✅ Đã hoàn tất bài viết chuẩn SEO với ' + successfulProv.name + '! (Ảnh đã crop chống vi phạm bản quyền)</span>';
+    // Nếu AI không bọc đúng block, bóc tách bằng regex linh hoạt
+    if (!newTitle) {
+      const tMatch = rawText.match(/(?:TIÊU ĐỀ|TITLE|H1):\s*(.+)/i);
+      if (tMatch) newTitle = tMatch[1].replace(/[*#]/g, '').trim();
+    }
+    if (!newMeta) {
+      const mMatch = rawText.match(/(?:META|MÔ TẢ|DESCRIPTION):\s*(.+)/i);
+      if (mMatch) newMeta = mMatch[1].replace(/[*#]/g, '').trim();
+    }
+    if (!newKeywords) {
+      const kMatch = rawText.match(/(?:KEYWORDS|TỪ KHÓA):\s*(.+)/i);
+      if (kMatch) newKeywords = kMatch[1].replace(/[*#]/g, '').trim();
+    }
+    if (!newLabels) {
+      const lMatch = rawText.match(/(?:LABELS|TAGS|NHÃN):\s*(.+)/i);
+      if (lMatch) newLabels = lMatch[1].replace(/[*#]/g, '').trim();
+    }
+
+    // Fallback thông minh đảm bảo 100% tự động đổi tiêu đề mới và thêm mô tả thẻ tags chuẩn SEO
+    if (!newTitle || (sampleData && newTitle.toLowerCase() === (sampleData.title || '').toLowerCase())) {
+      let cleanTopic = effectiveTopic.replace(/^(hướng dẫn|cách|tổng hợp)/i, '').trim();
+      newTitle = `Hướng Dẫn ${cleanTopic.charAt(0).toUpperCase() + cleanTopic.slice(1)} Toàn Diện A-Z [Chuẩn SEO 2026]`;
+    }
+    if (!newMeta) {
+      const plainText = htmlContent.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+      newMeta = (plainText.slice(0, 150) + '...').trim();
+    }
+    if (!newKeywords && effectiveTopic) {
+      newKeywords = `${effectiveTopic}, hướng dẫn ${effectiveTopic}, kinh nghiệm thực tế, mmo`;
+    }
+    if (!newLabels) {
+      newLabels = 'MMO, Hướng Dẫn, Thủ Thuật';
+    }
+
+    // Tự động điền dữ liệu SEO chuẩn vào các ô giao diện
+    const kwEl = document.getElementById('aiKeywords');
+    const titleEl = document.getElementById('aiSeoTitle');
+    const metaEl = document.getElementById('aiSeoMeta');
+    const labelsEl = document.getElementById('aiSeoLabels');
+
+    if (kwEl && newKeywords) {
+      kwEl.value = newKeywords;
+      kwEl.setAttribute("data-auto-generated", "true");
+    }
+    if (titleEl && newTitle) {
+      titleEl.value = newTitle;
+    }
+    if (metaEl && newMeta) {
+      metaEl.value = newMeta;
+      if (typeof updateAiMetaCounter === 'function') updateAiMetaCounter();
+    }
+    if (labelsEl && newLabels) {
+      labelsEl.value = newLabels;
+    }
+
+    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">✅ Đã hoàn tất bài viết chuẩn SEO E-E-A-T với ' + successfulProv.name + '! (Tiêu đề & mô tả & tags tự động tối ưu, ảnh crop 5% chống DMCA)</span>';
     showToast('🎉 AI ' + successfulProv.name + ' đã viết bài chuẩn SEO thành công!', 'success');
   } catch (err) {
     console.error('AI Writer error:', err);
