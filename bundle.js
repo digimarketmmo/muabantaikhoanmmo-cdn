@@ -5397,7 +5397,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         }
       }
 
-      if (viewId === "viewBlog" || viewId === "viewBlogDetail") {
+      if (viewId === "viewBlogDetail") {
+        document.getElementById("navBlog")?.classList.add("active");
+        if (!window.currentViewingBlog && typeof openBlogDetail === "function") {
+          try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const savedBlogId = urlParams.get("post") || urlParams.get("blog") || localStorage.getItem("mmo_current_blog_id");
+            const blogs = (MOCK_DATA && MOCK_DATA.blogs) ? MOCK_DATA.blogs : [];
+            const targetBlog = (savedBlogId ? blogs.find(item => item.id === savedBlogId) : null) || blogs[0];
+            if (targetBlog) {
+              openBlogDetail(targetBlog.id);
+            }
+          } catch(err) {
+            console.warn("Auto-restore blog detail error:", err);
+          }
+        }
+      } else if (viewId === "viewBlog") {
         document.getElementById("navBlog")?.classList.add("active");
         if (!_viewRendered["viewBlog"]) {
           _viewRendered["viewBlog"] = true;
@@ -13540,8 +13555,17 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function openBlogDetail(id) {
       const blogs = (MOCK_DATA && MOCK_DATA.blogs) ? MOCK_DATA.blogs : [];
-      const b = blogs.find(item => item.id === id) || blogs[0];
+      const b = (id ? blogs.find(item => item.id === id) : null) || blogs[0];
       if (!b) return;
+
+      // Lưu lại ID bài viết đang xem để khi F5 / Reload trang không bao giờ bị mất hoặc trắng trang
+      try {
+        localStorage.setItem("mmo_current_blog_id", b.id);
+        const url = new URL(window.location.href);
+        url.searchParams.set("post", b.id);
+        url.hash = "#viewBlogDetail";
+        window.history.replaceState(null, "", url.pathname + "?" + url.searchParams.toString() + url.hash);
+      } catch(e) {}
 
       const bCat = document.getElementById("articleBreadcrumbCat");
       if (bCat) bCat.innerText = b.category || "Tin tức";
@@ -13567,9 +13591,16 @@ function syncAllOpenViewsStock(changedProdId) {
       if (artSapo) artSapo.innerText = b.snippet || "";
 
       const artImg = document.getElementById("articleFeaturedImg");
+      const artImgWrap = document.getElementById("articleFeaturedImgWrap");
       if (artImg) {
-        artImg.src = b.image || "";
-        artImg.alt = b.title;
+        if (b.image) {
+          artImg.src = b.image;
+          artImg.alt = b.title;
+          if (artImgWrap) artImgWrap.style.display = "block";
+        } else {
+          artImg.src = "";
+          if (artImgWrap) artImgWrap.style.display = "none";
+        }
       }
       const artCaption = document.getElementById("articleImgCaption");
       if (artCaption) artCaption.innerText = "Ảnh minh họa: " + b.title;
@@ -18019,7 +18050,14 @@ function syncAllOpenViewsStock(changedProdId) {
           targetView = "viewStore";
         }
 
-        if (targetView && targetView !== "viewStore") {
+        if (targetView === "viewBlogDetail") {
+          const targetBlogId = urlParams.get("post") || urlParams.get("blog") || localStorage.getItem("mmo_current_blog_id");
+          if (typeof openBlogDetail === "function") {
+            openBlogDetail(targetBlogId);
+          } else {
+            switchView("viewBlogDetail");
+          }
+        } else if (targetView && targetView !== "viewStore") {
           const storedUser = localStorage.getItem("mmo_user");
           if ((targetView === "viewProfile" || targetView === "viewAdmin" || targetView === "viewDeposit") && !storedUser) {
             targetView = "viewStore";
