@@ -9901,6 +9901,24 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (document.getElementById("setGasUrl")) document.getElementById("setGasUrl").value = s.gasUrl || "";
 
+      // AI API Keys - Tự động nạp và bảo vệ chống mất dữ liệu (Self-Healing Anti-Data-Loss)
+      const _aiProviders = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
+      _aiProviders.forEach(function(p) {
+        const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
+        let val = localStorage.getItem('mmo_ai_key_' + p) || (s && s['ai_key_' + p]) || '';
+        if (!val) {
+          try {
+            const gen = JSON.parse(localStorage.getItem('mmo_general_settings') || '{}');
+            val = gen['ai_key_' + p] || '';
+          } catch(e) {}
+        }
+        if (val) {
+          if (!localStorage.getItem('mmo_ai_key_' + p)) localStorage.setItem('mmo_ai_key_' + p, val);
+          if (s && !s['ai_key_' + p]) s['ai_key_' + p] = val;
+        }
+        if (el) el.value = val;
+      });
+
       // Logo URL & Preview
       const logoUrl = s.brandLogo || "";
       if (document.getElementById("setSiteLogoUrl")) document.getElementById("setSiteLogoUrl").value = logoUrl;
@@ -9921,6 +9939,54 @@ function syncAllOpenViewsStock(changedProdId) {
       previewBrandUrl(ogUrl, "setSiteOgImagePreview", "setSiteOgImageHint", "btnResetOgImage");
     }
     window.loadGeneralSettingsUI = loadGeneralSettingsUI;
+
+    function saveAllAiApiKeysFromSystem(silent) {
+      const providers = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
+      let savedCount = 0;
+      let s = {};
+      try {
+        s = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}');
+      } catch(e) {}
+
+      providers.forEach(function(p) {
+        const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
+        if (el) {
+          const v = el.value.trim();
+          if (v) {
+            localStorage.setItem('mmo_ai_key_' + p, v);
+            s['ai_key_' + p] = v;
+            savedCount++;
+          } else {
+            localStorage.removeItem('mmo_ai_key_' + p);
+            delete s['ai_key_' + p];
+          }
+        } else {
+          // BẢO VỆ CHỐNG MẤT DỮ LIỆU: Nếu DOM element chưa được render, tuyệt đối không xóa key đã lưu
+          const existing = localStorage.getItem('mmo_ai_key_' + p) || s['ai_key_' + p];
+          if (existing) {
+            localStorage.setItem('mmo_ai_key_' + p, existing);
+            s['ai_key_' + p] = existing;
+            savedCount++;
+          }
+        }
+      });
+
+      try {
+        localStorage.setItem('mmo_system_settings', JSON.stringify(s));
+        localStorage.setItem('mmo_general_settings', JSON.stringify(s));
+      } catch(e) {}
+
+      const statusEl = document.getElementById('aiSystemKeySaveStatus');
+      if (statusEl) {
+        statusEl.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Đã lưu thành công danh sách API Key AI (' + savedCount + ' key đang hoạt động)!</span>';
+        setTimeout(function() { if (statusEl) statusEl.innerHTML = ''; }, 4000);
+      }
+      if (!silent && typeof showToast === 'function') {
+        showToast('✅ Đã lưu danh sách API Key AI thành công (' + savedCount + ' key)!', 'success');
+      }
+      if (typeof onAiProviderChange === 'function') onAiProviderChange();
+    }
+    window.saveAllAiApiKeysFromSystem = saveAllAiApiKeysFromSystem;
 
     function handleSaveGeneralSettings(e) {
       if (e) {
@@ -9959,6 +10025,26 @@ function syncAllOpenViewsStock(changedProdId) {
           _lastSavedAt: Date.now()
         };
 
+        if (typeof saveAllAiApiKeysFromSystem === "function") {
+          saveAllAiApiKeysFromSystem(true);
+        } else {
+          const providers = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
+          providers.forEach(function(p) {
+            const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
+            if (el) {
+              const v = el.value.trim();
+              if (v) {
+                settings['ai_key_' + p] = v;
+                localStorage.setItem('mmo_ai_key_' + p, v);
+              } else {
+                localStorage.removeItem('mmo_ai_key_' + p);
+              }
+            } else {
+              const existing = localStorage.getItem('mmo_ai_key_' + p);
+              if (existing) settings['ai_key_' + p] = existing;
+            }
+          });
+        }
         localStorage.setItem("mmo_system_settings", JSON.stringify(settings));
         localStorage.setItem("mmo_general_settings", JSON.stringify(settings));
 
