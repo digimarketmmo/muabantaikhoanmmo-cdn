@@ -1476,8 +1476,8 @@
     
     /* ==================== VIEW: ARTICLE NEWSPAPER LAYOUT (TRANG BÀI BÁO) ==================== */
     .article-page-container {
-      max-width: 80% !important;
-      width: 80% !important;
+      max-width: 75% !important;
+      width: 75% !important;
       margin: 20px auto 60px !important;
       padding: 0 !important;
       box-sizing: border-box;
@@ -4821,12 +4821,12 @@ header.header {
 }
 
 /* ==========================================================================
-   THU NHỎ TRANG XEM BÀI VIẾT BLOG THÊM 5% (CÒN 80%) & GRID 3 SẢN PHẨM ĐỀ XUẤT (v2.2.3)
+   THU NHỎ TRANG XEM BÀI VIẾT BLOG TRÊN MÁY TÍNH THÊM 5% (CÒN 75%), ĐIỆN THOẠI GIỮ NGUYÊN 100% (v2.2.4)
    ========================================================================== */
 .article-page-container,
 #viewBlogDetail {
-  width: 80% !important;
-  max-width: 80% !important;
+  width: 75% !important;
+  max-width: 75% !important;
   margin-left: auto !important;
   margin-right: auto !important;
   padding-left: 0 !important;
@@ -4835,11 +4835,28 @@ header.header {
   overflow: visible !important;
 }
 
+@media (max-width: 1200px) {
+  .article-page-container,
+  #viewBlogDetail {
+    width: 82% !important;
+    max-width: 82% !important;
+  }
+}
+
 @media (max-width: 992px) {
   .article-page-container,
   #viewBlogDetail {
-    width: 90% !important;
-    max-width: 90% !important;
+    width: 88% !important;
+    max-width: 88% !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .article-page-container,
+  #viewBlogDetail {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 8px !important;
   }
 }
 
