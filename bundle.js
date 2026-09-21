@@ -1656,12 +1656,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     };
 
     // CHUẨN HÓA VĂN BẢN VÀ DANH SÁCH SẢN PHẨM MẪU DUMMY / ĐÃ XÓA VĨNH VIỄN
+        // CHUẨN HÓA VĂN BẢN VÀ DANH SÁCH SẢN PHẨM MẪU DUMMY / ĐÃ XÓA VĨNH VIỄN
+    const _mmoNormTextCache = new Map();
     function normApiText(str) {
-      return String(str || '').toLowerCase()
+      const key = String(str || '');
+      if (_mmoNormTextCache.has(key)) return _mmoNormTextCache.get(key);
+      const res = key.toLowerCase()
         .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
         .replace(/[đĐ]/g, 'd')
         .replace(/[^a-z0-9]/g, ' ')
         .replace(/\s+/g, ' ').trim();
+      if (_mmoNormTextCache.size < 6000) _mmoNormTextCache.set(key, res);
+      return res;
     }
     window.normApiText = normApiText;
 
@@ -27578,9 +27584,11 @@ window.switchToFreeProvider = switchToFreeProvider;
 // SAFE AUTOMATIC BOOT AT VERY END OF BUNDLE (ALL DEFINITIONS READY)
 // =========================================================================
 if (typeof window !== "undefined") {
-  setTimeout(function() {
-    if (typeof initMMOApplication === "function" && !window._mmoAppFullyInitialized) {
+  if (typeof initMMOApplication === "function" && !window._mmoAppFullyInitialized) {
+    try {
       initMMOApplication();
+    } catch(errBoot) {
+      console.error("Auto boot initMMOApplication error:", errBoot);
     }
-  }, 10);
+  }
 }
