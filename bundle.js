@@ -24993,6 +24993,7 @@ function probeBrowserImage(url, timeoutMs = 3000) {
   if (!url || typeof url !== 'string') return Promise.resolve(null);
   return new Promise((resolve) => {
     const img = new Image();
+    img.referrerPolicy = 'no-referrer';
     let timer = setTimeout(() => {
       img.onload = null;
       img.onerror = null;
@@ -25011,6 +25012,7 @@ function probeBrowserImage(url, timeoutMs = 3000) {
       // Thử lại 1 lần qua weserv proxy để tránh trường hợp CDN bị chặn cục bộ
       const proxyUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(url) + '&w=300';
       const imgProxy = new Image();
+      imgProxy.referrerPolicy = 'no-referrer';
       let pTimer = setTimeout(() => {
         imgProxy.onload = null;
         imgProxy.onerror = null;
@@ -25044,47 +25046,56 @@ async function harvestPlatformRealImages(cleanUrl, fallbackTitle) {
   if (lowerUrl.includes('fptshop.com.vn')) {
     let artId = '';
     let slug = '';
-    const m = cleanUrl.match(new RegExp("[-_](\\d{4,9})(?:\\.html|/|$|\\?)")) || cleanUrl.match(new RegExp("tin-tuc/.*?-(\\d{4,9})")) || cleanUrl.match(new RegExp("(\\d{5,9})"));
+    const m = cleanUrl.match(/[-_](\d{4,9})(?:[?/#]|$|\.html)/) || cleanUrl.match(/tin-tuc\/.*?-(\d{4,9})/) || cleanUrl.match(/(\d{5,9})/);
     if (m) artId = m[1];
     try {
       const u = new URL(cleanUrl);
       const segs = u.pathname.split('/').filter(Boolean);
       let lastSeg = segs.pop() || '';
-      slug = lastSeg.replace(new RegExp("[-_]\\d{4,9}$"), "").replace(/\.html$/, "");
+      slug = lastSeg.replace(/[-_]\d{4,9}$/, '').replace(/\.html$/, '');
     } catch(e) {}
 
     if (artId) {
       const candidates = [];
-      for (let i = 1; i <= 30; i++) {
-        candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/Originals/' + i + '.jpg' });
+      for (let i = 1; i <= 25; i++) {
+        // Pattern 1: Chuẩn nhất của bài viết hướng dẫn FPTShop
+        candidates.push({ step: i, priority: 1, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/Originals/' + i + '.jpg' });
         if (slug) {
-          candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/Originals/' + slug + '-' + i + '.jpg' });
+          candidates.push({ step: i, priority: 2, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/Originals/' + slug + '-' + i + '.jpg' });
         }
-        candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/' + i + '.jpg' });
+        candidates.push({ step: i, priority: 3, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/' + i + '.jpg' });
         if (slug) {
-          candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/' + slug + '-' + i + '.jpg' });
+          candidates.push({ step: i, priority: 4, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/' + slug + '-' + i + '.jpg' });
         }
-        candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/Originals/' + i + '.png' });
-        if (slug) {
-          candidates.push({ step: i, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/Originals/' + slug + '-' + i + '.png' });
-        }
+        candidates.push({ step: i, priority: 5, url: 'https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/' + artId + '/Originals/' + i + '.png' });
       }
 
       // Quét song song bằng probeBrowserImage
       const probes = candidates.map(c => probeBrowserImage(c.url, 2800).then(res => {
-        if (res) return { step: c.step, url: c.url };
+        if (res) return { step: c.step, priority: c.priority, url: c.url };
         return null;
       }));
 
       const results = (await Promise.all(probes)).filter(Boolean);
-      results.sort((a, b) => a.step - b.step);
+      // Ưu tiên ảnh priority cao nhất (Originals/i.jpg)
+      results.sort((a, b) => a.priority - b.priority);
 
+      // Nhóm theo từng bước để mỗi bước chỉ có 1 ảnh duy nhất chuẩn nhất
+      const stepMap = new Map();
       results.forEach(r => {
-        if (!seenUrls.has(r.url)) {
-          seenUrls.add(r.url);
+        if (!stepMap.has(r.step)) {
+          stepMap.set(r.step, r.url);
+        }
+      });
+
+      const sortedSteps = [...stepMap.keys()].sort((a, b) => a - b);
+      sortedSteps.forEach(st => {
+        const u = stepMap.get(st);
+        if (!seenUrls.has(u)) {
+          seenUrls.add(u);
           images.push({
-            url: r.url,
-            alt: (fallbackTitle || 'Hướng dẫn') + ' - Bước ' + r.step,
+            url: u,
+            alt: (fallbackTitle || 'Hướng dẫn') + ' - Bước ' + st,
             selected: true
           });
         }
@@ -25180,6 +25191,17 @@ async function fetchSampleArticleData(sampleUrl) {
         selected: true
       });
     }
+  }
+
+  // 0. Thu hoạch 100% ảnh thật từ các nền tảng hướng dẫn chuyên biệt (FPTSHOP, TGDD, ĐMX...)
+  try {
+    const platformImgs = await harvestPlatformRealImages(cleanUrl, fallbackTitle);
+    if (platformImgs && platformImgs.length > 0) {
+      platformImgs.forEach(im => addImg(im.url, im.alt));
+      if (!title) title = fallbackTitle;
+    }
+  } catch(eHarv) {
+    console.warn('harvestPlatformRealImages error:', eHarv);
   }
 
   // 1. Thử qua Microlink API với custom data selector lấy toàn bộ ảnh, headings và bodyText
@@ -25311,7 +25333,16 @@ async function fetchSampleArticleData(sampleUrl) {
     isWafProtected = true;
   }
 
-  // 4. Nếu danh sách ảnh đang trống, tự động cấp bộ ảnh Full HD cực nét đúng chủ đề
+  // 4. Nếu danh sách ảnh đang trống, thử quét lại nền tảng hoặc cấp bộ ảnh theo chủ đề
+  if (images.length === 0) {
+    try {
+      const pImgs2 = await harvestPlatformRealImages(cleanUrl, title || fallbackTitle);
+      if (pImgs2 && pImgs2.length > 0) {
+        pImgs2.forEach(im => addImg(im.url, im.alt));
+      }
+    } catch(eH2) {}
+  }
+
   if (images.length === 0) {
     const topicImgs = getTopicIllustrativeImages(title, cleanUrl);
     topicImgs.forEach(im => {
@@ -25734,95 +25765,91 @@ window.renderSampleArticlePreviewUI = renderSampleArticlePreviewUI;
 // Cơ chế Crop chính xác 5% viền ảnh & Re-encode chống vi phạm bản quyền Google & DMCA (Full HD 95% siêu nét)
 async function cropAndUploadUniqueImage(rawImgUrl, altText) {
   if (!rawImgUrl || typeof rawImgUrl !== 'string') return rawImgUrl;
-  
-  if (rawImgUrl.includes('iili.io') || rawImgUrl.startsWith('data:')) {
-    return rawImgUrl;
+  let cleanSrc = rawImgUrl.trim();
+  if (!cleanSrc.startsWith('http://') && !cleanSrc.startsWith('https://')) return cleanSrc;
+
+  // Nếu đã được crop 5% qua weserv (đã có cx, cy) thì không crop lại
+  if (cleanSrc.includes('images.weserv.nl') && cleanSrc.includes('&cx=') && cleanSrc.includes('&cy=')) {
+    return cleanSrc;
   }
 
-  const urlsToTry = [
-    rawImgUrl,
-    `https://images.weserv.nl/?url=${encodeURIComponent(rawImgUrl)}&output=jpg&q=95&we=1`,
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(rawImgUrl)}`,
-    `https://mmo-api-proxy.manhdongvtc.workers.dev?url=${encodeURIComponent(rawImgUrl)}`
-  ];
-
-  for (const pUrl of urlsToTry) {
-    try {
-      const img = new Image();
-      img.crossOrigin = 'anonymous';
-      
-      await new Promise((resolve, reject) => {
-        const timer = setTimeout(() => reject(new Error('Timeout load ảnh')), 7000);
-        img.onload = () => { clearTimeout(timer); resolve(); };
-        img.onerror = () => { clearTimeout(timer); reject(new Error('Lỗi tải ảnh')); };
-        img.src = pUrl;
-      });
-
-      const origW = img.naturalWidth || img.width;
-      const origH = img.naturalHeight || img.height;
-      if (!origW || !origH || origW < 50 || origH < 50) continue;
-
-      // Cắt bỏ chính xác 5% mép ảnh ở mỗi cạnh (trên, dưới, trái, phải)
-      // Thay đổi tỷ lệ khung hình, kích thước và mã băm (hash)
-      // Ngăn chặn 100% thuật toán Google Vision / Google Reverse Image Search / DMCA đối chiếu bản quyền
-      const cropX = Math.round(origW * 0.05);
-      const cropY = Math.round(origH * 0.05);
-      const cropW = origW - (cropX * 2);
-      const cropH = origH - (cropY * 2);
-
-      // Nâng cấp độ phân giải tối đa lên Full HD 1600px để ảnh luôn sắc nét, chống vỡ mờ
-      let targetW = cropW;
-      let targetH = cropH;
-      if (targetW > 1600) {
-        targetH = Math.round(targetH * 1600 / targetW);
-        targetW = 1600;
+  return new Promise((resolve) => {
+    let isResolved = false;
+    const finish = (finalUrl) => {
+      if (!isResolved) {
+        isResolved = true;
+        resolve(finalUrl);
       }
+    };
 
-      const canvas = document.createElement('canvas');
-      canvas.width = targetW;
-      canvas.height = targetH;
-      const ctx = canvas.getContext('2d');
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, targetW, targetH);
+    // Timeout an toàn 2500ms: nếu mạng chậm, crop ngay theo kích thước chuẩn 1200x800
+    const timer = setTimeout(() => {
+      const fallbackUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) +
+        '&cx=60&cy=40&cw=1080&ch=720&output=jpg&q=95';
+      finish(fallbackUrl);
+    }, 2500);
 
-      // Xuất ảnh JPEG chất lượng 0.95 siêu nét
-      const blob = await new Promise((resolve) => {
-        canvas.toBlob((b) => resolve(b), 'image/jpeg', 0.95);
-      });
+    const img = new Image();
+    img.referrerPolicy = 'no-referrer';
 
-      if (!blob) {
-        return canvas.toDataURL('image/jpeg', 0.95);
+    img.onload = () => {
+      clearTimeout(timer);
+      try {
+        const origW = img.naturalWidth || 1200;
+        const origH = img.naturalHeight || 800;
+        if (origW > 80 && origH > 60) {
+          // Cắt bỏ chính xác 5% mép ảnh ở mỗi cạnh (trên, dưới, trái, phải)
+          // Thay đổi tỷ lệ khung hình, kích thước và mã băm (hash)
+          // Ngăn chặn 100% thuật toán Google Vision / Google Reverse Image Search / DMCA đối chiếu bản quyền
+          const cropX = Math.round(origW * 0.05);
+          const cropY = Math.round(origH * 0.05);
+          const cropW = origW - (cropX * 2);
+          const cropH = origH - (cropY * 2);
+
+          const croppedUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) +
+            '&cx=' + cropX + '&cy=' + cropY + '&cw=' + cropW + '&ch=' + cropH +
+            '&output=jpg&q=95';
+          finish(croppedUrl);
+        } else {
+          finish('https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) + '&cx=60&cy=40&cw=1080&ch=720&output=jpg&q=95');
+        }
+      } catch (e) {
+        finish('https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) + '&cx=60&cy=40&cw=1080&ch=720&output=jpg&q=95');
       }
+    };
 
-      // Tải ảnh mới lên CDN FreeImageHost để tạo link vĩnh viễn https://iili.io/
-      const fd = new FormData();
-      fd.append('key', '6d207e02198a847aa98d0a2a901485a5');
-      fd.append('action', 'upload');
-      fd.append('source', blob, 'seo_crop5_' + Date.now() + '.jpg');
-      fd.append('format', 'json');
+    img.onerror = () => {
+      clearTimeout(timer);
+      // Khi không tải trực tiếp được (do CDN chặn), thử đo kích thước qua weserv
+      const proxyImg = new Image();
+      proxyImg.referrerPolicy = 'no-referrer';
+      let pTimer = setTimeout(() => {
+        finish('https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) + '&cx=60&cy=40&cw=1080&ch=720&output=jpg&q=95');
+      }, 2000);
 
-      const controller = new AbortController();
-      const uploadTimer = setTimeout(() => controller.abort(), 9000);
-      const upRes = await fetch('https://freeimage.host/api/1/upload', {
-        method: 'POST',
-        body: fd,
-        signal: controller.signal
-      });
-      clearTimeout(uploadTimer);
+      proxyImg.onload = () => {
+        clearTimeout(pTimer);
+        const pw = proxyImg.naturalWidth || 1000;
+        const ph = proxyImg.naturalHeight || 600;
+        const cx = Math.round(pw * 0.05);
+        const cy = Math.round(ph * 0.05);
+        const cw = Math.round(pw - (cx * 2));
+        const ch = Math.round(ph - (cy * 2));
+        finish('https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) +
+          '&cx=' + cx + '&cy=' + cy + '&cw=' + cw + '&ch=' + ch +
+          '&output=jpg&q=95');
+      };
 
-      const json = await upRes.json();
-      if (json && json.image && json.image.url) {
-        return json.image.url;
-      }
-      
-      return canvas.toDataURL('image/jpeg', 0.95);
-    } catch (err) {
-      // Tiếp tục thử URL kế tiếp
-    }
-  }
+      proxyImg.onerror = () => {
+        clearTimeout(pTimer);
+        finish('https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) + '&cx=60&cy=40&cw=1080&ch=720&output=jpg&q=95');
+      };
 
-  return rawImgUrl;
+      proxyImg.src = 'https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) + '&w=800';
+    };
+
+    img.src = cleanSrc;
+  });
 }
 window.cropAndUploadUniqueImage = cropAndUploadUniqueImage;
 
@@ -26067,9 +26094,25 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
 
     // XỬ LÝ CHÈN ẢNH VÀ CROP 5% CHỐNG BẢN QUYỀN GOOGLE/DMCA AN TOÀN TUYỆT ĐỐI (KHÔNG CẮT GHÉP CHUỖI VỠ THẺ)
     if (activeImages.length > 0) {
+      if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-crop"></i> Đang tự động crop viền 5% chống quét trùng lặp bản quyền Google & DMCA...</span>';
+
+      // 1. TỰ ĐỘNG CROP VIỀN 5% CHO TOÀN BỘ 100% CÁC ẢNH ĐƯỢC CHỌN (KHÔNG BỎ SÓT BẤT KỲ ẢNH NÀO)
+      for (let i = 0; i < activeImages.length; i++) {
+        const targetImg = activeImages[i];
+        try {
+          const croppedUrl = await cropAndUploadUniqueImage(targetImg.url, targetImg.alt || effectiveTopic);
+          if (croppedUrl && croppedUrl !== targetImg.url) {
+            htmlContent = htmlContent.split(targetImg.url).join(croppedUrl);
+            targetImg.url = croppedUrl;
+          }
+        } catch(cropErr) {
+          console.warn('Lỗi crop ảnh chống bản quyền:', cropErr);
+        }
+      }
+
       if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-images"></i> Đang đồng bộ hình ảnh vào từng bước hướng dẫn...</span>';
 
-      // 1. Thay thế trực tiếp các placeholder [HINH_ANH_1], [HINH_ANH_2]... thành khối ảnh HTML hoàn chỉnh
+      // 2. Thay thế trực tiếp các placeholder [HINH_ANH_1], [HINH_ANH_2]... thành khối ảnh HTML hoàn chỉnh (ĐÃ CROP 5%)
       activeImages.forEach((img, i) => {
         const phRegex = new RegExp('\\\[(HINH_ANH|IMAGE|ANH)_' + (i + 1) + '\\\]', 'gi');
         const imgBlock = `\n<div class="separator" style="clear:both; text-align:center; margin:24px 0;">\n  <img src="${img.url}" alt="${img.alt || effectiveTopic}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25); display:inline-block;" loading="lazy" />\n  <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">${img.alt || effectiveTopic}</p>\n</div>\n`;
@@ -26078,7 +26121,7 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
         }
       });
 
-      // 2. Nếu còn ảnh nào chưa có trong bài viết (AI quên đặt placeholder), chèn an toàn qua DOMParser (100% không vỡ thẻ)
+      // 3. Nếu còn ảnh nào chưa có trong bài viết (AI quên đặt placeholder), chèn an toàn qua DOMParser (100% không vỡ thẻ, ĐÃ CROP 5%)
       const uninsertedImgs = activeImages.filter(im => !htmlContent.includes(im.url));
       if (uninsertedImgs.length > 0 && typeof DOMParser !== 'undefined') {
         try {
@@ -26129,26 +26172,10 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
         }
       }
 
-      // 3. Quét dọn triệt để bất kỳ mảnh vỡ CSS rác nào nếu còn sót
+      // 4. Quét dọn triệt để bất kỳ mảnh vỡ CSS rác nào nếu còn sót
       htmlContent = htmlContent.replace(/(t-size:\d+px;[^<>\n]*font-st[a-z:]*)/gi, '');
       htmlContent = htmlContent.replace(/(order-radius:\d+px;[^<>\n]*loading="lazy"\s*\/>)/gi, '');
       htmlContent = htmlContent.replace(/(argin:\d+px\s+0;)/gi, '');
-
-      // 4. XỬ LÝ CROP 5% VIỀN CHỐNG BẢN QUYỀN GOOGLE & DMCA
-      if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-crop"></i> Đang tự động crop viền 5% chống quét trùng lặp bản quyền Google & DMCA...</span>';
-      const imagesToProcess = activeImages.slice(0, 8);
-      for (let i = 0; i < imagesToProcess.length; i++) {
-        const targetImg = imagesToProcess[i];
-        try {
-          const uniqueUrl = await cropAndUploadUniqueImage(targetImg.url, targetImg.alt || effectiveTopic);
-          if (uniqueUrl && uniqueUrl !== targetImg.url) {
-            htmlContent = htmlContent.split(targetImg.url).join(uniqueUrl);
-            targetImg.url = uniqueUrl;
-          }
-        } catch(cropErr) {
-          console.warn('Lỗi crop ảnh chống bản quyền:', cropErr);
-        }
-      }
     }
 
     const editor = document.getElementById('aiEditorContent');
