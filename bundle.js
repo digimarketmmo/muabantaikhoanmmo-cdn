@@ -19960,6 +19960,24 @@ function injectAllProductsSchema() {
     }
     window.resetAllProdFilter = resetAllProdFilter;
 
+    function toggleMobileFilter() {
+      var sidebar = document.getElementById("allProdSidebar");
+      var btn = document.getElementById("mobileFilterToggleBtn");
+      var btnText = document.getElementById("mobileFilterBtnText");
+      if (!sidebar) return;
+      var isOpen = sidebar.classList.contains("mobile-filter-open");
+      if (isOpen) {
+        sidebar.classList.remove("mobile-filter-open");
+        if (btn) btn.classList.remove("active");
+        if (btnText) btnText.textContent = "Bộ lọc & Danh mục";
+      } else {
+        sidebar.classList.add("mobile-filter-open");
+        if (btn) btn.classList.add("active");
+        if (btnText) btnText.textContent = "Ẩn bộ lọc";
+      }
+    }
+    window.toggleMobileFilter = toggleMobileFilter;
+
     function changeAllProdPage(p) {
       allProdCurrentPage = p;
       renderAllProductsPage();

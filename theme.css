@@ -3790,7 +3790,7 @@
       }
     }
 
-    /* 8. Trang Tất cả sản phẩm &amp; Bộ lọc trên điện thoại */
+    /* 8. Trang Tất cả sản phẩm & Bộ lọc trên điện thoại */
     @media (max-width: 992px) {
       .all-products-page-container {
         padding: 12px 0 !important;
@@ -3798,12 +3798,49 @@
       .all-products-layout {
         display: flex !important;
         flex-direction: column !important;
-        gap: 14px !important;
+        gap: 10px !important;
+        grid-template-columns: none !important;
       }
+      /* Cancel sticky sidebar on tablet/mobile — shows above products */
       .all-prod-sidebar {
+        position: static !important;
         width: 100% !important;
         box-sizing: border-box !important;
-        padding: 14px !important;
+        padding: 0 !important;
+        max-height: none !important;
+        overflow-y: visible !important;
+        height: auto !important;
+        display: none !important;
+      }
+      .all-prod-sidebar.mobile-filter-open {
+        display: block !important;
+      }
+      .all-prod-main {
+        width: 100% !important;
+        display: block !important;
+        min-height: 200px !important;
+      }
+      .mobile-filter-toggle-btn {
+        display: flex !important;
+        align-items: center !important;
+        gap: 6px !important;
+        background: linear-gradient(135deg, #0f172a, #1e293b) !important;
+        color: #e2e8f0 !important;
+        border: 1px solid #334155 !important;
+        border-radius: 8px !important;
+        padding: 8px 16px !important;
+        font-size: 0.85rem !important;
+        font-weight: 600 !important;
+        cursor: pointer !important;
+        margin-bottom: 8px !important;
+        width: 100% !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
+      }
+      .mobile-filter-toggle-btn.active {
+        background: linear-gradient(135deg, #1e40af, #2563eb) !important;
+        border-color: #3b82f6 !important;
+        color: #fff !important;
       }
       .all-prod-top-bar {
         padding: 8px 10px !important;
@@ -3812,6 +3849,11 @@
       .all-prod-sort-btn {
         padding: 4px 8px !important;
         font-size: 0.74rem !important;
+      }
+    }
+    @media (min-width: 993px) {
+      .mobile-filter-toggle-btn {
+        display: none !important;
       }
     }
 
