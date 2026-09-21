@@ -19397,7 +19397,7 @@ function changeAdmUsersPage(p) {
     window.updateLiveRealTimeClock = updateLiveRealTimeClock;
     updateLiveRealTimeClock();
 
-    document.addEventListener("DOMContentLoaded", function() {
+    function initMMOApplication() {
       if (window._mmoCdnAppBooted) {
         if (typeof ensureUniversalComponentsExist === "function") ensureUniversalComponentsExist();
         if (typeof renderHeaderNotifications === "function") renderHeaderNotifications();
@@ -19519,7 +19519,17 @@ function changeAdmUsersPage(p) {
           }
         }
       } catch(e) {}
-    });
+    }
+    window.initMMOApplication = initMMOApplication;
+
+    if (typeof document !== "undefined") {
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initMMOApplication);
+      } else {
+        // DOM already parsed, boot immediately!
+        initMMOApplication();
+      }
+    }
 
     if (typeof window !== "undefined") {
       window.addEventListener("resize", function() {
