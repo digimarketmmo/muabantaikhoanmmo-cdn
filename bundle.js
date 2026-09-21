@@ -26026,64 +26026,81 @@ ${imgListText}
 `;
   }
 
-  const prompt = `Bạn là một chuyên gia SEO Content Marketing & Copywriting hàng đầu (Google Helpful Content & E-E-A-T Chuẩn SEO 2026).
-Hãy viết một bài blog chuyên sâu, chất lượng cao, hữu ích tuyệt đối cho người đọc về chủ đề sau:
+  const prompt = `Bạn là một chuyên gia SEO Content Marketing & Copywriting thực chiến hàng đầu (Google Helpful Content & E-E-A-T Chuẩn SEO 2026).
+Hãy viết một bài blog chuyên sâu, hữu ích tuyệt đối, đúng Search Intent của người đọc theo CHUẨN CẤU TRÚC BÀI BLOG SEO 2026 sau đây:
 
 CHỦ ĐỀ BÀI VIẾT: ${effectiveTopic}
 ${kwInstruction}
-ĐỘ DÀI BẮT BUỘC: ${wordCountDesc}
+ĐỘ DÀI: ${wordCountDesc} (Tập trung giải quyết trọn vẹn nhu cầu tìm kiếm, hướng dẫn chính xác từng bước, tuyệt đối không câu chữ lan man sáo rỗng)
 GIỌNG VĂN: ${toneLabel}
-HÌNH THỨC BÀI: ${postTypeLabel}
+HÌNH THỨC: ${postTypeLabel}
 ${sampleInstruction}
 
-=== BẮT BUỘC TUÂN THỦ CẤU TRÚC BÀI BLOG CHUẨN SEO 2026 SAU ĐÂY ===
+🚨 NGUYÊN TẮC CỐT LÕI BẮT BUỘC CỦA BÀI BLOG CHUẨN SEO 2026 (TUÂN THỦ TUYỆT ĐỐI 100%):
+1. ĐOẠN MỞ ĐẦU (100–180 từ) - TRẢ LỜI ĐÚNG NHU CẦU NGAY TỪ ĐẦU:
+   - TUYỆT ĐỐI KHÔNG mở bài bằng các câu sáo rỗng như "Trong thời đại công nghệ 4.0...", "Ngày nay...", "Trong thế giới số...", "Như chúng ta đã biết...".
+   - Áp dụng chuẩn công thức: [Vấn đề người đọc gặp phải] → [Giải pháp khắc phục] → [Bài viết này giúp gì] → [Điều kiện cần thiết].
+   - BẮT BUỘC CÓ KHUNG TRẢ LỜI NHANH (QUICK ANSWER) ngay dưới đoạn mở bài:
+     <div style="background:#0f172a; border-left:4px solid #38bdf8; padding:12px 16px; margin:14px 0; border-radius:6px;"><strong>💡 Trả lời nhanh / Tóm tắt kết quả chính:</strong> [Câu trả lời ngắn gọn, trực diện 1-3 câu giải quyết ngay nhu cầu tức thì của người đọc trước khi họ đọc chi tiết]</div>
 
-1. ĐOẠN MỞ BÀI (100–180 từ):
-- Đi thẳng vào vấn đề/nhu cầu tìm kiếm người đọc đang gặp.
-- KHUNG TRẢ LỜI NHANH (QUICK ANSWER): Đưa ngay câu trả lời cốt lõi trong khung HTML nổi bật:
-  <div style="background:#0f172a; border-left:4px solid #38bdf8; padding:12px 16px; margin:14px 0; border-radius:6px;"><strong>💡 Trả lời nhanh / Kết quả chính:</strong> [Câu trả lời ngắn gọn, trực diện, giải quyết ngay nhu cầu của người đọc]</div>
-- Giới thiệu ngắn gọn bài viết sẽ giúp người đọc giải quyết vấn đề như thế nào.
+2. QUY TẮC ĐẶT TIÊU ĐỀ H2 & TRẢ LỜI NHANH NGAY SAU H2 (QUICK ANSWER AFTER H2):
+   - Đặt tiêu đề H2 tự nhiên, hướng thẳng vào câu hỏi hoặc nhu cầu cụ thể của người đọc (TUYỆT ĐỐI KHÔNG đặt số thứ tự cứng nhắc 1., 2., 3. vô hồn).
+   - BẮT BUỘC NGAY DƯỚI MỖI H2: Đưa ra 1-2 câu trả lời súc tích, trực diện vào vấn đề trước, sau đó mới phân tích chi tiết và chia nhỏ thành các H3 (Công thức: Câu trả lời ngắn → Phân tích & Giải thích → Hướng dẫn chi tiết).
 
-2. <h2>1. [Chủ đề chính / Định nghĩa & Bản chất vấn đề]</h2>
-- Đưa câu trả lời súc tích ngay sau H2, sau đó chia nhỏ thành các H3:
-  - <h3>Khái niệm & Bản chất cốt lõi</h3>: giải thích dễ hiểu, trực quan.
-  - <h3>Khi nào cần sử dụng? / Vì sao quan trọng?</h3>
-  - <h3>Những điều quan trọng cần biết</h3>
+3. CẤU TRÚC CHI TIẾT CÁC MỤC H2 VÀ H3:
 
-3. <h2>2. [Hướng dẫn chi tiết từng bước thực hiện từ A-Z]</h2>
-- BẮT BUỘC chia thành các bước thực hành rõ ràng tương ứng các ảnh minh họa:
-  ${activeImages.length > 0 ? activeImages.map((im, i) => `  - <h3>Bước ${i + 1}: [Tên thao tác cụ thể bước ${i + 1}]</h3>\n    (Viết 2-4 câu hướng dẫn rõ ràng. Sau đó đặt placeholder: [HINH_ANH_${i + 1}] ngay dưới đoạn văn này)`).join('\n') : '  - <h3>Bước 1: Chuẩn bị</h3>\n  - <h3>Bước 2: Thực hiện chi tiết</h3>\n  - <h3>Bước 3: Hoàn tất & Kiểm tra</h3>'}
-- <h3>Lưu ý kỹ thuật quan trọng & Cách phòng tránh lỗi</h3>
+   - <h2>${effectiveTopic} là gì? Khái niệm & Bản chất cốt lõi</h2>
+     - Trả lời nhanh 1-2 câu định nghĩa súc tích, dễ hiểu nhất.
+     - <h3>Khái niệm & Nguyên lý hoạt động</h3>
+     - <h3>Khi nào cần sử dụng? / Vì sao quan trọng?</h3>
+     - <h3>Những điều quan trọng cần biết trước khi bắt đầu</h3>
 
-4. <h2>3. [So sánh / Phân tích ưu nhược điểm & Đánh giá]</h2>
-- <h3>Ưu điểm nổi bật</h3>: dùng thẻ <ul><li> liệt kê súc tích.
-- <h3>Nhược điểm & Hạn chế cần biết</h3>: dùng thẻ <ul><li> liệt kê khách quan.
-- <h3>Trường hợp / Đối tượng nên chọn</h3>
+   - <h2>Cần chuẩn bị những gì trước khi thực hiện?</h2>
+     - Trả lời nhanh danh sách điều kiện cần thiết.
+     - <h3>Yêu cầu phần cứng / Thiết bị / Tài khoản cần có</h3>
+     - <h3>Các công cụ & Phần mềm hỗ trợ</h3>
+     - <h3>Lưu ý sao lưu & Bảo mật an toàn dữ liệu</h3>
 
-5. <h2>4. [Các lỗi thường gặp & Cách xử lý triệt để]</h2>
-- <h3>Lỗi / Thách thức 1 & Cách xử lý</h3>
-- <h3>Lỗi / Thách thức 2 & Cách xử lý</h3>
-- KHUNG KINH NGHIỆM THỰC CHIẾN (E-E-A-T):
-  <div style="background:#1e1b4b; border-left:4px solid #a855f7; padding:12px 16px; margin:14px 0; border-radius:6px;"><strong>⭐ Kinh nghiệm thực tế (E-E-A-T 2026):</strong> [Chia sẻ mẹo thực chiến hữu ích]</div>
+   - <h2>Hướng dẫn chi tiết từng bước thực hiện từ A-Z</h2>
+     - Trả lời nhanh tóm tắt quy trình thực hiện.
+     ${activeImages.length > 0 ? activeImages.map((im, i) => `     - <h3>Bước ${i + 1}: [Tên thao tác cụ thể bước ${i + 1}]</h3>\n       (Viết 2-4 câu hướng dẫn rõ ràng, chi tiết thao tác thực tế. Sau đó đặt placeholder: [HINH_ANH_${i + 1}] ngay dưới đoạn văn này)`).join('\n') : '     - <h3>Bước 1: Chuẩn bị & Thiết lập ban đầu</h3>\n     - <h3>Bước 2: Thực hiện thao tác chi tiết</h3>\n     - <h3>Bước 3: Hoàn tất & Kiểm tra kết quả</h3>'}
+     - <h3>Lưu ý kỹ thuật quan trọng trong quá trình thực hiện</h3>
 
-6. <h2>5. Các Câu Hỏi Thường Gặp (FAQ)</h2>
-- Tạo tối thiểu 3 câu hỏi thường gặp nhất:
-  - <h3>[Câu hỏi 1?]</h3> -> trả lời súc tích 2-3 câu.
-  - <h3>[Câu hỏi 2?]</h3> -> trả lời súc tích 2-3 câu.
-  - <h3>[Câu hỏi 3?]</h3> -> trả lời súc tích 2-3 câu.
+   - <h2>Các lỗi thường gặp & Cách khắc phục triệt để</h2>
+     - Trả lời nhanh nguyên nhân gốc rễ dẫn đến lỗi.
+     - <h3>Lỗi phổ biến 1 & Cách xử lý</h3>
+     - <h3>Lỗi phổ biến 2 & Cách xử lý</h3>
+     - KHUNG KINH NGHIỆM THỰC CHIẾN (E-E-A-T 2026):
+       <div style="background:#1e1b4b; border-left:4px solid #a855f7; padding:12px 16px; margin:14px 0; border-radius:6px;"><strong>⭐ Kinh nghiệm thực tế (E-E-A-T 2026):</strong> [Chia sẻ trải nghiệm thực chiến hoặc mẹo thử nghiệm thực tế giúp người đọc làm thành công 100%]</div>
 
-7. <h2>Lời Kết & Lời Khuyên Hữu Ích</h2>
-- Tóm tắt lại giá trị và đưa ra lời khuyên thực tế.
-- Kêu gọi hành động (Call To Action) tự nhiên, nhắc đến giải pháp/dịch vụ tại muabantaikhoanmmo.com.
+   - <h2>Đánh giá ưu nhược điểm & Lời khuyên lựa chọn</h2>
+     - <h3>Ưu điểm nổi bật</h3> (dùng thẻ <ul><li> liệt kê súc tích)
+     - <h3>Nhược điểm & Hạn chế cần biết</h3> (dùng thẻ <ul><li> liệt kê khách quan)
+     - <h3>Trường hợp nên chọn / Không nên chọn</h3>
 
-=== QUY ĐỊNH ĐỊNH DẠNG ĐẦU RA (BẮT BUỘC) ===
-- KHÔNG dùng markdown thô (như ##, ###, **). Chỉ dùng HTML: <h2>, <h3>, <p>, <ul>, <li>, <ol>, <strong>, <em>, <div>.
-- Cuối bài viết, BẮT BUỘC cung cấp thông tin SEO Meta theo định dạng sau:
+   - <h2>Câu hỏi thường gặp (FAQ)</h2>
+     - Trả lời tối thiểu 3-5 câu hỏi thực tế người dùng hay tìm kiếm nhất:
+     - <h3>[Câu hỏi thực tế 1]?</h3> -> trả lời trực diện 2-3 câu.
+     - <h3>[Câu hỏi thực tế 2]?</h3> -> trả lời trực diện 2-3 câu.
+     - <h3>[Câu hỏi thực tế 3]?</h3> -> trả lời trực diện 2-3 câu.
+     - <h3>[Câu hỏi thực tế 4]?</h3> -> trả lời trực diện 2-3 câu.
+
+   - <h2>Lời kết & Bước tiếp theo</h2>
+     - Tóm tắt giá trị cốt lõi và hướng người đọc đến bước hành động tiếp theo.
+     - Kêu gọi hành động (Call To Action) và gợi ý liên kết nội bộ tự nhiên đến các dịch vụ tài khoản, tài nguyên MMO uy tín tại muabantaikhoanmmo.com.
+
+4. XÂY DỰNG TỪ KHÓA THEO CỤM CHỦ ĐỀ (TOPIC CLUSTER & SEMANTIC SEO 2026):
+   - TUYỆT ĐỐI KHÔNG nhồi nhét từ khóa chính lặp đi lặp lại một cách khiên cưỡng.
+   - Xây dựng mạng lưới từ khóa bao quát chủ đề, liên kết các thực thể (entities), thuật ngữ kỹ thuật liên quan, từ khóa phụ LSI để tạo nên một bài viết giàu giá trị thông tin chuyên sâu.
+
+5. ĐỊNH DẠNG ĐẦU RA (HTML CHUẨN):
+   - KHÔNG dùng markdown thô (như ##, ###, **). Chỉ dùng HTML: <h2>, <h3>, <p>, <ul>, <li>, <ol>, <strong>, <em>, <div>.
+   - Cuối bài viết, BẮT BUỘC cung cấp thông tin SEO Meta theo định dạng sau:
 ===SEO_META_START===
-KEYWORDS: [3-5 từ khóa SEO cách nhau bằng dấu phẩy]
-TITLE: [Tiêu đề SEO H1 mới hoàn toàn, hấp dẫn, CTR cao, chứa từ khóa chính, dưới 65 ký tự, KHÔNG TRÙNG tiêu đề bài mẫu]
+KEYWORDS: [3-5 từ khóa SEO bao quát cụm chủ đề, phân cách bằng dấu phẩy]
+TITLE: [Tiêu đề SEO H1 mới 100%, hấp dẫn, CTR cao, chứa từ khóa chính, dưới 65 ký tự, KHÔNG TRÙNG tiêu đề bài mẫu]
 META: [Đoạn mô tả ngắn Meta Description chuẩn SEO E-E-A-T, chứa từ khóa, độ dài từ 140 đến 158 ký tự]
-LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hướng dẫn, Mạng xã hội]
+LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hướng dẫn, Dịch vụ]
 ===SEO_META_END===`;
 
   const FAILOVER_CHAIN = ["groq", "cerebras", "openrouter", "gemini", "mistral", "nvidia"];
@@ -26107,7 +26124,7 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
         if (attempt > 0) {
           if (statusEl) statusEl.innerHTML = `<span style="color:#f59e0b;">⚠️ Nền tảng trước bận/hết quota -> Đang tự động chuyển sang <b>${tryProv.name}</b> viết bài...</span>`;
         }
-        rawText = await callAiChatService(tryKey, tryModel, prompt, "Bạn là chuyên gia SEO Content Marketing và Blogger tiếng Việt chuyên nghiệp.", targetMaxTokens);
+        rawText = await callAiChatService(tryKey, tryModel, prompt, "Bạn là chuyên gia SEO Content Marketing & E-E-A-T Technical Blogger tiếng Việt hàng đầu. Bạn viết bài chuẩn theo Search Intent, có câu trả lời nhanh (Quick Answer) trực diện, hướng dẫn từng bước rõ ràng kèm kinh nghiệm thực tế, tuyệt đối không dùng từ ngữ sáo rỗng.", targetMaxTokens);
         if (rawText) {
           successfulProv = tryProv;
           if (pSel && pSel.value !== tryKey) {
