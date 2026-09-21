@@ -18830,7 +18830,8 @@ function syncAllOpenViewsStock(changedProdId) {
     window.ITEMS_PER_PAGE = 10;
 
     var paginationState = {
-    admUsers: 1,
+      admPreOrders: 1,
+      admUsers: 1,
       admUsers: 1,
       admWithdraw: 1,
       admTx: 1,
@@ -18897,7 +18898,15 @@ function syncAllOpenViewsStock(changedProdId) {
       container.innerHTML = html;
     }
 
-    function changeAdmUsersPage(p) {
+        function changeAdmPreOrdersPage(p) {
+      if (typeof paginationState !== "undefined") paginationState.admPreOrders = p;
+      if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
+      const el = document.getElementById("admPreOrdersTable");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    window.changeAdmPreOrdersPage = changeAdmPreOrdersPage;
+
+function changeAdmUsersPage(p) {
       paginationState.admUsers = p;
       renderAdminUsersTable();
     }
@@ -19083,8 +19092,85 @@ function syncAllOpenViewsStock(changedProdId) {
     // Lắng nghe BroadcastChannel để đồng bộ realtime giữa các tab/cửa sổ song song
     try {
       if (typeof BroadcastChannel !== "undefined") {
-        const globalBc = new BroadcastChannel("mmo_channel");
+        // Xử lý sự kiện đặt trước phát sóng đa tab Realtime 0ms
+    function handlePreOrdersBroadcastMessage(data) {
+      if (!data) return;
+      if (data.type === "NEW_PREORDER" && data.order) {
+        _cachedPreOrdersList = null;
+        _lastPreOrdersFetchTime = 0;
+        const curOrders = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
+        const ordCode = String(data.order.orderCode || data.order.id || "").replace("#","").toLowerCase();
+        if (!curOrders.some(p => String(p.orderCode || p.id).replace("#","").toLowerCase() === ordCode)) {
+          curOrders.unshift(data.order);
+          try { localStorage.setItem("mmo_pre_orders", JSON.stringify(curOrders)); } catch(e) {}
+        }
+        if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
+        if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
+        if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
+        if (typeof renderProfileOrders === "function") renderProfileOrders();
+        if (typeof renderSystemOverview === "function") renderSystemOverview();
+        const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+        if (curUser && curUser.role === "ADMIN") {
+          if (typeof playNotificationSound === "function") playNotificationSound();
+          if (typeof showToast === "function") showToast("🔔 Có đơn đặt hàng trước mới #" + (data.order.orderCode || data.order.id), "info");
+        }
+      } else if (data.type === "ORDER_STATUS_CHANGED" && data.orderId) {
+        const cleanId = String(data.orderId).replace("#","").toLowerCase();
+        const keys = ["mmo_pre_orders", "mmo_orders", "mmo_user_orders", "mmo_all_orders"];
+        keys.forEach(k => {
+          try {
+            const raw = localStorage.getItem(k);
+            if (!raw) return;
+            const arr = JSON.parse(raw);
+            if (!Array.isArray(arr)) return;
+            let mod = false;
+            arr.forEach(o => {
+              const oId = String(o.orderCode || o.id || o.orderId || "").replace("#","").toLowerCase();
+              if (oId === cleanId) {
+                o.status = data.status;
+                o.statusText = data.statusText;
+                if (data.deliveredAccounts) o.deliveredAccounts = data.deliveredAccounts;
+                if (data.credentials) o.credentials = data.credentials;
+                if (data.status === "CANCELLED") {
+                  o.isCancelled = true;
+                  o.isRefunded = true;
+                }
+                mod = true;
+              }
+            });
+            if (mod) localStorage.setItem(k, JSON.stringify(arr));
+          } catch(e) {}
+        });
+        _cachedPreOrdersList = null;
+        _lastPreOrdersFetchTime = 0;
+        if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
+        if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
+        if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
+        if (typeof renderProfileOrders === "function") renderProfileOrders();
+        if (typeof renderSystemOverview === "function") renderSystemOverview();
+        
+        const dtlOidEl = document.getElementById("podOrderId");
+        if (dtlOidEl && String(dtlOidEl.innerText).replace("#","").toLowerCase() === cleanId) {
+          if (typeof openPreOrderDetailView === "function") openPreOrderDetailView(data.orderId);
+        }
+      }
+    }
+    window.handlePreOrdersBroadcastMessage = handlePreOrdersBroadcastMessage;
+
+    try {
+      if (typeof BroadcastChannel !== "undefined") {
+        const poChannel = new BroadcastChannel("mmo_preorders_channel");
+        poChannel.onmessage = function(ev) {
+          if (ev && ev.data) handlePreOrdersBroadcastMessage(ev.data);
+        };
+      }
+    } catch(ePoBc) {}
+
+    const globalBc = new BroadcastChannel("mmo_channel");
         globalBc.onmessage = function(ev) {
+          if (ev && ev.data && (ev.data.type === "NEW_PREORDER" || ev.data.type === "ORDER_STATUS_CHANGED")) {
+            handlePreOrdersBroadcastMessage(ev.data);
+          }
           if (ev && ev.data && ev.data.type === "BALANCE_UPDATED") {
             if (typeof loadStoredUser === "function") loadStoredUser();
             if (typeof updateUserUI === "function") updateUserUI();
@@ -21278,6 +21364,15 @@ function injectAllProductsSchema() {
     }
     window.checkAndAutoCancelExpiredPreOrders = checkAndAutoCancelExpiredPreOrders;
 
+    function isRealDeliveredAccount(str) {
+      if (!str || typeof str !== "string") return false;
+      const s = str.trim().toLowerCase();
+      if (!s) return false;
+      if (s.includes("đặt trước") || s.includes("dat truoc") || s.includes("hạn xử lý") || s.includes("han xu ly") || s.includes("pre-order") || s.includes("pre_order") || s.includes("ghi chú") || s.includes("ghi chu") || s.includes("thanh toán") || s.includes("đơn hàng")) return false;
+      return true;
+    }
+    window.isRealDeliveredAccount = isRealDeliveredAccount;
+
     function getPreOrders(forceRefresh = false) {
       const now = Date.now();
       if (!forceRefresh && _cachedPreOrdersList && (now - _lastPreOrdersFetchTime < 1500)) {
@@ -21297,6 +21392,23 @@ function injectAllProductsSchema() {
                 if (!p) return;
                 const cId = String(p.orderCode || p.id || p.orderId || "").replace("#", "").trim();
                 if (cId) {
+                  // Lọc bỏ ghi chú giả mạo tài khoản
+                  let pAccs = [];
+                  if (Array.isArray(p.deliveredAccounts)) {
+                    pAccs = p.deliveredAccounts.filter(isRealDeliveredAccount);
+                  } else if (p.credentials) {
+                    pAccs = String(p.credentials).split("\n").map(s => s.trim()).filter(isRealDeliveredAccount);
+                  }
+                  p.deliveredAccounts = pAccs;
+                  p.credentials = pAccs.join("\n");
+                  
+                  // Phục hồi trạng thái thực nếu bị ghi nhầm thành COMPLETED do dính text ghi chú
+                  const pSt = String(p.status || "").toUpperCase();
+                  if ((pSt === "COMPLETED" || pSt === "DELIVERED") && pAccs.length === 0) {
+                    p.status = "WAITING_CONFIRM";
+                    p.statusText = "Chờ xác nhận";
+                  }
+                  
                   poMap.set(cId.toLowerCase(), p);
                   poList.push(p);
                 }
@@ -21344,6 +21456,14 @@ function injectAllProductsSchema() {
                 const oStTxt = String(o.statusText || "").toLowerCase();
                 const oIsCancel = oSt === "CANCELLED" || oSt === "REFUNDED" || oStTxt.includes("hủy") || oStTxt.includes("hoàn tiền") || Boolean(o.isCancelled) || Boolean(o.isRefunded);
 
+                // Lọc tài khoản bàn giao thật sự
+                let validDelivered = [];
+                if (Array.isArray(o.deliveredAccounts)) {
+                  validDelivered = o.deliveredAccounts.filter(isRealDeliveredAccount);
+                } else if (o.credentials) {
+                  validDelivered = String(o.credentials).split("\n").map(s => s.trim()).filter(isRealDeliveredAccount);
+                }
+
                 if (exIdx !== -1) {
                   // Cập nhật thông tin đồng bộ
                   if (oIsCancel) {
@@ -21352,14 +21472,16 @@ function injectAllProductsSchema() {
                     poList[exIdx].isCancelled = true;
                     poList[exIdx].isRefunded = true;
                     if (o.cancelledBy) poList[exIdx].cancelledBy = o.cancelledBy;
-                  } else if (o.status === "COMPLETED" || (o.deliveredAccounts && o.deliveredAccounts.length > 0)) {
+                  } else if ((oSt === "COMPLETED" || oSt === "DELIVERED") && validDelivered.length > 0) {
                     poList[exIdx].status = "COMPLETED";
                     poList[exIdx].statusText = o.statusText || "Đã giao hàng";
-                    poList[exIdx].deliveredAccounts = o.deliveredAccounts || poList[exIdx].deliveredAccounts;
-                  } else if (o.status === "PROCESSING" && poList[exIdx].status !== "COMPLETED" && !poList[exIdx].isCancelled) {
+                    poList[exIdx].deliveredAccounts = validDelivered;
+                    poList[exIdx].credentials = validDelivered.join("\n");
+                  } else if ((oSt === "PROCESSING" || oStTxt.includes("gom")) && poList[exIdx].status !== "COMPLETED" && !poList[exIdx].isCancelled) {
                     poList[exIdx].status = "PROCESSING";
-                    poList[exIdx].statusText = o.statusText || "Đang xử lý / Gom hàng";
+                    poList[exIdx].statusText = o.statusText || "Đang gom hàng";
                   }
+                  // TUYỆT ĐỐI KHÔNG GHI ĐÈ WAITING_CONFIRM THÀNH COMPLETED NẾU CHƯA CÓ ACC THẬT!
                 } else {
                   if (k === "mmo_balance_logs" && rawId.startsWith("TX_PO_") && poList.some(p => String(p.orderCode || p.id).replace("#","").toLowerCase() === mapKey)) {
                     return;
@@ -21370,6 +21492,9 @@ function injectAllProductsSchema() {
                   if (oIsCancel || cleanCode.includes("REFUND") || String(o.typeText || "").includes("Hoàn tiền")) {
                     inferredStatus = "CANCELLED";
                     inferredStatusText = o.statusText || "Đã hủy / Hoàn tiền";
+                  } else if ((inferredStatus === "COMPLETED" || inferredStatus === "DELIVERED") && validDelivered.length === 0) {
+                    inferredStatus = "WAITING_CONFIRM";
+                    inferredStatusText = "Chờ xác nhận";
                   }
 
                   let cleanProdName = o.productName || o.prodName || "";
@@ -21402,8 +21527,8 @@ function injectAllProductsSchema() {
                     total: Number(o.total || o.totalPrice || 0) || 0,
                     maxDays: o.maxDays || 7,
                     customNotes: o.customNotes || o.note || "",
-                    deliveredAccounts: o.deliveredAccounts || (o.credentials ? [o.credentials] : []),
-                    credentials: Array.isArray(o.deliveredAccounts) ? o.deliveredAccounts.join("\n") : (o.credentials || ""),
+                    deliveredAccounts: validDelivered,
+                    credentials: validDelivered.join("\n"),
                     createdAt: o.createdAt || o.date || o.time || new Date().toLocaleString("vi-VN"),
                     createdTimestamp: (typeof getOrderTimestamp === "function") ? getOrderTimestamp(o) : Date.now()
                   };
@@ -21478,9 +21603,9 @@ function injectAllProductsSchema() {
             let arr = JSON.parse(raw);
             if (!Array.isArray(arr)) return;
             (orders || []).forEach(function(po) {
-              const pId = String(po.orderCode || po.id || po.orderId || "").replace("#", "").trim();
+              const pId = String(po.orderCode || po.id || po.orderId || "").replace("#", "").trim().toLowerCase();
               const idx = arr.findIndex(function(x) {
-                const xId = String(x.id || x.orderId || x.orderCode || "").replace("#", "").trim();
+                const xId = String(x.id || x.orderId || x.orderCode || "").replace("#", "").trim().toLowerCase();
                 return xId === pId;
               });
               if (idx !== -1) {
@@ -21499,6 +21624,18 @@ function injectAllProductsSchema() {
             localStorage.setItem(k, JSON.stringify(arr));
           } catch(e) {}
         });
+
+        // Đồng bộ lên Cloudflare Worker Turso Database
+        try {
+          if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function") {
+            fetch(MMO_WORKER_API.getApiUrl() + "/api/orders/sync", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ orders: orders || [] }),
+              keepalive: true
+            }).catch(function(err) { console.warn("Worker orders sync notice:", err); });
+          }
+        } catch(eWorker) {}
 
         if (typeof callGasApi === "function") {
           callGasApi("adminSavePreOrders", { orders: orders }).catch(function(){});
@@ -21846,7 +21983,8 @@ function injectAllProductsSchema() {
           orderId: orderCode,
           amount: finalTotal,
           currentBalance: user.balance,
-          accounts: "Đơn đặt trước - Hạn xử lý: " + maxDays + " ngày" + (customNotes ? (" - Ghi chú: " + customNotes) : "")
+          accounts: "",
+          customNotes: "Đơn đặt trước - Hạn xử lý: " + maxDays + " ngày" + (customNotes ? (" - Ghi chú: " + customNotes) : "")
         }).catch(function(err) {
           console.warn("Cloud pre-order sync notice:", err);
         });
@@ -21863,6 +22001,27 @@ function injectAllProductsSchema() {
       if (typeof renderSystemOverview === "function") renderSystemOverview();
       if (typeof showToast === "function") showToast("🎉 Đặt hàng trước thành công! Mã đơn: #" + orderCode, "success");
       try { window.dispatchEvent(new CustomEvent("mmo_preorders_changed", { detail: { orderCode: orderCode } })); } catch(e) {}
+      // Đồng bộ Turso Worker và BroadcastChannel Realtime 0ms
+      try {
+        if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function") {
+          fetch(MMO_WORKER_API.getApiUrl() + "/api/orders/sync", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orders: [newPreOrder] }),
+            keepalive: true
+          }).catch(function(err) { console.warn("Turso pre-order sync notice:", err); });
+        }
+      } catch(eTurso) {}
+      try {
+        const poBc = new BroadcastChannel("mmo_preorders_channel");
+        poBc.postMessage({ type: "NEW_PREORDER", order: newPreOrder });
+        poBc.close();
+      } catch(eBc) {}
+      try {
+        const mmoBc = new BroadcastChannel("mmo_channel");
+        mmoBc.postMessage({ type: "NEW_PREORDER", order: newPreOrder });
+        mmoBc.close();
+      } catch(eBc2) {}
 
       // 6. Chuyển sang xem đơn đặt trước (Hình 4)
       openPreOrderDetailView(orderCode);
@@ -22166,7 +22325,7 @@ function injectAllProductsSchema() {
         const st = String(o.status || "").toUpperCase();
         if (filterVal && filterVal !== "ALL" && filterVal !== "") {
           if (filterVal === "WAITING_CONFIRM" && st !== "WAITING_CONFIRM" && st !== "PENDING" && !st.includes("CHỜ")) return false;
-          if (filterVal === "PROCESSING" && st !== "PROCESSING" && !st.includes("XỬ LÝ")) return false;
+          if (filterVal === "PROCESSING" && st !== "PROCESSING" && !st.includes("XỬ LÝ") && !st.includes("GOM")) return false;
           if (filterVal === "COMPLETED" && st !== "COMPLETED" && st !== "DELIVERED" && !st.includes("GIAO")) return false;
           if (filterVal === "CANCELLED" && st !== "CANCELLED" && st !== "REFUNDED" && !st.includes("HỦY")) return false;
         }
@@ -22180,11 +22339,22 @@ function injectAllProductsSchema() {
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:30px; color:#64748b;'><i class='fa-solid fa-inbox' style='font-size:1.8rem; display:block; margin-bottom:8px; opacity:0.4;'></i>Không có đơn hàng đặt trước nào.</td></tr>";
+        tbody.innerHTML = "<tr><td colspan='9' style='text-align:center; padding:25px; color:#64748b;'><i class='fa-solid fa-inbox' style='font-size:1.6rem; display:block; margin-bottom:8px; opacity:0.4;'></i>Không có đơn hàng đặt trước nào.</td></tr>";
+        if (typeof renderPaginationUI === "function") renderPaginationUI("admPreOrdersPagination", 1, 0, "changeAdmPreOrdersPage", 10);
         return;
       }
 
-      tbody.innerHTML = filtered.map(function(o) {
+      // PHÂN TRANG CHUẨN 10 ĐƠN 1 TRANG
+      const pageSize = 10;
+      const page = (typeof paginationState !== "undefined" && paginationState.admPreOrders) ? paginationState.admPreOrders : 1;
+      const totalPages = Math.ceil(filtered.length / pageSize) || 1;
+      const safePage = Math.max(1, Math.min(page, totalPages));
+      if (typeof paginationState !== "undefined") paginationState.admPreOrders = safePage;
+
+      const startIndex = (safePage - 1) * pageSize;
+      const pageItems = filtered.slice(startIndex, startIndex + pageSize);
+
+      tbody.innerHTML = pageItems.map(function(o) {
         const oId = String(o.orderCode || o.id || '');
         const rawStatus = String(o.status || '').toUpperCase().trim();
         const rawStatusTxt = String(o.statusText || '').toLowerCase().trim();
@@ -22200,67 +22370,73 @@ function injectAllProductsSchema() {
         if (isCancelled) {
           let cancelLabel = "Đã Hủy / Hoàn Tiền";
           if (o.cancelledBy === "CUSTOMER" || rawStatusTxt.includes("khách")) {
-            cancelLabel = "Khách Hủy / Đã Hoàn Tiền";
+            cancelLabel = "Khách Hủy / Hoàn";
           } else if (o.cancelledReason === "EXPIRED" || rawStatusTxt.includes("quá hạn")) {
-            cancelLabel = "Quá Hạn (Đã Hoàn Tiền)";
+            cancelLabel = "Quá Hạn (Đã Hoàn)";
           } else if (o.cancelledBy === "ADMIN") {
-            cancelLabel = "Admin Hủy / Đã Hoàn Tiền";
+            cancelLabel = "Admin Hủy & Hoàn";
           }
-          stBadge = "<span style='background:rgba(239,68,68,0.2); color:#f87171; border:1px solid #ef4444; font-weight:800; padding:4px 10px; border-radius:4px; font-size:0.75rem; white-space:nowrap; display:inline-flex; align-items:center; gap:5px;'><i class='fa-solid fa-ban'></i> " + escapeHtml(cancelLabel) + "</span>";
-          actions = '<div style="display:inline-flex; gap:5px; align-items:center; white-space:nowrap;">' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 10px; font-size:0.75rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Xem chi tiết</button>' +
+          stBadge = "<span style='background:rgba(239,68,68,0.2); color:#f87171; border:1px solid #ef4444; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-ban'></i> " + escapeHtml(cancelLabel) + "</span>";
+          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Xem</button>' +
                     '</div>';
         } else if (isCompleted) {
-          stBadge = "<span style='background:rgba(16,185,129,0.2); color:#34d399; border:1px solid #10b981; font-weight:800; padding:4px 10px; border-radius:4px; font-size:0.75rem; white-space:nowrap; display:inline-flex; align-items:center; gap:5px;'><i class='fa-solid fa-circle-check'></i> Đã giao hàng</span>";
-          actions = '<div style="display:inline-flex; gap:5px; align-items:center; white-space:nowrap;">' +
-                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 9px; font-size:0.75rem; background:#1e293b; color:#10b981; border:1px solid rgba(16,185,129,0.4); font-weight:700; border-radius:4px; cursor:pointer;" title="Xem/Sửa tài khoản đã giao"><i class="fa-solid fa-key"></i> Xem Acc</button>' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 8px; font-size:0.75rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
+          stBadge = "<span style='background:rgba(16,185,129,0.2); color:#34d399; border:1px solid #10b981; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-circle-check'></i> Đã giao</span>";
+          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
+                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#1e293b; color:#10b981; border:1px solid rgba(16,185,129,0.4); font-weight:700; border-radius:4px; cursor:pointer;" title="Xem/Sửa tài khoản đã giao"><i class="fa-solid fa-key"></i> Acc</button>' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
                     '</div>';
         } else if (isProcessing) {
-          stBadge = "<span style='background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid #38bdf8; font-weight:800; padding:4px 10px; border-radius:4px; font-size:0.75rem; white-space:nowrap; display:inline-flex; align-items:center; gap:5px;'><i class='fa-solid fa-spinner fa-spin'></i> Đang gom hàng</span>";
-          actions = '<div style="display:inline-flex; gap:5px; align-items:center; white-space:nowrap;">' +
-                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 9px; font-size:0.75rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao hàng</button>' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 8px; font-size:0.75rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
-                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 8px; font-size:0.75rem; background:#ef4444; color:#fff; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
+          stBadge = "<span style='background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid #38bdf8; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-spinner fa-spin'></i> Gom hàng</span>";
+          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
+                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao</button>' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
+                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#ef4444; color:#fff; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
                     '</div>';
         } else {
-          stBadge = "<span style='background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid #f59e0b; font-weight:800; padding:4px 10px; border-radius:4px; font-size:0.75rem; white-space:nowrap; display:inline-flex; align-items:center; gap:5px;'><i class='fa-solid fa-clock'></i> Chờ xác nhận</span>";
-          actions = '<div style="display:inline-flex; gap:5px; align-items:center; white-space:nowrap;">' +
-                      '<button type="button" onclick="adminConfirmPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 9px; font-size:0.75rem; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Duyệt đơn"><i class="fa-solid fa-check"></i> Duyệt đơn</button>' +
-                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 9px; font-size:0.75rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao hàng</button>' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 8px; font-size:0.75rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
-                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:5px 8px; font-size:0.75rem; background:#ef4444; color:#fff; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
+          stBadge = "<span style='background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid #f59e0b; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-clock'></i> Chờ duyệt</span>";
+          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
+                      '<button type="button" onclick="adminConfirmPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Duyệt đơn"><i class="fa-solid fa-check"></i> Duyệt</button>' +
+                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao</button>' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
+                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#ef4444; color:#fff; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
                     '</div>';
         }
 
         const buyerDisplay = escapeHtml(o.buyerUsername || o.buyerEmail || 'Khách');
-        const buyerSub = o.buyerEmail ? ('<br/><span style="font-size:0.72rem; color:#64748b;">' + escapeHtml(o.buyerEmail) + '</span>') : '';
+        const buyerSub = o.buyerEmail ? ('<br/><span style="font-size:0.68rem; color:#64748b; word-break:break-all;">' + escapeHtml(o.buyerEmail) + '</span>') : '';
         const prodDisplay = escapeHtml(o.productName || 'Sản phẩm');
-        const varDisplay = o.variantName ? ('<br/><span style="font-size:0.72rem; color:#38bdf8;">Loại: ' + escapeHtml(o.variantName) + '</span>') : '';
+        const varDisplay = o.variantName ? ('<br/><span style="font-size:0.68rem; color:#38bdf8;">' + escapeHtml(o.variantName) + '</span>') : '';
         const amtStr = (typeof formatVND === 'function') ? formatVND(o.total || o.totalPrice || 0) : ((o.total || 0).toLocaleString('vi-VN') + ' đ');
         const dateStr = escapeHtml(o.createdAt || o.date || '');
 
         return '<tr>' +
-          '<td><a href="javascript:void(0)" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" style="color:#f59e0b; font-family:monospace; font-size:0.85rem; font-weight:800; text-decoration:underline; display:inline-flex; align-items:center; gap:4px; cursor:pointer;" title="👉 Bấm để mở xem chi tiết đơn hàng #' + escapeHtml(oId) + '">#' + escapeHtml(oId) + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.7rem;"></i></a><br/><span style="font-size:0.72rem; color:#64748b;">' + dateStr + '</span></td>' +
-          '<td><b>' + buyerDisplay + '</b>' + buyerSub + '</td>' +
-          '<td><div style="font-weight:600; color:#fff;">' + prodDisplay + '</div>' + varDisplay + '</td>' +
-          '<td style="text-align:center; font-weight:700;">' + (o.qty || 1) + '</td>' +
-          '<td style="color:#10b981; font-weight:800;">' + amtStr + '</td>' +
-          '<td style="color:#f59e0b; font-weight:600; white-space:nowrap;">' + (o.maxDays || 7) + ' ngày</td>' +
-          '<td style="color:#94a3b8; font-size:0.75rem; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + (escapeHtml(o.customNotes || '--')) + '</td>' +
-          '<td style="white-space:nowrap;">' + stBadge + '</td>' +
-          '<td style="white-space:nowrap;">' + actions + '</td>' +
+          '<td><a href="javascript:void(0)" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" style="color:#f59e0b; font-family:monospace; font-size:0.78rem; font-weight:800; text-decoration:underline; display:inline-flex; align-items:center; gap:2px; cursor:pointer;" title="Xem chi tiết đơn">#' + escapeHtml(oId) + '</a><br/><span style="font-size:0.68rem; color:#64748b;">' + dateStr + '</span></td>' +
+          '<td><b style="font-size:0.75rem;">' + buyerDisplay + '</b>' + buyerSub + '</td>' +
+          '<td><div style="font-weight:600; color:#fff; font-size:0.75rem; line-height:1.3;">' + prodDisplay + '</div>' + varDisplay + '</td>' +
+          '<td style="text-align:center; font-weight:700; font-size:0.78rem;">' + (o.qty || 1) + '</td>' +
+          '<td style="color:#10b981; font-weight:800; font-size:0.78rem;">' + amtStr + '</td>' +
+          '<td style="color:#f59e0b; font-weight:600; font-size:0.72rem;">' + (o.maxDays || 7) + ' ngày</td>' +
+          '<td style="color:#94a3b8; font-size:0.7rem; overflow:hidden; text-overflow:ellipsis; word-break:break-word;">' + (escapeHtml(o.customNotes || '--')) + '</td>' +
+          '<td>' + stBadge + '</td>' +
+          '<td style="text-align:center;">' + actions + '</td>' +
         '</tr>';
       }).join('');
+
+      if (typeof renderPaginationUI === "function") {
+        renderPaginationUI("admPreOrdersPagination", safePage, filtered.length, "changeAdmPreOrdersPage", 10);
+      }
     }
     window.renderAdminPreOrdersTable = renderAdminPreOrdersTable;
 
     function handleSearchAdminPreOrders(val) {
+      if (typeof paginationState !== "undefined") paginationState.admPreOrders = 1;
       renderAdminPreOrdersTable();
     }
     window.handleSearchAdminPreOrders = handleSearchAdminPreOrders;
 
     function handleFilterAdminPreOrders(val) {
+      if (typeof paginationState !== "undefined") paginationState.admPreOrders = 1;
       renderAdminPreOrdersTable();
     }
     window.handleFilterAdminPreOrders = handleFilterAdminPreOrders;
@@ -22269,10 +22445,13 @@ function injectAllProductsSchema() {
     function adminConfirmPreOrder(orderId) {
       const cleanId = String(orderId).replace("#", "").trim();
       const preOrders = getPreOrders(true);
-      const order = preOrders.find(function(o) { return String(o.id) === cleanId || String(o.orderCode) === cleanId; });
+      const order = preOrders.find(function(o) { 
+        const oid = String(o.id || o.orderCode || o.orderId || "").replace("#", "").trim();
+        return oid.toLowerCase() === cleanId.toLowerCase(); 
+      });
       if (!order) return;
       order.status = "PROCESSING";
-      order.statusText = "Đang xử lý";
+      order.statusText = "Đang gom hàng";
       savePreOrders(preOrders);
 
       // Đồng bộ thông báo cho khách hàng
@@ -22287,7 +22466,31 @@ function injectAllProductsSchema() {
         });
       }
 
-      if (typeof showToast === "function") showToast("✅ Đã chuyển đơn #" + (order.orderCode || order.id) + " sang trạng thái Đang xử lý / Gom hàng!", "success");
+      // Đồng bộ Turso Worker Database
+      try {
+        if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function") {
+          fetch(MMO_WORKER_API.getApiUrl() + "/api/orders/sync", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orders: [order] }),
+            keepalive: true
+          }).catch(function(e) { console.warn("Turso sync confirm error:", e); });
+        }
+      } catch(eTurso) {}
+
+      // Phát sóng đa tab Realtime 0ms
+      try {
+        const poBc = new BroadcastChannel("mmo_preorders_channel");
+        poBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "PROCESSING", statusText: "Đang gom hàng" });
+        poBc.close();
+      } catch(eBc) {}
+      try {
+        const mmoBc = new BroadcastChannel("mmo_channel");
+        mmoBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "PROCESSING", statusText: "Đang gom hàng" });
+        mmoBc.close();
+      } catch(eBc2) {}
+
+      if (typeof showToast === "function") showToast("✅ Đã duyệt đơn #" + (order.orderCode || order.id) + " sang trạng thái [Đang gom hàng]!", "success");
       renderAdminPreOrdersTable();
       if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
       if (typeof renderSystemOverview === "function") renderSystemOverview();
@@ -22351,6 +22554,28 @@ function injectAllProductsSchema() {
       order.statusText = "Đã giao hàng";
       order.completedAt = new Date().toLocaleString("vi-VN");
       savePreOrders(preOrders);
+
+      // Phát sóng đa tab Realtime 0ms & Turso Sync
+      try {
+        if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function") {
+          fetch(MMO_WORKER_API.getApiUrl() + "/api/orders/sync", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orders: [order] }),
+            keepalive: true
+          }).catch(function(e) { console.warn("Turso sync fulfill error:", e); });
+        }
+      } catch(eTurso) {}
+      try {
+        const poBc = new BroadcastChannel("mmo_preorders_channel");
+        poBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "COMPLETED", statusText: "Đã giao hàng", deliveredAccounts: lines, credentials: lines.join("\n") });
+        poBc.close();
+      } catch(eBc) {}
+      try {
+        const mmoBc = new BroadcastChannel("mmo_channel");
+        mmoBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "COMPLETED", statusText: "Đã giao hàng", deliveredAccounts: lines, credentials: lines.join("\n") });
+        mmoBc.close();
+      } catch(eBc2) {}
 
       // Cập nhật ngay vào toàn bộ các kho localStorage của thành viên
       const uKeys = ["mmo_orders", "mmo_user_orders", "mmo_all_orders"];
@@ -22454,6 +22679,28 @@ function injectAllProductsSchema() {
       order.refundedAt = new Date().toLocaleString("vi-VN");
 
       savePreOrders(preOrders);
+
+      // Phát sóng đa tab Realtime 0ms & Turso Sync
+      try {
+        if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function") {
+          fetch(MMO_WORKER_API.getApiUrl() + "/api/orders/sync", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orders: [order] }),
+            keepalive: true
+          }).catch(function(e) { console.warn("Turso sync cancel error:", e); });
+        }
+      } catch(eTurso) {}
+      try {
+        const poBc = new BroadcastChannel("mmo_preorders_channel");
+        poBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "CANCELLED", statusText: "Admin Hủy & Hoàn Tiền" });
+        poBc.close();
+      } catch(eBc) {}
+      try {
+        const mmoBc = new BroadcastChannel("mmo_channel");
+        mmoBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "CANCELLED", statusText: "Admin Hủy & Hoàn Tiền" });
+        mmoBc.close();
+      } catch(eBc2) {}
 
       if (typeof showToast === "function") showToast("✅ Đã hủy đơn #" + (order.orderCode || order.id) + " và hoàn trả tiền vào ví khách hàng!", "info");
       renderAdminPreOrdersTable();
