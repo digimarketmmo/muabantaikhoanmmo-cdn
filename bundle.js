@@ -19398,11 +19398,12 @@ function changeAdmUsersPage(p) {
     updateLiveRealTimeClock();
 
     function initMMOApplication() {
-      if (window._mmoCdnAppBooted) {
+      if (window._mmoAppFullyInitialized) {
         if (typeof ensureUniversalComponentsExist === "function") ensureUniversalComponentsExist();
         if (typeof renderHeaderNotifications === "function") renderHeaderNotifications();
         return;
       }
+      window._mmoAppFullyInitialized = true;
       window._mmoCdnAppBooted = true;
 
       const gBtn = document.getElementById("btnGoogleCustom");
