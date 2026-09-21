@@ -22039,14 +22039,19 @@ function injectAllProductsSchema() {
         return;
       }
 
-      const cleanId = String(orderId).replace("#", "").trim();
+      const cleanId = String(orderId).replace(/#/g, "").trim();
       let preOrders = getPreOrders();
-      let order = preOrders.find(function(o) { return String(o.id) === cleanId || String(o.orderCode) === cleanId; });
+      let order = (typeof findPreOrderById === "function") ? findPreOrderById(preOrders, cleanId) : preOrders.find(function(o) { return String(o.id) === cleanId || String(o.orderCode) === cleanId; });
 
       // Fallback tra cứu trong user orders hoặc all orders
       if (!order) {
         const uOrders = (typeof getUserOrders === "function") ? getUserOrders() : [];
-        const found = uOrders.find(function(o) { return String(o.orderId || o.id) === cleanId; });
+        const found = uOrders.find(function(o) {
+          const c1 = String(o.id || "").replace(/#/g, "").trim().toLowerCase();
+          const c2 = String(o.orderCode || "").replace(/#/g, "").trim().toLowerCase();
+          const c3 = String(o.orderId || "").replace(/#/g, "").trim().toLowerCase();
+          return c1 === cleanId.toLowerCase() || c2 === cleanId.toLowerCase() || c3 === cleanId.toLowerCase();
+        });
         if (found) {
           order = {
             id: cleanId,
@@ -22094,12 +22099,14 @@ function injectAllProductsSchema() {
 
       window._currentViewingPreOrder = order;
 
+      const clProd = (typeof formatCleanPreOrderProduct === "function") ? formatCleanPreOrderProduct(order.productName, order.variantName) : { cleanTitle: order.productName, cleanVariant: order.variantName };
+
       // Header
       const elCode = document.getElementById("podCode");
       if (elCode) elCode.innerText = order.orderCode || order.id;
 
       const elTitle = document.getElementById("podProdTitle");
-      if (elTitle) elTitle.innerText = order.productName + (order.variantName ? " (" + order.variantName + ")" : "");
+      if (elTitle) elTitle.innerText = clProd.cleanTitle + (clProd.cleanVariant ? " (" + clProd.cleanVariant + ")" : "");
 
       // Stepper & Status Badge
       const st = order.status || "WAITING_CONFIRM";
@@ -22172,7 +22179,7 @@ function injectAllProductsSchema() {
       if (elPrice) elPrice.innerText = typeof formatVND === "function" ? formatVND(order.unitPrice) : (order.unitPrice.toLocaleString("vi-VN") + " đ");
 
       const elItem = document.getElementById("podItemName");
-      if (elItem) elItem.innerText = order.productName + (order.variantName ? " (" + order.variantName + ")" : "");
+      if (elItem) elItem.innerText = clProd.cleanTitle + (clProd.cleanVariant ? " (" + clProd.cleanVariant + ")" : "");
 
       const elBuyer = document.getElementById("podBuyer");
       if (elBuyer) elBuyer.innerText = order.buyerUsername || order.buyerEmail || "Khách hàng";
@@ -22307,6 +22314,80 @@ function injectAllProductsSchema() {
     // ============================================================
     // [ADMIN PRE-ORDERS LOGIC] QUẢN LÝ ĐƠN ĐẶT TRƯỚC TRÊN ADMIN
     // ============================================================
+    // Helper rút gọn tiêu đề sản phẩm và biến thể cho bảng Đặt Trước
+    function formatCleanPreOrderProduct(rawTitle, rawVariant) {
+      let title = String(rawTitle || 'Sản phẩm MMO').trim();
+      let vName = String(rawVariant || '').trim();
+
+      // 1. Loại bỏ tiền tố 'Đặt trước:'
+      title = title.replace(/^đặt\s*trước\s*:\s*/gi, '').replace(/^dat\s*truoc\s*:\s*/gi, '').trim();
+
+      // 2. Loại bỏ các hậu tố '(Đặt trước ...)' hoặc '(X ngày)'
+      title = title.replace(/\(\s*đặt\s*trước\b.*?\)\s*\)/gi, '').trim();
+      title = title.replace(/\(\s*đặt\s*trước[^)]*\)/gi, '').trim();
+      title = title.replace(/\(\s*\d+\s*ngày\s*\)/gi, '').trim();
+
+      // 3. Chuẩn hóa biến thể
+      if (vName.toLowerCase() === 'mặc định' || vName.toLowerCase() === 'default' || vName.toLowerCase().includes('đặt trước')) {
+        vName = '';
+      }
+
+      // 4. Nếu tiêu đề kết thúc bằng (biến thể), tách ra nếu chưa có vName hoặc xóa nếu trùng vName
+      const m = title.match(/\(([^()]+)\)\s*$/);
+      if (m) {
+        const extracted = m[1].trim();
+        if (!vName) {
+          vName = extracted;
+          title = title.replace(/\(([^()]+)\)\s*$/, '').trim();
+        } else if (vName.toLowerCase() === extracted.toLowerCase()) {
+          title = title.replace(/\(([^()]+)\)\s*$/, '').trim();
+        }
+      }
+
+      if (vName.toLowerCase() === 'mặc định' || vName.toLowerCase() === 'default' || vName.toLowerCase().includes('đặt trước')) {
+        vName = '';
+      }
+
+      return { cleanTitle: title, cleanVariant: vName };
+    }
+    window.formatCleanPreOrderProduct = formatCleanPreOrderProduct;
+
+    // Helper tra cứu đơn hàng đặt trước chuẩn xác 100% đa trường
+    function findPreOrderById(orders, targetId) {
+      if (!targetId) return null;
+      const cleanTarget = String(targetId).replace(/#/g, '').trim().toLowerCase();
+      if (!cleanTarget) return null;
+      if (Array.isArray(orders)) {
+        const found = orders.find(function(o) {
+          if (!o) return false;
+          const c1 = String(o.id || '').replace(/#/g, '').trim().toLowerCase();
+          const c2 = String(o.orderCode || '').replace(/#/g, '').trim().toLowerCase();
+          const c3 = String(o.orderId || '').replace(/#/g, '').trim().toLowerCase();
+          return c1 === cleanTarget || c2 === cleanTarget || c3 === cleanTarget;
+        });
+        if (found) return found;
+      }
+      const checkStorageKeys = ['mmo_pre_orders', 'mmo_all_orders', 'mmo_orders', 'mmo_user_orders'];
+      for (let i = 0; i < checkStorageKeys.length; i++) {
+        try {
+          const raw = localStorage.getItem(checkStorageKeys[i]);
+          if (!raw) continue;
+          const list = JSON.parse(raw);
+          if (!Array.isArray(list)) continue;
+          const found = list.find(function(item) {
+            if (!item) return false;
+            const c1 = String(item.id || '').replace(/#/g, '').trim().toLowerCase();
+            const c2 = String(item.orderCode || '').replace(/#/g, '').trim().toLowerCase();
+            const c3 = String(item.orderId || '').replace(/#/g, '').trim().toLowerCase();
+            return c1 === cleanTarget || c2 === cleanTarget || c3 === cleanTarget;
+          });
+          if (found) return found;
+        } catch(e) {}
+      }
+      return null;
+    }
+    window.findPreOrderById = findPreOrderById;
+
     function renderAdminPreOrdersTable() {
       const tbody = document.getElementById("admPreOrdersTableBody");
       if (!tbody) return;
@@ -22378,45 +22459,46 @@ function injectAllProductsSchema() {
           }
           stBadge = "<span style='background:rgba(239,68,68,0.2); color:#f87171; border:1px solid #ef4444; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-ban'></i> " + escapeHtml(cancelLabel) + "</span>";
           actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Xem</button>' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Xem</button>' +
                     '</div>';
         } else if (isCompleted) {
           stBadge = "<span style='background:rgba(16,185,129,0.2); color:#34d399; border:1px solid #10b981; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-circle-check'></i> Đã giao</span>";
           actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
-                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#1e293b; color:#10b981; border:1px solid rgba(16,185,129,0.4); font-weight:700; border-radius:4px; cursor:pointer;" title="Xem/Sửa tài khoản đã giao"><i class="fa-solid fa-key"></i> Acc</button>' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
+                      '<button type="button" onclick="openAdminFulfillModal(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#1e293b; color:#10b981; border:1px solid rgba(16,185,129,0.4); font-weight:700; border-radius:4px; cursor:pointer;" title="Xem/Sửa tài khoản đã giao"><i class="fa-solid fa-key"></i> Acc</button>' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
                     '</div>';
         } else if (isProcessing) {
           stBadge = "<span style='background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid #38bdf8; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-spinner fa-spin'></i> Gom hàng</span>";
           actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
-                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao</button>' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
-                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#ef4444; color:#fff; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
+                      '<button type="button" onclick="openAdminFulfillModal(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao</button>' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
+                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#ef4444; color:#fff; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
                     '</div>';
         } else {
           stBadge = "<span style='background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid #f59e0b; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-clock'></i> Chờ duyệt</span>";
           actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
-                      '<button type="button" onclick="adminConfirmPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Duyệt đơn"><i class="fa-solid fa-check"></i> Duyệt</button>' +
-                      '<button type="button" onclick="openAdminFulfillModal(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao</button>' +
-                      '<button type="button" onclick="openPreOrderDetailView(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
-                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + oId + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#ef4444; color:#fff; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
+                      '<button type="button" onclick="adminConfirmPreOrder(\'' + escapeHtml(oId) + '\', event)" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Duyệt đơn"><i class="fa-solid fa-check"></i> Duyệt</button>' +
+                      '<button type="button" onclick="openAdminFulfillModal(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao</button>' +
+                      '<button type="button" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
+                      '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#ef4444; color:#fff; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
                     '</div>';
         }
 
         const buyerDisplay = escapeHtml(o.buyerUsername || o.buyerEmail || 'Khách');
         const buyerSub = o.buyerEmail ? ('<br/><span style="font-size:0.68rem; color:#64748b; word-break:break-all;">' + escapeHtml(o.buyerEmail) + '</span>') : '';
-        const prodDisplay = escapeHtml(o.productName || 'Sản phẩm');
-        const varDisplay = o.variantName ? ('<br/><span style="font-size:0.68rem; color:#38bdf8;">' + escapeHtml(o.variantName) + '</span>') : '';
+        const cleaned = formatCleanPreOrderProduct(o.productName, o.variantName);
+        const prodDisplay = escapeHtml(cleaned.cleanTitle || 'Sản phẩm MMO');
+        const varDisplay = cleaned.cleanVariant ? ('<div style="margin-top:2px;"><span style="font-size:0.67rem; color:#38bdf8; background:rgba(56,189,248,0.12); padding:1px 5px; border-radius:4px; border:1px solid rgba(56,189,248,0.25); display:inline-flex; align-items:center; gap:3px; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + escapeHtml(cleaned.cleanVariant) + '"><i class="fa-solid fa-layer-group" style="font-size:0.6rem;"></i> ' + escapeHtml(cleaned.cleanVariant) + '</span></div>') : '';
         const amtStr = (typeof formatVND === 'function') ? formatVND(o.total || o.totalPrice || 0) : ((o.total || 0).toLocaleString('vi-VN') + ' đ');
         const dateStr = escapeHtml(o.createdAt || o.date || '');
 
         return '<tr>' +
           '<td><a href="javascript:void(0)" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" style="color:#f59e0b; font-family:monospace; font-size:0.78rem; font-weight:800; text-decoration:underline; display:inline-flex; align-items:center; gap:2px; cursor:pointer;" title="Xem chi tiết đơn">#' + escapeHtml(oId) + '</a><br/><span style="font-size:0.68rem; color:#64748b;">' + dateStr + '</span></td>' +
           '<td><b style="font-size:0.75rem;">' + buyerDisplay + '</b>' + buyerSub + '</td>' +
-          '<td><div style="font-weight:600; color:#fff; font-size:0.75rem; line-height:1.3;">' + prodDisplay + '</div>' + varDisplay + '</td>' +
+          '<td><div style="font-weight:600; color:#fff; font-size:0.75rem; line-height:1.25; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; word-break:break-word;" title="' + escapeHtml(o.productName || '') + '">' + prodDisplay + '</div>' + varDisplay + '</td>' +
           '<td style="text-align:center; font-weight:700; font-size:0.78rem;">' + (o.qty || 1) + '</td>' +
-          '<td style="color:#10b981; font-weight:800; font-size:0.78rem;">' + amtStr + '</td>' +
-          '<td style="color:#f59e0b; font-weight:600; font-size:0.72rem;">' + (o.maxDays || 7) + ' ngày</td>' +
+          '<td style="color:#10b981; font-weight:800; font-size:0.78rem; white-space:nowrap;">' + amtStr + '</td>' +
+          '<td style="color:#f59e0b; font-weight:600; font-size:0.72rem; white-space:nowrap;">' + (o.maxDays || 7) + ' ngày</td>' +
           '<td style="color:#94a3b8; font-size:0.7rem; overflow:hidden; text-overflow:ellipsis; word-break:break-word;">' + (escapeHtml(o.customNotes || '--')) + '</td>' +
           '<td>' + stBadge + '</td>' +
           '<td style="text-align:center;">' + actions + '</td>' +
@@ -22441,32 +22523,102 @@ function injectAllProductsSchema() {
     }
     window.handleFilterAdminPreOrders = handleFilterAdminPreOrders;
 
-    // Admin xác nhận đơn hàng
-    function adminConfirmPreOrder(orderId) {
-      const cleanId = String(orderId).replace("#", "").trim();
-      const preOrders = getPreOrders(true);
-      const order = preOrders.find(function(o) { 
-        const oid = String(o.id || o.orderCode || o.orderId || "").replace("#", "").trim();
-        return oid.toLowerCase() === cleanId.toLowerCase(); 
-      });
-      if (!order) return;
+    // Admin xác nhận đơn hàng (Duyệt đơn đặt trước)
+    function adminConfirmPreOrder(orderId, evt) {
+      if (evt && typeof evt.stopPropagation === "function") {
+        evt.stopPropagation();
+        if (typeof evt.preventDefault === "function") evt.preventDefault();
+      }
+      if (!orderId) {
+        if (typeof showToast === "function") showToast("Mã đơn không hợp lệ!", "error");
+        return;
+      }
+      const cleanId = String(orderId).replace(/#/g, "").trim();
+      const cleanLower = cleanId.toLowerCase();
+
+      // 1. Tìm đơn trong getPreOrders(true) với matching đa trường (id, orderCode, orderId)
+      let preOrders = getPreOrders(true);
+      let order = findPreOrderById(preOrders, cleanId);
+
+      // 2. Fallback tìm kiếm trong các kho khác nếu chưa có trong danh sách
+      if (!order) {
+        const checkStorageKeys = ["mmo_pre_orders", "mmo_all_orders", "mmo_orders", "mmo_user_orders"];
+        for (let i = 0; i < checkStorageKeys.length; i++) {
+          try {
+            const raw = localStorage.getItem(checkStorageKeys[i]);
+            if (!raw) continue;
+            const list = JSON.parse(raw);
+            if (!Array.isArray(list)) continue;
+            const found = list.find(function(item) {
+              if (!item) return false;
+              const c1 = String(item.id || "").replace(/#/g, "").trim().toLowerCase();
+              const c2 = String(item.orderCode || "").replace(/#/g, "").trim().toLowerCase();
+              const c3 = String(item.orderId || "").replace(/#/g, "").trim().toLowerCase();
+              return c1 === cleanLower || c2 === cleanLower || c3 === cleanLower;
+            });
+            if (found) {
+              order = Object.assign({}, found, {
+                id: found.id || cleanId,
+                orderCode: found.orderCode || cleanId,
+                orderId: found.orderId || cleanId,
+                status: "PROCESSING",
+                statusText: "Đang gom hàng"
+              });
+              preOrders.unshift(order);
+              break;
+            }
+          } catch(eFind) {}
+        }
+      }
+
+      if (!order) {
+        if (typeof showToast === "function") showToast("⚠️ Không tìm thấy đơn hàng #" + cleanId + " để duyệt!", "error");
+        return;
+      }
+
+      // 3. Cập nhật trạng thái đơn sang PROCESSING
       order.status = "PROCESSING";
       order.statusText = "Đang gom hàng";
       savePreOrders(preOrders);
 
-      // Đồng bộ thông báo cho khách hàng
-      if (typeof addUserNotification === "function") {
-        addUserNotification({
-          title: "⚙️ Đơn đặt trước #" + (order.orderCode || order.id) + " đang được xử lý",
-          message: "Admin đã duyệt đơn và đang tiến hành chuẩn bị tài khoản cho bạn.",
-          type: "PRE_ORDER",
-          orderId: order.orderCode || order.id,
-          email: order.buyerEmail || order.email || order.userEmail,
-          playSound: true
-        });
-      }
+      // 4. Đồng bộ trực tiếp vào tất cả các kho lưu trữ đơn hàng
+      ["mmo_pre_orders", "mmo_all_orders", "mmo_orders", "mmo_user_orders"].forEach(function(k) {
+        try {
+          const raw = localStorage.getItem(k);
+          if (!raw) return;
+          let list = JSON.parse(raw);
+          if (!Array.isArray(list)) return;
+          let mod = false;
+          list.forEach(function(item) {
+            if (!item) return;
+            const c1 = String(item.id || "").replace(/#/g, "").trim().toLowerCase();
+            const c2 = String(item.orderCode || "").replace(/#/g, "").trim().toLowerCase();
+            const c3 = String(item.orderId || "").replace(/#/g, "").trim().toLowerCase();
+            if (c1 === cleanLower || c2 === cleanLower || c3 === cleanLower) {
+              item.status = "PROCESSING";
+              item.statusText = "Đang gom hàng";
+              mod = true;
+            }
+          });
+          if (mod) localStorage.setItem(k, JSON.stringify(list));
+        } catch(eStorage) {}
+      });
 
-      // Đồng bộ Turso Worker Database
+      // 5. Đồng bộ thông báo cho khách hàng
+      try {
+        if (typeof addUserNotification === "function") {
+          addUserNotification({
+            title: "⚙️ Đơn đặt trước #" + (order.orderCode || order.id || cleanId) + " đang được xử lý",
+            message: "Admin đã duyệt đơn và đang tiến hành chuẩn bị tài khoản cho bạn.",
+            type: "PRE_ORDER",
+            orderId: order.orderCode || order.id || cleanId,
+            email: order.buyerEmail || order.email || order.userEmail,
+            playSound: true
+          });
+        }
+      } catch(eNotif) {}
+
+      // 6. Đồng bộ Turso Worker Database
       try {
         if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function") {
           fetch(MMO_WORKER_API.getApiUrl() + "/api/orders/sync", {
@@ -22478,7 +22630,18 @@ function injectAllProductsSchema() {
         }
       } catch(eTurso) {}
 
-      // Phát sóng đa tab Realtime 0ms
+      // 7. Đồng bộ Google Sheets trung tâm
+      try {
+        if (typeof callGasApi === "function") {
+          callGasApi("adminUpdateOrderStatus", {
+            orderId: cleanId,
+            status: "PROCESSING",
+            statusText: "Đang gom hàng"
+          }).catch(function(eGas) { console.warn("GAS confirm sync error:", eGas); });
+        }
+      } catch(eGasWrap) {}
+
+      // 8. Phát sóng đa tab Realtime 0ms
       try {
         const poBc = new BroadcastChannel("mmo_preorders_channel");
         poBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "PROCESSING", statusText: "Đang gom hàng" });
@@ -22490,20 +22653,23 @@ function injectAllProductsSchema() {
         mmoBc.close();
       } catch(eBc2) {}
 
-      if (typeof showToast === "function") showToast("✅ Đã duyệt đơn #" + (order.orderCode || order.id) + " sang trạng thái [Đang gom hàng]!", "success");
+      if (typeof showToast === "function") showToast("✅ Đã duyệt đơn #" + (order.orderCode || order.id || cleanId) + " sang trạng thái [Đang gom hàng]!", "success");
       renderAdminPreOrdersTable();
       if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
       if (typeof renderSystemOverview === "function") renderSystemOverview();
-      updateAdminPreOrdersBadge();
+      if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
     }
     window.adminConfirmPreOrder = adminConfirmPreOrder;
 
     // Mở popup giao hàng Admin
     function openAdminFulfillModal(orderId) {
-      const cleanId = String(orderId).replace("#", "").trim();
+      const cleanId = String(orderId).replace(/#/g, "").trim();
       const preOrders = getPreOrders();
-      const order = preOrders.find(function(o) { return String(o.id) === cleanId || String(o.orderCode) === cleanId; });
-      if (!order) return;
+      const order = findPreOrderById(preOrders, cleanId);
+      if (!order) {
+        if (typeof showToast === "function") showToast("Không tìm thấy đơn hàng #" + cleanId, "warning");
+        return;
+      }
 
       const elId = document.getElementById("admFulfillOrderId");
       if (elId) elId.value = order.id || order.orderCode;
@@ -22542,11 +22708,14 @@ function injectAllProductsSchema() {
         return;
       }
 
-      const cleanId = String(orderId).replace("#", "").trim();
+      const cleanId = String(orderId).replace(/#/g, "").trim();
       const lines = rawText.split("\n").map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 0; });
       const preOrders = getPreOrders(true);
-      const order = preOrders.find(function(o) { return String(o.id) === cleanId || String(o.orderCode) === cleanId; });
-      if (!order) return;
+      const order = findPreOrderById(preOrders, cleanId);
+      if (!order) {
+        if (typeof showToast === "function") showToast("Không tìm thấy đơn hàng #" + cleanId, "warning");
+        return;
+      }
 
       order.deliveredAccounts = lines;
       order.credentials = lines.join("\n");
@@ -22568,12 +22737,12 @@ function injectAllProductsSchema() {
       } catch(eTurso) {}
       try {
         const poBc = new BroadcastChannel("mmo_preorders_channel");
-        poBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "COMPLETED", statusText: "Đã giao hàng", deliveredAccounts: lines, credentials: lines.join("\n") });
+        poBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "COMPLETED", statusText: "Đang giao hàng", deliveredAccounts: lines, credentials: lines.join("\n") });
         poBc.close();
       } catch(eBc) {}
       try {
         const mmoBc = new BroadcastChannel("mmo_channel");
-        mmoBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "COMPLETED", statusText: "Đã giao hàng", deliveredAccounts: lines, credentials: lines.join("\n") });
+        mmoBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "COMPLETED", statusText: "Đang giao hàng", deliveredAccounts: lines, credentials: lines.join("\n") });
         mmoBc.close();
       } catch(eBc2) {}
 
@@ -22624,10 +22793,13 @@ function injectAllProductsSchema() {
 
     // Admin Hủy đơn & hoàn tiền cho khách
     function adminCancelAndRefundPreOrder(orderId) {
-      const cleanId = String(orderId).replace("#", "").trim();
+      const cleanId = String(orderId).replace(/#/g, "").trim();
       const preOrders = getPreOrders(true);
-      const order = preOrders.find(function(o) { return String(o.id || o.orderCode).replace("#", "").trim() === cleanId; });
-      if (!order) return;
+      const order = findPreOrderById(preOrders, cleanId);
+      if (!order) {
+        if (typeof showToast === "function") showToast("Không tìm thấy đơn hàng #" + cleanId, "warning");
+        return;
+      }
 
       const refundAmount = Number(order.total || order.totalPrice || 0);
       if (!confirm("Bạn có chắc chắn muốn HỦY đơn #" + (order.orderCode || order.id) + " và hoàn trả " + (typeof formatVND === "function" ? formatVND(refundAmount) : refundAmount.toLocaleString("vi-VN") + " đ") + " vào ví khách hàng?")) {
