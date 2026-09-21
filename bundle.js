@@ -11123,22 +11123,12 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (document.getElementById("setGasUrl")) document.getElementById("setGasUrl").value = s.gasUrl || "";
 
-      // AI API Keys - Tự động nạp và bảo vệ chống mất dữ liệu (Self-Healing Anti-Data-Loss)
+      // AI API Keys - Tự động nạp và bảo vệ chống mất dữ liệu đa tầng (Anti-Key-Loss Shield)
       const _aiProviders = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
       _aiProviders.forEach(function(p) {
         const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
-        let val = localStorage.getItem('mmo_ai_key_' + p) || (s && s['ai_key_' + p]) || '';
-        if (!val) {
-          try {
-            const gen = JSON.parse(localStorage.getItem('mmo_general_settings') || '{}');
-            val = gen['ai_key_' + p] || '';
-          } catch(e) {}
-        }
-        if (val) {
-          if (!localStorage.getItem('mmo_ai_key_' + p)) localStorage.setItem('mmo_ai_key_' + p, val);
-          if (s && !s['ai_key_' + p]) s['ai_key_' + p] = val;
-        }
-        if (el) el.value = val;
+        const val = MMO_AI_KEYS.get(p);
+        if (el && val) el.value = val;
       });
 
       // Logo URL & Preview
@@ -11165,38 +11155,22 @@ function syncAllOpenViewsStock(changedProdId) {
     function saveAllAiApiKeysFromSystem(silent) {
       const providers = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
       let savedCount = 0;
-      let s = {};
-      try {
-        s = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}');
-      } catch(e) {}
 
       providers.forEach(function(p) {
         const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
         if (el) {
           const v = el.value.trim();
           if (v) {
-            localStorage.setItem('mmo_ai_key_' + p, v);
-            s['ai_key_' + p] = v;
+            MMO_AI_KEYS.set(p, v);
             savedCount++;
-          } else {
-            localStorage.removeItem('mmo_ai_key_' + p);
-            delete s['ai_key_' + p];
+          } else if (MMO_AI_KEYS.get(p)) {
+            // BẢO VỆ TUYỆT ĐỐI: NẾU Ô INPUT RỖNG THÌ GIỮ NGUYÊN KEY CŨ, TUYỆT ĐỐI KHÔNG XÓA!
+            savedCount++;
           }
         } else {
-          // BẢO VỆ CHỐNG MẤT DỮ LIỆU: Nếu DOM element chưa được render, tuyệt đối không xóa key đã lưu
-          const existing = localStorage.getItem('mmo_ai_key_' + p) || s['ai_key_' + p];
-          if (existing) {
-            localStorage.setItem('mmo_ai_key_' + p, existing);
-            s['ai_key_' + p] = existing;
-            savedCount++;
-          }
+          if (MMO_AI_KEYS.get(p)) savedCount++;
         }
       });
-
-      try {
-        localStorage.setItem('mmo_system_settings', JSON.stringify(s));
-        localStorage.setItem('mmo_general_settings', JSON.stringify(s));
-      } catch(e) {}
 
       const statusEl = document.getElementById('aiSystemKeySaveStatus');
       if (statusEl) {
@@ -11256,13 +11230,14 @@ function syncAllOpenViewsStock(changedProdId) {
             if (el) {
               const v = el.value.trim();
               if (v) {
+                MMO_AI_KEYS.set(p, v);
                 settings['ai_key_' + p] = v;
-                localStorage.setItem('mmo_ai_key_' + p, v);
               } else {
-                localStorage.removeItem('mmo_ai_key_' + p);
+                const existing = MMO_AI_KEYS.get(p);
+                if (existing) settings['ai_key_' + p] = existing;
               }
             } else {
-              const existing = localStorage.getItem('mmo_ai_key_' + p);
+              const existing = MMO_AI_KEYS.get(p);
               if (existing) settings['ai_key_' + p] = existing;
             }
           });
@@ -24537,7 +24512,77 @@ async function confirmRefundOrder() {
 
 // AI VIẾT BÀI SEO — Multi-Provider AI Engine (Groq, Cerebras, OpenRouter, Gemini, NVIDIA, Mistral)
 // ============================================================
-const DEFAULT_GEMINI_API_KEY = atob('QVEuQWI4Uk42S0VNaDJYNjA0VTBwQVFUTWRxaDAyRjFiSGZWNUVTVjVpb3dpQlZOTWVRSHc=');
+
+// ============================================================
+// HỆ THỐNG QUẢN LÝ & BẢO VỆ KEY AI ĐA TẦNG (ANTI-KEY-LOSS SHIELD)
+// ============================================================
+const MMO_AI_KEYS = {
+  get: function(provider) {
+    if (!provider) return '';
+    var p = String(provider).toLowerCase().trim();
+    var k = '';
+    try { k = localStorage.getItem('mmo_ai_key_' + p) || ''; } catch(e) {}
+    if (!k) {
+      try {
+        var backup = JSON.parse(localStorage.getItem('mmo_ai_keys_backup') || '{}');
+        k = backup[p] || '';
+      } catch(e) {}
+    }
+    if (!k) {
+      try {
+        var s = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}');
+        k = s['ai_key_' + p] || '';
+      } catch(e) {}
+    }
+    if (!k) {
+      try {
+        var g = JSON.parse(localStorage.getItem('mmo_general_settings') || '{}');
+        k = g['ai_key_' + p] || '';
+      } catch(e) {}
+    }
+    // Tự động khôi phục vào localStorage nếu tìm thấy trong backup
+    if (k && !localStorage.getItem('mmo_ai_key_' + p)) {
+      try { localStorage.setItem('mmo_ai_key_' + p, k); } catch(e) {}
+    }
+    return k;
+  },
+  set: function(provider, keyVal) {
+    if (!provider) return;
+    var p = String(provider).toLowerCase().trim();
+    var clean = (keyVal || '').trim();
+    if (clean) {
+      try { localStorage.setItem('mmo_ai_key_' + p, clean); } catch(e) {}
+      try {
+        var backup = JSON.parse(localStorage.getItem('mmo_ai_keys_backup') || '{}');
+        backup[p] = clean;
+        localStorage.setItem('mmo_ai_keys_backup', JSON.stringify(backup));
+      } catch(e) {}
+      try {
+        var s = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}');
+        s['ai_key_' + p] = clean;
+        localStorage.setItem('mmo_system_settings', JSON.stringify(s));
+      } catch(e) {}
+    }
+  },
+  remove: function(provider) {
+    if (!provider) return;
+    var p = String(provider).toLowerCase().trim();
+    try { localStorage.removeItem('mmo_ai_key_' + p); } catch(e) {}
+    try {
+      var backup = JSON.parse(localStorage.getItem('mmo_ai_keys_backup') || '{}');
+      delete backup[p];
+      localStorage.setItem('mmo_ai_keys_backup', JSON.stringify(backup));
+    } catch(e) {}
+    try {
+      var s = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}');
+      delete s['ai_key_' + p];
+      localStorage.setItem('mmo_system_settings', JSON.stringify(s));
+    } catch(e) {}
+  }
+};
+window.MMO_AI_KEYS = MMO_AI_KEYS;
+
+const DEFAULT_GEMINI_API_KEY = '';
 const AI_PROVIDERS = {
   groq: {
     name: 'Groq',
@@ -24605,18 +24650,19 @@ const AI_PROVIDERS = {
   },
   gemini: {
     name: 'Google Gemini',
-    badge: 'Có key sẵn',
+    badge: 'Google AI Studio',
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={KEY}',
     isOpenAiFormat: false,
     keyLink: 'https://aistudio.google.com/app/apikey',
-    defaultModel: 'gemini-3.1-flash-lite',
+    defaultModel: 'gemini-2.0-flash',
     models: [
-      { id: 'gemini-3.1-flash-lite', name: 'Gemini 3.1 Flash-Lite (Miễn phí & Cực nhanh)' },
-      { id: 'gemini-3.5-flash-lite', name: 'Gemini 3.5 Flash-Lite (Phiên bản mới)' },
-      { id: 'gemini-3.1-pro-preview', name: 'Gemini 3.1 Pro (Cần gói trả phí Billing)' }
+      { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Khuyên dùng - Cực nhanh & Chuẩn)' },
+      { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (Ổn định, Quota cao)' },
+      { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro (Phân tích chuyên sâu)' }
     ]
-  },
+  }
 };
+
 
 function onAiProviderChange() {
   const pSel = document.getElementById('aiProviderSelect');
@@ -24629,7 +24675,7 @@ function onAiProviderChange() {
   const keyDefaultHint = document.getElementById('aiKeyDefaultHint');
   const pKey = pSel ? pSel.value : 'groq';
   const prov = AI_PROVIDERS[pKey] || AI_PROVIDERS.groq;
-  localStorage.setItem('mmo_ai_selected_provider', pKey);
+  try { localStorage.setItem('mmo_ai_selected_provider', pKey); } catch(e) {}
 
   if (mSel && prov.models) {
     mSel.innerHTML = prov.models.map(m => `<option value="${m.id}" ${m.id === prov.defaultModel ? "selected='selected'" : ""}>${m.name}</option>`).join("");
@@ -24638,18 +24684,15 @@ function onAiProviderChange() {
   if (keyLabel) keyLabel.textContent = "🔑 " + prov.name + " API Key";
   if (keyLink) { keyLink.href = prov.keyLink; keyLink.textContent = "👉 Lấy " + prov.name + " API Key"; }
 
-  const savedKey = localStorage.getItem('mmo_ai_key_' + pKey) || '';
+  const savedKey = MMO_AI_KEYS.get(pKey);
   if (keyInput) keyInput.value = savedKey;
   if (keyDefaultHint) {
-    keyDefaultHint.style.display = (pKey === 'gemini') ? 'inline' : 'none';
+    keyDefaultHint.style.display = 'none';
   }
   if (keyStatus) {
     if (savedKey) {
-      keyStatus.textContent = 'Đã lưu key riêng';
+      keyStatus.textContent = 'Đã lưu key (' + (savedKey.length > 8 ? (savedKey.slice(0, 4) + '...' + savedKey.slice(-4)) : '***') + ')';
       keyStatus.style.color = '#38bdf8';
-    } else if (pKey === 'gemini') {
-      keyStatus.textContent = 'Key mặc định sẵn';
-      keyStatus.style.color = '#10b981';
     } else {
       keyStatus.textContent = 'Chưa nhập key';
       keyStatus.style.color = '#f59e0b';
@@ -24664,10 +24707,14 @@ function saveCurrentProviderApiKey() {
   const prov = AI_PROVIDERS[pKey] || AI_PROVIDERS.groq;
   const val = keyInput ? keyInput.value.trim() : '';
   if (val) {
-    localStorage.setItem('mmo_ai_key_' + pKey, val);
+    MMO_AI_KEYS.set(pKey, val);
+    const admInp = document.getElementById('setAiKey' + pKey.charAt(0).toUpperCase() + pKey.slice(1));
+    if (admInp) admInp.value = val;
     showToast('✅ Đã lưu API Key cho ' + prov.name + '!', 'success');
   } else {
-    localStorage.removeItem('mmo_ai_key_' + pKey);
+    MMO_AI_KEYS.remove(pKey);
+    const admInp = document.getElementById('setAiKey' + pKey.charAt(0).toUpperCase() + pKey.slice(1));
+    if (admInp) admInp.value = '';
     showToast('🔄 Đã xóa API Key cho ' + prov.name + '!', 'info');
   }
   onAiProviderChange();
@@ -24726,13 +24773,12 @@ function onAiEditorInput() {
 
 async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens = 4096) {
   const prov = AI_PROVIDERS[pKey] || AI_PROVIDERS.groq;
-  let apiKey = localStorage.getItem('mmo_ai_key_' + pKey) || '';
-  if (!apiKey && pKey === 'gemini') { apiKey = DEFAULT_GEMINI_API_KEY; }
+  let apiKey = MMO_AI_KEYS.get(pKey);
   if (!apiKey) {
-    throw new Error('Chưa có API Key cho ' + prov.name + '. Vui lòng nhập key hoặc bấm link lấy key miễn phí bên dưới!');
+    throw new Error('Chưa có API Key cho ' + prov.name + '. Vui lòng bấm link bên dưới lấy key miễn phí và bấm Lưu!');
   }
 
-  const effectiveMaxTokens = maxTokens || 4096;
+  const effectiveMaxTokens = Math.min(maxTokens || 4096, 8192);
 
   if (prov.isOpenAiFormat) {
     const headers = {
@@ -24740,9 +24786,12 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens
       'Authorization': 'Bearer ' + apiKey
     };
     if (prov.extraHeaders) Object.assign(headers, prov.extraHeaders);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 45000);
     const res = await fetch(prov.endpoint, {
       method: 'POST',
       headers: headers,
+      signal: controller.signal,
       body: JSON.stringify({
         model: modelId || prov.defaultModel,
         messages: [
@@ -24753,6 +24802,7 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens
         max_tokens: effectiveMaxTokens
       })
     });
+    clearTimeout(timeoutId);
     if (!res.ok) {
       const errText = await res.text();
       throw new Error(prov.name + ' Error ' + res.status + ': ' + errText.slice(0, 220));
@@ -24762,28 +24812,36 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens
     if (!reply) throw new Error(prov.name + ' không phản hồi nội dung.');
     return reply;
   } else {
-    const activeModel = modelId || 'gemini-3.1-flash-lite';
+    const activeModel = modelId || 'gemini-2.0-flash';
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${apiKey}`;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 45000);
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
       body: JSON.stringify({
         contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
         generationConfig: { maxOutputTokens: effectiveMaxTokens, temperature: 0.7 }
       })
     });
+    clearTimeout(timeoutId);
     if (!res.ok) {
-      if (activeModel !== 'gemini-3.1-flash-lite') {
-        const retryUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite:generateContent?key=${apiKey}`;
+      if (activeModel !== 'gemini-1.5-flash') {
+        const retryUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
         try {
+          const rController = new AbortController();
+          const rTimeout = setTimeout(() => rController.abort(), 35000);
           const retryRes = await fetch(retryUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            signal: rController.signal,
             body: JSON.stringify({
               contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
-              generationConfig: { maxOutputTokens: 4096, temperature: 0.7 }
+              generationConfig: { maxOutputTokens: effectiveMaxTokens, temperature: 0.7 }
             })
           });
+          clearTimeout(rTimeout);
           if (retryRes.ok) {
             const rJson = await retryRes.json();
             const rReply = rJson.candidates && rJson.candidates[0] && rJson.candidates[0].content && rJson.candidates[0].content.parts && rJson.candidates[0].content.parts[0] ? rJson.candidates[0].content.parts[0].text : '';
@@ -25762,13 +25820,13 @@ window.fetchAndPreviewSampleArticle = fetchAndPreviewSampleArticle;
 window.fetchSampleArticleData = fetchSampleArticleData;
 window.renderSampleArticlePreviewUI = renderSampleArticlePreviewUI;
 
-// Cơ chế Crop chính xác 5% viền ảnh & Re-encode chống vi phạm bản quyền Google & DMCA (Full HD 95% siêu nét)
+// Cơ chế Crop chính xác 5% viền ảnh & Re-encode chống vi phạm bản quyền Google & DMCA (Full HD 95% siêu nét, song song không block main-thread)
 async function cropAndUploadUniqueImage(rawImgUrl, altText) {
   if (!rawImgUrl || typeof rawImgUrl !== 'string') return rawImgUrl;
   let cleanSrc = rawImgUrl.trim();
   if (!cleanSrc.startsWith('http://') && !cleanSrc.startsWith('https://')) return cleanSrc;
 
-  // Nếu đã được crop 5% qua weserv (đã có cx, cy) thì không crop lại
+  // Nếu đã được crop 5% qua weserv (đã có cx, cy) thì giữ nguyên không crop lại
   if (cleanSrc.includes('images.weserv.nl') && cleanSrc.includes('&cx=') && cleanSrc.includes('&cy=')) {
     return cleanSrc;
   }
@@ -25782,12 +25840,10 @@ async function cropAndUploadUniqueImage(rawImgUrl, altText) {
       }
     };
 
-    // Timeout an toàn 2500ms: nếu mạng chậm, crop ngay theo kích thước chuẩn 1200x800
-    const timer = setTimeout(() => {
-      const fallbackUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) +
-        '&cx=60&cy=40&cw=1080&ch=720&output=jpg&q=95';
-      finish(fallbackUrl);
-    }, 2500);
+    // Timeout siêu nhanh 600ms: nếu mạng chậm hoặc CDN chống hotlink, crop ngay 5% theo tỷ lệ chuẩn
+    const fallbackUrl = 'https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) +
+      '&cx=60&cy=40&cw=1080&ch=720&output=jpg&q=95';
+    const timer = setTimeout(() => finish(fallbackUrl), 600);
 
     const img = new Image();
     img.referrerPolicy = 'no-referrer';
@@ -25798,9 +25854,6 @@ async function cropAndUploadUniqueImage(rawImgUrl, altText) {
         const origW = img.naturalWidth || 1200;
         const origH = img.naturalHeight || 800;
         if (origW > 80 && origH > 60) {
-          // Cắt bỏ chính xác 5% mép ảnh ở mỗi cạnh (trên, dưới, trái, phải)
-          // Thay đổi tỷ lệ khung hình, kích thước và mã băm (hash)
-          // Ngăn chặn 100% thuật toán Google Vision / Google Reverse Image Search / DMCA đối chiếu bản quyền
           const cropX = Math.round(origW * 0.05);
           const cropY = Math.round(origH * 0.05);
           const cropW = origW - (cropX * 2);
@@ -25811,41 +25864,16 @@ async function cropAndUploadUniqueImage(rawImgUrl, altText) {
             '&output=jpg&q=95';
           finish(croppedUrl);
         } else {
-          finish('https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) + '&cx=60&cy=40&cw=1080&ch=720&output=jpg&q=95');
+          finish(fallbackUrl);
         }
       } catch (e) {
-        finish('https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) + '&cx=60&cy=40&cw=1080&ch=720&output=jpg&q=95');
+        finish(fallbackUrl);
       }
     };
 
     img.onerror = () => {
       clearTimeout(timer);
-      // Khi không tải trực tiếp được (do CDN chặn), thử đo kích thước qua weserv
-      const proxyImg = new Image();
-      proxyImg.referrerPolicy = 'no-referrer';
-      let pTimer = setTimeout(() => {
-        finish('https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) + '&cx=60&cy=40&cw=1080&ch=720&output=jpg&q=95');
-      }, 2000);
-
-      proxyImg.onload = () => {
-        clearTimeout(pTimer);
-        const pw = proxyImg.naturalWidth || 1000;
-        const ph = proxyImg.naturalHeight || 600;
-        const cx = Math.round(pw * 0.05);
-        const cy = Math.round(ph * 0.05);
-        const cw = Math.round(pw - (cx * 2));
-        const ch = Math.round(ph - (cy * 2));
-        finish('https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) +
-          '&cx=' + cx + '&cy=' + cy + '&cw=' + cw + '&ch=' + ch +
-          '&output=jpg&q=95');
-      };
-
-      proxyImg.onerror = () => {
-        clearTimeout(pTimer);
-        finish('https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) + '&cx=60&cy=40&cw=1080&ch=720&output=jpg&q=95');
-      };
-
-      proxyImg.src = 'https://images.weserv.nl/?url=' + encodeURIComponent(cleanSrc) + '&w=800';
+      finish(fallbackUrl);
     };
 
     img.src = cleanSrc;
@@ -25911,36 +25939,38 @@ async function generateAiArticle() {
   let wordCountDesc = '';
   let targetMaxTokens = 4096;
   if (wordCount === '6000') {
-    wordCountDesc = 'Tối thiểu 5000 đến 6000 chữ (Bài viết đại bách khoa toàn thư cực kỳ chi tiết, phân tích thấu đáo từng khía cạnh, mở rộng tối đa mọi mục, không bỏ sót bất kỳ chi tiết hay bước nào)';
+    wordCountDesc = 'Tối thiểu 4000 đến 5000 chữ (Bài viết cực kỳ chi tiết, mở rộng tối đa mọi mục, không bỏ sót bước nào)';
     targetMaxTokens = 8192;
   } else if (wordCount === '4000') {
-    wordCountDesc = 'Tối thiểu 3500 đến 4000 chữ (Bài viết chi tiết chuẩn E-E-A-T từ A-Z, chuyên sâu, mở rộng tối đa các luận điểm và hướng dẫn cụ thể)';
-    targetMaxTokens = 8192;
+    wordCountDesc = 'Tối thiểu 3000 đến 3500 chữ (Bài viết chi tiết chuẩn E-E-A-T từ A-Z, chuyên sâu, mở rộng các luận điểm)';
+    targetMaxTokens = 6144;
   } else if (wordCount === 'tuong_duong') {
-    const sampleWordCount = (sampleData && sampleData.textSnippet) ? sampleData.textSnippet.split(/\s+/).length : 2500;
-    const estWords = Math.max(2500, Math.min(6000, Math.round(sampleWordCount * 1.5)));
-    wordCountDesc = `Ít nhất ${estWords} chữ hoặc tương đương độ dài đầy đủ của bài viết mẫu (Bao quát 100% tất cả các ý, các bước, các đề mục như bài viết mẫu, tuyệt đối không được viết sơ sài tóm tắt)`;
-    targetMaxTokens = 8192;
+    const sampleWordCount = (sampleData && sampleData.textSnippet) ? sampleData.textSnippet.split(/\s+/).length : 2000;
+    const estWords = Math.max(2000, Math.min(4500, Math.round(sampleWordCount * 1.2)));
+    wordCountDesc = `Ít nhất ${estWords} chữ hoặc tương đương độ dài bài mẫu`;
+    targetMaxTokens = 6144;
   } else {
-    // 2000 hoặc mặc định
-    wordCountDesc = 'Tối thiểu 2000 đến 2500 chữ (Bài viết chuẩn SEO chuyên sâu, hướng dẫn bài bản, phân tích kỹ lưỡng, giàu thông tin thực tế)';
+    wordCountDesc = 'Tối thiểu 2000 đến 2500 chữ (Bài viết chuẩn SEO chuyên sâu, hướng dẫn bài bản, giàu thông tin thực tế)';
     targetMaxTokens = 4096;
   }
 
-  // Lọc chỉ lấy những ảnh đã được người dùng tích chọn (selected !== false)
+  // Lọc chỉ lấy những ảnh đã được người dùng tích chọn (selected !== false) và có URL hợp lệ
   const activeImages = (sampleData && Array.isArray(sampleData.images))
-    ? sampleData.images.filter(im => im.selected !== false)
+    ? sampleData.images.filter(im => im && im.selected !== false && im.url && typeof im.url === 'string' && im.url.length > 10)
     : [];
 
   let sampleInstruction = '';
   if (sampleData && sampleData.success) {
     const imgListText = (activeImages.length > 0)
-      ? activeImages.map((im, i) => `Ảnh ${i + 1}: ${im.url} (Mô tả gốc: ${im.alt || effectiveTopic})`).join('\n')
+      ? activeImages.slice(0, 15).map((im, i) => `Ảnh ${i + 1}: ${im.url} (Mô tả gốc: ${im.alt || effectiveTopic})`).join('\n')
       : 'Không có ảnh minh họa nào được chọn';
 
     const headingsText = (sampleData.headings && sampleData.headings.length > 0)
-      ? `\nDANH SÁCH CÁC ĐỀ MỤC GỐC TỪ BÀI VIẾT MẪU (BẮT BUỘC PHẢI BAO QUÁT ĐẦY ĐỦ CÁC Ý NÀY TRONG BÀI VIẾT MỚI):\n` + sampleData.headings.map(h => `- ${h}`).join('\n')
+      ? `\nDANH SÁCH CÁC ĐỀ MỤC GỐC TỪ BÀI VIẾT MẪU (BẮT BUỘC PHẢI BAO QUÁT ĐẦY ĐỦ CÁC Ý NÀY TRONG BÀI VIẾT MỚI):\n` + sampleData.headings.slice(0, 15).map(h => `- ${h}`).join('\n')
       : '';
+
+    // Cắt textSnippet an toàn ở mức 2.500 ký tự để không làm phình prompt gây quá tải
+    const safeSnippet = (sampleData.textSnippet || '').slice(0, 2500);
 
     sampleInstruction = `
 === THÔNG TIN BÀI VIẾT MẪU ĐỂ HỌC HỎI & BÁM SÁT (BẮT BUỘC TUÂN THỦ 100%) ===
@@ -25949,7 +25979,7 @@ Tiêu đề bài mẫu: ${sampleData.title}
 ${headingsText}
 Nội dung chi tiết/định hướng từ bài mẫu:
 """
-${sampleData.textSnippet}
+${safeSnippet}
 """
 
 DANH SÁCH ${activeImages.length} HÌNH ẢNH THẬT ĐÃ ĐƯỢC CHỌN ĐỂ CHÈN VÀO BÀI:
@@ -25957,31 +25987,15 @@ ${imgListText}
 
 🚨 QUY TẮC BẮT BUỘC ĐỐI VỚI BÀI VIẾT (TUÂN THỦ TUYỆT ĐỐI 100%):
 1. BÁM SÁT 100% NỘI DUNG VÀ TẤT CẢ CÁC Ý CỦA BÀI MẪU - TUYỆT ĐỐI KHÔNG VIẾT SƠ SÀI:
-   - Bài viết mẫu có những luận điểm, điều kiện, bước thực hiện, thủ thuật, bảng biểu hoặc quy trình gì -> Bạn BẮT BUỘC phải đưa vào bài viết mới và giải thích cặn kẽ hơn nữa!
-   - TUYỆT ĐỐI KHÔNG tóm tắt qua loa hay bỏ sót ý quan trọng. Với mỗi bước hướng dẫn, phải giải thích rõ ràng: "Chuẩn bị gì?", "Cách thực hiện chi tiết từng thao tác", "Các lỗi thường gặp và cách khắc phục để không bị khóa tài khoản".
-   - Đảm bảo tính chuyên sâu E-E-A-T 2026, cung cấp đầy đủ thông tin thực chiến hữu ích nhất.
+   - Bài viết mẫu có những luận điểm, điều kiện, bước thực hiện, thủ thuật gì -> Bạn BẮT BUỘC phải đưa vào bài viết mới và giải thích cặn kẽ!
 2. TỰ ĐỘNG ĐỔI TIÊU ĐỀ MỚI 100% (TUYỆT ĐỐI KHÔNG COPY LẠI TIÊU ĐỀ BÀI MẪU):
-   - Bạn BẮT BUỘC phải sáng tạo một TIÊU ĐỀ MỚI HOÀN TOÀN, giật tít hấp dẫn, kích thích tò mò, CTR cao, chuẩn SEO 2026.
-   - Tiêu đề mới phải chứa từ khóa chính, dưới 65 ký tự, độc nhất vô nhị (Unique 100%), không được trùng với tiêu đề bài mẫu gốc.
+   - Bạn BẮT BUỘC phải sáng tạo một TIÊU ĐỀ MỚI HOÀN TOÀN, giật tít hấp dẫn, CTR cao, chuẩn SEO 2026, dưới 65 ký tự.
 3. BÁM SÁT 100% CHỦ ĐỀ & TUYỆT ĐỐI TRÁNH VIẾT LẠC ĐỀ:
-   - Bài viết BẮT BUỘC xoay quanh trực diện vấn đề/chủ đề: "${effectiveTopic}".
-   - Bám sát từng bước hướng dẫn cụ thể, các thủ thuật thực tế, phân tích chuyên sâu.
-   - TUYỆT ĐỐI KHÔNG viết lan man, không viết nhầm sang các chủ đề hoặc dịch vụ không liên quan.
-4. QUY TẮC CHÈN HÌNH ẢNH MINH HỌA HƯỚNG DẪN (ĐỒNG BỘ 100%):
-   ${activeImages.length > 0 ? `- Bạn TUYỆT ĐỐI KHÔNG CẦN viết thẻ <img> hay <div class="separator"> dài dòng.
-   - Bạn CHỈ CẦN ĐẶT DUY NHẤT CÁC PLACEHOLDER: [HINH_ANH_1], [HINH_ANH_2], ..., [HINH_ANH_${activeImages.length}] ngay dưới đoạn văn hướng dẫn của Bước 1, Bước 2... tương ứng.
-   - Mỗi bước hướng dẫn có đúng 1 placeholder ảnh đi kèm, nội dung bài hướng dẫn phải mô tả chính xác thao tác trong ảnh đó!` : '- Không có ảnh minh họa nào được chọn. Hãy tập trung viết nội dung bài hướng dẫn chuyên sâu.'}
+   - Bài viết BẮT BUỘC xoay quanh trực diện: "${effectiveTopic}".
+4. QUY TẮC CHÈN HÌNH ẢNH MINH HỌA HƯỚNG DẪN:
+   ${activeImages.length > 0 ? `- Bạn CHỈ CẦN ĐẶT DUY NHẤT CÁC PLACEHOLDER: [HINH_ANH_1], [HINH_ANH_2], ..., [HINH_ANH_${activeImages.length}] ngay dưới đoạn văn hướng dẫn của Bước 1, Bước 2... tương ứng.
+   - Mỗi bước hướng dẫn có đúng 1 placeholder ảnh đi kèm, mô tả chính xác thao tác trong ảnh đó!` : '- Không có ảnh minh họa nào được chọn. Hãy tập trung viết nội dung bài hướng dẫn chuyên sâu.'}
 `;
-  }
-
-    let dynamicStepsGuidance = '';
-  if (activeImages.length > 0) {
-    dynamicStepsGuidance = `3. <h2>2. [Hướng dẫn chi tiết từng bước thực hiện từ A-Z]</h2>
-- BẮT BUỘC PHẢI TẠO ĐỦ ${activeImages.length} BƯỚC THỰC HIỆN CHI TIẾT TƯƠNG ỨNG VỚI ${activeImages.length} HÌNH ẢNH HƯỚNG DẪN THỰC TẾ (BƯỚC 1 ĐẾN BƯỚC ${activeImages.length}):
-${activeImages.map((im, i) => `  - <h3>Bước ${i + 1}: [Tên thao tác cụ thể của bước ${i + 1}]</h3>\n    (Viết 2-4 câu hướng dẫn rõ ràng người đọc cần bấm gì, nhập gì, kiểm tra gì trên màn hình. Sau đó BẮT BUỘC đặt placeholder: [HINH_ANH_${i + 1}] ngay dưới đoạn văn này)`).join('\n')}
-- <h3>Lưu ý kỹ thuật quan trọng & Cách phòng tránh lỗi</h3>`;
-  } else {
-    dynamicStepsGuidance = `${dynamicStepsGuidance}`;
   }
 
   const prompt = `Bạn là một chuyên gia SEO Content Marketing & Copywriting hàng đầu (Google Helpful Content & E-E-A-T Chuẩn SEO 2026).
@@ -25997,7 +26011,7 @@ ${sampleInstruction}
 === BẮT BUỘC TUÂN THỦ CẤU TRÚC BÀI BLOG CHUẨN SEO 2026 SAU ĐÂY ===
 
 1. ĐOẠN MỞ BÀI (100–180 từ):
-- Đi thẳng vào vấn đề/nhu cầu tìm kiếm (Search Intent) người đọc đang gặp ngay từ câu đầu tiên. Tuyệt đối KHÔNG dùng các câu sáo rỗng như "Trong thời đại 4.0...", "Ngày nay...", "Trong thế giới công nghệ...".
+- Đi thẳng vào vấn đề/nhu cầu tìm kiếm người đọc đang gặp.
 - KHUNG TRẢ LỜI NHANH (QUICK ANSWER): Đưa ngay câu trả lời cốt lõi trong khung HTML nổi bật:
   <div style="background:#0f172a; border-left:4px solid #38bdf8; padding:12px 16px; margin:14px 0; border-radius:6px;"><strong>💡 Trả lời nhanh / Kết quả chính:</strong> [Câu trả lời ngắn gọn, trực diện, giải quyết ngay nhu cầu của người đọc]</div>
 - Giới thiệu ngắn gọn bài viết sẽ giúp người đọc giải quyết vấn đề như thế nào.
@@ -26008,12 +26022,10 @@ ${sampleInstruction}
   - <h3>Khi nào cần sử dụng? / Vì sao quan trọng?</h3>
   - <h3>Những điều quan trọng cần biết</h3>
 
-3. <h2>2. [Hướng dẫn chi tiết từng bước / Giải pháp thực tế từ A-Z]</h2>
-- Chia nhỏ thành các bước thực hành rõ ràng:
-  - <h3>Bước 1: [Tên bước 1 - Chuẩn bị]</h3>
-  - <h3>Bước 2: [Tên bước 2 - Thực hiện chi tiết]</h3>
-  - <h3>Bước 3: [Tên bước 3 - Hoàn tất & Kiểm tra]</h3>
-  - <h3>Lưu ý kỹ thuật quan trọng</h3>
+3. <h2>2. [Hướng dẫn chi tiết từng bước thực hiện từ A-Z]</h2>
+- BẮT BUỘC chia thành các bước thực hành rõ ràng tương ứng các ảnh minh họa:
+  ${activeImages.length > 0 ? activeImages.map((im, i) => `  - <h3>Bước ${i + 1}: [Tên thao tác cụ thể bước ${i + 1}]</h3>\n    (Viết 2-4 câu hướng dẫn rõ ràng. Sau đó đặt placeholder: [HINH_ANH_${i + 1}] ngay dưới đoạn văn này)`).join('\n') : '  - <h3>Bước 1: Chuẩn bị</h3>\n  - <h3>Bước 2: Thực hiện chi tiết</h3>\n  - <h3>Bước 3: Hoàn tất & Kiểm tra</h3>'}
+- <h3>Lưu ý kỹ thuật quan trọng & Cách phòng tránh lỗi</h3>
 
 4. <h2>3. [So sánh / Phân tích ưu nhược điểm & Đánh giá]</h2>
 - <h3>Ưu điểm nổi bật</h3>: dùng thẻ <ul><li> liệt kê súc tích.
@@ -26024,7 +26036,7 @@ ${sampleInstruction}
 - <h3>Lỗi / Thách thức 1 & Cách xử lý</h3>
 - <h3>Lỗi / Thách thức 2 & Cách xử lý</h3>
 - KHUNG KINH NGHIỆM THỰC CHIẾN (E-E-A-T):
-  <div style="background:#1e1b4b; border-left:4px solid #a855f7; padding:12px 16px; margin:14px 0; border-radius:6px;"><strong>⭐ Kinh nghiệm thực tế (E-E-A-T 2026):</strong> [Chia sẻ mẹo thực chiến hoặc kinh nghiệm hữu ích giúp người đọc an tâm, không bị lừa đảo hay mắc lỗi]</div>
+  <div style="background:#1e1b4b; border-left:4px solid #a855f7; padding:12px 16px; margin:14px 0; border-radius:6px;"><strong>⭐ Kinh nghiệm thực tế (E-E-A-T 2026):</strong> [Chia sẻ mẹo thực chiến hữu ích]</div>
 
 6. <h2>5. Các Câu Hỏi Thường Gặp (FAQ)</h2>
 - Tạo tối thiểu 3 câu hỏi thường gặp nhất:
@@ -26037,7 +26049,7 @@ ${sampleInstruction}
 - Kêu gọi hành động (Call To Action) tự nhiên, nhắc đến giải pháp/dịch vụ tại muabantaikhoanmmo.com.
 
 === QUY ĐỊNH ĐỊNH DẠNG ĐẦU RA (BẮT BUỘC) ===
-- KHÔNG dùng markdown thô (như ##, ###, **). Chỉ dùng HTML: <h2>, <h3>, <p>, <ul>, <li>, <ol>, <strong>, <em>, <div>, <img>.
+- KHÔNG dùng markdown thô (như ##, ###, **). Chỉ dùng HTML: <h2>, <h3>, <p>, <ul>, <li>, <ol>, <strong>, <em>, <div>.
 - Cuối bài viết, BẮT BUỘC cung cấp thông tin SEO Meta theo định dạng sau:
 ===SEO_META_START===
 KEYWORDS: [3-5 từ khóa SEO cách nhau bằng dấu phẩy]
@@ -26060,8 +26072,7 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
       const tryProv = AI_PROVIDERS[tryKey] || AI_PROVIDERS.groq;
       const tryModel = (tryKey === pKey && modelId) ? modelId : tryProv.defaultModel;
 
-      let keyCheck = localStorage.getItem("mmo_ai_key_" + tryKey) || "";
-      if (!keyCheck && tryKey === "gemini") keyCheck = DEFAULT_GEMINI_API_KEY;
+      let keyCheck = MMO_AI_KEYS.get(tryKey);
       if (!keyCheck) continue;
 
       try {
@@ -26084,7 +26095,7 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
     }
 
     if (!rawText) {
-      throw (lastErr || new Error("Tất cả các nền tảng AI đều bận hoặc chưa cấu hình API Key trong Cài Đặt Hệ Thống!"));
+      throw (lastErr || new Error("Chưa có API Key cho " + prov.name + " hoặc tất cả nền tảng AI đều bận. Vui lòng cấu hình API Key trong Cấu Hình Nền Tảng AI!"));
     }
 
     const seoStart = rawText.indexOf('===SEO_META_START===');
@@ -26092,37 +26103,34 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
     let htmlContent = seoStart > -1 ? rawText.slice(0, seoStart).trim() : rawText.trim();
     htmlContent = convertMarkdownToCleanHtml(htmlContent);
 
-    // XỬ LÝ CHÈN ẢNH VÀ CROP 5% CHỐNG BẢN QUYỀN GOOGLE/DMCA AN TOÀN TUYỆT ĐỐI (KHÔNG CẮT GHÉP CHUỖI VỠ THẺ)
+    // XỬ LÝ CHÈN ẢNH VÀ CROP 5% CHỐNG BẢN QUYỀN GOOGLE/DMCA AN TOÀN TUYỆT ĐỐI (PARALLEL FAST NON-BLOCKING)
     if (activeImages.length > 0) {
       if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-crop"></i> Đang tự động crop viền 5% chống quét trùng lặp bản quyền Google & DMCA...</span>';
 
-      // 1. TỰ ĐỘNG CROP VIỀN 5% CHO TOÀN BỘ 100% CÁC ẢNH ĐƯỢC CHỌN (KHÔNG BỎ SÓT BẤT KỲ ẢNH NÀO)
-      for (let i = 0; i < activeImages.length; i++) {
-        const targetImg = activeImages[i];
-        try {
-          const croppedUrl = await cropAndUploadUniqueImage(targetImg.url, targetImg.alt || effectiveTopic);
-          if (croppedUrl && croppedUrl !== targetImg.url) {
-            htmlContent = htmlContent.split(targetImg.url).join(croppedUrl);
-            targetImg.url = croppedUrl;
+      // 1. TỰ ĐỘNG CROP VIỀN 5% CHO TOÀN BỘ CÁC ẢNH ĐƯỢC CHỌN (CHẠY SONG SONG TRONG < 800MS, KHÔNG BLOCK THREAD)
+      try {
+        const cropPromises = activeImages.map(img => cropAndUploadUniqueImage(img.url, img.alt || effectiveTopic));
+        const croppedUrls = await Promise.all(cropPromises);
+        activeImages.forEach((img, idx) => {
+          if (croppedUrls[idx] && typeof croppedUrls[idx] === 'string' && croppedUrls[idx].length > 10) {
+            img.url = croppedUrls[idx];
           }
-        } catch(cropErr) {
-          console.warn('Lỗi crop ảnh chống bản quyền:', cropErr);
-        }
+        });
+      } catch(cropErr) {
+        console.warn('Lỗi crop ảnh song song:', cropErr);
       }
 
       if (statusEl) statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-images"></i> Đang đồng bộ hình ảnh vào từng bước hướng dẫn...</span>';
 
-      // 2. Thay thế trực tiếp các placeholder [HINH_ANH_1], [HINH_ANH_2]... thành khối ảnh HTML hoàn chỉnh (ĐÃ CROP 5%)
+      // 2. Thay thế an toàn các placeholder [HINH_ANH_1], [HINH_ANH_2]... (DÙNG REPLACER FUNCTION CHỐNG LỖI $ EXPANSION)
       activeImages.forEach((img, i) => {
-        const phRegex = new RegExp('\\\[(HINH_ANH|IMAGE|ANH)_' + (i + 1) + '\\\]', 'gi');
+        const phRegex = new RegExp('\\[(HINH_ANH|IMAGE|ANH)_' + (i + 1) + '\\]', 'gi');
         const imgBlock = `\n<div class="separator" style="clear:both; text-align:center; margin:24px 0;">\n  <img src="${img.url}" alt="${img.alt || effectiveTopic}" style="max-width:100%; height:auto; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.25); display:inline-block;" loading="lazy" />\n  <p style="font-size:12px; color:#94a3b8; margin-top:6px; font-style:italic;">${img.alt || effectiveTopic}</p>\n</div>\n`;
-        if (phRegex.test(htmlContent)) {
-          htmlContent = htmlContent.replace(phRegex, imgBlock);
-        }
+        htmlContent = htmlContent.replace(phRegex, () => imgBlock);
       });
 
-      // 3. Nếu còn ảnh nào chưa có trong bài viết (AI quên đặt placeholder), chèn an toàn qua DOMParser (100% không vỡ thẻ, ĐÃ CROP 5%)
-      const uninsertedImgs = activeImages.filter(im => !htmlContent.includes(im.url));
+      // 3. Nếu còn ảnh nào chưa có trong bài viết (AI quên đặt placeholder), chèn an toàn qua DOMParser (100% không vỡ thẻ)
+      const uninsertedImgs = activeImages.filter(im => im.url && im.url.length > 10 && !htmlContent.includes(im.url));
       if (uninsertedImgs.length > 0 && typeof DOMParser !== 'undefined') {
         try {
           const parser = new DOMParser();
@@ -26228,35 +26236,26 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
       const plainText = htmlContent.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
       newMeta = (plainText.slice(0, 150) + '...').trim();
     }
-    if (!newKeywords && effectiveTopic) {
-      newKeywords = `${effectiveTopic}, hướng dẫn ${effectiveTopic}, kinh nghiệm thực tế, mmo`;
+    if (!newKeywords) {
+      newKeywords = effectiveTopic;
     }
     if (!newLabels) {
-      newLabels = 'MMO, Hướng Dẫn, Thủ Thuật';
+      newLabels = 'MMO, Hướng dẫn, Dịch vụ';
     }
 
-    // Tự động điền dữ liệu SEO chuẩn vào các ô giao diện
     const kwEl = document.getElementById('aiKeywords');
     const titleEl = document.getElementById('aiSeoTitle');
     const metaEl = document.getElementById('aiSeoMeta');
     const labelsEl = document.getElementById('aiSeoLabels');
-
-    if (kwEl && newKeywords) {
+    if (kwEl) {
       kwEl.value = newKeywords;
       kwEl.setAttribute("data-auto-generated", "true");
     }
-    if (titleEl && newTitle) {
-      titleEl.value = newTitle;
-    }
-    if (metaEl && newMeta) {
-      metaEl.value = newMeta;
-      if (typeof updateAiMetaCounter === 'function') updateAiMetaCounter();
-    }
-    if (labelsEl && newLabels) {
-      labelsEl.value = newLabels;
-    }
+    if (titleEl) titleEl.value = newTitle;
+    if (metaEl) { metaEl.value = newMeta; updateAiMetaCounter(); }
+    if (labelsEl) labelsEl.value = newLabels;
 
-    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">✅ Đã hoàn tất bài viết chuẩn SEO E-E-A-T với ' + successfulProv.name + '! (Tiêu đề & mô tả & tags tự động tối ưu, ảnh crop 5% chống DMCA)</span>';
+    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;">✅ Đã hoàn tất bài viết chuẩn SEO với ' + successfulProv.name + '! (Ảnh đã crop 5% chống vi phạm bản quyền Google & DMCA)</span>';
     showToast('🎉 AI ' + successfulProv.name + ' đã viết bài chuẩn SEO thành công!', 'success');
   } catch (err) {
     console.error('AI Writer error:', err);
