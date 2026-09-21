@@ -24805,6 +24805,34 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens
     clearTimeout(timeoutId);
     if (!res.ok) {
       const errText = await res.text();
+      // XỬ LÝ THÔNG MINH CHO LỖI 429 RATE LIMIT HOẶC HẾT QUOTA
+      if (res.status === 429) {
+        if (pKey === 'mistral' && modelId !== 'open-mistral-7b') {
+          // Tự động thử lại với model nhẹ hơn open-mistral-7b sau 1.2s
+          try {
+            await new Promise(r => setTimeout(r, 1200));
+            const retryRes = await fetch(prov.endpoint, {
+              method: 'POST',
+              headers: headers,
+              body: JSON.stringify({
+                model: 'open-mistral-7b',
+                messages: [
+                  { role: 'system', content: sysPrompt || 'Bạn là chuyên gia SEO Content Writer tiếng Việt hàng đầu.' },
+                  { role: 'user', content: promptText }
+                ],
+                temperature: 0.7,
+                max_tokens: 2048
+              })
+            });
+            if (retryRes.ok) {
+              const retryJson = await retryRes.json();
+              const rReply = retryJson.choices && retryJson.choices[0] && retryJson.choices[0].message ? retryJson.choices[0].message.content : '';
+              if (rReply) return rReply;
+            }
+          } catch(e) {}
+        }
+        throw new Error(prov.name + ' Error 429 (Hết Quota/Vượt giới hạn Free): Tài khoản của bạn đã đạt hạn mức truy vấn. Hãy đổi sang ⚡ Groq (Llama 3.3 70B) hoặc 🤖 Google Gemini để viết bài miễn phí siêu tốc!');
+      }
       throw new Error(prov.name + ' Error ' + res.status + ': ' + errText.slice(0, 220));
     }
     const json = await res.json();
@@ -26259,8 +26287,37 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
     showToast('🎉 AI ' + successfulProv.name + ' đã viết bài chuẩn SEO thành công!', 'success');
   } catch (err) {
     console.error('AI Writer error:', err);
-    if (statusEl) statusEl.innerHTML = '<span style="color:#f87171;">❌ ' + (err.message || 'Lỗi không xác định') + '</span>';
-    showToast('❌ ' + (err.message || 'Lỗi kết nối AI'), 'error');
+    const errMsg = err.message || 'Lỗi không xác định';
+    const isQuotaErr = errMsg.includes('429') || errMsg.includes('Quota') || errMsg.includes('Rate limit') || errMsg.includes('giới hạn') || errMsg.includes('rate_limited');
+    
+    if (statusEl) {
+      if (isQuotaErr) {
+        statusEl.innerHTML = `
+          <div style="background:rgba(239,68,68,0.14); border:1px solid #ef4444; padding:12px 16px; border-radius:8px; margin-top:8px; font-size:12px; color:#fca5a5; line-height:1.5; text-align:left;">
+            <div style="font-weight:700; color:#ef4444; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <i class="fa-solid fa-triangle-exclamation"></i> ${errMsg}
+            </div>
+            <div style="color:#e2e8f0; font-size:11px; margin-bottom:8px;">
+              💡 <b>Gợi ý tức thì:</b> Tài khoản AI hiện tại đã đạt hạn mức lượt dùng / Quota. Hãy bấm nút dưới đây để đổi sang <b>⚡ Groq (Llama 3.3 70B)</b> hoặc <b>Gemini</b> để viết bài siêu tốc miễn phí:
+            </div>
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <button type="button" onclick="switchToFreeProvider('groq')" style="background:linear-gradient(135deg,#0284c7,#38bdf8); color:#fff; border:none; padding:7px 16px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; box-shadow:0 2px 8px rgba(56,189,248,0.3); display:flex; align-items:center; gap:5px;">
+                ⚡ Đổi sang Groq (Khuyên dùng - 3 giây)
+              </button>
+              <button type="button" onclick="switchToFreeProvider('gemini')" style="background:#1e293b; color:#38bdf8; border:1px solid #38bdf8; padding:7px 14px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px;">
+                🤖 Đổi sang Gemini
+              </button>
+              <button type="button" onclick="switchToFreeProvider('openrouter')" style="background:#1e293b; color:#a855f7; border:1px solid #a855f7; padding:7px 14px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px;">
+                🌐 Đổi sang OpenRouter
+              </button>
+            </div>
+          </div>
+        `;
+      } else {
+        statusEl.innerHTML = '<span style="color:#f87171;">❌ ' + errMsg + '</span>';
+      }
+    }
+    showToast(isQuotaErr ? '⚠️ Nền tảng AI bị giới hạn Quota. Vui lòng đổi sang Groq hoặc Gemini!' : ('❌ ' + errMsg), 'error');
   } finally {
     if (btn) { btn.disabled = false; btn.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:14px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 🚀 Viết Bài Tự Động 100% (SEO Full)</div><div style="font-size:10px;color:rgba(255,255,255,0.85);font-weight:400;">Tự sinh Từ khóa • H1 Title • Meta 150 ký tự • Tags • HTML H2/H3</div>'; }
   }
@@ -26993,3 +27050,24 @@ if (typeof document !== "undefined") {
     }, 100);
   }
 }
+
+function switchToFreeProvider(provKey) {
+  const pSel = document.getElementById('aiProviderSelect');
+  if (pSel) {
+    pSel.value = provKey;
+    if (typeof onAiProviderChange === 'function') onAiProviderChange();
+  }
+  const prov = (typeof AI_PROVIDERS !== 'undefined' && AI_PROVIDERS[provKey]) ? AI_PROVIDERS[provKey] : { name: provKey };
+  const statusEl = document.getElementById('aiGenerateStatus');
+  if (statusEl) {
+    statusEl.innerHTML = '<span style="color:#38bdf8;">👉 Đã chuyển sang <b>' + prov.name + '</b>! Vui lòng nhập key (nếu chưa có) hoặc bấm lại nút <b>🚀 Viết Bài Tự Động</b> ngay.</span>';
+  }
+  const keyInput = document.getElementById('aiCustomApiKey');
+  if (keyInput && !keyInput.value.trim()) {
+    keyInput.focus();
+    if (typeof showToast === 'function') showToast('💡 Vui lòng nhập API Key cho ' + prov.name + ' hoặc bấm link lấy key miễn phí!', 'info');
+  } else {
+    if (typeof showToast === 'function') showToast('✅ Đã đổi sang ' + prov.name + '! Bạn có thể bấm Viết Bài ngay.', 'success');
+  }
+}
+window.switchToFreeProvider = switchToFreeProvider;
