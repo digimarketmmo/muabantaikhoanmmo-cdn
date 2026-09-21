@@ -17622,6 +17622,19 @@ function syncAllOpenViewsStock(changedProdId) {
       if (orderBadge) orderBadge.innerText = depositOrderCode;
       if (memoText) memoText.innerText = depositOrderCode;
       if (amountDisp) amountDisp.innerText = formatVND(amount);
+
+      // Đồng bộ ô nhập và nút chọn nhanh với số tiền
+      const customInp = document.getElementById("depositCustomAmountInput");
+      if (customInp) customInp.value = amount;
+      document.querySelectorAll(".btn-preset-amt").forEach(btn => {
+        btn.style.background = "#131d2e";
+        btn.style.border = "1px solid #1e293b";
+      });
+      const curActiveBtn = document.getElementById("preset_" + amount);
+      if (curActiveBtn) {
+        curActiveBtn.style.background = "#10b981";
+        curActiveBtn.style.border = "1px solid #10b981";
+      }
       if (bankNameEl) bankNameEl.innerText = pay.bankName || "MB Bank";
       if (bankAccEl) bankAccEl.innerText = pay.accountNumber || "0968033451";
       if (bankOwnerEl) bankOwnerEl.innerText = pay.accountOwner || "NGUYEN MANH DONG";

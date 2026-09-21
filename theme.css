@@ -2338,8 +2338,11 @@
 
     /* ==================== VIEW 4: DEDICATED DEPOSIT SCREEN (IMAGE 4) ==================== */
     .deposit-view-wrapper {
-      max-width: 960px !important;
-      margin: 32px auto 60px !important;
+      max-width: 860px !important;
+      width: 100% !important;
+      margin: 16px auto 30px !important;
+      padding: 0 16px !important;
+      box-sizing: border-box !important;
     }
     .deposit-header-row {
       display: flex;
@@ -2437,9 +2440,11 @@
       margin-bottom: 20px;
     }
     .deposit-qr-img {
-      max-width: 220px;
-      width: 100%;
+      max-width: 170px !important;
+      max-height: 170px !important;
+      width: 170px;
       height: auto;
+      object-fit: contain;
       border-radius: 4px;
     }
     .qr-bank-sub {
