@@ -19098,26 +19098,121 @@ function changeAdmUsersPage(p) {
     try {
       if (typeof BroadcastChannel !== "undefined") {
         // Xử lý sự kiện đặt trước phát sóng đa tab Realtime 0ms
+    
+    // ============================================================
+    // [REALTIME PRE-ORDER MULTI-CHANNEL ENGINE - 0MS NO REFRESH]
+    // ============================================================
+    function getMmoPreOrdersBc() {
+      if (typeof window === "undefined" || typeof BroadcastChannel === "undefined") return null;
+      if (!window._mmoPersistentPreOrdersBc) {
+        window._mmoPersistentPreOrdersBc = new BroadcastChannel("mmo_preorders_channel");
+        window._mmoPersistentPreOrdersBc.onmessage = function(ev) {
+          if (ev && ev.data) handlePreOrdersBroadcastMessage(ev.data);
+        };
+      }
+      return window._mmoPersistentPreOrdersBc;
+    }
+    window.getMmoPreOrdersBc = getMmoPreOrdersBc;
+
+    function getMmoGlobalBc() {
+      if (typeof window === "undefined" || typeof BroadcastChannel === "undefined") return null;
+      if (!window._mmoPersistentGlobalBc) {
+        window._mmoPersistentGlobalBc = new BroadcastChannel("mmo_channel");
+        window._mmoPersistentGlobalBc.onmessage = function(ev) {
+          if (ev && ev.data && (ev.data.type === "NEW_PREORDER" || ev.data.type === "ORDER_STATUS_CHANGED" || ev.data.type === "PREORDERS_UPDATED")) {
+            handlePreOrdersBroadcastMessage(ev.data);
+          }
+        };
+      }
+      return window._mmoPersistentGlobalBc;
+    }
+    window.getMmoGlobalBc = getMmoGlobalBc;
+
+    function broadcastPreOrderEvent(payload) {
+      if (!payload) return;
+      // 1. Same-origin BroadcastChannel (persistent, never closed)
+      try {
+        const poBc = getMmoPreOrdersBc();
+        if (poBc) poBc.postMessage(payload);
+      } catch(e) {}
+      try {
+        const mmoBc = getMmoGlobalBc();
+        if (mmoBc) mmoBc.postMessage(payload);
+      } catch(e) {}
+
+      // 2. Cross-profile & cross-incognito Realtime SSE Hub (0ms latency)
+      try {
+        fetch("https://ntfy.sh/mmo_preorders_realtime_stream/publish", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }).catch(function() {});
+      } catch(e) {}
+    }
+    window.broadcastPreOrderEvent = broadcastPreOrderEvent;
+
+    var _preOrdersRealtimeSSE = null;
+    function initPreOrdersRealtimeSSE() {
+      try {
+        if (typeof window === "undefined" || typeof EventSource === "undefined") return;
+        if (_preOrdersRealtimeSSE) {
+          _preOrdersRealtimeSSE.close();
+        }
+        _preOrdersRealtimeSSE = new EventSource("https://ntfy.sh/mmo_preorders_realtime_stream/sse");
+        _preOrdersRealtimeSSE.onmessage = function(ev) {
+          try {
+            const data = JSON.parse(ev.data);
+            if (data && data.event === "message" && data.message) {
+              const incoming = JSON.parse(data.message);
+              handlePreOrdersBroadcastMessage(incoming);
+            } else if (data && data.type) {
+              handlePreOrdersBroadcastMessage(data);
+            }
+          } catch(err) {}
+        };
+      } catch(e) {}
+    }
+    window.initPreOrdersRealtimeSSE = initPreOrdersRealtimeSSE;
+
     function handlePreOrdersBroadcastMessage(data) {
       if (!data) return;
       if (data.type === "NEW_PREORDER" && data.order) {
         _cachedPreOrdersList = null;
         _lastPreOrdersFetchTime = 0;
+        const newOrd = data.order;
+        const ordCode = String(newOrd.orderCode || newOrd.id || "").replace("#","").toLowerCase();
+        
+        // 1. Cập nhật mmo_pre_orders
         const curOrders = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
-        const ordCode = String(data.order.orderCode || data.order.id || "").replace("#","").toLowerCase();
         if (!curOrders.some(p => String(p.orderCode || p.id).replace("#","").toLowerCase() === ordCode)) {
-          curOrders.unshift(data.order);
+          curOrders.unshift(newOrd);
           try { localStorage.setItem("mmo_pre_orders", JSON.stringify(curOrders)); } catch(e) {}
         }
+
+        // 2. Cập nhật mmo_all_orders và mmo_orders để bảng Lịch sử đơn hàng toàn sàn thấy ngay lập tức
+        ["mmo_all_orders", "mmo_orders"].forEach(function(k) {
+          try {
+            const raw = localStorage.getItem(k);
+            let list = raw ? JSON.parse(raw) : [];
+            if (!Array.isArray(list)) list = [];
+            if (!list.some(p => String(p.orderCode || p.id || p.orderId).replace("#","").toLowerCase() === ordCode)) {
+              list.unshift(newOrd);
+              localStorage.setItem(k, JSON.stringify(list));
+            }
+          } catch(e) {}
+        });
+
+        // 3. Rerender toàn bộ UI Admin và UI Người dùng trong 0ms
         if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
         if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
         if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
         if (typeof renderProfileOrders === "function") renderProfileOrders();
         if (typeof renderSystemOverview === "function") renderSystemOverview();
-        const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
-        if (curUser && curUser.role === "ADMIN") {
+
+        // 4. Phát âm thanh chuông và hiển thị thông báo toast nếu là Admin
+        if (typeof isAdminUser === "function" && isAdminUser()) {
           if (typeof playNotificationSound === "function") playNotificationSound();
-          if (typeof showToast === "function") showToast("🔔 Có đơn đặt hàng trước mới #" + (data.order.orderCode || data.order.id), "info");
+          if (typeof showToast === "function") showToast("🔔 Có đơn đặt hàng trước mới #" + (newOrd.orderCode || newOrd.id) + " - " + (newOrd.productName || "Sản phẩm"), "info");
         }
       } else if (data.type === "ORDER_STATUS_CHANGED" && data.orderId) {
         const cleanId = String(data.orderId).replace("#","").toLowerCase();
@@ -19449,6 +19544,38 @@ function changeAdmUsersPage(p) {
       if (typeof renderSidebarBlogs === "function") renderSidebarBlogs();
       if (typeof _viewRendered !== "undefined") _viewRendered["viewStore"] = true;
       if (typeof updateLiveRealTimeClock === "function") updateLiveRealTimeClock();
+      if (typeof initPreOrdersRealtimeSSE === "function") initPreOrdersRealtimeSSE();
+      // Polling dự phòng đơn hàng thời gian thực cho Admin mỗi 3.000ms
+      if (!window._mmoAdminOrdersRealtimePollTimer) {
+        window._mmoAdminOrdersRealtimePollTimer = setInterval(function() {
+          if (typeof isAdminUser === "function" && isAdminUser() && !document.hidden) {
+            if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function") {
+              fetch(MMO_WORKER_API.getApiUrl() + "/api/orders?limit=30", { cache: "no-store" })
+                .then(r => r.json())
+                .then(data => {
+                  if (data && data.success && Array.isArray(data.orders)) {
+                    let hasNew = false;
+                    const curPre = getPreOrders(true);
+                    data.orders.forEach(o => {
+                      const oCode = String(o.orderCode || o.id || o.orderId || "").replace("#","").toLowerCase();
+                      if (oCode.startsWith("pre") && !curPre.some(p => String(p.orderCode || p.id).replace("#","").toLowerCase() === oCode)) {
+                        curPre.unshift(o);
+                        hasNew = true;
+                      }
+                    });
+                    if (hasNew) {
+                      savePreOrders(curPre);
+                      if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
+                      if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
+                      if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
+                      if (typeof playNotificationSound === "function") playNotificationSound();
+                    }
+                  }
+                }).catch(function() {});
+            }
+          }
+        }, 3000);
+      }
       if (typeof initGoogleAuth === "function") initGoogleAuth();
       if (typeof initTursoUI === "function") initTursoUI();
       if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
@@ -21171,7 +21298,7 @@ function injectAllProductsSchema() {
       const idMap = new Map();
 
       // 1. Quét tất cả các nguồn lưu trữ đơn hàng trên toàn hệ thống (không lọc email)
-      const scanKeys = ["mmo_all_orders", "mmo_orders", "mmo_user_orders"];
+      const scanKeys = ["mmo_pre_orders", "mmo_all_orders", "mmo_orders", "mmo_user_orders"];
       scanKeys.forEach(function(k) {
         try {
           const raw = localStorage.getItem(k);
@@ -21225,7 +21352,7 @@ function injectAllProductsSchema() {
 
       // 2. Tự động hợp nhất tất cả đơn đặt trước từ getPreOrders()
       try {
-        const preOrders = (typeof getPreOrders === "function") ? getPreOrders() : [];
+        const preOrders = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
         preOrders.forEach(function(po) {
           const pId = String(po.orderCode || po.id || po.orderId || "");
           if (!pId) return;
@@ -22024,16 +22151,7 @@ function injectAllProductsSchema() {
           }).catch(function(err) { console.warn("Turso pre-order sync notice:", err); });
         }
       } catch(eTurso) {}
-      try {
-        const poBc = new BroadcastChannel("mmo_preorders_channel");
-        poBc.postMessage({ type: "NEW_PREORDER", order: newPreOrder });
-        poBc.close();
-      } catch(eBc) {}
-      try {
-        const mmoBc = new BroadcastChannel("mmo_channel");
-        mmoBc.postMessage({ type: "NEW_PREORDER", order: newPreOrder });
-        mmoBc.close();
-      } catch(eBc2) {}
+      broadcastPreOrderEvent({ type: "NEW_PREORDER", order: newPreOrder });
 
       // 6. Chuyển sang xem đơn đặt trước (Hình 4)
       openPreOrderDetailView(orderCode);
@@ -22300,6 +22418,7 @@ function injectAllProductsSchema() {
       if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
       if (typeof renderSystemOverview === "function") renderSystemOverview();
       if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
+      broadcastPreOrderEvent({ type: "ORDER_STATUS_CHANGED", orderId: cleanCode, status: "CANCELLED", statusText: "Khách Đã Hủy / Hoàn Tiền" });
       if (typeof showToast === "function") showToast("✅ Đã hủy đơn hàng và hoàn tiền " + (typeof formatVND === "function" ? formatVND(order.total) : order.total.toLocaleString("vi-VN") + " đ") + " vào ví thành công!", "success");
 
       openPreOrderDetailView(order.id);
@@ -22653,17 +22772,8 @@ function injectAllProductsSchema() {
         }
       } catch(eGasWrap) {}
 
-      // 8. Phát sóng đa tab Realtime 0ms
-      try {
-        const poBc = new BroadcastChannel("mmo_preorders_channel");
-        poBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "PROCESSING", statusText: "Đang gom hàng" });
-        poBc.close();
-      } catch(eBc) {}
-      try {
-        const mmoBc = new BroadcastChannel("mmo_channel");
-        mmoBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "PROCESSING", statusText: "Đang gom hàng" });
-        mmoBc.close();
-      } catch(eBc2) {}
+      // 8. Phát sóng đa tab Realtime 0ms & SSE Stream
+      broadcastPreOrderEvent({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "PROCESSING", statusText: "Đang gom hàng" });
 
       if (typeof showToast === "function") showToast("✅ Đã duyệt đơn #" + (order.orderCode || order.id || cleanId) + " sang trạng thái [Đang gom hàng]!", "success");
       renderAdminPreOrdersTable();
@@ -22747,16 +22857,7 @@ function injectAllProductsSchema() {
           }).catch(function(e) { console.warn("Turso sync fulfill error:", e); });
         }
       } catch(eTurso) {}
-      try {
-        const poBc = new BroadcastChannel("mmo_preorders_channel");
-        poBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "COMPLETED", statusText: "Đang giao hàng", deliveredAccounts: lines, credentials: lines.join("\n") });
-        poBc.close();
-      } catch(eBc) {}
-      try {
-        const mmoBc = new BroadcastChannel("mmo_channel");
-        mmoBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "COMPLETED", statusText: "Đang giao hàng", deliveredAccounts: lines, credentials: lines.join("\n") });
-        mmoBc.close();
-      } catch(eBc2) {}
+      broadcastPreOrderEvent({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "COMPLETED", statusText: "Đang giao hàng", deliveredAccounts: lines, credentials: lines.join("\n") });
 
       // Cập nhật ngay vào toàn bộ các kho localStorage của thành viên
       const uKeys = ["mmo_orders", "mmo_user_orders", "mmo_all_orders"];
@@ -22875,16 +22976,7 @@ function injectAllProductsSchema() {
           }).catch(function(e) { console.warn("Turso sync cancel error:", e); });
         }
       } catch(eTurso) {}
-      try {
-        const poBc = new BroadcastChannel("mmo_preorders_channel");
-        poBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "CANCELLED", statusText: "Admin Hủy & Hoàn Tiền" });
-        poBc.close();
-      } catch(eBc) {}
-      try {
-        const mmoBc = new BroadcastChannel("mmo_channel");
-        mmoBc.postMessage({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "CANCELLED", statusText: "Admin Hủy & Hoàn Tiền" });
-        mmoBc.close();
-      } catch(eBc2) {}
+      broadcastPreOrderEvent({ type: "ORDER_STATUS_CHANGED", orderId: cleanId, status: "CANCELLED", statusText: "Admin Hủy & Hoàn Tiền" });
 
       if (typeof showToast === "function") showToast("✅ Đã hủy đơn #" + (order.orderCode || order.id) + " và hoàn trả tiền vào ví khách hàng!", "info");
       renderAdminPreOrdersTable();
