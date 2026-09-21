@@ -24778,7 +24778,7 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens
     throw new Error('Chưa có API Key cho ' + prov.name + '. Vui lòng bấm link bên dưới lấy key miễn phí và bấm Lưu!');
   }
 
-  const effectiveMaxTokens = Math.min(maxTokens || 4096, 8192);
+  const effectiveMaxTokens = Math.min(maxTokens || 8192, 8192);
 
   if (prov.isOpenAiFormat) {
     const headers = {
@@ -25963,23 +25963,23 @@ async function generateAiArticle() {
     ? `TỪ KHÓA SEO ĐÃ CUNG CẤP: ${keywords.trim()}`
     : `TỪ KHÓA SEO: BẠN HÃY TỰ ĐỘNG PHÂN TÍCH CHỦ ĐỀ VÀ XÁC ĐỊNH BỘ TỪ KHÓA SEO TỐI ƯU NHẤT (1 từ khóa chính và 2-3 từ khóa phụ LSI).`;
 
-  // Thiết lập số lượng từ & Max tokens theo lựa chọn của người dùng
+  // Thiết lập số lượng từ & Max tokens chuẩn 8192 tokens chống dừng giữa chừng
   let wordCountDesc = '';
-  let targetMaxTokens = 4096;
+  let targetMaxTokens = 8192;
   if (wordCount === '6000') {
-    wordCountDesc = 'Tối thiểu 4000 đến 5000 chữ (Bài viết cực kỳ chi tiết, mở rộng tối đa mọi mục, không bỏ sót bước nào)';
+    wordCountDesc = 'Tối thiểu 3500 đến 4500 chữ (Bài viết cực kỳ chi tiết, mở rộng tối đa mọi mục, phân bổ đều để không bỏ sót FAQ và Kết luận)';
     targetMaxTokens = 8192;
   } else if (wordCount === '4000') {
-    wordCountDesc = 'Tối thiểu 3000 đến 3500 chữ (Bài viết chi tiết chuẩn E-E-A-T từ A-Z, chuyên sâu, mở rộng các luận điểm)';
-    targetMaxTokens = 6144;
+    wordCountDesc = 'Khoảng 2500 đến 3000 chữ (Bài viết chi tiết chuẩn E-E-A-T từ A-Z, chuyên sâu, phân bổ dung lượng đều từ đầu đến cuối)';
+    targetMaxTokens = 8192;
   } else if (wordCount === 'tuong_duong') {
     const sampleWordCount = (sampleData && sampleData.textSnippet) ? sampleData.textSnippet.split(/\s+/).length : 2000;
-    const estWords = Math.max(2000, Math.min(4500, Math.round(sampleWordCount * 1.2)));
-    wordCountDesc = `Ít nhất ${estWords} chữ hoặc tương đương độ dài bài mẫu`;
-    targetMaxTokens = 6144;
+    const estWords = Math.max(1800, Math.min(3500, Math.round(sampleWordCount * 1.1)));
+    wordCountDesc = `Khoảng ${estWords} chữ tương đương bài mẫu, đảm bảo hoàn thành trọn vẹn cả FAQ và Kết luận`;
+    targetMaxTokens = 8192;
   } else {
-    wordCountDesc = 'Tối thiểu 2000 đến 2500 chữ (Bài viết chuẩn SEO chuyên sâu, hướng dẫn bài bản, giàu thông tin thực tế)';
-    targetMaxTokens = 4096;
+    wordCountDesc = 'Khoảng 1800 đến 2200 chữ (Bài viết chuẩn SEO chuyên sâu, súc tích, phân bổ cân đối từ đầu đến cuối, BẮT BUỘC hoàn thành cả FAQ & Kết luận)';
+    targetMaxTokens = 8192;
   }
 
   // Lọc chỉ lấy những ảnh đã được người dùng tích chọn (selected !== false) và có URL hợp lệ
@@ -26037,6 +26037,9 @@ HÌNH THỨC: ${postTypeLabel}
 ${sampleInstruction}
 
 🚨 NGUYÊN TẮC CỐT LÕI BẮT BUỘC CỦA BÀI BLOG CHUẨN SEO 2026 (TUÂN THỦ TUYỆT ĐỐI 100%):
+0. QUY TẮC HOÀN THIỆN TOÀN BỘ BÀI VIẾT (CRITICAL - KHÔNG ĐƯỢC BỎ DỞ):
+   - BẮT BUỘC PHẢI VIẾT HOÀN TẤT 100% BÀI VIẾT TỪ ĐẦU ĐẾN CUỐI: Phải có đầy đủ Mở bài, Các bước hướng dẫn, Các lỗi thường gặp, Câu hỏi thường gặp (FAQ), Lời kết và Khối SEO Meta.
+   - TUYỆT ĐỐI KHÔNG ĐƯỢC DỪNG LẠI Ở GIỮA CHỪNG. Phân bổ dung lượng từng mục cô đọng, súc tích, giàu giá trị thực tế, không viết lan man dài dòng ở các bước đầu để đảm bảo dung lượng hoàn thành đầy đủ cả FAQ và Lời kết.
 1. ĐOẠN MỞ ĐẦU (100–180 từ) - TRẢ LỜI ĐÚNG NHU CẦU NGAY TỪ ĐẦU:
    - TUYỆT ĐỐI KHÔNG mở bài bằng các câu sáo rỗng như "Trong thời đại công nghệ 4.0...", "Ngày nay...", "Trong thế giới số...", "Như chúng ta đã biết...".
    - Áp dụng chuẩn công thức: [Vấn đề người đọc gặp phải] → [Giải pháp khắc phục] → [Bài viết này giúp gì] → [Điều kiện cần thiết].
@@ -26141,6 +26144,48 @@ LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hư
 
     if (!rawText) {
       throw (lastErr || new Error("Chưa có API Key cho " + prov.name + " hoặc tất cả nền tảng AI đều bận. Vui lòng cấu hình API Key trong Cấu Hình Nền Tảng AI!"));
+    }
+
+    // ============================================================
+    // CƠ CHẾ TỰ ĐỘNG VIẾT TIẾP KHI BÀI VIẾT BỊ CẮT NGANG (AUTO-CONTINUATION)
+    // Đảm bảo 100% bài viết luôn có đầy đủ FAQ, Lời kết và SEO Meta!
+    // ============================================================
+    const lowerRaw = rawText.toLowerCase();
+    const hasSeoMeta = rawText.includes('===SEO_META_START===') && rawText.includes('===SEO_META_END===');
+    const hasFaq = lowerRaw.includes('faq') || lowerRaw.includes('câu hỏi thường gặp') || lowerRaw.includes('thường gặp');
+    const hasConclusion = lowerRaw.includes('lời kết') || lowerRaw.includes('kết luận') || lowerRaw.includes('bước tiếp theo');
+
+    if (!hasSeoMeta || !hasFaq || !hasConclusion) {
+      if (statusEl) {
+        statusEl.innerHTML = '<span style="color:#38bdf8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tự động viết tiếp phần còn thiếu (FAQ, Lời kết &amp; SEO Meta)...</span>';
+      }
+      try {
+        const lastTail = rawText.slice(-300).trim();
+        const activeKey = successfulProv ? (successfulProv.id || pKey) : pKey;
+        const activeModel = modelId || '';
+        
+        let missingItems = [];
+        if (!hasFaq) missingItems.push('- Mục <h2>Câu hỏi thường gặp (FAQ)</h2> (tối thiểu 3-4 câu hỏi thực tế và câu trả lời súc tích)');
+        if (!hasConclusion) missingItems.push('- Mục <h2>Lời kết & Bước tiếp theo</h2> (kêu gọi hành động tự nhiên đến muabantaikhoanmmo.com)');
+        if (!hasSeoMeta) missingItems.push('- Khối SEO Meta bắt buộc:\n===SEO_META_START===\nKEYWORDS: ...\nTITLE: ...\nMETA: ...\nLABELS: ...\n===SEO_META_END===');
+
+        const continuePrompt = `Bài viết trước của bạn về chủ đề "${effectiveTopic}" đã viết đến đoạn sau:
+"""
+...${lastTail}
+"""
+NHƯNG DO GIỚI HẠN ĐỘ DÀI TOKEN, BÀI VIẾT BỊ DỪNG LẠI Ở ĐÂY VÀ ĐANG BỊ THIẾU CÁC MỤC CUỐI CÙNG:
+${missingItems.join('\n')}
+
+YÊU CẦU BẮT BUỘC: Bạn hãy VIẾT TIẾP TỤC NGAY TỪ ĐOẠN ĐANG DỞ ĐỂ HOÀN THÀNH TOÀN BỘ CÁC MỤC CÒN THIẾU Ở TRÊN.
+Chỉ xuất các thẻ HTML tiếp theo và khối SEO_META, tuyệt đối không lặp lại đoạn văn đã viết ở trên!`;
+
+        const continuedText = await callAiChatService(activeKey, activeModel, continuePrompt, "Bạn là chuyên gia SEO Content viết tiếp hoàn thiện 100% bài viết chuẩn SEO 2026.", 4096);
+        if (continuedText && continuedText.trim()) {
+          rawText = rawText + '\n\n' + continuedText.trim();
+        }
+      } catch (contErr) {
+        console.warn('Auto-continuation notice:', contErr);
+      }
     }
 
     const seoStart = rawText.indexOf('===SEO_META_START===');
