@@ -40,7 +40,7 @@
     window.adminOrdersStatusFilter = "ALL";
   
 
-const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyHkIlfSpwQXrtVz65Z-k0dwSyAaWbr6NW32-xPB8s8pgi_gw/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
 
     const MOCK_DATA = {
       categories: ["Tất cả","AI & Video","Facebook","Gmail","Rom & Tools","TikTok","HOT MAIL","Intagram","Chatgpt","Phone Farm","VPN Proxy","Capcut","Canva","Khác","YOUTUBE"],
@@ -6348,13 +6348,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       } catch(e) {}
 
       // Gửi mã OTP vào Email người dùng qua Google Apps Script (gửi từ muabantaikhoanmmo@gmail.com)
+      const ACTIVE_GAS_OTP_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
       let gasRes = null;
-      if (typeof callGasApi === "function") {
-        try {
-          gasRes = await callGasApi("sendPasswordResetOtp", { email: email, otp: otpCode });
-          console.log("[ForgotPass] Email dispatch response:", gasRes);
-        } catch (err) {
-          console.warn("[ForgotPass] Email dispatch error:", err);
+      try {
+        const otpUrl = ACTIVE_GAS_OTP_URL + "?action=sendPasswordResetOtp&email=" + encodeURIComponent(email) + "&otp=" + encodeURIComponent(otpCode);
+        const rawRes = await fetch(otpUrl, { method: "GET" });
+        gasRes = await rawRes.json();
+        console.log("[ForgotPass] Direct OTP dispatch response:", gasRes);
+      } catch (errDirect) {
+        if (typeof callGasApi === "function") {
+          try {
+            gasRes = await callGasApi("sendPasswordResetOtp", { email: email, otp: otpCode });
+            console.log("[ForgotPass] Fallback callGasApi response:", gasRes);
+          } catch (err) {
+            console.warn("[ForgotPass] Email dispatch error:", err);
+          }
         }
       }
 
@@ -6437,8 +6445,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
 
       // Đồng bộ mật khẩu mới lên Cloud
-      if (typeof callGasApi === "function") {
-        callGasApi("resetPassword", { email: email, newPassword: newPass }).catch(function() {});
+      const ACTIVE_GAS_OTP_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
+      try {
+        const resetUrl = ACTIVE_GAS_OTP_URL + "?action=resetPassword&email=" + encodeURIComponent(email) + "&newPassword=" + encodeURIComponent(newPass);
+        await fetch(resetUrl, { method: "GET" });
+      } catch(e) {
+        if (typeof callGasApi === "function") {
+          callGasApi("resetPassword", { email: email, newPassword: newPass }).catch(function() {});
+        }
       }
 
       showToast("🎉 Đặt lại mật khẩu thành công! Vui lòng đăng nhập với mật khẩu mới.", "success");
@@ -12288,17 +12302,20 @@ function syncAllOpenViewsStock(changedProdId) {
     // 3. CLOUD BACKEND & GOOGLE APPS SCRIPT API CONNECTOR
     // =========================================================================
     function getBackendApiUrl() {
+      const CURRENT_GAS_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
       try {
         const sys = typeof getGeneralSettings === "function" ? getGeneralSettings() : {};
         if (sys && sys.gasUrl && sys.gasUrl.trim()) {
-          if (sys.gasUrl.includes("AKfycbxNVgZI") || sys.gasUrl.includes("AKfycbx0dSYQOt6") || sys.gasUrl.includes("AKfycbx5PNa")) return "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyHkIlfSpwQXrtVz65Z-k0dwSyAaWbr6NW32-xPB8s8pgi_gw/exec";
-          return sys.gasUrl.trim();
+          const u = sys.gasUrl.trim();
+          if (u.includes("AKfycbxX7-") || u.includes("AKfycbxNVgZI") || u.includes("AKfycbx0dSYQOt6") || u.includes("AKfycbx5PNa")) {
+            return CURRENT_GAS_URL;
+          }
+          if (u.includes("AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW")) {
+            return u;
+          }
         }
       } catch(e) {}
-      if (typeof API_URL !== "undefined" && API_URL && !API_URL.includes("PLACEHOLDER")) {
-        return API_URL.trim();
-      }
-      return "";
+      return CURRENT_GAS_URL;
     }
     window.getBackendApiUrl = getBackendApiUrl;
 
