@@ -4339,6 +4339,71 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     }
     window.processAffiliateSettlement = processAffiliateSettlement;
 
+    // =========================================================================
+    // AFFILIATE CLOUD SYNC ENGINE (TURSO DB & REALTIME BROADCAST)
+    // =========================================================================
+    async function syncAffiliateRegistrationToCloud(buyerEmail, buyerName, referrerCode, authType = "EMAIL") {
+      try {
+        if (!buyerEmail || !referrerCode) return;
+        const cleanRef = String(referrerCode).trim().toLowerCase();
+        const cleanEmail = String(buyerEmail).trim().toLowerCase();
+        if (!cleanEmail || !cleanRef || cleanEmail === cleanRef || cleanEmail.split("@")[0] === cleanRef) return;
+
+        // 1. Post trực tiếp lên Cloudflare Worker Turso Database (SSOT tập trung toàn cầu)
+        fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/affiliate/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            buyerEmail: cleanEmail,
+            buyerName: buyerName || cleanEmail.split("@")[0],
+            referrerCode: cleanRef,
+            authType: authType
+          }),
+          keepalive: true
+        }).catch(e => console.warn("Worker affiliate register error:", e));
+
+        // 2. Phát sóng BroadcastChannel tức thì xuyên tab/cửa sổ cùng trình duyệt (0ms)
+        try {
+          if (typeof BroadcastChannel !== "undefined") {
+            const bc = new BroadcastChannel("mmo_affiliate_channel");
+            bc.postMessage({
+              type: "NEW_F1_MEMBER",
+              member: {
+                name: buyerName || cleanEmail.split("@")[0],
+                email: cleanEmail,
+                referredBy: cleanRef,
+                authType: authType,
+                created: new Date().toLocaleDateString("vi-VN")
+              }
+            });
+            setTimeout(() => bc.close(), 1000);
+          }
+        } catch(e) {}
+      } catch(err) {
+        console.warn("syncAffiliateRegistrationToCloud err:", err);
+      }
+    }
+    window.syncAffiliateRegistrationToCloud = syncAffiliateRegistrationToCloud;
+
+    async function fetchCloudAffiliateMembers(referrerCode) {
+      try {
+        if (!referrerCode) return [];
+        const cleanRef = String(referrerCode).trim().toLowerCase();
+        const res = await fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/affiliate/members?referrer=" + encodeURIComponent(cleanRef), {
+          method: "GET",
+          headers: { "Accept": "application/json" }
+        });
+        const json = await res.json().catch(() => null);
+        if (json && json.status === "success" && Array.isArray(json.members)) {
+          return json.members;
+        }
+      } catch(e) {
+        console.warn("fetchCloudAffiliateMembers error:", e);
+      }
+      return [];
+    }
+    window.fetchCloudAffiliateMembers = fetchCloudAffiliateMembers;
+
     function renderAffiliateDashboard() {
       try {
         if (!currentUser) return;
@@ -4350,131 +4415,167 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           processAffiliateSettlement();
         }
 
-        // 1. Populate Ref Link Input
+        // 1. Điền link giới thiệu vào ô input
         const refLinkInp = document.getElementById("affRefLinkInput");
         if (refLinkInp) {
           refLinkInp.value = window.location.origin + window.location.pathname + "?ref=" + encodeURIComponent(affCode);
         }
 
-        // 2. Find F1 Members
-        const allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
-        const f1Users = allUsers.filter(function(u) {
-          if (!u || !u.referredBy) return false;
-          const ref = (u.referredBy || "").toLowerCase().trim();
-          return ref === affCode || ref === myEmail;
-        });
+        function renderAffiliateF1AndCommissions() {
+          const allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+          const f1Users = allUsers.filter(function(u) {
+            if (!u || !u.referredBy) return false;
+            const ref = (u.referredBy || "").toLowerCase().trim();
+            return ref === affCode || ref === myEmail || ref === affCode.split("@")[0];
+          });
 
-        // 3. Find My Affiliate Commissions
-        const affOrders = (typeof getAffiliateOrders === "function") ? getAffiliateOrders() : [];
-        const myAffOrders = affOrders.filter(function(o) {
-          const rEmail = (o.referrerEmail || "").toLowerCase().trim();
-          const rCode = (o.referrerCode || "").toLowerCase().trim();
-          return rEmail === myEmail || rCode === affCode;
-        });
+          const affOrders = (typeof getAffiliateOrders === "function") ? getAffiliateOrders() : [];
+          const myAffOrders = affOrders.filter(function(o) {
+            const rEmail = (o.referrerEmail || "").toLowerCase().trim();
+            const rCode = (o.referrerCode || "").toLowerCase().trim();
+            return rEmail === myEmail || rCode === affCode;
+          });
 
-        // Tính toán hoa hồng tạm tính (HOLDING) và hoa hồng thực nhận (APPROVED)
-        const pendingCommissions = myAffOrders.filter(o => o.status === "HOLDING");
-        const approvedCommissions = myAffOrders.filter(o => o.status === "APPROVED");
+          const pendingCommissions = myAffOrders.filter(o => o.status === "HOLDING");
+          const approvedCommissions = myAffOrders.filter(o => o.status === "APPROVED");
 
-        const totalPending = pendingCommissions.reduce(function(sum, o) {
-          return sum + (Number(o.commissionAmount) || 0);
-        }, 0);
+          const totalPending = pendingCommissions.reduce(function(sum, o) {
+            return sum + (Number(o.commissionAmount) || 0);
+          }, 0);
 
-        const totalApproved = approvedCommissions.reduce(function(sum, o) {
-          return sum + (Number(o.commissionAmount) || 0);
-        }, 0);
+          const totalApproved = approvedCommissions.reduce(function(sum, o) {
+            return sum + (Number(o.commissionAmount) || 0);
+          }, 0);
 
-        // 4. Update Stats Cards
-        const affPending = document.getElementById("affPendingComm");
-        if (affPending) affPending.innerText = (typeof formatVND === "function") ? formatVND(totalPending) : (totalPending.toLocaleString("vi-VN") + " đ");
+          // Cập nhật các thẻ số liệu
+          const affPending = document.getElementById("affPendingComm");
+          if (affPending) affPending.innerText = (typeof formatVND === "function") ? formatVND(totalPending) : (totalPending.toLocaleString("vi-VN") + " đ");
 
-        const affApproved = document.getElementById("affApprovedComm");
-        if (affApproved) affApproved.innerText = (typeof formatVND === "function") ? formatVND(totalApproved) : (totalApproved.toLocaleString("vi-VN") + " đ");
+          const affApproved = document.getElementById("affApprovedComm");
+          if (affApproved) affApproved.innerText = (typeof formatVND === "function") ? formatVND(totalApproved) : (totalApproved.toLocaleString("vi-VN") + " đ");
 
-        const affF1Count = document.getElementById("affTotalF1Count");
-        if (affF1Count) affF1Count.innerText = f1Users.length;
+          const affF1Count = document.getElementById("affTotalF1Count");
+          if (affF1Count) affF1Count.innerText = f1Users.length;
 
-        const affF1Orders = document.getElementById("affTotalF1Orders");
-        if (affF1Orders) affF1Orders.innerText = myAffOrders.filter(o => o.status !== "CANCELLED").length;
+          const affF1Orders = document.getElementById("affTotalF1Orders");
+          if (affF1Orders) affF1Orders.innerText = myAffOrders.filter(o => o.status !== "CANCELLED").length;
 
-        const affF1Badge = document.getElementById("affF1ListBadge");
-        if (affF1Badge) affF1Badge.innerText = f1Users.length + " thành viên";
+          const affF1Badge = document.getElementById("affF1ListBadge");
+          if (affF1Badge) affF1Badge.innerText = f1Users.length + " thành viên";
 
-        // 5. Populate F1 Members Table
-        const tbody = document.getElementById("affF1TableBody");
-        if (tbody) {
-          if (f1Users.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:24px; color:#64748b;">Chưa có thành viên nào đăng ký qua link của bạn. Hãy chia sẻ link ngay để nhận hoa hồng!</td></tr>';
-          } else {
-            tbody.innerHTML = f1Users.map(function(u) {
-              const uOrders = myAffOrders.filter(function(o) {
-                return (o.buyerEmail || "").toLowerCase().trim() === (u.email || "").toLowerCase().trim();
-              });
-              const uComm = uOrders.reduce(function(sum, o) { return sum + (Number(o.commissionAmount) || 0); }, 0);
-              return '<tr>' +
-                '<td style="font-weight:700; color:#fff; vertical-align:middle;"><i class="fa-solid fa-user-tag green" style="margin-right:6px;"></i>' + escapeHtml(u.name || u.email.split("@")[0]) + '</td>' +
-                '<td style="color:#94a3b8; font-family:monospace; vertical-align:middle;">' + escapeHtml(u.email) + '</td>' +
-                '<td style="color:#64748b; vertical-align:middle;">' + escapeHtml(u.created || '2026') + '</td>' +
-                '<td style="font-weight:700; color:#10b981; vertical-align:middle;">' + uOrders.length + ' đơn (' + (typeof formatVND === "function" ? formatVND(uComm) : uComm + " đ") + ')</td>' +
-                '<td style="vertical-align:middle;"><span style="background:rgba(16,185,129,0.15); color:#10b981; padding:3px 8px; border-radius:4px; font-weight:700; font-size:0.75rem;">Đang hoạt động</span></td>' +
-              '</tr>';
-            }).join('');
+          // Điền bảng danh sách thành viên F1
+          const tbody = document.getElementById("affF1TableBody");
+          if (tbody) {
+            if (f1Users.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:24px; color:#64748b;">Chưa có thành viên nào đăng ký qua link của bạn. Hãy chia sẻ link ngay để nhận hoa hồng!</td></tr>';
+            } else {
+              tbody.innerHTML = f1Users.map(function(u) {
+                const uOrders = myAffOrders.filter(function(o) {
+                  return (o.buyerEmail || "").toLowerCase().trim() === (u.email || "").toLowerCase().trim();
+                });
+                const uComm = uOrders.reduce(function(sum, o) { return sum + (Number(o.commissionAmount) || 0); }, 0);
+                return '<tr>' +
+                  '<td style="font-weight:700; color:#fff; vertical-align:middle;"><i class="fa-solid fa-user-tag green" style="margin-right:6px;"></i>' + escapeHtml(u.name || u.email.split("@")[0]) + '</td>' +
+                  '<td style="color:#94a3b8; font-family:monospace; vertical-align:middle;">' + escapeHtml(u.email) + '</td>' +
+                  '<td style="color:#64748b; vertical-align:middle;">' + escapeHtml(u.created || '2026') + '</td>' +
+                  '<td style="font-weight:700; color:#10b981; vertical-align:middle;">' + uOrders.length + ' đơn (' + (typeof formatVND === "function" ? formatVND(uComm) : uComm + " đ") + ')</td>' +
+                  '<td style="vertical-align:middle;"><span style="background:rgba(16,185,129,0.15); color:#10b981; padding:3px 8px; border-radius:4px; font-weight:700; font-size:0.75rem;">Đang hoạt động</span></td>' +
+                '</tr>';
+              }).join('');
+            }
+          }
+
+          // Điền bảng lịch sử hoa hồng
+          const commTbody = document.getElementById("affCommHistoryTableBody");
+          const commBadge = document.getElementById("affCommCountBadge");
+          if (commBadge) commBadge.innerText = myAffOrders.length + " đơn hoa hồng";
+
+          if (commTbody) {
+            if (myAffOrders.length === 0) {
+              commTbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:28px; color:#64748b;">Chưa có đơn hàng nào phát sinh hoa hồng. Chia sẻ link giới thiệu của bạn để nhận hoa hồng 10% - 30% trên mỗi đơn hàng!</td></tr>';
+            } else {
+              const nowTs = Date.now();
+              commTbody.innerHTML = myAffOrders.map(function(o) {
+                const oId = o.orderId || "";
+                const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleString("vi-VN", { hour:"2-digit", minute:"2-digit", day:"2-digit", month:"2-digit", year:"numeric" }) : "--";
+                const totalStr = (typeof formatVND === "function") ? formatVND(o.orderTotal) : (o.orderTotal.toLocaleString("vi-VN") + " đ");
+                const commStr = (typeof formatVND === "function") ? formatVND(o.commissionAmount) : (o.commissionAmount.toLocaleString("vi-VN") + " đ");
+
+                let holdText = "";
+                let statusBadge = "";
+
+                if (o.status === "HOLDING") {
+                  const remainMs = Math.max(0, (o.holdUntil || 0) - nowTs);
+                  const totalHours = Math.floor(remainMs / (1000 * 60 * 60));
+                  const days = Math.floor(totalHours / 24);
+                  const hours = totalHours % 24;
+                  const minutes = Math.floor((remainMs % (1000 * 60 * 60)) / (1000 * 60));
+
+                  let countdownStr = "";
+                  if (days > 0) countdownStr = days + " ngày " + hours + " giờ";
+                  else if (hours > 0) countdownStr = hours + " giờ " + minutes + " phút";
+                  else countdownStr = minutes + " phút";
+
+                  holdText = '<span style="color:#f59e0b; font-weight:700; font-size:0.78rem; display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-hourglass-half fa-spin"></i> Còn ' + countdownStr + '</span>';
+                  statusBadge = '<span style="background:rgba(245,158,11,0.18); border:1px solid #f59e0b; color:#fbbf24; font-weight:800; padding:3px 8px; border-radius:4px; font-size:0.72rem; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-clock"></i> Tạm Giữ 3 Ngày</span>';
+                } else if (o.status === "APPROVED") {
+                  holdText = '<span style="color:#10b981; font-weight:700; font-size:0.78rem; display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-circle-check"></i> Đã hoàn tất 3 ngày</span>';
+                  statusBadge = '<span style="background:rgba(16,185,129,0.18); border:1px solid #10b981; color:#34d399; font-weight:800; padding:3px 8px; border-radius:4px; font-size:0.72rem; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-wallet"></i> Đã Vào Ví (+' + commStr + ')</span>';
+                } else if (o.status === "CANCELLED") {
+                  holdText = '<span style="color:#ef4444; font-weight:600; font-size:0.78rem; display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-ban"></i> Đã dừng giữ</span>';
+                  statusBadge = '<span style="background:rgba(239,68,68,0.18); border:1px solid #ef4444; color:#f87171; font-weight:800; padding:3px 8px; border-radius:4px; font-size:0.72rem; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;" title="' + escapeHtml(o.cancelReason || 'Đơn hoàn tiền / khiếu nại') + '"><i class="fa-solid fa-circle-xmark"></i> Đã Hủy (Hoàn Tiền)</span>';
+                }
+
+                return '<tr>' +
+                  '<td style="font-family:monospace; font-weight:800; color:#38bdf8; font-size:0.82rem; white-space:nowrap;">#' + escapeHtml(oId) + '</td>' +
+                  '<td style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">' + dateStr + '</td>' +
+                  '<td style="font-size:0.82rem; color:#fff; white-space:nowrap;"><strong style="display:block;">' + escapeHtml(o.buyerName || o.buyerEmail.split("@")[0]) + '</strong><span style="color:#94a3b8; font-size:0.72rem; font-family:monospace;">' + escapeHtml(o.buyerEmail) + '</span></td>' +
+                  '<td style="font-size:0.82rem; color:#cbd5e1;"><strong style="color:#fff; display:block;">' + escapeHtml(o.productName || 'Sản phẩm MMO') + '</strong>' + (o.variant && o.variant !== 'Mặc định' ? ('<span style="font-size:0.72rem; color:#a855f7;">' + escapeHtml(o.variant) + '</span>') : '') + '</td>' +
+                  '<td style="font-weight:700; color:#fff; font-size:0.82rem; white-space:nowrap;">' + totalStr + '</td>' +
+                  '<td style="font-weight:800; color:#10b981; font-size:0.85rem; white-space:nowrap;">+' + commStr + ' <span style="font-size:0.7rem; color:#94a3b8;">(' + (o.commissionRate || 10) + '%)</span></td>' +
+                  '<td style="white-space:nowrap;">' + holdText + '</td>' +
+                  '<td style="white-space:nowrap;">' + statusBadge + '</td>' +
+                '</tr>';
+              }).join('');
+            }
           }
         }
 
-        // 6. Populate Affiliate Commissions History Table
-        const commTbody = document.getElementById("affCommHistoryTableBody");
-        const commBadge = document.getElementById("affCommCountBadge");
-        if (commBadge) commBadge.innerText = myAffOrders.length + " đơn hoa hồng";
+        // Render ngay lập tức từ bộ nhớ cục bộ (0ms không giật lag)
+        renderAffiliateF1AndCommissions();
 
-        if (commTbody) {
-          if (myAffOrders.length === 0) {
-            commTbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:28px; color:#64748b;">Chưa có đơn hàng nào phát sinh hoa hồng. Chia sẻ link giới thiệu của bạn để nhận hoa hồng 10% - 30% trên mỗi đơn hàng!</td></tr>';
-          } else {
-            const nowTs = Date.now();
-            commTbody.innerHTML = myAffOrders.map(function(o) {
-              const oId = o.orderId || "";
-              const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleString("vi-VN", { hour:"2-digit", minute:"2-digit", day:"2-digit", month:"2-digit", year:"numeric" }) : "--";
-              const totalStr = (typeof formatVND === "function") ? formatVND(o.orderTotal) : (o.orderTotal.toLocaleString("vi-VN") + " đ");
-              const commStr = (typeof formatVND === "function") ? formatVND(o.commissionAmount) : (o.commissionAmount.toLocaleString("vi-VN") + " đ");
-
-              let holdText = "";
-              let statusBadge = "";
-
-              if (o.status === "HOLDING") {
-                const remainMs = Math.max(0, (o.holdUntil || 0) - nowTs);
-                const totalHours = Math.floor(remainMs / (1000 * 60 * 60));
-                const days = Math.floor(totalHours / 24);
-                const hours = totalHours % 24;
-                const minutes = Math.floor((remainMs % (1000 * 60 * 60)) / (1000 * 60));
-
-                let countdownStr = "";
-                if (days > 0) countdownStr = days + " ngày " + hours + " giờ";
-                else if (hours > 0) countdownStr = hours + " giờ " + minutes + " phút";
-                else countdownStr = minutes + " phút";
-
-                holdText = '<span style="color:#f59e0b; font-weight:700; font-size:0.78rem; display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-hourglass-half fa-spin"></i> Còn ' + countdownStr + '</span>';
-                statusBadge = '<span style="background:rgba(245,158,11,0.18); border:1px solid #f59e0b; color:#fbbf24; font-weight:800; padding:3px 8px; border-radius:4px; font-size:0.72rem; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-clock"></i> Tạm Giữ 3 Ngày</span>';
-              } else if (o.status === "APPROVED") {
-                holdText = '<span style="color:#10b981; font-weight:700; font-size:0.78rem; display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-circle-check"></i> Đã hoàn tất 3 ngày</span>';
-                statusBadge = '<span style="background:rgba(16,185,129,0.18); border:1px solid #10b981; color:#34d399; font-weight:800; padding:3px 8px; border-radius:4px; font-size:0.72rem; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-wallet"></i> Đã Vào Ví (+' + commStr + ')</span>';
-              } else if (o.status === "CANCELLED") {
-                holdText = '<span style="color:#ef4444; font-weight:600; font-size:0.78rem; display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-ban"></i> Đã dừng giữ</span>';
-                statusBadge = '<span style="background:rgba(239,68,68,0.18); border:1px solid #ef4444; color:#f87171; font-weight:800; padding:3px 8px; border-radius:4px; font-size:0.72rem; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;" title="' + escapeHtml(o.cancelReason || 'Đơn hoàn tiền / khiếu nại') + '"><i class="fa-solid fa-circle-xmark"></i> Đã Hủy (Hoàn Tiền)</span>';
+        // Đồng bộ tức thì từ Cloudflare Worker Turso DB để lấy thành viên đăng ký từ máy khác / trình duyệt khác
+        if (typeof fetchCloudAffiliateMembers === "function") {
+          fetchCloudAffiliateMembers(affCode).then(function(cloudMembers) {
+            if (Array.isArray(cloudMembers) && cloudMembers.length > 0) {
+              let localUsers = getRegisteredUsers();
+              let updated = false;
+              cloudMembers.forEach(function(cm) {
+                const cmEmail = (cm.email || "").toLowerCase().trim();
+                if (!cmEmail) return;
+                const found = localUsers.find(u => (u.email || "").toLowerCase().trim() === cmEmail);
+                if (!found) {
+                  localUsers.push({
+                    name: cm.name || cmEmail.split("@")[0],
+                    email: cmEmail,
+                    role: "MEMBER",
+                    balance: 0,
+                    created: cm.created || new Date().toLocaleDateString("vi-VN"),
+                    avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(cmEmail),
+                    referredBy: affCode
+                  });
+                  updated = true;
+                } else if (!found.referredBy || found.referredBy.toLowerCase().trim() !== affCode) {
+                  found.referredBy = affCode;
+                  updated = true;
+                }
+              });
+              if (updated) {
+                saveRegisteredUsers(localUsers);
+                renderAffiliateF1AndCommissions();
               }
-
-              return '<tr>' +
-                '<td style="font-family:monospace; font-weight:800; color:#38bdf8; font-size:0.82rem; white-space:nowrap;">#' + escapeHtml(oId) + '</td>' +
-                '<td style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">' + dateStr + '</td>' +
-                '<td style="font-size:0.82rem; color:#fff; white-space:nowrap;"><strong style="display:block;">' + escapeHtml(o.buyerName || o.buyerEmail.split("@")[0]) + '</strong><span style="color:#94a3b8; font-size:0.72rem; font-family:monospace;">' + escapeHtml(o.buyerEmail) + '</span></td>' +
-                '<td style="font-size:0.82rem; color:#cbd5e1;"><strong style="color:#fff; display:block;">' + escapeHtml(o.productName || 'Sản phẩm MMO') + '</strong>' + (o.variant && o.variant !== 'Mặc định' ? ('<span style="font-size:0.72rem; color:#a855f7;">' + escapeHtml(o.variant) + '</span>') : '') + '</td>' +
-                '<td style="font-weight:700; color:#fff; font-size:0.82rem; white-space:nowrap;">' + totalStr + '</td>' +
-                '<td style="font-weight:800; color:#10b981; font-size:0.85rem; white-space:nowrap;">+' + commStr + ' <span style="font-size:0.7rem; color:#94a3b8;">(' + (o.commissionRate || 10) + '%)</span></td>' +
-                '<td style="white-space:nowrap;">' + holdText + '</td>' +
-                '<td style="white-space:nowrap;">' + statusBadge + '</td>' +
-              '</tr>';
-            }).join('');
-          }
+            }
+          }).catch(function() {});
         }
 
       } catch(e) {
@@ -4482,6 +4583,32 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       }
     }
     window.renderAffiliateDashboard = renderAffiliateDashboard;
+
+    // Lắng nghe BroadcastChannel cập nhật F1 thời gian thực (0ms)
+    try {
+      if (typeof window !== "undefined" && typeof BroadcastChannel !== "undefined") {
+        const affBc = new BroadcastChannel("mmo_affiliate_channel");
+        affBc.onmessage = function(ev) {
+          if (ev && ev.data && ev.data.type === "NEW_F1_MEMBER") {
+            const mem = ev.data.member;
+            if (mem && mem.referredBy) {
+              const curRef = (currentUser && currentUser.email ? currentUser.email.split("@")[0] : "").toLowerCase();
+              const myEmail = (currentUser && currentUser.email ? currentUser.email : "").toLowerCase();
+              if (curRef && (curRef === mem.referredBy.toLowerCase() || myEmail === mem.referredBy.toLowerCase())) {
+                let uList = getRegisteredUsers();
+                if (!uList.some(u => (u.email || "").toLowerCase().trim() === mem.email.toLowerCase().trim())) {
+                  uList.push(mem);
+                  saveRegisteredUsers(uList);
+                  if (typeof renderAffiliateDashboard === "function") {
+                    renderAffiliateDashboard();
+                  }
+                }
+              }
+            }
+          }
+        };
+      }
+    } catch(e) {}
 
     function saveProductsToStorage() {
       // Dùng setTimeout(0) để nhả main thread, tránh đơ trang khi data lớn
@@ -6266,6 +6393,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         const savedRefCode = (localStorage.getItem("mmo_ref_code") || sessionStorage.getItem("mmo_ref_code") || "").trim().toLowerCase();
         if (savedRefCode && savedRefCode !== email && savedRefCode !== email.split("@")[0]) {
           currentUser.referredBy = (existingUser && existingUser.referredBy) ? existingUser.referredBy : savedRefCode;
+          if (typeof syncAffiliateRegistrationToCloud === "function" && currentUser.referredBy) {
+            syncAffiliateRegistrationToCloud(email, name, currentUser.referredBy, "GOOGLE");
+          }
         }
 
         if (existingIdx !== -1) {
@@ -6436,82 +6566,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         return;
       }
 
-      showToast("⏳ Đang khởi tạo tài khoản...", "info");
-
       const savedRefCode = (localStorage.getItem("mmo_ref_code") || sessionStorage.getItem("mmo_ref_code") || "").trim().toLowerCase();
       let refToAssign = "";
       if (savedRefCode && savedRefCode !== email && savedRefCode !== email.split("@")[0]) {
         refToAssign = savedRefCode;
       }
 
-      try {
-        const res = (typeof callGasApi === "function") ? await callGasApi("register", {
-          mode: "register",
-          action: "register",
-          name: name,
-          email: email,
-          password: pass,
-          referredBy: refToAssign
-        }) : null;
+      const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
+      const role = isAdm ? "Quản Trị Viên" : "MEMBER";
 
-        if (res && res.success && res.user) {
-          currentUser = {
-            userId: res.user.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
-            name: res.user.name || name,
-            email: res.user.email || email,
-            role: res.user.role === "ADMIN" ? "Quản Trị Viên" : (res.user.role || "MEMBER"),
-            balance: Number(res.user.balance) || 0,
-            avatar: res.user.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)),
-            referredBy: res.user.referredBy || refToAssign
-          };
-        } else if (res && res.message && !res.success) {
-          const msgLower = String(res.message || "").toLowerCase();
-          if (msgLower.includes("đã tồn tại") || msgLower.includes("da ton tai")) {
-            showToast("⚠️ " + res.message, "warning");
-            if (typeof switchAuthTab === "function") switchAuthTab("login");
-            return;
-          }
-          if (msgLower.includes("không tồn tại") || msgLower.includes("khong ton tai")) {
-            console.warn("GAS returned user not found during register, creating local account fallback.");
-            const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
-            currentUser = {
-              userId: "USR_" + Math.floor(100000 + Math.random() * 900000),
-              name: name,
-              email: email,
-              role: isAdm ? "Quản Trị Viên" : "MEMBER",
-              balance: 0,
-              avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email),
-              referredBy: refToAssign
-            };
-          } else {
-            showToast("⚠️ " + res.message, "danger");
-            return;
-          }
-        } else {
-          const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
-          const role = isAdm ? "Quản Trị Viên" : "MEMBER";
-          currentUser = {
-            userId: "USR_" + Math.floor(100000 + Math.random() * 900000),
-            name: name,
-            email: email,
-            role: role,
-            balance: 0,
-            avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email),
-            referredBy: refToAssign
-          };
-        }
-      } catch(err) {
-        const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
-        currentUser = {
-          userId: "USR_" + Math.floor(100000 + Math.random() * 900000),
-          name: name,
-          email: email,
-          role: isAdm ? "Quản Trị Viên" : "MEMBER",
-          balance: 0,
-          avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email),
-          referredBy: refToAssign
-        };
-      }
+      // 1. TẠO TÀI KHOẢN TỨC THÌ (0ms) - TUYỆT ĐỐI KHÔNG LÀM ĐƠ/TREO TRÌNH DUYỆT CỦA KHÁCH
+      currentUser = {
+        userId: "USR_" + Math.floor(100000 + Math.random() * 900000),
+        name: name,
+        email: email,
+        role: role,
+        balance: 0,
+        avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email),
+        referredBy: refToAssign,
+        created: new Date().toLocaleDateString("vi-VN")
+      };
 
       const users = getRegisteredUsers();
       if (!users.some(u => (u.email || "").toLowerCase().trim() === email)) {
@@ -6522,8 +6596,38 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       localStorage.setItem("mmo_user", JSON.stringify(currentUser));
       updateUserUI();
       closeModal("authModal");
-      showToast("🎉 Đăng ký tài khoản thành công!", "success");
+      showToast("🎉 Đăng ký tài khoản thành công! Chào mừng " + name, "success");
       switchView("viewProfile");
+
+      // 2. GHI NHẬN THÀNH VIÊN F1 LÊN CLOUD WORKER TURSO & PHÁT SÓNG REALTIME
+      if (refToAssign && typeof syncAffiliateRegistrationToCloud === "function") {
+        syncAffiliateRegistrationToCloud(email, name, refToAssign, "EMAIL");
+      }
+
+      // 3. ĐỒNG BỘ GOOGLE APPS SCRIPT CHẠY NGẦM TRONG NỀN (NON-BLOCKING)
+      if (typeof callGasApi === "function") {
+        callGasApi("register", {
+          mode: "register",
+          action: "register",
+          name: name,
+          email: email,
+          password: pass,
+          referredBy: refToAssign
+        }).then(function(res) {
+          if (res && res.success && res.user && res.user.userId) {
+            currentUser.userId = res.user.userId;
+            localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            let latestUsers = getRegisteredUsers();
+            const idx = latestUsers.findIndex(u => (u.email || "").toLowerCase().trim() === email);
+            if (idx !== -1) {
+              latestUsers[idx].userId = currentUser.userId;
+              saveRegisteredUsers(latestUsers);
+            }
+          }
+        }).catch(function(e) {
+          console.warn("Background GAS registration note:", e);
+        });
+      }
     }
     window.registerNewAccount = registerNewAccount;
     window.handleAccountRegister = registerNewAccount;
@@ -11975,7 +12079,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const isMutation = [
         "adminSaveProduct", "adminDeleteProduct", "adminSaveSettings",
         "adminUpdateUserRole", "adminDeleteStockItem", "adminImportStock", "createOrder",
-        "authGoogle", "authEmail", "register", "login", "verifyAdminPin", "payOrderByWallet",
+        "authGoogle", "authEmail", "verifyAdminPin", "payOrderByWallet",
         "apiSourceBuyProduct", "apiSourceGetProfile", "apiSourceGetProducts", "sendChatMessage", "markChatRead",
         "adminUpdateBalance", "adminUpdateOrderStatus"
       ].includes(action);
