@@ -14544,6 +14544,30 @@ function syncAllOpenViewsStock(changedProdId) {
       `).join("");
     }
 
+    
+    // ============================================================
+    // DYNAMIC REALISTIC VIEWS GENERATOR (v2.5.0)
+    // ============================================================
+    function getBlogRandomViews(blog) {
+      if (!blog) return "1.8k";
+      if (blog.views && blog.views !== "1.5k" && blog.views !== "1.2k" && typeof blog.views === "string" && !blog.views.includes("1.5k")) {
+        return blog.views;
+      }
+      const str = String(blog.id || blog.title || "");
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      const seed = Math.abs(hash);
+      const viewNum = 850 + (seed % 5950);
+      if (viewNum >= 1000) {
+        return (viewNum / 1000).toFixed(1) + "k";
+      }
+      return String(viewNum);
+    }
+    window.getBlogRandomViews = getBlogRandomViews;
+
     function renderBlogPage() {
       const tabs = document.getElementById("blogCategoryTabs");
       const grid = document.getElementById("blogMainGrid");
