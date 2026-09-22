@@ -6381,7 +6381,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
       // Background GAS call
       if (typeof callGasApi === "function") {
-        callGasApi("login", { email: email, password: pass }).then(function(res) {
+        callGasApi("login", { mode: "login", action: "login", email: email, password: pass }).then(function(res) {
           if (res && res.success && res.user) {
             currentUser.userId = res.user.userId || currentUser.userId;
             if (res.user.balance !== undefined) {
@@ -6429,6 +6429,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         return;
       }
 
+      const existingUsers = getRegisteredUsers();
+      if (existingUsers.some(u => (u.email || "").toLowerCase().trim() === email)) {
+        showToast("⚠️ Email này đã được đăng ký! Vui lòng Đăng Nhập hoặc dùng Quên Mật Khẩu.", "warning");
+        if (typeof switchAuthTab === "function") switchAuthTab("login");
+        return;
+      }
+
       showToast("⏳ Đang khởi tạo tài khoản...", "info");
 
       const savedRefCode = (localStorage.getItem("mmo_ref_code") || sessionStorage.getItem("mmo_ref_code") || "").trim().toLowerCase();
@@ -6439,6 +6446,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
 
       try {
         const res = (typeof callGasApi === "function") ? await callGasApi("register", {
+          mode: "register",
+          action: "register",
           name: name,
           email: email,
           password: pass,
@@ -6456,8 +6465,28 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
             referredBy: res.user.referredBy || refToAssign
           };
         } else if (res && res.message && !res.success) {
-          showToast("⚠️ " + res.message, "danger");
-          return;
+          const msgLower = String(res.message || "").toLowerCase();
+          if (msgLower.includes("đã tồn tại") || msgLower.includes("da ton tai")) {
+            showToast("⚠️ " + res.message, "warning");
+            if (typeof switchAuthTab === "function") switchAuthTab("login");
+            return;
+          }
+          if (msgLower.includes("không tồn tại") || msgLower.includes("khong ton tai")) {
+            console.warn("GAS returned user not found during register, creating local account fallback.");
+            const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
+            currentUser = {
+              userId: "USR_" + Math.floor(100000 + Math.random() * 900000),
+              name: name,
+              email: email,
+              role: isAdm ? "Quản Trị Viên" : "MEMBER",
+              balance: 0,
+              avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email),
+              referredBy: refToAssign
+            };
+          } else {
+            showToast("⚠️ " + res.message, "danger");
+            return;
+          }
         } else {
           const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
           const role = isAdm ? "Quản Trị Viên" : "MEMBER";
@@ -6467,7 +6496,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
             email: email,
             role: role,
             balance: 0,
-            avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)
+            avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email),
+            referredBy: refToAssign
           };
         }
       } catch(err) {
@@ -6478,7 +6508,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           email: email,
           role: isAdm ? "Quản Trị Viên" : "MEMBER",
           balance: 0,
-          avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)
+          avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email),
+          referredBy: refToAssign
         };
       }
 
@@ -11944,7 +11975,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const isMutation = [
         "adminSaveProduct", "adminDeleteProduct", "adminSaveSettings",
         "adminUpdateUserRole", "adminDeleteStockItem", "adminImportStock", "createOrder",
-        "authGoogle", "authEmail", "verifyAdminPin", "payOrderByWallet",
+        "authGoogle", "authEmail", "register", "login", "verifyAdminPin", "payOrderByWallet",
         "apiSourceBuyProduct", "apiSourceGetProfile", "apiSourceGetProducts", "sendChatMessage", "markChatRead",
         "adminUpdateBalance", "adminUpdateOrderStatus"
       ].includes(action);
