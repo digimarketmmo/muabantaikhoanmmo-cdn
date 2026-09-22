@@ -15722,6 +15722,88 @@ function syncAllOpenViewsStock(changedProdId) {
       renderArticleRelatedProducts(b);
       renderArticleRelatedGrid(b);
 
+      // [SEO RICH SNIPPETS]: BỔ SUNG ĐÁNH GIÁ SAO (AGGREGATE RATING) VÀ SCHEMA BLOGPOSTING
+      try {
+        let blogSchemaScript = document.getElementById("mmoBlogJsonLdSchema");
+        if (!blogSchemaScript) {
+          blogSchemaScript = document.createElement("script");
+          blogSchemaScript.id = "mmoBlogJsonLdSchema";
+          blogSchemaScript.type = "application/ld+json";
+          document.head.appendChild(blogSchemaScript);
+        }
+        const blogCanonicalUrl = window.location.origin + window.location.pathname + "?post=" + encodeURIComponent(b.id) + "&view=viewBlogDetail";
+        const blogRatingVal = (b.rating || "4.9");
+        const blogReviewCount = String(b.reviewCount || "128");
+        const blogSchema = {
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "BlogPosting",
+              "@id": blogCanonicalUrl + "#article",
+              "headline": b.title,
+              "alternativeHeadline": b.title + " - Hướng Dẫn & Cẩm Nang Kiếm Tiền MMO",
+              "description": b.snippet || (b.title + " - Chia sẻ kinh nghiệm kiếm tiền MMO tại MUABANTAIKHOANMMO.COM"),
+              "url": blogCanonicalUrl,
+              "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": blogCanonicalUrl
+              },
+              "image": [b.image || "https://iili.io/nFV4Rln.png"],
+              "datePublished": (b.date ? b.date.split("/").reverse().join("-") : "2026-01-01") + "T08:00:00+07:00",
+              "dateModified": new Date().toISOString(),
+              "author": {
+                "@type": "Person",
+                "name": "Admin MMO",
+                "url": "https://www.muabantaikhoanmmo.com/"
+              },
+              "publisher": {
+                "@type": "Organization",
+                "name": "MUABANTAIKHOANMMO.COM",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://iili.io/nFV4Rln.png"
+                }
+              },
+              "articleSection": b.category || "Kiếm Tiền MMO",
+              "inLanguage": "vi-VN",
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": blogRatingVal,
+                "bestRating": "5",
+                "worstRating": "1",
+                "ratingCount": blogReviewCount,
+                "reviewCount": blogReviewCount
+              }
+            },
+            {
+              "@type": "BreadcrumbList",
+              "@id": blogCanonicalUrl + "#breadcrumb",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Trang chủ",
+                  "item": window.location.origin + "/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": "Tin Tức & Blog",
+                  "item": window.location.origin + "/?view=viewBlog"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": b.title,
+                  "item": blogCanonicalUrl
+                }
+              ]
+            }
+          ]
+        };
+        blogSchemaScript.textContent = JSON.stringify(blogSchema);
+      } catch(e) { console.warn("Blog SEO schema error:", e); }
+
       switchView("viewBlogDetail");
       window.scrollTo(0, 0);
     }
