@@ -22623,25 +22623,25 @@ function injectAllProductsSchema() {
             cancelLabel = "Admin Hủy & Hoàn";
           }
           stBadge = "<span style='background:rgba(239,68,68,0.2); color:#f87171; border:1px solid #ef4444; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-ban'></i> " + escapeHtml(cancelLabel) + "</span>";
-          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
+          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:nowrap;">' +
                       '<button type="button" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i> Xem</button>' +
                     '</div>';
         } else if (isCompleted) {
           stBadge = "<span style='background:rgba(16,185,129,0.2); color:#34d399; border:1px solid #10b981; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-circle-check'></i> Đã giao</span>";
-          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
+          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:nowrap;">' +
                       '<button type="button" onclick="openAdminFulfillModal(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#1e293b; color:#10b981; border:1px solid rgba(16,185,129,0.4); font-weight:700; border-radius:4px; cursor:pointer;" title="Xem/Sửa tài khoản đã giao"><i class="fa-solid fa-key"></i> Acc</button>' +
                       '<button type="button" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
                     '</div>';
         } else if (isProcessing) {
           stBadge = "<span style='background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid #38bdf8; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-spinner fa-spin'></i> Gom hàng</span>";
-          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
+          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:nowrap;">' +
                       '<button type="button" onclick="openAdminFulfillModal(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao</button>' +
                       '<button type="button" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
                       '<button type="button" onclick="adminCancelAndRefundPreOrder(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#ef4444; color:#fff; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Hủy &amp; Hoàn tiền"><i class="fa-solid fa-ban"></i></button>' +
                     '</div>';
         } else {
           stBadge = "<span style='background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid #f59e0b; font-weight:800; padding:2px 6px; border-radius:4px; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-clock'></i> Chờ duyệt</span>";
-          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:wrap;">' +
+          actions = '<div style="display:flex; gap:3px; justify-content:center; flex-wrap:nowrap;">' +
                       '<button type="button" onclick="adminConfirmPreOrder(\'' + escapeHtml(oId) + '\', event)" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Duyệt đơn"><i class="fa-solid fa-check"></i> Duyệt</button>' +
                       '<button type="button" onclick="openAdminFulfillModal(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 7px; font-size:0.7rem; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;" title="Bàn giao tài khoản"><i class="fa-solid fa-key"></i> Giao</button>' +
                       '<button type="button" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" class="btn-action-copy" style="padding:3px 5px; font-size:0.7rem; background:#1e293b; color:#cbd5e1; border:1px solid #334155; border-radius:4px; cursor:pointer;" title="Xem chi tiết"><i class="fa-solid fa-eye"></i></button>' +
@@ -22660,11 +22660,11 @@ function injectAllProductsSchema() {
         return '<tr>' +
           '<td><a href="javascript:void(0)" onclick="openPreOrderDetailView(\'' + escapeHtml(oId) + '\')" style="color:#f59e0b; font-family:monospace; font-size:0.78rem; font-weight:800; text-decoration:underline; display:inline-flex; align-items:center; gap:2px; cursor:pointer;" title="Xem chi tiết đơn">#' + escapeHtml(oId) + '</a><br/><span style="font-size:0.68rem; color:#64748b;">' + dateStr + '</span></td>' +
           '<td><b style="font-size:0.75rem;">' + buyerDisplay + '</b>' + buyerSub + '</td>' +
-          '<td><div style="font-weight:600; color:#fff; font-size:0.75rem; line-height:1.25; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; word-break:break-word;" title="' + escapeHtml(o.productName || '') + '">' + prodDisplay + '</div>' + varDisplay + '</td>' +
+          '<td><div style="font-weight:600; color:#fff; font-size:0.75rem; line-height:1.25; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:220px;" title="' + escapeHtml(o.productName || '') + '"><i class="fa-solid fa-box" style="color:#a855f7; font-size:0.7rem; margin-right:3px;"></i> ' + prodDisplay + '</div>' + varDisplay + '</td>' +
           '<td style="text-align:center; font-weight:700; font-size:0.78rem;">' + (o.qty || 1) + '</td>' +
           '<td style="color:#10b981; font-weight:800; font-size:0.78rem; white-space:nowrap;">' + amtStr + '</td>' +
           '<td style="color:#f59e0b; font-weight:600; font-size:0.72rem; white-space:nowrap;">' + (o.maxDays || 7) + ' ngày</td>' +
-          '<td style="color:#94a3b8; font-size:0.7rem; overflow:hidden; text-overflow:ellipsis; word-break:break-word;">' + (escapeHtml(o.customNotes || '--')) + '</td>' +
+          '<td style="color:#94a3b8; font-size:0.7rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:140px;" title="' + escapeHtml(o.customNotes || '--') + '"><i class="fa-regular fa-note-sticky" style="font-size:0.65rem; margin-right:2px;"></i> ' + (escapeHtml(o.customNotes || '--')) + '</td>' +
           '<td>' + stBadge + '</td>' +
           '<td style="text-align:center;">' + actions + '</td>' +
         '</tr>';
@@ -25229,8 +25229,9 @@ const AI_PROVIDERS = {
     defaultModel: 'gemini-2.5-flash',
     models: [
       { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (Khuyên dùng - Nhanh & Mới nhất 2026)' },
-      { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (Ổn định, Quota cao)' },
-      { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro (Phân tích chuyên sâu)' }
+      { id: 'gemini-1.5-flash-latest', name: 'Gemini 1.5 Flash Latest (Tự động cập nhật)' },
+      { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro (Chuyên sâu)' },
+      { id: 'gemini-1.5-pro-latest', name: 'Gemini 1.5 Pro Latest' }
     ]
   }
 };
@@ -25294,6 +25295,31 @@ function saveCurrentProviderApiKey() {
 
 const BLOGGER_BLOG_ID_WRITER = '1442157221767603343';
 
+
+function switchAiMobileTab(tab) {
+  const tabConfig = document.getElementById('btnTabAiConfig');
+  const tabEditor = document.getElementById('btnTabAiEditor');
+  const modalBody = document.querySelector('#aiWriterModal .ai-modal-body');
+  if (!modalBody) return;
+  const colConfig = modalBody.children[0];
+  const colEditor = modalBody.children[1];
+  if (tab === 'editor') {
+    if (tabConfig) tabConfig.classList.remove('active');
+    if (tabEditor) tabEditor.classList.add('active');
+    if (colConfig) colConfig.style.setProperty('display', 'none', 'important');
+    if (colEditor) {
+      colEditor.style.setProperty('display', 'flex', 'important');
+      colEditor.style.setProperty('flex-direction', 'column', 'important');
+    }
+  } else {
+    if (tabConfig) tabConfig.classList.add('active');
+    if (tabEditor) tabEditor.classList.remove('active');
+    if (colConfig) colConfig.style.setProperty('display', 'block', 'important');
+    if (colEditor) colEditor.style.setProperty('display', 'none', 'important');
+  }
+}
+window.switchAiMobileTab = switchAiMobileTab;
+
 function openAiWriterModal() {
   const modal = document.getElementById('aiWriterModal');
   if (modal) { modal.style.setProperty('display', 'flex', 'important'); document.body.style.overflow = 'hidden'; }
@@ -25301,6 +25327,15 @@ function openAiWriterModal() {
   const pSel = document.getElementById('aiProviderSelect');
   if (pSel) { pSel.value = savedPKey; }
   onAiProviderChange();
+  if (window.innerWidth <= 900) {
+    switchAiMobileTab('config');
+  } else {
+    const modalBody = document.querySelector('#aiWriterModal .ai-modal-body');
+    if (modalBody && modalBody.children.length >= 2) {
+      modalBody.children[0].style.display = '';
+      modalBody.children[1].style.display = '';
+    }
+  }
 }
 
 function closeAiWriterModal() {
@@ -25412,38 +25447,56 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens
     if (!reply) throw new Error(prov.name + ' không phản hồi nội dung.');
     return reply;
   } else {
-    let activeModel = modelId || 'gemini-2.5-flash';
-    if (activeModel === 'gemini-2.0-flash') activeModel = 'gemini-2.5-flash';
-    const modelsToTry = [activeModel];
-    if (!modelsToTry.includes('gemini-2.5-flash')) modelsToTry.push('gemini-2.5-flash');
-    if (!modelsToTry.includes('gemini-1.5-flash')) modelsToTry.push('gemini-1.5-flash');
+    let targetModels = [];
+    if (modelId) {
+      // Map old deprecated names
+      let m = modelId;
+      if (m === 'gemini-1.5-flash' || m === 'gemini-2.0-flash') m = 'gemini-2.5-flash';
+      targetModels.push(m);
+    }
+    const fallbackList = ['gemini-2.5-flash', 'gemini-1.5-flash-latest', 'gemini-2.0-flash-exp', 'gemini-1.5-flash', 'gemini-1.5-pro-latest'];
+    for (const fb of fallbackList) {
+      if (!targetModels.includes(fb)) targetModels.push(fb);
+    }
 
     let lastErrText = '';
-    for (const curModel of modelsToTry) {
-      try {
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/${curModel}:generateContent?key=${apiKey}`;
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 45000);
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          signal: controller.signal,
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
-            generationConfig: { maxOutputTokens: effectiveMaxTokens, temperature: 0.7 }
-          })
-        });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          const json = await res.json();
-          const reply = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] ? json.candidates[0].content.parts[0].text : '';
-          if (reply) return reply;
-        } else {
-          lastErrText = await res.text();
-          console.warn(`Gemini model ${curModel} failed (${res.status}):`, lastErrText.slice(0, 150));
+    for (const curModel of targetModels) {
+      const apiVersions = ['v1beta', 'v1'];
+      for (const apiVer of apiVersions) {
+        try {
+          const url = `https://generativelanguage.googleapis.com/${apiVer}/models/${curModel}:generateContent?key=${apiKey}`;
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 45000);
+          const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
+              generationConfig: { maxOutputTokens: effectiveMaxTokens, temperature: 0.7 }
+            })
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const json = await res.json();
+            const reply = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] ? json.candidates[0].content.parts[0].text : '';
+            if (reply) return reply;
+          } else {
+            const errBody = await res.text();
+            lastErrText = errBody;
+            if (res.status === 429) {
+              throw new Error('Gemini Quota Exceeded (429): Quota tài khoản Gemini của bạn đã hết. Vui lòng đổi sang nền tảng ⚡ Groq (Llama 3.3 70B) để viết bài miễn phí siêu tốc!');
+            }
+            if (res.status === 400 && errBody.includes('API_KEY_INVALID')) {
+              throw new Error('Gemini API Key không hợp lệ. Vui lòng kiểm tra lại key trong Cấu hình AI.');
+            }
+          }
+        } catch(eCur) {
+          if (eCur.message && (eCur.message.includes('Quota') || eCur.message.includes('API_KEY_INVALID'))) {
+            throw eCur;
+          }
+          lastErrText = eCur.message;
         }
-      } catch(eCur) {
-        lastErrText = eCur.message;
       }
     }
     throw new Error('Gemini Error: ' + (lastErrText ? lastErrText.slice(0, 220) : 'Tất cả model Gemini đều không phản hồi. Vui lòng kiểm tra lại API Key hoặc đổi sang Groq.'));
@@ -26522,6 +26575,14 @@ async function generateAiArticle() {
 
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang phân tích SEO 2026 & viết bài tự động...'; }
   if (statusEl) statusEl.innerHTML = '<span style="color:#a855f7;">⏳ ' + prov.name + ' đang phân tích Search Intent và tạo cấu trúc SEO 2026...</span>';
+  const liveEditorStatus = document.getElementById('aiEditorLiveStatus');
+  if (liveEditorStatus) {
+    liveEditorStatus.style.display = 'block';
+    liveEditorStatus.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ' + prov.name + ' đang viết bài tự động... Xin vui lòng đợi vài giây...';
+  }
+  if (window.innerWidth <= 900 && typeof switchAiMobileTab === 'function') {
+    switchAiMobileTab('editor');
+  }
 
   const postTypeMap = { huong_dan: 'hướng dẫn chi tiết từng bước', review: 'bài review/đánh giá chuyên sâu', list: 'bài danh sách top-N', tin_tuc: 'bài tin tức/cập nhật', so_sanh: 'bài so sánh', qa: 'bài hỏi đáp FAQ' };
   const toneMap = { chuyen_nghiep: 'chuyên nghiệp, súc tích, tin cậy', than_thien: 'thân thiện, dễ đọc, gần gũi', vui_tuoi: 'vui tươi, trẻ trung, sáng tạo', hoc_thuat: 'học thuật, chuyên sâu, nhiều dữ liệu' };

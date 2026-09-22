@@ -2115,31 +2115,58 @@
       letter-spacing: 0.3px;
     }
     @media (max-width: 960px) {
+      .tools-page-container {
+        padding: 0 10px !important;
+        margin: 12px auto 40px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+      }
       .tools-layout-2col {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+        width: 100% !important;
+        gap: 16px !important;
       }
       .tools-sidebar-nav {
-        position: static;
-        overflow: visible !important;
+        position: static !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 12px !important;
+        overflow: hidden !important;
       }
       .tools-nav-vertical {
+        display: flex !important;
         flex-direction: row !important;
-        overflow-x: scroll !important;
+        overflow-x: auto !important;
         overflow-y: hidden !important;
         -webkit-overflow-scrolling: touch !important;
         touch-action: pan-x !important;
         scroll-snap-type: x mandatory !important;
-        padding-bottom: 8px;
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
+        gap: 10px !important;
+        padding: 4px 2px 12px 2px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
       }
       .tools-nav-vertical::-webkit-scrollbar {
-        display: none !important;
+        height: 4px !important;
+        display: block !important;
+      }
+      .tools-nav-vertical::-webkit-scrollbar-thumb {
+        background: #334155 !important;
+        border-radius: 4px !important;
       }
       .tools-nav-vertical .tool-tab-btn {
-        width: auto;
-        flex-shrink: 0;
+        width: auto !important;
+        min-width: 180px !important;
+        max-width: 220px !important;
+        flex-shrink: 0 !important;
         scroll-snap-align: start !important;
+        padding: 10px 14px !important;
+      }
+      .tool-box-card {
+        padding: 16px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
       }
     }
     .tools-nav-tabs {
@@ -4994,3 +5021,184 @@ a, button, [onclick], .nav-link, .product-card, .blog-item, .category-card, .sid
 
 
 
+
+
+/* STRICT PRE-ORDERS TABLE SINGLE-LINE SCROLL (v2.4.9) */
+#admPreOrdersTable {
+  min-width: 920px !important;
+  width: 100% !important;
+  table-layout: auto !important;
+  border-collapse: collapse !important;
+}
+#admPreOrdersTable th,
+#admPreOrdersTable td {
+  padding: 8px 6px !important;
+  font-size: 0.76rem !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+}
+#admPreOrdersTable td > div {
+  white-space: nowrap !important;
+}
+
+
+/* TOOLS PAGE MOBILE RESPONSIVE & HORIZONTAL SWIPE (v2.4.9) */
+@media (max-width: 960px) {
+  .tools-page-container,
+  #viewTools {
+    padding: 0 10px !important;
+    margin: 10px auto 40px !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+  .tools-layout-2col {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 16px !important;
+    box-sizing: border-box !important;
+  }
+  .tools-sidebar-nav {
+    position: static !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 12px 10px !important;
+    overflow: hidden !important;
+  }
+  .tools-nav-vertical {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-x !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 10px !important;
+    padding: 4px 4px 12px 4px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .tools-nav-vertical::-webkit-scrollbar {
+    height: 5px !important;
+    display: block !important;
+  }
+  .tools-nav-vertical::-webkit-scrollbar-thumb {
+    background: #10b981 !important;
+    border-radius: 4px !important;
+  }
+  .tools-nav-vertical .tool-tab-btn {
+    width: auto !important;
+    min-width: 180px !important;
+    max-width: 220px !important;
+    flex: 0 0 auto !important;
+    flex-shrink: 0 !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+  }
+  .tools-content-area {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .tool-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 16px 12px !important;
+  }
+}
+
+
+/* HEADER NOTIFICATION DROPDOWN MOBILE FIX (v2.4.9) */
+@media (max-width: 768px) {
+  #headerNotifDropdown {
+    position: fixed !important;
+    top: 60px !important;
+    right: 8px !important;
+    left: auto !important;
+    width: min(340px, calc(100vw - 16px)) !important;
+    max-width: calc(100vw - 16px) !important;
+    box-sizing: border-box !important;
+    z-index: 2147483640 !important;
+  }
+}
+
+
+/* AI WRITER MODAL MOBILE TABS & SCROLL (v2.4.9) */
+#aiModalMobileTabs {
+  display: none;
+}
+@media (max-width: 900px) {
+  #aiWriterModal {
+    padding: 4px !important;
+  }
+  #aiWriterModal .ai-modal-container {
+    height: calc(100vh - 8px) !important;
+    max-height: calc(100vh - 8px) !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+  #aiModalMobileTabs {
+    display: flex !important;
+    width: 100% !important;
+    background: #0f1026 !important;
+    border-bottom: 2px solid #7c3aed !important;
+    flex-shrink: 0 !important;
+  }
+  .ai-mobile-tab-btn {
+    flex: 1 !important;
+    padding: 11px 8px !important;
+    text-align: center !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    border: none !important;
+    cursor: pointer !important;
+    background: #161730 !important;
+    color: #94a3b8 !important;
+    border-bottom: 3px solid transparent !important;
+    transition: all 0.2s !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+  }
+  .ai-mobile-tab-btn.active {
+    background: #1e1e4a !important;
+    color: #38bdf8 !important;
+    border-bottom: 3px solid #38bdf8 !important;
+  }
+  .ai-modal-body,
+  #aiWriterModal .ai-modal-body {
+    display: block !important;
+    flex: 1 !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    position: relative !important;
+  }
+  .ai-modal-body > div:first-child {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-right: none !important;
+    box-sizing: border-box !important;
+    padding: 14px 14px 80px 14px !important;
+    height: auto !important;
+  }
+  .ai-modal-body > div:last-child {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 14px 14px 90px 14px !important;
+    height: auto !important;
+  }
+  #aiEditorContent {
+    min-height: 280px !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+}
