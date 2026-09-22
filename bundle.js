@@ -14724,10 +14724,13 @@ function syncAllOpenViewsStock(changedProdId) {
             let rawContent = (entry.content && entry.content.$t) ? entry.content.$t : ((entry.summary && entry.summary.$t) ? entry.summary.$t : "");
             rawContent = cleanBloggerContentForDarkTheme(rawContent);
 
-            const tmpDiv = document.createElement("div");
-            tmpDiv.innerHTML = rawContent;
-            const plainText = tmpDiv.textContent || tmpDiv.innerText || "";
-            const snippet = plainText.trim().substring(0, 180) + (plainText.length > 180 ? "..." : "");
+            // Mobile performance fix: dùng regex thay vì DOM parse để tránh freeze trên mobile (50 posts)
+            const plainText = rawContent.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+              .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+              .replace(/<[^>]+>/g, ' ')
+              .replace(/\s+/g, ' ')
+              .trim();
+            const snippet = plainText.substring(0, 180) + (plainText.length > 180 ? "..." : "");
 
             const rawId = (entry.id && entry.id.$t) ? entry.id.$t : String(index);
             const id = "BLOGGER_" + (rawId.indexOf("post-") !== -1 ? rawId.split("post-")[1] : index);
@@ -27060,13 +27063,19 @@ function fallbackCopyAiHtml(html, cb) {
 window.fallbackCopyAiHtml = fallbackCopyAiHtml;
 
 function openBloggerWithAiContent() {
-  copyAiHtml();
   const bloggerUrl = 'https://draft.blogger.com/blog/posts/1442157221767603343?hl=vi';
+  // Gọi window.open NGAY TRONG GESTURE EVENT (trước mọi async) để mobile không block popup
+  const newWin = window.open(bloggerUrl, '_blank');
+  // Copy HTML sau (async OK vì window.open đã được gọi rồi)
+  copyAiHtml();
   setTimeout(() => {
-    window.open(bloggerUrl, '_blank');
     const statusEl = document.getElementById('aiCopyStatus');
     if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;font-weight:600;">📋 Đã copy HTML bài viết! Đang mở trang bài đăng Blogger...</span>';
     if (typeof showToast === 'function') showToast('📋 Đã copy HTML bài viết & Mở Blogger!', 'success');
+    // Nếu popup bị block, thông báo cho user
+    if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
+      if (typeof showToast === 'function') showToast('⚠️ Popup bị chặn! Vui lòng cho phép popup và thử lại.', 'warn');
+    }
   }, 300);
 }
 window.openBloggerWithAiContent = openBloggerWithAiContent;
