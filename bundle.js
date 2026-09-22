@@ -4065,11 +4065,290 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
     }
     window.openAdminUserDetailModal = openAdminUserDetailModal;
 
+    // =========================================================================
+    // HỆ THỐNG TIẾP THỊ LIÊN KẾT (AFFILIATE ENGINE) - QUY TRÌNH CHUẨN HOÁ
+    // - Tạm giữ hoa hồng 3 ngày (72 giờ)
+    // - Tự động hủy khi khách khiếu nại, hủy đơn hoặc hoàn tiền
+    // - Tự động cộng tiền vào ví sau 3 ngày hoàn tất an toàn
+    // =========================================================================
+
+    function getAffiliateOrders() {
+      try {
+        const raw = localStorage.getItem("mmo_affiliate_orders");
+        return raw ? JSON.parse(raw) : [];
+      } catch(e) {
+        return [];
+      }
+    }
+    window.getAffiliateOrders = getAffiliateOrders;
+
+    function saveAffiliateOrders(list) {
+      try {
+        localStorage.setItem("mmo_affiliate_orders", JSON.stringify(list || []));
+      } catch(e) {}
+    }
+    window.saveAffiliateOrders = saveAffiliateOrders;
+
+    function recordAffiliateCommissionForOrder(order) {
+      if (!order) return null;
+      const orderId = String(order.orderId || order.orderCode || order.id || "").replace("#", "").trim();
+      if (!orderId) return null;
+
+      let affOrders = getAffiliateOrders();
+      if (affOrders.some(a => a.orderId === orderId)) {
+        return null; // Đã ghi nhận hoa hồng cho đơn này rồi
+      }
+
+      const buyerEmail = String(order.buyerEmail || order.email || order.userEmail || (currentUser ? currentUser.email : "")).toLowerCase().trim();
+      if (!buyerEmail || !buyerEmail.includes("@")) return null;
+
+      // 1. Tìm mã người giới thiệu (refCode)
+      const allUsers = typeof getRegisteredUsers === "function" ? getRegisteredUsers() : [];
+      const buyerUser = allUsers.find(u => (u.email || "").toLowerCase().trim() === buyerEmail);
+      let refCode = (buyerUser && buyerUser.referredBy) ? String(buyerUser.referredBy).toLowerCase().trim() : "";
+
+      if (!refCode) {
+        refCode = (localStorage.getItem("mmo_ref_code") || sessionStorage.getItem("mmo_ref_code") || "").toLowerCase().trim();
+      }
+      if (!refCode && order.refCode) {
+        refCode = String(order.refCode).toLowerCase().trim();
+      }
+
+      if (!refCode) return null;
+
+      // 2. Tìm thông tin người giới thiệu (referrer)
+      const referrer = allUsers.find(u => {
+        const uMail = (u.email || "").toLowerCase().trim();
+        const uPrefix = uMail.split("@")[0];
+        const uId = (u.userId || u.id || "").toLowerCase().trim();
+        return uMail === refCode || uPrefix === refCode || uId === refCode;
+      });
+
+      if (!referrer) return null;
+
+      // Chống tự giới thiệu chính mình (Self-referral check)
+      if ((referrer.email || "").toLowerCase().trim() === buyerEmail) {
+        return null;
+      }
+
+      // 3. Tính toán hoa hồng
+      const totalAmt = Number(order.total || order.totalPrice || order.amount || 0);
+      if (totalAmt <= 0) return null;
+
+      let commRate = 10; // Mặc định 10%
+      if (typeof order.commissionRate === "number" && order.commissionRate > 0) {
+        commRate = order.commissionRate;
+      } else if (order.productId || order.prodId) {
+        const pId = order.productId || order.prodId;
+        const p = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products.find(x => x.id === pId) : null;
+        if (p) {
+          if (typeof p.commissionRate === "number") commRate = p.commissionRate;
+          else if (typeof p.commission === "number") commRate = p.commission;
+          else {
+            const m = String(p.commission || p.commissionRate || "").match(/[0-9]+/);
+            if (m) commRate = parseInt(m[0], 10);
+          }
+        }
+      }
+      if (isNaN(commRate) || commRate <= 0) commRate = 10;
+
+      const commAmount = Math.round(totalAmt * (commRate / 100));
+      if (commAmount <= 0) return null;
+
+      const nowTs = Date.now();
+      const holdDuration = 3 * 24 * 60 * 60 * 1000; // 3 ngày = 72 giờ
+
+      const affRecord = {
+        id: "AFF_" + orderId + "_" + nowTs,
+        orderId: orderId,
+        buyerEmail: buyerEmail,
+        buyerName: (buyerUser && buyerUser.name) ? buyerUser.name : (order.buyerUsername || order.userName || buyerEmail.split("@")[0]),
+        referrerEmail: referrer.email,
+        referrerCode: refCode,
+        referrerName: referrer.name || referrer.email.split("@")[0],
+        productId: order.productId || order.prodId || "",
+        productName: order.productName || order.prodName || "Tài khoản MMO",
+        variant: order.variant || order.variantName || "Mặc định",
+        orderTotal: totalAmt,
+        commissionRate: commRate,
+        commissionAmount: commAmount,
+        createdAt: nowTs,
+        holdUntil: nowTs + holdDuration,
+        holdDays: 3,
+        status: "HOLDING", // HOLDING: Tạm giữ 3 ngày
+        statusText: "Tạm giữ 3 ngày (Chờ duyệt)",
+        settledAt: null,
+        cancelledAt: null,
+        cancelReason: ""
+      };
+
+      affOrders.unshift(affRecord);
+      saveAffiliateOrders(affOrders);
+
+      // Nếu người giới thiệu đang đăng nhập, hiển thị thông báo
+      if (currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === referrer.email.toLowerCase().trim()) {
+        if (typeof addUserNotification === "function") {
+          addUserNotification({
+            title: "💰 Hoa hồng tạm tính đơn #" + orderId,
+            message: "Thành viên F1 (" + buyerEmail + ") vừa mua đơn #" + orderId + ". Bạn được tạm giữ " + (typeof formatVND === "function" ? formatVND(commAmount) : commAmount + " đ") + " hoa hồng (sẽ tự động cộng vào ví sau 3 ngày hoàn tất).",
+            type: "AFFILIATE",
+            email: referrer.email
+          });
+        }
+        if (typeof renderAffiliateDashboard === "function") renderAffiliateDashboard();
+      }
+
+      return affRecord;
+    }
+    window.recordAffiliateCommissionForOrder = recordAffiliateCommissionForOrder;
+
+    function cancelAffiliateCommissionForOrder(orderId, reason) {
+      if (!orderId) return false;
+      const cleanId = String(orderId).replace("#", "").trim();
+      let affOrders = getAffiliateOrders();
+      let modified = false;
+
+      affOrders.forEach(item => {
+        if (item.orderId === cleanId && item.status === "HOLDING") {
+          item.status = "CANCELLED";
+          item.statusText = "Đã hủy hoa hồng (Đơn hủy/hoàn tiền)";
+          item.cancelledAt = Date.now();
+          item.cancelReason = reason || "Đơn hàng bị khiếu nại / hoàn tiền";
+          modified = true;
+
+          // Thông báo cho người giới thiệu
+          if (typeof addUserNotification === "function") {
+            addUserNotification({
+              title: "⚠️ Hủy hoa hồng đơn #" + cleanId,
+              message: "Đơn hàng #" + cleanId + " của thành viên F1 đã bị hủy hoặc hoàn tiền. Hoa hồng tạm tính (" + (typeof formatVND === "function" ? formatVND(item.commissionAmount) : item.commissionAmount + " đ") + ") đã bị hủy theo quy định.",
+              type: "AFFILIATE_CANCEL",
+              email: item.referrerEmail
+            });
+          }
+        }
+      });
+
+      if (modified) {
+        saveAffiliateOrders(affOrders);
+        if (typeof renderAffiliateDashboard === "function") renderAffiliateDashboard();
+      }
+      return modified;
+    }
+    window.cancelAffiliateCommissionForOrder = cancelAffiliateCommissionForOrder;
+
+    function processAffiliateSettlement() {
+      let affOrders = getAffiliateOrders();
+      if (!affOrders || affOrders.length === 0) return 0;
+
+      const nowTs = Date.now();
+      let settledCount = 0;
+      let users = typeof getRegisteredUsers === "function" ? getRegisteredUsers() : [];
+      let allOrders = typeof getAllOrders === "function" ? getAllOrders() : [];
+      let preOrders = typeof getPreOrders === "function" ? getPreOrders(true) : [];
+      let modified = false;
+
+      affOrders.forEach(item => {
+        if (item.status !== "HOLDING") return;
+
+        // 1. Kiểm tra xem đơn hàng gốc có bị hủy hoặc khiếu nại không
+        const oMatch = allOrders.find(o => String(o.orderId || o.id).replace("#", "").trim() === item.orderId) ||
+                       preOrders.find(p => String(p.id || p.orderCode).replace("#", "").trim() === item.orderId);
+
+        if (oMatch) {
+          const st = String(oMatch.status || "").toUpperCase();
+          const isCancelOrRefund = st === "CANCELLED" || st === "REFUNDED" || st.includes("HỦY") || st.includes("HOÀN TIỀN") || st.includes("KHIẾU NẠI") || Boolean(oMatch.isCancelled) || Boolean(oMatch.isRefunded);
+          if (isCancelOrRefund) {
+            item.status = "CANCELLED";
+            item.statusText = "Đã hủy hoa hồng (Đơn hủy/hoàn tiền)";
+            item.cancelledAt = nowTs;
+            item.cancelReason = "Đơn hàng gốc đã hủy hoặc hoàn tiền ví";
+            modified = true;
+            return;
+          }
+        }
+
+        // 2. Nếu đã qua 3 ngày (72 giờ)
+        if (nowTs >= item.holdUntil) {
+          item.status = "APPROVED";
+          item.statusText = "Đã cộng vào ví";
+          item.settledAt = nowTs;
+          modified = true;
+          settledCount++;
+
+          // Cộng tiền vào số dư ví của người giới thiệu
+          const refEmail = (item.referrerEmail || "").toLowerCase().trim();
+          const rIdx = users.findIndex(u => (u.email || "").toLowerCase().trim() === refEmail);
+          let newBal = item.commissionAmount;
+          let rName = item.referrerName || refEmail.split("@")[0];
+
+          if (rIdx !== -1) {
+            users[rIdx].balance = (Number(users[rIdx].balance) || 0) + item.commissionAmount;
+            newBal = users[rIdx].balance;
+            rName = users[rIdx].name || rName;
+          } else {
+            users.push({
+              userId: "USR_" + Math.floor(100000 + Math.random() * 900000),
+              email: refEmail,
+              name: rName,
+              balance: item.commissionAmount,
+              role: "MEMBER"
+            });
+            newBal = item.commissionAmount;
+          }
+
+          if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(users);
+
+          // Ghi nhận lịch sử giao dịch & log số dư
+          if (typeof recordTransaction === "function") {
+            recordTransaction(
+              refEmail,
+              rName,
+              "Hoa hồng tiếp thị liên kết",
+              item.commissionAmount,
+              newBal,
+              "Hoa hồng " + item.commissionRate + "% từ thành viên F1 (" + item.buyerEmail + ") cho đơn #" + item.orderId + " sau 3 ngày hoàn tất"
+            );
+          }
+
+          // Cập nhật currentUser nếu đang là người giới thiệu
+          if (currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === refEmail) {
+            currentUser.balance = newBal;
+            localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            if (typeof updateUserUI === "function") updateUserUI();
+            if (typeof showToast === "function") {
+              showToast("🎉 Chúc mừng! Bạn vừa nhận được " + (typeof formatVND === "function" ? formatVND(item.commissionAmount) : item.commissionAmount + " đ") + " hoa hồng tiếp thị liên kết từ đơn #" + item.orderId + "!", "success");
+            }
+          }
+
+          // Gửi thông báo chuông
+          if (typeof addUserNotification === "function") {
+            addUserNotification({
+              title: "🎉 Nhận hoa hồng tiếp thị #" + item.orderId,
+              message: "Bạn đã nhận được +" + (typeof formatVND === "function" ? formatVND(item.commissionAmount) : item.commissionAmount + " đ") + " hoa hồng từ đơn hàng #" + item.orderId + " vào ví sau 3 ngày hoàn tất an toàn.",
+              type: "AFFILIATE_PAID",
+              email: refEmail
+            });
+          }
+        }
+      });
+
+      if (modified) {
+        saveAffiliateOrders(affOrders);
+      }
+      return settledCount;
+    }
+    window.processAffiliateSettlement = processAffiliateSettlement;
+
     function renderAffiliateDashboard() {
       try {
         if (!currentUser) return;
         const affCode = (currentUser.email ? currentUser.email.split('@')[0] : (currentUser.userId || "aff")).toLowerCase();
         const myEmail = (currentUser.email || "").toLowerCase().trim();
+
+        // 0. Tự động quét và quyết toán các khoản hoa hồng đã qua 3 ngày
+        if (typeof processAffiliateSettlement === "function") {
+          processAffiliateSettlement();
+        }
 
         // 1. Populate Ref Link Input
         const refLinkInp = document.getElementById("affRefLinkInput");
@@ -4085,31 +4364,38 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
           return ref === affCode || ref === myEmail;
         });
 
-        // 3. Find F1 Orders & Commissions
-        let affOrders = [];
-        try {
-          affOrders = JSON.parse(localStorage.getItem("mmo_affiliate_orders") || "[]");
-        } catch(e) {}
-
+        // 3. Find My Affiliate Commissions
+        const affOrders = (typeof getAffiliateOrders === "function") ? getAffiliateOrders() : [];
         const myAffOrders = affOrders.filter(function(o) {
           const rEmail = (o.referrerEmail || "").toLowerCase().trim();
           const rCode = (o.referrerCode || "").toLowerCase().trim();
           return rEmail === myEmail || rCode === affCode;
         });
 
-        const totalCommissionEarned = myAffOrders.reduce(function(sum, o) {
+        // Tính toán hoa hồng tạm tính (HOLDING) và hoa hồng thực nhận (APPROVED)
+        const pendingCommissions = myAffOrders.filter(o => o.status === "HOLDING");
+        const approvedCommissions = myAffOrders.filter(o => o.status === "APPROVED");
+
+        const totalPending = pendingCommissions.reduce(function(sum, o) {
+          return sum + (Number(o.commissionAmount) || 0);
+        }, 0);
+
+        const totalApproved = approvedCommissions.reduce(function(sum, o) {
           return sum + (Number(o.commissionAmount) || 0);
         }, 0);
 
         // 4. Update Stats Cards
         const affPending = document.getElementById("affPendingComm");
-        if (affPending) affPending.innerText = formatVND(totalCommissionEarned);
+        if (affPending) affPending.innerText = (typeof formatVND === "function") ? formatVND(totalPending) : (totalPending.toLocaleString("vi-VN") + " đ");
+
+        const affApproved = document.getElementById("affApprovedComm");
+        if (affApproved) affApproved.innerText = (typeof formatVND === "function") ? formatVND(totalApproved) : (totalApproved.toLocaleString("vi-VN") + " đ");
 
         const affF1Count = document.getElementById("affTotalF1Count");
         if (affF1Count) affF1Count.innerText = f1Users.length;
 
         const affF1Orders = document.getElementById("affTotalF1Orders");
-        if (affF1Orders) affF1Orders.innerText = myAffOrders.length;
+        if (affF1Orders) affF1Orders.innerText = myAffOrders.filter(o => o.status !== "CANCELLED").length;
 
         const affF1Badge = document.getElementById("affF1ListBadge");
         if (affF1Badge) affF1Badge.innerText = f1Users.length + " thành viên";
@@ -4126,15 +4412,71 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
               });
               const uComm = uOrders.reduce(function(sum, o) { return sum + (Number(o.commissionAmount) || 0); }, 0);
               return '<tr>' +
-                '<td style="font-weight:700; color:#fff; vertical-align:middle;">' + escapeHtml(u.name || u.email.split("@")[0]) + '</td>' +
+                '<td style="font-weight:700; color:#fff; vertical-align:middle;"><i class="fa-solid fa-user-tag green" style="margin-right:6px;"></i>' + escapeHtml(u.name || u.email.split("@")[0]) + '</td>' +
                 '<td style="color:#94a3b8; font-family:monospace; vertical-align:middle;">' + escapeHtml(u.email) + '</td>' +
                 '<td style="color:#64748b; vertical-align:middle;">' + escapeHtml(u.created || '2026') + '</td>' +
-                '<td style="font-weight:700; color:#10b981; vertical-align:middle;">' + uOrders.length + ' đơn (' + formatVND(uComm) + ')</td>' +
+                '<td style="font-weight:700; color:#10b981; vertical-align:middle;">' + uOrders.length + ' đơn (' + (typeof formatVND === "function" ? formatVND(uComm) : uComm + " đ") + ')</td>' +
                 '<td style="vertical-align:middle;"><span style="background:rgba(16,185,129,0.15); color:#10b981; padding:3px 8px; border-radius:4px; font-weight:700; font-size:0.75rem;">Đang hoạt động</span></td>' +
               '</tr>';
             }).join('');
           }
         }
+
+        // 6. Populate Affiliate Commissions History Table
+        const commTbody = document.getElementById("affCommHistoryTableBody");
+        const commBadge = document.getElementById("affCommCountBadge");
+        if (commBadge) commBadge.innerText = myAffOrders.length + " đơn hoa hồng";
+
+        if (commTbody) {
+          if (myAffOrders.length === 0) {
+            commTbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:28px; color:#64748b;">Chưa có đơn hàng nào phát sinh hoa hồng. Chia sẻ link giới thiệu của bạn để nhận hoa hồng 10% - 30% trên mỗi đơn hàng!</td></tr>';
+          } else {
+            const nowTs = Date.now();
+            commTbody.innerHTML = myAffOrders.map(function(o) {
+              const oId = o.orderId || "";
+              const dateStr = o.createdAt ? new Date(o.createdAt).toLocaleString("vi-VN", { hour:"2-digit", minute:"2-digit", day:"2-digit", month:"2-digit", year:"numeric" }) : "--";
+              const totalStr = (typeof formatVND === "function") ? formatVND(o.orderTotal) : (o.orderTotal.toLocaleString("vi-VN") + " đ");
+              const commStr = (typeof formatVND === "function") ? formatVND(o.commissionAmount) : (o.commissionAmount.toLocaleString("vi-VN") + " đ");
+
+              let holdText = "";
+              let statusBadge = "";
+
+              if (o.status === "HOLDING") {
+                const remainMs = Math.max(0, (o.holdUntil || 0) - nowTs);
+                const totalHours = Math.floor(remainMs / (1000 * 60 * 60));
+                const days = Math.floor(totalHours / 24);
+                const hours = totalHours % 24;
+                const minutes = Math.floor((remainMs % (1000 * 60 * 60)) / (1000 * 60));
+
+                let countdownStr = "";
+                if (days > 0) countdownStr = days + " ngày " + hours + " giờ";
+                else if (hours > 0) countdownStr = hours + " giờ " + minutes + " phút";
+                else countdownStr = minutes + " phút";
+
+                holdText = '<span style="color:#f59e0b; font-weight:700; font-size:0.78rem; display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-hourglass-half fa-spin"></i> Còn ' + countdownStr + '</span>';
+                statusBadge = '<span style="background:rgba(245,158,11,0.18); border:1px solid #f59e0b; color:#fbbf24; font-weight:800; padding:3px 8px; border-radius:4px; font-size:0.72rem; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-clock"></i> Tạm Giữ 3 Ngày</span>';
+              } else if (o.status === "APPROVED") {
+                holdText = '<span style="color:#10b981; font-weight:700; font-size:0.78rem; display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-circle-check"></i> Đã hoàn tất 3 ngày</span>';
+                statusBadge = '<span style="background:rgba(16,185,129,0.18); border:1px solid #10b981; color:#34d399; font-weight:800; padding:3px 8px; border-radius:4px; font-size:0.72rem; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-wallet"></i> Đã Vào Ví (+' + commStr + ')</span>';
+              } else if (o.status === "CANCELLED") {
+                holdText = '<span style="color:#ef4444; font-weight:600; font-size:0.78rem; display:inline-flex; align-items:center; gap:5px;"><i class="fa-solid fa-ban"></i> Đã dừng giữ</span>';
+                statusBadge = '<span style="background:rgba(239,68,68,0.18); border:1px solid #ef4444; color:#f87171; font-weight:800; padding:3px 8px; border-radius:4px; font-size:0.72rem; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;" title="' + escapeHtml(o.cancelReason || 'Đơn hoàn tiền / khiếu nại') + '"><i class="fa-solid fa-circle-xmark"></i> Đã Hủy (Hoàn Tiền)</span>';
+              }
+
+              return '<tr>' +
+                '<td style="font-family:monospace; font-weight:800; color:#38bdf8; font-size:0.82rem; white-space:nowrap;">#' + escapeHtml(oId) + '</td>' +
+                '<td style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">' + dateStr + '</td>' +
+                '<td style="font-size:0.82rem; color:#fff; white-space:nowrap;"><strong style="display:block;">' + escapeHtml(o.buyerName || o.buyerEmail.split("@")[0]) + '</strong><span style="color:#94a3b8; font-size:0.72rem; font-family:monospace;">' + escapeHtml(o.buyerEmail) + '</span></td>' +
+                '<td style="font-size:0.82rem; color:#cbd5e1;"><strong style="color:#fff; display:block;">' + escapeHtml(o.productName || 'Sản phẩm MMO') + '</strong>' + (o.variant && o.variant !== 'Mặc định' ? ('<span style="font-size:0.72rem; color:#a855f7;">' + escapeHtml(o.variant) + '</span>') : '') + '</td>' +
+                '<td style="font-weight:700; color:#fff; font-size:0.82rem; white-space:nowrap;">' + totalStr + '</td>' +
+                '<td style="font-weight:800; color:#10b981; font-size:0.85rem; white-space:nowrap;">+' + commStr + ' <span style="font-size:0.7rem; color:#94a3b8;">(' + (o.commissionRate || 10) + '%)</span></td>' +
+                '<td style="white-space:nowrap;">' + holdText + '</td>' +
+                '<td style="white-space:nowrap;">' + statusBadge + '</td>' +
+              '</tr>';
+            }).join('');
+          }
+        }
+
       } catch(e) {
         console.error("renderAffiliateDashboard error:", e);
       }
@@ -5735,6 +6077,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       if (tab === "register") {
         if (formLogin) formLogin.style.display = "none";
         if (formRegister) formRegister.style.display = "flex";
+        try {
+          const savedRef = (localStorage.getItem("mmo_ref_code") || sessionStorage.getItem("mmo_ref_code") || "").trim();
+          const refNoticeEl = document.getElementById("regRefNotice");
+          const refTextEl = document.getElementById("regRefCodeText");
+          if (refNoticeEl && savedRef) {
+            refNoticeEl.style.display = "flex";
+            if (refTextEl) refTextEl.innerText = "@" + savedRef;
+          }
+        } catch(e) {}
         if (btnLogin) {
           btnLogin.style.background = "transparent";
           btnLogin.style.color = "#94a3b8";
@@ -14180,6 +14531,12 @@ function syncAllOpenViewsStock(changedProdId) {
         allOrders = allOrders.filter(o => (o.id !== orderId && o.orderId !== orderId));
         allOrders.unshift(orderObj);
         localStorage.setItem("mmo_all_orders", JSON.stringify(allOrders));
+        if (typeof recordAffiliateCommissionForOrder === "function") {
+          recordAffiliateCommissionForOrder(orderObj);
+        }
+        if (typeof recordAffiliateCommissionForOrder === "function") {
+          recordAffiliateCommissionForOrder(orderObj);
+        }
 
         try {
           if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof TURSO_CLIENT.recordOrder === "function") {
@@ -19052,6 +19409,18 @@ function changeAdmUsersPage(p) {
     }
 
 
+    // Tự động kiểm tra và quyết toán hoa hồng tiếp thị đã qua 3 ngày
+    try {
+      if (typeof processAffiliateSettlement === "function") {
+        processAffiliateSettlement();
+      }
+      setInterval(function() {
+        if (typeof processAffiliateSettlement === "function") {
+          processAffiliateSettlement();
+        }
+      }, 60000);
+    } catch(e) {}
+
     // GLOBAL DOM CONTENT LOADED INITIALIZER & CROSS-TAB SYNC
     // 1. Capture Ref Code and Product Navigation from URL
     try {
@@ -20818,6 +21187,9 @@ function injectAllProductsSchema() {
         uo.hasComplaint = true;
         uo.isWarranty = true;
         if (typeof saveUserOrders === "function") saveUserOrders(uOrders);
+      if (typeof cancelAffiliateCommissionForOrder === "function") {
+        cancelAffiliateCommissionForOrder(orderId, "Admin hoàn tiền đơn hàng vào ví");
+      }
       }
 
       // Cập nhật đồng bộ toàn bộ các mảng lưu trữ đơn hàng
@@ -20838,6 +21210,9 @@ function injectAllProductsSchema() {
           });
           if (modified) localStorage.setItem(k, JSON.stringify(parsed));
         });
+        if (typeof cancelAffiliateCommissionForOrder === "function") {
+          cancelAffiliateCommissionForOrder(cleanId, "Khách hàng khiếu nại / bảo hành đơn hàng");
+        }
       } catch(syncErr) {
         console.warn('Sync complain error:', syncErr);
       }
@@ -22183,6 +22558,9 @@ function injectAllProductsSchema() {
         uOrders.unshift(newPreOrder);
         localStorage.setItem("mmo_user_orders", JSON.stringify(uOrders));
       } catch(e) {}
+      if (typeof recordAffiliateCommissionForOrder === "function") {
+        recordAffiliateCommissionForOrder(newPreOrder);
+      }
 
       // Tạo thông báo chuông và popup thông báo cho khách hàng
       if (typeof addUserNotification === "function") {
@@ -22496,6 +22874,9 @@ function injectAllProductsSchema() {
       if (pIdx !== -1) {
         preOrders[pIdx] = Object.assign({}, preOrders[pIdx], order);
         savePreOrders(preOrders);
+        if (typeof cancelAffiliateCommissionForOrder === "function") {
+          cancelAffiliateCommissionForOrder(cleanCode, "Khách hàng hủy đơn đặt trước và hoàn tiền 100%");
+        }
       }
 
       if (typeof updateWalletUI === "function") updateWalletUI();
@@ -23051,6 +23432,9 @@ function injectAllProductsSchema() {
       order.refundedAt = new Date().toLocaleString("vi-VN");
 
       savePreOrders(preOrders);
+      if (typeof cancelAffiliateCommissionForOrder === "function") {
+        cancelAffiliateCommissionForOrder(cleanId, "Admin hủy đơn đặt trước và hoàn tiền");
+      }
 
       // Phát sóng đa tab Realtime 0ms & Turso Sync
       try {
