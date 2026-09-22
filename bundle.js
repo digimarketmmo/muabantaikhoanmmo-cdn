@@ -6199,11 +6199,46 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       const btnRegister = document.getElementById("tabBtnRegister");
       const formLogin = document.getElementById("formLoginBlock");
       const formRegister = document.getElementById("formRegisterBlock");
+      const formForgot = document.getElementById("formForgotBlock");
+      const googleSection = document.getElementById("googleAuthSection");
       const title = document.getElementById("authModalTitle");
 
-      if (tab === "register") {
+      if (tab === "forgot") {
+        if (formLogin) formLogin.style.display = "none";
+        if (formRegister) formRegister.style.display = "none";
+        if (formForgot) formForgot.style.display = "flex";
+        if (googleSection) googleSection.style.display = "none";
+        if (btnLogin) {
+          btnLogin.style.background = "transparent";
+          btnLogin.style.color = "#94a3b8";
+          btnLogin.style.fontWeight = "500";
+        }
+        if (btnRegister) {
+          btnRegister.style.background = "transparent";
+          btnRegister.style.color = "#94a3b8";
+          btnRegister.style.fontWeight = "500";
+        }
+        if (title) title.innerHTML = "<i class='fa-solid fa-key' style='color:#38bdf8;'></i> Khôi Phục Mật Khẩu";
+        
+        try {
+          const loginEmailEl = document.getElementById("loginEmailInput");
+          const curLoginEmail = loginEmailEl && loginEmailEl.value ? String(loginEmailEl.value).trim() : "";
+          const forgotEmailInp = document.getElementById("forgotEmailInput");
+          if (curLoginEmail && forgotEmailInp && !forgotEmailInp.value) {
+            forgotEmailInp.value = curLoginEmail;
+          }
+        } catch(e) {}
+        const s1 = document.getElementById("forgotStep1");
+        const s2 = document.getElementById("forgotStep2");
+        if (s1) s1.style.display = "block";
+        if (s2) s2.style.display = "none";
+        const otpInp = document.getElementById("forgotOtpInput");
+        if (otpInp) otpInp.value = "";
+      } else if (tab === "register") {
         if (formLogin) formLogin.style.display = "none";
         if (formRegister) formRegister.style.display = "flex";
+        if (formForgot) formForgot.style.display = "none";
+        if (googleSection) googleSection.style.display = "block";
         try {
           const savedRef = (localStorage.getItem("mmo_ref_code") || sessionStorage.getItem("mmo_ref_code") || "").trim();
           const refNoticeEl = document.getElementById("regRefNotice");
@@ -6227,6 +6262,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
       } else {
         if (formLogin) formLogin.style.display = "flex";
         if (formRegister) formRegister.style.display = "none";
+        if (formForgot) formForgot.style.display = "none";
+        if (googleSection) googleSection.style.display = "block";
         if (btnLogin) {
           btnLogin.style.background = "#10b981";
           btnLogin.style.color = "#ffffff";
@@ -6240,6 +6277,199 @@ const API_URL = "https://script.google.com/macros/s/AKfycbxX7-jgydpDtoNt7BgScsyH
         if (title) title.innerHTML = "<i class='fa-solid fa-user-shield green'></i> Đăng Nhập Hệ Thống";
       }
     }
+    window.switchAuthTab = switchAuthTab;
+
+    let forgotCooldownTimer = null;
+    let forgotCooldownSec = 0;
+
+    function handleResendForgotOtp() {
+      if (forgotCooldownSec > 0) {
+        showToast("Vui lòng chờ " + forgotCooldownSec + " giây để gửi lại mã!", "warning");
+        return;
+      }
+      handleRequestPasswordReset(true);
+    }
+    window.handleResendForgotOtp = handleResendForgotOtp;
+
+    function startForgotCooldown(seconds) {
+      forgotCooldownSec = seconds || 60;
+      const btn = document.getElementById("btnResendForgotOtp");
+      if (forgotCooldownTimer) clearInterval(forgotCooldownTimer);
+      
+      const updateBtn = () => {
+        if (btn) {
+          if (forgotCooldownSec > 0) {
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
+            btn.style.cursor = "not-allowed";
+            btn.textContent = "Gửi lại (" + forgotCooldownSec + "s)";
+          } else {
+            btn.disabled = false;
+            btn.style.opacity = "1";
+            btn.style.cursor = "pointer";
+            btn.textContent = "Gửi lại mã";
+          }
+        }
+      };
+      updateBtn();
+      forgotCooldownTimer = setInterval(() => {
+        forgotCooldownSec--;
+        updateBtn();
+        if (forgotCooldownSec <= 0) {
+          clearInterval(forgotCooldownTimer);
+          forgotCooldownTimer = null;
+        }
+      }, 1000);
+    }
+
+    async function handleRequestPasswordReset(isResend) {
+      const emailInp = document.getElementById("forgotEmailInput");
+      const email = (sessionStorage.getItem("mmo_forgot_email") || (emailInp ? emailInp.value : "")).trim().toLowerCase();
+      if (!email || !email.includes("@")) {
+        showToast("Vui lòng nhập địa chỉ email hợp lệ!", "warning");
+        return;
+      }
+
+      const btnReq = document.getElementById("btnRequestResetOtp");
+      const btnResend = document.getElementById("btnResendForgotOtp");
+      if (isResend && btnResend) {
+        btnResend.textContent = "...";
+      } else if (btnReq) {
+        btnReq.disabled = true;
+        btnReq.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> ĐANG GỬI MÃ...";
+      }
+
+      // Tạo mã OTP bảo mật 6 số ngẫu nhiên
+      const otpCode = String(Math.floor(100000 + Math.random() * 900000));
+      try {
+        sessionStorage.setItem("mmo_forgot_otp", otpCode);
+        sessionStorage.setItem("mmo_forgot_email", email);
+        sessionStorage.setItem("mmo_forgot_time", String(Date.now()));
+      } catch(e) {}
+
+      // Gửi mã OTP vào Email người dùng qua Google Apps Script (gửi từ muabantaikhoanmmo@gmail.com)
+      let gasRes = null;
+      if (typeof callGasApi === "function") {
+        try {
+          gasRes = await callGasApi("sendPasswordResetOtp", { email: email, otp: otpCode });
+          console.log("[ForgotPass] Email dispatch response:", gasRes);
+        } catch (err) {
+          console.warn("[ForgotPass] Email dispatch error:", err);
+        }
+      }
+
+      if (btnReq) {
+        btnReq.disabled = false;
+        btnReq.innerHTML = "<i class='fa-solid fa-paper-plane'></i> TIẾP TỤC / GỬI MÃ XÁC THỰC";
+      }
+
+      if (gasRes && gasRes.success === false) {
+        showToast("⚠️ Máy chủ phản hồi: " + (gasRes.message || "Không thể gửi email. Vui lòng thử lại sau!"), "danger", 8000);
+        return;
+      }
+
+      // Chuyển sang Bước 2: Nhập OTP và đổi mật khẩu
+      const s1 = document.getElementById("forgotStep1");
+      const s2 = document.getElementById("forgotStep2");
+      const otpInp = document.getElementById("forgotOtpInput");
+      const targetEmailDisp = document.getElementById("forgotTargetEmailDisp");
+
+      if (s1) s1.style.display = "none";
+      if (s2) s2.style.display = "flex";
+      if (targetEmailDisp) targetEmailDisp.textContent = email;
+
+      if (otpInp) {
+        otpInp.value = "";
+        otpInp.focus();
+      }
+
+      startForgotCooldown(60);
+
+      showToast("📧 Mã xác thực OTP đã được gửi đến email " + email + ". Vui lòng kiểm tra Hộp thư đến (hoặc hòm thư Spam/Rác) để lấy mã xác thực!", "success", 12000);
+    }
+    window.handleRequestPasswordReset = handleRequestPasswordReset;
+
+    async function handleConfirmPasswordReset() {
+      const email = (sessionStorage.getItem("mmo_forgot_email") || document.getElementById("forgotEmailInput")?.value || "").trim().toLowerCase();
+      const savedOtp = sessionStorage.getItem("mmo_forgot_otp");
+      const enteredOtp = (document.getElementById("forgotOtpInput")?.value || "").trim();
+      const newPass = document.getElementById("forgotNewPassInput")?.value || "";
+      const confirmPass = document.getElementById("forgotConfirmPassInput")?.value || "";
+
+      if (!enteredOtp) {
+        showToast("Vui lòng nhập mã xác thực OTP từ email của bạn!", "warning");
+        const oInp = document.getElementById("forgotOtpInput");
+        if (oInp) oInp.focus();
+        return;
+      }
+      if (savedOtp && enteredOtp !== savedOtp) {
+        showToast("⚠️ Mã xác thực OTP không chính xác. Vui lòng kiểm tra lại email!", "danger");
+        return;
+      }
+      if (!newPass || newPass.length < 6) {
+        showToast("Mật khẩu mới phải có ít nhất 6 ký tự!", "warning");
+        return;
+      }
+      if (newPass !== confirmPass) {
+        showToast("Mật khẩu xác nhận không khớp!", "warning");
+        return;
+      }
+
+      let users = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+      let updated = false;
+      users.forEach(u => {
+        if ((u.email || "").toLowerCase().trim() === email) {
+          u.password = newPass;
+          updated = true;
+        }
+      });
+      if (!updated) {
+        users.push({
+          userId: "USR_" + Math.floor(100000 + Math.random() * 900000),
+          name: email.split("@")[0],
+          email: email,
+          role: "MEMBER",
+          balance: 0,
+          password: newPass
+        });
+      }
+      if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(users);
+      try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
+
+      // Đồng bộ mật khẩu mới lên Cloud
+      if (typeof callGasApi === "function") {
+        callGasApi("resetPassword", { email: email, newPassword: newPass }).catch(function() {});
+      }
+
+      showToast("🎉 Đặt lại mật khẩu thành công! Vui lòng đăng nhập với mật khẩu mới.", "success");
+      try {
+        sessionStorage.removeItem("mmo_forgot_otp");
+        sessionStorage.removeItem("mmo_forgot_email");
+        sessionStorage.removeItem("mmo_forgot_time");
+      } catch(e) {}
+
+      switchAuthTab("login");
+      const loginEmailInp = document.getElementById("loginEmailInput");
+      const loginPassInp = document.getElementById("loginPassInput");
+      if (loginEmailInp) loginEmailInp.value = email;
+      if (loginPassInp) {
+        loginPassInp.value = "";
+        loginPassInp.focus();
+      }
+    }
+    window.handleConfirmPasswordReset = handleConfirmPasswordReset;
+
+    // Gán sự kiện click cho liên kết Quên Mật Khẩu bảo đảm 100% không bị chặn
+    document.addEventListener("DOMContentLoaded", function() {
+      const forgotLink = document.getElementById("btnForgotPasswordLink");
+      if (forgotLink) {
+        forgotLink.addEventListener("click", function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          switchAuthTab("forgot");
+        });
+      }
+    });
 
     // =========================================================================
     // OFFICIAL GOOGLE SIGN-IN SYSTEM (GIS & OAUTH2 POPUP)
@@ -20264,6 +20494,9 @@ function changeAdmUsersPage(p) {
     window.openAuthModal = openAuthModal;
 
     window.switchAuthTab = switchAuthTab;
+    window.handleRequestPasswordReset = handleRequestPasswordReset;
+    window.handleResendForgotOtp = handleResendForgotOtp;
+    window.handleConfirmPasswordReset = handleConfirmPasswordReset;
 
     window.prepareDeposit = prepareDeposit;
 
