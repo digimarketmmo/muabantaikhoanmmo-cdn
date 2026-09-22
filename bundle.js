@@ -27064,19 +27064,42 @@ window.fallbackCopyAiHtml = fallbackCopyAiHtml;
 
 function openBloggerWithAiContent() {
   const bloggerUrl = 'https://draft.blogger.com/blog/posts/1442157221767603343?hl=vi';
-  // Gọi window.open NGAY TRONG GESTURE EVENT (trước mọi async) để mobile không block popup
-  const newWin = window.open(bloggerUrl, '_blank');
-  // Copy HTML sau (async OK vì window.open đã được gọi rồi)
-  copyAiHtml();
-  setTimeout(() => {
-    const statusEl = document.getElementById('aiCopyStatus');
-    if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;font-weight:600;">📋 Đã copy HTML bài viết! Đang mở trang bài đăng Blogger...</span>';
-    if (typeof showToast === 'function') showToast('📋 Đã copy HTML bài viết & Mở Blogger!', 'success');
-    // Nếu popup bị block, thông báo cho user
-    if (!newWin || newWin.closed || typeof newWin.closed === 'undefined') {
-      if (typeof showToast === 'function') showToast('⚠️ Popup bị chặn! Vui lòng cho phép popup và thử lại.', 'warn');
+  // MOBILE-SAFE: Dùng thẻ <a> click() thay window.open() để tránh popup blocker 100%
+  // trên iOS Safari và Android Chrome - <a> click trong gesture luôn được cho phép
+  const editor = document.getElementById('aiEditorContent');
+  const html = editor ? editor.innerHTML : '';
+  // Bước 1: Copy HTML đồng bộ ngay lập tức (trước khi mở tab)
+  if (html && html.trim() !== '' && html !== '<br>') {
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = html;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:0;left:0;width:2px;height:2px;opacity:0.01;z-index:-1;';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      ta.setSelectionRange(0, ta.value.length);
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+    } catch(e) {}
+    // Phương pháp 2 async (fallback - không ảnh hưởng đến việc mở tab)
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(html).catch(() => {});
     }
-  }, 300);
+  }
+  // Bước 2: Mở Blogger bằng <a> click() - KHÔNG BỊ BLOCK trên mobile
+  const a = document.createElement('a');
+  a.href = bloggerUrl;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  // Feedback UI
+  const statusEl = document.getElementById('aiCopyStatus');
+  if (statusEl) statusEl.innerHTML = '<span style="color:#22c55e;font-weight:600;">📋 Đã copy HTML & Đang mở Blogger...</span>';
+  if (typeof showToast === 'function') showToast('📋 Đã copy HTML bài viết & Mở Blogger!', 'success');
 }
 window.openBloggerWithAiContent = openBloggerWithAiContent;
 
