@@ -25226,9 +25226,9 @@ const AI_PROVIDERS = {
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/{MODEL}:generateContent?key={KEY}',
     isOpenAiFormat: false,
     keyLink: 'https://aistudio.google.com/app/apikey',
-    defaultModel: 'gemini-2.0-flash',
+    defaultModel: 'gemini-2.5-flash',
     models: [
-      { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Khuyên dùng - Cực nhanh & Chuẩn)' },
+      { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (Khuyên dùng - Nhanh & Mới nhất 2026)' },
       { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (Ổn định, Quota cao)' },
       { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro (Phân tích chuyên sâu)' }
     ]
@@ -25412,50 +25412,41 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens
     if (!reply) throw new Error(prov.name + ' không phản hồi nội dung.');
     return reply;
   } else {
-    const activeModel = modelId || 'gemini-2.0-flash';
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${apiKey}`;
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 45000);
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: controller.signal,
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
-        generationConfig: { maxOutputTokens: effectiveMaxTokens, temperature: 0.7 }
-      })
-    });
-    clearTimeout(timeoutId);
-    if (!res.ok) {
-      if (activeModel !== 'gemini-1.5-flash') {
-        const retryUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-        try {
-          const rController = new AbortController();
-          const rTimeout = setTimeout(() => rController.abort(), 35000);
-          const retryRes = await fetch(retryUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            signal: rController.signal,
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
-              generationConfig: { maxOutputTokens: effectiveMaxTokens, temperature: 0.7 }
-            })
-          });
-          clearTimeout(rTimeout);
-          if (retryRes.ok) {
-            const rJson = await retryRes.json();
-            const rReply = rJson.candidates && rJson.candidates[0] && rJson.candidates[0].content && rJson.candidates[0].content.parts && rJson.candidates[0].content.parts[0] ? rJson.candidates[0].content.parts[0].text : '';
-            if (rReply) return rReply;
-          }
-        } catch(e) {}
+    let activeModel = modelId || 'gemini-2.5-flash';
+    if (activeModel === 'gemini-2.0-flash') activeModel = 'gemini-2.5-flash';
+    const modelsToTry = [activeModel];
+    if (!modelsToTry.includes('gemini-2.5-flash')) modelsToTry.push('gemini-2.5-flash');
+    if (!modelsToTry.includes('gemini-1.5-flash')) modelsToTry.push('gemini-1.5-flash');
+
+    let lastErrText = '';
+    for (const curModel of modelsToTry) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${curModel}:generateContent?key=${apiKey}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 45000);
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
+            generationConfig: { maxOutputTokens: effectiveMaxTokens, temperature: 0.7 }
+          })
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const json = await res.json();
+          const reply = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] ? json.candidates[0].content.parts[0].text : '';
+          if (reply) return reply;
+        } else {
+          lastErrText = await res.text();
+          console.warn(`Gemini model ${curModel} failed (${res.status}):`, lastErrText.slice(0, 150));
+        }
+      } catch(eCur) {
+        lastErrText = eCur.message;
       }
-      const errText = await res.text();
-      throw new Error('Gemini Error ' + res.status + ': ' + errText.slice(0, 220));
     }
-    const json = await res.json();
-    const reply = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] ? json.candidates[0].content.parts[0].text : '';
-    if (!reply) throw new Error('Gemini không phản hồi nội dung.');
-    return reply;
+    throw new Error('Gemini Error: ' + (lastErrText ? lastErrText.slice(0, 220) : 'Tất cả model Gemini đều không phản hồi. Vui lòng kiểm tra lại API Key hoặc đổi sang Groq.'));
   }
 }
 
@@ -26032,7 +26023,7 @@ async function fetchSampleArticleData(sampleUrl) {
 // Biến lưu trữ toàn cục dữ liệu bài viết mẫu hiện tại
 window.currentSampleArticleData = null;
 
-// Modal phóng to xem ảnh minh họa chi tiết
+// Modal phóng to xem ảnh minh họa chi tiết (z-index cao hơn aiWriterModal để không bị che khuất)
 function openSampleImageZoomModal(idx) {
   if (!window.currentSampleArticleData || !Array.isArray(window.currentSampleArticleData.images)) return;
   const img = window.currentSampleArticleData.images[idx];
@@ -26042,33 +26033,39 @@ function openSampleImageZoomModal(idx) {
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'sampleImageZoomModal';
-    modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; display:flex; align-items:center; justify-content:center; padding:16px; box-sizing:border-box; backdrop-filter:blur(5px);';
     document.body.appendChild(modal);
   }
+  // Đảm bảo z-index cao nhất tuyệt đối (2147483648 > 2147483647 của aiWriterModal)
+  modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; width:100vw; height:100vh; background:rgba(0,0,0,0.92); z-index:2147483648 !important; display:flex; align-items:center; justify-content:center; padding:12px; box-sizing:border-box; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);';
 
   const isSelected = img.selected !== false;
   modal.innerHTML = `
-    <div style="background:#0f172a; border:1px solid #334155; border-radius:12px; max-width:820px; width:100%; max-height:92vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7); position:relative;">
-      <div style="padding:12px 16px; border-bottom:1px solid #1e293b; display:flex; align-items:center; justify-content:space-between; background:#1e1e38;">
-        <div style="display:flex; align-items:center; gap:8px;">
-          <span style="font-size:13px; font-weight:700; color:#38bdf8;"><i class="fa-solid fa-magnifying-glass-plus"></i> Phóng to ảnh minh họa #${idx + 1}</span>
-          <span style="font-size:11px; color:#94a3b8; background:#0f172a; padding:2px 8px; border-radius:4px; border:1px solid #334155; max-width:350px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${img.alt || 'Ảnh minh họa bài viết'}</span>
+    <div style="background:#0f172a; border:1px solid #38bdf8; border-radius:12px; max-width:880px; width:100%; max-height:94vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.9), 0 0 30px rgba(56,189,248,0.25); position:relative; z-index:2147483649 !important;">
+      <div style="padding:10px 14px; border-bottom:1px solid #1e293b; display:flex; align-items:center; justify-content:space-between; background:#1e1e38; flex-shrink:0;">
+        <div style="display:flex; align-items:center; gap:8px; min-width:0;">
+          <span style="font-size:13px; font-weight:700; color:#38bdf8; white-space:nowrap;"><i class="fa-solid fa-magnifying-glass-plus"></i> Ảnh #${idx + 1}</span>
+          <span style="font-size:11px; color:#94a3b8; background:#0f172a; padding:2px 8px; border-radius:4px; border:1px solid #334155; max-width:240px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${img.alt || 'Ảnh minh họa bài viết'}</span>
         </div>
-        <button type="button" onclick="closeSampleImageZoomModal()" style="background:transparent; border:none; color:#94a3b8; font-size:18px; cursor:pointer; padding:4px 8px; line-height:1;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#94a3b8'">✕</button>
+        <div style="display:flex; align-items:center; gap:8px; flex-shrink:0;">
+          <a href="${img.url}" target="_blank" rel="noopener noreferrer" style="font-size:11px; color:#38bdf8; text-decoration:none; background:#0f172a; padding:4px 8px; border-radius:6px; border:1px solid #334155; display:inline-flex; align-items:center; gap:4px;" title="Mở link ảnh gốc trong tab mới">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Mở tab mới
+          </a>
+          <button type="button" onclick="closeSampleImageZoomModal()" style="background:#ef4444; border:none; color:#fff; font-size:14px; font-weight:bold; cursor:pointer; width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; padding:0; line-height:1;">✕</button>
+        </div>
       </div>
-      <div style="flex:1; overflow:auto; padding:16px; display:flex; align-items:center; justify-content:center; background:#020617;">
-        <img src="${img.url}" alt="${img.alt || ''}" style="max-width:100%; max-height:65vh; object-fit:contain; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.5);" onerror="this.src='https://iili.io/nFV4Rln.png'" />
+      <div style="flex:1; min-height:180px; max-height:68vh; overflow:auto; padding:12px; display:flex; align-items:center; justify-content:center; background:#020617;">
+        <img src="${img.url}" alt="${img.alt || ''}" referrerpolicy="no-referrer" style="max-width:100%; max-height:64vh; width:auto; height:auto; object-fit:contain; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.6);" onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='https://images.weserv.nl/?url=' + encodeURIComponent('${img.url}');} else { this.src='https://iili.io/nFV4Rln.png'; }" />
       </div>
-      <div style="padding:12px 16px; border-top:1px solid #1e293b; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; background:#1e1e38;">
+      <div style="padding:10px 14px; border-top:1px solid #1e293b; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; background:#1e1e38; flex-shrink:0;">
         <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; color:#e2e8f0; user-select:none;">
           <input type="checkbox" ${isSelected ? 'checked' : ''} onchange="toggleSampleImageSelection(${idx}, this.checked)" style="width:16px; height:16px; accent-color:#10b981; cursor:pointer;" />
-          <span style="font-weight:600;"><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Chọn chèn ảnh này vào bài viết tự động</span>
+          <span style="font-weight:600;"><i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Chọn chèn ảnh này</span>
         </label>
         <div style="display:flex; gap:8px;">
-          <button type="button" onclick="removeSampleArticleImage(${idx}); closeSampleImageZoomModal();" style="background:#ef4444; color:#fff; border:none; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:5px;">
-            <i class="fa-solid fa-trash-can"></i> Xóa ảnh này
+          <button type="button" onclick="removeSampleArticleImage(${idx}); closeSampleImageZoomModal();" style="background:#ef4444; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:4px;">
+            <i class="fa-solid fa-trash-can"></i> Xóa ảnh
           </button>
-          <button type="button" onclick="closeSampleImageZoomModal()" style="background:#334155; color:#e2e8f0; border:none; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer;">
+          <button type="button" onclick="closeSampleImageZoomModal()" style="background:#334155; color:#e2e8f0; border:none; padding:6px 14px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer;">
             Đóng
           </button>
         </div>
@@ -26078,7 +26075,7 @@ function openSampleImageZoomModal(idx) {
   modal.onclick = (e) => {
     if (e.target === modal) closeSampleImageZoomModal();
   };
-  modal.style.display = 'flex';
+  modal.style.setProperty('display', 'flex', 'important');
 }
 window.openSampleImageZoomModal = openSampleImageZoomModal;
 
@@ -26140,9 +26137,9 @@ function openBulkPasteImagesModal() {
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'bulkPasteImagesModal';
-    modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; display:flex; align-items:center; justify-content:center; padding:16px; box-sizing:border-box; backdrop-filter:blur(5px);';
     document.body.appendChild(modal);
   }
+  modal.style.cssText = 'position:fixed; top:0; left:0; right:0; bottom:0; width:100vw; height:100vh; background:rgba(0,0,0,0.85); z-index:2147483648 !important; display:flex; align-items:center; justify-content:center; padding:16px; box-sizing:border-box; backdrop-filter:blur(5px);';
 
   modal.innerHTML = `
     <div style="background:#0f172a; border:1px solid #334155; border-radius:12px; max-width:600px; width:100%; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7);">
