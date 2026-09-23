@@ -1679,37 +1679,40 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.cleanCompareText = cleanCompareText;
 
+    const REAL_PRODUCT_IDS = [
+      "PROD_MUBKH47T2U", "PROD_MUBJQ6JP7O", "PROD_MU9YH8D9FK", "SP_CAPCUT_PRO", "PROD_MU6R34FZ4Z",
+      "PROD_MU5T3T47AE", "PROD_MU5SPLMSEC", "PROD_MU5PWT7PP7", "SP_CHATGPT", "SP_FANPAGE",
+      "SP_GEMINI", "SP_GMAIL_DOMAIN", "SP_HOTMAIL", "SP_J7", "SP_J7_PRO", "SP_S10", "SP_TIKTOK_US",
+      "PROD_MU2YQ1J3PY", "PROD_MU2PA8VNDP", "PROD_MU2OXBZC6K", "PROD_MU2OGW71GZ", "PROD_MU2OAG3IO2",
+      "PROD_MU2O4MW4DQ", "PROD_MU2NX4CYEW", "PROD_MU2NUXL1Q4", "PROD_MU2NSFQCMT", "PROD_MU2NKET1OG",
+      "PROD_MU2N2TVDIJ", "PROD_MU2MY8WCOE", "PROD_MU2MOON7L6", "PROD_MU2LYZY5C7", "PROD_MU2JIBBRH8",
+      "PROD_MU2IXVFLMW", "PROD_MU2CZL38PH", "PROD_MU2BIFBBNE", "PROD_MU2B32VLQY", "PROD_MU2ASBNSJT",
+      "PROD_MU2A2S732Y", "PROD_MU29WM90LZ", "PROD_MU29RGEBH0", "PROD_MU29IZBLAK", "PROD_MU1LSSJ7AZ",
+      "PROD_MU1G6LJX", "PROD_MTQZT2Y1", "PROD_MTRB6000", "PROD_MTTPLODQ", "PROD_MTU9F5HN",
+      "PROD_MTVI44UK", "PROD_MTPIJ9XV", "PROD_MTQQXO2E", "PROD_MTQWMPL5", "PROD_MTQWQFZD",
+      "PROD_MTQX1C7X", "PROD_MTQX465U", "PROD_MTQX7SIK", "PROD_MTYN7UJG", "PROD_MTPI7PIO"
+    ];
+    window.REAL_PRODUCT_IDS = REAL_PRODUCT_IDS;
+
     const DUMMY_SEED_IDS = [
-  "SP_CAPCUT_PRO",
-  "SP_GMAIL_DOMAIN",
-  "SP_CHATGPT",
-  "SP_FANPAGE",
-  "SP_GEMINI",
-  "SP_HOTMAIL",
-  "SP_J7",
-  "SP_J7_PRO",
-  "SP_S10",
-  "SP_TIKTOK_US",
-  "zalo-new-2016",
-  "EXPRESS_VPN_1M",
-  "FB_VIA_VN",
-  "FB_CLONE_VN",
-  "GMAIL_CO_2020",
-  "GMAIL_NEW",
-  "TIKTOK_1K_FOLLOW",
-  "TIKTOK_BETA_US",
-  "TELE_SESSION_VN",
-  "DISCORD_NITRO",
-  "X_TWITTER_2019",
-  "PROXY_IPV4_VN",
-  "CHATGPT_PLUS",
-  "CANVA_PRO_LIFETIME",
-  "SP_TIKTOK_BRAZIL",
-  "SP_GMAIL_CO",
-  "SP_TELEGRAM_SESSION",
-  "SP_TIKTOK_VN",
-  "SP_CANVA"
-];
+      "zalo-new-2016",
+      "EXPRESS_VPN_1M",
+      "FB_VIA_VN",
+      "FB_CLONE_VN",
+      "GMAIL_CO_2020",
+      "GMAIL_NEW",
+      "TIKTOK_1K_FOLLOW",
+      "TIKTOK_BETA_US",
+      "TELE_SESSION_VN",
+      "DISCORD_NITRO",
+      "X_TWITTER_2019",
+      "PROXY_IPV4_VN",
+      "CHATGPT_PLUS",
+      "CANVA_PRO_LIFETIME",
+      "SP_TELEGRAM_SESSION",
+      "SP_TIKTOK_VN",
+      "SP_CANVA"
+    ];
 
     function getDeletedProductIds() {
       let ids = [];
@@ -1728,6 +1731,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!productOrId) return true;
       const pid = typeof productOrId === "object" ? String(productOrId.id || "").trim() : String(productOrId).trim();
       if (!pid) return true;
+
+      // Sản phẩm thật trong hệ thống không bao giờ bị coi là đã xóa nếu chưa có cờ isDeleted
+      if (typeof REAL_PRODUCT_IDS !== "undefined" && REAL_PRODUCT_IDS.includes(pid)) {
+        if (typeof productOrId === "object" && productOrId.isDeleted === true) return true;
+        return false;
+      }
 
       // 1. DUMMY_SEED_IDS (các sản phẩm mẫu lúc khởi tạo hệ thống)
       if (DUMMY_SEED_IDS.includes(pid)) return true;
@@ -7421,10 +7430,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         localStorage.setItem("mmo_current_view", viewId);
         if (typeof window !== "undefined" && window.location && window.history && window.history.replaceState) {
           if (viewId === "viewStore") {
-            // Khi về Trang Chủ: Xóa sạch ?prod, ?product, ?post, ?blog, ?ref và hash #viewStore để URL sạch 100%
+            // Khi về Trang Chủ: Giữ lại ?category= hoặc ?s= nếu người dùng đang lọc/tìm kiếm!
             try { localStorage.removeItem("mmo_last_viewed_prod"); } catch(e) {}
-            const cleanUrl = window.location.origin + window.location.pathname;
-            window.history.replaceState(null, "", cleanUrl);
+            const url = new URL(window.location.href);
+            url.searchParams.delete("prod");
+            url.searchParams.delete("product");
+            url.searchParams.delete("post");
+            url.searchParams.delete("blog");
+            url.searchParams.delete("m");
+            if (url.searchParams.has("category") || url.searchParams.has("s")) {
+              const newUrl = url.pathname + "?" + url.searchParams.toString();
+              window.history.replaceState(null, "", newUrl);
+            } else {
+              const cleanUrl = window.location.origin + window.location.pathname;
+              window.history.replaceState(null, "", cleanUrl);
+            }
           } else if (viewId === "viewProductDetail") {
             // Đang xem chi tiết sản phẩm: URL sẽ do openProductDetailById quản lý (?prod=...)
           } else {
@@ -7448,6 +7468,60 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
 
         // SMART SYNCHRONIZED SOLD QUANTITY CALCULATOR (KHÔNG BỊ 100 ĐỒNG LOẠT)
+    
+    // RESOLVE PRODUCT IMAGE: Ánh xạ ảnh CDN chuẩn 100% cho mọi sản phẩm MMO
+    function resolveProductImage(p) {
+      if (!p) return "https://iili.io/nFV4Rln.png";
+      if (p.image && typeof p.image === "string" && p.image.startsWith("http") && !p.image.includes("undefined") && !p.image.includes("placeholder")) {
+        return p.image;
+      }
+      const id = String(p.id || "").toUpperCase();
+      const name = String(p.name || "").toLowerCase();
+      const cdnBase = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/";
+
+      if (id.includes("NOT8") || name.includes("not8") || name.includes("note 8") || name.includes("note8")) return cdnBase + "rom_not8_android10.png";
+      if (id.includes("NOT9") || name.includes("not 9") || name.includes("note 9") || name.includes("note9")) return cdnBase + "rom_not9_android10.png";
+      if (name.includes("not10") || name.includes("note 10") || name.includes("note10")) return cdnBase + "rom_not10_android12.png";
+      if (name.includes("j7 pro")) return cdnBase + "rom_j7_pro.png";
+      if (name.includes("j7 prime")) return cdnBase + "rom_j7_prime.png";
+      if (name.includes("j7 plus") || name.includes("j7 plush")) return cdnBase + "rom_j7_plus.png";
+      if (name.includes("s10")) return cdnBase + "rom_s10_android12.png";
+      if (name.includes("s22")) return cdnBase + "rom_s22_android12.png";
+      if (name.includes("s7")) return cdnBase + "rom_s7_android10.png";
+      if (name.includes("s8")) return cdnBase + "rom_s8_android10.png";
+      if (name.includes("s9")) return cdnBase + "rom_s9_android10.png";
+      if (name.includes("canva")) return cdnBase + "canva_pro.png";
+      if (name.includes("capcut")) return cdnBase + "capcut_pro.png";
+      if (name.includes("kling")) return cdnBase + "kling_ai.png";
+      if (name.includes("chatgpt") || name.includes("chat gpt") || name.includes("gemini") || name.includes("gpt")) return cdnBase + "chatgpt_plus.png";
+      if (name.includes("hotmail") || name.includes("outlook")) return cdnBase + "hotmail_outlook.png";
+      if (name.includes("instagram")) return cdnBase + "instagram.png";
+      if (name.includes("tiktok brazil")) return cdnBase + "tiktok_brazil.png";
+      if (name.includes("tiktok pháp") || name.includes("tiktok phap")) return cdnBase + "tiktok_france.png";
+      if (name.includes("tiktok việt") || name.includes("tiktok viet") || name.includes("mở giỏ")) return cdnBase + "tiktok_vietnam.png";
+      if (name.includes("tiktok")) return cdnBase + "tiktok_beta.png";
+      if (name.includes("gmail 10 phút") || name.includes("10m") || name.includes("10 phút")) return cdnBase + "gmail_10m.png";
+      if (name.includes("1 giờ") || name.includes("1h")) return cdnBase + "gmail_1h.png";
+      if (name.includes("24h") || name.includes("24 giờ")) return cdnBase + "gmail_24h.png";
+      if (name.includes("7 ngày")) return cdnBase + "gmail_7day.png";
+      if (name.includes("14 ngày")) return cdnBase + "gmail_14day.png";
+      if (name.includes("30 ngày")) return cdnBase + "gmail_30day.png";
+      if (name.includes("gmail cổ") || name.includes("gmail co")) return cdnBase + "gmail_co.png";
+      if (name.includes("gmail")) return cdnBase + "blog_gmail.png";
+      if (name.includes("paypal")) return cdnBase + "paypal_usdt.png";
+      if (name.includes("youtube")) return cdnBase + "youtube_channel.png";
+      if (name.includes("zalo")) return cdnBase + "zalo_group.png";
+      if (name.includes("facebook") || name.includes("fanpage")) return cdnBase + "facebook_fanpage.png";
+      if (name.includes("via")) return cdnBase + "facebook_via.png";
+      if (name.includes("proxy")) return cdnBase + "proxy_4g.png";
+      if (name.includes("vpn") || name.includes("nord")) return cdnBase + "nord_vpn.png";
+      if (name.includes("express")) return cdnBase + "express_vpn.png";
+      if (name.includes("spotify")) return cdnBase + "spotify_premium.png";
+
+      return "https://iili.io/nFV4Rln.png";
+    }
+    window.resolveProductImage = resolveProductImage;
+
     function getRealisticProductSold(p) {
       if (!p) return 0;
       const PRESET_SOLD = {
@@ -7646,9 +7720,28 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function filterCategory(cat) {
       currentCategory = cat;
       if (typeof paginationState !== "undefined") paginationState.storeProd = 1;
+      const curView = localStorage.getItem("mmo_current_view") || "viewStore";
+      if (curView !== "viewStore" && typeof switchView === "function") {
+        switchView("viewStore");
+      }
+      try {
+        const url = new URL(window.location.href);
+        if (cat && cat !== "Tất cả") {
+          url.searchParams.set("category", cat);
+        } else {
+          url.searchParams.delete("category");
+        }
+        url.searchParams.delete("prod");
+        url.searchParams.delete("product");
+        url.searchParams.delete("m");
+        const newUrl = url.pathname + (url.searchParams.toString() ? "?" + url.searchParams.toString() : "");
+        window.history.replaceState(null, "", newUrl);
+      } catch(e) {}
       renderCategories();
       renderProductGrid();
     }
+    window.filterCategory = filterCategory;
+    window.switchCategory = filterCategory;
 
     // RENDER PRODUCT GRID WITH 10-ITEM PAGINATION
     function renderProductGrid() {
@@ -13706,34 +13799,55 @@ function syncAllOpenViewsStock(changedProdId) {
     window.renderRelatedProductsSeo = renderDetailRelatedProducts;
 
     function openProductDetailById(id) {
+      if (!id) return;
+      const cleanId = String(id).trim();
       const activeNow = localStorage.getItem("mmo_current_view") || "viewStore";
       if (activeNow !== "viewProductDetail" && activeNow !== "viewPreOrderDetail") {
         _previousView = activeNow;
       }
-      if (typeof isProductDeleted === "function" && isProductDeleted(id)) {
-        try {
-          const u = new URL(window.location.href);
-          u.searchParams.delete("prod");
-          u.searchParams.delete("product");
-          window.history.replaceState(null, "", u.pathname + (u.searchParams.toString() ? '?' + u.searchParams.toString() : ''));
-        } catch(e) {}
-        showToast("Sản phẩm này đã bị xóa hoặc không còn tồn tại!", "warning");
-        if (typeof switchView === "function") switchView("viewStore");
-        return;
-      }
+
       const visibleProds = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products : []);
-      let p = visibleProds.find(item => item.id === id);
+      let p = visibleProds.find(item => item && item.id === cleanId);
+
+      // Tra cứu nhanh trong localStorage cache nếu chưa có trong bộ nhớ
+      if (!p) {
+        try {
+          const raw = localStorage.getItem("mmo_admin_products") || localStorage.getItem("mmo_products");
+          if (raw) {
+            const cachedList = JSON.parse(raw);
+            if (Array.isArray(cachedList)) {
+              p = cachedList.find(item => item && item.id === cleanId);
+            }
+          }
+        } catch(e) {}
+      }
+
+      // TikTok Brazil alias lookup
+      if (!p && (cleanId === "PROD_MTPG0PUD" || cleanId === "PROD_MTPIJ9XV" || cleanId === "SP_TIKTOK_BRAZIL")) {
+        p = visibleProds.find(item => item && (item.id === "PROD_MTPIJ9XV" || item.id === "PROD_MTPG0PUD" || (item.name && item.name.toUpperCase().includes("TIKTOK") && item.name.toUpperCase().includes("BRAZIL"))));
+      }
+
+      // Nếu vẫn chưa thấy: Đồng bộ từ backend và CHỜ PHẢN HỒI (KHÔNG ĐƯỢC TỰ ĐỘNG ĐÁ VỀ TRANG CHỦ)
       if (!p && typeof syncProductsFromBackend === "function") {
+        if (typeof switchView === "function") switchView("viewProductDetail");
+        const dtlTitleEl = document.getElementById("dtlTitle");
+        if (dtlTitleEl) dtlTitleEl.innerText = "Đang tải thông tin sản phẩm...";
+
         syncProductsFromBackend().then(() => {
           const freshV = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products : []);
-          const fp = freshV.find(item => item.id === id);
-          if (fp && typeof openProductDetailById === "function") openProductDetailById(id);
-        }).catch(() => {});
+          const fp = freshV.find(item => item && item.id === cleanId);
+          if (fp) {
+            openProductDetailById(cleanId);
+          } else {
+            showToast("Sản phẩm này không còn tồn tại hoặc đã được chuyển mục!", "warning");
+            if (typeof switchView === "function") switchView("viewStore");
+          }
+        }).catch(() => {
+          if (typeof switchView === "function") switchView("viewStore");
+        });
+        return; // DỪNG LẠI CHỜ ĐỒNG BỘ XONG, TUYỆT ĐỐI KHÔNG CHẠY XUỐNG DƯỚI
       }
-      // TikTok Brazil alias lookup
-      if (!p && (id === "PROD_MTPG0PUD" || id === "PROD_MTPIJ9XV" || id === "SP_TIKTOK_BRAZIL")) {
-        p = visibleProds.find(item => item.id === "PROD_MTPIJ9XV" || item.id === "PROD_MTPG0PUD" || (item.name && item.name.toUpperCase().includes("TIKTOK") && item.name.toUpperCase().includes("BRAZIL")));
-      }
+
       if (!p || (typeof isProductDeleted === "function" && isProductDeleted(p))) {
         showToast("Sản phẩm này đã bị xóa hoặc không còn tồn tại!", "warning");
         if (typeof switchView === "function") switchView("viewStore");
@@ -13980,6 +14094,28 @@ function syncAllOpenViewsStock(changedProdId) {
           document.head.appendChild(prodSchemaScript);
         }
 
+        const prodImgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png");
+        p.image = prodImgUrl;
+
+        const prodShippingDetails = {
+          "@type": "OfferShippingDetails",
+          "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "VND" },
+          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "VN" },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" },
+            "transitTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" }
+          }
+        };
+        const prodReturnPolicy = {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "VN",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+          "merchantReturnDays": 1,
+          "returnMethod": "https://schema.org/ReturnByMail",
+          "returnFees": "https://schema.org/FreeReturn"
+        };
+
         let offersData;
         if (p.variants && Array.isArray(p.variants) && p.variants.length > 1) {
           offersData = p.variants.map(function(v, vi) {
@@ -13989,10 +14125,13 @@ function syncAllOpenViewsStock(changedProdId) {
               "priceCurrency": "VND",
               "price": v.price || p.price || 0,
               "priceValidUntil": "2027-12-31",
+              "validFrom": "2026-01-01T00:00:00+07:00",
               "availability": ((typeof getShopVariantStock === "function" ? getShopVariantStock(p, vi) : (v.stock || 0)) > 0)
                 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
               "itemCondition": "https://schema.org/NewCondition",
-              "seller": { "@type": "Organization", "name": "MUABANTAIKHOANMMO.COM" }
+              "seller": { "@type": "Organization", "name": "MUABANTAIKHOANMMO.COM" },
+              "shippingDetails": prodShippingDetails,
+              "hasMerchantReturnPolicy": prodReturnPolicy
             };
           });
         } else {
@@ -14002,11 +14141,20 @@ function syncAllOpenViewsStock(changedProdId) {
             "priceCurrency": "VND",
             "price": currentSelectedPrice || p.price || 0,
             "priceValidUntil": "2027-12-31",
+            "validFrom": "2026-01-01T00:00:00+07:00",
             "availability": (p.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
             "itemCondition": "https://schema.org/NewCondition",
-            "seller": { "@type": "Organization", "name": "MUABANTAIKHOANMMO.COM" }
+            "seller": { "@type": "Organization", "name": "MUABANTAIKHOANMMO.COM" },
+            "shippingDetails": prodShippingDetails,
+            "hasMerchantReturnPolicy": prodReturnPolicy
           };
         }
+
+        // Loại bỏ schemaAllProductsItemList để Googlebot chỉ thấy DUY NHẤT 1 AggregateRating trên trang chi tiết
+        try {
+          const oldListScript = document.getElementById("schemaAllProductsItemList");
+          if (oldListScript) oldListScript.remove();
+        } catch(e) {}
 
         const faqSchema = {
           "@type": "FAQPage",
@@ -14071,7 +14219,7 @@ function syncAllOpenViewsStock(changedProdId) {
               "name": p.name,
               "description": prodDesc,
               "url": prodCanonicalUrl,
-              "image": [p.image || "https://iili.io/nFV4Rln.png"],
+              "image": [prodImgUrl],
               "sku": p.id,
               "mpn": p.id,
               "brand": { "@type": "Brand", "name": "MUABANTAIKHOANMMO" },
@@ -14120,8 +14268,13 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       try {
-        const newUrl = window.location.pathname + "?prod=" + encodeURIComponent(p.id);
-        window.history.pushState({ prod: p.id }, "", newUrl);
+        const url = new URL(window.location.href);
+        url.searchParams.set("prod", p.id);
+        url.searchParams.set("view", "viewProductDetail");
+        url.searchParams.delete("m");
+        url.hash = "";
+        const newUrl = url.pathname + "?" + url.searchParams.toString();
+        window.history.replaceState({ prod: p.id }, "", newUrl);
       } catch(e) {}
 
       // [AUTO-FETCH LIVE STOCK]: Nếu sản phẩm dùng API nguồn nhưng sourceStock = 0 → tự fetch live
@@ -20509,6 +20662,7 @@ function changeAdmUsersPage(p) {
         
         const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
         const viewParam = urlParams.get("view");
+        const catParam = urlParams.get("category");
         if (hasProdParam) {
           targetView = "viewProductDetail";
         } else if (hasBlogParam) {
@@ -20521,6 +20675,9 @@ function changeAdmUsersPage(p) {
           targetView = savedView;
         } else {
           targetView = "viewStore";
+        }
+        if (catParam && typeof filterCategory === "function") {
+          setTimeout(function() { filterCategory(catParam); }, 80);
         }
 
         if (targetView === "viewBlogDetail") {
@@ -20619,6 +20776,14 @@ function changeAdmUsersPage(p) {
     // [SEO GOOGLE INDEX]: Tự động khai báo danh mục tất cả sản phẩm dưới dạng Schema ItemList cho Googlebot
 function injectAllProductsSchema() {
       try {
+        // Nếu đang ở URL chi tiết sản phẩm, xóa bỏ schemaAllProductsItemList để Googlebot chỉ thấy DUY NHẤT 1 AggregateRating
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("prod") || urlParams.get("product") || (window.location.hash && window.location.hash.startsWith("#product_"))) {
+          const s = document.getElementById("schemaAllProductsItemList");
+          if (s) s.remove();
+          return;
+        }
+
         const prods = (MOCK_DATA && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : [];
         if (prods.length === 0) return;
         const deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
@@ -20634,6 +20799,25 @@ function injectAllProductsSchema() {
         }
         const baseUrl = window.location.origin + window.location.pathname;
         const siteUrl = "https://www.muabantaikhoanmmo.com/";
+
+        const prodShippingDetails = {
+          "@type": "OfferShippingDetails",
+          "shippingRate": { "@type": "MonetaryAmount", "value": "0", "currency": "VND" },
+          "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "VN" },
+          "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" },
+            "transitTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 0, "unitCode": "DAY" }
+          }
+        };
+        const prodReturnPolicy = {
+          "@type": "MerchantReturnPolicy",
+          "applicableCountry": "VN",
+          "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+          "merchantReturnDays": 1,
+          "returnMethod": "https://schema.org/ReturnByMail",
+          "returnFees": "https://schema.org/FreeReturn"
+        };
 
         const graphSchema = {
           "@context": "https://schema.org",
@@ -20660,9 +20844,8 @@ function injectAllProductsSchema() {
               "numberOfItems": visibleProds.length,
               "itemListElement": visibleProds.map((p, idx) => {
                 const prodUrl = baseUrl + "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
-                const soldCount = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p) : (p.buffSold || p.sold || 10);
-                const reviewCount = Math.max(5, Math.min(500, Math.floor(soldCount / 3)));
                 const price = (p.variants && p.variants[0] && p.variants[0].price) ? p.variants[0].price : (p.price || 0);
+                const imgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png");
                 return {
                   "@type": "ListItem",
                   "position": idx + 1,
@@ -20672,7 +20855,7 @@ function injectAllProductsSchema() {
                     "name": p.name,
                     "description": (p.description || ("Mua " + p.name + " tu dong 24/7 uy tin, gia re nhat Viet Nam.")).slice(0, 300),
                     "url": prodUrl,
-                    "image": [p.image || "https://iili.io/nFV4Rln.png"],
+                    "image": [imgUrl],
                     "sku": p.id,
                     "brand": { "@type": "Brand", "name": "MUABANTAIKHOANMMO" },
                     "category": p.category || "Tai Khoan MMO",
@@ -20682,16 +20865,12 @@ function injectAllProductsSchema() {
                       "priceCurrency": "VND",
                       "price": price,
                       "priceValidUntil": "2027-12-31",
+                      "validFrom": "2026-01-01T00:00:00+07:00",
                       "availability": (p.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
                       "itemCondition": "https://schema.org/NewCondition",
-                      "seller": { "@type": "Organization", "name": "MUABANTAIKHOANMMO.COM" }
-                    },
-                    "aggregateRating": {
-                      "@type": "AggregateRating",
-                      "ratingValue": "4.9",
-                      "bestRating": "5",
-                      "worstRating": "1",
-                      "reviewCount": String(reviewCount)
+                      "seller": { "@type": "Organization", "name": "MUABANTAIKHOANMMO.COM" },
+                      "shippingDetails": prodShippingDetails,
+                      "hasMerchantReturnPolicy": prodReturnPolicy
                     }
                   }
                 };
