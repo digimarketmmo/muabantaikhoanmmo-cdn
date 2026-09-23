@@ -11913,6 +11913,19 @@ function syncAllOpenViewsStock(changedProdId) {
           });
         }
 
+        // Đảm bảo toàn bộ Logo Website có href='/' hợp lệ để mở tab mới bằng chuột phải hoặc Ctrl+click
+        document.querySelectorAll(".logo, .header-inner .logo, .footer-col-1 .logo").forEach(function(a) {
+          if (!a.getAttribute("href") || a.getAttribute("href") === "javascript:void(0)" || a.getAttribute("href") === "#") {
+            a.setAttribute("href", "/");
+          }
+          a.onclick = function(event) {
+            if (!event.ctrlKey && !event.metaKey && event.button === 0) {
+              event.preventDefault();
+              if (typeof switchView === "function") switchView("viewStore");
+            }
+          };
+        });
+
         // 3. Favicon Website
         if (settings.brandFavicon && settings.brandFavicon.trim()) {
           const cleanFavicon = settings.brandFavicon.trim();
