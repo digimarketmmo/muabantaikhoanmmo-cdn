@@ -380,7 +380,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "name": "Rom androi 10 s7  s7 edge mod adb",
           "category": "Phone Farm",
           "price": 300000,
-          "stock": 0,
+          "stock": 30,
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
@@ -390,14 +390,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             {
               "name": "Rom androi 10 s7 G930FDS",
               "price": 300000,
-              "stock": 0,
-              "available": false
+              "stock": 30,
+              "available": true
             },
             {
               "name": "Rom androi  s7 edge G935",
               "price": 300000,
-              "stock": 0,
-              "available": false
+              "stock": 63,
+              "available": true
             }
           ],
           "deliveryType": "local",
@@ -8363,7 +8363,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       },
 
       fetchProducts: async function() {
-        const res = await fetch(this.getApiUrl() + "/api/products", { cache: "no-store" });
+        const res = await fetch(this.getApiUrl() + "/api/products");
         const data = await res.json().catch(() => ({}));
         if (!res.ok || data.success === false) {
           throw new Error(data.error || data.message || ("Lỗi tải danh mục (HTTP " + res.status + ")"));
@@ -8372,7 +8372,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       },
 
       fetchProduct: async function(productIdOrSlug) {
-        const res = await fetch(this.getApiUrl() + "/api/products/" + encodeURIComponent(productIdOrSlug), { cache: "no-store" });
+        const res = await fetch(this.getApiUrl() + "/api/products/" + encodeURIComponent(productIdOrSlug));
         const data = await res.json().catch(() => ({}));
         if (!res.ok || data.success === false) {
           throw new Error(data.error || data.message || ("Lỗi tải sản phẩm (HTTP " + res.status + ")"));
@@ -8832,10 +8832,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.uploadAllProductsToTurso = uploadAllProductsToTurso;
 
     async function syncTursoProductsToLocalUI() {
-      if (typeof MMO_WORKER_API === "undefined" || !MMO_WORKER_API.isConfigured()) return;
+      let res = null;
+      if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
+        try {
+          res = await MMO_WORKER_API.fetchProducts();
+        } catch(workerFetchErr) {
+          console.warn("MMO_WORKER_API.fetchProducts error, fallback to GAS:", workerFetchErr);
+        }
+      }
+      if (!res || !Array.isArray(res.products) || res.products.length === 0) {
+        if (typeof callGasApi === "function") {
+          try {
+            const gasProdsRes = await callGasApi("getProducts");
+            if (gasProdsRes && Array.isArray(gasProdsRes.products) && gasProdsRes.products.length > 0) {
+              res = gasProdsRes;
+            }
+          } catch(gasErr) {}
+        }
+      }
+      if (!res || !Array.isArray(res.products) || res.products.length === 0) return;
       try {
-        const res = await MMO_WORKER_API.fetchProducts();
-        if (!res || !Array.isArray(res.products) || res.products.length === 0) return;
 
         const deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
         if (!MOCK_DATA.products) MOCK_DATA.products = [];
@@ -9757,6 +9773,8 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.initApiSourceStockUI = initApiSourceStockUI;
 
+    var _mmoProxyDeadUntil = 0;
+
     async function executeSourceApiCall(action, payload) {
       payload = payload || {};
       const provider = (payload && payload.provider) ? String(payload.provider).toLowerCase() : "sellmmo";
@@ -9764,6 +9782,15 @@ function syncAllOpenViewsStock(changedProdId) {
       const baseUrl = (payload && payload.baseUrl) ? String(payload.baseUrl).trim() : (pCfg.baseUrl || "https://sellmmo.vn");
       const apiKey = (payload && payload.apiKey) ? String(payload.apiKey).trim() : (pCfg.apiKey || "");
       const workerProxy = (typeof sourceProxyUrl !== "undefined" && sourceProxyUrl) ? sourceProxyUrl.replace(/\/+$/, "") : "https://mmo-api-proxy.manhdongvtc.workers.dev";
+
+      function createFastSignal(ms = 4000) {
+        if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
+          return AbortSignal.timeout(ms);
+        }
+        const ctrl = new AbortController();
+        setTimeout(() => ctrl.abort(), ms);
+        return ctrl.signal;
+      }
 
       // ---- shop1989nd: authType=userpass, dùng username/password thay api_key ----
       if (pCfg.authType === "userpass") {
@@ -9832,7 +9859,12 @@ function syncAllOpenViewsStock(changedProdId) {
           const amount = payload.amount || 1;
           const target = bUrl + "/api/BResource.php?username=" + encodeURIComponent(uname) + "&password=" + encodeURIComponent(upass) + "&id=" + encodeURIComponent(prodId) + "&amount=" + encodeURIComponent(amount);
           try {
-            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target));
+            if (Date.now() < _mmoProxyDeadUntil) throw new Error("Proxy rate-limited");
+            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(5000) });
+            if (!resp.ok) {
+              if (resp.status === 429 || resp.status >= 500) _mmoProxyDeadUntil = Date.now() + 600000;
+              throw new Error("Proxy status " + resp.status);
+            }
             const json = await resp.json();
             let accounts = [];
             if (json.status === "success" && json.data) {
@@ -9868,7 +9900,10 @@ function syncAllOpenViewsStock(changedProdId) {
               raw: json
             };
           } catch(e) {
-            console.warn("shop1989nd buyProduct error:", e);
+            console.warn("shop1989nd buyProduct error, fallback to GAS:", e);
+            if (typeof callGasApi === "function") {
+              return await callGasApi("apiSourceBuyProduct", payload);
+            }
             return { success: false, message: "Lỗi kết nối shop1989nd!", provider: provider };
           }
         }
@@ -9880,7 +9915,12 @@ function syncAllOpenViewsStock(changedProdId) {
       if (action === "getProfile") {
         const target = baseUrl.replace(/\/+$/, "") + "/api/profile.php?api_key=" + encodeURIComponent(apiKey);
         try {
-          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target));
+          if (Date.now() < _mmoProxyDeadUntil) throw new Error("Proxy rate-limited");
+          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(4000) });
+          if (!resp.ok) {
+            if (resp.status === 429 || resp.status >= 500) _mmoProxyDeadUntil = Date.now() + 600000;
+            throw new Error("Proxy status " + resp.status);
+          }
           const json = await resp.json();
           return {
             success: json.status === "success",
@@ -9919,7 +9959,12 @@ function syncAllOpenViewsStock(changedProdId) {
       if (action === "getProducts") {
         const target = baseUrl.replace(/\/+$/, "") + "/api/products.php?api_key=" + encodeURIComponent(apiKey);
         try {
-          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target));
+          if (Date.now() < _mmoProxyDeadUntil) throw new Error("Proxy rate-limited");
+          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(4000) });
+          if (!resp.ok) {
+            if (resp.status === 429 || resp.status >= 500) _mmoProxyDeadUntil = Date.now() + 600000;
+            throw new Error("Proxy status " + resp.status);
+          }
           const json = await resp.json();
           return {
             success: json.status === "success",
@@ -9941,11 +9986,17 @@ function syncAllOpenViewsStock(changedProdId) {
                         (payload.coupon ? ("&coupon=" + encodeURIComponent(payload.coupon)) : "");
 
         try {
+          if (Date.now() < _mmoProxyDeadUntil) throw new Error("Proxy rate-limited");
           const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: bodyStr
+            body: bodyStr,
+            signal: createFastSignal(5000)
           });
+          if (!resp.ok) {
+            if (resp.status === 429 || resp.status >= 500) _mmoProxyDeadUntil = Date.now() + 600000;
+            throw new Error("Proxy status " + resp.status);
+          }
           const json = await resp.json();
 
           let accounts = [];
@@ -9996,6 +10047,18 @@ function syncAllOpenViewsStock(changedProdId) {
     window.executeSourceApiCall = executeSourceApiCall;
 
     
+    // Khởi tạo hàm lấy số dư nguồn an toàn chống ReferenceError
+    function getSourceBalances() {
+      return window.cachedSourceBalances || {};
+    }
+    window.getSourceBalances = getSourceBalances;
+
+    function getSourceBalance(provider = "sellmmo") {
+      const balances = getSourceBalances();
+      return (typeof balances[provider] === "number") ? balances[provider] : 999999;
+    }
+    window.getSourceBalance = getSourceBalance;
+
     // Khởi tạo bộ nhớ tạm số dư an toàn chống ReferenceError
     if (typeof window.cachedSourceBalances === "undefined" || !window.cachedSourceBalances) {
       window.cachedSourceBalances = {};
@@ -15110,7 +15173,13 @@ function syncAllOpenViewsStock(changedProdId) {
             throw new Error("Kho hàng không đủ số lượng tài khoản khả dụng trên máy chủ!");
           }
         } catch(tursoErr) {
-          throw new Error((tursoErr && tursoErr.message) ? tursoErr.message : "Kho hàng không đủ tài khoản khả dụng!");
+          // Failsafe: nếu Turso lỗi mạng hoặc 429, kiểm tra kho MMO_WAREHOUSE nội bộ
+          const localCreds = (typeof MMO_WAREHOUSE !== "undefined") ? MMO_WAREHOUSE.deliverAccounts(product.id, vIdx, qty, orderId) : [];
+          if (localCreds && Array.isArray(localCreds) && localCreds.length >= qty) {
+            credsLines = localCreds;
+          } else {
+            throw new Error((tursoErr && tursoErr.message) ? tursoErr.message : "Kho hàng không đủ tài khoản khả dụng!");
+          }
         }
       } else {
         credsLines = MMO_WAREHOUSE.deliverAccounts(product.id, vIdx, qty, orderId);
@@ -20439,12 +20508,14 @@ function changeAdmUsersPage(p) {
       if (typeof _viewRendered !== "undefined") _viewRendered["viewStore"] = true;
       if (typeof updateLiveRealTimeClock === "function") updateLiveRealTimeClock();
       if (typeof initPreOrdersRealtimeSSE === "function") initPreOrdersRealtimeSSE();
-      // Polling dự phòng đơn hàng thời gian thực cho Admin mỗi 3.000ms
+      // Polling dự phòng đơn hàng thời gian thực cho Admin mỗi 45 giây (chỉ khi mở tab viewAdmin)
       if (!window._mmoAdminOrdersRealtimePollTimer) {
         window._mmoAdminOrdersRealtimePollTimer = setInterval(function() {
           if (typeof isAdminUser === "function" && isAdminUser() && !document.hidden) {
+            const curV = typeof currentView !== "undefined" ? currentView : (localStorage.getItem("mmo_current_view") || "");
+            if (curV !== "viewAdmin") return;
             if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function") {
-              fetch(MMO_WORKER_API.getApiUrl() + "/api/orders?limit=30", { cache: "no-store" })
+              fetch(MMO_WORKER_API.getApiUrl() + "/api/orders?limit=30")
                 .then(r => r.json())
                 .then(data => {
                   if (data && data.success && Array.isArray(data.orders)) {
@@ -20468,7 +20539,7 @@ function changeAdmUsersPage(p) {
                 }).catch(function() {});
             }
           }
-        }, 3000);
+        }, 45000);
       }
       if (typeof initGoogleAuth === "function") initGoogleAuth();
       if (typeof initTursoUI === "function") initTursoUI();
