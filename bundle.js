@@ -2738,6 +2738,27 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.setAdmProductFilter = setAdmProductFilter;
 
+    let admProductSearchQuery = "";
+    function handleSearchAdminProducts(val) {
+      admProductSearchQuery = (val || "").trim();
+      const clearBtn = document.getElementById("admProductSearchClearBtn");
+      if (clearBtn) {
+        clearBtn.style.display = admProductSearchQuery ? "block" : "none";
+      }
+      if (typeof paginationState !== "undefined") paginationState.admProd = 1;
+      renderAdminDashboard();
+    }
+    window.handleSearchAdminProducts = handleSearchAdminProducts;
+
+    function clearAdminProductSearch() {
+      const inp = document.getElementById("admProductSearchInput");
+      if (inp) inp.value = "";
+      const clearBtn = document.getElementById("admProductSearchClearBtn");
+      if (clearBtn) clearBtn.style.display = "none";
+      handleSearchAdminProducts("");
+    }
+    window.clearAdminProductSearch = clearAdminProductSearch;
+
     function renderAdminDashboard() {
       try {
         const tbody = document.querySelector("#admProductsTable tbody");
@@ -2762,6 +2783,44 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             });
           }
 
+          // Lọc tìm kiếm sản phẩm theo từ khóa (hỗ trợ có dấu và không dấu)
+          if (admProductSearchQuery) {
+            const removeAccents = function(str) {
+              return String(str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+            };
+            const qRaw = admProductSearchQuery.toLowerCase();
+            const qNorm = removeAccents(admProductSearchQuery);
+
+            prods = prods.filter(function(p) {
+              const pid = String(p.id || "").toLowerCase();
+              const name = String(p.name || "");
+              const nameNorm = removeAccents(name);
+              const cat = String(p.category || "");
+              const catNorm = removeAccents(cat);
+              const desc = String(p.description || "");
+              const descNorm = removeAccents(desc);
+
+              // Khớp theo biến thể
+              const vMatch = (p.variants && Array.isArray(p.variants)) ? p.variants.some(function(v) {
+                const vn = String(v.name || "");
+                return vn.toLowerCase().includes(qRaw) || removeAccents(vn).includes(qNorm);
+              }) : false;
+
+              // Khớp theo API Mapping
+              const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
+              const apiMatch = apiMap ? (
+                String(apiMap.provider || "").toLowerCase().includes(qRaw) ||
+                String(apiMap.sourceProdId || "").toLowerCase().includes(qRaw)
+              ) : false;
+
+              return pid.includes(qRaw) ||
+                     name.toLowerCase().includes(qRaw) || nameNorm.includes(qNorm) ||
+                     cat.toLowerCase().includes(qRaw) || catNorm.includes(qNorm) ||
+                     desc.toLowerCase().includes(qRaw) || descNorm.includes(qNorm) ||
+                     vMatch || apiMatch;
+            });
+          }
+
           const ADM_PRODS_PER_PAGE = 10;
           const page = (typeof paginationState !== "undefined" && paginationState.admProd) ? paginationState.admProd : 1;
           const totalPages = Math.ceil(prods.length / ADM_PRODS_PER_PAGE);
@@ -2772,7 +2831,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           const pageProds = prods.slice(startIndex, startIndex + ADM_PRODS_PER_PAGE);
 
           if (prods.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:24px; color:#64748b;">Chưa có sản phẩm nào. Hãy bấm "Thêm Sản Phẩm" để tạo mới.</td></tr>';
+            const emptyMsg = admProductSearchQuery
+              ? 'Không tìm thấy sản phẩm nào khớp với từ khóa "<strong>' + escapeHtml(admProductSearchQuery) + '</strong>".'
+              : 'Chưa có sản phẩm nào. Hãy bấm "Thêm Sản Phẩm" để tạo mới.';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:28px; color:#64748b;"><i class="fa-solid fa-box-open" style="font-size:1.6rem; display:block; margin-bottom:8px; opacity:0.5;"></i>' + emptyMsg + '</td></tr>';
           } else {
             tbody.innerHTML = pageProds.map(function(p) {
               const vCount = (p.variants && p.variants.length) ? p.variants.length : 1;
