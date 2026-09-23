@@ -8338,6 +8338,30 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return c.signal;
       },
 
+      _fetchJson: async function(url, options = {}, timeoutMs = 1200) {
+        if (!this._checkWorkerAvailable()) {
+          throw new Error("Worker rate-limited or offline (Circuit breaker active)");
+        }
+        const sig = this._fastSignal(timeoutMs);
+        try {
+          const res = await fetch(url, { ...options, signal: sig });
+          if (!res.ok) {
+            if (res.status === 429 || res.status >= 500) {
+              this._markWorkerDead("HTTP " + res.status);
+            }
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.error || errData.message || ("Lỗi API (HTTP " + res.status + ")"));
+          }
+          const data = await res.json().catch(() => ({}));
+          return data;
+        } catch(err) {
+          if (err.name === 'AbortError' || err.name === 'TimeoutError' || (err.message && (err.message.includes('rate-limited') || err.message.includes('Failed to fetch')))) {
+            this._markWorkerDead(err.message);
+          }
+          throw err;
+        }
+      },
+
       getApiUrl: function() {
         try {
           const oldTurso = localStorage.getItem("mmo_turso_db_url") || "";
@@ -8378,72 +8402,39 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       },
 
       fetchHealth: async function() {
-        if (!this._checkWorkerAvailable()) throw new Error("Worker rate-limited");
-        const res = await fetch(this.getApiUrl() + "/api/health", { cache: "no-store", signal: this._fastSignal(1200) }).catch(e => { this._markWorkerDead(e); throw e; });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.ok === false) {
-          throw new Error(data.message || data.error || ("Lỗi máy chủ API (HTTP " + res.status + ")"));
-        }
-        return data;
+        return await this._fetchJson(this.getApiUrl() + "/api/health", { cache: "no-store" }, 1200);
       },
 
       fetchProducts: async function() {
-        if (!this._checkWorkerAvailable()) throw new Error("Worker rate-limited");
-        const res = await fetch(this.getApiUrl() + "/api/products", { signal: this._fastSignal(1200) }).catch(e => { this._markWorkerDead(e); throw e; });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi tải danh mục (HTTP " + res.status + ")"));
-        }
-        return data;
+        return await this._fetchJson(this.getApiUrl() + "/api/products", {}, 1200);
       },
 
       fetchProduct: async function(productIdOrSlug) {
-        if (!this._checkWorkerAvailable()) throw new Error("Worker rate-limited");
-        const res = await fetch(this.getApiUrl() + "/api/products/" + encodeURIComponent(productIdOrSlug), { signal: this._fastSignal(1200) }).catch(e => { this._markWorkerDead(e); throw e; });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi tải sản phẩm (HTTP " + res.status + ")"));
-        }
-        return data;
+        return await this._fetchJson(this.getApiUrl() + "/api/products/" + encodeURIComponent(productIdOrSlug), {}, 1200);
       },
 
       createOrder: async function(orderData) {
-        const res = await fetch(this.getApiUrl() + "/api/orders", {
+        return await this._fetchJson(this.getApiUrl() + "/api/orders", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(orderData)
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi tạo đơn hàng (HTTP " + res.status + ")"));
-        }
-        return data;
+        }, 2000);
       },
 
       getOrder: async function(orderId) {
-        const res = await fetch(this.getApiUrl() + "/api/orders/" + encodeURIComponent(orderId), { cache: "no-store" });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi tra cứu đơn hàng (HTTP " + res.status + ")"));
-        }
-        return data;
+        return await this._fetchJson(this.getApiUrl() + "/api/orders/" + encodeURIComponent(orderId), { cache: "no-store" }, 1500);
       },
 
       deliverOrderWebhook: async function(orderId) {
-        const res = await fetch(this.getApiUrl() + "/api/payment/webhook", {
+        return await this._fetchJson(this.getApiUrl() + "/api/payment/webhook", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ order_id: orderId })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi webhook giao hàng (HTTP " + res.status + ")"));
-        }
-        return data;
+        }, 2000);
       },
 
       checkoutAccounts: async function(productId, variantIdx, qty, orderId, email, amount) {
-        const res = await fetch(this.getApiUrl() + "/api/orders/checkout", {
+        return await this._fetchJson(this.getApiUrl() + "/api/orders/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -8455,15 +8446,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             amount: amount || 0,
             payment_method: "BALANCE"
           })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi xuất kho Turso (HTTP " + res.status + ")"));
-        }
-        return data;
+        }, 2000);
       },
 
       adminImportAccounts: async function(productId, variantIdx, accounts, prodData, onProgress) {
+        if (!this._checkWorkerAvailable()) {
+          throw new Error("Worker rate-limited (Local import active)");
+        }
         const secret = this.getAdminSecret();
         const headers = { "Content-Type": "application/json" };
         if (secret) headers["Authorization"] = "Bearer " + secret;
@@ -8482,7 +8471,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (typeof onProgress === "function") {
             onProgress(i, accounts.length);
           }
-          const res = await fetch(this.getApiUrl() + "/api/admin/inventory/import", {
+          const data = await this._fetchJson(this.getApiUrl() + "/api/admin/inventory/import", {
             method: "POST",
             headers: headers,
             body: JSON.stringify({
@@ -8491,11 +8480,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               accounts: chunk,
               product_data: (i === 0) ? (prodData || null) : null
             })
-          });
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok || data.success === false) {
-            throw new Error(data.error || data.message || ("Lỗi API nạp kho (HTTP " + res.status + ")"));
-          }
+          }, 2000);
+
           totalImported += (data.imported !== undefined ? data.imported : chunk.length);
           totalDuplicates += (data.duplicates || 0);
           if (data.current_stock !== undefined) lastStock = data.current_stock;
@@ -8517,7 +8503,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const secret = this.getAdminSecret();
         const headers = { "Content-Type": "application/json" };
         if (secret) headers["Authorization"] = "Bearer " + secret;
-        const res = await fetch(this.getApiUrl() + "/api/admin/inventory/set", {
+        return await this._fetchJson(this.getApiUrl() + "/api/admin/inventory/set", {
           method: "POST",
           headers: headers,
           body: JSON.stringify({
@@ -8526,32 +8512,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             accounts: accounts,
             product_data: prodData || null
           })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi API lưu kho (HTTP " + res.status + ")"));
-        }
-        return data;
+        }, 2000);
       },
 
       adminSyncProducts: async function(products) {
         const secret = this.getAdminSecret();
         const headers = { "Content-Type": "application/json" };
         if (secret) headers["Authorization"] = "Bearer " + secret;
-        const res = await fetch(this.getApiUrl() + "/api/admin/products/sync", {
+        return await this._fetchJson(this.getApiUrl() + "/api/admin/products/sync", {
           method: "POST",
           headers: headers,
           body: JSON.stringify({ products: products })
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi API đồng bộ sản phẩm (HTTP " + res.status + ")"));
-        }
-        return data;
+        }, 2000);
       },
 
       adminGetInventory: async function(productId, variantIdx) {
-        if (!this._checkWorkerAvailable()) throw new Error("Worker rate-limited");
         const secret = this.getAdminSecret();
         const headers = {};
         if (secret) headers["Authorization"] = "Bearer " + secret;
@@ -8559,12 +8534,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL") {
           u += "?variant=" + variantIdx;
         }
-        const res = await fetch(u, { headers: headers, cache: "no-store", signal: this._fastSignal(1200) }).catch(e => { this._markWorkerDead(e); throw e; });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi API đọc kho (HTTP " + res.status + ")"));
-        }
-        return data;
+        return await this._fetchJson(u, { headers: headers, cache: "no-store" }, 1200);
       },
 
       adminClearInventory: async function(productId, variantIdx) {
@@ -8575,12 +8545,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL") {
           u += "?variant=" + variantIdx;
         }
-        const res = await fetch(u, { method: "DELETE", headers: headers });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi xóa kho (HTTP " + res.status + ")"));
-        }
-        return data;
+        return await this._fetchJson(u, { method: "DELETE", headers: headers }, 1500);
       },
 
       adminClearSold: async function(productId, variantIdx) {
@@ -8591,12 +8556,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL") {
           u += "?variant=" + variantIdx;
         }
-        const res = await fetch(u, { method: "DELETE", headers: headers });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || data.success === false) {
-          throw new Error(data.error || data.message || ("Lỗi xóa lịch sử bán (HTTP " + res.status + ")"));
-        }
-        return data;
+        return await this._fetchJson(u, { method: "DELETE", headers: headers }, 1500);
       }
     };
 
@@ -8618,47 +8578,106 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return MMO_WORKER_API.getApiUrl();
       },
       getAvailableAccounts: async function(productId, variantIdx) {
-        const res = await MMO_WORKER_API.adminGetInventory(productId, variantIdx);
-        return (res && Array.isArray(res.available)) ? res.available : [];
+        try {
+          if (MMO_WORKER_API._checkWorkerAvailable()) {
+            const res = await MMO_WORKER_API.adminGetInventory(productId, variantIdx);
+            if (res && Array.isArray(res.available)) return res.available;
+          }
+        } catch(e) {
+          console.warn("TURSO_CLIENT.getAvailableAccounts offline fallback:", e.message);
+        }
+        return (typeof MMO_WAREHOUSE !== "undefined") ? MMO_WAREHOUSE.getAvailable(productId, variantIdx) : [];
       },
       fetchSoldAccounts: async function(productId, variantIdx) {
-        const res = await MMO_WORKER_API.adminGetInventory(productId, variantIdx);
-        return (res && Array.isArray(res.sold)) ? res.sold : [];
+        try {
+          if (MMO_WORKER_API._checkWorkerAvailable()) {
+            const res = await MMO_WORKER_API.adminGetInventory(productId, variantIdx);
+            if (res && Array.isArray(res.sold)) return res.sold;
+          }
+        } catch(e) {}
+        return (typeof MMO_WAREHOUSE !== "undefined") ? MMO_WAREHOUSE.getSold(productId, variantIdx) : [];
       },
       clearSoldAccounts: async function(productId, variantIdx) {
-        const res = await MMO_WORKER_API.adminClearSold(productId, variantIdx);
-        return (res && res.deleted) ? res.deleted : 0;
+        try {
+          if (MMO_WORKER_API._checkWorkerAvailable()) {
+            const res = await MMO_WORKER_API.adminClearSold(productId, variantIdx);
+            return (res && res.deleted) ? res.deleted : 0;
+          }
+        } catch(e) {}
+        return 0;
       },
       clearAvailableAccounts: async function(productId, variantIdx) {
-        const res = await MMO_WORKER_API.adminClearInventory(productId, variantIdx);
-        return (res && res.deleted) ? res.deleted : 0;
+        try {
+          if (MMO_WORKER_API._checkWorkerAvailable()) {
+            const res = await MMO_WORKER_API.adminClearInventory(productId, variantIdx);
+            return (res && res.deleted) ? res.deleted : 0;
+          }
+        } catch(e) {}
+        return 0;
       },
       setAvailableAccounts: async function(productId, variantIdx, accounts, prodData) {
-        const res = await MMO_WORKER_API.adminSetAccounts(productId, variantIdx, accounts, prodData);
-        return (res && res.total) ? res.total : (Array.isArray(accounts) ? accounts.length : 0);
+        if (typeof MMO_WAREHOUSE !== "undefined") {
+          MMO_WAREHOUSE.setAccounts(productId, variantIdx, accounts);
+        }
+        try {
+          if (MMO_WORKER_API._checkWorkerAvailable()) {
+            const res = await MMO_WORKER_API.adminSetAccounts(productId, variantIdx, accounts, prodData);
+            return (res && res.total) ? res.total : (Array.isArray(accounts) ? accounts.length : 0);
+          }
+        } catch(e) {
+          console.warn("TURSO_CLIENT.setAvailableAccounts bg note:", e.message);
+        }
+        return Array.isArray(accounts) ? accounts.length : 0;
       },
       importAccounts: async function(productId, variantIdx, accounts, prodData, onProgress) {
-        const res = await MMO_WORKER_API.adminImportAccounts(productId, variantIdx, accounts, prodData, onProgress);
-        return (res && res.imported !== undefined) ? res.imported : 0;
+        let localCount = 0;
+        if (typeof MMO_WAREHOUSE !== "undefined") {
+          localCount = MMO_WAREHOUSE.importAccounts(productId, variantIdx, accounts);
+        }
+        try {
+          if (MMO_WORKER_API._checkWorkerAvailable()) {
+            const res = await MMO_WORKER_API.adminImportAccounts(productId, variantIdx, accounts, prodData, onProgress);
+            return (res && res.imported !== undefined) ? res.imported : localCount;
+          }
+        } catch(e) {
+          console.warn("TURSO_CLIENT.importAccounts bg note:", e.message);
+        }
+        return localCount;
       },
       checkoutAccounts: async function(productId, variantIdx, qty, orderId, email, amount) {
-        const res = await MMO_WORKER_API.checkoutAccounts(productId, variantIdx, qty, orderId, email, amount);
-        return (res && Array.isArray(res.accounts)) ? res.accounts : [];
+        try {
+          if (MMO_WORKER_API._checkWorkerAvailable()) {
+            const res = await MMO_WORKER_API.checkoutAccounts(productId, variantIdx, qty, orderId, email, amount);
+            if (res && Array.isArray(res.accounts) && res.accounts.length >= qty) {
+              return res.accounts;
+            }
+          }
+        } catch(e) {
+          console.warn("TURSO_CLIENT.checkoutAccounts offline, will fallback local:", e.message);
+        }
+        return null; // Trả về null để executeBuyCurrentProduct biết cần xuất kho nội bộ MMO_WAREHOUSE!
       },
       fetchProducts: async function() {
-        const res = await MMO_WORKER_API.fetchProducts();
-        return (res && Array.isArray(res.products)) ? res.products : [];
+        try {
+          if (MMO_WORKER_API._checkWorkerAvailable()) {
+            const res = await MMO_WORKER_API.fetchProducts();
+            return (res && Array.isArray(res.products)) ? res.products : [];
+          }
+        } catch(e) {}
+        return (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : [];
       },
       syncAllProductsToTurso: async function() {
-        if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
-          const res = await MMO_WORKER_API.adminSyncProducts(MOCK_DATA.products);
-          return (res && res.synced) ? res.synced : MOCK_DATA.products.length;
+        if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products) && MMO_WORKER_API._checkWorkerAvailable()) {
+          try {
+            const res = await MMO_WORKER_API.adminSyncProducts(MOCK_DATA.products);
+            return (res && res.synced) ? res.synced : MOCK_DATA.products.length;
+          } catch(e) {}
         }
         return 0;
       },
       saveProduct: async function(prodData) {
         try {
-          if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.adminSyncProducts === "function") {
+          if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
             return await MMO_WORKER_API.adminSyncProducts([prodData]);
           }
         } catch(e) {
@@ -9841,7 +9860,12 @@ function syncAllOpenViewsStock(changedProdId) {
         if (action === "getProfile") {
           const target = bUrl + "/api/GetBalance.php?username=" + encodeURIComponent(uname) + "&password=" + encodeURIComponent(upass);
           try {
-            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target));
+            if (Date.now() < _mmoProxyDeadUntil) throw new Error("Proxy rate-limited");
+            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(1500) });
+            if (!resp.ok) {
+              if (resp.status === 429 || resp.status >= 500) _mmoProxyDeadUntil = Date.now() + 600000;
+              throw new Error("Proxy status " + resp.status);
+            }
             const rawText = await resp.text();
             let money = 0;
             let isOk = false;
@@ -9861,7 +9885,11 @@ function syncAllOpenViewsStock(changedProdId) {
             }
             return { success: isOk, data: { money: money }, provider: provider, raw: rawText };
           } catch(e) {
-            console.warn("shop1989nd getProfile error:", e);
+            console.warn("shop1989nd getProfile error, fallback to GAS:", e);
+            if (typeof callGasApi === "function") {
+              const gasProf = await callGasApi("apiSourceGetProfile", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
+              if (gasProf && gasProf.success) return gasProf;
+            }
             return { success: false, data: { money: 0 }, provider: provider };
           }
         }
@@ -9869,7 +9897,12 @@ function syncAllOpenViewsStock(changedProdId) {
         if (action === "getProducts") {
           const target = bUrl + "/api/ListResource.php?username=" + encodeURIComponent(uname) + "&password=" + encodeURIComponent(upass);
           try {
-            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target));
+            if (Date.now() < _mmoProxyDeadUntil) throw new Error("Proxy rate-limited");
+            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(1500) });
+            if (!resp.ok) {
+              if (resp.status === 429 || resp.status >= 500) _mmoProxyDeadUntil = Date.now() + 600000;
+              throw new Error("Proxy status " + resp.status);
+            }
             const json = await resp.json();
             let categories = [];
             if (json.status === "success" && Array.isArray(json.categories)) {
@@ -9889,7 +9922,11 @@ function syncAllOpenViewsStock(changedProdId) {
             }
             return { success: json.status === "success", categories: categories, provider: provider, raw: json };
           } catch(e) {
-            console.warn("shop1989nd getProducts error:", e);
+            console.warn("shop1989nd getProducts error, fallback to GAS:", e);
+            if (typeof callGasApi === "function") {
+              const gasProds = await callGasApi("apiSourceGetProducts", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
+              if (gasProds && gasProds.success) return gasProds;
+            }
             return { success: false, categories: [], provider: provider };
           }
         }
@@ -9904,7 +9941,7 @@ function syncAllOpenViewsStock(changedProdId) {
           const target = bUrl + "/api/BResource.php?username=" + encodeURIComponent(uname) + "&password=" + encodeURIComponent(upass) + "&id=" + encodeURIComponent(prodId) + "&amount=" + encodeURIComponent(amount);
           try {
             if (Date.now() < _mmoProxyDeadUntil) throw new Error("Proxy rate-limited");
-            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(3500) });
+            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(2500) });
             if (!resp.ok) {
               if (resp.status === 429 || resp.status >= 500) _mmoProxyDeadUntil = Date.now() + 600000;
               throw new Error("Proxy status " + resp.status);
@@ -9946,7 +9983,7 @@ function syncAllOpenViewsStock(changedProdId) {
           } catch(e) {
             console.warn("shop1989nd buyProduct error, fallback to GAS:", e);
             if (typeof callGasApi === "function") {
-              const gasRes = await callGasApi("apiSourceBuyProduct", payload);
+              const gasRes = await callGasApi("apiSourceBuyProduct", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
               if (gasRes && gasRes.success) return gasRes;
               return { success: false, message: (gasRes && (gasRes.message || gasRes.msg)) || "Lỗi kết nối shop1989nd!", provider: provider, raw: gasRes };
             }
@@ -9962,7 +9999,7 @@ function syncAllOpenViewsStock(changedProdId) {
         const target = baseUrl.replace(/\/+$/, "") + "/api/profile.php?api_key=" + encodeURIComponent(apiKey);
         try {
           if (Date.now() < _mmoProxyDeadUntil) throw new Error("Proxy rate-limited");
-          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(4000) });
+          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(1500) });
           if (!resp.ok) {
             if (resp.status === 429 || resp.status >= 500) _mmoProxyDeadUntil = Date.now() + 600000;
             throw new Error("Proxy status " + resp.status);
@@ -9976,7 +10013,7 @@ function syncAllOpenViewsStock(changedProdId) {
           };
         } catch(workerErr) {
           console.warn("Worker proxy error, fallback to GAS:", workerErr);
-          return await callGasApi("apiSourceGetProfile", payload);
+          return await callGasApi("apiSourceGetProfile", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
         }
       }
 
@@ -10006,7 +10043,7 @@ function syncAllOpenViewsStock(changedProdId) {
         const target = baseUrl.replace(/\/+$/, "") + "/api/products.php?api_key=" + encodeURIComponent(apiKey);
         try {
           if (Date.now() < _mmoProxyDeadUntil) throw new Error("Proxy rate-limited");
-          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(4000) });
+          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(1500) });
           if (!resp.ok) {
             if (resp.status === 429 || resp.status >= 500) _mmoProxyDeadUntil = Date.now() + 600000;
             throw new Error("Proxy status " + resp.status);
@@ -10020,7 +10057,7 @@ function syncAllOpenViewsStock(changedProdId) {
           };
         } catch(workerErr) {
           console.warn("Worker proxy error, fallback to GAS:", workerErr);
-          return await callGasApi("apiSourceGetProducts", payload);
+          return await callGasApi("apiSourceGetProducts", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
         }
       }
 
@@ -10085,7 +10122,7 @@ function syncAllOpenViewsStock(changedProdId) {
         } catch(workerErr) {
           console.warn("Worker proxy error, fallback to GAS:", workerErr);
           if (typeof callGasApi === "function") {
-            const gasRes = await callGasApi("apiSourceBuyProduct", payload);
+            const gasRes = await callGasApi("apiSourceBuyProduct", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
             if (gasRes && gasRes.success) return gasRes;
             return { success: false, message: (gasRes && (gasRes.message || gasRes.msg)) || "Lỗi kết nối API nguồn hàng!", provider: provider, raw: gasRes };
           }
@@ -11343,55 +11380,29 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       try {
-        let newStockCount = 0;
-        let importedCount = newLines.length;
+        // 1. Luôn nạp trực tiếp vào kho nội bộ MMO_WAREHOUSE và cập nhật giao diện trong 0ms!
+        const newStockCount = MMO_WAREHOUSE.importAccounts(prodId, vVal, newLines);
+        textarea.value = "";
+        const importLinesCount = document.getElementById("admStockImportLines");
+        if (importLinesCount) importLinesCount.innerText = "0 dòng";
 
-        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
-          // 1. Nạp trực tiếp lên Turso Database qua Worker kèm tiến trình hiển thị
-          const res = await TURSO_CLIENT.importAccounts(prodId, vVal || 0, newLines, prod, (done, total) => {
-            if (importBtn && total > 100) {
-              importBtn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang nạp kho (" + done + "/" + total + ")...";
-            }
-          });
-          importedCount = (typeof res === "number") ? res : ((res && res.imported !== undefined) ? res.imported : newLines.length);
-
-          // 2. Nạp song song vào bộ nhớ local để giao diện tức thì
-          MMO_WAREHOUSE.importAccounts(prodId, vVal, newLines);
-
-          // 3. Đọc lại danh sách tài khoản chính xác từ Turso để render vào ô kho sẵn sàng
-          await handleStockVariantChange();
-          await syncTursoStockToLocalUI();
-
-          const curAccs = (prod.variants && prod.variants[vVal] && Array.isArray(prod.variants[vVal].accounts)) 
-            ? prod.variants[vVal].accounts 
-            : (Array.isArray(prod.accounts) ? prod.accounts : []);
-          newStockCount = curAccs.length;
-
-          // 4. Chỉ xóa ô textarea sau khi ĐÃ NẠP THÀNH CÔNG VÀO TURSO
-          textarea.value = "";
-          const importLinesCount = document.getElementById("admStockImportLines");
-          if (importLinesCount) importLinesCount.innerText = "0 dòng";
-
-          const varName = (hasVars && prod.variants[vVal]) ? ("biến thể [" + prod.variants[vVal].name + "]") : "kho sản phẩm";
-          showToast("🎉 Đã nạp thành công " + importedCount + " tài khoản lên Turso Database (" + varName + ")! Tồn kho: " + newStockCount + " acc.", "success");
-        } else {
-          newStockCount = MMO_WAREHOUSE.importAccounts(prodId, vVal, newLines);
-          textarea.value = "";
-          const importLinesCount = document.getElementById("admStockImportLines");
-          if (importLinesCount) importLinesCount.innerText = "0 dòng";
-
-          if (hasVars && typeof updateVariantSelectForProduct === "function") {
-            updateVariantSelectForProduct(prodId);
-            if (varSelect && vVal !== null) varSelect.value = vVal;
-          }
-          handleStockVariantChange();
-
-          const varName = (hasVars && prod.variants[vVal]) ? ("biến thể [" + prod.variants[vVal].name + "]") : "kho sản phẩm";
-          showToast("🎉 Đã nạp thành công " + newLines.length + " tài khoản vào " + varName + "! Tồn kho: " + newStockCount + " acc.", "success");
+        if (hasVars && typeof updateVariantSelectForProduct === "function") {
+          updateVariantSelectForProduct(prodId);
+          if (varSelect && vVal !== null) varSelect.value = vVal;
         }
-
+        await handleStockVariantChange();
         if (typeof saveProductsToStorage === "function") saveProductsToStorage();
         if (typeof recordProductVariants === "function") recordProductVariants(prodId, prod.variants, prod.name);
+        refreshAllShopStockUI(prodId);
+
+        const varName = (hasVars && prod.variants[vVal]) ? ("biến thể [" + prod.variants[vVal].name + "]") : "kho sản phẩm";
+        showToast("🎉 Đã nạp thành công " + newLines.length + " tài khoản vào " + varName + "! Tồn kho: " + newStockCount + " acc.", "success");
+
+        // 2. Chạy ngầm đồng bộ Turso Database nếu khả dụng (tuyệt đối không chặn hoặc báo lỗi nếu Turso ngoại tuyến)
+        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
+          TURSO_CLIENT.importAccounts(prodId, vVal || 0, newLines, prod).catch(e => console.warn("Turso import bg note:", e));
+        }
+
         if (typeof callGasApi === "function") {
           callGasApi("adminImportStock", {
             prodId: prodId,
@@ -11401,7 +11412,6 @@ function syncAllOpenViewsStock(changedProdId) {
             stock: newStockCount
           }).catch(err => console.warn("Lỗi sync Google Sheets:", err));
         }
-        refreshAllShopStockUI(prodId);
 
       } catch(err) {
         console.error("Lỗi nạp kho:", err);
@@ -11451,19 +11461,13 @@ function syncAllOpenViewsStock(changedProdId) {
 
       syncAllOpenViewsStock(prodId, prodTotalStock, accounts, false, vVal);
 
-      // NẾU ĐÃ KẾT NỐI TURSO DATABASE: ĐỒNG BỘ TRỰC TIẾP LÊN TURSO
-      if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
-        try {
-          await TURSO_CLIENT.setAvailableAccounts(prodId, vVal, accounts, prod);
-          if (isUserClick) {
-            showToast("💾 Đã lưu " + accounts.length + " tài khoản lên Turso Database thành công!", "success");
-          }
-        } catch(tursoSaveErr) {
-          console.error("Lỗi lưu Turso:", tursoSaveErr);
-          if (isUserClick) showToast("Lỗi lưu lên Turso: " + tursoSaveErr.message, "danger");
-        }
-      } else if (isUserClick) {
+      if (isUserClick) {
         showToast("💾 Đã lưu kho thành công! Tồn kho hiện tại: " + accounts.length + " acc.", "success");
+      }
+
+      // NẾU ĐÃ KẾT NỐI TURSO DATABASE: ĐỒNG BỘ TRỰC TIẾP LÊN TURSO CHẠY NGẦM
+      if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
+        TURSO_CLIENT.setAvailableAccounts(prodId, vVal, accounts, prod).catch(e => console.warn("Turso save bg note:", e));
       }
 
       if (isUserClick && typeof callGasApi === "function") {
@@ -14888,50 +14892,43 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       } else {
         // GIAO HÀNG TỰ ĐỘNG: Ưu tiên lấy trực tiếp từ Turso Cloud Database nếu đã kết nối (SSOT)
-        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
+        let deliveredAccs = null;
+        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
           try {
             const tursoCreds = await TURSO_CLIENT.checkoutAccounts(p.id, vIdx, qty, orderId, cleanEmail, totalCost);
             if (tursoCreds && Array.isArray(tursoCreds) && tursoCreds.length >= qty) {
-              credsLines = tursoCreds;
-              // Đồng bộ trừ tồn kho local
+              deliveredAccs = tursoCreds;
               MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
-            } else {
-              // Turso trả về không đủ hoặc đã hết hàng -> DỪNG NGAY, KHÔNG GIAO TÀI KHOẢN CŨ VÀ KHÔNG GHI ĐÈ TURSO
-              if (targetVar) {
-                targetVar.stock = 0;
-                targetVar.accounts = [];
-              }
-              refreshAllShopStockUI(p.id);
-              if (typeof syncDetailStockUI === "function") syncDetailStockUI(0);
-              restoreBtn();
-              showToast("⚠️ Rất tiếc, sản phẩm vừa được khách hàng khác mua hoặc đã hết hàng trong kho!", "warning");
-              if (typeof openPreOrderModal === "function") {
-                setTimeout(() => openPreOrderModal(), 600);
-              }
-              return;
             }
           } catch(tursoBuyErr) {
-            console.warn("Lỗi xuất kho Turso, fallback sang kho nội bộ:", tursoBuyErr);
-            // FALLBACK KHO NỘI BỘ THỜI GIAN THỰC
-            credsLines = MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
-            if (!credsLines || credsLines.length < qty) {
-              if (targetVar) {
-                targetVar.stock = 0;
-                targetVar.accounts = [];
-              }
-              refreshAllShopStockUI(p.id);
-              if (typeof syncDetailStockUI === "function") syncDetailStockUI(0);
-              restoreBtn();
-              showToast("⚠️ Rất tiếc, kho hàng tạm thời không đủ tài khoản khả dụng!", "warning");
-              if (typeof openPreOrderModal === "function") {
-                setTimeout(() => openPreOrderModal(), 600);
-              }
-              return;
-            }
+            console.warn("Lỗi xuất kho Turso, chuyển sang kho nội bộ:", tursoBuyErr);
           }
+        }
+
+        // Nếu Turso ngoại tuyến hoặc trả về không đủ, lập tức trích xuất từ kho nội bộ MMO_WAREHOUSE
+        if (!deliveredAccs || deliveredAccs.length < qty) {
+          const localDelivered = MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
+          if (localDelivered && Array.isArray(localDelivered) && localDelivered.length >= qty) {
+            deliveredAccs = localDelivered;
+          }
+        }
+
+        if (deliveredAccs && deliveredAccs.length >= qty) {
+          credsLines = deliveredAccs;
         } else {
-          // GIAO HÀNG TỰ ĐỘNG TỪ KHO NỘI BỘ (Chỉ khi chưa kết nối Turso)
-          credsLines = MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
+          // Chỉ báo hết hàng khi CẢ Turso LẪN Kho nội bộ thực sự không còn tài khoản
+          if (targetVar) {
+            targetVar.stock = 0;
+            targetVar.accounts = [];
+          }
+          refreshAllShopStockUI(p.id);
+          if (typeof syncDetailStockUI === "function") syncDetailStockUI(0);
+          restoreBtn();
+          showToast("⚠️ Rất tiếc, kho hàng tạm thời không đủ số lượng tài khoản khả dụng!", "warning");
+          if (typeof openPreOrderModal === "function") {
+            setTimeout(() => openPreOrderModal(), 600);
+          }
+          return;
         }
       }
 
