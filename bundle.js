@@ -9783,7 +9783,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const apiKey = (payload && payload.apiKey) ? String(payload.apiKey).trim() : (pCfg.apiKey || "");
       const workerProxy = (typeof sourceProxyUrl !== "undefined" && sourceProxyUrl) ? sourceProxyUrl.replace(/\/+$/, "") : "https://mmo-api-proxy.manhdongvtc.workers.dev";
 
-      function createFastSignal(ms = 4000) {
+      function createFastSignal(ms = 3500) {
         if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
           return AbortSignal.timeout(ms);
         }
@@ -9860,7 +9860,7 @@ function syncAllOpenViewsStock(changedProdId) {
           const target = bUrl + "/api/BResource.php?username=" + encodeURIComponent(uname) + "&password=" + encodeURIComponent(upass) + "&id=" + encodeURIComponent(prodId) + "&amount=" + encodeURIComponent(amount);
           try {
             if (Date.now() < _mmoProxyDeadUntil) throw new Error("Proxy rate-limited");
-            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(5000) });
+            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(3500) });
             if (!resp.ok) {
               if (resp.status === 429 || resp.status >= 500) _mmoProxyDeadUntil = Date.now() + 600000;
               throw new Error("Proxy status " + resp.status);
@@ -9902,7 +9902,9 @@ function syncAllOpenViewsStock(changedProdId) {
           } catch(e) {
             console.warn("shop1989nd buyProduct error, fallback to GAS:", e);
             if (typeof callGasApi === "function") {
-              return await callGasApi("apiSourceBuyProduct", payload);
+              const gasRes = await callGasApi("apiSourceBuyProduct", payload);
+              if (gasRes && gasRes.success) return gasRes;
+              return { success: false, message: (gasRes && (gasRes.message || gasRes.msg)) || "Lỗi kết nối shop1989nd!", provider: provider, raw: gasRes };
             }
             return { success: false, message: "Lỗi kết nối shop1989nd!", provider: provider };
           }
@@ -9991,7 +9993,7 @@ function syncAllOpenViewsStock(changedProdId) {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: bodyStr,
-            signal: createFastSignal(5000)
+            signal: createFastSignal(3500)
           });
           if (!resp.ok) {
             if (resp.status === 429 || resp.status >= 500) _mmoProxyDeadUntil = Date.now() + 600000;
@@ -10038,7 +10040,12 @@ function syncAllOpenViewsStock(changedProdId) {
           };
         } catch(workerErr) {
           console.warn("Worker proxy error, fallback to GAS:", workerErr);
-          return await callGasApi("apiSourceBuyProduct", payload);
+          if (typeof callGasApi === "function") {
+            const gasRes = await callGasApi("apiSourceBuyProduct", payload);
+            if (gasRes && gasRes.success) return gasRes;
+            return { success: false, message: (gasRes && (gasRes.message || gasRes.msg)) || "Lỗi kết nối API nguồn hàng!", provider: provider, raw: gasRes };
+          }
+          return { success: false, message: "Lỗi kết nối nguồn hàng!", provider: provider };
         }
       }
 
@@ -12326,8 +12333,8 @@ function syncAllOpenViewsStock(changedProdId) {
         "adminUpdateBalance", "adminUpdateOrderStatus"
       ].includes(action);
 
-      // Timeout an toàn: Đột biến 10s, đọc dữ liệu 6s để tránh làm treo hoặc đơ trình duyệt
-      const timeoutMs = isMutation ? 30000 : 25000;
+      // Timeout an toàn: Đột biến 6s, đọc dữ liệu 4s để loại bỏ hoàn toàn đơ/lag web
+      const timeoutMs = isMutation ? 6000 : 4000;
       function createTimeoutSignal(ms) {
         if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
           return AbortSignal.timeout(ms);
@@ -12366,6 +12373,10 @@ function syncAllOpenViewsStock(changedProdId) {
         const res = await fetch(url, { method: "GET", signal: createTimeoutSignal(timeoutMs) });
         return await res.json();
       } catch (err) {
+        if (err && (err.name === 'AbortError' || err.name === 'TimeoutError')) {
+          console.warn("GAS GET timeout aborted:", action);
+          return null;
+        }
         try {
           const res = await fetch(apiUrl, {
             method: "POST",
@@ -13498,9 +13509,9 @@ function syncAllOpenViewsStock(changedProdId) {
         const curP = typeof currentSelectedProduct !== "undefined" ? currentSelectedProduct : null;
         if (!curP) return;
 
-        // 1. Nạp danh sách tồn kho mới nhất từ API nguồn
-        if (typeof fetchApiSourceProducts === "function") {
-          await fetchApiSourceProducts(false);
+        // 1. Nạp danh sách tồn kho mới nhất từ API nguồn trong nền (không block UI)
+        if (typeof fetchApiSourceProducts === "function" && (!cachedSourceProducts || cachedSourceProducts.length === 0)) {
+          fetchApiSourceProducts(false).catch(() => {});
         }
 
         // 2. Tra cứu mapping API của sản phẩm hoặc biến thể hiện tại
@@ -13591,17 +13602,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function startDetailStockAutoSync(prodId) {
       if (_dtlStockAutoSyncTimer) clearInterval(_dtlStockAutoSyncTimer);
-      _dtlStockAutoSyncTimer = setInterval(function() {
-        const curP = typeof currentSelectedProduct !== "undefined" ? currentSelectedProduct : null;
-        const viewDetail = document.getElementById("viewProductDetail");
-        const isVisible = viewDetail && (viewDetail.style.display !== "none" && !viewDetail.classList.contains("hidden"));
-        if (isVisible && curP && String(curP.id) === String(prodId)) {
-          triggerLiveDetailStockSync(null);
-        } else if (!isVisible) {
-          clearInterval(_dtlStockAutoSyncTimer);
-          _dtlStockAutoSyncTimer = null;
-        }
-      }, 30000);
+      _dtlStockAutoSyncTimer = null;
     }
     window.startDetailStockAutoSync = startDetailStockAutoSync;
 
@@ -14779,14 +14780,6 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (isApiOnDemand) {
         const providerKey = apiMap.provider || "sellmmo";
-        const sourceBal = (typeof getSourceBalance === "function") ? getSourceBalance(providerKey) : 999999;
-        const reqPrice = (Number(apiMap.sourcePrice) || 69) * qty;
-        if (sourceBal < reqPrice) {
-          restoreBtn();
-          showToast("⚠️ Kho hàng đang tạm cập nhật tài khoản mới. Vui lòng liên hệ Admin hoặc thử lại sau!", "warning");
-          return;
-        }
-
         try {
           const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[providerKey]) ? API_SOURCES[providerKey] : { baseUrl: "https://sellmmo.vn", apiKey: "" };
           const buyRes = await executeSourceApiCall("buyProduct", {
@@ -14795,6 +14788,8 @@ function syncAllOpenViewsStock(changedProdId) {
             provider: providerKey,
             baseUrl: apiMap.baseUrl || pCfg.baseUrl,
             apiKey: apiMap.apiKey || pCfg.apiKey,
+            username: apiMap.username || pCfg.username,
+            password: apiMap.password || pCfg.password,
             targetProdId: p.id
           });
           if (buyRes && buyRes.success && Array.isArray(buyRes.accounts) && buyRes.accounts.length >= qty) {
@@ -15155,6 +15150,8 @@ function syncAllOpenViewsStock(changedProdId) {
         provider: providerKey,
         baseUrl: apiMap.baseUrl || pCfg.baseUrl,
         apiKey: apiMap.apiKey || pCfg.apiKey,
+        username: apiMap.username || pCfg.username,
+        password: apiMap.password || pCfg.password,
         targetProdId: product.id
       });
       if (buyRes && buyRes.success && Array.isArray(buyRes.accounts) && buyRes.accounts.length >= qty) {
