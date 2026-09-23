@@ -20501,8 +20501,11 @@ function changeAdmUsersPage(p) {
         
         const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
         const viewParam = urlParams.get("view");
+        const catParam = urlParams.get("category");
         if (hash === "viewPrivacy" || hash === "privacy" || viewParam === "viewPrivacy" || (viewParam === "viewTerms" && (hash === "viewPrivacy" || hash === "privacy"))) {
           targetView = "viewPrivacy";
+        } else if (hash === "viewTerms" || hash === "terms" || viewParam === "viewTerms") {
+          targetView = "viewTerms";
         } else if (hasProdParam) {
           targetView = "viewProductDetail";
         } else if (hasBlogParam) {
