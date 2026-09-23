@@ -20501,8 +20501,9 @@ function changeAdmUsersPage(p) {
         
         const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
         const viewParam = urlParams.get("view");
-        const catParam = urlParams.get("category");
-        if (hasProdParam) {
+        if (hash === "viewPrivacy" || hash === "privacy" || viewParam === "viewPrivacy" || (viewParam === "viewTerms" && (hash === "viewPrivacy" || hash === "privacy"))) {
+          targetView = "viewPrivacy";
+        } else if (hasProdParam) {
           targetView = "viewProductDetail";
         } else if (hasBlogParam) {
           targetView = "viewBlogDetail";
@@ -20571,8 +20572,10 @@ function changeAdmUsersPage(p) {
     if (typeof window !== "undefined") {
       window.addEventListener("hashchange", function() {
         const hash = (window.location.hash || "").replace("#", "").trim();
-        const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewTools", "viewProfile", "viewDeposit", "viewAdmin"];
-        if (hash && validViews.includes(hash)) {
+        const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
+        if (hash && (hash === "viewPrivacy" || hash === "privacy")) {
+          switchView("viewPrivacy");
+        } else if (hash && validViews.includes(hash)) {
           switchView(hash);
         }
       });
