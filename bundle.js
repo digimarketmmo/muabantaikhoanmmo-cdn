@@ -1881,88 +1881,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     // HÀM TỰ ĐỘNG XÓA SẠCH 100% DỮ LIỆU DEMO / ĐƠN ẢO / TỒN KHO ẢO KHI KHỞI ĐỘNG
     function purgeAllSystemDemoData() {
-      try {
-        const DEMO_EMAILS = [
-          "hungmmo88@gmail.com",
-          "ductran.ads@gmail.com",
-          "namle.affiliate@gmail.com",
-          "khachhang@gmail.com",
-          "khach@gmail.com",
-          "test@gmail.com"
-        ];
-
-        // 1. Xóa đơn demo trong mmo_all_orders & mmo_orders & mmo_user_orders
-        const orderKeys = ["mmo_all_orders", "mmo_orders", "mmo_user_orders"];
-        orderKeys.forEach(function(k) {
-          try {
-            const raw = localStorage.getItem(k);
-            if (raw) {
-              const list = JSON.parse(raw);
-              if (Array.isArray(list)) {
-                const cleaned = list.filter(function(o) {
-                  const id = String(o.orderId || o.id || "").toUpperCase();
-                  const em = String(o.email || o.userEmail || o.buyer || "").toLowerCase().trim();
-                  const pName = String(o.productName || "").toLowerCase();
-                  if (id === "MMO888999" || id.includes("SAMPLE") || id.includes("DEMO") || id.includes("TEST")) return false;
-                  if (!em || !em.includes("@") || DEMO_EMAILS.includes(em) || em.includes("sample") || em.includes("demo") || em.includes("test@") || em.includes("khach@")) return false;
-                  if (pName.includes("mẫu demo") || pName.includes("demo order") || pName.includes("sản phẩm mẫu")) return false;
-                  return true;
-                });
-                localStorage.setItem(k, JSON.stringify(cleaned));
-              }
-            }
-          } catch(e) {}
-        });
-
-        // 2. Xóa giao dịch demo trong mmo_transaction_history & mmo_transactions
-        const txKeys = ["mmo_transaction_history", "mmo_transactions"];
-        txKeys.forEach(function(k) {
-          try {
-            const raw = localStorage.getItem(k);
-            if (raw) {
-              const list = JSON.parse(raw);
-              if (Array.isArray(list)) {
-                const cleaned = list.filter(function(t) {
-                  const em = String(t.userEmail || t.email || "").toLowerCase().trim();
-                  const note = String(t.note || "").toLowerCase();
-                  if (DEMO_EMAILS.includes(em) || em.includes("sample") || em.includes("demo")) return false;
-                  if (note.includes("demo") || note.includes("mẫu")) return false;
-                  return true;
-                });
-                localStorage.setItem(k, JSON.stringify(cleaned));
-              }
-            }
-          } catch(e) {}
-        });
-
-        // 3. Xóa tồn kho ảo và lượt bán ảo trong mmo_products & mmo_admin_products
-        const prodKeys = ["mmo_products", "mmo_admin_products"];
-        prodKeys.forEach(function(k) {
-          try {
-            const raw = localStorage.getItem(k);
-            if (raw) {
-              const list = JSON.parse(raw);
-              if (Array.isArray(list)) {
-                let modified = false;
-                list.forEach(function(p) {
-                  if (p.stock === 1050 || p.stock === 500 || p.stock === 120 || p.stock === 99 || p.stock === 37 || p.stock === 35 || p.stock === 20 || p.stock === 80) {
-                    p.stock = 0;
-                    modified = true;
-                  }
-                  if (p.sold === 1050 || p.sold === 484 || p.sold === 500 || p.sold === 285 || p.sold === 1568 || p.sold === 2927 || p.sold === 629 || p.sold === 1360 || p.sold === 1200 || p.sold === 383 || p.sold === 100 || p.buffSold === 100) {
-                    p.sold = 0;
-                    p.buffSold = 0;
-                    modified = true;
-                  }
-                });
-                if (modified) localStorage.setItem(k, JSON.stringify(list));
-              }
-            }
-          } catch(e) {}
-        });
-      } catch(err) {
-        console.warn("purgeAllSystemDemoData err:", err);
-      }
+      // Đã hoàn thành dọn dẹp hệ thống. Vô hiệu hóa vĩnh viễn để bảo vệ 100% dữ liệu đơn hàng và kho hàng thật của khách.
+      return;
     }
     window.purgeAllSystemDemoData = purgeAllSystemDemoData;
     try { purgeAllSystemDemoData(); } catch(e) {}
@@ -2754,6 +2674,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       } catch(e) {
         console.error("syncSystemOverviewWithCloud error:", e);
         if (typeof renderSystemOverview === "function") renderSystemOverview();
+          if (typeof syncCloudOrdersToLocalUI === "function") syncCloudOrdersToLocalUI(true);
       }
     }
     window.syncSystemOverviewWithCloud = syncSystemOverviewWithCloud;
@@ -6827,6 +6748,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (typeof loadUserWalletFromCloud === "function") loadUserWalletFromCloud();
       } else if (tabId === "tabProfOrders") {
         if (typeof renderProfileOrders === "function") renderProfileOrders();
+        if (typeof syncCloudOrdersToLocalUI === "function") syncCloudOrdersToLocalUI(true);
       } else if (tabId === "tabProfInfo") {
         if (typeof populateProfileInfoInputs === "function") populateProfileInfoInputs();
       } else if (tabId === "tabProfAffiliate") {
@@ -13441,6 +13363,178 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       } catch(e) {}
     })();
+
+    
+    // =========================================================================
+    // [CLOUD ORDERS REALTIME SYNC ENGINE]
+    // Tự động kéo 100% tất cả đơn hàng thật từ Cloudflare Worker / Turso Cloud
+    // Đảm bảo đơn mua mới nhất luôn xuất hiện ngay trên đầu trang khách & trang Admin
+    // =========================================================================
+    var _isSyncingCloudOrders = false;
+    var _lastCloudOrdersSyncTime = 0;
+
+    async function syncCloudOrdersToLocalUI(force = false) {
+      const now = Date.now();
+      if (!force && (now - _lastCloudOrdersSyncTime < 5000 || _isSyncingCloudOrders)) return;
+      _isSyncingCloudOrders = true;
+      _lastCloudOrdersSyncTime = now;
+
+      try {
+        const apiUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.manhdongvtc.workers.dev";
+
+        const res = await fetch(apiUrl + "/api/orders?limit=100", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        const cloudOrders = Array.isArray(data) ? data : (data.orders || []);
+        if (!Array.isArray(cloudOrders) || cloudOrders.length === 0) return;
+
+        let all = [];
+        try { all = JSON.parse(localStorage.getItem("mmo_all_orders") || "[]"); } catch(e) {}
+        let userOrders = [];
+        try { userOrders = JSON.parse(localStorage.getItem("mmo_user_orders") || "[]"); } catch(e) {}
+        let orders = [];
+        try { orders = JSON.parse(localStorage.getItem("mmo_orders") || "[]"); } catch(e) {}
+
+        const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+        const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
+        const isAdm = (curUser && typeof isAdminUser === "function" && isAdminUser(curUser));
+
+        let modified = false;
+
+        cloudOrders.forEach(function(co) {
+          if (!co) return;
+          const rawId = String(co.orderId || co.id || co.orderCode || "").trim();
+          if (!rawId) return;
+          const cleanId = rawId.replace("#", "").trim();
+
+          const rawDateStr = co.date || co.createdAt || "";
+          let ts = 0;
+          if (typeof getOrderTimestamp === "function") {
+            ts = getOrderTimestamp(co);
+          }
+          if (!ts || isNaN(ts) || ts <= 0) {
+            ts = Date.parse(rawDateStr) || Date.now();
+          }
+
+          const formattedDate = (typeof formatOrderDate === "function")
+            ? formatOrderDate(rawDateStr, ts)
+            : (rawDateStr || new Date(ts).toLocaleString("vi-VN"));
+
+          const credsStr = co.credentials || co.accounts || "";
+          const accsArr = Array.isArray(co.deliveredAccounts) && co.deliveredAccounts.length > 0
+            ? co.deliveredAccounts
+            : (Array.isArray(co.accounts) && co.accounts.length > 0
+                ? co.accounts
+                : (credsStr ? [credsStr] : []));
+
+          const normOrder = {
+            id: cleanId,
+            orderId: cleanId,
+            orderCode: cleanId,
+            productId: co.productId || co.product_id || "",
+            productName: co.productName || co.product_name || "Tài khoản MMO",
+            variant: co.variantName || co.variant || "Mặc định",
+            variantName: co.variantName || co.variant || "Mặc định",
+            quantity: co.quantity || co.qty || 1,
+            qty: co.quantity || co.qty || 1,
+            price: Number(co.price) || 0,
+            total: Number(co.total || co.totalPrice || co.totalAmount || 0),
+            totalPrice: Number(co.total || co.totalPrice || co.totalAmount || 0),
+            date: formattedDate,
+            createdAt: formattedDate,
+            createdTimestamp: ts,
+            status: co.status || "COMPLETED",
+            statusText: co.statusText || (co.status === "COMPLETED" ? "Hoàn thành" : (co.status === "PROCESSING" ? "Đang gom hàng" : (co.status === "CANCELLED" ? "Đã hủy" : "Chờ xác nhận"))),
+            type: cleanId.startsWith("PRE") ? "PRE_ORDER" : "REGULAR",
+            credentials: credsStr,
+            deliveredAccounts: accsArr,
+            accounts: accsArr,
+            email: co.email || co.userEmail || "",
+            userEmail: co.userEmail || co.email || "",
+            buyerEmail: co.buyerEmail || co.email || co.userEmail || "",
+            userName: co.userName || co.username || co.buyerUsername || "Khách Hàng",
+            buyerUsername: co.buyerUsername || co.userName || co.username || "Khách Hàng"
+          };
+
+          // 1. Thêm vào In-Memory
+          if (!window._mmoInMemoryOrders) window._mmoInMemoryOrders = [];
+          const memIdx = window._mmoInMemoryOrders.findIndex(m => m && String(m.id || m.orderId || "").replace("#","").trim() === cleanId);
+          if (memIdx === -1) {
+            window._mmoInMemoryOrders.unshift(normOrder);
+          } else {
+            if (!window._mmoInMemoryOrders[memIdx].credentials && normOrder.credentials) {
+              window._mmoInMemoryOrders[memIdx].credentials = normOrder.credentials;
+            }
+          }
+
+          // 2. Thêm vào mmo_all_orders (toàn sàn)
+          const aIdx = all.findIndex(o => (o && String(o.id || o.orderId || "").replace("#","").trim() === cleanId));
+          if (aIdx === -1) {
+            all.unshift(normOrder);
+            modified = true;
+          } else {
+            if (!all[aIdx].credentials && normOrder.credentials) {
+              all[aIdx].credentials = normOrder.credentials;
+              modified = true;
+            }
+          }
+
+          // 3. Thêm vào mmo_orders
+          const oIdx = orders.findIndex(o => (o && String(o.id || o.orderId || "").replace("#","").trim() === cleanId));
+          if (oIdx === -1) {
+            orders.unshift(normOrder);
+            modified = true;
+          } else {
+            if (!orders[oIdx].credentials && normOrder.credentials) {
+              orders[oIdx].credentials = normOrder.credentials;
+              modified = true;
+            }
+          }
+
+          // 4. Thêm vào mmo_user_orders (Kho người dùng)
+          const oEmail = String(normOrder.userEmail || normOrder.email || "").toLowerCase().trim();
+          const isUserMatch = !cleanUserMail || isAdm || (oEmail === cleanUserMail) || (cleanUserMail.includes("manhdong") && oEmail.includes("digimarketmmo")) || (cleanUserMail.includes("digimarketmmo") && oEmail.includes("manhdong")) || !oEmail || oEmail.startsWith("guest_");
+          if (isUserMatch) {
+            const uIdx = userOrders.findIndex(o => (o && String(o.id || o.orderId || "").replace("#","").trim() === cleanId));
+            if (uIdx === -1) {
+              userOrders.unshift(normOrder);
+              modified = true;
+            } else {
+              if (!userOrders[uIdx].credentials && normOrder.credentials) {
+                userOrders[uIdx].credentials = normOrder.credentials;
+                modified = true;
+              }
+            }
+          }
+        });
+
+        if (modified) {
+          if (typeof safeStorageSet === "function") {
+            safeStorageSet("mmo_all_orders", all, 250);
+            safeStorageSet("mmo_orders", orders, 250);
+            safeStorageSet("mmo_user_orders", userOrders, 250);
+          } else {
+            try {
+              localStorage.setItem("mmo_all_orders", JSON.stringify(all.slice(0, 250)));
+              localStorage.setItem("mmo_orders", JSON.stringify(orders.slice(0, 250)));
+              localStorage.setItem("mmo_user_orders", JSON.stringify(userOrders.slice(0, 250)));
+            } catch(e) {}
+          }
+
+          if (typeof renderProfileOrders === "function") renderProfileOrders();
+          if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
+          if (typeof updateAdminSidebarBadges === "function") updateAdminSidebarBadges();
+          if (typeof renderSystemOverview === "function") renderSystemOverview();
+        }
+      } catch(syncErr) {
+        console.warn("syncCloudOrdersToLocalUI error:", syncErr);
+      } finally {
+        _isSyncingCloudOrders = false;
+      }
+    }
+    window.syncCloudOrdersToLocalUI = syncCloudOrdersToLocalUI;
 
     function getUserOrders() {
       let userOrders = [];
@@ -21452,6 +21546,16 @@ function changeAdmUsersPage(p) {
       }
       window._mmoAppFullyInitialized = true;
       window._mmoCdnAppBooted = true;
+      try {
+        if (typeof syncCloudOrdersToLocalUI === "function") {
+          syncCloudOrdersToLocalUI(true);
+        }
+        setInterval(function() {
+          if (typeof syncCloudOrdersToLocalUI === "function") {
+            syncCloudOrdersToLocalUI(false);
+          }
+        }, 12000);
+      } catch(e) {}
 
       const gBtn = document.getElementById("btnGoogleCustom");
       if (gBtn) {
