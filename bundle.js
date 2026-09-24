@@ -4449,33 +4449,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       setTimeout(function() {
         try {
           if (MOCK_DATA && MOCK_DATA.products) {
-            // Loại bỏ ảnh base64 quá lớn trước khi serialize để tránh block
-            const prodsToSave = MOCK_DATA.products.map(function(p) {
-              if (!p) return p;
-              if (p.image && p.image.startsWith('data:') && p.image.length > 50000) {
-                const cp = Object.assign({}, p);
-                cp.image = p.image.slice(0, 40000);
-                return cp;
-              }
-              return p;
-            });
-            const prodsJson = JSON.stringify(prodsToSave);
+            // [BẢO TỒN 100% ẢNH SẢN PHẨM]: Tuyệt đối không cắt lát base64 làm hỏng ảnh
+            const prodsJson = JSON.stringify(MOCK_DATA.products);
             localStorage.setItem("mmo_admin_products", prodsJson);
             localStorage.setItem("mmo_products", prodsJson);
           }
         } catch(e) {
           console.warn("Storage quota warning when saving products:", e);
           try {
+            // Nếu vượt quota localStorage, chỉ giảm bớt danh sách accounts tồn kho, bảo toàn 100% ảnh
             const safeProds = (MOCK_DATA.products || []).map(function(p) {
               const cp = Object.assign({}, p);
-              if (cp.image && cp.image.length > 45000 && cp.image.startsWith("data:")) {
-                cp.image = cp.image.slice(0, 40000);
-              }
-              // Nếu vẫn quá lớn, bỏ accounts để tiết kiệm space
               if (cp.variants && Array.isArray(cp.variants)) {
                 cp.variants = cp.variants.map(function(v) {
                   const vc = Object.assign({}, v);
-                  if (vc.accounts && vc.accounts.length > 100) vc.accounts = vc.accounts.slice(0, 100);
+                  if (vc.accounts && vc.accounts.length > 50) vc.accounts = vc.accounts.slice(0, 50);
                   return vc;
                 });
               }
@@ -4484,8 +4472,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const safeJson = JSON.stringify(safeProds);
             localStorage.setItem("mmo_admin_products", safeJson);
             localStorage.setItem("mmo_products", safeJson);
-          } catch(err2) {
-            console.error("Critical: Could not save products to storage:", err2);
+          } catch(e2) {
+            console.error("Critical: Could not save products to storage:", e2);
           }
         }
       }, 0);
@@ -4640,11 +4628,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 serverProd.deliveryType = 'api';
                 currentProd.delivery_type = 'api';
                 serverProd.delivery_type = 'api';
-                let apiStock = 999;
-                if (existingApiMap && existingApiMap.sourceStock !== undefined && Number(existingApiMap.sourceStock) > 0) {
+                let apiStock = 0;
+                if (existingApiMap && existingApiMap.sourceStock !== undefined && Number(existingApiMap.sourceStock) >= 0) {
                   apiStock = Number(existingApiMap.sourceStock);
                 } else if (typeof getShopVariantStock === 'function') {
                   apiStock = getShopVariantStock(currentProd, 0);
+                } else {
+                  apiStock = Number(currentProd.stock) || 0;
                 }
                 serverProd.stock = apiStock;
                 currentProd.stock = apiStock;
@@ -5215,10 +5205,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const buffSold = parseInt(document.getElementById("admProdBuffSold")?.value) || 0;
       const rating = parseFloat(document.getElementById("admProdBuffRating")?.value) || 4.9;
       const reviewsCount = parseInt(document.getElementById("admProdBuffReviews")?.value) || 15;
-      const image = document.getElementById("admProdImage")?.value.trim() || "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500";
-      const warranty = document.getElementById("admProdWarranty")?.value.trim() || "Bảo Hành 1 Đổi 1";
-      const description = document.getElementById("admProdDesc")?.value.trim() || "";
-
       if (!name) {
         showToast("Vui lòng nhập tên sản phẩm!", "warning");
         return;
@@ -5227,6 +5213,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!MOCK_DATA.products) MOCK_DATA.products = [];
       const oldProd = isEditing ? MOCK_DATA.products.find(p => p && p.id === prodId) : null;
       const actualTargetId = (oldProd && oldProd.id) ? oldProd.id : prodId;
+      const inputImg = document.getElementById("admProdImage")?.value.trim();
+      const image = inputImg || (oldProd && oldProd.image) || (oldProd && oldProd.image_url) || (oldProd && oldProd.imageUrl) || "https://iili.io/nFV4Rln.png";
+      const warranty = document.getElementById("admProdWarranty")?.value.trim() || "Bảo Hành 1 Đổi 1";
+      const description = document.getElementById("admProdDesc")?.value.trim() || "";
 
       const container = document.getElementById("admVariantsContainer") || document.getElementById("admVariantRowsContainer");
       const varRows = container ? container.querySelectorAll(".adm-variant-row") : [];
@@ -5289,7 +5279,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           liveSourcePrice = (typeof foundSrc.price === "number") ? foundSrc.price : (parseInt(foundSrc.price) || 0);
           liveSourceName = foundSrc.name || "";
         } else {
-          liveSourceStock = 999;
+          liveSourceStock = (oldProd && typeof oldProd.stock === "number") ? oldProd.stock : 0;
         }
         variants.forEach(v => { v.stock = liveSourceStock; });
       }
@@ -7554,14 +7544,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         // SMART SYNCHRONIZED SOLD QUANTITY CALCULATOR (KHÔNG BỊ 100 ĐỒNG LOẠT)
     
-    // RESOLVE PRODUCT IMAGE: Ánh xạ ảnh CDN chuẩn 100% cho mọi sản phẩm MMO
+    // RESOLVE PRODUCT IMAGE: Bảo tồn 100% ảnh sản phẩm đã có (kể cả base64), chỉ fallback khi không có ảnh
     function resolveProductImage(p) {
       if (!p) return "https://iili.io/nFV4Rln.png";
-      if (p.image && typeof p.image === "string" && p.image.startsWith("http") && !p.image.includes("undefined") && !p.image.includes("placeholder")) {
-        return p.image;
+      const existingImg = (typeof p === "string") ? p : (p.image || p.image_url || p.imageUrl || "");
+      if (typeof existingImg === "string" && existingImg.trim() !== "") {
+        const trimmed = existingImg.trim();
+        if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("data:image/") || trimmed.startsWith("/")) &&
+            !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder")) {
+          return trimmed;
+        }
       }
-      const id = String(p.id || "").toUpperCase();
-      const name = String(p.name || "").toLowerCase();
+      const id = String((typeof p === "object" && p.id) || "").toUpperCase();
+      const name = String((typeof p === "object" && p.name) || "").toLowerCase();
       const cdnBase = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/";
 
       if (id.includes("NOT8") || name.includes("not8") || name.includes("note 8") || name.includes("note8")) return cdnBase + "rom_not8_android10.png";
@@ -9168,7 +9163,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (deletedIds.includes(tp.id)) return;
           if (typeof isProductDeleted === "function" && isProductDeleted(tp)) return;
 
-          const img = tp.image || tp.imageUrl || tp.image_url || "https://images.unsplash.com/photo-1557200134-90327ee9fafa?w=500";
+          const img = tp.image || tp.imageUrl || tp.image_url || "";
           
           let variants = [];
           if (Array.isArray(tp.variants)) {
@@ -9209,12 +9204,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               } else {
                 cur.deliveryType = 'api';
                 cur.delivery_type = 'api';
-                if (effectiveMapping && effectiveMapping.sourceStock) {
-                  updatedStock = effectiveMapping.sourceStock;
+                if (effectiveMapping && effectiveMapping.sourceStock !== undefined && effectiveMapping.sourceStock !== null) {
+                  updatedStock = Number(effectiveMapping.sourceStock) || 0;
                 } else if (typeof getShopVariantStock === 'function') {
                   updatedStock = getShopVariantStock(cur, 0);
                 } else {
-                  updatedStock = 999;
+                  updatedStock = Number(cur.stock) || 0;
                 }
                 if (Array.isArray(variants)) variants.forEach(v => { v.stock = updatedStock; });
                 if (Array.isArray(cur.variants)) cur.variants.forEach(v => { v.stock = updatedStock; });
@@ -9230,7 +9225,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 deliveryType: isApiType ? 'api' : 'local',
                 delivery_type: isApiType ? 'api' : 'local',
                 apiMapping: effectiveMapping,
-                image: img,
+                image: (cur.image && cur.image.trim() !== "" && !cur.image.includes("unsplash") && !cur.image.includes("placeholder")) ? cur.image : (img || cur.image || "https://iili.io/nFV4Rln.png"),
                 description: tp.description || cur.description,
                 warranty: tp.warranty || cur.warranty,
                 variants: (variants && variants.length > 0) ? variants : cur.variants
@@ -9240,7 +9235,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             // Sản phẩm mới từ Turso
             const isApiTypeNew = (tp.delivery_type === 'api' || tp.deliveryType === 'api');
             let newStock = Number(tp.stock) || 0;
-            if (isApiTypeNew && newStock <= 0) newStock = 999;
             MOCK_DATA.products.push({
               id: tp.id,
               name: tp.name,
@@ -9250,7 +9244,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               sold: Number(tp.sold) || 0,
               buffSold: 0,
               rating: tp.rating || 4.9,
-              image: img,
+              image: (img && img.trim() !== "" && !img.includes("placeholder") && !img.includes("unsplash")) ? img : (typeof resolveProductImage === "function" ? resolveProductImage({ id: tp.id, name: tp.name, category: tp.category }) : "https://iili.io/nFV4Rln.png"),
               warranty: tp.warranty || "Bảo Hành 1 Đổi 1",
               description: tp.description || "",
               variants: variants,
@@ -10919,7 +10913,10 @@ function syncAllOpenViewsStock(changedProdId) {
       "PROD_MTQX1C7X": { enabled: true, provider: "shop1989nd", sourceProdId: "19745", sourcePrice: 138.6, sourceProdName: "Gmail Domain Cho Thuê live 12h+" },
       "PROD_MTQX465U": { enabled: true, provider: "shop1989nd", sourceProdId: "19768", sourcePrice: 53.2, sourceProdName: "Gmail Domain Cho Thuê .live 10 phút" },
       "PROD_MU5PWT7PP7": { enabled: true, provider: "nguyenlieummo", sourceProdId: "119284", sourcePrice: 3220, sourceProdName: "TÀI KHOẢN KLING AI 65 CREDIT" },
-      "PROD_MTQZT2Y1": { enabled: true, provider: "nguyenlieummo", sourceProdId: "121063", sourcePrice: 656, sourceProdName: "Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months", sourceStock: 88181 }
+      "PROD_MTQZT2Y1": { enabled: true, provider: "nguyenlieummo", sourceProdId: "121063", sourcePrice: 656, sourceProdName: "Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months", sourceStock: 88181 },
+      "PROD_MU5SPLMSEC": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23960", sourcePrice: 2900, sourceProdName: "ChatGPT New Gmail Trial", sourceStock: 16037 },
+      "PROD_MU5T3T47AE": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23607", sourcePrice: 27000, sourceProdName: "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3", sourceStock: 994 },
+      "PROD_MU6R34FZ4Z": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23586", sourcePrice: 1560000, sourceProdName: "Google Gemini AI Veo3 - 18 Tháng", sourceStock: 45 }
     };
 
     function getApiProductMappings() {
@@ -10929,7 +10926,14 @@ function syncAllOpenViewsStock(changedProdId) {
         if (stored) {
           const parsed = JSON.parse(stored);
           if (parsed && typeof parsed === "object") {
-            Object.assign(result, parsed);
+            Object.keys(parsed).forEach(k => {
+              if (parsed[k] && typeof parsed[k] === "object") {
+                result[k] = Object.assign({}, result[k] || {}, parsed[k]);
+                if ((!result[k].sourceStock || result[k].sourceStock === 0) && DEFAULT_API_PRODUCT_MAPPINGS[k] && DEFAULT_API_PRODUCT_MAPPINGS[k].sourceStock) {
+                  result[k].sourceStock = DEFAULT_API_PRODUCT_MAPPINGS[k].sourceStock;
+                }
+              }
+            });
           }
         }
       } catch(e) {}
@@ -11341,7 +11345,7 @@ function syncAllOpenViewsStock(changedProdId) {
       } else {
         const sourceProds = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts)) ? window.cachedSourceProducts : [];
         const srcItem = sourceProds.find(s => String(s.id) === String(srcId));
-        const liveSrcStock = (srcItem && typeof srcItem.amount === "number") ? srcItem.amount : 999;
+        const liveSrcStock = (srcItem && typeof srcItem.amount === "number") ? srcItem.amount : ((srcItem && srcItem.amount !== undefined) ? (parseInt(srcItem.amount) || 0) : 0);
         const liveSrcPrice = (srcItem && typeof srcItem.price === "number") ? srcItem.price : 100;
 
         mappings[prodId] = {
@@ -11592,13 +11596,13 @@ function syncAllOpenViewsStock(changedProdId) {
 
       // Danh sách sản phẩm mẫu đã xác thực 100% test mua thành công cho từng nguồn
       const PINNED_VERIFIED = [
-        { id: "33171", provider: "sellmmo", name: "Gmail Domain ✔️ live 2 phút", price: 55, stock: 9999, tag: "⭐ [sellmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "23960", provider: "selltainguyenmmo", name: "ChatGPT New Gmail Trial (Trial 2FA)", price: 2900, stock: 16037, tag: "⭐ [selltainguyenmmo] CHATGPT NEW TRIAL (16.037 ACC)" },
+        { id: "26521", provider: "selltainguyenmmo", name: "PROXY IPV4 - PUBLIC - USA 0151", price: 6600, stock: 42, tag: "⭐ [selltainguyenmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
         { id: "712", provider: "mail72h", name: "Mail 24h [ID 712]", price: 259, stock: 72357, tag: "⭐ [mail72h] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
-        { id: "19768", provider: "shop1989nd", name: "Gmail Domain Cho Thuê 10 phút", price: 53.2, stock: 9999, tag: "⭐ [shop1989nd] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
-        { id: "19084", provider: "shop1989nd", name: "Outlook Trusted Oauth2 [Graph]", price: 201.5, stock: 67224, tag: "⭐ [shop1989nd] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
-        { id: "117725", provider: "nguyenlieummo", name: "ID 4 - NVR name ngoai", price: 74, stock: 1810, tag: "⭐ [nguyenlieummo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
         { id: "121063", provider: "nguyenlieummo", name: "Hotmail Trusted - OAuth2 [Graph] Live 12-36 Tháng", price: 656, stock: 88181, tag: "⭐ [nguyenlieummo] HOTMAIL LIVE TRÂU (88K ACC)" },
-        { id: "26521", provider: "selltainguyenmmo", name: "PROXY IPV4 - PUBLIC - USA 0151", price: 6600, stock: 42, tag: "⭐ [selltainguyenmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" }
+        { id: "117725", provider: "nguyenlieummo", name: "ID 4 - NVR name ngoai", price: 74, stock: 1810, tag: "⭐ [nguyenlieummo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "19084", provider: "shop1989nd", name: "Outlook Trusted Oauth2 [Graph]", price: 201.5, stock: 67224, tag: "⭐ [shop1989nd] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "33171", provider: "sellmmo", name: "Gmail Domain ✔️ live 2 phút", price: 55, stock: 1550, tag: "⭐ [sellmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" }
       ];
 
       let html = '<optgroup label="✅ SẢN PHẨM KHUYÊN DÙNG TEST (ĐÃ XÁC THỰC 100% CÒN HÀNG THẬT & MUA THÀNH CÔNG)">';
@@ -11643,7 +11647,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       const prodName = opt ? opt.innerText : "Sản phẩm " + prodId;
       const price = opt ? Number(opt.getAttribute("data-price") || 0) : 0;
-      const stock = opt ? Number(opt.getAttribute("data-stock") || 0) : 999;
+      const stock = opt ? Number(opt.getAttribute("data-stock") || 0) : 0;
       let provider = opt ? (opt.getAttribute("data-provider") || "sellmmo") : "sellmmo";
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : API_SOURCES.sellmmo;
 
@@ -15478,7 +15482,9 @@ function syncAllOpenViewsStock(changedProdId) {
         }
 
         const prodImgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png");
-        p.image = prodImgUrl;
+        if (!p.image || p.image.includes("placeholder")) {
+          p.image = prodImgUrl;
+        }
 
         const prodShippingDetails = {
           "@type": "OfferShippingDetails",
