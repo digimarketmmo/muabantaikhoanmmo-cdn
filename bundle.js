@@ -13595,10 +13595,45 @@ function syncAllOpenViewsStock(changedProdId) {
           ? MMO_WORKER_API.getApiUrl()
           : "https://mmo-shop-api.manhdongvtc.workers.dev";
 
-        const res = await fetch(apiUrl + "/api/orders?limit=100", { cache: "no-store" });
-        if (!res.ok) return;
-        const data = await res.json();
-        const cloudOrders = Array.isArray(data) ? data : (data.orders || []);
+        const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+        const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
+        const isAdm = (curUser && typeof isAdminUser === "function" && isAdminUser(curUser));
+
+        // Tự động đồng bộ số dư người dùng từ Turso Database
+        if (cleanUserMail) {
+          fetch(apiUrl + "/api/user/profile?email=" + encodeURIComponent(cleanUserMail))
+            .then(r => r.json())
+            .then(uData => {
+              if (uData && uData.success && uData.user && uData.user.balance !== undefined) {
+                const tursoBal = Number(uData.user.balance);
+                if (!isNaN(tursoBal) && currentUser && currentUser.balance !== tursoBal) {
+                  currentUser.balance = tursoBal;
+                  try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+                  if (typeof updateUserUI === "function") updateUserUI();
+                }
+              }
+            }).catch(() => {});
+        }
+
+        let cloudOrders = [];
+        if (cleanUserMail && !isAdm) {
+          try {
+            const uRes = await fetch(apiUrl + "/api/orders?email=" + encodeURIComponent(cleanUserMail) + "&limit=200", { cache: "no-store" });
+            if (uRes.ok) {
+              const uData = await uRes.json();
+              const uList = Array.isArray(uData) ? uData : (uData.orders || []);
+              if (Array.isArray(uList)) cloudOrders = cloudOrders.concat(uList);
+            }
+          } catch(e) {}
+        }
+
+        const res = await fetch(apiUrl + "/api/orders?limit=300", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          const generalList = Array.isArray(data) ? data : (data.orders || []);
+          if (Array.isArray(generalList)) cloudOrders = cloudOrders.concat(generalList);
+        }
+
         if (!Array.isArray(cloudOrders) || cloudOrders.length === 0) return;
 
         let all = [];
@@ -13607,10 +13642,6 @@ function syncAllOpenViewsStock(changedProdId) {
         try { userOrders = JSON.parse(localStorage.getItem("mmo_user_orders") || "[]"); } catch(e) {}
         let orders = [];
         try { orders = JSON.parse(localStorage.getItem("mmo_orders") || "[]"); } catch(e) {}
-
-        const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
-        const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
-        const isAdm = (curUser && typeof isAdminUser === "function" && isAdminUser(curUser));
 
         let modified = false;
 
@@ -16064,82 +16095,130 @@ function syncAllOpenViewsStock(changedProdId) {
         return;
       }
       let credsLines = [];
+      let workerHandled = false;
 
-      if (isApiOnDemand) {
-        const providerKey = apiMap.provider || "sellmmo";
-        try {
-          const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[providerKey]) ? API_SOURCES[providerKey] : { baseUrl: "https://sellmmo.vn", apiKey: "" };
-          const buyRes = await executeSourceApiCall("buyProduct", {
-            productId: apiMap.sourceProdId,
-            amount: qty,
-            provider: providerKey,
-            baseUrl: apiMap.baseUrl || pCfg.baseUrl,
-            apiKey: apiMap.apiKey || pCfg.apiKey,
-            username: apiMap.username || pCfg.username,
-            password: apiMap.password || pCfg.password,
-            targetProdId: p.id
-          });
-          if (buyRes && buyRes.success && Array.isArray(buyRes.accounts) && buyRes.accounts.length >= qty) {
-            credsLines = buyRes.accounts;
+      // [ƯU TIÊN TỐI CAO] GỌI TRỰC TIẾP CLOUDFLARE WORKER / TURSO ĐÁM MÂY XỬ LÝ 100%
+      try {
+        const workerCheckoutUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
+          ? (MMO_WORKER_API.getApiUrl() + "/api/orders/checkout")
+          : "https://mmo-shop-api.manhdongvtc.workers.dev/api/orders/checkout";
+
+        const checkoutPayload = {
+          product_id: p.id,
+          variant_idx: vIdx,
+          quantity: qty,
+          order_id: orderId,
+          customer_email: cleanEmail,
+          customer_name: (currentUser && (currentUser.name || currentUser.username)) || cleanEmail,
+          amount: totalCost,
+          payment_method: "BALANCE",
+          api_mapping: isApiOnDemand ? apiMap : null
+        };
+
+        const wRes = await fetch(workerCheckoutUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(checkoutPayload)
+        });
+
+        const wData = await wRes.json().catch(() => null);
+        if (wData && wData.success && Array.isArray(wData.accounts) && wData.accounts.length >= qty) {
+          credsLines = wData.accounts;
+          workerHandled = true;
+          if (wData.balance_after !== undefined && !isNaN(Number(wData.balance_after))) {
+            currentUser.balance = Number(wData.balance_after);
+          }
+        } else if (wData && !wData.success) {
+          restoreBtn();
+          const errMsg = wData.message || "Kho hàng tạm thời không đủ số lượng tài khoản!";
+          const isOutOfStock = /hết hàng|không đủ|out of stock|tồn kho|số lượng/i.test(errMsg);
+          if (isOutOfStock && typeof openPreOrderModal === "function") {
+            showToast("⚠️ " + errMsg + " Đang chuyển sang Đặt Trước...", "warning");
+            setTimeout(() => openPreOrderModal(p, vIdx), 600);
           } else {
-            restoreBtn();
-            const errMsg = (buyRes && (buyRes.message || buyRes.msg)) || "⚠️ Kho hàng đang cập nhật thêm tài khoản. Số dư của bạn chưa bị trừ!";
-            const isOutOfStockOrBalance = /không đủ|hết hàng|out of stock|tồn kho|số lượng|balance|số dư|không khả dụng/i.test(errMsg);
-            if (isOutOfStockOrBalance && typeof markApiProductOutOfStock === "function") {
-              markApiProductOutOfStock(p, vIdx, errMsg);
-              showToast("⚠️ Nhà cung cấp hiện đang hết hàng (" + errMsg + "). Sản phẩm đã chuyển sang [ĐẶT TRƯỚC]! Số dư ví của bạn không bị trừ.", "warning");
-              if (typeof openPreOrderModal === "function") {
-                setTimeout(() => openPreOrderModal(p, vIdx), 800);
-              }
+            showToast("⚠️ " + errMsg, "danger");
+          }
+          return;
+        }
+      } catch(wErr) {
+        console.warn("Worker direct checkout network fallback:", wErr);
+      }
+
+      // Fallback cục bộ chỉ khi Worker hoàn toàn không phản hồi hoặc ngoại tuyến
+      if (!workerHandled) {
+        if (isApiOnDemand) {
+          const providerKey = apiMap.provider || "sellmmo";
+          try {
+            const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[providerKey]) ? API_SOURCES[providerKey] : { baseUrl: "https://sellmmo.vn", apiKey: "" };
+            const buyRes = await executeSourceApiCall("buyProduct", {
+              productId: apiMap.sourceProdId,
+              amount: qty,
+              provider: providerKey,
+              baseUrl: apiMap.baseUrl || pCfg.baseUrl,
+              apiKey: apiMap.apiKey || pCfg.apiKey,
+              username: apiMap.username || pCfg.username,
+              password: apiMap.password || pCfg.password,
+              targetProdId: p.id
+            });
+            if (buyRes && buyRes.success && Array.isArray(buyRes.accounts) && buyRes.accounts.length >= qty) {
+              credsLines = buyRes.accounts;
             } else {
-              showToast(errMsg, "warning");
+              restoreBtn();
+              const errMsg = (buyRes && (buyRes.message || buyRes.msg)) || "⚠️ Kho hàng đang cập nhật thêm tài khoản. Số dư của bạn chưa bị trừ!";
+              const isOutOfStockOrBalance = /không đủ|hết hàng|out of stock|tồn kho|số lượng|balance|số dư|không khả dụng/i.test(errMsg);
+              if (isOutOfStockOrBalance && typeof markApiProductOutOfStock === "function") {
+                markApiProductOutOfStock(p, vIdx, errMsg);
+                showToast("⚠️ Nhà cung cấp hiện đang hết hàng (" + errMsg + "). Sản phẩm đã chuyển sang [ĐẶT TRƯỚC]! Số dư ví của bạn không bị trừ.", "warning");
+                if (typeof openPreOrderModal === "function") {
+                  setTimeout(() => openPreOrderModal(p, vIdx), 800);
+                }
+              } else {
+                showToast(errMsg, "warning");
+              }
+              return;
+            }
+          } catch(apiErr) {
+            restoreBtn();
+            showToast("⚠️ Hệ thống đang bảo trì cập nhật kho tài khoản. Vui lòng thử lại sau giây lát!", "danger");
+            return;
+          }
+        } else {
+          let deliveredAccs = null;
+          if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
+            try {
+              const tursoCreds = await TURSO_CLIENT.checkoutAccounts(p.id, vIdx, qty, orderId, cleanEmail, totalCost);
+              if (tursoCreds && Array.isArray(tursoCreds) && tursoCreds.length >= qty) {
+                deliveredAccs = tursoCreds;
+                MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
+              }
+            } catch(tursoBuyErr) {
+              console.warn("Lỗi xuất kho Turso, chuyển sang kho nội bộ:", tursoBuyErr);
+            }
+          }
+
+          if (!deliveredAccs || deliveredAccs.length < qty) {
+            const localDelivered = MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
+            if (localDelivered && Array.isArray(localDelivered) && localDelivered.length >= qty) {
+              deliveredAccs = localDelivered;
+            }
+          }
+
+          if (deliveredAccs && deliveredAccs.length >= qty) {
+            credsLines = deliveredAccs;
+          } else {
+            if (targetVar) {
+              targetVar.stock = 0;
+              targetVar.accounts = [];
+            }
+            refreshAllShopStockUI(p.id);
+            if (typeof syncDetailStockUI === "function") syncDetailStockUI(0);
+            restoreBtn();
+            showToast("⚠️ Rất tiếc, kho hàng tạm thời không đủ số lượng tài khoản khả dụng!", "warning");
+            if (typeof openPreOrderModal === "function") {
+              setTimeout(() => openPreOrderModal(), 600);
             }
             return;
           }
-        } catch(apiErr) {
-          restoreBtn();
-          showToast("⚠️ Hệ thống đang bảo trì cập nhật kho tài khoản. Vui lòng thử lại sau giây lát!", "danger");
-          return;
-        }
-      } else {
-        // GIAO HÀNG TỰ ĐỘNG: Ưu tiên lấy trực tiếp từ Turso Cloud Database nếu đã kết nối (SSOT)
-        let deliveredAccs = null;
-        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
-          try {
-            const tursoCreds = await TURSO_CLIENT.checkoutAccounts(p.id, vIdx, qty, orderId, cleanEmail, totalCost);
-            if (tursoCreds && Array.isArray(tursoCreds) && tursoCreds.length >= qty) {
-              deliveredAccs = tursoCreds;
-              MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
-            }
-          } catch(tursoBuyErr) {
-            console.warn("Lỗi xuất kho Turso, chuyển sang kho nội bộ:", tursoBuyErr);
-          }
-        }
-
-        // Nếu Turso ngoại tuyến hoặc trả về không đủ, lập tức trích xuất từ kho nội bộ MMO_WAREHOUSE
-        if (!deliveredAccs || deliveredAccs.length < qty) {
-          const localDelivered = MMO_WAREHOUSE.deliverAccounts(p.id, vIdx, qty, orderId);
-          if (localDelivered && Array.isArray(localDelivered) && localDelivered.length >= qty) {
-            deliveredAccs = localDelivered;
-          }
-        }
-
-        if (deliveredAccs && deliveredAccs.length >= qty) {
-          credsLines = deliveredAccs;
-        } else {
-          // Chỉ báo hết hàng khi CẢ Turso LẪN Kho nội bộ thực sự không còn tài khoản
-          if (targetVar) {
-            targetVar.stock = 0;
-            targetVar.accounts = [];
-          }
-          refreshAllShopStockUI(p.id);
-          if (typeof syncDetailStockUI === "function") syncDetailStockUI(0);
-          restoreBtn();
-          showToast("⚠️ Rất tiếc, kho hàng tạm thời không đủ số lượng tài khoản khả dụng!", "warning");
-          if (typeof openPreOrderModal === "function") {
-            setTimeout(() => openPreOrderModal(), 600);
-          }
-          return;
         }
       }
 
