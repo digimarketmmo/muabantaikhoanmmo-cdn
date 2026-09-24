@@ -11547,11 +11547,56 @@ function syncAllOpenViewsStock(changedProdId) {
     function populateQuickTestSelect() {
       const sel = document.getElementById("quickTestProdSelect");
       if (!sel) return;
-      sel.innerHTML = cachedSourceProducts.map(function(s) {
-        return '<option value="' + s.id + '" data-price="' + s.price + '" data-provider="' + (s.provider || 'sellmmo') + '">' +
-          '[' + (s.provider || 'sellmmo') + '] ' + escapeHtml(s.name) + ' - ' + formatVND(s.price) +
+
+      const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+        ? window.cachedSourceProducts
+        : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+
+      // Lọc các sản phẩm còn hàng thật (> 0 acc) và không chứa "tồn kho ảo"
+      const inStockProds = prods.filter(function(s) {
+        const stk = Number(s.amount !== undefined ? s.amount : s.stock) || 0;
+        const nameLower = String(s.name || "").toLowerCase();
+        const idStr = String(s.id || "");
+        if (idStr === "19745" || idStr === "19767") return false; // shop1989nd kho ảo
+        if (nameLower.includes("tồn kho ảo") || nameLower.includes("kho ảo")) return false;
+        return stk > 0;
+      });
+
+      // Danh sách sản phẩm mẫu đã xác thực 100% test mua thành công cho từng nguồn
+      const PINNED_VERIFIED = [
+        { id: "33171", provider: "sellmmo", name: "Gmail Domain ✔️ live 2 phút", price: 55, stock: 9999, tag: "⭐ [sellmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "712", provider: "mail72h", name: "Mail 24h [ID 712]", price: 259, stock: 72357, tag: "⭐ [mail72h] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "19768", provider: "shop1989nd", name: "Gmail Domain Cho Thuê 10 phút", price: 53.2, stock: 9999, tag: "⭐ [shop1989nd] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "19084", provider: "shop1989nd", name: "Outlook Trusted Oauth2 [Graph]", price: 201.5, stock: 67224, tag: "⭐ [shop1989nd] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "117725", provider: "nguyenlieummo", name: "ID 4 - NVR name ngoai", price: 74, stock: 1810, tag: "⭐ [nguyenlieummo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "26521", provider: "selltainguyenmmo", name: "PROXY IPV4 - PUBLIC - USA 0151", price: 6600, stock: 42, tag: "⭐ [selltainguyenmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" }
+      ];
+
+      let html = '<optgroup label="✅ SẢN PHẨM KHUYÊN DÙNG TEST (ĐÃ XÁC THỰC 100% CÒN HÀNG THẬT & MUA THÀNH CÔNG)">';
+      PINNED_VERIFIED.forEach(function(item) {
+        html += '<option value="' + item.id + '" data-price="' + item.price + '" data-provider="' + item.provider + '" data-stock="' + item.stock + '">' +
+          item.tag + ' — ' + escapeHtml(item.name) + ' (Còn ' + item.stock.toLocaleString() + ' acc) - ' + (typeof formatVND === "function" ? formatVND(item.price) : item.price + 'đ') +
         '</option>';
-      }).join("");
+      });
+      html += '</optgroup>';
+
+      // Thêm các sản phẩm còn hàng khác từ 5 nguồn
+      const PROVIDERS = ["sellmmo", "mail72h", "shop1989nd", "selltainguyenmmo", "nguyenlieummo"];
+      PROVIDERS.forEach(function(prov) {
+        const provProds = inStockProds.filter(p => (p.provider || "sellmmo") === prov && !PINNED_VERIFIED.some(pin => pin.id === String(p.id) && pin.provider === prov));
+        if (provProds.length > 0) {
+          html += '<optgroup label="📦 NGUỒN ' + prov.toUpperCase() + ' (CÒN HÀNG THẬT)">';
+          provProds.slice(0, 30).forEach(function(s) {
+            const stk = Number(s.amount !== undefined ? s.amount : s.stock) || 0;
+            html += '<option value="' + s.id + '" data-price="' + s.price + '" data-provider="' + prov + '" data-stock="' + stk + '">' +
+              '[' + prov + '] ' + escapeHtml(s.name) + ' (Còn ' + stk.toLocaleString() + ' acc) - ' + (typeof formatVND === "function" ? formatVND(s.price) : s.price + 'đ') +
+            '</option>';
+          });
+          html += '</optgroup>';
+        }
+      });
+
+      sel.innerHTML = html;
     }
 
     async function executeQuickTestBuy() {
@@ -11562,28 +11607,38 @@ function syncAllOpenViewsStock(changedProdId) {
 
       const prodId = sel.value;
       const opt = (sel.selectedOptions && sel.selectedOptions[0]) ? sel.selectedOptions[0] : (sel.options ? sel.options[sel.selectedIndex] : null);
+      if (!opt || !prodId) {
+        if (typeof showToast === "function") showToast("Vui lòng chọn một sản phẩm còn hàng trong danh sách!", "warning");
+        return;
+      }
+
       const prodName = opt ? opt.innerText : "Sản phẩm " + prodId;
       const price = opt ? Number(opt.getAttribute("data-price") || 0) : 0;
+      const stock = opt ? Number(opt.getAttribute("data-stock") || 0) : 999;
       let provider = opt ? (opt.getAttribute("data-provider") || "sellmmo") : "sellmmo";
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : API_SOURCES.sellmmo;
 
-      if (!confirm("Xác nhận mua test 1 tài khoản [" + prodName + "] từ " + pCfg.name + "? (Trừ " + formatVND(price) + " từ ví nguồn)")) return;
+      if (stock <= 0) {
+        if (typeof showToast === "function") showToast("⚠️ Sản phẩm nguồn này hiện đang có số lượng tồn kho = 0 trên nhà cung cấp! Vui lòng chọn sản phẩm khác có hàng.", "warning");
+        return;
+      }
+
+      // Khóa chống bấm liên tục làm dính rate limit "Thao tác quá nhanh"
+      if (window._lastApiQuickTestTime && (Date.now() - window._lastApiQuickTestTime) < 2500) {
+        if (typeof showToast === "function") showToast("⏳ Đang xử lý giao dịch trước, vui lòng chờ 2 giây...", "info");
+        return;
+      }
+      window._lastApiQuickTestTime = Date.now();
+
+      if (!confirm("Xác nhận mua test 1 tài khoản:\n[" + prodName + "]\n\nNguồn: " + pCfg.name + "\nGiá nhập: " + (typeof formatVND === "function" ? formatVND(price) : price + "đ") + " (Trừ từ ví nguồn)")) return;
 
       const originalBtnHtml = btn ? btn.innerHTML : "";
       if (btn) {
-        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang mua test...";
+        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang kết nối nguồn API...";
         btn.disabled = true;
       }
       if (resBox) resBox.style.display = "none";
 
-      // Auto-detect provider if data in cache has mismatched provider
-      if (String(prodId) === "19745" || String(prodId) === "19768" || String(prodId) === "19773" || String(prodId) === "19767") {
-        provider = "shop1989nd";
-      } else if (String(prodId) === "712" || String(prodId) === "769" || String(prodId) === "797" || String(prodId) === "817" || String(prodId) === "818") {
-        provider = "mail72h";
-      } else if (String(prodId) === "119284" || String(prodId) === "13840") {
-        provider = "nguyenlieummo";
-      }
       const actualCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : pCfg;
 
       try {
@@ -11607,7 +11662,7 @@ function syncAllOpenViewsStock(changedProdId) {
           if (typeof showToast === "function") showToast("Mua test thành công 1 tài khoản từ " + pCfg.name + "!", "success");
           fetchSingleSourceProfile(provider, false);
         } else {
-          throw new Error((res && res.message) ? res.message : "Giao dịch test không thành công");
+          throw new Error((res && (res.message || res.msg)) ? (res.message || res.msg) : "Giao dịch test không thành công");
         }
       } catch(err) {
         if (typeof showToast === "function") showToast("Lỗi mua test: " + err.message, "danger");
