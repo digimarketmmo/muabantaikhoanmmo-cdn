@@ -9257,7 +9257,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 deliveryType: isApiType ? 'api' : 'local',
                 delivery_type: isApiType ? 'api' : 'local',
                 apiMapping: effectiveMapping,
-                image: (cur.image && cur.image.trim() !== "" && !cur.image.includes("unsplash") && !cur.image.includes("placeholder")) ? cur.image : (img || cur.image || "https://iili.io/nFV4Rln.png"),
+                image: (cur.image && cur.image.trim() !== "" && !cur.image.startsWith("data:") && !cur.image.includes("unsplash") && !cur.image.includes("placeholder")) ? cur.image : (typeof resolveProductImage === "function" ? resolveProductImage(cur) : (cur.image || "https://iili.io/nFV4Rln.png")),
                 description: tp.description || cur.description,
                 warranty: tp.warranty || cur.warranty,
                 variants: (variants && variants.length > 0) ? variants : cur.variants
@@ -9276,7 +9276,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               sold: Number(tp.sold) || 0,
               buffSold: 0,
               rating: tp.rating || 4.9,
-              image: (img && img.trim() !== "" && !img.includes("placeholder") && !img.includes("unsplash")) ? img : (typeof resolveProductImage === "function" ? resolveProductImage({ id: tp.id, name: tp.name, category: tp.category }) : "https://iili.io/nFV4Rln.png"),
+              image: (img && img.trim() !== "" && !img.startsWith("data:") && !img.includes("placeholder") && !img.includes("unsplash")) ? img : (typeof resolveProductImage === "function" ? resolveProductImage({ id: tp.id, name: tp.name, category: tp.category }) : "https://iili.io/nFV4Rln.png"),
               warranty: tp.warranty || "Bảo Hành 1 Đổi 1",
               description: tp.description || "",
               variants: variants,
@@ -15281,8 +15281,10 @@ function syncAllOpenViewsStock(changedProdId) {
       const dtlId = document.getElementById("dtlId");
       if (dtlId) dtlId.innerText = p.id;
 
+      const exactImgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png");
+      p.image = exactImgUrl;
       const dtlImg = document.getElementById("dtlImage");
-      if (dtlImg) dtlImg.src = p.image;
+      if (dtlImg) dtlImg.src = exactImgUrl;
 
       const dtlTitle = document.getElementById("dtlTitle");
       if (dtlTitle) dtlTitle.innerText = p.name;
