@@ -6967,13 +6967,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.playNotificationSound = playNotificationSound;
 
     function getUserNotificationsStorageKey(userEmail) {
+      if (userEmail === "admin") return "mmo_notifications_admin";
       const email = userEmail || (currentUser && currentUser.email ? currentUser.email : "guest");
       return "mmo_notifications_" + String(email).toLowerCase().trim().replace(/[^a-z0-9_]/gi, "_");
     }
 
     function getStoredNotifications(userEmail) {
       try {
-        const key = getUserNotificationsStorageKey(userEmail);
+        let email = userEmail;
+        if (!email) {
+          if (typeof isAdminUser === "function" && isAdminUser()) {
+            email = "admin";
+          } else {
+            email = (currentUser && currentUser.email) ? currentUser.email : "guest";
+          }
+        }
+        const key = getUserNotificationsStorageKey(email);
         const raw = localStorage.getItem(key);
         if (!raw) return [];
         const parsed = JSON.parse(raw);
@@ -6986,7 +6995,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function saveStoredNotifications(notifs, userEmail) {
       try {
-        const key = getUserNotificationsStorageKey(userEmail);
+        let email = userEmail;
+        if (!email) {
+          if (typeof isAdminUser === "function" && isAdminUser()) {
+            email = "admin";
+          } else {
+            email = (currentUser && currentUser.email) ? currentUser.email : "guest";
+          }
+        }
+        const key = getUserNotificationsStorageKey(email);
         localStorage.setItem(key, JSON.stringify(notifs.slice(0, 50)));
       } catch(e) {}
     }
@@ -6999,23 +7016,44 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           id: "NOTIF_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
           title: opts.title || "Thông báo mới",
           message: opts.message || "",
-          type: opts.type || "INFO", // PRE_ORDER, ORDER, DEPOSIT, WARRANTY, INFO
+          type: opts.type || "INFO", // PRE_ORDER, ORDER, DEPOSIT, WARRANTY, INFO, CANCEL
           orderId: opts.orderId || "",
           link: opts.link || "",
           read: false,
-          time: new Date().toLocaleString("vi-VN"),
+          time: new Date().toLocaleTimeString("vi-VN") + " " + new Date().toLocaleDateString("vi-VN"),
           timestamp: Date.now()
         };
         notifs.unshift(newNotif);
         saveStoredNotifications(notifs, userEmail);
+
+        // TỰ ĐỘNG LƯU VÀO KHO THÔNG BÁO ADMIN CHO MỌI SỰ KIỆN ĐƠN HÀNG, ĐẶT TRƯỚC, NẠP TIỀN
+        if (opts.forAdmin || ["PRE_ORDER", "ORDER", "DEPOSIT", "WARRANTY", "AFFILIATE", "CANCEL"].includes(opts.type)) {
+          const admNotifs = getStoredNotifications("admin");
+          const adminCopy = Object.assign({}, newNotif, {
+            title: (opts.adminTitle || opts.title || "Thông báo hệ thống"),
+            message: (opts.adminMessage || (userEmail ? "[" + userEmail + "] " : "") + opts.message)
+          });
+          admNotifs.unshift(adminCopy);
+          saveStoredNotifications(admNotifs, "admin");
+        }
 
         // Phát âm thanh chuông thông báo nếu được phép
         if (opts.playSound !== false) {
           playNotificationSound();
         }
 
-        // Cập nhật giao diện chuông trên thanh tiêu đề
+        // Phát sóng BroadcastChannel tức thì để các tab khác (kể cả tab Admin) cập nhật ngay lập tức trong 0ms
+        if (typeof BroadcastChannel !== "undefined") {
+          try {
+            const nBc = new BroadcastChannel("mmo_channel");
+            nBc.postMessage({ type: "NEW_NOTIFICATION", notif: newNotif });
+          } catch(eBc) {}
+        }
+
+        // Cập nhật giao diện chuông trên thanh tiêu đề và thanh menu Admin
         renderHeaderNotifications();
+        renderAdminNotifications();
+        updateAdminSidebarBadges();
         return newNotif;
       } catch(e) {
         console.warn("addUserNotification error:", e);
@@ -7025,7 +7063,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function markAllNotificationsAsRead() {
       try {
-        const userEmail = currentUser && currentUser.email ? currentUser.email : "";
+        const userEmail = (currentUser && currentUser.email) ? currentUser.email : "";
         const notifs = getStoredNotifications(userEmail);
         notifs.forEach(function(n) { n.read = true; });
         saveStoredNotifications(notifs, userEmail);
@@ -7100,11 +7138,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function handleNotificationItemClick(notifId, orderId, notifType) {
       try {
-        const notifs = getStoredNotifications();
+        const userEmail = (currentUser && currentUser.email) ? currentUser.email : "";
+        const notifs = getStoredNotifications(userEmail);
         const item = notifs.find(function(n) { return n.id === notifId; });
         if (item) {
           item.read = true;
-          saveStoredNotifications(notifs);
+          saveStoredNotifications(notifs, userEmail);
           renderHeaderNotifications();
         }
 
@@ -7137,6 +7176,220 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
     }
     window.toggleHeaderNotifDropdown = toggleHeaderNotifDropdown;
+
+    // =========================================================================
+    // ADMIN NOTIFICATIONS & SIDEBAR MENU BADGES (HÌNH 1 & HÌNH 2)
+    // =========================================================================
+    function renderAdminNotifications() {
+      try {
+        const notifs = getStoredNotifications("admin");
+        const unreadCount = notifs.filter(function(n) { return !n.read; }).length;
+
+        const badges = document.querySelectorAll("#adminNotifBadge, #adminTopNotifBadge");
+        badges.forEach(b => {
+          if (unreadCount > 0) {
+            b.innerText = unreadCount > 99 ? "99+" : unreadCount;
+            b.style.display = "inline-flex";
+          } else {
+            b.style.display = "none";
+          }
+        });
+
+        const listContainer = document.getElementById("adminNotifList");
+        if (!listContainer) return;
+
+        if (notifs.length === 0) {
+          listContainer.innerHTML = '<div style="padding:28px 16px; text-align:center; color:#64748b;">' +
+            '<i class="fa-regular fa-bell-slash" style="font-size:1.8rem; display:block; margin-bottom:8px; opacity:0.4;"></i>' +
+            '<div style="font-size:0.85rem; font-weight:600;">Chưa có thông báo quản trị nào</div>' +
+            '<div style="font-size:0.75rem; color:#475569; margin-top:2px;">Đơn đặt trước mới, đơn hàng và nạp tiền sẽ hiển thị tại đây.</div>' +
+          '</div>';
+          return;
+        }
+
+        listContainer.innerHTML = notifs.map(function(n) {
+          let icon = '<i class="fa-solid fa-bell" style="color:#38bdf8;"></i>';
+          let iconBg = 'rgba(56,189,248,0.12)';
+          if (n.type === 'PRE_ORDER') {
+            icon = '<i class="fa-solid fa-hourglass-half" style="color:#f59e0b;"></i>';
+            iconBg = 'rgba(245,158,11,0.15)';
+          } else if (n.type === 'ORDER') {
+            icon = '<i class="fa-solid fa-bag-shopping" style="color:#10b981;"></i>';
+            iconBg = 'rgba(16,185,129,0.15)';
+          } else if (n.type === 'DEPOSIT') {
+            icon = '<i class="fa-solid fa-wallet" style="color:#10b981;"></i>';
+            iconBg = 'rgba(16,185,129,0.15)';
+          } else if (n.type === 'WARRANTY') {
+            icon = '<i class="fa-solid fa-shield-halved" style="color:#ef4444;"></i>';
+            iconBg = 'rgba(239,68,68,0.15)';
+          } else if (n.type === 'CANCEL') {
+            icon = '<i class="fa-solid fa-ban" style="color:#ef4444;"></i>';
+            iconBg = 'rgba(239,68,68,0.15)';
+          }
+
+          const unreadDot = !n.read ? '<span style="width:8px; height:8px; border-radius:50%; background:#38bdf8; display:inline-block; flex-shrink:0;"></span>' : '';
+          const bgHover = !n.read ? 'background:#0f1a2e;' : 'background:transparent;';
+
+          return '<div onclick="handleAdminNotificationItemClick(\'' + n.id + '\', \'' + (n.orderId || '') + '\', \'' + (n.type || '') + '\')" style="padding:10px 14px; border-bottom:1px solid #1e293b; display:flex; align-items:flex-start; gap:10px; cursor:pointer; transition:background 0.2s; ' + bgHover + '" onmouseover="this.style.background=\'#162238\'" onmouseout="this.style.background=\'' + (!n.read ? '#0f1a2e' : 'transparent') + '\'">' +
+            '<div style="width:32px; height:32px; border-radius:8px; background:' + iconBg + '; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">' + icon + '</div>' +
+            '<div style="flex:1; min-width:0;">' +
+              '<div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">' +
+                '<strong style="font-size:0.82rem; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + escapeHtml(n.title) + '</strong>' +
+                unreadDot +
+              '</div>' +
+              '<div style="font-size:0.75rem; color:#94a3b8; margin-top:2px; line-height:1.35;">' + escapeHtml(n.message) + '</div>' +
+              '<div style="font-size:0.68rem; color:#64748b; margin-top:4px;">' + escapeHtml(n.time || '') + '</div>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+      } catch(e) {}
+    }
+    window.renderAdminNotifications = renderAdminNotifications;
+
+    function handleAdminNotificationItemClick(notifId, orderId, notifType) {
+      try {
+        const notifs = getStoredNotifications("admin");
+        const item = notifs.find(function(n) { return n.id === notifId; });
+        if (item) {
+          item.read = true;
+          saveStoredNotifications(notifs, "admin");
+          renderAdminNotifications();
+          updateAdminSidebarBadges();
+        }
+
+        toggleAdminNotifDropdown(false);
+
+        if (notifType === "PRE_ORDER") {
+          switchAdminTab("tabAdmOrders");
+          if (orderId && typeof openPreOrderDetailView === "function") {
+            openPreOrderDetailView(orderId);
+          }
+        } else if (notifType === "ORDER" || notifType === "CANCEL") {
+          switchAdminTab("tabAdmOrders");
+        } else if (notifType === "DEPOSIT") {
+          switchAdminTab("tabAdmWithdrawals");
+        } else if (notifType === "CHAT" || notifType === "WARRANTY") {
+          switchAdminTab("tabAdmChat");
+        }
+      } catch(e) {}
+    }
+    window.handleAdminNotificationItemClick = handleAdminNotificationItemClick;
+
+    function toggleAdminNotifDropdown(forceState) {
+      const dd = document.getElementById("adminNotifDropdown");
+      if (!dd) return;
+      const isCurrentlyOpen = dd.style.display === "block";
+      const shouldOpen = (typeof forceState === "boolean") ? forceState : !isCurrentlyOpen;
+      if (shouldOpen) {
+        renderAdminNotifications();
+        dd.style.display = "block";
+      } else {
+        dd.style.display = "none";
+      }
+    }
+    window.toggleAdminNotifDropdown = toggleAdminNotifDropdown;
+
+    function markAllAdminNotificationsAsRead() {
+      try {
+        const notifs = getStoredNotifications("admin");
+        notifs.forEach(function(n) { n.read = true; });
+        saveStoredNotifications(notifs, "admin");
+        renderAdminNotifications();
+        updateAdminSidebarBadges();
+        if (typeof showToast === "function") showToast("Đã đánh dấu tất cả thông báo quản trị là đã đọc", "info");
+      } catch(e) {}
+    }
+    window.markAllAdminNotificationsAsRead = markAllAdminNotificationsAsRead;
+
+    // Cập nhật toàn bộ huy hiệu số lượng trên thanh Menu Quản Trị (Hình 2)
+    function updateAdminSidebarBadges() {
+      try {
+        // 1. Badge Lịch Sử Đơn Hàng & Đổi Trả (tabBtnAdmOrders)
+        const badgeOrders = document.getElementById("admOrdersNavBadge");
+        if (badgeOrders) {
+          let preOrders = [];
+          try { preOrders = JSON.parse(localStorage.getItem("mmo_pre_orders") || "[]"); } catch(e) {}
+          const pendingPreOrders = Array.isArray(preOrders) ? preOrders.filter(o => o && (o.status === "WAITING_CONFIRM" || o.status === "PROCESSING")).length : 0;
+          
+          let allOrders = [];
+          try { allOrders = JSON.parse(localStorage.getItem("mmo_all_orders") || "[]"); } catch(e) {}
+          const pendingOrders = Array.isArray(allOrders) ? allOrders.filter(o => o && (o.status === "PENDING" || o.status === "WAITING_CONFIRM")).length : 0;
+
+          const totalPending = pendingPreOrders + pendingOrders;
+          if (totalPending > 0) {
+            badgeOrders.style.display = "inline-block";
+            badgeOrders.innerText = totalPending > 99 ? "99+" : totalPending;
+          } else {
+            badgeOrders.style.display = "none";
+          }
+        }
+
+        // 2. Badge Yêu Cầu Nạp / Rút Tiền (tabBtnAdmWithdrawals)
+        const badgeWithdrawals = document.getElementById("admWithdrawalsNavBadge");
+        if (badgeWithdrawals) {
+          let depRequests = [];
+          try { depRequests = JSON.parse(localStorage.getItem("mmo_deposit_requests") || "[]"); } catch(e) {}
+          let withRequests = [];
+          try { withRequests = JSON.parse(localStorage.getItem("mmo_withdrawal_requests") || "[]"); } catch(e) {}
+          const pendingDep = Array.isArray(depRequests) ? depRequests.filter(r => r && (r.status === "PENDING" || r.status === "WAITING")).length : 0;
+          const pendingWith = Array.isArray(withRequests) ? withRequests.filter(r => r && (r.status === "PENDING" || r.status === "WAITING")).length : 0;
+          const totalDepWith = pendingDep + pendingWith;
+          if (totalDepWith > 0) {
+            badgeWithdrawals.style.display = "inline-block";
+            badgeWithdrawals.innerText = totalDepWith > 99 ? "99+" : totalDepWith;
+          } else {
+            badgeWithdrawals.style.display = "none";
+          }
+        }
+
+        // 3. Badge Quản Lý Kho Hàng (tabBtnAdmStock)
+        const badgeStock = document.getElementById("admStockNavBadge");
+        if (badgeStock) {
+          let outCount = 0;
+          if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+            MOCK_DATA.products.forEach(p => {
+              if (p) {
+                const st = (typeof getProductStockCount === "function") ? getProductStockCount(p) : (p.stock || 0);
+                if (st <= 0) outCount++;
+              }
+            });
+          }
+          if (outCount > 0) {
+            badgeStock.style.display = "inline-block";
+            badgeStock.innerText = outCount > 99 ? "99+" : outCount;
+          } else {
+            badgeStock.style.display = "none";
+          }
+        }
+
+        // 4. Badge Chuông Thông Báo Admin
+        const admNotifs = getStoredNotifications("admin");
+        const unreadCount = admNotifs.filter(n => !n.read).length;
+        const admBadges = document.querySelectorAll("#adminNotifBadge, #adminTopNotifBadge");
+        admBadges.forEach(b => {
+          if (unreadCount > 0) {
+            b.innerText = unreadCount > 99 ? "99+" : unreadCount;
+            b.style.display = "inline-flex";
+          } else {
+            b.style.display = "none";
+          }
+        });
+      } catch(e) {
+        console.warn("updateAdminSidebarBadges error:", e);
+      }
+    }
+    window.updateAdminSidebarBadges = updateAdminSidebarBadges;
+
+    // Đóng dropdown thông báo admin khi nhấp ra ngoài
+    document.addEventListener("click", function(e) {
+      const admWrap = document.querySelector(".admin-sidebar-notif-wrap, .admin-notif-bell-wrap");
+      const admDropdown = document.getElementById("adminNotifDropdown");
+      if (admWrap && admDropdown && admDropdown.style.display === "block") {
+        if (!admWrap.contains(e.target)) {
+          admDropdown.style.display = "none";
+        }
+      }
+    });
 
     // Đóng dropdown thông báo khi nhấp ra ngoài
     document.addEventListener("click", function(e) {
@@ -7186,6 +7439,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         window.scrollTo(0, 0);
       } catch(e) {}
 
+      if (viewId === "viewAdmin") {
+        setTimeout(function() {
+          if (typeof updateAdminSidebarBadges === "function") updateAdminSidebarBadges();
+          if (typeof renderAdminNotifications === "function") renderAdminNotifications();
+        }, 100);
+      }
       if (viewId === "viewProfile" || viewId === "viewDeposit" || viewId === "viewAdmin") {
         let checkUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
         if (!checkUser) {
@@ -9964,7 +10223,7 @@ function syncAllOpenViewsStock(changedProdId) {
           } catch(e) {
             console.warn("shop1989nd getProfile error, fallback to GAS:", e);
             if (typeof callGasApi === "function") {
-              const gasProf = await callGasApi("apiSourceGetProfile", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
+              const gasProf = await callGasApi("apiSourceGetProfile", { ...payload });
               if (gasProf && gasProf.success) return gasProf;
             }
             return { success: false, data: { money: 0 }, provider: provider };
@@ -10001,7 +10260,7 @@ function syncAllOpenViewsStock(changedProdId) {
           } catch(e) {
             console.warn("shop1989nd getProducts error, fallback to GAS:", e);
             if (typeof callGasApi === "function") {
-              const gasProds = await callGasApi("apiSourceGetProducts", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
+              const gasProds = await callGasApi("apiSourceGetProducts", { ...payload });
               if (gasProds && gasProds.success) return gasProds;
             }
             return { success: false, categories: [], provider: provider };
@@ -10059,7 +10318,7 @@ function syncAllOpenViewsStock(changedProdId) {
           } catch(e) {
             console.warn("shop1989nd buyProduct error, fallback to GAS:", e);
             if (typeof callGasApi === "function") {
-              const gasRes = await callGasApi("apiSourceBuyProduct", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
+              const gasRes = await callGasApi("apiSourceBuyProduct", { ...payload });
               if (gasRes && gasRes.success) return gasRes;
               return { success: false, message: (gasRes && (gasRes.message || gasRes.msg)) || "Lỗi kết nối shop1989nd!", provider: provider, raw: gasRes };
             }
@@ -10089,7 +10348,7 @@ function syncAllOpenViewsStock(changedProdId) {
           };
         } catch(workerErr) {
           console.warn("Worker proxy error, fallback to GAS:", workerErr);
-          return await callGasApi("apiSourceGetProfile", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
+          return await callGasApi("apiSourceGetProfile", { ...payload });
         }
       }
 
@@ -10133,7 +10392,7 @@ function syncAllOpenViewsStock(changedProdId) {
           };
         } catch(workerErr) {
           console.warn("Worker proxy error, fallback to GAS:", workerErr);
-          return await callGasApi("apiSourceGetProducts", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
+          return await callGasApi("apiSourceGetProducts", { ...payload });
         }
       }
 
@@ -10206,7 +10465,7 @@ function syncAllOpenViewsStock(changedProdId) {
         } catch(workerErr) {
           console.warn("Worker proxy error, fallback to GAS:", workerErr);
           if (typeof callGasApi === "function") {
-            const gasRes = await callGasApi("apiSourceBuyProduct", { ...payload, proxyUrl: "https://httpbin.org/redirect-to" });
+            const gasRes = await callGasApi("apiSourceBuyProduct", { ...payload });
             if (gasRes && gasRes.success) return gasRes;
             return { success: false, message: (gasRes && (gasRes.message || gasRes.msg)) || "Lỗi kết nối API nguồn hàng!", provider: provider, raw: gasRes };
           }
@@ -10428,7 +10687,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
     async function fetchApiSourceProducts(isManual = false) {
       try {
-        const [resShop1989, resSelltainguyenmmo, resSellmmo, resNguyenLieu, resMail72h] = await Promise.allSettled([
+        const [resMail72h, resShop1989, resSelltainguyenmmo, resSellmmo, resNguyenLieu] = await Promise.allSettled([
           executeSourceApiCall("getProducts", { provider: "mail72h", baseUrl: API_SOURCES.mail72h.baseUrl, apiKey: API_SOURCES.mail72h.apiKey }),
           executeSourceApiCall("getProducts", { provider: "shop1989nd", baseUrl: API_SOURCES.shop1989nd.baseUrl, username: API_SOURCES.shop1989nd.username, password: API_SOURCES.shop1989nd.password }),
           executeSourceApiCall("getProducts", { provider: "selltainguyenmmo", baseUrl: API_SOURCES.selltainguyenmmo.baseUrl, apiKey: API_SOURCES.selltainguyenmmo.apiKey }),
@@ -11085,7 +11344,7 @@ function syncAllOpenViewsStock(changedProdId) {
       prods.forEach(function(p) {
         const map = mappings[p.id];
         if (map && map.enabled && map.sourceProdId) {
-          const provider = map.provider || "sellmmo";
+          let provider = map.provider || "sellmmo";
           const sourceBal = getSourceBalance(provider);
           const minPriceNeeded = Number(map.sourcePrice) || 50;
 
@@ -11159,7 +11418,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const opt = (sel.selectedOptions && sel.selectedOptions[0]) ? sel.selectedOptions[0] : (sel.options ? sel.options[sel.selectedIndex] : null);
       const prodName = opt ? opt.innerText : "Sản phẩm " + prodId;
       const price = opt ? Number(opt.getAttribute("data-price") || 0) : 0;
-      const provider = opt ? (opt.getAttribute("data-provider") || "sellmmo") : "sellmmo";
+      let provider = opt ? (opt.getAttribute("data-provider") || "sellmmo") : "sellmmo";
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : API_SOURCES.sellmmo;
 
       if (!confirm("Xác nhận mua test 1 tài khoản [" + prodName + "] từ " + pCfg.name + "? (Trừ " + formatVND(price) + " từ ví nguồn)")) return;
@@ -11171,8 +11430,26 @@ function syncAllOpenViewsStock(changedProdId) {
       }
       if (resBox) resBox.style.display = "none";
 
+      // Auto-detect provider if data in cache has mismatched provider
+      if (String(prodId) === "19745" || String(prodId) === "19768" || String(prodId) === "19773" || String(prodId) === "19767") {
+        provider = "shop1989nd";
+      } else if (String(prodId) === "712" || String(prodId) === "769" || String(prodId) === "797" || String(prodId) === "817" || String(prodId) === "818") {
+        provider = "mail72h";
+      } else if (String(prodId) === "119284" || String(prodId) === "13840") {
+        provider = "nguyenlieummo";
+      }
+      const actualCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : pCfg;
+
       try {
-        const res = await executeSourceApiCall("buyProduct", { productId: prodId, amount: 1, provider: provider, baseUrl: pCfg.baseUrl, apiKey: pCfg.apiKey });
+        const res = await executeSourceApiCall("buyProduct", {
+          productId: prodId,
+          amount: 1,
+          provider: provider,
+          baseUrl: actualCfg.baseUrl,
+          apiKey: actualCfg.apiKey,
+          username: actualCfg.username,
+          password: actualCfg.password
+        });
 
         if (res && res.success && Array.isArray(res.accounts) && res.accounts.length > 0) {
           if (resBox) {
@@ -11214,8 +11491,28 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (typeof showToast === "function") showToast("Đang gửi lệnh mua test tới " + pCfg.name + "...", "info");
 
+      // Auto-detect provider if mapping had wrong provider
+      const sId = String(map.sourceProdId);
+      if (sId === "19745" || sId === "19768" || sId === "19773" || sId === "19767") {
+        provider = "shop1989nd";
+      } else if (sId === "712" || sId === "769" || sId === "797" || sId === "817" || sId === "818") {
+        provider = "mail72h";
+      } else if (sId === "119284" || sId === "13840") {
+        provider = "nguyenlieummo";
+      }
+      const actualCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : pCfg;
+
       try {
-        const res = await executeSourceApiCall("buyProduct", { productId: map.sourceProdId, amount: 1, provider: provider, baseUrl: pCfg.baseUrl, apiKey: pCfg.apiKey, targetProdId: targetProdId });
+        const res = await executeSourceApiCall("buyProduct", {
+          productId: map.sourceProdId,
+          amount: 1,
+          provider: provider,
+          baseUrl: actualCfg.baseUrl,
+          apiKey: actualCfg.apiKey,
+          username: actualCfg.username,
+          password: actualCfg.password,
+          targetProdId: targetProdId
+        });
 
         if (res && res.success && Array.isArray(res.accounts) && res.accounts.length > 0) {
           alert("✅ MUA TEST THÀNH CÔNG TỪ " + pCfg.name.toUpperCase() + "!\n\n" +
@@ -20390,6 +20687,17 @@ function changeAdmUsersPage(p) {
         if (typeof isAdminUser === "function" && isAdminUser()) {
           if (typeof playNotificationSound === "function") playNotificationSound();
           if (typeof showToast === "function") showToast("🔔 Có đơn đặt hàng trước mới #" + (newOrd.orderCode || newOrd.id) + " - " + (newOrd.productName || "Sản phẩm"), "info");
+          if (typeof addUserNotification === "function") {
+            addUserNotification({
+              title: "⏳ Đơn đặt trước mới #" + (newOrd.orderCode || newOrd.id),
+              message: "Khách [" + (newOrd.buyerEmail || newOrd.userEmail || "Khách") + "] vừa đặt trước " + (newOrd.quantity || newOrd.qty || 1) + "x " + (newOrd.productName || "Sản phẩm") + ".",
+              type: "PRE_ORDER",
+              orderId: newOrd.orderCode || newOrd.id,
+              forAdmin: true,
+              playSound: false
+            });
+          }
+          if (typeof updateAdminSidebarBadges === "function") updateAdminSidebarBadges();
         }
       } else if (data.type === "ORDER_STATUS_CHANGED" && data.orderId) {
         const cleanId = String(data.orderId).replace("#","").toLowerCase();
@@ -20425,6 +20733,7 @@ function changeAdmUsersPage(p) {
         if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
         if (typeof renderProfileOrders === "function") renderProfileOrders();
         if (typeof renderSystemOverview === "function") renderSystemOverview();
+        if (typeof updateAdminSidebarBadges === "function") updateAdminSidebarBadges();
         
         const dtlOidEl = document.getElementById("podOrderId");
         if (dtlOidEl && String(dtlOidEl.innerText).replace("#","").toLowerCase() === cleanId) {
