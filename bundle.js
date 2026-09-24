@@ -10293,6 +10293,40 @@ function syncAllOpenViewsStock(changedProdId) {
           if (String(prodId) === "19524" || String(prodId) === "11924" || String(prodId) === "1") {
             prodId = "19768"; // Gmail Domain Cho Thuê live 10 phút (giá 53.2đ, tồn 9.999 acc)
           }
+
+          // [ƯU TIÊN 1] GỌI TRỰC TIẾP WORKER BACKEND TẬP TRUNG
+          try {
+            const wBuyUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
+              ? (MMO_WORKER_API.getApiUrl() + "/api/admin/source-buy")
+              : "https://mmo-shop-api.manhdongvtc.workers.dev/api/admin/source-buy";
+            const wRes = await fetch(wBuyUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                provider: "shop1989nd",
+                productId: prodId,
+                amount: amount,
+                baseUrl: bUrl,
+                username: uname,
+                password: upass,
+                authType: "userpass"
+              }),
+              signal: createFastSignal(10000)
+            });
+            const wJson = await wRes.json().catch(() => null);
+            if (wJson && wJson.success && Array.isArray(wJson.accounts) && wJson.accounts.length > 0) {
+              return {
+                success: true,
+                message: wJson.message || "Mua hàng từ shop1989nd thành công!",
+                trans_id: wJson.trans_id || "",
+                accounts: wJson.accounts,
+                count: wJson.accounts.length,
+                provider: provider,
+                raw: wJson
+              };
+            }
+          } catch(wErr) {}
+
           const target = bUrl + "/api/BResource.php?username=" + encodeURIComponent(uname) + "&password=" + encodeURIComponent(upass) + "&id=" + encodeURIComponent(prodId) + "&amount=" + encodeURIComponent(amount);
           try {
             const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(8000) });
@@ -10416,6 +10450,49 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (action === "buyProduct") {
+        // [ƯU TIÊN 1] GỌI TRỰC TIẾP WORKER BACKEND TẬP TRUNG (ĐÃ TÍCH HỢP TRIPLE-FALLBACK)
+        try {
+          const wBuyUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
+            ? (MMO_WORKER_API.getApiUrl() + "/api/admin/source-buy")
+            : "https://mmo-shop-api.manhdongvtc.workers.dev/api/admin/source-buy";
+          const wRes = await fetch(wBuyUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              provider: provider,
+              productId: payload.productId || payload.id || payload.sourceProdId,
+              amount: payload.amount || 1,
+              baseUrl: pCfg.baseUrl || baseUrl,
+              apiKey: pCfg.apiKey || apiKey,
+              username: pCfg.username,
+              password: pCfg.password,
+              authType: pCfg.authType
+            }),
+            signal: createFastSignal(12000)
+          });
+          const wJson = await wRes.json().catch(() => null);
+          if (wJson && wJson.success && Array.isArray(wJson.accounts) && wJson.accounts.length > 0) {
+            if (payload.targetProdId && typeof callGasApi === "function") {
+              callGasApi("adminAddStock", {
+                prodId: payload.targetProdId,
+                accountsStr: wJson.accounts.join("\n"),
+                note: "Nhập tự động Worker " + provider + " trans: " + (wJson.trans_id || "")
+              }).catch(function(e) { console.log("Ghi sheet kho:", e); });
+            }
+            return {
+              success: true,
+              message: wJson.message || "Mua hàng từ nguồn thành công!",
+              trans_id: wJson.trans_id || "",
+              accounts: wJson.accounts,
+              count: wJson.accounts.length,
+              provider: provider,
+              raw: wJson
+            };
+          }
+        } catch(wErr) {
+          console.warn("Central Worker source-buy failed, trying local proxy:", wErr);
+        }
+
         const target = baseUrl.replace(/\/+$/, "") + "/api/buy_product";
         const bodyStr = "api_key=" + encodeURIComponent(apiKey) +
                         "&action=buyProduct&id=" + encodeURIComponent(payload.productId || payload.id) +
@@ -16110,6 +16187,7 @@ function syncAllOpenViewsStock(changedProdId) {
           order_id: orderId,
           customer_email: cleanEmail,
           customer_name: (currentUser && (currentUser.name || currentUser.username)) || cleanEmail,
+          user_balance: curBal,
           amount: totalCost,
           payment_method: "BALANCE",
           api_mapping: isApiOnDemand ? apiMap : null
@@ -16129,16 +16207,29 @@ function syncAllOpenViewsStock(changedProdId) {
             currentUser.balance = Number(wData.balance_after);
           }
         } else if (wData && !wData.success) {
-          restoreBtn();
           const errMsg = wData.message || "Kho hàng tạm thời không đủ số lượng tài khoản!";
+          if (wData.code === "INSUFFICIENT_BALANCE") {
+            restoreBtn();
+            showToast("⚠️ " + errMsg, "warning");
+            setTimeout(function() {
+              if (typeof switchView === "function") switchView("viewDeposit");
+            }, 600);
+            return;
+          }
           const isOutOfStock = /hết hàng|không đủ|out of stock|tồn kho|số lượng/i.test(errMsg);
-          if (isOutOfStock && typeof openPreOrderModal === "function") {
+          if (isOutOfStock && !isApiOnDemand && typeof openPreOrderModal === "function") {
+            restoreBtn();
             showToast("⚠️ " + errMsg + " Đang chuyển sang Đặt Trước...", "warning");
             setTimeout(() => openPreOrderModal(p, vIdx), 600);
-          } else {
-            showToast("⚠️ " + errMsg, "danger");
+            return;
           }
-          return;
+          // Nếu không phải API on-demand, dừng và báo lỗi ngay
+          if (!isApiOnDemand) {
+            restoreBtn();
+            showToast("⚠️ " + errMsg, "danger");
+            return;
+          }
+          console.warn("Worker checkout API source notice, falling back to multi-tier API execution:", errMsg);
         }
       } catch(wErr) {
         console.warn("Worker direct checkout network fallback:", wErr);
