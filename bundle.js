@@ -9897,10 +9897,26 @@ function syncAllOpenViewsStock(changedProdId) {
 
     async function executeSourceApiCall(action, payload) {
       payload = payload || {};
-      const provider = (payload && payload.provider) ? String(payload.provider).toLowerCase() : "sellmmo";
-      const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : (API_SOURCES ? API_SOURCES.sellmmo : {});
-      const baseUrl = (payload && payload.baseUrl) ? String(payload.baseUrl).trim() : (pCfg.baseUrl || "https://sellmmo.vn");
-      const apiKey = (payload && payload.apiKey) ? String(payload.apiKey).trim() : (pCfg.apiKey || "");
+      let provider = (payload && payload.provider) ? String(payload.provider).toLowerCase() : "";
+      const bUrlIn = (payload && payload.baseUrl) ? String(payload.baseUrl).toLowerCase() : "";
+      const sIdIn = (payload && (payload.sourceProdId || payload.productId || payload.id)) ? String(payload.sourceProdId || payload.productId || payload.id) : "";
+
+      // AUTO-DETECT PROVIDER TO PREVENT MISCONFIGURATION
+      if (bUrlIn.includes("shop1989nd") || sIdIn === "19745" || sIdIn === "19768" || sIdIn === "19773" || sIdIn === "19767") {
+        provider = "shop1989nd";
+      } else if (bUrlIn.includes("mail72h") || sIdIn === "712" || sIdIn === "769" || sIdIn === "797" || sIdIn === "817" || sIdIn === "818") {
+        provider = "mail72h";
+      } else if (bUrlIn.includes("nguyenlieummo") || sIdIn === "119284" || sIdIn === "13840") {
+        provider = "nguyenlieummo";
+      } else if (bUrlIn.includes("selltainguyenmmo") || (sIdIn.length === 5 && Number(sIdIn) >= 20000)) {
+        provider = "selltainguyenmmo";
+      } else if (!provider) {
+        provider = "sellmmo";
+      }
+
+      const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? Object.assign({}, API_SOURCES[provider]) : { baseUrl: "https://sellmmo.vn", apiKey: "" };
+      const baseUrl = pCfg.baseUrl || (payload && payload.baseUrl) || "https://sellmmo.vn";
+      const apiKey = pCfg.apiKey || (payload && payload.apiKey) || "";
       const workerProxy = (typeof sourceProxyUrl !== "undefined" && sourceProxyUrl) ? sourceProxyUrl.replace(/\/+$/, "") : "https://mmo-api-proxy.manhdongvtc.workers.dev";
 
       function createFastSignal(ms = 5000) {
@@ -10001,13 +10017,12 @@ function syncAllOpenViewsStock(changedProdId) {
           }
           const target = bUrl + "/api/BResource.php?username=" + encodeURIComponent(uname) + "&password=" + encodeURIComponent(upass) + "&id=" + encodeURIComponent(prodId) + "&amount=" + encodeURIComponent(amount);
           try {
-            // proxy lockout disabled
             const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(8000) });
-            if (!resp.ok) {
-              // rate limit handled without 10m lockout
-              throw new Error("Proxy status " + resp.status);
+            const rawText = await resp.text();
+            let json = {};
+            try { json = JSON.parse(rawText); } catch(je) {
+              return { success: false, message: "Lỗi phản hồi từ shop1989nd: " + (rawText.length > 80 ? "Lỗi máy chủ nguồn" : rawText), provider: provider };
             }
-            const json = await resp.json();
             let accounts = [];
             if (json.status === "success" && json.data) {
               if (Array.isArray(json.data.lists)) {
@@ -10130,18 +10145,26 @@ function syncAllOpenViewsStock(changedProdId) {
                         (payload.coupon ? ("&coupon=" + encodeURIComponent(payload.coupon)) : "");
 
         try {
-          // proxy lockout disabled
           const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: bodyStr,
             signal: createFastSignal(8000)
           });
-          if (!resp.ok) {
-            // rate limit handled without 10m lockout
-            throw new Error("Proxy status " + resp.status);
+          const rawText = await resp.text();
+          let json = {};
+          try { json = JSON.parse(rawText); } catch(je) {
+            return { success: false, message: "Lỗi phản hồi từ nhà cung cấp: " + (rawText.length > 80 ? "Lỗi máy chủ nguồn" : rawText), provider: provider };
           }
-          const json = await resp.json();
+
+          if (json.status !== "success") {
+            return {
+              success: false,
+              message: json.msg || json.message || "Mua hàng từ nguồn thất bại hoặc kho nguồn tạm hết!",
+              provider: provider,
+              raw: json
+            };
+          }
 
           let accounts = [];
           if (Array.isArray(json.data)) {
@@ -10601,6 +10624,18 @@ function syncAllOpenViewsStock(changedProdId) {
         "PROD_MU5PWT7PP7": { enabled: true, provider: "nguyenlieummo", sourceProdId: "119284", sourcePrice: 3220, sourceProdName: "TÀI KHOẢN KLING AI 65 CREDIT" },
         "PROD_MTQZT2Y1": { enabled: true, provider: "nguyenlieummo", sourceProdId: "13840", sourcePrice: 110, sourceProdName: "Hotmail Trusted - OAuth2 [Graph] Live" }
       };
+
+      // Bảo vệ tuyệt đối: nếu sản phẩm cốt lõi bị lưu sai provider trong localStorage, tự động sửa về đúng chuẩn
+      if (prodId && defaultMappings[prodId]) {
+        if (!maps[prodId] || maps[prodId].provider !== defaultMappings[prodId].provider || !maps[prodId].sourceProdId) {
+          return enrichMapping(defaultMappings[prodId]);
+        }
+      }
+      if (prodObj && prodObj.id && defaultMappings[prodObj.id]) {
+        if (!maps[prodObj.id] || maps[prodObj.id].provider !== defaultMappings[prodObj.id].provider || !maps[prodObj.id].sourceProdId) {
+          return enrichMapping(defaultMappings[prodObj.id]);
+        }
+      }
 
       // 1. Kiểm tra cấu hình explicitly bị tắt
       if (prodId && maps[prodId] && maps[prodId].enabled === false) {
@@ -14875,8 +14910,11 @@ function syncAllOpenViewsStock(changedProdId) {
       // Kiểm tra API On-Demand
       let apiMap = null;
       if (typeof getApiProductMapping === "function") {
-        const vName = (targetVar && targetVar.name) ? targetVar.name : "";
-        apiMap = (vName ? getApiProductMapping(vName) : null) || getApiProductMapping(p) || (p && p.apiMapping);
+        apiMap = getApiProductMapping(p) || (p && p.apiMapping);
+        if (!apiMap || !apiMap.sourceProdId) {
+          const vName = (targetVar && targetVar.name) ? targetVar.name : "";
+          if (vName) apiMap = getApiProductMapping(vName);
+        }
       }
       const isApiOnDemand = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
 
