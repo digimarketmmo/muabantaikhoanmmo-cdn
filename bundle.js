@@ -20791,6 +20791,17 @@ function syncAllOpenViewsStock(changedProdId) {
         const stored = localStorage.getItem("mmo_withdraw_requests");
         let list = stored ? JSON.parse(stored) : [];
         if (!Array.isArray(list)) list = [];
+        // Lọc bỏ yêu cầu rút demo hoặc dữ liệu mẫu nếu có, chỉ giữ dữ liệu thực tế
+        list = list.filter(w => {
+          if (!w) return false;
+          const em = String(w.userEmail || "").toLowerCase().trim();
+          const nm = String(w.userName || "").toLowerCase().trim();
+          const id = String(w.id || "").toLowerCase().trim();
+          if (em.includes("demo") || em.includes("sample") || em === "test@gmail.com") return false;
+          if (nm.includes("demo") || nm.includes("mẫu")) return false;
+          if (id.includes("demo") || id.includes("sample")) return false;
+          return true;
+        });
         return list;
       } catch(e) {
         return [];
@@ -20803,7 +20814,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.saveWithdrawRequests = saveWithdrawRequests;
 
-    // Helper: Lấy danh sách giao dịch nạp tiền thành công toàn sàn
+    // Helper: Lấy danh sách giao dịch nạp tiền thành công toàn sàn (Dữ liệu thực tế 100%, không demo)
     function getPlatformDeposits() {
       const depositList = [];
       const seenDepositIds = new Set();
@@ -20848,7 +20859,7 @@ function syncAllOpenViewsStock(changedProdId) {
                 amount: Number(ch.amount) || 0,
                 bankName: ch.bank || "MBBank (VietQR SePay)",
                 bankAcc: ch.bankAcc || "0988888888",
-                bankOwner: ch.bankOwner || "NGUYEN MANH DONG",
+                bankOwner: "NGUYEN MANH DONG",
                 time: ch.time || ch.date || (new Date().toLocaleDateString("vi-VN")),
                 status: "Thành công",
                 handledBy: "Tự động SePay 24/7",
@@ -20924,40 +20935,6 @@ function syncAllOpenViewsStock(changedProdId) {
           }
         }
       } catch(e) {}
-
-      // 5. Bổ sung các khoản nạp tiền của thành viên đã chi tiêu mua hàng hoặc có số dư thực tế
-      const users = typeof getRegisteredUsers === "function" ? getRegisteredUsers() : [];
-      users.forEach((u, uIdx) => {
-        if (!u || !u.email) return;
-        const em = (u.email || "").toLowerCase().trim();
-        if (em.includes("admin") && uIdx === 0) return;
-        const bal = Number(u.balance) || 0;
-        const allOrders = typeof getAllOrders === "function" ? getAllOrders() : [];
-        const userOrders = allOrders.filter(o => (o.email || o.userEmail || "").toLowerCase().trim() === em);
-        const totalSpent = userOrders.reduce((acc, o) => acc + (Number(o.total || o.totalCost || o.totalPrice) || 0), 0);
-        const minNeededDeposit = bal + totalSpent;
-        if (minNeededDeposit > 0) {
-          const uDepId = "DEP_USR_" + em.replace(/[^a-z0-9]/g, "").slice(0, 10);
-          if (!seenDepositIds.has(uDepId)) {
-            seenDepositIds.add(uDepId);
-            depositList.push({
-              id: uDepId,
-              orderId: uDepId,
-              userEmail: u.email,
-              userName: u.name || u.email.split("@")[0],
-              type: "Nạp tiền VietQR / SePay",
-              amount: minNeededDeposit,
-              bankName: "MBBank (VietQR SePay)",
-              bankAcc: "0988888888",
-              bankOwner: "NGUYEN MANH DONG",
-              time: (userOrders[0] && (userOrders[0].date || userOrders[0].createdAt)) ? (userOrders[0].date || userOrders[0].createdAt) : new Date().toLocaleDateString("vi-VN") + " 09:30",
-              status: "Thành công",
-              handledBy: "Tự động SePay 24/7",
-              note: "Nạp tiền tự động qua VietQR SePay"
-            });
-          }
-        }
-      });
 
       return depositList;
     }
@@ -21229,20 +21206,27 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof paginationState !== "undefined") paginationState.admWithdraw = 1;
       
       const btns = {
-        ALL: "btnWdFilterAll",
-        DEPOSIT: "btnWdFilterDeposit",
-        WITHDRAW: "btnWdFilterWithdraw",
-        PENDING: "btnWdFilterPending"
+        ALL: { id: "btnWdFilterAll", border: "#38bdf8" },
+        DEPOSIT: { id: "btnWdFilterDeposit", border: "#10b981" },
+        WITHDRAW: { id: "btnWdFilterWithdraw", border: "#ef4444" },
+        PENDING: { id: "btnWdFilterPending", border: "#f59e0b" }
       };
       Object.keys(btns).forEach(k => {
-        const btn = document.getElementById(btns[k]);
+        const item = btns[k];
+        const btn = document.getElementById(item.id);
         if (btn) {
           if (k === adminWithdrawActiveFilter) {
             btn.classList.add("active");
             btn.style.background = "#1e293b";
+            btn.style.borderColor = item.border;
+            btn.style.color = "#ffffff";
+            btn.style.fontWeight = "700";
           } else {
             btn.classList.remove("active");
-            btn.style.background = "transparent";
+            btn.style.background = "#0f172a";
+            btn.style.borderColor = "#1e293b";
+            btn.style.color = "#ffffff";
+            btn.style.fontWeight = "600";
           }
         }
       });
@@ -21257,104 +21241,9 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.handleSearchAdminWithdraw = handleSearchAdminWithdraw;
 
-    // Helper: Vẽ biểu đồ dòng tiền Cash Flow SVG
-    function renderAdminCashflowChart(totalIn, totalOut, deposits, withdrawals) {
-      const ratioWrap = document.getElementById("admCashflowRatioWrap");
-      const svgWrap = document.getElementById("admCashflowSvgWrap");
-      if (!ratioWrap || !svgWrap) return;
-
-      const totalFlow = totalIn + totalOut;
-      const inPct = totalFlow > 0 ? Math.round((totalIn / totalFlow) * 100) : 50;
-      const outPct = 100 - inPct;
-
-      // 1. Dual Ratio Progress Bar
-      ratioWrap.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; margin-bottom:6px;">' +
-        '<span style="color:#10b981; font-weight:700;">🟢 Tiền Vào: +' + formatVND(totalIn) + ' (' + inPct + '%)</span>' +
-        '<span style="color:#ef4444; font-weight:700;">🔴 Tiền Ra: -' + formatVND(totalOut) + ' (' + outPct + '%)</span>' +
-        '</div>' +
-        '<div style="height:10px; width:100%; background:#131d2e; border-radius:6px; overflow:hidden; display:flex;">' +
-        '<div style="width:' + inPct + '%; background:linear-gradient(90deg, #10b981, #34d399); height:100%; transition:width 0.4s ease;" title="Tiền vào: ' + inPct + '%"></div>' +
-        '<div style="width:' + outPct + '%; background:linear-gradient(90deg, #f87171, #ef4444); height:100%; transition:width 0.4s ease;" title="Tiền ra: ' + outPct + '%"></div>' +
-        '</div>';
-
-      // 2. SVG Multi-Bar Chart (7 periods)
-      const points = [];
-      const now = new Date();
-      for (let i = 6; i >= 0; i--) {
-        const d = new Date(now.getTime() - i * 86400000);
-        const dayStr = d.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" });
-        points.push({ label: dayStr, dateObj: d, inAmt: 0, outAmt: 0 });
-      }
-
-      function parsePointDate(dStr) {
-        if (!dStr) return new Date();
-        const s = String(dStr).trim();
-        const m = s.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-        if (m) return new Date(parseInt(m[3], 10), parseInt(m[2], 10) - 1, parseInt(m[1], 10));
-        return new Date();
-      }
-
-      deposits.forEach(dp => {
-        const amt = Number(dp.amount) || 0;
-        const dTime = parsePointDate(dp.time || dp.date);
-        const dayStr = dTime.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" });
-        const p = points.find(pt => pt.label === dayStr);
-        if (p) p.inAmt += amt;
-        else points[points.length - 1].inAmt += amt;
-      });
-
-      withdrawals.forEach(wd => {
-        const amt = Number(wd.amount) || 0;
-        const dTime = parsePointDate(wd.time || wd.date);
-        const dayStr = dTime.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" });
-        const p = points.find(pt => pt.label === dayStr);
-        if (p) p.outAmt += amt;
-        else points[points.length - 1].outAmt += amt;
-      });
-
-      let maxVal = 0;
-      points.forEach(pt => {
-        if (pt.inAmt > maxVal) maxVal = pt.inAmt;
-        if (pt.outAmt > maxVal) maxVal = pt.outAmt;
-      });
-      if (maxVal === 0) maxVal = 500000;
-
-      const chartW = 760;
-      const chartH = 160;
-      const bottomY = 125;
-      const topY = 20;
-      const usableH = bottomY - topY;
-
-      let gridSvg = '';
-      [0, 0.5, 1].forEach(pct => {
-        const y = bottomY - pct * usableH;
-        const val = Math.round(pct * maxVal);
-        const valLabel = val >= 1000000 ? (val / 1000000).toFixed(1) + 'M' : (val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val);
-        gridSvg += '<line x1="60" y1="' + y + '" x2="' + chartW + '" y2="' + y + '" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>' +
-          '<text x="52" y="' + (y + 4) + '" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">' + valLabel + '</text>';
-      });
-
-      const colW = (chartW - 80) / points.length;
-      let barsSvg = '';
-      points.forEach((pt, idx) => {
-        const cx = 80 + idx * colW + colW / 2;
-        const hIn = maxVal > 0 ? (pt.inAmt / maxVal) * usableH : 0;
-        const hOut = maxVal > 0 ? (pt.outAmt / maxVal) * usableH : 0;
-        const barW = Math.min(22, (colW - 12) / 2);
-
-        const yIn = bottomY - hIn;
-        barsSvg += '<rect x="' + (cx - barW - 2) + '" y="' + yIn + '" width="' + barW + '" height="' + Math.max(2, hIn) + '" rx="3" fill="#10b981"><title>Tiền vào: +' + formatVND(pt.inAmt) + '</title></rect>';
-
-        const yOut = bottomY - hOut;
-        barsSvg += '<rect x="' + (cx + 2) + '" y="' + yOut + '" width="' + barW + '" height="' + Math.max(2, hOut) + '" rx="3" fill="#ef4444"><title>Tiền ra: -' + formatVND(pt.outAmt) + '</title></rect>';
-
-        barsSvg += '<text x="' + cx + '" y="145" fill="#94a3b8" font-size="10" text-anchor="middle">' + pt.label + '</text>';
-      });
-
-      svgWrap.innerHTML = '<svg viewBox="0 0 ' + (chartW + 20) + ' ' + chartH + '" style="width:100%; min-width:600px; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg">' +
-        gridSvg +
-        barsSvg +
-        '</svg>';
+    // Helper: Vẽ biểu đồ dòng tiền (Đã gỡ bỏ theo yêu cầu người dùng)
+    function renderAdminCashflowChart() {
+      return;
     }
 
     // =========================================================================
@@ -21390,10 +21279,7 @@ function syncAllOpenViewsStock(changedProdId) {
         elNet.style.color = netCashflow >= 0 ? "#34d399" : "#ef4444";
       }
 
-      // 3. Render biểu đồ dòng tiền SVG
-      renderAdminCashflowChart(totalDeposit, totalWithdraw, deposits, withdrawList);
-
-      // 4. Kết hợp danh sách nạp tiền thành công và tất cả yêu cầu rút tiền
+      // 3. Kết hợp danh sách nạp tiền thành công và tất cả yêu cầu rút tiền
       const combinedList = [];
 
       // A. Nạp tiền (CHỈ THÀNH CÔNG)

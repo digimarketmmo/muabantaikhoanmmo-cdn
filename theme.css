@@ -5667,4 +5667,29 @@ a, button, [onclick], .nav-link, .product-card, .blog-item, .category-card, .sid
   }
 }
 
+/* Dark theme styling for Admin Filter Buttons */
+.adm-filter-btn {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border: 1px solid #1e293b !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  font-weight: 600 !important;
+}
+.adm-filter-btn:hover {
+  background: #1e293b !important;
+  color: #ffffff !important;
+  border-color: #334155 !important;
+}
+.adm-filter-btn.active {
+  background: #1e293b !important;
+  color: #ffffff !important;
+  border-color: #38bdf8 !important;
+  font-weight: 700 !important;
+}
+
+
 
