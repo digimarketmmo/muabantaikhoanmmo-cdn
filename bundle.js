@@ -28598,6 +28598,57 @@ function switchAiMobileTab(tab) {
 }
 window.switchAiMobileTab = switchAiMobileTab;
 
+let currentAiWritingMode = 'keyword';
+
+function switchAiWritingMode(mode) {
+  currentAiWritingMode = mode || 'keyword';
+  try { localStorage.setItem('mmo_ai_writer_mode', currentAiWritingMode); } catch(e) {}
+
+  const btnKw = document.getElementById('btnAiModeKeyword');
+  const btnLink = document.getElementById('btnAiModeLink');
+  const linkWrap = document.getElementById('aiLinkSectionWrap');
+  const kwBanner = document.getElementById('aiKeywordModeBanner');
+  const btnGen = document.getElementById('aiGenerateBtn');
+  const topicLabel = document.getElementById('aiTopicLabel');
+
+  if (currentAiWritingMode === 'keyword') {
+    if (btnKw) {
+      btnKw.style.background = 'linear-gradient(135deg,#7c3aed,#a855f7)';
+      btnKw.style.color = '#ffffff';
+      btnKw.style.fontWeight = '700';
+    }
+    if (btnLink) {
+      btnLink.style.background = 'transparent';
+      btnLink.style.color = '#94a3b8';
+      btnLink.style.fontWeight = '600';
+    }
+    if (linkWrap) linkWrap.style.display = 'none';
+    if (kwBanner) kwBanner.style.display = 'flex';
+    if (topicLabel) topicLabel.innerHTML = '📌 Chủ Đề / Tiêu Đề Bài Viết <span style="font-size:11px;color:#38bdf8;font-weight:400;">(Hoặc nhập Từ Khóa ở ô dưới)</span>';
+    if (btnGen && !btnGen.disabled) {
+      btnGen.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:14px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 🚀 Viết Bài Chuẩn SEO Ngay (Không Cần Link)</div><div style="font-size:10px;color:rgba(255,255,255,0.85);font-weight:400;">Tự động phân tích Search Intent • H1/H2/H3 • Meta 150 ký tự • Chuẩn E-E-A-T 2026</div>';
+    }
+  } else {
+    if (btnKw) {
+      btnKw.style.background = 'transparent';
+      btnKw.style.color = '#94a3b8';
+      btnKw.style.fontWeight = '600';
+    }
+    if (btnLink) {
+      btnLink.style.background = 'linear-gradient(135deg,#7c3aed,#a855f7)';
+      btnLink.style.color = '#ffffff';
+      btnLink.style.fontWeight = '700';
+    }
+    if (linkWrap) linkWrap.style.display = 'block';
+    if (kwBanner) kwBanner.style.display = 'none';
+    if (topicLabel) topicLabel.innerHTML = '📌 Chủ Đề / Tiêu Đề Bài Viết *';
+    if (btnGen && !btnGen.disabled) {
+      btnGen.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:14px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 🚀 Viết Bài Tự Động Bám Sát Bài Mẫu (Kèm Ảnh Thật)</div><div style="font-size:10px;color:rgba(255,255,255,0.85);font-weight:400;">Bám sát cấu trúc link mẫu • Trích xuất ảnh thật • Tự sinh SEO Meta Full</div>';
+    }
+  }
+}
+window.switchAiWritingMode = switchAiWritingMode;
+
 function openAiWriterModal() {
   const modal = document.getElementById('aiWriterModal');
   if (modal) { modal.style.setProperty('display', 'flex', 'important'); document.body.style.overflow = 'hidden'; }
@@ -28605,6 +28656,8 @@ function openAiWriterModal() {
   const pSel = document.getElementById('aiProviderSelect');
   if (pSel) { pSel.value = savedPKey; }
   onAiProviderChange();
+  const savedMode = localStorage.getItem('mmo_ai_writer_mode') || 'keyword';
+  switchAiWritingMode(savedMode);
   if (window.innerWidth <= 900) {
     switchAiMobileTab('config');
   } else {
@@ -28782,9 +28835,21 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens
 }
 
 async function autoSuggestKeywordsOnly() {
-  const topic = (document.getElementById('aiTopic') || {}).value || '';
-  if (!topic.trim()) { showToast('⚠️ Vui lòng nhập Chủ Đề bài viết trước!', 'warn'); return; }
+  const topicEl = document.getElementById('aiTopic');
   const kwInput = document.getElementById('aiKeywords');
+  let topic = (topicEl || {}).value || '';
+  let curKw = (kwInput || {}).value || '';
+
+  if (!topic.trim() && curKw.trim()) {
+    topic = curKw.trim().split(',')[0].trim();
+    if (topicEl) topicEl.value = topic;
+  }
+
+  if (!topic.trim()) {
+    showToast('⚠️ Vui lòng nhập Tiêu Đề hoặc Từ Khóa trước khi bấm Gợi ý!', 'warn');
+    if (topicEl) topicEl.focus();
+    return;
+  }
   const statusEl = document.getElementById('aiGenerateStatus');
   const pSel = document.getElementById('aiProviderSelect');
   const mSel = document.getElementById('aiModelSelect');
@@ -29810,9 +29875,11 @@ async function cropAndUploadUniqueImage(rawImgUrl, altText) {
 window.cropAndUploadUniqueImage = cropAndUploadUniqueImage;
 
 async function generateAiArticle() {
-  const refUrl = (document.getElementById('aiReferenceUrl') || {}).value || '';
-  const topic = (document.getElementById('aiTopic') || {}).value || '';
-  const keywords = (document.getElementById('aiKeywords') || {}).value || '';
+  const isKeywordMode = (window.currentAiWritingMode || localStorage.getItem('mmo_ai_writer_mode') || 'keyword') === 'keyword';
+  const rawRefUrl = (document.getElementById('aiReferenceUrl') || {}).value || '';
+  const refUrl = isKeywordMode ? '' : rawRefUrl;
+  let topic = (document.getElementById('aiTopic') || {}).value || '';
+  let keywords = (document.getElementById('aiKeywords') || {}).value || '';
   const postType = (document.getElementById('aiPostType') || {}).value || 'huong_dan';
   const wordCount = (document.getElementById('aiWordCount') || {}).value || '2000';
   const tone = (document.getElementById('aiTone') || {}).value || 'than_thien';
@@ -29826,7 +29893,7 @@ async function generateAiArticle() {
   const statusEl = document.getElementById('aiGenerateStatus');
 
   let sampleData = null;
-  if (refUrl && refUrl.trim()) {
+  if (!isKeywordMode && refUrl && refUrl.trim()) {
     if (window.currentSampleArticleData && window.currentSampleArticleData.url === refUrl.trim()) {
       sampleData = window.currentSampleArticleData;
     } else {
@@ -29845,13 +29912,25 @@ async function generateAiArticle() {
     }
   }
 
-  const effectiveTopic = (document.getElementById('aiTopic') || {}).value || (sampleData ? sampleData.title : '') || '';
+  // Tự động đồng bộ nếu người dùng chỉ nhập từ khóa mà để trống tiêu đề (hoặc ngược lại)
+  if (!topic.trim() && keywords.trim()) {
+    topic = keywords.trim().split(',')[0].trim();
+    const tEl = document.getElementById('aiTopic');
+    if (tEl) tEl.value = topic;
+  }
+
+  const effectiveTopic = topic.trim() || (sampleData ? sampleData.title : '') || '';
   if (!effectiveTopic.trim()) {
-    showToast('⚠️ Vui lòng nhập chủ đề bài viết hoặc dán link bài viết mẫu!', 'warn');
+    showToast('⚠️ Vui lòng nhập Từ Khóa hoặc Tiêu Đề bài viết để AI tự động viết!', 'warn');
+    const tEl = document.getElementById('aiTopic');
+    if (tEl) tEl.focus();
     return;
   }
 
-  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang phân tích SEO 2026 & viết bài tự động...'; }
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang phân tích SEO 2026 & viết bài tự động...';
+  }
   if (statusEl) statusEl.innerHTML = '<span style="color:#a855f7;">⏳ ' + prov.name + ' đang phân tích Search Intent và tạo cấu trúc SEO 2026...</span>';
   const liveEditorStatus = document.getElementById('aiEditorLiveStatus');
   if (liveEditorStatus) {
@@ -30323,7 +30402,15 @@ Chỉ xuất các thẻ HTML tiếp theo và khối SEO_META, tuyệt đối kh�
     }
     showToast(isQuotaErr ? '⚠️ Nền tảng AI bị giới hạn Quota. Vui lòng đổi sang Groq hoặc Gemini!' : ('❌ ' + errMsg), 'error');
   } finally {
-    if (btn) { btn.disabled = false; btn.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:14px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 🚀 Viết Bài Tự Động 100% (SEO Full)</div><div style="font-size:10px;color:rgba(255,255,255,0.85);font-weight:400;">Tự sinh Từ khóa • H1 Title • Meta 150 ký tự • Tags • HTML H2/H3</div>'; }
+    if (btn) {
+      btn.disabled = false;
+      const isKw = (window.currentAiWritingMode || localStorage.getItem('mmo_ai_writer_mode') || 'keyword') === 'keyword';
+      if (isKw) {
+        btn.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:14px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 🚀 Viết Bài Chuẩn SEO Ngay (Không Cần Link)</div><div style="font-size:10px;color:rgba(255,255,255,0.85);font-weight:400;">Tự động phân tích Search Intent • H1/H2/H3 • Meta 150 ký tự • Chuẩn E-E-A-T 2026</div>';
+      } else {
+        btn.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:14px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 🚀 Viết Bài Tự Động Bám Sát Bài Mẫu (Kèm Ảnh Thật)</div><div style="font-size:10px;color:rgba(255,255,255,0.85);font-weight:400;">Bám sát cấu trúc link mẫu • Trích xuất ảnh thật • Tự sinh SEO Meta Full</div>';
+      }
+    }
   }
 }
 window.generateAiArticle = generateAiArticle;
