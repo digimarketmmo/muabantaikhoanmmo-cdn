@@ -5615,4 +5615,56 @@ a, button, [onclick], .nav-link, .product-card, .blog-item, .category-card, .sid
   }
 }
 
+/* ==========================================================================
+   ADMIN FINANCE & WALLET TRANSACTIONS RESPONSIVE (v2.9.2)
+   ========================================================================== */
+.adm-table-scroll-wrapper {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.adm-table-scroll-wrapper .admin-table {
+  min-width: 900px !important;
+  border-collapse: collapse !important;
+}
+.adm-table-scroll-wrapper .admin-table th,
+.adm-table-scroll-wrapper .admin-table td {
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+}
+.adm-finance-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 992px) {
+  .adm-finance-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media (max-width: 768px) {
+  .adm-table-scroll-wrapper {
+    margin: 0 -4px !important;
+    padding-bottom: 8px !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #38bdf8 rgba(15, 23, 42, 0.6) !important;
+  }
+  .adm-table-scroll-wrapper::-webkit-scrollbar {
+    height: 5px !important;
+  }
+  .adm-table-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: #38bdf8 !important;
+    border-radius: 4px !important;
+  }
+  .adm-table-scroll-wrapper::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.6) !important;
+  }
+}
+@media (max-width: 576px) {
+  .adm-finance-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 

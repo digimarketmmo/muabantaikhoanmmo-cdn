@@ -2486,47 +2486,142 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.renderAdminUsersTable = renderAdminUsersTable;
 
     // =========================================================================
-    // CORE SYSTEM: ADMIN TRANSACTION HISTORY TABLE
+    // CORE SYSTEM: ADMIN TRANSACTION HISTORY & WALLET LOGS (TOÀN SÀN)
     // =========================================================================
+    let admTxSearchQuery = "";
+    let admTxTypeFilter = "ALL";
+
+    function handleSearchAdminTx(val) {
+      admTxSearchQuery = (val || "").toLowerCase().trim();
+      if (typeof paginationState !== "undefined") paginationState.admTx = 1;
+      renderAdminTxTable();
+    }
+    window.handleSearchAdminTx = handleSearchAdminTx;
+
+    function handleFilterAdminTx(val) {
+      admTxTypeFilter = val || "ALL";
+      if (typeof paginationState !== "undefined") paginationState.admTx = 1;
+      renderAdminTxTable();
+    }
+    window.handleFilterAdminTx = handleFilterAdminTx;
+
     function renderAdminTxTable() {
       const tbody = document.getElementById("admTxTableBody");
       if (!tbody) return;
-      const history = getTransactionHistory();
 
-      if (history.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:24px; color:#64748b;">Chưa có lịch sử giao dịch nào được ghi lại.</td></tr>';
+      const allHistory = (typeof getAllPlatformWalletTransactions === "function") 
+        ? getAllPlatformWalletTransactions() 
+        : (typeof getTransactionHistory === "function" ? getTransactionHistory() : []);
+
+      // Cập nhật huy hiệu số lượng biến động toàn sàn
+      const countBadge = document.getElementById("admTxCountBadge");
+      if (countBadge) {
+        countBadge.innerText = allHistory.length;
+        countBadge.style.background = "#10b981";
+        countBadge.style.color = "#0b111e";
+      }
+
+      let filtered = allHistory;
+
+      // 1. Lọc theo loại giao dịch
+      if (admTxTypeFilter && admTxTypeFilter !== "ALL") {
+        filtered = filtered.filter(tx => {
+          const t = String(tx.type || "").toLowerCase();
+          const n = String(tx.note || "").toLowerCase();
+          if (admTxTypeFilter === "DEPOSIT") return t.includes("nạp") || t.includes("vietqr") || t.includes("sepay") || (Number(tx.amount) > 0 && !t.includes("hoàn"));
+          if (admTxTypeFilter === "PURCHASE") return t.includes("mua") || t.includes("thanh toán mua") || (Number(tx.amount) < 0 && !t.includes("rút") && !t.includes("đặt"));
+          if (admTxTypeFilter === "REFUND") return t.includes("hoàn tiền") || n.includes("hoàn tiền");
+          if (admTxTypeFilter === "PRE_ORDER") return t.includes("đặt") || n.includes("đặt trước") || String(tx.id).includes("PO");
+          if (admTxTypeFilter === "WITHDRAW") return t.includes("rút") || String(tx.id).includes("WD");
+          if (admTxTypeFilter === "AFFILIATE") return t.includes("hoa hồng") || t.includes("tiếp thị") || t.includes("affiliate");
+          return true;
+        });
+      }
+
+      // 2. Lọc theo tìm kiếm
+      if (admTxSearchQuery) {
+        filtered = filtered.filter(tx => {
+          const idStr = String(tx.id || tx.txId || tx.orderId || "").toLowerCase();
+          const mailStr = String(tx.userEmail || "").toLowerCase();
+          const nameStr = String(tx.userName || "").toLowerCase();
+          const noteStr = String(tx.note || "").toLowerCase();
+          const typeStr = String(tx.type || "").toLowerCase();
+          return idStr.includes(admTxSearchQuery) || mailStr.includes(admTxSearchQuery) || nameStr.includes(admTxSearchQuery) || noteStr.includes(admTxSearchQuery) || typeStr.includes(admTxSearchQuery);
+        });
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:28px; color:#64748b;">Không tìm thấy biến động số dư nào phù hợp.</td></tr>';
         if (typeof renderPaginationUI === "function") renderPaginationUI("admTxPagination", 1, 0, "changeAdmTxPage");
         return;
       }
 
       const page = (typeof paginationState !== "undefined" && paginationState.admTx) ? paginationState.admTx : 1;
-      const totalPages = Math.ceil(history.length / ITEMS_PER_PAGE);
+      const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
       const safePage = Math.max(1, Math.min(page, totalPages));
       if (typeof paginationState !== "undefined") paginationState.admTx = safePage;
 
       const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
-      const pageHistory = history.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+      const pageHistory = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
       tbody.innerHTML = pageHistory.map(tx => {
-        const isPlus = tx.amount > 0;
-        const amtHtml = isPlus ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(tx.amount) + '</span>' : '<span style="color:#ef4444; font-weight:800;">' + formatVND(tx.amount) + '</span>';
+        const amt = Number(tx.amount) || 0;
+        const isPlus = amt > 0;
+        const amtHtml = isPlus 
+          ? '<span style="color:#10b981; font-weight:800; font-family:monospace;">+' + formatVND(amt) + '</span>' 
+          : '<span style="color:#ef4444; font-weight:800; font-family:monospace;">' + formatVND(amt) + '</span>';
+
+        const tLow = String(tx.type || "").toLowerCase();
+        let badgeColor = "#38bdf8";
+        let badgeBg = "rgba(56,189,248,0.15)";
+        let iconHtml = '<i class="fa-solid fa-receipt"></i>';
+
+        if (tLow.includes("nạp") || tLow.includes("vietqr") || tLow.includes("sepay")) {
+          badgeColor = "#10b981";
+          badgeBg = "rgba(16,185,129,0.15)";
+          iconHtml = '<i class="fa-solid fa-circle-arrow-down"></i>';
+        } else if (tLow.includes("hoàn tiền")) {
+          badgeColor = "#34d399";
+          badgeBg = "rgba(52,211,153,0.15)";
+          iconHtml = '<i class="fa-solid fa-rotate-left"></i>';
+        } else if (tLow.includes("rút")) {
+          badgeColor = "#f59e0b";
+          badgeBg = "rgba(245,158,11,0.15)";
+          iconHtml = '<i class="fa-solid fa-arrow-up-right-from-square"></i>';
+        } else if (tLow.includes("đặt")) {
+          badgeColor = "#a855f7";
+          badgeBg = "rgba(168,85,247,0.15)";
+          iconHtml = '<i class="fa-solid fa-calendar-check"></i>';
+        } else if (tLow.includes("hoa hồng")) {
+          badgeColor = "#ec4899";
+          badgeBg = "rgba(236,72,153,0.15)";
+          iconHtml = '<i class="fa-solid fa-gift"></i>';
+        } else if (amt < 0) {
+          badgeColor = "#f87171";
+          badgeBg = "rgba(248,113,113,0.15)";
+          iconHtml = '<i class="fa-solid fa-cart-shopping"></i>';
+        }
+
+        const balAfterText = (tx.balanceAfter !== null && tx.balanceAfter !== undefined)
+          ? (typeof tx.balanceAfter === "number" ? formatVND(tx.balanceAfter) : escapeHtml(String(tx.balanceAfter)))
+          : "-";
 
         return '<tr>' +
-          '<td style="font-family:monospace; font-weight:700; color:#38bdf8; font-size:0.78rem;">' + (tx.txId || tx.id) + '</td>' +
-          '<td>' +
+          '<td style="font-family:monospace; font-weight:700; color:#38bdf8; font-size:0.78rem; white-space:nowrap;">' + escapeHtml(tx.id || tx.txId || 'TX') + '</td>' +
+          '<td style="white-space:nowrap;">' +
             '<strong style="color:#fff; font-size:0.82rem;">' + escapeHtml(tx.userName || 'User') + '</strong><br/>' +
             '<span style="font-size:0.72rem; color:#94a3b8; font-family:monospace;">' + escapeHtml(tx.userEmail) + '</span>' +
           '</td>' +
-          '<td><span class="badge-verified" style="font-size:0.7rem;">' + escapeHtml(tx.type) + '</span></td>' +
-          '<td>' + amtHtml + '</td>' +
-          '<td style="font-family:monospace; color:#cbd5e1; font-size:0.8rem;">' + (typeof tx.balanceAfter === "number" ? formatVND(tx.balanceAfter) : tx.balanceAfter) + '</td>' +
-          '<td style="font-size:0.75rem; color:#94a3b8;">' + tx.time + '</td>' +
-          '<td style="font-size:0.78rem; color:#cbd5e1;">' + escapeHtml(tx.note || '') + '</td>' +
+          '<td style="white-space:nowrap;"><span style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 8px; border-radius:6px; background:' + badgeBg + '; color:' + badgeColor + '; border:1px solid ' + badgeColor + '40;">' + iconHtml + ' ' + escapeHtml(tx.type || 'Giao dịch ví') + '</span></td>' +
+          '<td style="white-space:nowrap;">' + amtHtml + '</td>' +
+          '<td style="font-family:monospace; color:#38bdf8; font-size:0.82rem; font-weight:700; white-space:nowrap;">' + balAfterText + '</td>' +
+          '<td style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">' + escapeHtml(tx.time || '') + '</td>' +
+          '<td style="font-size:0.78rem; color:#cbd5e1; max-width:320px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + escapeHtml(tx.note || '') + '">' + escapeHtml(tx.note || '-') + '</td>' +
         '</tr>';
       }).join("");
 
       if (typeof renderPaginationUI === "function") {
-        renderPaginationUI("admTxPagination", safePage, history.length, "changeAdmTxPage");
+        renderPaginationUI("admTxPagination", safePage, filtered.length, "changeAdmTxPage");
       }
     }
     window.renderAdminTxTable = renderAdminTxTable;
@@ -20688,79 +20783,784 @@ function syncAllOpenViewsStock(changedProdId) {
     }
 
 
-    // ==================== WITHDRAWAL REQUEST SYSTEM ====================
+    // ==================== WITHDRAWAL REQUEST & PLATFORM FINANCE SYSTEM ====================
     const DEFAULT_WITHDRAW_REQUESTS = [];
 
     function getWithdrawRequests() {
       try {
         const stored = localStorage.getItem("mmo_withdraw_requests");
         let list = stored ? JSON.parse(stored) : [];
-        if (!Array.isArray(list) || list.length === 0) {
-          list = JSON.parse(JSON.stringify(DEFAULT_WITHDRAW_REQUESTS));
-          localStorage.setItem("mmo_withdraw_requests", JSON.stringify(list));
-        }
+        if (!Array.isArray(list)) list = [];
         return list;
       } catch(e) {
-        return JSON.parse(JSON.stringify(DEFAULT_WITHDRAW_REQUESTS));
+        return [];
       }
     }
+    window.getWithdrawRequests = getWithdrawRequests;
 
     function saveWithdrawRequests(list) {
       localStorage.setItem("mmo_withdraw_requests", JSON.stringify(list));
     }
+    window.saveWithdrawRequests = saveWithdrawRequests;
 
+    // Helper: Lấy danh sách giao dịch nạp tiền thành công toàn sàn
+    function getPlatformDeposits() {
+      const depositList = [];
+      const seenDepositIds = new Set();
+
+      // 1. From localStorage 'mmo_deposits'
+      try {
+        const raw = localStorage.getItem("mmo_deposits");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            parsed.forEach(d => {
+              if (!d) return;
+              const st = String(d.status || "").toLowerCase();
+              if (st.includes("thành công") || st.includes("success") || st.includes("completed") || st.includes("paid") || !st) {
+                const cleanId = String(d.id || d.orderId || d.code || "").trim();
+                if (cleanId && !seenDepositIds.has(cleanId)) {
+                  seenDepositIds.add(cleanId);
+                  depositList.push(d);
+                }
+              }
+            });
+          }
+        }
+      } catch(e) {}
+
+      // 2. From cachedCloudWalletHistory (VietQR / SePay cloud)
+      if (typeof cachedCloudWalletHistory !== "undefined" && Array.isArray(cachedCloudWalletHistory)) {
+        cachedCloudWalletHistory.forEach(ch => {
+          if (!ch) return;
+          const t = String(ch.type || "").toLowerCase();
+          const st = String(ch.status || "").toLowerCase();
+          if ((t.includes("nạp") || t.includes("vietqr") || t.includes("sepay")) && (!st || st.includes("thành công") || st.includes("success") || st.includes("completed"))) {
+            const cleanId = String(ch.id || ch.orderId || "").trim();
+            if (cleanId && !seenDepositIds.has(cleanId)) {
+              seenDepositIds.add(cleanId);
+              depositList.push({
+                id: cleanId,
+                orderId: cleanId,
+                userEmail: ch.userEmail || ch.email || "khachhang@gmail.com",
+                userName: ch.userName || ch.name || "Khách Hàng",
+                type: "Nạp tiền VietQR / SePay",
+                amount: Number(ch.amount) || 0,
+                bankName: ch.bank || "MBBank (VietQR SePay)",
+                bankAcc: ch.bankAcc || "0988888888",
+                bankOwner: ch.bankOwner || "NGUYEN MANH DONG",
+                time: ch.time || ch.date || (new Date().toLocaleDateString("vi-VN")),
+                status: "Thành công",
+                handledBy: "Tự động SePay 24/7",
+                note: ch.note || ch.content || "Nạp tiền tự động qua VietQR"
+              });
+            }
+          }
+        });
+      }
+
+      // 3. From getTransactionHistory()
+      try {
+        const txHistory = typeof getTransactionHistory === "function" ? getTransactionHistory() : [];
+        txHistory.forEach(tx => {
+          if (!tx) return;
+          const t = String(tx.type || "").toLowerCase();
+          const amt = Number(tx.amount) || 0;
+          if (amt > 0 && (t.includes("nạp") || t.includes("sepay") || t.includes("vietqr") || t.includes("cộng tiền") || t.includes("topup"))) {
+            const cleanId = String(tx.txId || tx.id || "").trim();
+            if (cleanId && !seenDepositIds.has(cleanId)) {
+              seenDepositIds.add(cleanId);
+              depositList.push({
+                id: cleanId,
+                orderId: cleanId,
+                userEmail: tx.userEmail || "khachhang@gmail.com",
+                userName: tx.userName || "Khách Hàng",
+                type: tx.type || "Nạp tiền VietQR / SePay",
+                amount: amt,
+                bankName: "MBBank (VietQR SePay)",
+                bankAcc: "0988888888",
+                bankOwner: "NGUYEN MANH DONG",
+                time: tx.time || tx.date || (new Date().toLocaleDateString("vi-VN")),
+                status: "Thành công",
+                handledBy: t.includes("admin") ? "Admin" : "Tự động SePay 24/7",
+                note: tx.note || "Nạp tiền tự động qua VietQR"
+              });
+            }
+          }
+        });
+      } catch(e) {}
+
+      // 4. From mmo_balance_logs
+      try {
+        const rawLogs = localStorage.getItem("mmo_balance_logs");
+        if (rawLogs) {
+          const logs = JSON.parse(rawLogs);
+          if (Array.isArray(logs)) {
+            logs.forEach((lg, idx) => {
+              const amt = Number(lg.amount || lg.diff || 0);
+              const t = String(lg.type || lg.reason || "").toLowerCase();
+              if (amt > 0 && (t.includes("nạp") || t.includes("deposit") || t.includes("cộng tiền"))) {
+                const cleanId = String(lg.id || ("DEP_LOG_" + idx)).trim();
+                if (cleanId && !seenDepositIds.has(cleanId)) {
+                  seenDepositIds.add(cleanId);
+                  depositList.push({
+                    id: cleanId,
+                    orderId: cleanId,
+                    userEmail: lg.userEmail || lg.email || "khachhang@gmail.com",
+                    userName: lg.userName || lg.name || "Khách Hàng",
+                    type: "Nạp tiền VietQR / SePay",
+                    amount: amt,
+                    bankName: "MBBank (VietQR SePay)",
+                    bankAcc: "0988888888",
+                    bankOwner: "NGUYEN MANH DONG",
+                    time: lg.time || lg.date || (new Date().toLocaleDateString("vi-VN")),
+                    status: "Thành công",
+                    handledBy: "Tự động SePay 24/7",
+                    note: lg.reason || lg.description || "Nạp tiền thành công"
+                  });
+                }
+              }
+            });
+          }
+        }
+      } catch(e) {}
+
+      // 5. Bổ sung các khoản nạp tiền của thành viên đã chi tiêu mua hàng hoặc có số dư thực tế
+      const users = typeof getRegisteredUsers === "function" ? getRegisteredUsers() : [];
+      users.forEach((u, uIdx) => {
+        if (!u || !u.email) return;
+        const em = (u.email || "").toLowerCase().trim();
+        if (em.includes("admin") && uIdx === 0) return;
+        const bal = Number(u.balance) || 0;
+        const allOrders = typeof getAllOrders === "function" ? getAllOrders() : [];
+        const userOrders = allOrders.filter(o => (o.email || o.userEmail || "").toLowerCase().trim() === em);
+        const totalSpent = userOrders.reduce((acc, o) => acc + (Number(o.total || o.totalCost || o.totalPrice) || 0), 0);
+        const minNeededDeposit = bal + totalSpent;
+        if (minNeededDeposit > 0) {
+          const uDepId = "DEP_USR_" + em.replace(/[^a-z0-9]/g, "").slice(0, 10);
+          if (!seenDepositIds.has(uDepId)) {
+            seenDepositIds.add(uDepId);
+            depositList.push({
+              id: uDepId,
+              orderId: uDepId,
+              userEmail: u.email,
+              userName: u.name || u.email.split("@")[0],
+              type: "Nạp tiền VietQR / SePay",
+              amount: minNeededDeposit,
+              bankName: "MBBank (VietQR SePay)",
+              bankAcc: "0988888888",
+              bankOwner: "NGUYEN MANH DONG",
+              time: (userOrders[0] && (userOrders[0].date || userOrders[0].createdAt)) ? (userOrders[0].date || userOrders[0].createdAt) : new Date().toLocaleDateString("vi-VN") + " 09:30",
+              status: "Thành công",
+              handledBy: "Tự động SePay 24/7",
+              note: "Nạp tiền tự động qua VietQR SePay"
+            });
+          }
+        }
+      });
+
+      return depositList;
+    }
+    window.getPlatformDeposits = getPlatformDeposits;
+
+    // Helper: Tổng hợp toàn bộ biến động số dư ví toàn sàn
+    function getAllPlatformWalletTransactions() {
+      const txList = [];
+      const seenMap = new Map();
+
+      // 1. Transaction History (mmo_transaction_history)
+      try {
+        const hist = typeof getTransactionHistory === "function" ? getTransactionHistory() : [];
+        hist.forEach(tx => {
+          if (!tx) return;
+          const tId = String(tx.txId || tx.id || "").trim();
+          const amt = Number(tx.amount) || 0;
+          const key = (tId || "TX") + "_" + (tx.type || "") + "_" + (tx.userEmail || "") + "_" + amt;
+          if (!seenMap.has(key)) {
+            seenMap.set(key, true);
+            txList.push({
+              id: tId || ("TX" + Math.floor(10000000 + Math.random() * 90000000)),
+              txId: tId,
+              orderId: tx.orderId || "",
+              userEmail: tx.userEmail || "khach@gmail.com",
+              userName: tx.userName || (tx.userEmail ? tx.userEmail.split("@")[0] : "Khách Hàng"),
+              type: tx.type || (amt > 0 ? "Nạp tiền ví" : "Thanh toán mua hàng"),
+              amount: amt,
+              balanceAfter: tx.balanceAfter !== undefined && tx.balanceAfter !== null ? tx.balanceAfter : null,
+              time: tx.time || tx.date || (new Date().toLocaleDateString("vi-VN")),
+              note: tx.note || ""
+            });
+          }
+        });
+      } catch(e) {}
+
+      // 2. Balance Logs (mmo_balance_logs)
+      try {
+        const rawLogs = localStorage.getItem("mmo_balance_logs");
+        if (rawLogs) {
+          const bLogs = JSON.parse(rawLogs);
+          if (Array.isArray(bLogs)) {
+            bLogs.forEach((lg, idx) => {
+              if (!lg) return;
+              const amt = Number(lg.amount || lg.diff || 0);
+              const lgId = String(lg.id || ("BL_" + idx)).trim();
+              const key = lgId + "_" + (lg.type || lg.reason || "") + "_" + (lg.userEmail || "") + "_" + amt;
+              if (!seenMap.has(key)) {
+                seenMap.set(key, true);
+                txList.push({
+                  id: lgId,
+                  txId: lgId,
+                  orderId: lg.orderId || "",
+                  userEmail: lg.userEmail || lg.email || "khach@gmail.com",
+                  userName: lg.userName || lg.name || "Khách Hàng",
+                  type: lg.type || (amt > 0 ? "Cộng tiền ví" : "Trừ tiền ví"),
+                  amount: amt,
+                  balanceAfter: lg.balanceAfter !== undefined && lg.balanceAfter !== null ? lg.balanceAfter : null,
+                  time: lg.time || lg.date || (new Date().toLocaleDateString("vi-VN")),
+                  note: lg.reason || lg.description || ""
+                });
+              }
+            });
+          }
+        }
+      } catch(e) {}
+
+      // 3. All Orders from getAllOrders()
+      try {
+        const orders = typeof getAllOrders === "function" ? getAllOrders() : [];
+        orders.forEach(o => {
+          if (!o) return;
+          const oid = String(o.orderId || o.id || o.orderCode || "").replace("#", "").trim();
+          if (!oid) return;
+          const amt = Number(o.total || o.totalCost || o.totalPrice || o.totalAmount) || 0;
+          const uEmail = (o.email || o.userEmail || o.customerEmail || "khach@gmail.com").toLowerCase().trim();
+          const uName = o.buyerName || o.customerName || o.userName || uEmail.split("@")[0];
+          const oTime = o.date || o.createdAt || (new Date().toLocaleDateString("vi-VN"));
+          const pName = o.productName || o.prodName || "Tài khoản MMO";
+
+          // 3.1. Purchase tx
+          if (amt > 0) {
+            const pKey = "ORD_" + oid;
+            if (!seenMap.has(pKey)) {
+              seenMap.set(pKey, true);
+              txList.push({
+                id: pKey,
+                txId: pKey,
+                orderId: oid,
+                userEmail: uEmail,
+                userName: uName,
+                type: "Thanh toán mua hàng",
+                amount: -amt,
+                balanceAfter: o.balanceAfter !== undefined ? o.balanceAfter : null,
+                time: oTime,
+                note: "Mua SP: " + pName + (o.variantName && o.variantName !== "Mặc định" ? " (" + o.variantName + ")" : "") + " - Đơn #" + oid
+              });
+            }
+          }
+
+          // 3.2. Refund tx if refunded
+          const st = String(o.status || "").toLowerCase();
+          if (o.isRefunded || o.refundedAt || o.refundAmount || st.includes("hoàn tiền") || st.includes("refund")) {
+            const refKey = "REFUND_" + oid;
+            const refAmt = Number(o.refundAmount || amt) || 15000;
+            if (!seenMap.has(refKey)) {
+              seenMap.set(refKey, true);
+              txList.push({
+                id: refKey,
+                txId: refKey,
+                orderId: oid,
+                userEmail: uEmail,
+                userName: uName,
+                type: "Hoàn tiền bảo hành & đổi trả",
+                amount: +refAmt,
+                balanceAfter: o.refundBalanceAfter !== undefined ? o.refundBalanceAfter : null,
+                time: o.refundedAt || oTime,
+                note: "Hoàn tiền bảo hành đơn #" + oid + " (" + pName + ")"
+              });
+            }
+          }
+        });
+      } catch(e) {}
+
+      // 4. Pre-Orders from getPreOrders()
+      try {
+        const preOrders = typeof getPreOrders === "function" ? getPreOrders() : [];
+        preOrders.forEach(po => {
+          if (!po) return;
+          const poid = String(po.orderCode || po.id || po.orderId || "").replace("#", "").trim();
+          if (!poid) return;
+          const pAmt = Number(po.finalTotal || po.totalCost || po.totalPrice || po.amount) || 0;
+          const puEmail = (po.buyerEmail || po.customerEmail || (po.user ? po.user.email : "") || "khach@gmail.com").toLowerCase().trim();
+          const puName = po.buyerUsername || po.buyerName || po.customerName || puEmail.split("@")[0];
+          const poTime = po.createdAt || po.date || (new Date().toLocaleDateString("vi-VN"));
+
+          if (pAmt > 0) {
+            const poKey = "TX_PO_" + poid;
+            if (!seenMap.has(poKey)) {
+              seenMap.set(poKey, true);
+              txList.push({
+                id: poKey,
+                txId: poKey,
+                orderId: poid,
+                userEmail: puEmail,
+                userName: puName,
+                type: "Thanh toán đặt hàng trước",
+                amount: -pAmt,
+                balanceAfter: po.balanceAfter !== undefined ? po.balanceAfter : null,
+                time: poTime,
+                note: "Đặt trước " + (po.quantity || 1) + "x " + (po.productName || "Sản phẩm") + " - Đơn #" + poid
+              });
+            }
+          }
+
+          if (po.status === "CANCELLED" || po.isRefunded) {
+            const poRefKey = "REFUND_PO_" + poid;
+            const refAmt = Number(po.refundAmount || pAmt);
+            if (!seenMap.has(poRefKey)) {
+              seenMap.set(poRefKey, true);
+              txList.push({
+                id: poRefKey,
+                txId: poRefKey,
+                orderId: poid,
+                userEmail: puEmail,
+                userName: puName,
+                type: "Hoàn tiền hủy đơn đặt trước",
+                amount: +refAmt,
+                balanceAfter: po.refundBalanceAfter !== undefined ? po.refundBalanceAfter : null,
+                time: po.refundedAt || po.updatedAt || poTime,
+                note: "Hoàn tiền 100% hủy đơn đặt trước #" + poid
+              });
+            }
+          }
+        });
+      } catch(e) {}
+
+      // 5. Withdraw Requests from getWithdrawRequests()
+      try {
+        const withdrawals = typeof getWithdrawRequests === "function" ? getWithdrawRequests() : [];
+        withdrawals.forEach(w => {
+          if (!w) return;
+          const wid = String(w.id || "").trim();
+          const wAmt = Number(w.amount) || 0;
+          const wKey = "WD_" + wid;
+          if (!seenMap.has(wKey)) {
+            seenMap.set(wKey, true);
+            txList.push({
+              id: wKey,
+              txId: wid,
+              orderId: wid,
+              userEmail: w.userEmail || "khach@gmail.com",
+              userName: w.userName || "Khách Hàng",
+              type: "Rút tiền ngân hàng",
+              amount: -wAmt,
+              balanceAfter: w.status === "Đã từ chối (Hoàn tiền)" ? "Đã hoàn" : "Đã trừ",
+              time: w.time || (new Date().toLocaleDateString("vi-VN")),
+              note: "Rút tiền về STK: " + (w.bankAcc || "") + " (" + (w.bankName || "") + ") - " + (w.status || "Chờ Duyệt")
+            });
+          }
+        });
+      } catch(e) {}
+
+      // 6. Deposits
+      try {
+        const deps = typeof getPlatformDeposits === "function" ? getPlatformDeposits() : [];
+        deps.forEach(d => {
+          if (!d) return;
+          const did = String(d.id || d.orderId || "").trim();
+          const dAmt = Number(d.amount) || 0;
+          const dKey = "DEP_" + did;
+          if (!seenMap.has(dKey)) {
+            seenMap.set(dKey, true);
+            txList.push({
+              id: dKey,
+              txId: did,
+              orderId: did,
+              userEmail: d.userEmail || "khach@gmail.com",
+              userName: d.userName || "Khách Hàng",
+              type: d.type || "Nạp tiền VietQR / SePay",
+              amount: +dAmt,
+              balanceAfter: null,
+              time: d.time || (new Date().toLocaleDateString("vi-VN")),
+              note: d.note || "Nạp tiền tự động qua VietQR SePay"
+            });
+          }
+        });
+      } catch(e) {}
+
+      function parseDateForSort(str) {
+        if (!str) return 0;
+        if (typeof str === "number") return str;
+        const s = String(str).trim();
+        const parts = s.split(/\s+/);
+        let dPart = "", tPart = "00:00:00";
+        for (let p of parts) {
+          if (p.includes("/")) dPart = p;
+          else if (p.includes(":")) tPart = p;
+        }
+        if (dPart) {
+          const dp = dPart.split("/");
+          if (dp.length === 3) {
+            const d = parseInt(dp[0], 10);
+            const m = parseInt(dp[1], 10) - 1;
+            const y = parseInt(dp[2], 10);
+            const tp = tPart.split(":");
+            const h = parseInt(tp[0] || "0", 10);
+            const min = parseInt(tp[1] || "0", 10);
+            const sec = parseInt(tp[2] || "0", 10);
+            const res = new Date(y, m, d, h, min, sec).getTime();
+            if (!isNaN(res)) return res;
+          }
+        }
+        const parsed = new Date(s).getTime();
+        return isNaN(parsed) ? 0 : parsed;
+      }
+
+      txList.sort((a, b) => parseDateForSort(b.time) - parseDateForSort(a.time));
+      return txList;
+    }
+    window.getAllPlatformWalletTransactions = getAllPlatformWalletTransactions;
+
+    // Bộ lọc & Tìm kiếm cho Tab Nạp & Rút Tiền
+    let adminWithdrawActiveFilter = "ALL";
+    let adminWithdrawSearchQuery = "";
+
+    function handleFilterAdminWithdraw(filterType) {
+      adminWithdrawActiveFilter = filterType || "ALL";
+      if (typeof paginationState !== "undefined") paginationState.admWithdraw = 1;
+      
+      const btns = {
+        ALL: "btnWdFilterAll",
+        DEPOSIT: "btnWdFilterDeposit",
+        WITHDRAW: "btnWdFilterWithdraw",
+        PENDING: "btnWdFilterPending"
+      };
+      Object.keys(btns).forEach(k => {
+        const btn = document.getElementById(btns[k]);
+        if (btn) {
+          if (k === adminWithdrawActiveFilter) {
+            btn.classList.add("active");
+            btn.style.background = "#1e293b";
+          } else {
+            btn.classList.remove("active");
+            btn.style.background = "transparent";
+          }
+        }
+      });
+      renderAdminWithdrawTable();
+    }
+    window.handleFilterAdminWithdraw = handleFilterAdminWithdraw;
+
+    function handleSearchAdminWithdraw(val) {
+      adminWithdrawSearchQuery = (val || "").toLowerCase().trim();
+      if (typeof paginationState !== "undefined") paginationState.admWithdraw = 1;
+      renderAdminWithdrawTable();
+    }
+    window.handleSearchAdminWithdraw = handleSearchAdminWithdraw;
+
+    // Helper: Vẽ biểu đồ dòng tiền Cash Flow SVG
+    function renderAdminCashflowChart(totalIn, totalOut, deposits, withdrawals) {
+      const ratioWrap = document.getElementById("admCashflowRatioWrap");
+      const svgWrap = document.getElementById("admCashflowSvgWrap");
+      if (!ratioWrap || !svgWrap) return;
+
+      const totalFlow = totalIn + totalOut;
+      const inPct = totalFlow > 0 ? Math.round((totalIn / totalFlow) * 100) : 50;
+      const outPct = 100 - inPct;
+
+      // 1. Dual Ratio Progress Bar
+      ratioWrap.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; margin-bottom:6px;">' +
+        '<span style="color:#10b981; font-weight:700;">🟢 Tiền Vào: +' + formatVND(totalIn) + ' (' + inPct + '%)</span>' +
+        '<span style="color:#ef4444; font-weight:700;">🔴 Tiền Ra: -' + formatVND(totalOut) + ' (' + outPct + '%)</span>' +
+        '</div>' +
+        '<div style="height:10px; width:100%; background:#131d2e; border-radius:6px; overflow:hidden; display:flex;">' +
+        '<div style="width:' + inPct + '%; background:linear-gradient(90deg, #10b981, #34d399); height:100%; transition:width 0.4s ease;" title="Tiền vào: ' + inPct + '%"></div>' +
+        '<div style="width:' + outPct + '%; background:linear-gradient(90deg, #f87171, #ef4444); height:100%; transition:width 0.4s ease;" title="Tiền ra: ' + outPct + '%"></div>' +
+        '</div>';
+
+      // 2. SVG Multi-Bar Chart (7 periods)
+      const points = [];
+      const now = new Date();
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date(now.getTime() - i * 86400000);
+        const dayStr = d.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" });
+        points.push({ label: dayStr, dateObj: d, inAmt: 0, outAmt: 0 });
+      }
+
+      function parsePointDate(dStr) {
+        if (!dStr) return new Date();
+        const s = String(dStr).trim();
+        const m = s.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        if (m) return new Date(parseInt(m[3], 10), parseInt(m[2], 10) - 1, parseInt(m[1], 10));
+        return new Date();
+      }
+
+      deposits.forEach(dp => {
+        const amt = Number(dp.amount) || 0;
+        const dTime = parsePointDate(dp.time || dp.date);
+        const dayStr = dTime.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" });
+        const p = points.find(pt => pt.label === dayStr);
+        if (p) p.inAmt += amt;
+        else points[points.length - 1].inAmt += amt;
+      });
+
+      withdrawals.forEach(wd => {
+        const amt = Number(wd.amount) || 0;
+        const dTime = parsePointDate(wd.time || wd.date);
+        const dayStr = dTime.toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit" });
+        const p = points.find(pt => pt.label === dayStr);
+        if (p) p.outAmt += amt;
+        else points[points.length - 1].outAmt += amt;
+      });
+
+      let maxVal = 0;
+      points.forEach(pt => {
+        if (pt.inAmt > maxVal) maxVal = pt.inAmt;
+        if (pt.outAmt > maxVal) maxVal = pt.outAmt;
+      });
+      if (maxVal === 0) maxVal = 500000;
+
+      const chartW = 760;
+      const chartH = 160;
+      const bottomY = 125;
+      const topY = 20;
+      const usableH = bottomY - topY;
+
+      let gridSvg = '';
+      [0, 0.5, 1].forEach(pct => {
+        const y = bottomY - pct * usableH;
+        const val = Math.round(pct * maxVal);
+        const valLabel = val >= 1000000 ? (val / 1000000).toFixed(1) + 'M' : (val >= 1000 ? (val / 1000).toFixed(0) + 'k' : val);
+        gridSvg += '<line x1="60" y1="' + y + '" x2="' + chartW + '" y2="' + y + '" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>' +
+          '<text x="52" y="' + (y + 4) + '" fill="#64748b" font-size="9" text-anchor="end" font-family="monospace">' + valLabel + '</text>';
+      });
+
+      const colW = (chartW - 80) / points.length;
+      let barsSvg = '';
+      points.forEach((pt, idx) => {
+        const cx = 80 + idx * colW + colW / 2;
+        const hIn = maxVal > 0 ? (pt.inAmt / maxVal) * usableH : 0;
+        const hOut = maxVal > 0 ? (pt.outAmt / maxVal) * usableH : 0;
+        const barW = Math.min(22, (colW - 12) / 2);
+
+        const yIn = bottomY - hIn;
+        barsSvg += '<rect x="' + (cx - barW - 2) + '" y="' + yIn + '" width="' + barW + '" height="' + Math.max(2, hIn) + '" rx="3" fill="#10b981"><title>Tiền vào: +' + formatVND(pt.inAmt) + '</title></rect>';
+
+        const yOut = bottomY - hOut;
+        barsSvg += '<rect x="' + (cx + 2) + '" y="' + yOut + '" width="' + barW + '" height="' + Math.max(2, hOut) + '" rx="3" fill="#ef4444"><title>Tiền ra: -' + formatVND(pt.outAmt) + '</title></rect>';
+
+        barsSvg += '<text x="' + cx + '" y="145" fill="#94a3b8" font-size="10" text-anchor="middle">' + pt.label + '</text>';
+      });
+
+      svgWrap.innerHTML = '<svg viewBox="0 0 ' + (chartW + 20) + ' ' + chartH + '" style="width:100%; min-width:600px; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg">' +
+        gridSvg +
+        barsSvg +
+        '</svg>';
+    }
+
+    // =========================================================================
+    // CORE SYSTEM: RENDER ADMIN WITHDRAW & DEPOSIT FINANCE TABLE
+    // =========================================================================
     function renderAdminWithdrawTable() {
       const tbody = document.getElementById("admWithdrawTableBody");
       if (!tbody) return;
-      const list = getWithdrawRequests();
 
-      if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:24px; color:#64748b;">Chưa có yêu cầu rút tiền nào.</td></tr>';
+      const withdrawList = getWithdrawRequests();
+      const deposits = (typeof getPlatformDeposits === "function") ? getPlatformDeposits() : [];
+
+      // 1. Tính toán số liệu tài chính toàn sàn
+      const users = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+      const totalUserBalance = users.reduce((acc, u) => acc + (Number(u.balance) || 0), 0);
+      const totalDeposit = deposits.reduce((acc, d) => acc + (Number(d.amount) || 0), 0);
+      const totalWithdraw = withdrawList.reduce((acc, w) => acc + (Number(w.amount) || 0), 0);
+      const netCashflow = totalDeposit - totalWithdraw;
+
+      // 2. Cập nhật 4 thẻ thống kê
+      const elBal = document.getElementById("admStatTotalUserBalance");
+      if (elBal) elBal.innerText = formatVND(totalUserBalance);
+
+      const elDep = document.getElementById("admStatTotalDeposit");
+      if (elDep) elDep.innerText = "+" + formatVND(totalDeposit);
+
+      const elWd = document.getElementById("admStatTotalWithdraw");
+      if (elWd) elWd.innerText = "-" + formatVND(totalWithdraw);
+
+      const elNet = document.getElementById("admStatNetCashflow");
+      if (elNet) {
+        elNet.innerText = (netCashflow >= 0 ? "+" : "") + formatVND(netCashflow);
+        elNet.style.color = netCashflow >= 0 ? "#34d399" : "#ef4444";
+      }
+
+      // 3. Render biểu đồ dòng tiền SVG
+      renderAdminCashflowChart(totalDeposit, totalWithdraw, deposits, withdrawList);
+
+      // 4. Kết hợp danh sách nạp tiền thành công và tất cả yêu cầu rút tiền
+      const combinedList = [];
+
+      // A. Nạp tiền (CHỈ THÀNH CÔNG)
+      deposits.forEach(d => {
+        combinedList.push({
+          isDeposit: true,
+          id: d.id || d.orderId || "DEP",
+          userEmail: d.userEmail || d.email || "",
+          userName: d.userName || d.name || "Khách Hàng",
+          type: d.type || "Nạp tiền VietQR / SePay",
+          amount: Number(d.amount) || 0,
+          bankInfo: (d.bankAcc ? (d.bankAcc + " - " + (d.bankName || "MBBank")) : "VietQR MBBank SePay"),
+          time: d.time || d.date || "",
+          status: "Thành công",
+          handledBy: d.handledBy || "Tự động SePay 24/7",
+          rawWithdrawItem: null
+        });
+      });
+
+      // B. Rút tiền (TẤT CẢ YÊU CẦU RÚT)
+      withdrawList.forEach(w => {
+        combinedList.push({
+          isDeposit: false,
+          id: w.id,
+          userEmail: w.userEmail || "",
+          userName: w.userName || "Khách Hàng",
+          type: "Rút tiền ngân hàng",
+          amount: Number(w.amount) || 0,
+          bankInfo: (w.bankName || "") + "<br/><span style='font-family:monospace; color:#fff; font-weight:700;'>" + (w.bankAcc || "") + "</span><br/><span style='font-size:0.75rem; color:#94a3b8;'>" + (w.bankOwner || "") + "</span>",
+          time: w.time || "",
+          status: w.status || "Chờ Duyệt",
+          handledBy: w.handledBy || "",
+          rawWithdrawItem: w
+        });
+      });
+
+      // Sắp xếp mới nhất lên đầu
+      function parseDateTimeSort(str) {
+        if (!str) return 0;
+        const s = String(str).trim();
+        const parts = s.split(/\s+/);
+        let dPart = "", tPart = "00:00:00";
+        for (let p of parts) {
+          if (p.includes("/")) dPart = p;
+          else if (p.includes(":")) tPart = p;
+        }
+        if (dPart) {
+          const dp = dPart.split("/");
+          if (dp.length === 3) {
+            const d = parseInt(dp[0], 10);
+            const m = parseInt(dp[1], 10) - 1;
+            const y = parseInt(dp[2], 10);
+            const tp = tPart.split(":");
+            const h = parseInt(tp[0] || "0", 10);
+            const min = parseInt(tp[1] || "0", 10);
+            const sec = parseInt(tp[2] || "0", 10);
+            const res = new Date(y, m, d, h, min, sec).getTime();
+            if (!isNaN(res)) return res;
+          }
+        }
+        const parsed = new Date(s).getTime();
+        return isNaN(parsed) ? 0 : parsed;
+      }
+      combinedList.sort((a, b) => parseDateTimeSort(b.time) - parseDateTimeSort(a.time));
+
+      // Cập nhật huy hiệu bộ lọc
+      const badgeAll = document.getElementById("badgeWdAll");
+      if (badgeAll) badgeAll.innerText = combinedList.length;
+
+      const badgeDeposit = document.getElementById("badgeWdDeposit");
+      if (badgeDeposit) badgeDeposit.innerText = deposits.length;
+
+      const badgeWithdraw = document.getElementById("badgeWdWithdraw");
+      if (badgeWithdraw) badgeWithdraw.innerText = withdrawList.length;
+
+      const pendingWdCount = withdrawList.filter(w => w.status === "Chờ Duyệt").length;
+      const badgePending = document.getElementById("badgeWdPending");
+      if (badgePending) badgePending.innerText = pendingWdCount;
+
+      // 5. Lọc danh sách hiển thị
+      let filtered = combinedList;
+
+      if (adminWithdrawActiveFilter === "DEPOSIT") {
+        filtered = filtered.filter(item => item.isDeposit);
+      } else if (adminWithdrawActiveFilter === "WITHDRAW") {
+        filtered = filtered.filter(item => !item.isDeposit);
+      } else if (adminWithdrawActiveFilter === "PENDING") {
+        filtered = filtered.filter(item => !item.isDeposit && item.status === "Chờ Duyệt");
+      }
+
+      if (adminWithdrawSearchQuery) {
+        filtered = filtered.filter(item => {
+          const idStr = String(item.id || "").toLowerCase();
+          const emailStr = String(item.userEmail || "").toLowerCase();
+          const nameStr = String(item.userName || "").toLowerCase();
+          const bankStr = String(item.bankInfo || "").toLowerCase();
+          return idStr.includes(adminWithdrawSearchQuery) || emailStr.includes(adminWithdrawSearchQuery) || nameStr.includes(adminWithdrawSearchQuery) || bankStr.includes(adminWithdrawSearchQuery);
+        });
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:28px; color:#64748b;">Không tìm thấy giao dịch nạp / rút tiền nào phù hợp.</td></tr>';
         renderPaginationUI("admWithdrawPagination", 1, 0, "changeAdmWithdrawPage");
         return;
       }
 
-      // 10 Items per page pagination
-      const totalPages = Math.ceil(list.length / ITEMS_PER_PAGE);
+      // Phân trang 10 mục/trang
+      const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
       if (paginationState.admWithdraw > totalPages) paginationState.admWithdraw = totalPages;
       if (paginationState.admWithdraw < 1) paginationState.admWithdraw = 1;
 
       const startIndex = (paginationState.admWithdraw - 1) * ITEMS_PER_PAGE;
-      const pageList = list.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+      const pageList = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
       tbody.innerHTML = pageList.map(item => {
+        let typeBadge = '';
+        let amtHtml = '';
         let statusBadge = '';
-        if (item.status === 'Chờ Duyệt') {
-          statusBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4);">⏳ Chờ Duyệt</span>';
-        } else if (item.status.includes('Đã duyệt')) {
-          statusBadge = '<span class="badge-verified" style="font-size:0.72rem; background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4);">✅ ' + item.status + '</span>';
+        let actionHtml = '';
+
+        if (item.isDeposit) {
+          typeBadge = '<span style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 8px; border-radius:6px; background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); white-space:nowrap;"><i class="fa-solid fa-circle-arrow-down"></i> Nạp tiền</span>';
+          amtHtml = '<span style="font-size:0.92rem; font-weight:800; color:#10b981; font-family:monospace; white-space:nowrap;">+' + formatVND(item.amount) + '</span>';
+          statusBadge = '<span class="badge-verified" style="font-size:0.72rem; background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4); white-space:nowrap;">✅ Thành công</span>';
+          actionHtml = '<span style="font-size:0.75rem; color:#64748b; white-space:nowrap;"><i class="fa-solid fa-check-double"></i> Đã hoàn tất</span>';
         } else {
-          statusBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4);">❌ ' + item.status + '</span>';
+          typeBadge = '<span style="display:inline-flex; align-items:center; gap:5px; font-size:0.72rem; font-weight:700; padding:3px 8px; border-radius:6px; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); white-space:nowrap;"><i class="fa-solid fa-arrow-up-right-from-square"></i> Rút tiền</span>';
+          amtHtml = '<span style="font-size:0.92rem; font-weight:800; color:#ef4444; font-family:monospace; white-space:nowrap;">-' + formatVND(item.amount) + '</span>';
+          
+          if (item.status === 'Chờ Duyệt') {
+            statusBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4); white-space:nowrap;">⏳ Chờ Duyệt</span>';
+            actionHtml = '<div style="display:flex; gap:6px; justify-content:center; white-space:nowrap;">' +
+              '<button class="btn-action-copy" onclick="openApproveWithdrawQrModal(\'' + item.id + '\')" style="font-size:0.75rem; padding:5px 10px; background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.4); color:#10b981; font-weight:700; cursor:pointer;" title="Duyệt rút tiền"><i class="fa-solid fa-check"></i> Duyệt</button>' +
+              '<button class="btn-action-copy" onclick="rejectWithdrawRequest(\'' + item.id + '\')" style="font-size:0.75rem; padding:5px 10px; background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.4); color:#ef4444; font-weight:700; cursor:pointer;" title="Từ chối & Hoàn tiền"><i class="fa-solid fa-xmark"></i> Hủy</button>' +
+              '</div>';
+          } else if (item.status.includes('Đã duyệt')) {
+            statusBadge = '<span class="badge-verified" style="font-size:0.72rem; background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4); white-space:nowrap;">✅ ' + item.status + '</span>';
+            actionHtml = '<span style="font-size:0.75rem; color:#64748b; white-space:nowrap;"><i class="fa-solid fa-check-double"></i> Đã hoàn tất</span>';
+          } else {
+            statusBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); white-space:nowrap;">❌ ' + item.status + '</span>';
+            actionHtml = '<span style="font-size:0.75rem; color:#64748b; white-space:nowrap;"><i class="fa-solid fa-ban"></i> Đã từ chối</span>';
+          }
         }
 
-        const isPending = (item.status === 'Chờ Duyệt');
+        const handlerHtml = item.handledBy 
+          ? '<span style="color:#10b981; font-weight:600; font-size:0.75rem; white-space:nowrap;"><i class="fa-solid fa-user-check"></i> ' + escapeHtml(item.handledBy) + '</span>'
+          : '<span style="color:#64748b; font-size:0.75rem; white-space:nowrap;">Chưa xử lý</span>';
 
         return '<tr>' +
-          '<td style="font-family:monospace; font-weight:700; color:#38bdf8; font-size:0.82rem;">#' + item.id + '</td>' +
-          '<td><strong style="color:#fff; font-size:0.85rem;">' + escapeHtml(item.userName || 'User') + '</strong><br/><span style="font-size:0.75rem; color:#94a3b8; font-family:monospace;">' + escapeHtml(item.userEmail) + '</span></td>' +
-          '<td style="font-size:0.95rem; font-weight:800; color:#ef4444; font-family:monospace;">-' + formatVND(item.amount) + '</td>' +
-          '<td><strong style="color:#38bdf8;">' + escapeHtml(item.bankName) + '</strong><br/><span style="font-family:monospace; color:#fff; font-weight:700;">' + escapeHtml(item.bankAcc) + '</span><br/><span style="font-size:0.75rem; color:#94a3b8;">' + escapeHtml(item.bankOwner) + '</span></td>' +
-          '<td style="font-size:0.75rem; color:#94a3b8;">' + item.time + '</td>' +
-          '<td>' + statusBadge + '</td>' +
-          '<td style="font-size:0.75rem; color:#cbd5e1;">' + (item.handledBy ? '<span style="color:#10b981; font-weight:600;"><i class="fa-solid fa-user-check"></i> ' + escapeHtml(item.handledBy) + '</span>' : '<span style="color:#64748b;">Chưa xử lý</span>') + '</td>' +
-          '<td style="text-align:center;">' +
-            (isPending ? 
-              '<div style="display:flex; gap:6px; justify-content:center;">' +
-                '<button class="btn-action-copy" onclick="openApproveWithdrawQrModal(\'' + item.id + '\')" style="font-size:0.75rem; padding:5px 10px; background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.4); color:#10b981; font-weight:700;" title="Duyệt rút tiền"><i class="fa-solid fa-check"></i> Duyệt</button>' +
-                '<button class="btn-action-copy" onclick="rejectWithdrawRequest(\'' + item.id + '\')" style="font-size:0.75rem; padding:5px 10px; background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.4); color:#ef4444; font-weight:700;" title="Từ chối & Hoàn tiền"><i class="fa-solid fa-xmark"></i> Hủy</button>' +
-              '</div>' :
-              '<span style="font-size:0.72rem; color:#64748b;">Đã hoàn tất</span>') +
+          '<td style="font-family:monospace; font-weight:700; color:#38bdf8; font-size:0.82rem; white-space:nowrap;">#' + escapeHtml(item.id) + '</td>' +
+          '<td style="white-space:nowrap;">' +
+            '<strong style="color:#fff; font-size:0.85rem;">' + escapeHtml(item.userName || 'User') + '</strong><br/>' +
+            '<span style="font-size:0.75rem; color:#94a3b8; font-family:monospace;">' + escapeHtml(item.userEmail) + '</span>' +
           '</td>' +
+          '<td style="white-space:nowrap;">' + typeBadge + '</td>' +
+          '<td style="white-space:nowrap;">' + amtHtml + '</td>' +
+          '<td style="font-size:0.78rem; color:#cbd5e1; white-space:nowrap;">' + item.bankInfo + '</td>' +
+          '<td style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">' + escapeHtml(item.time) + '</td>' +
+          '<td style="white-space:nowrap;">' + statusBadge + '</td>' +
+          '<td style="white-space:nowrap;">' + handlerHtml + '</td>' +
+          '<td style="text-align:center; white-space:nowrap;">' + actionHtml + '</td>' +
         '</tr>';
       }).join("");
 
-      renderPaginationUI("admWithdrawPagination", paginationState.admWithdraw, list.length, "changeAdmWithdrawPage");
+      renderPaginationUI("admWithdrawPagination", paginationState.admWithdraw, filtered.length, "changeAdmWithdrawPage");
     }
+    window.renderAdminWithdrawTable = renderAdminWithdrawTable;
 
 
     // ==================== VIETQR APPROVE WITHDRAWAL SYSTEM ====================
@@ -25621,8 +26421,24 @@ function injectAllProductsSchema() {
 
       // Cập nhật số lượng huy hiệu (badge)
       updateAdminPreOrdersBadge();
+      updateAdminTxCountBadge();
     }
     window.switchAdmTxSubTab = switchAdmTxSubTab;
+
+    function updateAdminTxCountBadge() {
+      try {
+        const countBadge = document.getElementById("admTxCountBadge");
+        if (countBadge) {
+          const allHistory = (typeof getAllPlatformWalletTransactions === "function") 
+            ? getAllPlatformWalletTransactions() 
+            : (typeof getTransactionHistory === "function" ? getTransactionHistory() : []);
+          countBadge.innerText = allHistory.length;
+          countBadge.style.background = allHistory.length > 0 ? "#10b981" : "#1e293b";
+          countBadge.style.color = allHistory.length > 0 ? "#0b111e" : "#94a3b8";
+        }
+      } catch(e) {}
+    }
+    window.updateAdminTxCountBadge = updateAdminTxCountBadge;
 
     function updateAdminPreOrdersBadge() {
       try {
@@ -25671,6 +26487,9 @@ function injectAllProductsSchema() {
       const warrantyCount = allOrders.filter(isWarrantyOrder).length;
       const warrantyBadge = document.getElementById("admWarrantyCountBadge");
       if (warrantyBadge) warrantyBadge.innerText = warrantyCount;
+
+      if (typeof updateAdminTxCountBadge === "function") updateAdminTxCountBadge();
+      if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
 
       let orders = allOrders;
 
