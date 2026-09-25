@@ -195,7 +195,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
-          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/chatgpt_plus.png",
+          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/chatgpt_new_trial.png",
           "warranty": "Bảo Hành Login",
           "variants": [
             {
@@ -257,7 +257,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
-          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tool_oauth2.png",
+          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/hotmail_oauth2.png",
           "warranty": "Bảo Hành Login",
           "variants": [
             {
@@ -4668,7 +4668,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
               const updatedName = isLocallyFresh ? (currentProd.name || serverProd.name) : (serverProd.name || currentProd.name);
               const updatedCategory = isLocallyFresh ? (currentProd.category || serverProd.category) : (serverProd.category || currentProd.category);
-              const updatedImage = isLocallyFresh ? (currentProd.image || serverProd.image) : (serverProd.image || currentProd.image);
+              const isCurValidImg = typeof currentProd.image === "string" && currentProd.image.trim() !== "" && !currentProd.image.includes("placeholder") && !currentProd.image.includes("undefined");
+              const isServerValidImg = typeof serverProd.image === "string" && serverProd.image.trim() !== "" && !serverProd.image.includes("placeholder") && !serverProd.image.includes("undefined");
+              const updatedImage = (isLocallyFresh || isCurValidImg) ? currentProd.image : (isServerValidImg ? serverProd.image : currentProd.image);
               const updatedDesc = isLocallyFresh ? (currentProd.description || serverProd.description) : (serverProd.description || currentProd.description);
               const updatedWarranty = isLocallyFresh ? (currentProd.warranty || serverProd.warranty) : (serverProd.warranty || currentProd.warranty);
               const updatedCommission = isLocallyFresh ? (currentProd.commission || serverProd.commission) : (serverProd.commission || currentProd.commission);
@@ -5296,6 +5298,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         rating: rating,
         reviewCount: reviewsCount,
         image: image,
+        image_url: image,
+        imageUrl: image,
         warranty: warranty,
         description: description,
         variants: variants,
@@ -5450,6 +5454,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       // Defer tất cả render để nhả main thread (tránh đơ/jank sau khi lưu)
       setTimeout(function() {
+        if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
         if (typeof renderProductGrid === "function") renderProductGrid();
         if (typeof renderBestSellers === "function") renderBestSellers();
         if (typeof renderRecommended === "function") renderRecommended();
@@ -5458,6 +5463,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (typeof initStockManagementUI === "function") initStockManagementUI();
         if (typeof renderAllProductsPage === "function") renderAllProductsPage();
         if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+        if (typeof renderDetailRelatedProducts === "function" && currentSelectedProduct) {
+          renderDetailRelatedProducts(currentSelectedProduct);
+        }
       }, 10);
 
       // Đồng bộ trực tiếp lên Google Apps Script / Google Sheets
@@ -7574,7 +7582,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "PROD_MTYN7UJG": cdnBase + "youtube_channel.png",
         "PROD_MU6R34FZ4Z": cdnBase + "google_gemini_veo3.webp",
         "PROD_MU5T3T47AE": cdnBase + "gemini_pro_veo3.png",
-        "PROD_MU5SPLMSEC": cdnBase + "chatgpt_plus.png",
+        "PROD_MU5SPLMSEC": cdnBase + "chatgpt_new_trial.png",
         "SP_CHATGPT": cdnBase + "chatgpt_plus.png",
         "PROD_MU2OXBZC6K": cdnBase + "chatgpt_plus.png",
         "PROD_MTQZT2Y1": cdnBase + "hotmail_outlook.png",
@@ -7582,7 +7590,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "SP_HOTMAIL": cdnBase + "hotmail_outlook.png",
         "PROD_MTU9F5HN": cdnBase + "paypal_usdt.png",
         "PROD_MTPI7PIO": cdnBase + "zalo_group.png",
-        "PROD_MU2YQ1J3PY": cdnBase + "tool_oauth2.png",
+        "PROD_MU2YQ1J3PY": cdnBase + "hotmail_oauth2.png",
         "PROD_MU2PA8VNDP": cdnBase + "instagram.png",
         "PROD_MU2LYZY5C7": cdnBase + "rom_j7_pro.png",
         "PROD_MU2IXVFLMW": cdnBase + "tiktok_vietnam.png",
@@ -7611,7 +7619,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (name.includes("canva")) return cdnBase + "canva_pro.png";
       if (name.includes("capcut")) return cdnBase + "capcut_pro.png";
       if (name.includes("kling")) return cdnBase + "kling_ai.png";
-      if (name.includes("chatgpt") || name.includes("chat gpt") || name.includes("gemini") || name.includes("gpt")) return cdnBase + "chatgpt_plus.png";
+      if (name.includes("gemini pro") || name.includes("gg 5tb") || name.includes("veo 3.1")) return cdnBase + "gemini_pro_veo3.png";
+      if (name.includes("gemini") || name.includes("veo3") || name.includes("veo 3")) return cdnBase + "google_gemini_veo3.webp";
+      if (name.includes("gmail trial") || name.includes("new gmail trial")) return cdnBase + "chatgpt_new_trial.png";
+      if (name.includes("chatgpt") || name.includes("chat gpt") || name.includes("gpt")) return cdnBase + "chatgpt_plus.png";
       if (name.includes("hotmail") || name.includes("outlook")) return cdnBase + "hotmail_outlook.png";
       if (name.includes("instagram")) return cdnBase + "instagram.png";
       if (name.includes("tiktok brazil")) return cdnBase + "tiktok_brazil.png";
@@ -7660,7 +7671,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "PROD_MTYN7UJG": cdnBase + "youtube_channel.png",
         "PROD_MU6R34FZ4Z": cdnBase + "google_gemini_veo3.webp",
         "PROD_MU5T3T47AE": cdnBase + "gemini_pro_veo3.png",
-        "PROD_MU5SPLMSEC": cdnBase + "chatgpt_plus.png",
+        "PROD_MU5SPLMSEC": cdnBase + "chatgpt_new_trial.png",
         "SP_CHATGPT": cdnBase + "chatgpt_plus.png",
         "PROD_MU2OXBZC6K": cdnBase + "chatgpt_plus.png",
         "PROD_MTQZT2Y1": cdnBase + "hotmail_outlook.png",
@@ -7668,7 +7679,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "SP_HOTMAIL": cdnBase + "hotmail_outlook.png",
         "PROD_MTU9F5HN": cdnBase + "paypal_usdt.png",
         "PROD_MTPI7PIO": cdnBase + "zalo_group.png",
-        "PROD_MU2YQ1J3PY": cdnBase + "tool_oauth2.png",
+        "PROD_MU2YQ1J3PY": cdnBase + "hotmail_oauth2.png",
         "PROD_MU2PA8VNDP": cdnBase + "instagram.png",
         "PROD_MU2LYZY5C7": cdnBase + "rom_j7_pro.png",
         "PROD_MU2IXVFLMW": cdnBase + "tiktok_vietnam.png",
@@ -9317,6 +9328,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 delivery_type: isApiType ? 'api' : 'local',
                 apiMapping: effectiveMapping,
                 image: targetImage,
+                image_url: targetImage,
                 description: tp.description || cur.description,
                 warranty: tp.warranty || cur.warranty,
                 variants: (variants && variants.length > 0) ? variants : cur.variants
@@ -9368,6 +9380,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (typeof renderRecommended === "function") renderRecommended();
           if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
           if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+          if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+          if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
+            const freshCur = MOCK_DATA.products.find(p => p && p.id === currentSelectedProduct.id);
+            if (freshCur) {
+              currentSelectedProduct = freshCur;
+              const dtlImg = document.getElementById("dtlImage");
+              if (dtlImg && freshCur.image) dtlImg.src = (typeof resolveProductImage === "function") ? resolveProductImage(freshCur) : freshCur.image;
+              if (typeof renderDetailRelatedProducts === "function") renderDetailRelatedProducts(freshCur);
+            }
+          }
         }
       } catch(e) {
         console.warn("syncTursoProductsToLocalUI error:", e);
@@ -15178,7 +15200,8 @@ function syncAllOpenViewsStock(changedProdId) {
           const prodUrl = "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
           const pIdEscaped = escapeHtml(p.id);
           const pNameEscaped = escapeHtml(p.name);
-          const pImageEscaped = escapeHtml(p.image || "");
+          const pImgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || p.image_url || "");
+          const pImageEscaped = escapeHtml(pImgUrl);
           const pCatEscaped = escapeHtml(p.category || "MMO");
 
           return '<div class="product-card" style="background:#0b111e; border:1px solid #1e293b; border-radius:10px; overflow:hidden; display:flex; flex-direction:column; transition:transform 0.2s, box-shadow 0.2s;">' +
@@ -22053,29 +22076,39 @@ function changeAdmUsersPage(p) {
           if (ev && ev.data && ev.data.type === "PRODUCT_UPDATED") {
             const updId = ev.data.prodId;
             const updVariants = ev.data.variants;
+            const updData = ev.data.prodData;
             if (typeof loadPersistedProducts === "function") loadPersistedProducts();
             if (typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) {
-              const target = MOCK_DATA.products.find(p => p.id === updId || (p.name && ev.data.prodData && p.name.trim().toLowerCase() === ev.data.prodData.name.trim().toLowerCase()));
-              if (target && updVariants) {
-                target.variants = updVariants;
+              const target = MOCK_DATA.products.find(p => p.id === updId || (p.name && updData && p.name.trim().toLowerCase() === updData.name.trim().toLowerCase()));
+              if (target && updData) {
+                Object.assign(target, updData);
+                if (updVariants) target.variants = updVariants;
                 if (ev.data.stock !== undefined) target.stock = ev.data.stock;
               }
             }
-            if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && (String(currentSelectedProduct.id) === String(updId) || (currentSelectedProduct.name && ev.data.prodData && currentSelectedProduct.name.trim().toLowerCase() === ev.data.prodData.name.trim().toLowerCase()))) {
-              if (updVariants) currentSelectedProduct.variants = updVariants;
-              if (ev.data.stock !== undefined) currentSelectedProduct.stock = ev.data.stock;
-              if (currentSelectedVariantIndex >= (currentSelectedProduct.variants ? currentSelectedProduct.variants.length : 1)) {
-                currentSelectedVariantIndex = 0;
+            if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
+              if (String(currentSelectedProduct.id) === String(updId) || (currentSelectedProduct.name && updData && currentSelectedProduct.name.trim().toLowerCase() === updData.name.trim().toLowerCase())) {
+                if (updData) Object.assign(currentSelectedProduct, updData);
+                if (updVariants) currentSelectedProduct.variants = updVariants;
+                if (ev.data.stock !== undefined) currentSelectedProduct.stock = ev.data.stock;
+                if (currentSelectedVariantIndex >= (currentSelectedProduct.variants ? currentSelectedProduct.variants.length : 1)) {
+                  currentSelectedVariantIndex = 0;
+                }
               }
             }
             if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(updId, ev.data.stock, null, true);
             const dtlViewEl = document.getElementById("viewProductDetail");
             if (dtlViewEl && dtlViewEl.style.display !== "none" && !dtlViewEl.classList.contains("hidden")) {
-              if (typeof openProductDetailById === "function") openProductDetailById(updId);
+              if (currentSelectedProduct && (String(currentSelectedProduct.id) === String(updId) || (currentSelectedProduct.name && updData && currentSelectedProduct.name.trim().toLowerCase() === updData.name.trim().toLowerCase()))) {
+                if (typeof openProductDetailById === "function") openProductDetailById(updId);
+              } else {
+                if (typeof renderDetailRelatedProducts === "function" && currentSelectedProduct) renderDetailRelatedProducts(currentSelectedProduct);
+              }
             }
             if (typeof renderProductGrid === "function") renderProductGrid();
             if (typeof renderBestSellers === "function") renderBestSellers();
             if (typeof renderRecommended === "function") renderRecommended();
+            if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
           }
         };
       }
