@@ -5467,3 +5467,93 @@ a, button, [onclick], .nav-link, .product-card, .blog-item, .category-card, .sid
   margin: 0 !important;
   text-decoration: none !important;
 }
+
+/* ==========================================================================
+   MY ORDERS (ĐƠN HÀNG CỦA TÔI) RESPONSIVE FILTER TABS (v2.9.0)
+   ========================================================================== */
+.prof-orders-filter-bar {
+  margin-bottom: 16px;
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 12px;
+  flex-wrap: wrap;
+}
+.prof-orders-tab-btn {
+  font-size: 0.8rem;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+.prof-tab-text-short {
+  display: none;
+}
+.prof-tab-text-full {
+  display: inline;
+}
+
+@media (max-width: 768px) {
+  .prof-orders-card-box {
+    padding: 14px 10px !important;
+  }
+  .prof-orders-header-row {
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+  }
+  .prof-order-search-wrap {
+    width: 100% !important;
+    display: flex !important;
+  }
+  .prof-order-search-input {
+    flex: 1 !important;
+    width: auto !important;
+    min-width: 0 !important;
+  }
+  .prof-orders-filter-bar {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin-bottom: 12px !important;
+    padding-bottom: 10px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .prof-orders-filter-bar::-webkit-scrollbar {
+    display: none !important;
+  }
+  .prof-orders-tab-btn {
+    flex: 1 1 0px !important;
+    min-width: 0 !important;
+    padding: 6px 2px !important;
+    font-size: 0.68rem !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
+    white-space: nowrap !important;
+    box-sizing: border-box !important;
+    letter-spacing: -0.3px !important;
+    border-radius: 5px !important;
+  }
+  .prof-orders-tab-btn i {
+    font-size: 0.66rem !important;
+    margin-right: 1px !important;
+  }
+  .prof-tab-text-full {
+    display: none !important;
+  }
+  .prof-tab-text-short {
+    display: inline !important;
+  }
+}
+
