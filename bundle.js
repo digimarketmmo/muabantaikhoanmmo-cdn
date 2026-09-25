@@ -170,7 +170,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
-          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp",
+          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gemini_pro_veo3.png",
           "warranty": "Bảo Hành 1 Đổi 1",
           "variants": [
             {
@@ -5418,8 +5418,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // TỰ ĐỘNG LÀM MỚI TOÀN BỘ GIAO DIỆN TRANG XEM CHI TIẾT SẢN PHẨM (viewProductDetail)
       const dtlView = document.getElementById("viewProductDetail");
       const isDtlActive = dtlView && (dtlView.style.display !== "none" && !dtlView.classList.contains("hidden"));
-      if (typeof openProductDetailById === "function") {
-        if (isDtlActive || (currentSelectedProduct && (String(currentSelectedProduct.id) === String(actualTargetId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId))))) {
+      if (isDtlActive || (currentSelectedProduct && (String(currentSelectedProduct.id) === String(actualTargetId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId))))) {
+        const dtlImg = document.getElementById("dtlImage");
+        if (dtlImg && prodData.image) dtlImg.src = prodData.image;
+        const dtlTitle = document.getElementById("dtlTitle");
+        if (dtlTitle) dtlTitle.innerText = prodData.name;
+        if (typeof openProductDetailById === "function") {
           openProductDetailById(actualTargetId);
         }
       }
@@ -7544,16 +7548,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         // SMART SYNCHRONIZED SOLD QUANTITY CALCULATOR (KHÔNG BỊ 100 ĐỒNG LOẠT)
     
-    // RESOLVE PRODUCT IMAGE: Bảo tồn 100% ảnh sản phẩm đã có (kể cả base64), chỉ fallback khi không có ảnh
+    // RESOLVE PRODUCT IMAGE: Bảo tồn 100% ảnh sản phẩm người dùng đã tải lên (kể cả base64), chỉ fallback khi không có ảnh
     function resolveProductImage(p) {
       if (!p) return "https://iili.io/nFV4Rln.png";
       const existingImg = (typeof p === "string") ? p : (p.image || p.image_url || p.imageUrl || "");
       if (typeof existingImg === "string" && existingImg.trim() !== "") {
         const trimmed = existingImg.trim();
-        // [QUY TẮC BẢO VỆ GOOGLEBOT & SCHEMA]: Chỉ chấp nhận URL HTTP/HTTPS công khai hợp lệ.
-        // Tuyệt đối KHÔNG trả về Data URI (data:image) vì Google Search Console sẽ báo lỗi "URL trong trường image không hợp lệ".
+        // [QUY TẮC CỐT LÕI - BẢO TỒN 100% ẢNH USER TẢI LÊN]: Chấp nhận Data URI (base64) hiển thị trực tiếp trên web
+        if (trimmed.startsWith("data:image/") || trimmed.startsWith("data:")) {
+          return trimmed;
+        }
+        // Chấp nhận URL HTTP/HTTPS công khai hoặc đường dẫn hợp lệ
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
-            !trimmed.startsWith("data:") &&
             !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash")) {
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
@@ -7567,7 +7573,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "PROD_MU5PWT7PP7": cdnBase + "kling_ai.png",
         "PROD_MTYN7UJG": cdnBase + "youtube_channel.png",
         "PROD_MU6R34FZ4Z": cdnBase + "google_gemini_veo3.webp",
-        "PROD_MU5T3T47AE": cdnBase + "google_gemini_veo3.webp",
+        "PROD_MU5T3T47AE": cdnBase + "gemini_pro_veo3.png",
         "PROD_MU5SPLMSEC": cdnBase + "chatgpt_plus.png",
         "SP_CHATGPT": cdnBase + "chatgpt_plus.png",
         "PROD_MU2OXBZC6K": cdnBase + "chatgpt_plus.png",
@@ -7633,6 +7639,55 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       return "https://iili.io/nFV4Rln.png";
     }
     window.resolveProductImage = resolveProductImage;
+
+    // RESOLVE PRODUCT SEO SCHEMA IMAGE: Dành riêng cho Schema.org JSON-LD (Google Search Console yêu cầu URL công khai)
+    function resolveProductSeoSchemaImage(p) {
+      if (!p) return "https://iili.io/nFV4Rln.png";
+      const existingImg = (typeof p === "string") ? p : (p.image || p.image_url || p.imageUrl || "");
+      if (typeof existingImg === "string" && existingImg.trim() !== "") {
+        const trimmed = existingImg.trim();
+        if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
+            !trimmed.startsWith("data:") &&
+            !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash")) {
+          return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
+        }
+      }
+      const id = String((typeof p === "object" && p.id) || "").toUpperCase();
+      const name = String((typeof p === "object" && p.name) || "").toLowerCase();
+      const cdnBase = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/";
+      const KNOWN_CDN_MAP = {
+        "PROD_MU5PWT7PP7": cdnBase + "kling_ai.png",
+        "PROD_MTYN7UJG": cdnBase + "youtube_channel.png",
+        "PROD_MU6R34FZ4Z": cdnBase + "google_gemini_veo3.webp",
+        "PROD_MU5T3T47AE": cdnBase + "gemini_pro_veo3.png",
+        "PROD_MU5SPLMSEC": cdnBase + "chatgpt_plus.png",
+        "SP_CHATGPT": cdnBase + "chatgpt_plus.png",
+        "PROD_MU2OXBZC6K": cdnBase + "chatgpt_plus.png",
+        "PROD_MTQZT2Y1": cdnBase + "hotmail_outlook.png",
+        "PROD_MTRB6000": cdnBase + "hotmail_outlook.png",
+        "SP_HOTMAIL": cdnBase + "hotmail_outlook.png",
+        "PROD_MTU9F5HN": cdnBase + "paypal_usdt.png",
+        "PROD_MTPI7PIO": cdnBase + "zalo_group.png",
+        "PROD_MU2YQ1J3PY": cdnBase + "tool_oauth2.png",
+        "PROD_MU2PA8VNDP": cdnBase + "instagram.png",
+        "PROD_MU2LYZY5C7": cdnBase + "rom_j7_pro.png",
+        "PROD_MU2IXVFLMW": cdnBase + "tiktok_vietnam.png",
+        "PROD_MU2CZL38PH": cdnBase + "tiktok_france.png",
+        "PROD_MTPIJ9XV": cdnBase + "tiktok_brazil.png",
+        "PROD_MTQQXO2E": cdnBase + "gmail_24h.png",
+        "PROD_MTQWMPL5": cdnBase + "gmail_7day.png",
+        "PROD_MTQWQFZD": cdnBase + "gmail_30day.png",
+        "PROD_MTQX1C7X": cdnBase + "gmail_1h.png",
+        "PROD_MTQX465U": cdnBase + "gmail_10m.png",
+        "PROD_MTQX7SIK": cdnBase + "gmail_14day.png"
+      };
+      if (KNOWN_CDN_MAP[id]) return KNOWN_CDN_MAP[id];
+      if (name.includes("gemini pro") || name.includes("veo3")) return cdnBase + "gemini_pro_veo3.png";
+      if (name.includes("gemini")) return cdnBase + "google_gemini_veo3.webp";
+      if (name.includes("kling")) return cdnBase + "kling_ai.png";
+      return "https://iili.io/nFV4Rln.png";
+    }
+    window.resolveProductSeoSchemaImage = resolveProductSeoSchemaImage;
 
     function getRealisticProductSold(p) {
       if (!p) return 0;
@@ -9246,7 +9301,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 if (Array.isArray(variants)) variants.forEach(v => { v.stock = updatedStock; });
                 if (Array.isArray(cur.variants)) cur.variants.forEach(v => { v.stock = updatedStock; });
               }
-              if (cur.stock !== updatedStock || cur.price !== updatedPrice || cur.name !== tp.name) {
+              const isImgValid = function(val) {
+                return typeof val === "string" && val.trim() !== "" && !val.includes("placeholder") && !val.includes("unsplash") && !val.includes("undefined") && !val.includes("null");
+              };
+              const targetImage = isImgValid(img) ? img.trim() : (isImgValid(cur.image) ? cur.image.trim() : (typeof resolveProductImage === "function" ? resolveProductImage(cur) : (cur.image || "https://iili.io/nFV4Rln.png")));
+              if (cur.stock !== updatedStock || cur.price !== updatedPrice || cur.name !== tp.name || cur.image !== targetImage) {
                 hasNewOrUpdated = true;
               }
               MOCK_DATA.products[existingIdx] = Object.assign({}, cur, {
@@ -9257,7 +9316,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 deliveryType: isApiType ? 'api' : 'local',
                 delivery_type: isApiType ? 'api' : 'local',
                 apiMapping: effectiveMapping,
-                image: (cur.image && cur.image.trim() !== "" && !cur.image.startsWith("data:") && !cur.image.includes("unsplash") && !cur.image.includes("placeholder")) ? cur.image : (typeof resolveProductImage === "function" ? resolveProductImage(cur) : (cur.image || "https://iili.io/nFV4Rln.png")),
+                image: targetImage,
                 description: tp.description || cur.description,
                 warranty: tp.warranty || cur.warranty,
                 variants: (variants && variants.length > 0) ? variants : cur.variants
@@ -9267,6 +9326,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             // Sản phẩm mới từ Turso
             const isApiTypeNew = (tp.delivery_type === 'api' || tp.deliveryType === 'api');
             let newStock = Number(tp.stock) || 0;
+            const isImgValidNew = function(val) {
+              return typeof val === "string" && val.trim() !== "" && !val.includes("placeholder") && !val.includes("unsplash") && !val.includes("undefined") && !val.includes("null");
+            };
+            const targetImageNew = isImgValidNew(img) ? img.trim() : (typeof resolveProductImage === "function" ? resolveProductImage({ id: tp.id, name: tp.name, category: tp.category }) : "https://iili.io/nFV4Rln.png");
             MOCK_DATA.products.push({
               id: tp.id,
               name: tp.name,
@@ -9276,7 +9339,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               sold: Number(tp.sold) || 0,
               buffSold: 0,
               rating: tp.rating || 4.9,
-              image: (img && img.trim() !== "" && !img.startsWith("data:") && !img.includes("placeholder") && !img.includes("unsplash")) ? img : (typeof resolveProductImage === "function" ? resolveProductImage({ id: tp.id, name: tp.name, category: tp.category }) : "https://iili.io/nFV4Rln.png"),
+              image: targetImageNew,
               warranty: tp.warranty || "Bảo Hành 1 Đổi 1",
               description: tp.description || "",
               variants: variants,
@@ -15478,6 +15541,7 @@ function syncAllOpenViewsStock(changedProdId) {
       // ===== FULL SEO & STRUCTURED DATA UPDATE =====
       try {
         const prodCanonicalUrl = window.location.origin + window.location.pathname + "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
+        const schemaImgUrl = (typeof resolveProductSeoSchemaImage === "function") ? resolveProductSeoSchemaImage(p) : ((p.image && !p.image.startsWith("data:")) ? p.image : "https://iili.io/nFV4Rln.png");
         const soldCount = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p) : (p.buffSold || p.sold || 10);
         const reviewCount = Math.max(5, Math.min(500, Math.floor(soldCount / 3)));
         const prodDesc = (p.description || ("Mua " + p.name + " tu dong 24/7 uy tin, gia re nhat Viet Nam.")).slice(0, 300);
@@ -15495,7 +15559,7 @@ function syncAllOpenViewsStock(changedProdId) {
         const ogDescEl = document.querySelector("meta[property='og:description']");
         if (ogDescEl) ogDescEl.setAttribute("content", prodShortDesc);
         const ogImgEl = document.querySelector("meta[property='og:image']");
-        if (ogImgEl) ogImgEl.setAttribute("content", (prodImgUrl && !prodImgUrl.startsWith("data:")) ? prodImgUrl : "https://iili.io/nFV4Rln.png");
+        if (ogImgEl) ogImgEl.setAttribute("content", schemaImgUrl);
         const ogUrlEl = document.querySelector("meta[property='og:url']");
         if (ogUrlEl) ogUrlEl.setAttribute("content", prodCanonicalUrl);
         const twTitleEl = document.querySelector("meta[name='twitter:title']");
@@ -15503,7 +15567,7 @@ function syncAllOpenViewsStock(changedProdId) {
         const twDescEl = document.querySelector("meta[name='twitter:description']");
         if (twDescEl) twDescEl.setAttribute("content", prodShortDesc);
         const twImgEl = document.querySelector("meta[name='twitter:image']");
-        if (twImgEl) twImgEl.setAttribute("content", (prodImgUrl && !prodImgUrl.startsWith("data:")) ? prodImgUrl : "https://iili.io/nFV4Rln.png");
+        if (twImgEl) twImgEl.setAttribute("content", schemaImgUrl);
         const canonicalEl = document.getElementById("canonicalLink");
         if (canonicalEl) canonicalEl.setAttribute("href", prodCanonicalUrl);
 
@@ -15515,10 +15579,7 @@ function syncAllOpenViewsStock(changedProdId) {
           document.head.appendChild(prodSchemaScript);
         }
 
-        const prodImgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : "https://iili.io/nFV4Rln.png";
-        if (!p.image || p.image.includes("placeholder") || p.image.startsWith("data:")) {
-          p.image = prodImgUrl;
-        }
+        const prodImgUrl = schemaImgUrl;
 
         const prodShippingDetails = {
           "@type": "OfferShippingDetails",
@@ -22401,7 +22462,7 @@ function injectAllProductsSchema() {
               "itemListElement": visibleProds.map((p, idx) => {
                 const prodUrl = baseUrl + "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
                 const price = (p.variants && p.variants[0] && p.variants[0].price) ? p.variants[0].price : (p.price || 0);
-                const imgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png");
+                const imgUrl = (typeof resolveProductSeoSchemaImage === "function") ? resolveProductSeoSchemaImage(p) : ((p.image && !p.image.startsWith("data:")) ? p.image : "https://iili.io/nFV4Rln.png");
                 return {
                   "@type": "ListItem",
                   "position": idx + 1,
