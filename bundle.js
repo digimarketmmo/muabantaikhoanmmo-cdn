@@ -7495,7 +7495,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // 3. Render thông minh theo nhu cầu (Chỉ render 1 lần duy nhất hoặc khi có dữ liệu mới)
       if (viewId === "viewStore") {
         document.getElementById("navStore")?.classList.add("active");
-        if (!_viewRendered["viewStore"] || _viewDirty["viewStore"]) {
+        const bList = document.getElementById("bestSellerList");
+        const rGrid = document.getElementById("recommendedGrid");
+        const pGrid = document.getElementById("productGrid");
+        const isBListEmpty = !bList || bList.children.length === 0;
+        const isRGridEmpty = !rGrid || rGrid.children.length === 0;
+        const isPGridEmpty = !pGrid || pGrid.children.length === 0;
+        if (!_viewRendered["viewStore"] || _viewDirty["viewStore"] || isBListEmpty || isRGridEmpty || isPGridEmpty) {
           _viewRendered["viewStore"] = true;
           _viewDirty["viewStore"] = false;
           if (typeof renderProductGrid === "function") renderProductGrid();
@@ -7854,8 +7860,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const items = prods.slice(0, 12);
       const html = items.map(function(p) {
         const displaySold = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p).toLocaleString("vi-VN") : (p.buffSold || p.sold || 0);
+        const imgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || '');
         return '<div class="compact-product-item" onclick="openProductDetailById(\'' + p.id + '\')">' +
-          '<div class="compact-thumb"><img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" /></div>' +
+          '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + escapeHtml(p.name) + '" loading="lazy" /></div>' +
           '<div class="compact-info">' +
             '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + escapeHtml(p.name) + '</a>' +
             '<div class="compact-meta">' +
@@ -7952,10 +7959,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const cVal = Math.round(Number(p.price || 0) * cRate / 100);
       const commTagHtml = '<div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: ' + cRate + '% (~' + (typeof formatVND === "function" ? formatVND(cVal) : cVal.toLocaleString("vi-VN") + ' đ') + ')</span><span class="comm-text-short">HH ' + cRate + '%</span></div>';
 
+      const cardImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || '');
       return '<div class="product-card" onclick="openProductDetailById(\'' + p.id + '\')">' +
         '<div class="product-img-wrap" style="position:relative;">' +
           badgeWarningHtml +
-          '<img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" loading="lazy" />' +
+          '<img src="' + cardImg + '" alt="' + escapeHtml(p.name) + '" loading="lazy" />' +
         '</div>' +
         '<div class="product-body">' +
           '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</a>' +
@@ -9464,7 +9472,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
 
         refreshAllShopStockUI();
-        if (hasNewOrUpdated) {
+        const bList = document.getElementById("bestSellerList");
+        const rGrid = document.getElementById("recommendedGrid");
+        const isBListEmpty = !bList || bList.children.length === 0;
+        const isRGridEmpty = !rGrid || rGrid.children.length === 0;
+        if (hasNewOrUpdated || isBListEmpty || isRGridEmpty) {
           saveProductsToStorage();
           if (typeof renderCategories === "function") renderCategories();
           if (typeof renderProductGrid === "function") renderProductGrid();
@@ -21962,6 +21974,26 @@ function changeAdmUsersPage(p) {
       if (typeof renderProductGrid === "function") renderProductGrid();
       if (typeof renderSidebarBlogs === "function") renderSidebarBlogs();
       if (typeof _viewRendered !== "undefined") _viewRendered["viewStore"] = true;
+      setTimeout(function() {
+        const bList = document.getElementById("bestSellerList");
+        const rGrid = document.getElementById("recommendedGrid");
+        if ((!bList || bList.children.length === 0) && typeof renderBestSellers === "function") {
+          renderBestSellers();
+        }
+        if ((!rGrid || rGrid.children.length === 0) && typeof renderRecommended === "function") {
+          renderRecommended();
+        }
+      }, 50);
+      setTimeout(function() {
+        const bList = document.getElementById("bestSellerList");
+        const rGrid = document.getElementById("recommendedGrid");
+        if ((!bList || bList.children.length === 0) && typeof renderBestSellers === "function") {
+          renderBestSellers();
+        }
+        if ((!rGrid || rGrid.children.length === 0) && typeof renderRecommended === "function") {
+          renderRecommended();
+        }
+      }, 250);
       if (typeof updateLiveRealTimeClock === "function") updateLiveRealTimeClock();
       if (typeof initPreOrdersRealtimeSSE === "function") initPreOrdersRealtimeSSE();
       // Polling dự phòng đơn hàng thời gian thực cho Admin mỗi 45 giây (chỉ khi mở tab viewAdmin)
