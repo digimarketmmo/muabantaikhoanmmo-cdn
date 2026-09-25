@@ -5557,3 +5557,62 @@ a, button, [onclick], .nav-link, .product-card, .blog-item, .category-card, .sid
   }
 }
 
+/* ==========================================================================
+   MY ORDERS TABLE HORIZONTAL SCROLL & ZERO OVERLAP (v2.9.1)
+   ========================================================================== */
+.prof-orders-table-wrapper {
+  overflow-x: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  border-radius: 8px;
+}
+.prof-orders-table {
+  width: 100% !important;
+  min-width: 880px !important;
+  border-collapse: collapse !important;
+  font-size: 0.85rem !important;
+}
+.prof-orders-table th,
+.prof-orders-table td {
+  white-space: nowrap !important;
+  vertical-align: middle !important;
+}
+.prof-orders-table td > div {
+  white-space: nowrap !important;
+}
+
+@media (max-width: 768px) {
+  .prof-orders-table-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin: 0 -4px !important;
+    padding-bottom: 8px !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #38bdf8 rgba(15, 23, 42, 0.6) !important;
+  }
+  .prof-orders-table-wrapper::-webkit-scrollbar {
+    height: 5px !important;
+  }
+  .prof-orders-table-wrapper::-webkit-scrollbar-thumb {
+    background: #38bdf8 !important;
+    border-radius: 4px !important;
+  }
+  .prof-orders-table-wrapper::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.6) !important;
+  }
+  .prof-orders-table {
+    min-width: 880px !important;
+  }
+  .prof-orders-table th {
+    padding: 10px 12px !important;
+    font-size: 0.74rem !important;
+    white-space: nowrap !important;
+  }
+  .prof-orders-table td {
+    padding: 10px 12px !important;
+    white-space: nowrap !important;
+  }
+}
+
+
