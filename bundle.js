@@ -16970,7 +16970,7 @@ function syncAllOpenViewsStock(changedProdId) {
       list.innerHTML = (MOCK_DATA.blogs || []).slice(0, 8).map(b => `
         <div class="blog-item" onclick="openBlogDetail('${b.id}')">
           <div class="blog-thumb">
-            <img src="${b.image}" alt="${b.title}"/>
+            <img src="${upgradeBloggerImageToFullHd(b.image)}" alt="${b.title}"/>
           </div>
           <div class="blog-content">
             <div class="blog-title">${b.title}</div>
@@ -17036,7 +17036,7 @@ function syncAllOpenViewsStock(changedProdId) {
       grid.innerHTML = pageBlogs.map(b => `
         <div class="blog-card-full" onclick="openBlogDetail('${b.id}')">
           <div class="blog-card-img">
-            <img src="${b.image}" alt="${b.title}" loading="lazy"/>
+            <img src="${upgradeBloggerImageToFullHd(b.image)}" alt="${b.title}" loading="lazy"/>
           </div>
           <div class="blog-card-body">
             <span class="blog-badge-cat">${b.category}</span>
@@ -17103,6 +17103,15 @@ function syncAllOpenViewsStock(changedProdId) {
 
     
     
+    // NÂNG CẤP TOÀN BỘ ẢNH BLOGGER / GOOGLE USERCONTENT LÊN FULL HD S1600 SẮC NÉT 100%
+    function upgradeBloggerImageToFullHd(str) {
+      if (!str || typeof str !== "string") return str;
+      return str
+        .replace(/\/(w[0-9]+-h[0-9]+[^/]*|s[0-9]+(-[a-z0-9-]+)?)\//gi, '/s1600/')
+        .replace(/=(w[0-9]+-h[0-9]+[^"'\s]*|s[0-9]+(-[a-z0-9-]+)?)/gi, '=s1600');
+    }
+    window.upgradeBloggerImageToFullHd = upgradeBloggerImageToFullHd;
+
     // ==================== CLEAN BLOGGER CONTENT FOR DARK THEME ====================
     function cleanBloggerContentForDarkTheme(content) {
       if (!content) return "";
@@ -17132,6 +17141,9 @@ function syncAllOpenViewsStock(changedProdId) {
       // Strip hardcoded light backgrounds so it syncs cleanly with dark theme
       html = html.replace(/background(-color)?\s*:\s*(#ffffff|#fff|white|rgb\(255,\s*255,\s*255\)|rgba\(255,\s*255,\s*255,\s*1\))/gi, "background: transparent");
       html = html.replace(/color\s*:\s*(#000000|#000|#202124|#222222|#222|black|rgb\(0,\s*0,\s*0\)|rgb\(32,\s*33,\s*36\))/gi, "color: inherit");
+
+      // Nâng cấp toàn bộ URL ảnh Blogger lên chuẩn gốc s1600 Full HD chống mờ vỡ chữ
+      html = upgradeBloggerImageToFullHd(html);
 
       return priceBadgeHtml + html;
     }
@@ -17172,11 +17184,8 @@ function syncAllOpenViewsStock(changedProdId) {
             if (image === "https://iili.io/nFV4Rln.png" && entry.media$thumbnail && entry.media$thumbnail.url) {
               image = entry.media$thumbnail.url;
             }
-            // Nâng cấp mọi URL ảnh thumbnail Blogger thành chuẩn gốc s1600 không vỡ nét
-            image = String(image)
-              .replace(/=s[0-9]+(-[a-z0-9-]+)?/i, '=s1600')
-              .replace(/\/s[0-9]+(-c)?\//i, '/s1600/')
-              .replace(/=w[0-9]+-h[0-9]+[^"']*/i, '=s1600');
+            // Nâng cấp mọi URL ảnh thumbnail Blogger thành chuẩn gốc s1600 Full HD không vỡ nét
+            image = upgradeBloggerImageToFullHd(String(image));
 
             let dateStr = "Vừa xong";
             let publishTime = Date.now();
@@ -17189,6 +17198,7 @@ function syncAllOpenViewsStock(changedProdId) {
             }
 
             let rawContent = (entry.content && entry.content.$t) ? entry.content.$t : ((entry.summary && entry.summary.$t) ? entry.summary.$t : "");
+            rawContent = upgradeBloggerImageToFullHd(rawContent);
             rawContent = cleanBloggerContentForDarkTheme(rawContent);
 
             // Mobile performance fix: dùng regex thay vì DOM parse để tránh freeze trên mobile (50 posts)
@@ -17430,11 +17440,8 @@ function syncAllOpenViewsStock(changedProdId) {
       const artImgWrap = document.getElementById("articleFeaturedImgWrap");
       if (artImg) {
         if (b.image) {
-          // Nâng cấp ảnh bài viết lên độ phân giải cao s1600 chống vỡ ảnh tuyệt đối
-          let highResImg = String(b.image)
-            .replace(/=s[0-9]+(-[a-z0-9-]+)?/i, '=s1600')
-            .replace(/\/s[0-9]+(-c)?\//i, '/s1600/')
-            .replace(/=w[0-9]+-h[0-9]+[^"']*/i, '=s1600');
+          // Nâng cấp ảnh bài viết lên độ phân giải cao s1600 / Full HD chống vỡ ảnh tuyệt đối
+          let highResImg = upgradeBloggerImageToFullHd(String(b.image));
           artImg.src = highResImg;
           artImg.alt = b.title;
           if (artImgWrap) artImgWrap.style.display = "block";
@@ -17449,12 +17456,8 @@ function syncAllOpenViewsStock(changedProdId) {
       const artBody = document.getElementById("articleBodyContent");
       if (artBody) {
         let contentHtml = (typeof cleanBloggerContentForDarkTheme === "function") ? cleanBloggerContentForDarkTheme(b.content || "") : (b.content || "");
-        // Tự động nâng cấp toàn bộ ảnh trong nội dung bài viết lên s1600 để ảnh sắc nét 100%
-        contentHtml = contentHtml.replace(/https?:\/\/blogger\.googleusercontent\.com\/img\/a\/[^\s"'>]+/gi, function(m) {
-          return m.replace(/=s[0-9]+(-[a-z0-9-]+)?/i, '=s1600')
-                  .replace(/\/s[0-9]+(-c)?\//i, '/s1600/')
-                  .replace(/=w[0-9]+-h[0-9]+[^"']*/i, '=s1600');
-        });
+        // Tự động nâng cấp toàn bộ ảnh trong nội dung bài viết lên s1600 / Full HD để ảnh sắc nét 100%
+        contentHtml = upgradeBloggerImageToFullHd(contentHtml);
         if (!contentHtml.includes("<h2") && !contentHtml.includes("<p>")) {
           contentHtml = contentHtml.split("\n\n").map(para => {
             if (para.startsWith("1.") || para.startsWith("2.") || para.startsWith("3.") || para.startsWith("-")) {
@@ -17698,7 +17701,7 @@ function syncAllOpenViewsStock(changedProdId) {
       container.innerHTML = topList.map((item, idx) => 
         '<div onclick="openBlogDetail(\'' + item.id + '\')" style="display:flex; gap:10px; align-items:center; cursor:pointer; padding:6px 0; border-bottom:1px solid #141f33;">' +
           '<span style="font-size:1.1rem; font-weight:800; color:' + (idx < 3 ? '#ef4444' : '#64748b') + '; width:24px; text-align:center;">0' + (idx+1) + '</span>' +
-          '<img src="' + item.image + '" style="width:48px; height:48px; border-radius:6px; object-fit:cover; flex-shrink:0;" alt="' + escapeHtml(item.title) + '" />' +
+          '<img src="' + upgradeBloggerImageToFullHd(item.image) + '" style="width:48px; height:48px; border-radius:6px; object-fit:cover; flex-shrink:0;" alt="' + escapeHtml(item.title) + '" />' +
           '<div style="flex:1; overflow:hidden;">' +
             '<div style="font-size:0.8rem; font-weight:600; color:#cbd5e1; line-height:1.35; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">' +
               escapeHtml(item.title) +
@@ -17931,10 +17934,8 @@ function syncAllOpenViewsStock(changedProdId) {
 
       container.innerHTML = items.map(function(b) {
         const rViews = getBlogRandomViews(b);
-        // Nâng cấp ảnh thumbnail lên độ phân giải sắc nét
-        let cImg = String(b.image || '')
-          .replace(/=s[0-9]+(-[a-z0-9-]+)?/i, '=s800')
-          .replace(/\/s[0-9]+(-c)?\//i, '/s800/');
+        // Nâng cấp ảnh thumbnail lên độ phân giải sắc nét Full HD
+        let cImg = upgradeBloggerImageToFullHd(String(b.image || ''));
         return '<div class="blog-card-full" onclick="openBlogDetail(\'' + b.id + '\')">' +
           '<div class="blog-card-img">' +
             '<img src="' + cImg + '" alt="' + escapeHtml(b.title) + '" loading="lazy"/>' +
