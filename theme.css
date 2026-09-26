@@ -411,7 +411,7 @@
       border-radius: var(--radius-md);
       padding: 4px 6px 4px 14px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-      transition: var(--transition);
+      position: relative;
     }
     .hero-search-box:focus-within {
       border-color: #3b82f6;
@@ -444,11 +444,157 @@
       font-weight: 700;
       cursor: pointer;
       transition: var(--transition);
+      white-space: nowrap;
     }
     .hero-search-btn:hover {
       background: #2563eb;
       border-color: #2563eb;
       color: white;
+    }
+
+    /* Live Search Dropdown */
+    .hero-search-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      background: #0b1320;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75);
+      z-index: 999999;
+      max-height: 440px;
+      overflow-y: auto;
+      display: none;
+      backdrop-filter: blur(12px);
+      text-align: left;
+    }
+    .search-drop-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.78rem;
+      color: #94a3b8;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .search-drop-close {
+      cursor: pointer;
+      color: #64748b;
+      font-size: 0.9rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .search-drop-close:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.1);
+    }
+    .search-drop-list {
+      padding: 6px 0;
+    }
+    .search-drop-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: background 0.18s ease;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    }
+    .search-drop-item:last-child {
+      border-bottom: none;
+    }
+    .search-drop-item:hover {
+      background: rgba(56, 189, 248, 0.08);
+    }
+    .search-drop-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #070a12;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .search-drop-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .search-drop-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .search-drop-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+    .search-drop-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+    }
+    .search-drop-price {
+      color: #10b981;
+      font-weight: 700;
+    }
+    .search-drop-cat {
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+    }
+    .search-drop-action {
+      flex-shrink: 0;
+    }
+    .search-drop-btn {
+      font-size: 0.75rem;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .search-drop-item:hover .search-drop-btn {
+      background: #0284c7;
+      color: #fff;
+    }
+    .search-drop-footer {
+      padding: 10px 14px;
+      text-align: center;
+      background: rgba(15, 23, 42, 0.7);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.82rem;
+      color: #38bdf8;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .search-drop-footer:hover {
+      background: rgba(56, 189, 248, 0.15);
+      color: #7dd3fc;
+    }
+    .search-drop-empty {
+      padding: 30px 20px;
+      text-align: center;
     }
 
     /* ==================== 3-COLUMN FULL-WIDTH LAYOUT (WIDER SIDEBARS: 290px) ==================== */

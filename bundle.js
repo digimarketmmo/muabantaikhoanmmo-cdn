@@ -8176,6 +8176,59 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.filterCategory = filterCategory;
     window.switchCategory = filterCategory;
 
+    // SMART SEARCH & ACCENT-INSENSITIVE PRODUCT MATCHER
+    function matchProductQuery(p, q) {
+      if (!p || !q) return false;
+      const qRaw = String(q).toLowerCase().trim();
+      if (!qRaw) return true;
+      const removeAcc = function(s) {
+        return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase().trim();
+      };
+      const qNorm = removeAcc(qRaw);
+      const qCompressed = qNorm.replace(/\s+/g, "");
+
+      const nameRaw = (p.name || "").toLowerCase();
+      const nameNorm = removeAcc(nameRaw);
+      const nameCompressed = nameNorm.replace(/\s+/g, "");
+
+      const catRaw = (p.category || "").toLowerCase();
+      const catNorm = removeAcc(catRaw);
+      const catCompressed = catNorm.replace(/\s+/g, "");
+
+      const descRaw = (p.description || "").toLowerCase();
+      const descNorm = removeAcc(descRaw);
+
+      // 1. Direct or normalized substring match
+      if (nameRaw.includes(qRaw) || nameNorm.includes(qNorm)) return true;
+      if (catRaw.includes(qRaw) || catNorm.includes(qNorm)) return true;
+      if (descRaw.includes(qRaw) || descNorm.includes(qNorm)) return true;
+
+      // 2. Compressed match (e.g. 'cap cut' matches 'capcut', 'chat gpt' matches 'chatgpt')
+      if (nameCompressed.includes(qCompressed) || catCompressed.includes(qCompressed)) return true;
+
+      // 3. Variant names match
+      if (Array.isArray(p.variants)) {
+        const vMatch = p.variants.some(function(v) {
+          if (!v || !v.name) return false;
+          const vn = v.name.toLowerCase();
+          const vNorm = removeAcc(vn);
+          const vComp = vNorm.replace(/\s+/g, "");
+          return vn.includes(qRaw) || vNorm.includes(qNorm) || vComp.includes(qCompressed);
+        });
+        if (vMatch) return true;
+      }
+
+      // 4. Multi-word match: all words in query match in name/cat/desc
+      const words = qNorm.split(/\s+/).filter(Boolean);
+      if (words.length > 1) {
+        const fullCombined = nameNorm + " " + catNorm + " " + descNorm;
+        if (words.every(function(w) { return fullCombined.includes(w); })) return true;
+      }
+
+      return false;
+    }
+    window.matchProductQuery = matchProductQuery;
+
     // RENDER PRODUCT GRID WITH 10-ITEM PAGINATION
     function renderProductGrid() {
       const container = document.getElementById("productGrid");
@@ -8183,16 +8236,47 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       let filtered = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? [...MOCK_DATA.products] : []);
       if (currentCategory && currentCategory !== "Tất cả") {
-        filtered = filtered.filter(p => (p.category || "").toLowerCase().includes(currentCategory.toLowerCase()));
+        filtered = filtered.filter(function(p) { return (p.category || "").toLowerCase().includes(currentCategory.toLowerCase()); });
       }
 
-      const q = (document.getElementById("searchInput")?.value || "").toLowerCase().trim();
+      const q = (document.getElementById("searchInput")?.value || "").trim();
       if (q) {
-        filtered = filtered.filter(p => (p.name || "").toLowerCase().includes(q) || (p.category || "").toLowerCase().includes(q));
+        filtered = filtered.filter(function(p) { return matchProductQuery(p, q); });
+      }
+
+      // Hiển thị thanh thông báo kết quả tìm kiếm nếu có từ khóa
+      const searchNotice = document.getElementById("storeSearchNotice");
+      if (q) {
+        if (searchNotice) {
+          searchNotice.style.display = "block";
+          searchNotice.innerHTML = '<div style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 8px; padding: 10px 16px; margin: 12px 0 16px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">' +
+            '<span style="font-size: 0.88rem; color: #e2e8f0;">' +
+              '<i class="fa-solid fa-magnifying-glass" style="color:#38bdf8; margin-right:6px;"></i>' +
+              'Kết quả tìm kiếm cho: <strong style="color:#38bdf8;">&quot;' + escapeHtml(q) + '&quot;</strong> (' + filtered.length + ' sản phẩm)' +
+            '</span>' +
+            '<button type="button" onclick="clearHeroSearch()" style="background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; border-radius: 6px; padding: 5px 12px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.2s;">' +
+              '<i class="fa-solid fa-xmark"></i> Xóa tìm kiếm' +
+            '</button>' +
+          '</div>';
+        }
+      } else {
+        if (searchNotice) {
+          searchNotice.style.display = "none";
+          searchNotice.innerHTML = "";
+        }
       }
 
       if (filtered.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#64748b; padding:40px;">Không tìm thấy sản phẩm phù hợp.</p>';
+        container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px 20px; color:#94a3b8;">' +
+          '<i class="fa-solid fa-magnifying-glass" style="font-size:3rem; margin-bottom:14px; display:block; color:#475569;"></i>' +
+          '<h4 style="font-size:1.05rem; color:#f1f5f9; margin-bottom:8px;">Không tìm thấy sản phẩm phù hợp</h4>' +
+          '<p style="font-size:0.88rem; color:#64748b; max-width:460px; margin:0 auto 16px auto;">' +
+            'Không tìm thấy sản phẩm nào khớp với từ khóa &quot;<strong>' + escapeHtml(q) + '</strong>&quot;' + (currentCategory && currentCategory !== "Tất cả" ? ' trong danh mục &quot;' + escapeHtml(currentCategory) + '&quot;' : '') + '.' +
+          '</p>' +
+          '<button type="button" onclick="clearHeroSearch()" style="background:#0284c7; color:#fff; border:none; padding:9px 20px; border-radius:6px; font-weight:700; cursor:pointer; font-size:0.85rem; box-shadow:0 4px 14px rgba(2,132,199,0.3);">' +
+            '<i class="fa-solid fa-rotate-left" style="margin-right:6px;"></i> Xem lại tất cả sản phẩm' +
+          '</button>' +
+        '</div>';
         if (typeof renderPaginationUI === "function") {
           renderPaginationUI("storeProductPagination", 1, 0, "changeStoreProdPage");
         }
@@ -16954,13 +17038,202 @@ function syncAllOpenViewsStock(changedProdId) {
     window.viewOrderHistoryFromModal = viewOrderHistoryFromModal;
 
 
-    // SEARCH HANDLERS
-    function handleSearchInput(e) {
-      if (e.key === "Enter") triggerSearch();
-      else renderProductGrid();
+    // ==================== ADVANCED HERO SEARCH & AUTOCOMPLETE ====================
+    function highlightSearchMatch(text, query) {
+      if (!text) return "";
+      if (!query) return escapeHtml(text);
+      const qClean = String(query).trim();
+      if (!qClean) return escapeHtml(text);
+      try {
+        const escapedQ = qClean.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp("(" + escapedQ + ")", "gi");
+        return escapeHtml(text).replace(regex, '<span style="color:#38bdf8; font-weight:700; background:rgba(56,189,248,0.15); padding:0 2px; border-radius:2px;">$1</span>');
+      } catch(e) {
+        return escapeHtml(text);
+      }
     }
+    window.highlightSearchMatch = highlightSearchMatch;
+
+    function closeHeroSearchDropdown() {
+      const dropdown = document.getElementById("heroSearchDropdown");
+      if (dropdown) {
+        dropdown.style.display = "none";
+      }
+    }
+    window.closeHeroSearchDropdown = closeHeroSearchDropdown;
+
+    function selectSearchDropdownItem(prodId) {
+      closeHeroSearchDropdown();
+      if (typeof openProductDetailById === "function") {
+        openProductDetailById(prodId);
+      }
+    }
+    window.selectSearchDropdownItem = selectSearchDropdownItem;
+
+    function renderHeroSearchDropdown() {
+      const input = document.getElementById("searchInput");
+      const dropdown = document.getElementById("heroSearchDropdown");
+      if (!input || !dropdown) return;
+
+      const q = (input.value || "").trim();
+      if (!q) {
+        dropdown.style.display = "none";
+        dropdown.innerHTML = "";
+        return;
+      }
+
+      const allProds = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products : []);
+      const matches = allProds.filter(function(p) {
+        return (typeof matchProductQuery === "function") ? matchProductQuery(p, q) : ((p.name || "").toLowerCase().includes(q.toLowerCase()) || (p.category || "").toLowerCase().includes(q.toLowerCase()));
+      });
+
+      if (matches.length === 0) {
+        dropdown.innerHTML = '<div class="search-drop-empty">' +
+          '<i class="fa-solid fa-magnifying-glass" style="font-size:1.6rem; color:#475569; margin-bottom:8px; display:block;"></i>' +
+          '<div style="color:#cbd5e1; font-weight:600; font-size:0.88rem;">Không tìm thấy sản phẩm nào khớp với &quot;' + escapeHtml(q) + '&quot;</div>' +
+          '<div style="color:#64748b; font-size:0.75rem; margin-top:5px;">Gợi ý: Tìm thử "capcut", "tiktok", "gmail", "canva", "chatgpt"...</div>' +
+        '</div>';
+        dropdown.style.display = "block";
+        return;
+      }
+
+      const topMatches = matches.slice(0, 6);
+      let html = '<div class="search-drop-header">' +
+        '<span><i class="fa-solid fa-fire" style="color:#f59e0b; margin-right:5px;"></i> Gợi ý sản phẩm (' + matches.length + ')</span>' +
+        '<span class="search-drop-close" onclick="closeHeroSearchDropdown()" title="Đóng"><i class="fa-solid fa-xmark"></i></span>' +
+      '</div>' +
+      '<div class="search-drop-list">';
+
+      topMatches.forEach(function(p) {
+        const cardImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || 'https://iili.io/nFV4Rln.png');
+        const priceDisplay = (typeof getProductPriceDisplay === "function") ? getProductPriceDisplay(p) : formatVND(p.price);
+        const totalStock = typeof getProductStockCount === "function" ? getProductStockCount(p) : (p.stock !== undefined ? p.stock : 0);
+        const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p));
+        const stockLabel = (totalStock === 0 && !isApi) ? '<span style="color:#ef4444;">Hết hàng</span>' : '<span style="color:#10b981;">Còn hàng</span>';
+
+        html += '<div class="search-drop-item" onclick="selectSearchDropdownItem(\'' + p.id + '\')">' +
+          '<div class="search-drop-thumb">' +
+            '<img src="' + cardImg + '" alt="' + escapeHtml(p.name) + '" loading="lazy" />' +
+          '</div>' +
+          '<div class="search-drop-info">' +
+            '<div class="search-drop-name" title="' + escapeHtml(p.name) + '">' + highlightSearchMatch(p.name, q) + '</div>' +
+            '<div class="search-drop-meta">' +
+              '<span class="search-drop-price">' + priceDisplay + '</span>' +
+              '<span class="search-drop-cat">' + escapeHtml(p.category || "MMO") + '</span>' +
+              '<span class="search-drop-stock">' + stockLabel + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="search-drop-action">' +
+            '<span class="search-drop-btn">Xem <i class="fa-solid fa-arrow-right"></i></span>' +
+          '</div>' +
+        '</div>';
+      });
+
+      html += '</div>';
+      html += '<div class="search-drop-footer" onclick="triggerSearch()">' +
+        '<span>Xem tất cả <strong>' + matches.length + '</strong> kết quả cho &quot;' + escapeHtml(q) + '&quot; &rarr;</span>' +
+      '</div>';
+
+      dropdown.innerHTML = html;
+      dropdown.style.display = "block";
+    }
+    window.renderHeroSearchDropdown = renderHeroSearchDropdown;
+
+    let _searchDebounceTimer = null;
+    function handleSearchInput(e) {
+      if (e && e.key === "Enter") {
+        triggerSearch();
+        return;
+      }
+      if (e && e.key === "Escape") {
+        closeHeroSearchDropdown();
+        return;
+      }
+
+      // Live search dropdown with slight debounce
+      if (_searchDebounceTimer) clearTimeout(_searchDebounceTimer);
+      _searchDebounceTimer = setTimeout(function() {
+        renderHeroSearchDropdown();
+      }, 50);
+
+      // Nếu người dùng xóa trắng ô tìm kiếm thì tự động cập nhật lại lưới sản phẩm
+      const input = document.getElementById("searchInput");
+      if (input && !input.value.trim()) {
+        closeHeroSearchDropdown();
+        renderProductGrid();
+      }
+    }
+    window.handleSearchInput = handleSearchInput;
+
     function triggerSearch() {
+      closeHeroSearchDropdown();
+      const input = document.getElementById("searchInput");
+      const q = (input ? input.value : "").trim();
+
+      // 1. Chuyển về viewStore nếu đang ở view khác (viewAllProducts, viewBlog, viewProfile, viewDetail)
+      const curView = localStorage.getItem("mmo_current_view") || "viewStore";
+      if (curView !== "viewStore" && typeof switchView === "function") {
+        switchView("viewStore");
+      }
+
+      // 2. Đồng bộ sang ô tìm kiếm trang Tất cả sản phẩm nếu có
+      const allProdInput = document.getElementById("allProdSearchInp");
+      if (allProdInput) allProdInput.value = q;
+
+      // 3. Đặt lại danh mục về Tất cả để tìm kiếm toàn diện toàn sàn
+      currentCategory = "Tất cả";
+      if (typeof paginationState !== "undefined") {
+        paginationState.storeProd = 1;
+      }
+      if (typeof renderCategories === "function") {
+        renderCategories();
+      }
+
+      // 4. Render lại lưới sản phẩm nổi bật
       renderProductGrid();
+
+      // 5. Cuộn mượt màn hình xuống ngay khu vực sản phẩm
+      setTimeout(function() {
+        const targetSection = document.getElementById("storeProductsSection") || document.getElementById("categoryTabs") || document.getElementById("productGrid");
+        if (targetSection) {
+          const topOffset = targetSection.getBoundingClientRect().top + window.pageYOffset - 90;
+          window.scrollTo({ top: Math.max(0, topOffset), behavior: "smooth" });
+        }
+      }, 80);
+    }
+    window.triggerSearch = triggerSearch;
+
+    function clearHeroSearch() {
+      const input = document.getElementById("searchInput");
+      if (input) input.value = "";
+      const allProdInput = document.getElementById("allProdSearchInp");
+      if (allProdInput) allProdInput.value = "";
+      closeHeroSearchDropdown();
+      currentCategory = "Tất cả";
+      if (typeof paginationState !== "undefined") {
+        paginationState.storeProd = 1;
+      }
+      if (typeof renderCategories === "function") {
+        renderCategories();
+      }
+      renderProductGrid();
+    }
+    window.clearHeroSearch = clearHeroSearch;
+
+    // Đóng dropdown tìm kiếm khi click ngoài hoặc nhấn Escape
+    if (typeof document !== "undefined") {
+      document.addEventListener("click", function(e) {
+        const searchBox = document.querySelector(".hero-search-box");
+        const dropdown = document.getElementById("heroSearchDropdown");
+        if (searchBox && dropdown && !searchBox.contains(e.target)) {
+          dropdown.style.display = "none";
+        }
+      });
+      document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape") {
+          closeHeroSearchDropdown();
+        }
+      });
     }
 
     // ==================== BLOG LOGIC ====================
@@ -22251,13 +22524,13 @@ function changeAdmUsersPage(p) {
     window.changeApiMappingsPage = changeApiMappingsPage;
 
     function changeStoreProdPage(p) {
-      let filtered = (MOCK_DATA && MOCK_DATA.products) ? [...MOCK_DATA.products] : [];
+      let filtered = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? [...MOCK_DATA.products] : []);
       if (currentCategory && currentCategory !== "Tất cả") {
-        filtered = filtered.filter(prod => (prod.category || "").toLowerCase().includes(currentCategory.toLowerCase()));
+        filtered = filtered.filter(function(prod) { return (prod.category || "").toLowerCase().includes(currentCategory.toLowerCase()); });
       }
-      const q = (document.getElementById("searchInput")?.value || "").toLowerCase().trim();
+      const q = (document.getElementById("searchInput")?.value || "").trim();
       if (q) {
-        filtered = filtered.filter(prod => (prod.name || "").toLowerCase().includes(q) || (prod.category || "").toLowerCase().includes(q));
+        filtered = filtered.filter(function(prod) { return matchProductQuery(prod, q); });
       }
       const isMobileStore = (typeof window !== "undefined" && window.innerWidth <= 768);
       const pageSizeStore = isMobileStore ? 6 : 12;
@@ -22266,9 +22539,10 @@ function changeAdmUsersPage(p) {
       if (p > totalPages) p = totalPages;
       paginationState.storeProd = p;
       renderProductGrid();
-      const el = document.getElementById("allProductsSection");
+      const el = document.getElementById("storeProductsSection") || document.getElementById("categoryTabs") || document.getElementById("productGrid");
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }
+    window.changeStoreProdPage = changeStoreProdPage;
 
     function changeUserOrdersPage(p) {
       paginationState.userOrders = p;
@@ -23489,9 +23763,11 @@ function injectAllProductsSchema() {
 
       let list = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? [...MOCK_DATA.products] : []);
 
-      const q = (document.getElementById("allProdSearchInp")?.value || "").toLowerCase().trim();
+      const q = (document.getElementById("allProdSearchInp")?.value || "").trim();
       if (q) {
-        list = list.filter(function(p) { return (p.name || "").toLowerCase().includes(q) || (p.category || "").toLowerCase().includes(q); });
+        list = list.filter(function(p) {
+          return (typeof matchProductQuery === "function") ? matchProductQuery(p, q) : ((p.name || "").toLowerCase().includes(q.toLowerCase()) || (p.category || "").toLowerCase().includes(q.toLowerCase()));
+        });
       }
 
       if (allProdCurrentCat && allProdCurrentCat !== "Tất cả") {
