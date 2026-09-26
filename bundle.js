@@ -7684,12 +7684,24 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           renderArticleRelatedProducts(window.currentViewingBlog);
         } else if (!window.currentViewingBlog && typeof openBlogDetail === "function") {
           try {
+            const curPath = (window.location.pathname || "").toLowerCase();
+            const isKnownRoot = (curPath === "/" || curPath === "" || curPath === "/index.html");
+            const isKnownView = (curPath === "/viewstore" || curPath === "/viewallproducts" || curPath === "/viewblog");
+            const isArticlePath = !isKnownRoot && !isKnownView && (curPath.indexOf("/blog/") !== -1 || curPath.indexOf(".html") !== -1 || /\/\d{4}\/\d{2}\//.test(curPath) || curPath.indexOf("/p/") !== -1 || (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes(".")));
+
+            if (isArticlePath && typeof resolveAndOpenBlogByUrl === "function") {
+              const resolved = resolveAndOpenBlogByUrl(curPath);
+              if (resolved) return;
+            }
+
             const urlParams = new URLSearchParams(window.location.search);
             const savedBlogId = urlParams.get("post") || urlParams.get("blog") || localStorage.getItem("mmo_current_blog_id");
             const blogs = (MOCK_DATA && MOCK_DATA.blogs) ? MOCK_DATA.blogs : [];
-            const targetBlog = (savedBlogId ? blogs.find(item => item.id === savedBlogId) : null) || blogs[0];
+            const targetBlog = savedBlogId ? blogs.find(item => item.id === savedBlogId) : null;
             if (targetBlog) {
               openBlogDetail(targetBlog.id);
+            } else if (!isArticlePath && blogs[0]) {
+              openBlogDetail(blogs[0].id);
             }
           } catch(err) {
             console.warn("Auto-restore blog detail error:", err);
@@ -17422,6 +17434,26 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.cleanBloggerContentForDarkTheme = cleanBloggerContentForDarkTheme;
 
+    function sanitizeBlogSlug(rawSlug) {
+      if (!rawSlug) return "";
+      let s = String(rawSlug).trim().toLowerCase();
+      if (s.includes("://")) {
+        try { s = new URL(s).pathname; } catch(e) {}
+      }
+      s = s.split("?")[0].split("#")[0];
+      s = s.replace(/\.html$/i, "");
+      s = s.replace(/^\/?\d{4}\/\d{2}\//, "/");
+      s = s.replace(/^\/?blog\//i, "/");
+      s = s.replace(/^\/+/, "").replace(/\/+$/, "");
+      if (/^blog[-_]/i.test(s)) {
+        s = s.replace(/^blog[-_]+/i, "");
+      } else if (/^blog[a-z0-9]/i.test(s) && s.length > 4) {
+        s = s.replace(/^blog/i, "");
+      }
+      return s.replace(/^\/+/, "").replace(/\/+$/, "");
+    }
+    window.sanitizeBlogSlug = sanitizeBlogSlug;
+
     // ==================== ROBUST JSONP BLOGGER FEED SYNC (ANTI-REVERSE SYNC) ====================
     function fetchBloggerFeedPosts(isManual) {
       if (typeof isManual === "undefined") isManual = false;
@@ -17497,6 +17529,7 @@ function syncAllOpenViewsStock(changedProdId) {
                   postPathname = parsed.pathname;
                   const sm = parsed.pathname.match(/\/([^\/\?#]+)\.html/);
                   postSlug = sm ? sm[1] : parsed.pathname.replace(/^\//, '').replace(/\/$/, '');
+                  postSlug = sanitizeBlogSlug(postSlug || postPathname);
                 } catch(e) {}
               }
             }
@@ -17585,7 +17618,7 @@ function syncAllOpenViewsStock(changedProdId) {
             const curPath = (window.location.pathname || "").toLowerCase();
             const isKnownRoot = (curPath === "/" || curPath === "" || curPath === "/index.html");
             const isKnownView = (curPath === "/viewstore" || curPath === "/viewallproducts" || curPath === "/viewblog");
-            const isArticlePath = !isKnownRoot && !isKnownView && (curPath.endsWith(".html") || /\/\d{4}\/\d{2}\//.test(curPath) || curPath.indexOf("/p/") !== -1 || (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes(".")));
+            const isArticlePath = !isKnownRoot && !isKnownView && (curPath.indexOf("/blog/") !== -1 || curPath.endsWith(".html") || /\/\d{4}\/\d{2}\//.test(curPath) || curPath.indexOf("/p/") !== -1 || (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes(".")));
             if (isArticlePath) {
               if (typeof resolveAndOpenBlogByUrl === "function") {
                 resolveAndOpenBlogByUrl(curPath);
@@ -17670,17 +17703,19 @@ function syncAllOpenViewsStock(changedProdId) {
       let cleanShortPath = "";
       try {
         localStorage.setItem("mmo_current_blog_id", b.id);
+        window.currentViewingBlog = b;
         const curPath = (window.location.pathname || "").toLowerCase();
+        const cleanSlug = (typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "");
 
-        // 1. Nếu người dùng đang ở sẵn URL /blog/... thì giữ nguyên dạng /blog/slug/
+        // 1. Nếu người dùng đang ở sẵn URL /blog/... thì chuẩn hóa thành /blog/[cleanSlug]/
         if (curPath.startsWith("/blog/")) {
-          cleanShortPath = curPath.endsWith("/") ? curPath : (curPath + "/");
+          cleanShortPath = "/blog/" + cleanSlug + "/";
         } else if (keepCanonicalUrl && (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes("."))) {
           // 2. Nếu đang ở URL rút gọn đơn không có blog (ví dụ: /gmail-thue) thì giữ nguyên 100%
           cleanShortPath = curPath;
-        } else if (b.slug) {
-          // 3. Mặc định tạo URL chuẩn SEO đẹp /blog/slug/
-          cleanShortPath = "/blog/" + b.slug + "/";
+        } else if (cleanSlug) {
+          // 3. Mặc định tự động chuyển hướng sang định dạng chuẩn SEO đẹp: /blog/[cleanSlug]/
+          cleanShortPath = "/blog/" + cleanSlug + "/";
         } else {
           // 4. Fallback đường dẫn cũ nếu bài viết không có slug
           cleanShortPath = b.pathname || "";
@@ -17864,7 +17899,8 @@ function syncAllOpenViewsStock(changedProdId) {
       const blogs = (MOCK_DATA && MOCK_DATA.blogs && Array.isArray(MOCK_DATA.blogs)) ? MOCK_DATA.blogs : [];
       if (blogs.length === 0) return false;
 
-      // Chuẩn hóa và bóc tách slug: hỗ trợ hoàn hảo cả /blog/slug/, /blog/slug, /slug.html, /slug (như /gmail-thue)
+      // Chuẩn hóa và bóc tách slug sạch
+      const targetCleanSlug = (typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(clean) : clean;
       const cleanNoBlog = clean.replace(/^\/blog\//i, "/").replace(/^blog\//i, "");
       const strippedClean = cleanNoBlog.replace(/^\/\d{4}\/\d{2}\//, "/");
       const targetSlug = strippedClean.replace(/\.html$/i, "").replace(/^\/+/, "").replace(/\/+$/, "");
@@ -17880,7 +17916,17 @@ function syncAllOpenViewsStock(changedProdId) {
         return false;
       });
 
-      // 2. Khớp theo Slug (hỗ trợ cả gmail-thue, gmail-trust-la-gi, gmail-co-la-gi, v.v.)
+      // 2. Khớp theo Clean Slug (hỗ trợ cả gmail-thue, bloggmail-co-la-gi, gmail-co-la-gi, v.v.)
+      if (!found && targetCleanSlug) {
+        found = blogs.find(function(b) {
+          if (!b) return false;
+          const bCleanSlug = (typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname) : (b.slug || "").toLowerCase().trim();
+          if (bCleanSlug && (bCleanSlug === targetCleanSlug || bCleanSlug.indexOf(targetCleanSlug) !== -1 || targetCleanSlug.indexOf(bCleanSlug) !== -1)) return true;
+          return false;
+        });
+      }
+
+      // 3. Khớp theo Slug thô nếu chưa thấy
       if (!found && targetSlug) {
         found = blogs.find(function(b) {
           if (!b) return false;
@@ -17892,9 +17938,9 @@ function syncAllOpenViewsStock(changedProdId) {
         });
       }
 
-      // 3. Khớp mờ theo tiêu đề nếu chưa tìm thấy
-      if (!found && targetSlug) {
-        const cleanSlugWords = targetSlug.replace(/-/g, " ");
+      // 4. Khớp mờ theo tiêu đề nếu chưa tìm thấy
+      if (!found && targetCleanSlug) {
+        const cleanSlugWords = targetCleanSlug.replace(/-/g, " ");
         if (cleanSlugWords && typeof cleanCompareText === "function") {
           const compTarget = cleanCompareText(cleanSlugWords);
           found = blogs.find(function(b) {
@@ -17904,7 +17950,10 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (found) {
-        openBlogDetail(found.id, true);
+        // Nếu là URL rút gọn đơn 1 segment (như /gmail-thue) -> giữ nguyên canonical
+        // Nếu là URL dài Blogger dạng /2026/09/... -> tự động chuyển hướng sang /blog/[slug]/
+        const isSingleShortSlug = (clean.split("/").filter(Boolean).length === 1 && !clean.includes("."));
+        openBlogDetail(found.id, isSingleShortSlug);
         return true;
       }
       return false;
@@ -23310,7 +23359,7 @@ function changeAdmUsersPage(p) {
           if (isArticlePath && typeof resolveAndOpenBlogByUrl === "function") {
             const resolved = resolveAndOpenBlogByUrl(curPath);
             if (!resolved) {
-              if (typeof openBlogDetail === "function") openBlogDetail(targetBlogId);
+              if (targetBlogId && typeof openBlogDetail === "function") openBlogDetail(targetBlogId);
               else switchView("viewBlogDetail");
             }
           } else if (typeof openBlogDetail === "function") {
