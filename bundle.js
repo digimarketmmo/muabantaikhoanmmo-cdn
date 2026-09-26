@@ -17670,18 +17670,27 @@ function syncAllOpenViewsStock(changedProdId) {
       let cleanShortPath = "";
       try {
         localStorage.setItem("mmo_current_blog_id", b.id);
-        // TỰ ĐỘNG CẮT BỎ /YYYY/MM/ ĐỂ URL SIÊU NGẮN CHUẨN SEO: /tai-khoan-gmail.html
-        cleanShortPath = b.pathname || "";
-        if (!cleanShortPath && b.url) {
-          try { cleanShortPath = new URL(b.url).pathname; } catch(e) {}
+        const curPath = (window.location.pathname || "").toLowerCase();
+
+        // 1. Nếu người dùng đang ở sẵn URL /blog/... thì giữ nguyên dạng /blog/slug/
+        if (curPath.startsWith("/blog/")) {
+          cleanShortPath = curPath.endsWith("/") ? curPath : (curPath + "/");
+        } else if (keepCanonicalUrl && (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes("."))) {
+          // 2. Nếu đang ở URL rút gọn đơn không có blog (ví dụ: /gmail-thue) thì giữ nguyên 100%
+          cleanShortPath = curPath;
+        } else if (b.slug) {
+          // 3. Mặc định tạo URL chuẩn SEO đẹp /blog/slug/
+          cleanShortPath = "/blog/" + b.slug + "/";
+        } else {
+          // 4. Fallback đường dẫn cũ nếu bài viết không có slug
+          cleanShortPath = b.pathname || "";
+          if (!cleanShortPath && b.url) {
+            try { cleanShortPath = new URL(b.url).pathname; } catch(e) {}
+          }
+          cleanShortPath = cleanShortPath.replace(/^\/\d{4}\/\d{2}\//, '/');
+          if (!cleanShortPath.startsWith("/")) cleanShortPath = "/" + cleanShortPath;
+          if (!cleanShortPath.endsWith(".html") && !cleanShortPath.endsWith("/")) cleanShortPath += ".html";
         }
-        if (!cleanShortPath && b.slug) {
-          cleanShortPath = "/" + b.slug + ".html";
-        }
-        // Cắt bỏ bất kỳ tiền tố ngày tháng nào /YYYY/MM/ (ví dụ: /2026/09/tai-khoan-gmail.html -> /tai-khoan-gmail.html)
-        cleanShortPath = cleanShortPath.replace(/^\/\d{4}\/\d{2}\//, '/');
-        if (!cleanShortPath.startsWith("/")) cleanShortPath = "/" + cleanShortPath;
-        if (!cleanShortPath.endsWith(".html") && !cleanShortPath.endsWith("/")) cleanShortPath += ".html";
 
         window.history.replaceState(null, "", window.location.origin + cleanShortPath);
       } catch(e) {}
@@ -17846,42 +17855,48 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function resolveAndOpenBlogByUrl(pathOrUrl) {
       if (!pathOrUrl) return false;
-      const clean = String(pathOrUrl).toLowerCase().trim();
+      let clean = String(pathOrUrl).toLowerCase().trim();
+      if (clean.includes("://")) {
+        try { clean = new URL(clean).pathname; } catch(e) {}
+      }
+      clean = clean.split("?")[0].split("#")[0];
+
       const blogs = (MOCK_DATA && MOCK_DATA.blogs && Array.isArray(MOCK_DATA.blogs)) ? MOCK_DATA.blogs : [];
       if (blogs.length === 0) return false;
-      
-      // 1. Khớp chính xác theo URL hoặc Pathname (kể cả có hoặc đã cắt bỏ /YYYY/MM/)
-      const strippedClean = clean.replace(/^\/\d{4}\/\d{2}\//, '/');
+
+      // Chuẩn hóa và bóc tách slug: hỗ trợ hoàn hảo cả /blog/slug/, /blog/slug, /slug.html, /slug (như /gmail-thue)
+      const cleanNoBlog = clean.replace(/^\/blog\//i, "/").replace(/^blog\//i, "");
+      const strippedClean = cleanNoBlog.replace(/^\/\d{4}\/\d{2}\//, "/");
+      const targetSlug = strippedClean.replace(/\.html$/i, "").replace(/^\/+/, "").replace(/\/+$/, "");
+
+      // 1. Khớp chính xác theo URL hoặc Pathname
       let found = blogs.find(function(b) {
         if (!b) return false;
         if (b.url && (b.url.toLowerCase().indexOf(clean) !== -1 || b.url.toLowerCase().indexOf(strippedClean) !== -1)) return true;
         const bPath = (b.pathname || "").toLowerCase();
-        const strippedBPath = bPath.replace(/^\/\d{4}\/\d{2}\//, '/');
+        const strippedBPath = bPath.replace(/^\/\d{4}\/\d{2}\//, "/");
         if (bPath && (clean.indexOf(bPath) !== -1 || bPath.indexOf(clean) !== -1)) return true;
         if (strippedBPath && (strippedClean === strippedBPath || strippedClean.indexOf(strippedBPath) !== -1 || strippedBPath.indexOf(strippedClean) !== -1)) return true;
         return false;
       });
 
-      // 2. Khớp theo Slug (ví dụ: /2026/09/tai-khoan-gmail.html -> tai-khoan-gmail)
-      if (!found) {
-        const slugMatch = clean.match(/\/([^\/\?#]+)\.html/);
-        const targetSlug = slugMatch ? slugMatch[1] : clean.replace(/^\//, '').replace(/\/$/, '');
-        if (targetSlug) {
-          found = blogs.find(function(b) {
-            if (!b) return false;
-            if (b.slug && (b.slug.toLowerCase() === targetSlug || b.slug.toLowerCase().indexOf(targetSlug) !== -1 || targetSlug.indexOf(b.slug.toLowerCase()) !== -1)) return true;
-            if (b.url && b.url.toLowerCase().indexOf(targetSlug) !== -1) return true;
-            return false;
-          });
-        }
+      // 2. Khớp theo Slug (hỗ trợ cả gmail-thue, gmail-trust-la-gi, gmail-co-la-gi, v.v.)
+      if (!found && targetSlug) {
+        found = blogs.find(function(b) {
+          if (!b) return false;
+          const bSlug = (b.slug || "").toLowerCase().trim();
+          if (bSlug && (bSlug === targetSlug || bSlug.indexOf(targetSlug) !== -1 || targetSlug.indexOf(bSlug) !== -1)) return true;
+          if (b.url && b.url.toLowerCase().indexOf(targetSlug) !== -1) return true;
+          if (b.pathname && b.pathname.toLowerCase().indexOf(targetSlug) !== -1) return true;
+          return false;
+        });
       }
 
       // 3. Khớp mờ theo tiêu đề nếu chưa tìm thấy
-      if (!found) {
-        const slugMatch = clean.match(/\/([^\/\?#]+)\.html/);
-        const targetSlug = slugMatch ? slugMatch[1].replace(/-/g, ' ') : '';
-        if (targetSlug && typeof cleanCompareText === "function") {
-          const compTarget = cleanCompareText(targetSlug);
+      if (!found && targetSlug) {
+        const cleanSlugWords = targetSlug.replace(/-/g, " ");
+        if (cleanSlugWords && typeof cleanCompareText === "function") {
+          const compTarget = cleanCompareText(cleanSlugWords);
           found = blogs.find(function(b) {
             return b && b.title && cleanCompareText(b.title).indexOf(compTarget) !== -1;
           });
@@ -23264,7 +23279,7 @@ function changeAdmUsersPage(p) {
         const curPath = (window.location.pathname || "").toLowerCase();
         const isKnownRoot = (curPath === "/" || curPath === "" || curPath === "/index.html");
         const isKnownView = (curPath === "/viewstore" || curPath === "/viewallproducts" || curPath === "/viewblog");
-        const isArticlePath = !isKnownRoot && !isKnownView && (curPath.endsWith(".html") || /\/\d{4}\/\d{2}\//.test(curPath) || curPath.indexOf("/p/") !== -1 || (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes(".")));
+        const isArticlePath = !isKnownRoot && !isKnownView && (curPath.startsWith("/blog/") || curPath.indexOf("/blog/") !== -1 || curPath.endsWith(".html") || /\/\d{4}\/\d{2}\//.test(curPath) || curPath.indexOf("/p/") !== -1 || (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes(".")));
         
         const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
         const viewParam = urlParams.get("view");
@@ -23359,7 +23374,7 @@ function changeAdmUsersPage(p) {
       window.addEventListener("popstate", function() {
         const curPath = (window.location.pathname || "").toLowerCase();
         const isKnownRoot = (curPath === "/" || curPath === "" || curPath === "/index.html");
-        const isArticlePath = !isKnownRoot && (curPath.endsWith(".html") || /\/\d{4}\/\d{2}\//.test(curPath));
+        const isArticlePath = !isKnownRoot && (curPath.startsWith("/blog/") || curPath.indexOf("/blog/") !== -1 || curPath.endsWith(".html") || /\/\d{4}\/\d{2}\//.test(curPath) || curPath.indexOf("/p/") !== -1 || (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes(".")));
         if (isArticlePath && typeof resolveAndOpenBlogByUrl === "function") {
           resolveAndOpenBlogByUrl(curPath);
         } else {
