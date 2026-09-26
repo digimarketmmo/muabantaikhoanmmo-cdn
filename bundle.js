@@ -29145,6 +29145,16 @@ function convertMarkdownToCleanHtml(str) {
   s = s.replace(/([^\n])\s+###\s+/g, '$1\n\n### ');
   s = s.replace(/([^\n])\s+\*\s+\*\*/g, '$1\n* **');
   s = s.replace(/([^\n])\s+-\s+\*\*/g, '$1\n- **');
+
+  // Tách các bảng bị dồn trên 1 dòng có nhiều cặp || (ví dụ: | Yêu cầu | Chi tiết ||---|...|)
+  s = s.replace(/\|\s*\|+/g, '|\n|');
+
+  // Tách các mục ghim 📌, 📍, 🎯, 👉, ✅, ⚡, 🔹, 🔸 nếu bị dồn sau văn bản hoặc cùng trên 1 dòng
+  s = s.replace(/([^\n])\s*(📌|📍|🎯|👉|✅|⚡|🔹|🔸)/g, '$1\n$2');
+
+  // Loại bỏ hoàn toàn các dòng kẻ ---, ***, ___
+  s = s.replace(/^[ \t]*[-*_]{3,}[ \t]*$/gm, '');
+
   const lines = s.split(/\r?\n/);
   const out = [];
   let inList = null;
@@ -29153,7 +29163,7 @@ function convertMarkdownToCleanHtml(str) {
     if (currentP.length > 0) {
       const text = currentP.join(' ').trim();
       if (text) {
-        if (/^<(div|blockquote|table|h[1-6])/i.test(text)) {
+        if (/^<(div|blockquote|table|h[1-6]|p)/i.test(text)) {
           out.push(text);
         } else {
           out.push('<p>' + text + '</p>');
@@ -29173,6 +29183,78 @@ function convertMarkdownToCleanHtml(str) {
     if (!line) {
       flushP(); flushList(); continue;
     }
+
+    // Bỏ qua dòng gạch ngang ---, ***, ___
+    if (/^[-*_]{3,}$/.test(line)) {
+      flushP(); flushList(); continue;
+    }
+
+    // Bắt và chuyển đổi bảng Markdown Table thành HTML Table chuẩn đẹp
+    if (line.startsWith('|') && line.endsWith('|')) {
+      flushP(); flushList();
+      const tableLines = [line];
+      while (i + 1 < lines.length && lines[i + 1].trim().startsWith('|') && lines[i + 1].trim().endsWith('|')) {
+        i++;
+        tableLines.push(lines[i].trim());
+      }
+      if (tableLines.length >= 2) {
+        let hasSeparator = false;
+        let headerCols = [];
+        const bodyRows = [];
+        for (let r = 0; r < tableLines.length; r++) {
+          const rawRow = tableLines[r];
+          const cells = rawRow.split('|').slice(1, -1).map(function(c) { return c.trim(); });
+          if (r === 1 && cells.every(function(c) { return /^[:\- ]+$/.test(c); })) {
+            hasSeparator = true;
+            continue;
+          }
+          if (r === 0) {
+            headerCols = cells;
+          } else {
+            bodyRows.push(cells);
+          }
+        }
+        if (hasSeparator || headerCols.length > 0) {
+          let tblHtml = '<div style="overflow-x:auto; margin:18px 0;">\n  <table style="width:100%; border-collapse:collapse; text-align:left; font-size:14px; border:1px solid #cbd5e1; border-radius:8px; overflow:hidden;">\n';
+          if (headerCols.length > 0) {
+            tblHtml += '    <thead>\n      <tr style="background:#1e293b; color:#ffffff;">\n';
+            headerCols.forEach(function(h) {
+              tblHtml += '        <th style="padding:12px 14px; border:1px solid #334155; font-weight:700;">' + h + '</th>\n';
+            });
+            tblHtml += '      </tr>\n    </thead>\n';
+          }
+          tblHtml += '    <tbody>\n';
+          bodyRows.forEach(function(row, rIdx) {
+            const bg = (rIdx % 2 === 0) ? '#f8fafc' : '#ffffff';
+            tblHtml += '      <tr style="background:' + bg + '; border-bottom:1px solid #e2e8f0;">\n';
+            row.forEach(function(c) {
+              tblHtml += '        <td style="padding:10px 14px; border:1px solid #cbd5e1; color:#1e293b;">' + c + '</td>\n';
+            });
+            tblHtml += '      </tr>\n';
+          });
+          tblHtml += '    </tbody>\n  </table>\n</div>';
+          out.push(tblHtml);
+          continue;
+        }
+      }
+    }
+
+    // Bắt các mục ghim (📌, 📍, 🎯, 👉, ✅, ⚡, 🔹, 🔸) xuống dòng và đặt icon ghim ở đầu dòng
+    const pinMatch = line.match(/^(📌|📍|🎯|👉|✅|⚡|🔹|🔸)\s*(.+)$/);
+    if (pinMatch) {
+      flushP(); flushList();
+      const icon = pinMatch[1];
+      let itemContent = pinMatch[2].trim();
+      const colonIdx = itemContent.indexOf(':');
+      if (colonIdx > 0 && colonIdx < 40 && !itemContent.includes('<strong>')) {
+        const prefix = itemContent.slice(0, colonIdx).trim();
+        const suffix = itemContent.slice(colonIdx + 1).trim();
+        itemContent = '<strong>' + prefix + ':</strong> ' + suffix;
+      }
+      out.push('<p style="margin:8px 0; padding-left:4px; line-height:1.6;"><span style="font-size:16px;">' + icon + '</span> ' + itemContent + '</p>');
+      continue;
+    }
+
     const h4Match = line.match(/^####\s+(.+)$/);
     if (h4Match) { flushP(); flushList(); out.push("<h4>" + h4Match[1].trim() + "</h4>"); continue; }
     const h3Match = line.match(/^###\s+(.+)$/);
@@ -29202,6 +29284,7 @@ function convertMarkdownToCleanHtml(str) {
   }
   flushP(); flushList();
   let html = out.join('\n');
+  html = html.replace(/<p>\s*[-*_]{2,}\s*<\/p>/gi, '');
   html = html.replace(/#{2,6}\s*/g, '');
   html = html.replace(/\*{2,3}/g, '');
   return html;
@@ -30341,8 +30424,11 @@ ${sampleInstruction}
    - TUYỆT ĐỐI KHÔNG nhồi nhét từ khóa chính lặp đi lặp lại một cách khiên cưỡng.
    - Xây dựng mạng lưới từ khóa bao quát chủ đề, liên kết các thực thể (entities), thuật ngữ kỹ thuật liên quan, từ khóa phụ LSI để tạo nên một bài viết giàu giá trị thông tin chuyên sâu.
 
-5. ĐỊNH DẠNG ĐẦU RA (HTML CHUẨN):
-   - KHÔNG dùng markdown thô (như ##, ###, **). Chỉ dùng HTML: <h2>, <h3>, <p>, <ul>, <li>, <ol>, <strong>, <em>, <div>.
+5. ĐỊNH DẠNG ĐẦU RA (HTML CHUẨN 100% ĐỂ SAO CHÉP VÀO BLOGGER KHÔNG BỊ LỖI):
+   - KHÔNG dùng markdown thô (như ##, ###, **). Chỉ dùng HTML: <h2>, <h3>, <p>, <ul>, <li>, <ol>, <strong>, <em>, <div>, <table>.
+   - TUYỆT ĐỐI KHÔNG dùng ký tự gạch ngang phân cách '---' hoặc '***' trong toàn bộ bài viết.
+   - BẢNG BIỂU (Table): Khi tạo bảng (Yêu cầu thiết bị, công cụ hỗ trợ, so sánh...), BẮT BUỘC dùng thẻ HTML <table><thead><tr><th>...</th></tr></thead><tbody><tr><td>...</td></tr></tbody></table> chuẩn đẹp. TUYỆT ĐỐI KHÔNG dùng ký hiệu gạch đứng markdown (| Cột 1 | Cột 2 |).
+   - CÁC MỤC GHIM (📌): Khi liệt kê các yêu cầu hoặc lưu ý bằng icon ghim 📌 (hoặc 📍, 🎯, 👉, ✅), BẮT BUỘC mỗi mục phải xuống một dòng riêng biệt, đặt icon 📌 ở đầu mỗi dòng (ví dụ: <p>📌 <strong>Thiết bị:</strong> Máy tính...</p>). TUYỆT ĐỐI KHÔNG viết dồn nhiều mục 📌 trên cùng một dòng.
    - Cuối bài viết, BẮT BUỘC cung cấp thông tin SEO Meta theo định dạng sau:
 ===SEO_META_START===
 KEYWORDS: [3-5 từ khóa SEO bao quát cụm chủ đề, phân cách bằng dấu phẩy]
