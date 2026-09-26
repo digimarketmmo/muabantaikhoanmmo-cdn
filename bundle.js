@@ -7757,26 +7757,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             url.searchParams.delete("blog");
             url.searchParams.delete("m");
             if (url.searchParams.has("category") || url.searchParams.has("s")) {
-              const newUrl = url.pathname + "?" + url.searchParams.toString();
+              const newUrl = window.location.origin + "/?" + url.searchParams.toString();
               window.history.replaceState(null, "", newUrl);
             } else {
-              const cleanUrl = window.location.origin + window.location.pathname;
-              window.history.replaceState(null, "", cleanUrl);
+              window.history.replaceState(null, "", window.location.origin + "/");
             }
           } else if (viewId === "viewProductDetail") {
             // Đang xem chi tiết sản phẩm: URL sẽ do openProductDetailById quản lý (?prod=...)
+          } else if (viewId === "viewBlogDetail") {
+            // Đang xem chi tiết bài blog: URL sẽ do openBlogDetail quản lý
           } else {
             // Các trang khác (viewAllProducts, viewBlog, viewTools, viewProfile, viewDeposit, viewAdmin):
-            // Giữ hash tương ứng và xóa sạch ?prod, ?product
+            // Luôn đặt URL chuẩn tại gốc trang chủ kèm hash tương ứng, xóa sạch pathname của bài viết nếu có
             const url = new URL(window.location.href);
             url.searchParams.delete("prod");
             url.searchParams.delete("product");
-            if (viewId !== "viewBlogDetail") {
-              url.searchParams.delete("post");
-              url.searchParams.delete("blog");
-            }
+            url.searchParams.delete("post");
+            url.searchParams.delete("blog");
+            url.searchParams.delete("m");
             url.hash = "#" + viewId;
-            const newUrl = url.searchParams.toString() ? (url.pathname + "?" + url.searchParams.toString() + url.hash) : (url.pathname + url.hash);
+            const newUrl = window.location.origin + "/" + (url.searchParams.toString() ? ("?" + url.searchParams.toString()) : "") + url.hash;
             window.history.replaceState(null, "", newUrl);
           }
         }
@@ -17202,6 +17202,22 @@ function syncAllOpenViewsStock(changedProdId) {
             const rawId = (entry.id && entry.id.$t) ? entry.id.$t : String(index);
             const id = "BLOGGER_" + (rawId.indexOf("post-") !== -1 ? rawId.split("post-")[1] : index);
 
+            let postUrl = "";
+            let postPathname = "";
+            let postSlug = "";
+            if (Array.isArray(entry.link)) {
+              const altLink = entry.link.find(function(l) { return l.rel === "alternate"; });
+              if (altLink && altLink.href) {
+                postUrl = altLink.href;
+                try {
+                  const parsed = new URL(postUrl);
+                  postPathname = parsed.pathname;
+                  const sm = parsed.pathname.match(/\/([^\/\?#]+)\.html/);
+                  postSlug = sm ? sm[1] : parsed.pathname.replace(/^\//, '').replace(/\/$/, '');
+                } catch(e) {}
+              }
+            }
+
             return {
               id: id,
               title: title,
@@ -17211,7 +17227,10 @@ function syncAllOpenViewsStock(changedProdId) {
               views: getBlogRandomViews({ id: id, title: title }),
               image: image,
               snippet: snippet || title,
-              content: rawContent || snippet || title
+              content: rawContent || snippet || title,
+              url: postUrl,
+              pathname: postPathname,
+              slug: postSlug
             };
           });
 
@@ -17221,17 +17240,23 @@ function syncAllOpenViewsStock(changedProdId) {
           // Tạo Map bài viết hiện tại để so sánh timestamp chống dữ liệu cũ
           const blogMap = new Map();
           currentBlogs.forEach(function(b) {
-            const key = (b.id || b.title || "").toLowerCase().trim();
-            if (key) blogMap.set(key, b);
+            const keyId = (b.id || "").toLowerCase().trim();
+            const keyTitle = (b.title || "").toLowerCase().trim();
+            const keySlug = (b.slug || "").toLowerCase().trim();
+            if (keyId) blogMap.set(keyId, b);
+            if (keyTitle) blogMap.set(keyTitle, b);
+            if (keySlug) blogMap.set(keySlug, b);
           });
 
           bloggerPosts.forEach(function(newPost) {
             const keyById = (newPost.id || "").toLowerCase().trim();
             const keyByTitle = (newPost.title || "").toLowerCase().trim();
-            const existing = blogMap.get(keyById) || blogMap.get(keyByTitle);
+            const keyBySlug = (newPost.slug || "").toLowerCase().trim();
+            const existing = blogMap.get(keyById) || blogMap.get(keyByTitle) || (keyBySlug ? blogMap.get(keyBySlug) : null);
 
             if (!existing) {
               blogMap.set(keyById || keyByTitle, newPost);
+              if (keyBySlug) blogMap.set(keyBySlug, newPost);
             } else {
               // CẤM DỮ LIỆU CŨ GHI ĐÈ DỮ LIỆU MỚI: Chỉ cập nhật nếu bài mới có thời gian mới hơn hoặc nội dung dài hơn
               const existingTime = existing.publishTime || (existing.date ? new Date(existing.date).getTime() : 0);
@@ -17240,12 +17265,14 @@ function syncAllOpenViewsStock(changedProdId) {
               const newContentLen = (newPost.content || "").length;
 
               if (newTime >= existingTime || (newContentLen > existingContentLen && existingContentLen < 300)) {
-                blogMap.set(keyById || keyByTitle, Object.assign({}, existing, newPost));
+                const mergedPost = Object.assign({}, existing, newPost);
+                blogMap.set(keyById || keyByTitle, mergedPost);
+                if (keyBySlug) blogMap.set(keyBySlug, mergedPost);
               }
             }
           });
 
-          const mergedBlogs = Array.from(blogMap.values());
+          const mergedBlogs = Array.from(new Set(blogMap.values()));
           mergedBlogs.sort(function(a, b) {
             return (b.publishTime || 0) - (a.publishTime || 0);
           });
@@ -17269,6 +17296,19 @@ function syncAllOpenViewsStock(changedProdId) {
           if (typeof renderBlogPage === "function") renderBlogPage();
           if (typeof renderSidebarBlogs === "function") renderSidebarBlogs();
           if (typeof renderAdminBlogsTable === "function") renderAdminBlogsTable();
+
+          // Tự động nhận diện và mở bài viết nếu người dùng đang đứng ở URL bài viết Blog
+          try {
+            const curPath = (window.location.pathname || "").toLowerCase();
+            const isKnownRoot = (curPath === "/" || curPath === "" || curPath === "/index.html");
+            const isKnownView = (curPath === "/viewstore" || curPath === "/viewallproducts" || curPath === "/viewblog");
+            const isArticlePath = !isKnownRoot && !isKnownView && (curPath.endsWith(".html") || /\/\d{4}\/\d{2}\//.test(curPath) || curPath.indexOf("/p/") !== -1 || (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes(".")));
+            if (isArticlePath) {
+              if (typeof resolveAndOpenBlogByUrl === "function") {
+                resolveAndOpenBlogByUrl(curPath);
+              }
+            }
+          } catch(e) {}
 
           if (isManual) {
             const msg = "Đã đồng bộ thành công " + bloggerPosts.length + " bài đăng chuẩn đẹp!";
@@ -17327,18 +17367,45 @@ function syncAllOpenViewsStock(changedProdId) {
 
   
 
-    function openBlogDetail(id) {
+    function openBlogDetail(id, keepCanonicalUrl) {
       const blogs = (MOCK_DATA && MOCK_DATA.blogs) ? MOCK_DATA.blogs : [];
-      const b = (id ? blogs.find(item => item.id === id) : null) || blogs[0];
+      let b = null;
+      if (id) {
+        b = blogs.find(item => item.id === id);
+        if (!b) {
+          const cleanKey = String(id).toLowerCase().trim();
+          b = blogs.find(item => (item.slug && item.slug.toLowerCase() === cleanKey) ||
+                                 (item.url && item.url.toLowerCase().indexOf(cleanKey) !== -1) ||
+                                 (item.pathname && item.pathname.toLowerCase().indexOf(cleanKey) !== -1) ||
+                                 (item.title && item.title.toLowerCase() === cleanKey));
+        }
+      }
+      if (!b) b = blogs[0];
       if (!b) return;
 
       // Lưu lại ID bài viết đang xem để khi F5 / Reload trang không bao giờ bị mất hoặc trắng trang
       try {
         localStorage.setItem("mmo_current_blog_id", b.id);
-        const url = new URL(window.location.href);
-        url.searchParams.set("post", b.id);
-        url.hash = "#viewBlogDetail";
-        window.history.replaceState(null, "", url.pathname + "?" + url.searchParams.toString() + url.hash);
+        if (!keepCanonicalUrl) {
+          if (b.pathname) {
+            window.history.replaceState(null, "", window.location.origin + b.pathname);
+          } else if (b.url && b.url.indexOf(window.location.origin) === 0) {
+            try {
+              const pUrl = new URL(b.url);
+              window.history.replaceState(null, "", window.location.origin + pUrl.pathname);
+            } catch(e) {
+              const url = new URL(window.location.href);
+              url.searchParams.set("post", b.id);
+              url.hash = "#viewBlogDetail";
+              window.history.replaceState(null, "", window.location.origin + "/?" + url.searchParams.toString() + url.hash);
+            }
+          } else {
+            const url = new URL(window.location.href);
+            url.searchParams.set("post", b.id);
+            url.hash = "#viewBlogDetail";
+            window.history.replaceState(null, "", window.location.origin + "/?" + url.searchParams.toString() + url.hash);
+          }
+        }
       } catch(e) {}
 
       const bCat = document.getElementById("articleBreadcrumbCat");
@@ -17505,6 +17572,54 @@ function syncAllOpenViewsStock(changedProdId) {
       window.scrollTo(0, 0);
     }
     window.openBlogDetail = openBlogDetail;
+
+    function resolveAndOpenBlogByUrl(pathOrUrl) {
+      if (!pathOrUrl) return false;
+      const clean = String(pathOrUrl).toLowerCase().trim();
+      const blogs = (MOCK_DATA && MOCK_DATA.blogs && Array.isArray(MOCK_DATA.blogs)) ? MOCK_DATA.blogs : [];
+      if (blogs.length === 0) return false;
+      
+      // 1. Khớp chính xác theo URL hoặc Pathname
+      let found = blogs.find(function(b) {
+        if (!b) return false;
+        if (b.url && b.url.toLowerCase().indexOf(clean) !== -1) return true;
+        if (b.pathname && (clean.indexOf(b.pathname.toLowerCase()) !== -1 || b.pathname.toLowerCase().indexOf(clean) !== -1)) return true;
+        return false;
+      });
+
+      // 2. Khớp theo Slug (ví dụ: /2026/09/tai-khoan-gmail.html -> tai-khoan-gmail)
+      if (!found) {
+        const slugMatch = clean.match(/\/([^\/\?#]+)\.html/);
+        const targetSlug = slugMatch ? slugMatch[1] : clean.replace(/^\//, '').replace(/\/$/, '');
+        if (targetSlug) {
+          found = blogs.find(function(b) {
+            if (!b) return false;
+            if (b.slug && (b.slug.toLowerCase() === targetSlug || b.slug.toLowerCase().indexOf(targetSlug) !== -1 || targetSlug.indexOf(b.slug.toLowerCase()) !== -1)) return true;
+            if (b.url && b.url.toLowerCase().indexOf(targetSlug) !== -1) return true;
+            return false;
+          });
+        }
+      }
+
+      // 3. Khớp mờ theo tiêu đề nếu chưa tìm thấy
+      if (!found) {
+        const slugMatch = clean.match(/\/([^\/\?#]+)\.html/);
+        const targetSlug = slugMatch ? slugMatch[1].replace(/-/g, ' ') : '';
+        if (targetSlug && typeof cleanCompareText === "function") {
+          const compTarget = cleanCompareText(targetSlug);
+          found = blogs.find(function(b) {
+            return b && b.title && cleanCompareText(b.title).indexOf(compTarget) !== -1;
+          });
+        }
+      }
+
+      if (found) {
+        openBlogDetail(found.id, true);
+        return true;
+      }
+      return false;
+    }
+    window.resolveAndOpenBlogByUrl = resolveAndOpenBlogByUrl;
 
     // [SEO]: TỰ ĐỘNG SINH MỤC LỤC BÀI VIẾT (TABLE OF CONTENTS)
     function renderArticleTableOfContents(bodyEl) {
@@ -22872,6 +22987,10 @@ function changeAdmUsersPage(p) {
         const urlParams = new URLSearchParams(window.location.search);
         const hasProdParam = !!(urlParams.get("prod") || urlParams.get("product") || (hash.startsWith("product_")));
         const hasBlogParam = !!(urlParams.get("post") || urlParams.get("blog"));
+        const curPath = (window.location.pathname || "").toLowerCase();
+        const isKnownRoot = (curPath === "/" || curPath === "" || curPath === "/index.html");
+        const isKnownView = (curPath === "/viewstore" || curPath === "/viewallproducts" || curPath === "/viewblog");
+        const isArticlePath = !isKnownRoot && !isKnownView && (curPath.endsWith(".html") || /\/\d{4}\/\d{2}\//.test(curPath) || curPath.indexOf("/p/") !== -1 || (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes(".")));
         
         const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
         const viewParam = urlParams.get("view");
@@ -22882,7 +23001,7 @@ function changeAdmUsersPage(p) {
           targetView = "viewTerms";
         } else if (hasProdParam) {
           targetView = "viewProductDetail";
-        } else if (hasBlogParam) {
+        } else if (hasBlogParam || isArticlePath) {
           targetView = "viewBlogDetail";
         } else if (viewParam && validViews.includes(viewParam)) {
           targetView = viewParam;
@@ -22899,7 +23018,13 @@ function changeAdmUsersPage(p) {
 
         if (targetView === "viewBlogDetail") {
           const targetBlogId = urlParams.get("post") || urlParams.get("blog") || localStorage.getItem("mmo_current_blog_id");
-          if (typeof openBlogDetail === "function") {
+          if (isArticlePath && typeof resolveAndOpenBlogByUrl === "function") {
+            const resolved = resolveAndOpenBlogByUrl(curPath);
+            if (!resolved) {
+              if (typeof openBlogDetail === "function") openBlogDetail(targetBlogId);
+              else switchView("viewBlogDetail");
+            }
+          } else if (typeof openBlogDetail === "function") {
             openBlogDetail(targetBlogId);
           } else {
             switchView("viewBlogDetail");
@@ -22954,6 +23079,23 @@ function changeAdmUsersPage(p) {
           switchView("viewPrivacy");
         } else if (hash && validViews.includes(hash)) {
           switchView(hash);
+        }
+      });
+
+      window.addEventListener("popstate", function() {
+        const curPath = (window.location.pathname || "").toLowerCase();
+        const isKnownRoot = (curPath === "/" || curPath === "" || curPath === "/index.html");
+        const isArticlePath = !isKnownRoot && (curPath.endsWith(".html") || /\/\d{4}\/\d{2}\//.test(curPath));
+        if (isArticlePath && typeof resolveAndOpenBlogByUrl === "function") {
+          resolveAndOpenBlogByUrl(curPath);
+        } else {
+          const urlParams = new URLSearchParams(window.location.search);
+          const view = urlParams.get("view");
+          const hash = (window.location.hash || "").replace("#", "").trim();
+          const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
+          if (view && validViews.includes(view)) switchView(view);
+          else if (hash && validViews.includes(hash)) switchView(hash);
+          else switchView("viewStore");
         }
       });
     }
