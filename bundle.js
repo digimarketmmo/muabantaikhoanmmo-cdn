@@ -17384,28 +17384,23 @@ function syncAllOpenViewsStock(changedProdId) {
       if (!b) return;
 
       // Lưu lại ID bài viết đang xem để khi F5 / Reload trang không bao giờ bị mất hoặc trắng trang
+      let cleanShortPath = "";
       try {
         localStorage.setItem("mmo_current_blog_id", b.id);
-        if (!keepCanonicalUrl) {
-          if (b.pathname) {
-            window.history.replaceState(null, "", window.location.origin + b.pathname);
-          } else if (b.url && b.url.indexOf(window.location.origin) === 0) {
-            try {
-              const pUrl = new URL(b.url);
-              window.history.replaceState(null, "", window.location.origin + pUrl.pathname);
-            } catch(e) {
-              const url = new URL(window.location.href);
-              url.searchParams.set("post", b.id);
-              url.hash = "#viewBlogDetail";
-              window.history.replaceState(null, "", window.location.origin + "/?" + url.searchParams.toString() + url.hash);
-            }
-          } else {
-            const url = new URL(window.location.href);
-            url.searchParams.set("post", b.id);
-            url.hash = "#viewBlogDetail";
-            window.history.replaceState(null, "", window.location.origin + "/?" + url.searchParams.toString() + url.hash);
-          }
+        // TỰ ĐỘNG CẮT BỎ /YYYY/MM/ ĐỂ URL SIÊU NGẮN CHUẨN SEO: /tai-khoan-gmail.html
+        cleanShortPath = b.pathname || "";
+        if (!cleanShortPath && b.url) {
+          try { cleanShortPath = new URL(b.url).pathname; } catch(e) {}
         }
+        if (!cleanShortPath && b.slug) {
+          cleanShortPath = "/" + b.slug + ".html";
+        }
+        // Cắt bỏ bất kỳ tiền tố ngày tháng nào /YYYY/MM/ (ví dụ: /2026/09/tai-khoan-gmail.html -> /tai-khoan-gmail.html)
+        cleanShortPath = cleanShortPath.replace(/^\/\d{4}\/\d{2}\//, '/');
+        if (!cleanShortPath.startsWith("/")) cleanShortPath = "/" + cleanShortPath;
+        if (!cleanShortPath.endsWith(".html") && !cleanShortPath.endsWith("/")) cleanShortPath += ".html";
+
+        window.history.replaceState(null, "", window.location.origin + cleanShortPath);
       } catch(e) {}
 
       const bCat = document.getElementById("articleBreadcrumbCat");
@@ -17495,7 +17490,7 @@ function syncAllOpenViewsStock(changedProdId) {
           blogSchemaScript.type = "application/ld+json";
           document.head.appendChild(blogSchemaScript);
         }
-        const blogCanonicalUrl = window.location.origin + window.location.pathname + "?post=" + encodeURIComponent(b.id) + "&view=viewBlogDetail";
+        const blogCanonicalUrl = window.location.origin + (cleanShortPath || (window.location.pathname.replace(/^\/\d{4}\/\d{2}\//, '/')));
         const blogRatingVal = (b.rating || "4.9");
         const blogReviewCount = String(b.reviewCount || "128");
         const blogSchema = {
@@ -17579,11 +17574,15 @@ function syncAllOpenViewsStock(changedProdId) {
       const blogs = (MOCK_DATA && MOCK_DATA.blogs && Array.isArray(MOCK_DATA.blogs)) ? MOCK_DATA.blogs : [];
       if (blogs.length === 0) return false;
       
-      // 1. Khớp chính xác theo URL hoặc Pathname
+      // 1. Khớp chính xác theo URL hoặc Pathname (kể cả có hoặc đã cắt bỏ /YYYY/MM/)
+      const strippedClean = clean.replace(/^\/\d{4}\/\d{2}\//, '/');
       let found = blogs.find(function(b) {
         if (!b) return false;
-        if (b.url && b.url.toLowerCase().indexOf(clean) !== -1) return true;
-        if (b.pathname && (clean.indexOf(b.pathname.toLowerCase()) !== -1 || b.pathname.toLowerCase().indexOf(clean) !== -1)) return true;
+        if (b.url && (b.url.toLowerCase().indexOf(clean) !== -1 || b.url.toLowerCase().indexOf(strippedClean) !== -1)) return true;
+        const bPath = (b.pathname || "").toLowerCase();
+        const strippedBPath = bPath.replace(/^\/\d{4}\/\d{2}\//, '/');
+        if (bPath && (clean.indexOf(bPath) !== -1 || bPath.indexOf(clean) !== -1)) return true;
+        if (strippedBPath && (strippedClean === strippedBPath || strippedClean.indexOf(strippedBPath) !== -1 || strippedBPath.indexOf(strippedClean) !== -1)) return true;
         return false;
       });
 
