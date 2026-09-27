@@ -12663,14 +12663,31 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.cleanSourceProductName = cleanSourceProductName;
 
-    // 3. Hàm chuyển nguồn an toàn qua Registry (khắc phục lỗi click lúc được lúc không)
-    function switchSourceByRegistry(regKey) {
+    // 3. Hàm chuyển nguồn an toàn qua Registry & Bulletproof Data Fallback (khắc phục triệt để lỗi click lúc được lúc không)
+    function switchSourceByRegistry(regKey, btnEl) {
       try {
-        if (!regKey || !window._compareRegistry || !window._compareRegistry[regKey]) {
+        let item = (regKey && window._compareRegistry) ? window._compareRegistry[regKey] : null;
+
+        // Bulletproof Fallback: Nếu không tìm thấy trong Registry, đọc trực tiếp từ thuộc tính data của nút
+        if (!item && btnEl) {
+          const p = btnEl.getAttribute('data-provider');
+          const sid = btnEl.getAttribute('data-source-id');
+          if (p && sid) {
+            item = {
+              provider: p,
+              sourceProdId: sid,
+              sourcePrice: Number(btnEl.getAttribute('data-price') || 0),
+              sourceStock: Number(btnEl.getAttribute('data-stock') || 0),
+              sourceProdName: btnEl.getAttribute('data-name') || ""
+            };
+          }
+        }
+
+        if (!item) {
           if (typeof showToast === "function") showToast("Không tìm thấy thông tin sản phẩm nguồn!", "warning");
           return;
         }
-        const item = window._compareRegistry[regKey];
+
         applySwitchSource(
           window.currentCompareProdId,
           item.provider,
@@ -12693,13 +12710,32 @@ function syncAllOpenViewsStock(changedProdId) {
         return;
       }
 
+      // Reset mapping đang chọn tạm thời để luôn đọc dữ liệu gốc mới nhất
+      window.currentCompareActiveMap = null;
+
       // 1. Luôn mở modal ngay lập tức với z-index cao nhất
       modal.style.display = "flex";
       modal.style.zIndex = "999999";
 
       try {
-        const prods = (typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) ? MOCK_DATA.products : (window.MOCK_DATA && window.MOCK_DATA.products ? window.MOCK_DATA.products : []);
-        let prod = (prodId && prodId !== "NEW" && prodId !== "DRAFT" && prodId !== "NEW_PRODUCT") ? prods.find(p => String(p.id) === String(prodId)) : null;
+        const cleanId = String(prodId || "").trim();
+        const prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : (window.MOCK_DATA && Array.isArray(window.MOCK_DATA.products) ? window.MOCK_DATA.products : []);
+        let prod = (cleanId && cleanId !== "NEW" && cleanId !== "DRAFT" && cleanId !== "NEW_PRODUCT") ? prods.find(p => p && String(p.id) === cleanId) : null;
+
+        if (!prod && cleanId && typeof findShopProduct === "function") {
+          prod = findShopProduct(cleanId);
+        }
+
+        // Tìm trong localStorage nếu chưa nạp vào memory
+        if (!prod && cleanId) {
+          try {
+            const rawAdmin = localStorage.getItem("mmo_admin_products");
+            const rawShop = localStorage.getItem("mmo_products");
+            const listA = rawAdmin ? JSON.parse(rawAdmin) : [];
+            const listS = rawShop ? JSON.parse(rawShop) : [];
+            prod = listA.find(p => p && String(p.id) === cleanId) || listS.find(p => p && String(p.id) === cleanId);
+          } catch(eStorage) {}
+        }
 
         // Nếu không tìm thấy sản phẩm trong danh sách (hoặc đang thêm mới/chưa lưu ID):
         // Tự động đọc dữ liệu trực tiếp từ Form đang mở!
@@ -12721,7 +12757,7 @@ function syncAllOpenViewsStock(changedProdId) {
           const currentSrcName = selOpt ? (selOpt.getAttribute("data-name") || selOpt.text || "") : "";
 
           prod = {
-            id: prodId || ("PROD_" + Date.now().toString(36).toUpperCase()),
+            id: cleanId || ("PROD_" + Date.now().toString(36).toUpperCase()),
             name: nameVal || "Sản phẩm",
             category: catVal,
             price: 0,
@@ -12817,7 +12853,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (!statusBox || !prod) return;
 
       const escFn = (typeof escapeHtml === "function") ? escapeHtml : function(s) { return String(s || ""); };
-      let apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(prod.id) : (prod.apiMapping || null);
+      let apiMap = window.currentCompareActiveMap || ((typeof getApiProductMapping === "function") ? getApiProductMapping(prod.id) : (prod.apiMapping || null));
 
       if (!apiMap) {
         const rApi = document.getElementById("admProdTypeApi");
@@ -12918,9 +12954,13 @@ function syncAllOpenViewsStock(changedProdId) {
       const targetProv = provFilterSel ? provFilterSel.value : "all";
       const chosenDur = durFilterSel ? durFilterSel.value : "auto";
 
-      const prods = (typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) ? MOCK_DATA.products : (window.MOCK_DATA && window.MOCK_DATA.products ? window.MOCK_DATA.products : []);
-      const currentProd = prods.find(p => String(p.id) === String(prodId));
-      let currentApiMap = currentProd ? ((typeof getApiProductMapping === "function") ? getApiProductMapping(currentProd.id) : currentProd.apiMapping) : null;
+      const prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : (window.MOCK_DATA && Array.isArray(window.MOCK_DATA.products) ? window.MOCK_DATA.products : []);
+      let currentProd = prods.find(p => p && String(p.id) === String(prodId));
+      if (!currentProd && prodId && typeof findShopProduct === "function") {
+        currentProd = findShopProduct(prodId);
+      }
+
+      let currentApiMap = window.currentCompareActiveMap || (currentProd ? ((typeof getApiProductMapping === "function") ? getApiProductMapping(currentProd.id) : currentProd.apiMapping) : null);
 
       // Fallback lấy mapping từ form nếu đang mở
       if (!currentApiMap) {
@@ -13089,7 +13129,7 @@ function syncAllOpenViewsStock(changedProdId) {
         if (isCurrentActive) {
           actionBtn = '<span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.4); padding:3px 8px; border-radius:4px; font-weight:700; font-size:0.72rem; display:inline-flex; align-items:center; gap:3px;"><i class="fa-solid fa-circle-check"></i> Đang Dùng</span>';
         } else {
-          actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" onclick="switchSourceByRegistry(this.getAttribute(\'data-reg\'))" style="padding:3px 8px; font-size:0.72rem; font-weight:700; border-radius:4px; cursor:pointer; display:inline-flex; align-items:center; gap:3px; white-space:nowrap; ' + (isTop1 ? 'background:linear-gradient(135deg, #10b981, #059669); color:#fff; border-color:#10b981;' : '') + '" title="Đổi sang nguồn ' + escFn(shortProvName) + '">' +
+          actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" data-provider="' + prov + '" data-source-id="' + item.id + '" data-price="' + price + '" data-stock="' + stock + '" data-name="' + escFn(cleanName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="padding:3px 8px; font-size:0.72rem; font-weight:700; border-radius:4px; cursor:pointer; display:inline-flex; align-items:center; gap:3px; white-space:nowrap; ' + (isTop1 ? 'background:linear-gradient(135deg, #10b981, #059669); color:#fff; border-color:#10b981;' : '') + '" title="Đổi sang nguồn ' + escFn(shortProvName) + '">' +
             '<i class="fa-solid fa-bolt"></i> ' + (isTop1 ? 'Đổi (Rẻ nhất)' : 'Đổi nguồn') +
           '</button>';
         }
@@ -13182,7 +13222,7 @@ function syncAllOpenViewsStock(changedProdId) {
             '</div>' +
           '</div>' +
         '</div>' +
-        '<button type="button" class="btn-tool-primary" data-reg="' + bestRegKey + '" onclick="switchSourceByRegistry(this.getAttribute(\'data-reg\'))" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:800; padding:7px 14px; border-radius:6px; font-size:0.82rem; cursor:pointer; box-shadow:0 0 12px rgba(245,158,11,0.4); display:inline-flex; align-items:center; gap:6px;">' +
+        '<button type="button" class="btn-tool-primary" data-reg="' + bestRegKey + '" data-provider="' + prov + '" data-source-id="' + bestDeal.id + '" data-price="' + bestPrice + '" data-stock="' + bestStock + '" data-name="' + escFn(cleanDealName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:800; padding:7px 14px; border-radius:6px; font-size:0.82rem; cursor:pointer; box-shadow:0 0 12px rgba(245,158,11,0.4); display:inline-flex; align-items:center; gap:6px;">' +
           '<i class="fa-solid fa-bolt"></i> 1-CLICK ĐỔI SANG NGUỒN NÀY NGAY' +
         '</button>' +
       '</div>';
@@ -13232,6 +13272,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : { name: provider, baseUrl: "", apiKey: "" };
       const numPrice = Number(sourcePrice) || 0;
       const numStock = (Number(sourceStock) > 0) ? Number(sourceStock) : 9999;
+      const cleanProdId = String(targetProdId || window.currentCompareProdId || "").trim();
 
       // 1. Cập nhật trực tiếp Form Chỉnh Sửa Sản Phẩm (#adminProductModal) nếu đang mở
       try {
@@ -13267,18 +13308,57 @@ function syncAllOpenViewsStock(changedProdId) {
         console.warn("Lỗi cập nhật modal edit form:", eForm);
       }
 
-      // 2. Tìm sản phẩm trong danh sách sản phẩm cửa hàng
-      const prods = (typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) ? MOCK_DATA.products : (window.MOCK_DATA && window.MOCK_DATA.products ? window.MOCK_DATA.products : []);
-      let prod = (targetProdId && targetProdId !== "NEW" && targetProdId !== "DRAFT" && targetProdId !== "NEW_PRODUCT") ? prods.find(p => String(p.id) === String(targetProdId)) : null;
+      // 2. Tìm hoặc khởi tạo sản phẩm từ tất cả các nguồn dữ liệu
+      let prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : (window.MOCK_DATA && Array.isArray(window.MOCK_DATA.products) ? window.MOCK_DATA.products : []);
+      let prod = null;
 
-      // Nếu không tìm theo ID, thử tìm theo tên trong form
-      if (!prod) {
-        const nameInp = document.getElementById("admProdName");
-        const nameVal = nameInp ? nameInp.value.trim().toLowerCase() : "";
-        if (nameVal) {
-          prod = prods.find(p => (p.name || "").toLowerCase().trim() === nameVal);
+      if (cleanProdId && cleanProdId !== "NEW" && cleanProdId !== "DRAFT" && cleanProdId !== "NEW_PRODUCT") {
+        prod = prods.find(p => p && String(p.id) === cleanProdId);
+        if (!prod && typeof findShopProduct === "function") {
+          prod = findShopProduct(cleanProdId);
         }
       }
+
+      // Nếu không tìm thấy, thử tìm trong localStorage
+      if (!prod && cleanProdId) {
+        try {
+          const rawAdmin = localStorage.getItem("mmo_admin_products");
+          const rawShop = localStorage.getItem("mmo_products");
+          const listAdmin = rawAdmin ? JSON.parse(rawAdmin) : [];
+          const listShop = rawShop ? JSON.parse(rawShop) : [];
+          prod = listAdmin.find(p => p && String(p.id) === cleanProdId) || listShop.find(p => p && String(p.id) === cleanProdId);
+        } catch(eL) {}
+      }
+
+      // Nếu vẫn không tìm theo ID, thử tìm theo tên trong form hoặc tên hiện tại
+      if (!prod) {
+        const nameInp = document.getElementById("admProdName");
+        const nameVal = nameInp ? nameInp.value.trim().toLowerCase() : (window.currentCompareProdName || "").trim().toLowerCase();
+        if (nameVal) {
+          prod = prods.find(p => p && (p.name || "").toLowerCase().trim() === nameVal);
+        }
+      }
+
+      // Nếu vẫn chưa có sản phẩm (sản phẩm mới chưa lưu), khởi tạo đối tượng SP hoàn chỉnh
+      if (!prod) {
+        const nameInp = document.getElementById("admProdName");
+        const nameVal = nameInp ? nameInp.value.trim() : (window.currentCompareProdName || "Sản phẩm");
+        const catSel = document.getElementById("admProdCategory");
+        const catVal = catSel ? catSel.value : "Proxy US";
+        prod = {
+          id: cleanProdId || ("PROD_" + Date.now().toString(36).toUpperCase()),
+          name: nameVal,
+          category: catVal,
+          price: 0,
+          stock: numStock,
+          deliveryType: "api",
+          delivery_type: "api"
+        };
+        prods.unshift(prod);
+      }
+
+      const effectiveId = String(prod ? prod.id : cleanProdId);
+      const effectiveName = prod ? prod.name : (document.getElementById("admProdName") ? document.getElementById("admProdName").value : (window.currentCompareProdName || ""));
 
       const mapItem = {
         enabled: true,
@@ -13289,49 +13369,68 @@ function syncAllOpenViewsStock(changedProdId) {
         sourceProdName: sourceProdName || ("Sản phẩm #" + sourceProdId),
         sourcePrice: numPrice,
         sourceStock: numStock,
-        targetProdId: prod ? prod.id : (targetProdId || "NEW"),
-        targetProdName: prod ? prod.name : (document.getElementById("admProdName") ? document.getElementById("admProdName").value : "")
+        targetProdId: effectiveId,
+        targetProdName: effectiveName
       };
 
-      if (prod) {
-        // Lưu mapping
-        try {
-          const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
-          maps[prod.id] = mapItem;
+      // 3. Lưu mapping vào BẢNG MAPPINGS & localStorage (BẮT BUỘC CHẠY 100%)
+      try {
+        const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+        maps[effectiveId] = mapItem;
 
-          if (Array.isArray(prod.variants)) {
-            prod.variants.forEach((v, vIdx) => {
-              maps[prod.id + '__VAR__' + vIdx] = mapItem;
-              maps[prod.id + '_' + vIdx] = mapItem;
-              v.stock = numStock;
-              v.apiMapping = mapItem;
-            });
-          }
-
-          if (typeof saveApiProductMappings === "function") {
-            saveApiProductMappings(maps);
-          } else {
-            localStorage.setItem("mmo_api_product_mappings", JSON.stringify(maps));
-          }
-
-          try {
-            localStorage.setItem("mmo_api_map_" + prod.id, JSON.stringify(mapItem));
-          } catch(eMap) {}
-        } catch(e) {
-          console.warn("Lỗi lưu api mappings:", e);
+        if (prod && Array.isArray(prod.variants)) {
+          prod.variants.forEach((v, vIdx) => {
+            maps[effectiveId + '__VAR__' + vIdx] = mapItem;
+            maps[effectiveId + '_' + vIdx] = mapItem;
+            v.stock = numStock;
+            v.apiMapping = mapItem;
+          });
         }
 
-        // Cập nhật đối tượng sản phẩm
+        if (typeof saveApiProductMappings === "function") {
+          saveApiProductMappings(maps);
+        } else {
+          localStorage.setItem("mmo_api_product_mappings", JSON.stringify(maps));
+        }
+
+        try {
+          localStorage.setItem("mmo_api_map_" + effectiveId, JSON.stringify(mapItem));
+        } catch(eMap) {}
+      } catch(e) {
+        console.warn("Lỗi lưu api mappings:", e);
+      }
+
+      // 4. Cập nhật đối tượng sản phẩm và đồng bộ vào kho lưu trữ
+      if (prod) {
         prod.deliveryType = "api";
         prod.delivery_type = "api";
         prod.stock = numStock;
         prod.apiMapping = mapItem;
         prod._lastEditedAt = Date.now();
 
+        // Đảm bảo prod có mặt trong MOCK_DATA.products
+        if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+          const idx = MOCK_DATA.products.findIndex(p => p && String(p.id) === String(prod.id));
+          if (idx >= 0) {
+            MOCK_DATA.products[idx] = prod;
+          } else {
+            MOCK_DATA.products.unshift(prod);
+          }
+        }
+        if (typeof window !== "undefined" && window.MOCK_DATA && Array.isArray(window.MOCK_DATA.products)) {
+          const idx = window.MOCK_DATA.products.findIndex(p => p && String(p.id) === String(prod.id));
+          if (idx >= 0) {
+            window.MOCK_DATA.products[idx] = prod;
+          } else {
+            window.MOCK_DATA.products.unshift(prod);
+          }
+        }
+
         // Lưu sản phẩm vào localStorage mmo_products & mmo_admin_products
         try {
-          localStorage.setItem("mmo_products", JSON.stringify(prods));
-          localStorage.setItem("mmo_admin_products", JSON.stringify(prods));
+          const targetList = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : prods;
+          localStorage.setItem("mmo_products", JSON.stringify(targetList));
+          localStorage.setItem("mmo_admin_products", JSON.stringify(targetList));
         } catch(eStorage) {
           console.warn("Lỗi lưu localStorage mmo_products:", eStorage);
         }
@@ -13352,11 +13451,15 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       }
 
-      // 3. Cập nhật lại UI trong Modal So Sánh
-      renderCompareCurrentStatus(prod || { id: targetProdId, apiMapping: mapItem, deliveryType: "api" });
+      // 5. GHI NHỚ MAPPING VỪA ĐỔI ĐỂ CẬP NHẬT MODAL SO SÁNH TỨC THÌ 0MS
+      window.currentCompareActiveMap = mapItem;
+      window._lastSwitchedApiMap = mapItem;
+
+      // Cập nhật lại UI trong Modal So Sánh
+      renderCompareCurrentStatus(prod || { id: effectiveId, apiMapping: mapItem, deliveryType: "api" });
       executeCompareSourcesSearch();
 
-      // 4. Thông báo thành công
+      // 6. Thông báo thành công
       const provName = pCfg.name || provider;
       if (typeof showToast === "function") {
         showToast("⚡ Đã chọn nguồn [" + provName + "]! Giá nhập: " + (typeof formatVND === "function" ? formatVND(numPrice) : numPrice + "đ") + " (Kho: " + numStock.toLocaleString() + " acc)", "success");
