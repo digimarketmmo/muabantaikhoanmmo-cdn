@@ -3441,6 +3441,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.toggleAdmProductSourceFields = toggleAdmProductSourceFields;
 
     // BỘ LỌC VÀ TÌM NHANH SẢN PHẨM NGUỒN TRONG MODAL SỬA/THÊM SẢN PHẨM
+    // BỘ LỌC VÀ TÌM NHANH SẢN PHẨM NGUỒN TRONG MODAL SỬA/THÊM SẢN PHẨM
     function filterAdmModalSourceProducts(keyword) {
       const pSel = document.getElementById("admProdApiProvider");
       const sSel = document.getElementById("admProdApiSourceSelect");
@@ -3448,10 +3449,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const clearBtn = document.getElementById("btnAdmClearSourceSearch");
       if (!sSel) return;
 
-      const kw = (keyword || "").trim().toLowerCase();
-      if (clearBtn) clearBtn.style.display = kw ? "inline-block" : "none";
+      const rawKw = (keyword || "").trim();
+      if (clearBtn) clearBtn.style.display = rawKw ? "inline-block" : "none";
 
-      const provider = pSel ? (pSel.value || "shop1989nd") : "shop1989nd";
+      const provider = pSel ? (pSel.value || "selltainguyenmmo") : "selltainguyenmmo";
       const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
         ? window.cachedSourceProducts
         : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
@@ -3466,25 +3467,59 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       });
       const totalInProvider = filtered.length;
 
-      if (kw) {
-        const removeAccents = function(str) {
-          return String(str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
-        };
-        const normKw = removeAccents(kw);
-        const words = normKw.split(/\s+/).filter(Boolean);
+      const removeAccents = function(str) {
+        return String(str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+      };
 
-        filtered = filtered.filter(s => {
+      const normalizeSearchText = function(str) {
+        let s = removeAccents(str);
+        s = s.replace(/\b(intagram|inta)\b/g, "instagram");
+        s = s.replace(/\b(titok|tik tok)\b/g, "tiktok");
+        s = s.replace(/\bytb\b/g, "youtube");
+        s = s.replace(/\bfb\b/g, "facebook");
+        return s;
+      };
+
+      if (rawKw) {
+        const normKw = normalizeSearchText(rawKw);
+        const words = normKw.split(/\s+/).filter(w => w.length >= 2);
+
+        // 1. Thử tìm kiếm chặt chẽ (Strict match: tất cả từ đều xuất hiện)
+        let strictMatched = filtered.filter(s => {
           const rawId = String(s.id || "").trim();
-          if (rawId === kw || rawId.includes(kw)) return true;
-          const rawText = ((s.category || "") + " " + (s.name || "") + " " + rawId).toLowerCase();
-          const normText = removeAccents(rawText);
-          return words.every(w => normText.includes(w) || rawText.includes(w));
+          if (rawId === normKw || rawId.includes(normKw)) return true;
+          const rawText = normalizeSearchText((s.category || "") + " " + (s.name || "") + " " + rawId);
+          return words.every(w => rawText.includes(w));
         });
+
+        if (strictMatched.length > 0) {
+          filtered = strictMatched;
+        } else {
+          // 2. Fallback tìm kiếm thông minh có chấm điểm (Scored fuzzy match)
+          const scored = [];
+          filtered.forEach(s => {
+            const rawId = String(s.id || "").trim();
+            const rawText = normalizeSearchText((s.category || "") + " " + (s.name || "") + " " + rawId);
+            let score = 0;
+            words.forEach(w => {
+              if (rawText.includes(w)) {
+                score += (w === "instagram" || w === "ig" || w === "tiktok" || w === "gmail" || w === "facebook" || w === "kling" || w === "proxy") ? 3 : 1;
+              }
+            });
+            if (score > 0) scored.push({ s: s, score: score });
+          });
+          scored.sort((a, b) => b.score - a.score || (b.s.amount > 0 ? 1 : 0) - (a.s.amount > 0 ? 1 : 0));
+          if (scored.length > 0) {
+            filtered = scored.map(item => item.s);
+          } else {
+            filtered = [];
+          }
+        }
       }
 
       if (countSpan) {
-        if (kw) {
-          countSpan.innerHTML = '<span style="color:#10b981;"><i class="fa-solid fa-check"></i> ' + filtered.length + '/' + totalInProvider + ' SP</span>';
+        if (rawKw) {
+          countSpan.innerHTML = '<span style="color:' + (filtered.length > 0 ? '#10b981' : '#f87171') + ';"><i class="fa-solid ' + (filtered.length > 0 ? 'fa-check' : 'fa-triangle-exclamation') + '"></i> ' + filtered.length + '/' + totalInProvider + ' SP</span>';
         } else {
           countSpan.innerHTML = '<span style="color:#94a3b8;">' + totalInProvider + ' SP</span>';
         }
@@ -3492,9 +3527,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       const pendingVal = sSel.getAttribute("data-pending-id") || "";
       const currentVal = sSel.value || pendingVal;
-      let optionsHtml = '<option value="">-- ' + (kw ? ('Tìm thấy ' + filtered.length + ' SP (Bấm để chọn)') : ('Chọn sản phẩm nguồn (' + filtered.length + ' SP)')) + ' --</option>';
+      let optionsHtml = '';
 
-      // BẢO VỆ TUYỆT ĐỐI: Nếu sản phẩm đã mapping nhưng chưa có trong danh sách tìm kiếm/lọc, luôn hiển thị để không bị mất ID
+      if (filtered.length === 0) {
+        optionsHtml = '<option value="">-- Không tìm thấy SP nào khớp "' + escapeHtml(rawKw) + '". Hãy thử gõ từ khóa ngắn hơn (VD: IG, Mail, Kling...) --</option>';
+      } else {
+        optionsHtml = '<option value="">-- ' + (rawKw ? ('Tìm thấy ' + filtered.length + ' SP (Bấm để chọn)') : ('Chọn sản phẩm nguồn (' + filtered.length + ' SP)')) + ' --</option>';
+      }
+
+      // BẢO VỆ TUYỆT ĐỐI: Nếu sản phẩm đã mapping nhưng chưa có trong danh sách tìm kiếm/lọc, luôn giữ lại trong dropdown để không bị mất ID
       if (currentVal && !filtered.some(s => String(s.id) === String(currentVal))) {
         optionsHtml += '<option value="' + currentVal + '" selected="selected" data-stock="9999">[Đang liên kết: #' + currentVal + '] Giữ nguyên sản phẩm nguồn này</option>';
       }
@@ -3511,9 +3552,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       sSel.innerHTML = optionsHtml;
 
-      if (currentVal && !sSel.value) {
+      if (currentVal && (!sSel.value || sSel.value === "")) {
         sSel.value = String(currentVal);
-      } else if (kw && filtered.length === 1 && !sSel.value) {
+      } else if (rawKw && filtered.length === 1 && (!sSel.value || sSel.value === "")) {
         sSel.value = String(filtered[0].id);
       }
       if (typeof handleAdmModalSourceChange === "function") handleAdmModalSourceChange();
@@ -3533,21 +3574,65 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function autoFillSourceSearchFromName() {
       const nameInput = document.getElementById("admProdName");
       const searchInput = document.getElementById("admProdApiSourceSearch");
+      const catSelect = document.getElementById("admProdCategory");
       if (!nameInput || !searchInput) return;
       let val = nameInput.value.trim();
-      if (!val) {
+      let cat = catSelect ? catSelect.value.trim() : "";
+      if (!val && !cat) {
         if (typeof showToast === "function") showToast("Vui lòng nhập Tên Sản Phẩm ở trên trước!", "warning");
         nameInput.focus();
         return;
       }
-      // Bóc tách từ khóa sạch
-      let clean = val.replace(/^(tài\s*khoản|tai\s*khoan|acc|tk|chuyên\s*cung\s*cấp|cho\s*thuê|thue|thuê)\s+/i, '').trim();
-      const parts = clean.split(/\s+/).slice(0, 3).join(' ');
-      const finalKw = parts || clean;
+
+      const fullText = (val + " " + cat).toLowerCase();
+
+      // 1. Nhận diện nền tảng / thương hiệu phổ biến (Smart Platform Detection)
+      let detectedKeyword = "";
+      if (fullText.includes("insta") || fullText.includes("inta") || fullText.includes("ig")) {
+        detectedKeyword = "Instagram";
+      } else if (fullText.includes("face") || fullText.includes("fb") || fullText.includes("via") || fullText.includes("clone") || fullText.includes("bm")) {
+        detectedKeyword = "Facebook";
+      } else if (fullText.includes("tik") || fullText.includes("tt")) {
+        detectedKeyword = "TikTok";
+      } else if (fullText.includes("gmail") || fullText.includes("mail domain") || fullText.includes("edu")) {
+        detectedKeyword = "Gmail";
+      } else if (fullText.includes("hot") || fullText.includes("outlook")) {
+        detectedKeyword = "Hotmail";
+      } else if (fullText.includes("gpt") || fullText.includes("chatgpt") || fullText.includes("openai")) {
+        detectedKeyword = "ChatGPT";
+      } else if (fullText.includes("gemini") || fullText.includes("veo")) {
+        detectedKeyword = "Gemini";
+      } else if (fullText.includes("kling")) {
+        detectedKeyword = "Kling";
+      } else if (fullText.includes("proxy") || fullText.includes("socks") || fullText.includes("ipv4") || fullText.includes("4g")) {
+        detectedKeyword = "Proxy";
+      } else if (fullText.includes("you") || fullText.includes("ytb")) {
+        detectedKeyword = "Youtube";
+      } else if (fullText.includes("canva")) {
+        detectedKeyword = "Canva";
+      } else if (fullText.includes("capcut")) {
+        detectedKeyword = "Capcut";
+      } else if (fullText.includes("tele")) {
+        detectedKeyword = "Telegram";
+      } else if (fullText.includes("discord")) {
+        detectedKeyword = "Discord";
+      } else if (fullText.includes("twitter") || fullText.includes("x.com")) {
+        detectedKeyword = "Twitter";
+      }
+
+      // 2. Nếu không thuộc platform trên, bóc tách từ khóa sạch (bỏ từ thừa MMO)
+      let finalKw = detectedKeyword;
+      if (!finalKw) {
+        let clean = val.replace(/^(tài\s*khoản|tai\s*khoan|acc|tk|chuyên\s*cung\s*cấp|cho\s*thuê|thue|thuê)\s+/i, '').trim();
+        clean = clean.replace(/\b(khỏe|khoe|ngâm|ngam|lâu|lau|cổ|co|new|trâu|trau|zin|random|siêu|chất\s*lượng|uy\s*tín|giá\s*rẻ|bảo\s*hành|bao\s*die|live|đã)\b/gi, '').trim();
+        const parts = clean.split(/\s+/).filter(w => w.length >= 2).slice(0, 2).join(' ');
+        finalKw = parts || clean || val.split(/\s+/)[0] || "";
+      }
+
       searchInput.value = finalKw;
       searchInput.focus();
       filterAdmModalSourceProducts(finalKw);
-      if (typeof showToast === "function") showToast("Đã lọc SP nguồn theo: " + finalKw, "info");
+      if (typeof showToast === "function") showToast("🪄 Đã tìm nhanh SP nguồn theo: \"" + finalKw + "\"", "info");
     }
     window.autoFillSourceSearchFromName = autoFillSourceSearchFromName;
     window.quickFillApiSearchFromName = autoFillSourceSearchFromName;
@@ -5523,8 +5608,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (priceHiddenInput) priceHiddenInput.value = effectivePrice;
 
       const isApiSelected = document.getElementById("admProdTypeApi")?.checked;
-      const apiProviderVal = document.getElementById("admProdApiProvider")?.value || "shop1989nd";
-      const apiSourceProdIdVal = document.getElementById("admProdApiSourceSelect")?.value || "";
+      const apiProviderVal = document.getElementById("admProdApiProvider")?.value || "selltainguyenmmo";
+      const sSel = document.getElementById("admProdApiSourceSelect");
+      let apiSourceProdIdVal = sSel ? (sSel.value || sSel.getAttribute("data-pending-id") || "") : "";
+      if (sSel && !apiSourceProdIdVal && sSel.selectedIndex >= 0 && sSel.options[sSel.selectedIndex]) {
+        apiSourceProdIdVal = sSel.options[sSel.selectedIndex].value || "";
+      }
+      if (!apiSourceProdIdVal && oldProd) {
+        const oldMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(actualTargetId) : (oldProd.apiMapping || null);
+        if (oldMap && oldMap.sourceProdId) {
+          apiSourceProdIdVal = String(oldMap.sourceProdId);
+        }
+      }
 
       if (isApiSelected && !apiSourceProdIdVal) {
         showToast("⚠️ Vui lòng chọn sản phẩm nguồn API tương ứng trước khi lưu!", "warning");
@@ -5619,8 +5714,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           prodData.delivery_type = "api";
           prodData.stock = liveSourceStock;
           if (Array.isArray(prodData.variants)) {
-            prodData.variants.forEach(v => { if (v) v.stock = liveSourceStock; });
+            prodData.variants.forEach(v => {
+              if (v) {
+                v.stock = liveSourceStock;
+                v.apiMapping = mapItem;
+              }
+            });
           }
+          try {
+            localStorage.setItem("mmo_api_map_" + actualTargetId, JSON.stringify(mapItem));
+          } catch(eMap) {}
         } else {
           delete maps[actualTargetId];
           variants.forEach((v, vIdx) => {
@@ -5631,6 +5734,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           delete prodData.apiMapping;
           prodData.deliveryType = "local";
           prodData.delivery_type = "local";
+          try {
+            localStorage.removeItem("mmo_api_map_" + actualTargetId);
+          } catch(eMap) {}
         }
         if (typeof saveApiProductMappings === "function") {
           saveApiProductMappings(maps);
@@ -9734,7 +9840,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             if (!isLocallyFresh) {
               const isApiType = (tp.delivery_type === 'api' || tp.deliveryType === 'api' || cur.deliveryType === 'api' || cur.delivery_type === 'api' || (typeof isProductApi === 'function' && (isProductApi(cur) || isProductApi(tp))));
               let updatedStock = cur.stock;
-              const effectiveMapping = isApiType ? (cur.apiMapping || (typeof getApiProductMapping === 'function' ? getApiProductMapping(cur) : null)) : null;
+              const effectiveMapping = isApiType ? (cur.apiMapping || tp.apiMapping || (variants && variants[0] && variants[0].apiMapping) || (cur.variants && cur.variants[0] && cur.variants[0].apiMapping) || (typeof getApiProductMapping === 'function' ? getApiProductMapping(cur) : null)) : null;
+              if (effectiveMapping && effectiveMapping.sourceProdId) {
+                try {
+                  const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+                  if (!maps[cur.id] || !maps[cur.id].sourceProdId) {
+                    maps[cur.id] = effectiveMapping;
+                    if (typeof saveApiProductMappings === "function") saveApiProductMappings(maps);
+                  }
+                  localStorage.setItem("mmo_api_map_" + cur.id, JSON.stringify(effectiveMapping));
+                } catch(eMapSync) {}
+              }
               
               const updatedPrice = (tp.price !== undefined) ? Number(tp.price) : cur.price;
               if (!isApiType) {
@@ -9788,6 +9904,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             // Sản phẩm mới từ Turso -> Đưa lên đầu danh sách để hiển thị ngay trên Store
             const isApiTypeNew = (tp.delivery_type === 'api' || tp.deliveryType === 'api' || (typeof isProductApi === 'function' && isProductApi(tp)));
             let newStock = Number(tp.stock) || 0;
+            const newMapping = isApiTypeNew ? (tp.apiMapping || (variants && variants[0] && variants[0].apiMapping) || (typeof getApiProductMapping === 'function' ? getApiProductMapping(tp) : null)) : null;
+            if (newMapping && newMapping.sourceProdId) {
+              try {
+                const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+                if (!maps[tp.id] || !maps[tp.id].sourceProdId) {
+                  maps[tp.id] = newMapping;
+                  if (typeof saveApiProductMappings === "function") saveApiProductMappings(maps);
+                }
+                localStorage.setItem("mmo_api_map_" + tp.id, JSON.stringify(newMapping));
+              } catch(eMapSync) {}
+            }
             if (isApiTypeNew && newStock <= 0) newStock = 9999;
             if (isApiTypeNew && Array.isArray(variants)) {
               variants.forEach(v => { if ((Number(v.stock) || 0) <= 0) v.stock = newStock; });
@@ -9811,7 +9938,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               description: tp.description || "",
               variants: variants,
               deliveryType: isApiTypeNew ? "api" : "local",
-              delivery_type: isApiTypeNew ? "api" : "local"
+              delivery_type: isApiTypeNew ? "api" : "local",
+              apiMapping: newMapping
             });
             hasNewOrUpdated = true;
           }
@@ -11662,9 +11790,27 @@ function syncAllOpenViewsStock(changedProdId) {
         return enrichMapping(maps[prodObj.id]);
       }
 
-      // 3. Tra cứu theo apiMapping gắn trực tiếp trên đối tượng sản phẩm
+      // 2.1 Tra cứu theo khóa sao lưu độc lập mmo_api_map_[id]
+      try {
+        const storedMap = (prodId ? localStorage.getItem("mmo_api_map_" + prodId) : null) || (prodObj && prodObj.id ? localStorage.getItem("mmo_api_map_" + prodObj.id) : null);
+        if (storedMap) {
+          const parsedM = JSON.parse(storedMap);
+          if (parsedM && parsedM.enabled && parsedM.sourceProdId) {
+            return enrichMapping(parsedM);
+          }
+        }
+      } catch(e) {}
+
+      // 3. Tra cứu theo apiMapping gắn trực tiếp trên đối tượng sản phẩm hoặc biến thể
       if (prodObj && prodObj.apiMapping && prodObj.apiMapping.enabled && prodObj.apiMapping.sourceProdId) {
         return enrichMapping(prodObj.apiMapping);
+      }
+      if (prodObj && Array.isArray(prodObj.variants) && prodObj.variants.length > 0) {
+        for (const v of prodObj.variants) {
+          if (v && v.apiMapping && v.apiMapping.enabled && v.apiMapping.sourceProdId) {
+            return enrichMapping(v.apiMapping);
+          }
+        }
       }
 
       // 4. Tra cứu theo tên sản phẩm (CHỈ khi tham số truyền vào là chuỗi tên, TUYỆT ĐỐI không áp dụng khi là mã ID)
