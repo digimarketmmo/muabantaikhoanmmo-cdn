@@ -5823,10 +5823,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
 
-      // TỰ ĐỘNG LÀM MỚI TOÀN BỘ GIAO DIỆN TRANG XEM CHI TIẾT SẢN PHẨM (viewProductDetail)
+      // TỰ ĐỘNG LÀM MỚI TOÀN BỘ GIAO DIỆN TRANG XEM CHI TIẾT SẢN PHẨM (viewProductDetail) NẾU ĐANG XEM THỰC SỰ
       const dtlView = document.getElementById("viewProductDetail");
       const isDtlActive = dtlView && (dtlView.style.display !== "none" && !dtlView.classList.contains("hidden"));
-      if (isDtlActive || (currentSelectedProduct && (String(currentSelectedProduct.id) === String(actualTargetId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId))))) {
+      if (isDtlActive && (currentSelectedProduct && (String(currentSelectedProduct.id) === String(actualTargetId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId))))) {
         const dtlImg = document.getElementById("dtlImage");
         if (dtlImg && prodData.image) dtlImg.src = prodData.image;
         const dtlTitle = document.getElementById("dtlTitle");
@@ -7807,6 +7807,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
 
+      if (viewId === "viewProductDetail") {
+        const _sp = new URLSearchParams(window.location.search);
+        const _hasProd = _sp.get("prod") || _sp.get("product") || (window.location.hash && window.location.hash.startsWith("#product_")) || (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && currentSelectedProduct.id);
+        if (!_hasProd) {
+          viewId = "viewStore";
+        }
+      }
+
       localStorage.setItem("mmo_current_view", viewId);
       if (viewId === "viewDeposit" && typeof prepareDeposit === "function") {
         const initAmt = window._targetDepositAmount || 20000;
@@ -7817,12 +7825,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         depositPollingTimer = null;
       }
 
-      // 1. TỨC THÌ 0MS: Chuyển đổi hiển thị view
+      // 1. TỨC THÌ 0MS: Chuyển đổi hiển thị view độc lập 100% (chống kẹt view với !important)
       const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
       views.forEach(function(v) {
         const el = document.getElementById(v);
-        if (el) el.style.display = (v === viewId) ? "block" : "none";
+        if (el) {
+          if (v === viewId) {
+            el.style.setProperty("display", "block", "important");
+          } else {
+            el.style.setProperty("display", "none", "important");
+          }
+        }
       });
+      // Bảo đảm tuyệt đối: nếu không phải viewProductDetail thì chi tiết sản phẩm phải biến mất 100%
+      if (viewId !== "viewProductDetail") {
+        const dtlForceHide = document.getElementById("viewProductDetail");
+        if (dtlForceHide) dtlForceHide.style.setProperty("display", "none", "important");
+      }
 
       // 2. Cập nhật Nav Active state tức thì
       document.querySelectorAll(".nav-link").forEach(function(l) { l.classList.remove("active"); });
@@ -7948,7 +7967,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             url.searchParams.delete("product");
             url.searchParams.delete("post");
             url.searchParams.delete("blog");
+            url.searchParams.delete("view");
             url.searchParams.delete("m");
+            url.hash = "";
             if (url.searchParams.has("category") || url.searchParams.has("s")) {
               const newUrl = window.location.origin + "/?" + url.searchParams.toString();
               window.history.replaceState(null, "", newUrl);
@@ -7967,6 +7988,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             url.searchParams.delete("product");
             url.searchParams.delete("post");
             url.searchParams.delete("blog");
+            url.searchParams.delete("view");
             url.searchParams.delete("m");
             url.hash = "#" + viewId;
             const newUrl = window.location.origin + "/" + (url.searchParams.toString() ? ("?" + url.searchParams.toString()) : "") + url.hash;
@@ -23608,7 +23630,8 @@ function changeAdmUsersPage(p) {
         const hash = (window.location.hash || "").replace("#", "").trim();
         const savedView = localStorage.getItem("mmo_current_view");
         const urlParams = new URLSearchParams(window.location.search);
-        const hasProdParam = !!(urlParams.get("prod") || urlParams.get("product") || (hash.startsWith("product_")));
+        const explicitProdId = urlParams.get("prod") || urlParams.get("product") || (hash.startsWith("product_") ? hash.replace("product_", "").split("?")[0] : null);
+        const hasProdParam = !!explicitProdId;
         const hasBlogParam = !!(urlParams.get("post") || urlParams.get("blog"));
         const curPath = (window.location.pathname || "").toLowerCase();
         const isKnownRoot = (curPath === "/" || curPath === "" || curPath === "/index.html");
@@ -23622,11 +23645,11 @@ function changeAdmUsersPage(p) {
           targetView = "viewPrivacy";
         } else if (hash === "viewTerms" || hash === "terms" || viewParam === "viewTerms") {
           targetView = "viewTerms";
-        } else if (hasProdParam) {
+        } else if (hasProdParam && explicitProdId) {
           targetView = "viewProductDetail";
         } else if (hasBlogParam || isArticlePath) {
           targetView = "viewBlogDetail";
-        } else if (viewParam && validViews.includes(viewParam)) {
+        } else if (viewParam && validViews.includes(viewParam) && viewParam !== "viewProductDetail") {
           targetView = viewParam;
         } else if (hash && validViews.includes(hash) && hash !== "viewProductDetail") {
           targetView = hash;
@@ -23653,6 +23676,11 @@ function changeAdmUsersPage(p) {
             } else {
               switchView("viewBlogDetail");
             }
+          }
+        } else if (targetView === "viewProductDetail") {
+          switchView("viewProductDetail");
+          if (explicitProdId && typeof openProductDetailById === "function") {
+            openProductDetailById(explicitProdId);
           }
         } else if (targetView && targetView !== "viewStore") {
           const storedUser = localStorage.getItem("mmo_user");
@@ -23702,7 +23730,7 @@ function changeAdmUsersPage(p) {
         const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
         if (hash && (hash === "viewPrivacy" || hash === "privacy")) {
           switchView("viewPrivacy");
-        } else if (hash && validViews.includes(hash)) {
+        } else if (hash && validViews.includes(hash) && hash !== "viewProductDetail") {
           switchView(hash);
         }
       });
@@ -23718,9 +23746,17 @@ function changeAdmUsersPage(p) {
           const view = urlParams.get("view");
           const hash = (window.location.hash || "").replace("#", "").trim();
           const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
-          if (view && validViews.includes(view)) switchView(view);
-          else if (hash && validViews.includes(hash)) switchView(hash);
-          else switchView("viewStore");
+          const popProdId = urlParams.get("prod") || urlParams.get("product") || (hash.startsWith("product_") ? hash.replace("product_", "").split("?")[0] : null);
+          if (view === "viewProductDetail" && popProdId) {
+            switchView("viewProductDetail");
+            if (typeof openProductDetailById === "function") openProductDetailById(popProdId);
+          } else if (view && validViews.includes(view) && view !== "viewProductDetail") {
+            switchView(view);
+          } else if (hash && validViews.includes(hash) && hash !== "viewProductDetail") {
+            switchView(hash);
+          } else {
+            switchView("viewStore");
+          }
         }
       });
     }
