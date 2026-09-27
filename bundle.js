@@ -2734,6 +2734,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function renderAdminDashboard() {
       try {
+        const esc = (typeof escapeHtml === "function") ? escapeHtml : function(s) {
+          if (s === null || s === undefined) return '';
+          return String(s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+        };
         const tbody = document.querySelector("#admProductsTable tbody");
         if (tbody) {
           let prods = (MOCK_DATA && MOCK_DATA.products) ? [...MOCK_DATA.products] : [];
@@ -2805,7 +2814,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
           if (prods.length === 0) {
             const emptyMsg = admProductSearchQuery
-              ? 'Không tìm thấy sản phẩm nào khớp với từ khóa "<strong>' + escapeHtml(admProductSearchQuery) + '</strong>".'
+              ? 'Không tìm thấy sản phẩm nào khớp với từ khóa "<strong>' + esc(admProductSearchQuery) + '</strong>".'
               : 'Chưa có sản phẩm nào. Hãy bấm "Thêm Sản Phẩm" để tạo mới.';
             tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:28px; color:#64748b;"><i class="fa-solid fa-box-open" style="font-size:1.6rem; display:block; margin-bottom:8px; opacity:0.5;"></i>' + emptyMsg + '</td></tr>';
           } else {
@@ -2814,7 +2823,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               return '<tr>' +
                 '<td>' + p.id + '</td>' +
                 '<td><img src="' + p.image + '" style="width:36px; height:36px; border-radius:4px; object-fit:cover;" /></td>' +
-                '<td><a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#ffffff; text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:6px;" onmouseover="this.style.color=\'#10b981\'" onmouseout="this.style.color=\'#ffffff\'" title="Mở xem chi tiết sản phẩm trong tab mới"><strong>' + escapeHtml(p.name) + '</strong> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem; color:#38bdf8;"></i></a><br/>' +
+                '<td><a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#ffffff; text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:6px;" onmouseover="this.style.color=\'#10b981\'" onmouseout="this.style.color=\'#ffffff\'" title="Mở xem chi tiết sản phẩm trong tab mới"><strong>' + esc(p.name) + '</strong> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem; color:#38bdf8;"></i></a><br/>' +
                   (function() {
                     const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
                     const isApi = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
@@ -2824,7 +2833,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                     return '<span style="font-size:0.68rem; background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:1px 6px; border-radius:4px; font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-right:6px;"><i class="fa-solid fa-box"></i> Kho Nội Bộ</span>';
                   })() +
                   '<span style="font-size:0.75rem; color:#38bdf8;">' + vCount + ' Biến thể</span></td>' +
-                '<td>' + escapeHtml(p.category) + '</td>' +
+                '<td>' + esc(p.category) + '</td>' +
                 '<td style="color:#10b981; font-weight:700;">' + formatVND(p.price) + '</td>' +
                 '<td>' + (function() {
                   const stk = typeof getProductStockCount === "function" ? getProductStockCount(p) : (p.stock || 0);
@@ -2865,6 +2874,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
     }
     window.renderAdminDashboard = renderAdminDashboard;
+    window.renderAdminProductsTable = renderAdminDashboard;
 
     // =========================================================================
     // TRANG TỔNG QUAN HỆ THỐNG (SYSTEM OVERVIEW DASHBOARD)
@@ -8434,6 +8444,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (tabId === "tabAdmDashboard") {
         if (typeof renderSystemOverview === "function") renderSystemOverview();
       }
+      if (tabId === "tabAdmProducts") {
+        if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+        if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+      }
       if (tabId === "tabAdmChat") {
         if (typeof renderAdminChatUI === "function") renderAdminChatUI();
         const tabEl = document.getElementById("tabAdmChat");
@@ -11565,15 +11579,6 @@ function syncAllOpenViewsStock(changedProdId) {
       const prodObj = typeof productOrId === "object" ? productOrId : ((typeof findShopProduct === "function") ? findShopProduct(prodId) : null);
       const prodName = prodObj ? (prodObj.name || "") : (typeof productOrId === "string" ? productOrId.trim() : "");
 
-      // [BẢO VỆ KHO NỘI BỘ]: Nếu sản phẩm là kho nội bộ và không có mapping API nào, không tự động gán
-      const isExplicitLocal = prodObj && (prodObj.deliveryType === "local" || prodObj.delivery_type === "local" || prodObj.deliveryType === "manual" || prodObj.delivery_type === "manual") && !maps[prodId] && !DEFAULT_API_PRODUCT_MAPPINGS[prodId] && !(prodObj.apiMapping && prodObj.apiMapping.enabled);
-      if (isExplicitLocal) {
-        if (prodObj.apiMapping && prodObj.apiMapping.enabled && prodObj.apiMapping.sourceProdId) {
-          return enrichMapping(prodObj.apiMapping);
-        }
-        return null;
-      }
-
       const maps = getApiProductMappings();
 
       function enrichMapping(m) {
@@ -11595,6 +11600,15 @@ function syncAllOpenViewsStock(changedProdId) {
         }
         res.sourceStock = Math.max(0, stock);
         return res;
+      }
+
+      // [BẢO VỆ KHO NỘI BỘ]: Nếu sản phẩm là kho nội bộ và không có mapping API nào, không tự động gán
+      const isExplicitLocal = prodObj && (prodObj.deliveryType === "local" || prodObj.delivery_type === "local" || prodObj.deliveryType === "manual" || prodObj.delivery_type === "manual") && !maps[prodId] && !DEFAULT_API_PRODUCT_MAPPINGS[prodId] && !(prodObj.apiMapping && prodObj.apiMapping.enabled);
+      if (isExplicitLocal) {
+        if (prodObj.apiMapping && prodObj.apiMapping.enabled && prodObj.apiMapping.sourceProdId) {
+          return enrichMapping(prodObj.apiMapping);
+        }
+        return null;
       }
 
       // [BUILT-IN DEFAULT MAPPINGS FOR ON-DEMAND PRODUCTS]
