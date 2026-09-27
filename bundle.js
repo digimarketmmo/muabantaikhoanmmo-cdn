@@ -17783,6 +17783,9 @@ function syncAllOpenViewsStock(changedProdId) {
       const artBody = document.getElementById("articleBodyContent");
       if (artBody) {
         let contentHtml = (typeof cleanBloggerContentForDarkTheme === "function") ? cleanBloggerContentForDarkTheme(b.content || "") : (b.content || "");
+        if (!contentHtml && artBody.innerHTML && artBody.innerHTML.trim().length > 100) {
+          contentHtml = artBody.innerHTML;
+        }
         // Tự động nâng cấp toàn bộ ảnh trong nội dung bài viết lên s1600 / Full HD để ảnh sắc nét 100%
         contentHtml = upgradeBloggerImageToFullHd(contentHtml);
         if (!contentHtml.includes("<h2") && !contentHtml.includes("<p>")) {
