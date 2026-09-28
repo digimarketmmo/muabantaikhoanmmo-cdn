@@ -8251,7 +8251,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (dtlLeft) dtlLeft.innerHTML = html;
     }
 
-    // RENDER RECOMMENDED (CENTER - 6 ITEMS) - ƯU TIÊN CÒN HÀNG, BÁN CHẠY & LUÂN PHIÊN
+    // RENDER RECOMMENDED (TRANG CHỦ: TẤT CẢ SẢN PHẨM ƯU TIÊN BÁN CHẠY HOẶC XEM NHIỀU; TRANG KHÁC GIỮ NGUYÊN)
     function renderRecommended() {
       const grid = document.getElementById("recommendedGrid");
       const dtlRight = document.getElementById("detailRightRecList");
@@ -8269,22 +8269,36 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return (p.stock !== undefined ? p.stock : 99);
       }
 
-      // Sắp xếp ưu tiên: Còn hàng lên trước, sau đó tới nhiều lượt bán nhất
+      function getProductPopularityScore(p) {
+        const sold = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p) : (p.buffSold || p.sold || 0);
+        let views = 0;
+        if (typeof p.views === "number" && !isNaN(p.views)) {
+          views = p.views;
+        } else if (typeof p.views === "string") {
+          const numMatch = p.views.match(/[0-9.]+/);
+          if (numMatch) {
+            let v = parseFloat(numMatch[0]);
+            if (p.views.toLowerCase().includes("k")) v *= 1000;
+            views = v;
+          }
+        }
+        // Điểm ưu tiên: Kết hợp bán chạy (trọng số cao) và xem nhiều
+        return (sold * 10) + views;
+      }
+
+      // Sắp xếp ưu tiên: Còn hàng lên trước, sau đó tới bán chạy hoặc xem nhiều nhất
       let sortedProds = [...prods].sort((a, b) => {
         const hasA = getProdStock(a) > 0 ? 1 : 0;
         const hasB = getProdStock(b) > 0 ? 1 : 0;
         if (hasA !== hasB) return hasB - hasA;
-        const soldA = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(a) : (a.buffSold || a.sold || 0);
-        const soldB = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(b) : (b.buffSold || b.sold || 0);
-        return soldB - soldA;
+        const scoreA = getProductPopularityScore(a);
+        const scoreB = getProductPopularityScore(b);
+        return scoreB - scoreA;
       });
 
-      // Luôn luôn đảm bảo lấy đủ đúng 6 sản phẩm cho hàng ĐỀ XUẤT CHO BẠN (không bao giờ bị thiếu thành 5)
-      const recLimit = 6;
-      const selectedRecs = sortedProds.slice(0, recLimit);
-
+      // TRANG CHỦ: ĐỀ XUẤT TẤT CẢ CÁC SẢN PHẨM (ƯU TIÊN BÁN CHẠY HOẶC XEM NHIỀU)
       if (grid) {
-        grid.innerHTML = selectedRecs.map(p => renderSingleCard(p, false)).join("");
+        grid.innerHTML = sortedProds.map(p => renderSingleCard(p, false)).join("");
       }
 
       if (dtlRight) {
