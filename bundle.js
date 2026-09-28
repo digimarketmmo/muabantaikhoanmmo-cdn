@@ -18390,11 +18390,50 @@ function syncAllOpenViewsStock(changedProdId) {
       });
     }
 
+    // ============================================================
+    // BỘ LỌC TRÙNG LẶP BÀI VIẾT TUYỆT ĐỐI (DEDUPLICATION ENGINE v3.2.2)
+    // Loại bỏ 100% các bài viết trùng lặp tiêu đề / slug / id, chỉ giữ lại đúng 1 bài duy nhất
+    // ============================================================
+    function getUniqueBlogs(blogs) {
+      if (!Array.isArray(blogs)) return [];
+      const seenTitles = new Set();
+      const seenSlugs = new Set();
+      const seenIds = new Set();
+      const unique = [];
+
+      for (let i = 0; i < blogs.length; i++) {
+        const b = blogs[i];
+        if (!b) continue;
+        const rawTitle = (b.title || "").toLowerCase().trim();
+        const cleanTitle = rawTitle.replace(/[\s\-_.,:;!?]+/g, " ");
+        const rawSlug = (b.slug || "").toLowerCase().trim();
+        const rawId = (b.id || "").toLowerCase().trim();
+
+        if (cleanTitle && seenTitles.has(cleanTitle)) {
+          continue; // ĐÃ CÓ TIÊU ĐỀ NÀY RỒI -> BỎ QUA NGAY!
+        }
+        if (rawSlug && rawSlug !== "blog" && seenSlugs.has(rawSlug)) {
+          continue; // ĐÃ CÓ SLUG NÀY RỒI -> BỎ QUA NGAY!
+        }
+        if (rawId && seenIds.has(rawId)) {
+          continue; // ĐÃ CÓ ID NÀY RỒI -> BỎ QUA NGAY!
+        }
+
+        if (cleanTitle) seenTitles.add(cleanTitle);
+        if (rawSlug && rawSlug !== "blog") seenSlugs.add(rawSlug);
+        if (rawId) seenIds.add(rawId);
+        unique.push(b);
+      }
+      return unique;
+    }
+    window.getUniqueBlogs = getUniqueBlogs;
+
     // ==================== BLOG LOGIC ====================
     function renderSidebarBlogs() {
       const list = document.getElementById("homeSidebarBlogList");
       if (!list) return;
-      list.innerHTML = (MOCK_DATA.blogs || []).slice(0, 8).map(b => `
+      const uniqueBlogs = (typeof getUniqueBlogs === "function") ? getUniqueBlogs(MOCK_DATA.blogs || []) : (MOCK_DATA.blogs || []);
+      list.innerHTML = uniqueBlogs.slice(0, 8).map(b => `
         <div class="blog-item" onclick="openBlogDetail('${b.id}')">
           <div class="blog-thumb">
             <img src="${upgradeBloggerImageToFullHd(b.image)}" alt="${b.title}"/>
@@ -18443,6 +18482,9 @@ function syncAllOpenViewsStock(changedProdId) {
       `).join("");
 
       let list = (MOCK_DATA && MOCK_DATA.blogs) ? MOCK_DATA.blogs : [];
+      if (typeof getUniqueBlogs === "function") {
+        list = getUniqueBlogs(list);
+      }
       if (currentBlogCategory !== "Tất cả") {
         list = list.filter(b => b.category === currentBlogCategory);
       }
@@ -18523,8 +18565,11 @@ function syncAllOpenViewsStock(changedProdId) {
       if (savedAdminBlogs) {
         const parsed = JSON.parse(savedAdminBlogs);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          MOCK_DATA.blogs = parsed;
+          MOCK_DATA.blogs = (typeof getUniqueBlogs === "function") ? getUniqueBlogs(parsed) : parsed;
         }
+      }
+      if (Array.isArray(MOCK_DATA.blogs) && typeof getUniqueBlogs === "function") {
+        MOCK_DATA.blogs = getUniqueBlogs(MOCK_DATA.blogs);
       }
     } catch(e) {}
 
@@ -18730,7 +18775,8 @@ function syncAllOpenViewsStock(changedProdId) {
             }
           });
 
-          const mergedBlogs = Array.from(new Set(blogMap.values()));
+          const rawMergedBlogs = Array.from(new Set(blogMap.values()));
+          const mergedBlogs = (typeof getUniqueBlogs === "function") ? getUniqueBlogs(rawMergedBlogs) : rawMergedBlogs;
           mergedBlogs.sort(function(a, b) {
             return (b.publishTime || 0) - (a.publishTime || 0);
           });
