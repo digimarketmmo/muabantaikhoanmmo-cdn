@@ -914,6 +914,10 @@
         gap: 8px !important;
       }
     }
+    /* Chỉ hiển thị đúng tối đa 6 sản phẩm (1 hàng desktop) ở mục ĐỀ XUẤT CHO BẠN */
+    #recommendedGrid > *:nth-child(n+7) {
+      display: none !important;
+    }
     @media (max-width: 1600px) {
       .recommended-grid { grid-template-columns: repeat(6, 1fr); gap: 8px; }
     }

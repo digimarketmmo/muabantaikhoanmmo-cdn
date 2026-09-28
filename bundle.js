@@ -8348,6 +8348,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }).join("");
       }
     }
+    try { window.renderRecommended = renderRecommended; } catch(e) {}
     function renderSingleCard(p, isSponsored = false) {
       const displaySold = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p).toLocaleString("vi-VN") : (p.buffSold || p.sold || 0);
       const totalStock = typeof getProductStockCount === "function" ? getProductStockCount(p) : (p.stock !== undefined ? p.stock : 0);
