@@ -8359,8 +8359,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       let apiBadgeHtml = '';
 
       if (totalStock === 0 && !isApi) {
-        stockHtml = '<span style="color:#ef4444; font-weight:700;"><i class="fa-solid fa-circle-xmark"></i> Hết hàng</span>';
-        badgeWarningHtml = '<span style="position:absolute; top:8px; left:8px; background:#ef4444; color:#fff; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.5); z-index:2;"><i class="fa-solid fa-ban"></i> Hết hàng</span>';
+        stockHtml = '<span style="color:#f59e0b; font-weight:700;"><i class="fa-solid fa-clock"></i> Đặt trước</span>';
+        badgeWarningHtml = '<span style="position:absolute; top:8px; left:8px; background:linear-gradient(135deg,#f59e0b,#ea580c); color:#fff; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.5); z-index:2;"><i class="fa-solid fa-clock"></i> Đặt trước</span>';
       } else if (totalStock > 0 && totalStock < 5 && !isApi) {
         stockHtml = '<span style="color:#f59e0b; font-weight:700;"><i class="fa-solid fa-triangle-exclamation"></i> Sắp hết (' + totalStock + ')</span>';
         badgeWarningHtml = '<span style="position:absolute; top:8px; left:8px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.5); z-index:2;"><i class="fa-solid fa-triangle-exclamation"></i> Sắp hết (' + totalStock + ')</span>';
@@ -10429,7 +10429,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (effectiveStock > 0) {
           dtlStock.innerHTML = '<span class="stock-badge in-stock" style="color:#10b981; font-weight:800;"><i class="fa-solid fa-circle-check" style="font-size:0.85rem; margin-right:4px;"></i>' + effectiveStock.toLocaleString('vi-VN') + ' tài khoản</span>' + refreshIconHtml;
         } else {
-          dtlStock.innerHTML = '<span class="stock-badge out-stock" style="color:#ef4444; font-weight:800;"><i class="fa-solid fa-circle-xmark" style="font-size:0.85rem; margin-right:4px;"></i>0 tài khoản</span>' + refreshIconHtml;
+          dtlStock.innerHTML = '<span class="stock-badge out-stock" style="color:#f59e0b; font-weight:800;"><i class="fa-solid fa-clock" style="font-size:0.85rem; margin-right:4px;"></i>Đặt trước (0 tài khoản)</span>' + refreshIconHtml;
         }
       }
 
@@ -18310,7 +18310,7 @@ function syncAllOpenViewsStock(changedProdId) {
         const priceDisplay = (typeof getProductPriceDisplay === "function") ? getProductPriceDisplay(p) : formatVND(p.price);
         const totalStock = typeof getProductStockCount === "function" ? getProductStockCount(p) : (p.stock !== undefined ? p.stock : 0);
         const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p));
-        const stockLabel = (totalStock === 0 && !isApi) ? '<span style="color:#ef4444;">Hết hàng</span>' : '<span style="color:#10b981;">Còn hàng</span>';
+        const stockLabel = (totalStock === 0 && !isApi) ? '<span style="color:#f59e0b;"><i class="fa-solid fa-clock"></i> Đặt trước</span>' : '<span style="color:#10b981;">Còn hàng</span>';
 
         html += '<div class="search-drop-item" onclick="selectSearchDropdownItem(\'' + p.id + '\')">' +
           '<div class="search-drop-thumb">' +
@@ -25033,7 +25033,7 @@ function injectAllProductsSchema() {
       const displaySold = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p).toLocaleString("vi-VN") : (p.buffSold || p.sold || 0);
       const totalStock = typeof getProductStockCount === "function" ? getProductStockCount(p) : (p.stock !== undefined ? p.stock : 0);
       let stockText = totalStock > 99 ? '99+' : totalStock;
-      if (totalStock === 0) stockText = '<span style="color:#ef4444; font-weight:700;">Hết hàng</span>';
+      if (totalStock === 0) stockText = '<span style="color:#f59e0b; font-weight:700;"><i class="fa-solid fa-clock"></i> Đặt trước</span>';
       else if (totalStock < 5) stockText = '<span style="color:#f59e0b; font-weight:700;">Sắp hết (' + totalStock + ')</span>';
 
       return '<div class="product-card product-card-list-mode" onclick="openProductDetailById(&quot;' + p.id + '&quot;)" style="display:flex; flex-direction:row; align-items:center; gap:16px; padding:12px 16px; background:#0b111e; border:1px solid #1e293b; border-radius:10px; cursor:pointer; margin-bottom:10px; transition:border 0.2s;">' +
