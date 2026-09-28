@@ -8251,13 +8251,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (dtlLeft) dtlLeft.innerHTML = html;
     }
 
-    // RENDER RECOMMENDED (TRANG CHỦ: TẤT CẢ SẢN PHẨM ƯU TIÊN BÁN CHẠY HOẶC XEM NHIỀU; TRANG KHÁC GIỮ NGUYÊN)
+    // RENDER RECOMMENDED (TRANG CHỦ: ĐÚNG 1 HÀNG 6 SẢN PHẨM LUÂN PHIÊN; TRANG KHÁC GIỮ NGUYÊN)
+    let _recRotationIndex = 0;
+    try {
+      _recRotationIndex = parseInt(sessionStorage.getItem("mmo_rec_rot_idx") || "0", 10) || 0;
+      // Tự động xoay vòng sang 6 sản phẩm tiếp theo ở lần tải trang sau
+      sessionStorage.setItem("mmo_rec_rot_idx", String(_recRotationIndex + 6));
+    } catch(e) {}
+
     function renderRecommended() {
       const grid = document.getElementById("recommendedGrid");
       const dtlRight = document.getElementById("detailRightRecList");
       if (!grid && !dtlRight) return;
 
       const prods = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? [...MOCK_DATA.products] : []);
+      if (!prods || prods.length === 0) return;
       
       function getProdStock(p) {
         if (typeof getProductStockCount === "function") {
@@ -8296,11 +8304,35 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return scoreB - scoreA;
       });
 
-      // TRANG CHỦ: ĐỀ XUẤT TẤT CẢ CÁC SẢN PHẨM (ƯU TIÊN BÁN CHẠY HOẶC XEM NHIỀU)
+      // TRANG CHỦ: CHỈ HIỂN THỊ ĐÚNG 1 HÀNG 6 SẢN PHẨM & LUÂN PHIÊN TOÀN BỘ SẢN PHẨM
       if (grid) {
-        grid.innerHTML = sortedProds.map(p => renderSingleCard(p, false)).join("");
+        const REC_ROW_COUNT = 6;
+        const total = sortedProds.length;
+        if (total > 0) {
+          const startIndex = (_recRotationIndex % total);
+          const selectedRecs = [];
+          for (let i = 0; i < REC_ROW_COUNT && i < total; i++) {
+            selectedRecs.push(sortedProds[(startIndex + i) % total]);
+          }
+          grid.innerHTML = selectedRecs.map(p => renderSingleCard(p, false)).join("");
+        }
+
+        // Tự động luân phiên 6 sản phẩm mới sau mỗi 15 giây khi khách đang xem trang chủ
+        if (typeof window !== "undefined" && !window._recRotationIntervalSet) {
+          window._recRotationIntervalSet = true;
+          setInterval(function() {
+            const rGrid = document.getElementById("recommendedGrid");
+            const curV = (typeof currentView !== "undefined") ? currentView : "viewStore";
+            if (rGrid && (curV === "viewStore" || !document.getElementById("viewStore")?.classList.contains("hidden"))) {
+              _recRotationIndex += 6;
+              try { sessionStorage.setItem("mmo_rec_rot_idx", String(_recRotationIndex)); } catch(e) {}
+              renderRecommended();
+            }
+          }, 15000);
+        }
       }
 
+      // CÁC TRANG KHÁC (TRANG CHI TIẾT SẢN PHẨM): GIỮ NGUYÊN 10 SẢN PHẨM
       if (dtlRight) {
         dtlRight.innerHTML = sortedProds.filter(p => getProdStock(p) > 0).slice(0, 10).map(function(p) {
           return '<div class="compact-product-item" onclick="openProductDetailById(\'' + p.id + '\')">' +
