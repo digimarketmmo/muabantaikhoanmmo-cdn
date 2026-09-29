@@ -8311,6 +8311,140 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.getRealisticProductSold = getRealisticProductSold;
 
+    // =========================================================================
+    // RENDER PRODUCT DETAIL SIDEBARS (PHÂN BIỆT 100% 2 THANH BÊN KHÔNG TRÙNG LẶP)
+    // - Thanh Trái (#detailLeftBestList): Top 10 Bán chạy nhất toàn sàn (loại trừ SP đang xem)
+    // - Thanh Phải (#detailRightRecList): Top 10 Đề xuất theo ngữ cảnh (Proxy, Mail, Tool...) 
+    //   và TUYỆT ĐỐI KHÔNG TRÙNG LẶP BẤT KỲ SẢN PHẨM NÀO VỚI THANH BÊN TRÁI
+    // =========================================================================
+    function renderProductDetailSidebars(currentProd) {
+      const dtlLeft = document.getElementById("detailLeftBestList");
+      const dtlRight = document.getElementById("detailRightRecList");
+      if (!dtlLeft && !dtlRight) return;
+
+      const prods = (typeof getVisibleProducts === "function") 
+        ? getVisibleProducts() 
+        : ((typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? [...MOCK_DATA.products] : []);
+      if (!prods || prods.length === 0) return;
+
+      if (currentProd) {
+        window._currentActiveDetailProduct = currentProd;
+      } else if (window._currentActiveDetailProduct) {
+        currentProd = window._currentActiveDetailProduct;
+      }
+
+      const curId = currentProd ? String(currentProd.id).trim() : null;
+
+      function renderCompactItemHtml(p) {
+        if (!p) return "";
+        const displaySold = (typeof getRealisticProductSold === "function") 
+          ? getRealisticProductSold(p).toLocaleString("vi-VN") 
+          : (p.buffSold || p.sold || 0);
+        const imgUrl = (typeof resolveProductImage === "function") 
+          ? resolveProductImage(p) 
+          : (p.image || p.image_url || '');
+        const priceDisplay = (typeof getProductPriceDisplay === "function") 
+          ? getProductPriceDisplay(p) 
+          : (typeof formatVND === "function" ? formatVND(p.price) : (p.price + " đ"));
+        const pIdEscaped = (typeof escapeHtml === "function") ? escapeHtml(p.id) : p.id;
+        const pNameEscaped = (typeof escapeHtml === "function") ? escapeHtml(p.name) : p.name;
+        
+        return '<div class="compact-product-item" onclick="openProductDetailById(\'' + pIdEscaped + '\')">' +
+          '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + pNameEscaped + '" loading="lazy" /></div>' +
+          '<div class="compact-info">' +
+            '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + pNameEscaped + '</a>' +
+            '<div class="compact-meta">' +
+              '<span class="compact-price">' + priceDisplay + '</span>' +
+              '<span class="compact-sold">Đã bán: ' + displaySold + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      // 1. THANH BÊN TRÁI: "SẢN PHẨM NỔI BẬT" (Top bán chạy nhất toàn sàn, loại trừ SP đang xem)
+      const leftCandidates = prods.filter(p => !curId || String(p.id).trim() !== curId);
+      leftCandidates.sort((a, b) => {
+        const soldA = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(a) : (a.buffSold || a.sold || 0);
+        const soldB = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(b) : (b.buffSold || b.sold || 0);
+        return soldB - soldA;
+      });
+
+      const leftItems = leftCandidates.slice(0, 10);
+      const leftIds = new Set(leftItems.map(p => String(p.id).trim()));
+      if (curId) leftIds.add(curId);
+
+      if (dtlLeft) {
+        dtlLeft.innerHTML = leftItems.map(renderCompactItemHtml).join("");
+      }
+
+      // 2. THANH BÊN PHẢI: "SẢN PHẨM ĐỀ XUẤT" (KHÔNG TRÙNG LẶP 100% VỚI THANH TRÁI & SP ĐANG XEM)
+      const rightCandidates = prods.filter(p => !leftIds.has(String(p.id).trim()));
+
+      const curCategory = currentProd ? String(currentProd.category || currentProd.cate || "").toLowerCase() : "";
+      const curNameLower = currentProd ? String(currentProd.name || "").toLowerCase() : "";
+
+      // Nhận diện nhóm ngành ngữ cảnh của sản phẩm đang xem
+      const isProxy = curNameLower.includes("proxy") || curCategory.includes("proxy");
+      const isMail = curNameLower.includes("mail") || curNameLower.includes("gmail") || curNameLower.includes("outlook") || curNameLower.includes("hotmail") || curCategory.includes("mail") || curCategory.includes("gmail");
+      const isSocial = curNameLower.includes("tiktok") || curNameLower.includes("facebook") || curNameLower.includes("fb") || curNameLower.includes("via") || curNameLower.includes("clone") || curCategory.includes("tiktok") || curCategory.includes("facebook");
+      const isSoftwareAi = curNameLower.includes("kling") || curNameLower.includes("chatgpt") || curNameLower.includes("canva") || curNameLower.includes("netflix") || curNameLower.includes("capcut") || curNameLower.includes("ai") || curCategory.includes("ai") || curCategory.includes("phan mem");
+
+      rightCandidates.sort((a, b) => {
+        let scoreA = 0;
+        let scoreB = 0;
+
+        const aName = String(a.name || "").toLowerCase();
+        const bName = String(b.name || "").toLowerCase();
+        const aCat = String(a.category || "").toLowerCase();
+        const bCat = String(b.category || "").toLowerCase();
+
+        // Điểm cùng danh mục
+        if (curCategory && aCat === curCategory) scoreA += 60;
+        if (curCategory && bCat === curCategory) scoreB += 60;
+
+        // Điểm cùng nhóm ngành liên quan
+        if (isProxy) {
+          if (aName.includes("proxy") || aCat.includes("proxy")) scoreA += 50;
+          if (bName.includes("proxy") || bCat.includes("proxy")) scoreB += 50;
+        } else if (isMail) {
+          if (aName.includes("mail") || aName.includes("gmail") || aName.includes("outlook") || aName.includes("hotmail") || aCat.includes("mail")) scoreA += 50;
+          if (bName.includes("mail") || bName.includes("gmail") || bName.includes("outlook") || bName.includes("hotmail") || bCat.includes("mail")) scoreB += 50;
+        } else if (isSocial) {
+          if (aName.includes("tiktok") || aName.includes("fb") || aName.includes("via") || aName.includes("clone") || aCat.includes("tiktok") || aCat.includes("facebook")) scoreA += 50;
+          if (bName.includes("tiktok") || bName.includes("fb") || bName.includes("via") || bName.includes("clone") || bCat.includes("tiktok") || bCat.includes("facebook")) scoreB += 50;
+        } else if (isSoftwareAi) {
+          if (aName.includes("ai") || aName.includes("canva") || aName.includes("chatgpt") || aName.includes("kling") || aName.includes("capcut") || aCat.includes("ai")) scoreA += 50;
+          if (bName.includes("ai") || bName.includes("canva") || bName.includes("chatgpt") || bName.includes("kling") || bCat.includes("capcut") || bCat.includes("ai")) scoreB += 50;
+        }
+
+        // Ưu tiên sản phẩm còn hàng
+        const stockA = (typeof getProductStockCount === "function") ? getProductStockCount(a) : (a.stock !== undefined ? a.stock : 10);
+        const stockB = (typeof getProductStockCount === "function") ? getProductStockCount(b) : (b.stock !== undefined ? b.stock : 10);
+        if (stockA > 0) scoreA += 25;
+        if (stockB > 0) scoreB += 25;
+
+        // Điểm đánh giá (Rating)
+        const ratingA = Number(a.rating) || 5;
+        const ratingB = Number(b.rating) || 5;
+        scoreA += ratingA * 3;
+        scoreB += ratingB * 3;
+
+        // Điểm phổ biến (Sales)
+        const soldA = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(a) : (a.buffSold || a.sold || 0);
+        const soldB = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(b) : (b.buffSold || b.sold || 0);
+        scoreA += Math.min(20, Math.floor(soldA / 50));
+        scoreB += Math.min(20, Math.floor(soldB / 50));
+
+        return scoreB - scoreA;
+      });
+
+      const rightItems = rightCandidates.slice(0, 10);
+      if (dtlRight) {
+        dtlRight.innerHTML = rightItems.map(renderCompactItemHtml).join("");
+      }
+    }
+    window.renderProductDetailSidebars = renderProductDetailSidebars;
+
     // RENDER BEST SELLERS (LEFT SIDEBAR & DETAIL SIDEBAR)
     function renderBestSellers() {
       const list = document.getElementById("bestSellerList");
@@ -8341,14 +8475,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }).join("");
 
       if (list) list.innerHTML = html;
-      if (dtlLeft) dtlLeft.innerHTML = html;
+      if (dtlLeft) {
+        renderProductDetailSidebars(window._currentActiveDetailProduct || null);
+      }
     }
 
-    // RENDER RECOMMENDED (TRANG CHỦ: ĐÚNG 1 HÀNG 6 SẢN PHẨM LUÂN PHIÊN; TRANG KHÁC GIỮ NGUYÊN)
+    // RENDER RECOMMENDED (TRANG CHỦ: ĐÚNG 1 HÀNG 6 SẢN PHẨM LUÂN PHIÊN; TRANG CHI TIẾT: PHÂN BIỆT 100%)
     let _recRotationIndex = 0;
     try {
       _recRotationIndex = parseInt(sessionStorage.getItem("mmo_rec_rot_idx") || "0", 10) || 0;
-      // Tự động xoay vòng sang 6 sản phẩm tiếp theo ở lần tải trang sau
       sessionStorage.setItem("mmo_rec_rot_idx", String(_recRotationIndex + 6));
     } catch(e) {}
 
@@ -8383,11 +8518,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             views = v;
           }
         }
-        // Điểm ưu tiên: Kết hợp bán chạy (trọng số cao) và xem nhiều
         return (sold * 10) + views;
       }
 
-      // Sắp xếp ưu tiên: Còn hàng lên trước, sau đó tới bán chạy hoặc xem nhiều nhất
       let sortedProds = [...prods].sort((a, b) => {
         const hasA = getProdStock(a) > 0 ? 1 : 0;
         const hasB = getProdStock(b) > 0 ? 1 : 0;
@@ -8410,7 +8543,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           grid.innerHTML = selectedRecs.map(p => renderSingleCard(p, false)).join("");
         }
 
-        // Tự động luân phiên 6 sản phẩm mới sau mỗi 15 giây khi khách đang xem trang chủ
         if (typeof window !== "undefined" && !window._recRotationIntervalSet) {
           window._recRotationIntervalSet = true;
           setInterval(function() {
@@ -8425,20 +8557,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
 
-      // CÁC TRANG KHÁC (TRANG CHI TIẾT SẢN PHẨM): GIỮ NGUYÊN 10 SẢN PHẨM
+      // TRANG CHI TIẾT SẢN PHẨM: ĐỒNG BỘ QUA renderProductDetailSidebars ĐỂ KHÔNG BAO GIỜ TRÙNG LẶP
       if (dtlRight) {
-        dtlRight.innerHTML = sortedProds.filter(p => getProdStock(p) > 0).slice(0, 10).map(function(p) {
-          return '<div class="compact-product-item" onclick="openProductDetailById(\'' + p.id + '\')">' +
-            '<div class="compact-thumb"><img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" /></div>' +
-            '<div class="compact-info">' +
-              '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + escapeHtml(p.name) + '</a>' +
-              '<div class="compact-meta">' +
-                '<span class="compact-price">' + formatVND(p.price) + '</span>' +
-                '<span class="compact-sold">Đã bán: ' + ((typeof getRealisticProductSold === "function") ? getRealisticProductSold(p).toLocaleString("vi-VN") : (p.buffSold || p.sold || 0)) + '</span>' +
-              '</div>' +
-            '</div>' +
-          '</div>';
-        }).join("");
+        renderProductDetailSidebars(window._currentActiveDetailProduct || null);
       }
     }
     try { window.renderRecommended = renderRecommended; } catch(e) {}
@@ -17393,12 +17514,18 @@ function syncAllOpenViewsStock(changedProdId) {
         window.history.replaceState({ prod: p.id }, "", newUrl);
       } catch(e) {}
 
+      window._currentActiveDetailProduct = p;
+      if (typeof renderProductDetailSidebars === "function") {
+        renderProductDetailSidebars(p);
+      }
+
       if (typeof switchProductDescTab === "function") switchProductDescTab("desc");
 
       // [NON-BLOCKING DEFERRED TASKS]: Trì hoãn các tác vụ nền nặng (SEO, Live sync, Sidebar) để UI chuyển tức thì 0ms
       setTimeout(function() {
         if (typeof refreshAllShopStockUI === "function") refreshAllShopStockUI(p.id);
         if (typeof renderDetailRelatedProducts === "function") renderDetailRelatedProducts(p);
+        if (typeof renderProductDetailSidebars === "function") renderProductDetailSidebars(p);
         if (typeof renderProductApiIntegration === "function") renderProductApiIntegration();
         if (typeof renderRelatedProductsSeo === "function") renderRelatedProductsSeo(p);
         if (typeof injectAllProductsSchema === "function") injectAllProductsSchema();
