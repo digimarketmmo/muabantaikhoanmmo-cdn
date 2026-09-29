@@ -3966,8 +3966,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function handleAdmModalSourceChange() {
       const sSel = document.getElementById("admProdApiSourceSelect");
+      const pSel = document.getElementById("admProdApiProvider");
       const info = document.getElementById("admProdApiSourceInfo");
       if (!sSel || !info) return;
+      if (sSel.value) {
+        sSel.setAttribute("data-pending-id", sSel.value);
+        if (pSel && pSel.value) sSel.setAttribute("data-active-provider", pSel.value);
+      }
       const opt = (sSel.selectedOptions && sSel.selectedOptions[0]) ? sSel.selectedOptions[0] : (sSel.options ? sSel.options[sSel.selectedIndex] : null);
       if (opt && opt.value) {
         const price = opt.getAttribute("data-price") || 0;
@@ -5052,9 +5057,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (res.apiProductMappings && typeof res.apiProductMappings === 'object') {
             try {
               const curMappings = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
-              // Merge: server cung cấp sourceStock mới nhất, local giữ apiKey/baseUrl/config do admin setup
-              // Với mỗi key, server.sourceStock > local.sourceStock (để tránh stale 0 overwrite)
-              const mergedMappings = Object.assign({}, curMappings, res.apiProductMappings);
+              // Merge: local giữ cấu hình admin đã sửa, bổ sung các mapping mới từ server
+              const mergedMappings = Object.assign({}, res.apiProductMappings, curMappings);
               // Nhưng giữ lại apiKey và baseUrl từ local nếu server không có
               Object.keys(curMappings).forEach(function(k) {
                 if (mergedMappings[k] && curMappings[k]) {
@@ -5938,6 +5942,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             targetProdName: name
           };
           maps[actualTargetId] = mapItem;
+          if (name) maps[name] = mapItem;
+          if (oldProd && oldProd.name && oldProd.name !== name) delete maps[oldProd.name];
           // Map toàn bộ biến thể theo đúng ID sản phẩm
           variants.forEach((v, vIdx) => {
             maps[actualTargetId + '__VAR__' + vIdx] = mapItem;
@@ -10318,14 +10324,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             if (!isLocallyFresh) {
               const isApiType = (tp.delivery_type === 'api' || tp.deliveryType === 'api' || cur.deliveryType === 'api' || cur.delivery_type === 'api' || (typeof isProductApi === 'function' && (isProductApi(cur) || isProductApi(tp))));
               let updatedStock = cur.stock;
-              const effectiveMapping = isApiType ? (cur.apiMapping || tp.apiMapping || (variants && variants[0] && variants[0].apiMapping) || (cur.variants && cur.variants[0] && cur.variants[0].apiMapping) || (typeof getApiProductMapping === 'function' ? getApiProductMapping(cur) : null)) : null;
+              const effectiveMapping = isApiType ? (tp.apiMapping || cur.apiMapping || (variants && variants[0] && variants[0].apiMapping) || (cur.variants && cur.variants[0] && cur.variants[0].apiMapping) || (typeof getApiProductMapping === 'function' ? getApiProductMapping(cur) : null)) : null;
               if (effectiveMapping && effectiveMapping.sourceProdId) {
                 try {
                   const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
-                  if (!maps[cur.id] || !maps[cur.id].sourceProdId) {
-                    maps[cur.id] = effectiveMapping;
-                    if (typeof saveApiProductMappings === "function") saveApiProductMappings(maps);
-                  }
+                  maps[cur.id] = effectiveMapping;
+                  if (cur.name) maps[cur.name] = effectiveMapping;
+                  if (typeof saveApiProductMappings === "function") saveApiProductMappings(maps);
                   localStorage.setItem("mmo_api_map_" + cur.id, JSON.stringify(effectiveMapping));
                 } catch(eMapSync) {}
               }
@@ -11385,17 +11390,19 @@ function syncAllOpenViewsStock(changedProdId) {
         if (payload.id) payload.id = "121063";
       }
 
-      // AUTO-DETECT PROVIDER TO PREVENT MISCONFIGURATION
-      if (bUrlIn.includes("shop1989nd") || sIdIn === "19745" || sIdIn === "19768" || sIdIn === "19773" || sIdIn === "19767") {
-        provider = "shop1989nd";
-      } else if (bUrlIn.includes("mail72h") || sIdIn === "712" || sIdIn === "769" || sIdIn === "797" || sIdIn === "817" || sIdIn === "818") {
-        provider = "mail72h";
-      } else if (bUrlIn.includes("nguyenlieummo") || sIdIn === "119284" || sIdIn === "13840" || sIdIn === "121063" || sIdIn === "117725" || sIdIn.startsWith("1210") || sIdIn.startsWith("1192") || sIdIn.startsWith("1177")) {
-        provider = "nguyenlieummo";
-      } else if (bUrlIn.includes("selltainguyenmmo") || (sIdIn.length === 5 && Number(sIdIn) >= 20000)) {
-        provider = "selltainguyenmmo";
-      } else if (!provider) {
-        provider = "sellmmo";
+      // AUTO-DETECT PROVIDER NẾU CHƯA CÓ HOẶC SAI
+      if (!provider || (typeof API_SOURCES !== "undefined" && !API_SOURCES[provider])) {
+        if (bUrlIn.includes("shop1989nd") || sIdIn === "19745" || sIdIn === "19768" || sIdIn === "19773" || sIdIn === "19767") {
+          provider = "shop1989nd";
+        } else if (bUrlIn.includes("mail72h") || sIdIn === "712" || sIdIn === "769" || sIdIn === "797" || sIdIn === "817" || sIdIn === "818") {
+          provider = "mail72h";
+        } else if (bUrlIn.includes("nguyenlieummo") || sIdIn === "119284" || sIdIn === "13840" || sIdIn === "121063" || sIdIn === "117725" || sIdIn.startsWith("1210") || sIdIn.startsWith("1192") || sIdIn.startsWith("1177")) {
+          provider = "nguyenlieummo";
+        } else if (bUrlIn.includes("selltainguyenmmo")) {
+          provider = "selltainguyenmmo";
+        } else {
+          provider = "sellmmo";
+        }
       }
 
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? Object.assign({}, API_SOURCES[provider]) : { baseUrl: "https://sellmmo.vn", apiKey: "" };
@@ -12243,14 +12250,14 @@ function syncAllOpenViewsStock(changedProdId) {
         maps[prodId].sourceStock = 88181;
       }
 
-      // Bảo vệ tuyệt đối: nếu sản phẩm cốt lõi bị lưu sai provider hoặc ID chết trong localStorage, tự động sửa về đúng chuẩn
+      // Bảo vệ: nếu sản phẩm chưa có mapping hợp lệ trong maps, dùng defaultMappings
       if (prodId && defaultMappings[prodId]) {
-        if (!maps[prodId] || maps[prodId].provider !== defaultMappings[prodId].provider || !maps[prodId].sourceProdId || maps[prodId].sourceProdId === "13840") {
+        if (!maps[prodId] || !maps[prodId].sourceProdId || maps[prodId].sourceProdId === "13840") {
           return enrichMapping(defaultMappings[prodId]);
         }
       }
       if (prodObj && prodObj.id && defaultMappings[prodObj.id]) {
-        if (!maps[prodObj.id] || maps[prodObj.id].provider !== defaultMappings[prodObj.id].provider || !maps[prodObj.id].sourceProdId || maps[prodObj.id].sourceProdId === "13840") {
+        if (!maps[prodObj.id] || !maps[prodObj.id].sourceProdId || maps[prodObj.id].sourceProdId === "13840") {
           return enrichMapping(defaultMappings[prodObj.id]);
         }
       }
