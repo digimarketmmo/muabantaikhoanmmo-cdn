@@ -1132,8 +1132,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "id": "PROD_MU1G6LJX",
           "name": "Capcut pro Cá Nhân 7 ngày",
           "category": "Capcut",
-          "price": 25000,
-          "stock": 0,
+          "price": 20000,
+          "stock": 132,
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
@@ -1141,10 +1141,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "warranty": "Bảo Hành 1 Đổi 1",
           "variants": [
             {
-              "name": "capcut pro 7 ngày",
-              "price": 25000,
-              "stock": 0,
-              "available": false
+              "name": "capcut pro cá nhân 7 ngày",
+              "price": 20000,
+              "stock": 132,
+              "available": true,
+              "apiMapping": {
+                "enabled": true,
+                "provider": "selltainguyenmmo",
+                "baseUrl": "https://selltainguyenmmo.com",
+                "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+                "sourceProdId": "25644",
+                "sourceProdName": "Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO",
+                "sourcePrice": 9000,
+                "sourceStock": 132,
+                "targetProdId": "PROD_MU1G6LJX",
+                "targetProdName": "Capcut pro Cá Nhân 7 ngày"
+              }
             }
           ],
           "deliveryType": "api",
@@ -1152,12 +1164,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "description": "Capcut pro Cá Nhân 7 ngày chính chủ, xuất video 4K 60FPS không watermark, mở khóa toàn bộ hiệu ứng VIP.",
           "apiMapping": {
             "enabled": true,
-            "provider": "sellmmo",
-            "baseUrl": "https://sellmmo.vn",
-            "sourceProdId": "23154",
-            "sourceProdName": "[Capcut Pro] Capcut Pro Cá Nhân 7 Ngày",
-            "sourcePrice": 17000,
-            "sourceStock": 38,
+            "provider": "selltainguyenmmo",
+            "baseUrl": "https://selltainguyenmmo.com",
+            "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+            "sourceProdId": "25644",
+            "sourceProdName": "Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO",
+            "sourcePrice": 9000,
+            "sourceStock": 132,
             "targetProdId": "PROD_MU1G6LJX",
             "targetProdName": "Capcut pro Cá Nhân 7 ngày"
           }
@@ -5051,6 +5064,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (typeof document !== "undefined" && document.hidden) return; // Bỏ qua nếu tab đang ẩn
       try {
         _isSyncingProductsFromBackend = true;
+        // [SSOT TURSO CLOUD PRIORITY]: Luôn đồng bộ từ Turso Cloud SQLite SSOT qua Cloudflare Worker
+        if (typeof syncTursoProductsToLocalUI === "function") {
+          await syncTursoProductsToLocalUI();
+          _isSyncingProductsFromBackend = false;
+          return;
+        }
         if (typeof callGasApi !== "function") return;
         const res = await callGasApi("getProducts");
         if (res && res.success && Array.isArray(res.products) && res.products.length > 0) {
@@ -11233,11 +11252,13 @@ function syncAllOpenViewsStock(changedProdId) {
       } catch(e) {}
     }
 
-    // Tự động kiểm tra và đồng bộ tồn kho từ đám mây Google Sheets định kỳ mỗi 60 giây (chỉ chạy khi tab đang hiển thị, tránh quá tải)
+    // Tự động kiểm tra và đồng bộ tồn kho từ đám mây Turso SQLite SSOT định kỳ mỗi 60 giây (chỉ chạy khi tab đang hiển thị, tránh quá tải)
     if (typeof window !== "undefined" && !window._mmoCloudPollInterval) {
       window._mmoCloudPollInterval = setInterval(function() {
         if (typeof document !== "undefined" && document.hidden) return;
-        if (typeof syncProductsFromBackend === "function") {
+        if (typeof syncTursoProductsToLocalUI === "function") {
+          syncTursoProductsToLocalUI();
+        } else if (typeof syncProductsFromBackend === "function") {
           syncProductsFromBackend();
         }
       }, 60000);
@@ -11250,7 +11271,9 @@ function syncAllOpenViewsStock(changedProdId) {
         const now = Date.now();
         if (now - _lastFocusSyncTime > 30000) {
           _lastFocusSyncTime = now;
-          if (typeof syncProductsFromBackend === "function") {
+          if (typeof syncTursoProductsToLocalUI === "function") {
+            syncTursoProductsToLocalUI();
+          } else if (typeof syncProductsFromBackend === "function") {
             syncProductsFromBackend();
           }
         }
@@ -11261,7 +11284,9 @@ function syncAllOpenViewsStock(changedProdId) {
             const now = Date.now();
             if (now - _lastFocusSyncTime > 30000) {
               _lastFocusSyncTime = now;
-              if (typeof syncProductsFromBackend === "function") {
+              if (typeof syncTursoProductsToLocalUI === "function") {
+                syncTursoProductsToLocalUI();
+              } else if (typeof syncProductsFromBackend === "function") {
                 syncProductsFromBackend();
               }
             }
@@ -12122,7 +12147,8 @@ function syncAllOpenViewsStock(changedProdId) {
       "PROD_MUJU6XY3HK": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26437", sourcePrice: 100000, sourceProdName: "Proxy 4Gvinaphone - 30 ngày", sourceStock: 9999 },
       "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày", sourceStock: 9999 },
       "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G", sourceStock: 9999 },
-      "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 9999 }
+      "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 9999 },
+      "PROD_MU1G6LJX": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng", sourceStock: 132 }
     };
 
     function getApiProductMappings() {
@@ -12140,6 +12166,10 @@ function syncAllOpenViewsStock(changedProdId) {
                 }
               }
             });
+            // Tự động di chuyển PROD_MU1G6LJX từ sellmmo sang selltainguyenmmo nếu còn sót cấu hình cũ
+            if (result["PROD_MU1G6LJX"] && (result["PROD_MU1G6LJX"].sourceProdId === "23154" || result["PROD_MU1G6LJX"].provider === "sellmmo")) {
+              result["PROD_MU1G6LJX"] = Object.assign({}, DEFAULT_API_PRODUCT_MAPPINGS["PROD_MU1G6LJX"]);
+            }
           }
         }
       } catch(e) {}
@@ -12240,7 +12270,8 @@ function syncAllOpenViewsStock(changedProdId) {
         "PROD_MUJU6XY3HK": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26437", sourcePrice: 100000, sourceProdName: "Proxy 4Gvinaphone - 30 ngày", sourceStock: 9999 },
         "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày", sourceStock: 9999 },
         "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G", sourceStock: 9999 },
-        "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 9999 }
+        "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 9999 },
+        "PROD_MU1G6LJX": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng", sourceStock: 132 }
       };
 
       // Tự động chuyển tiếp mã cũ 13840 sang 121063 nếu có trong maps
@@ -12248,6 +12279,15 @@ function syncAllOpenViewsStock(changedProdId) {
         maps[prodId].sourceProdId = "121063";
         maps[prodId].sourcePrice = 656;
         maps[prodId].sourceStock = 88181;
+      }
+
+      // Tự động chuyển tiếp PROD_MU1G6LJX sang selltainguyenmmo nếu còn sót cấu hình cũ sellmmo
+      if ((prodId === "PROD_MU1G6LJX" || (prodObj && prodObj.id === "PROD_MU1G6LJX")) && maps["PROD_MU1G6LJX"] && (maps["PROD_MU1G6LJX"].sourceProdId === "23154" || maps["PROD_MU1G6LJX"].provider === "sellmmo")) {
+        maps["PROD_MU1G6LJX"] = Object.assign({}, defaultMappings["PROD_MU1G6LJX"]);
+        try {
+          localStorage.setItem("mmo_api_map_PROD_MU1G6LJX", JSON.stringify(maps["PROD_MU1G6LJX"]));
+          localStorage.setItem("mmo_api_product_mappings", JSON.stringify(maps));
+        } catch(e) {}
       }
 
       // Bảo vệ: nếu sản phẩm chưa có mapping hợp lệ trong maps, dùng defaultMappings
@@ -12267,7 +12307,19 @@ function syncAllOpenViewsStock(changedProdId) {
         return null;
       }
 
-      // 2. Tra cứu trực tiếp theo ID sản phẩm trong bảng maps (ưu tiên cao nhất)
+      // 1.5. ƯU TIÊN SỐ 1: apiMapping gắn trực tiếp trên đối tượng sản phẩm (từ Cloudflare Worker / Turso SQLite SSOT)
+      if (prodObj && prodObj.apiMapping && prodObj.apiMapping.enabled && prodObj.apiMapping.sourceProdId) {
+        return enrichMapping(prodObj.apiMapping);
+      }
+      if (prodObj && Array.isArray(prodObj.variants) && prodObj.variants.length > 0) {
+        for (const v of prodObj.variants) {
+          if (v && v.apiMapping && v.apiMapping.enabled && v.apiMapping.sourceProdId) {
+            return enrichMapping(v.apiMapping);
+          }
+        }
+      }
+
+      // 2. Tra cứu trực tiếp theo ID sản phẩm trong bảng maps
       if (prodId && maps[prodId] && maps[prodId].enabled && maps[prodId].sourceProdId) {
         return enrichMapping(maps[prodId]);
       }
@@ -12285,18 +12337,6 @@ function syncAllOpenViewsStock(changedProdId) {
           }
         }
       } catch(e) {}
-
-      // 3. Tra cứu theo apiMapping gắn trực tiếp trên đối tượng sản phẩm hoặc biến thể
-      if (prodObj && prodObj.apiMapping && prodObj.apiMapping.enabled && prodObj.apiMapping.sourceProdId) {
-        return enrichMapping(prodObj.apiMapping);
-      }
-      if (prodObj && Array.isArray(prodObj.variants) && prodObj.variants.length > 0) {
-        for (const v of prodObj.variants) {
-          if (v && v.apiMapping && v.apiMapping.enabled && v.apiMapping.sourceProdId) {
-            return enrichMapping(v.apiMapping);
-          }
-        }
-      }
 
       // 4. Tra cứu theo tên sản phẩm (CHỈ khi tham số truyền vào là chuỗi tên, TUYỆT ĐỐI không áp dụng khi là mã ID)
       if (!isIdKey && prodName) {
@@ -25224,7 +25264,9 @@ function changeAdmUsersPage(p) {
       // Tự động tải sản phẩm mới nhất từ máy chủ để mọi người xem được ngay
       const _urlHasProd = window.location.search && (window.location.search.includes("prod=") || window.location.search.includes("product=") || window.location.search.includes("view=viewProductDetail"));
       setTimeout(function() {
-        if (typeof syncProductsFromBackend === "function") {
+        if (typeof syncTursoProductsToLocalUI === "function") {
+          syncTursoProductsToLocalUI();
+        } else if (typeof syncProductsFromBackend === "function") {
           syncProductsFromBackend();
         }
         if (typeof syncAdminEmailsFromCloud === "function") {
