@@ -3675,13 +3675,56 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         optionsHtml = '<option value="">-- ' + (rawKw ? ('Tìm thấy ' + filtered.length + ' SP (Bấm để chọn)') : ('Chọn sản phẩm nguồn (' + filtered.length + ' SP)')) + ' --</option>';
       }
 
-      // BẢO VỆ TUYỆT ĐỐI: Nếu sản phẩm đã mapping nhưng chưa có trong danh sách tìm kiếm/lọc, luôn giữ lại trong dropdown để không bị mất ID
-      if (currentVal && !filtered.some(s => String(s.id) === String(currentVal))) {
+      // CHỈ giữ lại currentVal nếu nó THỰC SỰ THUỘC VỀ NHÀ CUNG CẤP NÀY
+      // VÀ chỉ khi người dùng KHÔNG đang gõ từ khóa tìm kiếm (để tránh làm nghẽn kết quả tìm kiếm)
+      let shouldKeepCurrentVal = false;
+      if (!rawKw && currentVal) {
+        const currentProdId = document.getElementById("admProdId")?.value;
+        const curMap = (typeof getApiProductMapping === "function" && currentProdId) ? getApiProductMapping(currentProdId) : null;
+        if (curMap && curMap.provider === provider && String(curMap.sourceProdId) === String(currentVal)) {
+          shouldKeepCurrentVal = true;
+        } else if (sSel.getAttribute("data-active-provider") === provider) {
+          shouldKeepCurrentVal = true;
+        }
+      }
+
+      if (shouldKeepCurrentVal && !filtered.some(s => String(s.id) === String(currentVal))) {
         optionsHtml += '<option value="' + currentVal + '" selected="selected" data-stock="9999">[Đang liên kết: #' + currentVal + '] Giữ nguyên sản phẩm nguồn này</option>';
       }
 
+      // Tìm sản phẩm tốt nhất để auto-select nếu đang tìm kiếm
+      let bestMatchId = "";
+      if (rawKw && filtered.length > 0) {
+        if (currentVal && filtered.some(s => String(s.id) === String(currentVal))) {
+          bestMatchId = String(currentVal);
+        } else {
+          // Thử tìm sản phẩm khớp thời hạn từ tên sản phẩm đang sửa (VD: 7 ngày)
+          const nameInput = document.getElementById("admProdName");
+          const pNameLower = (nameInput ? nameInput.value : "").toLowerCase();
+          let durMatch = null;
+          if (pNameLower.includes("7 ngày") || pNameLower.includes("7 day") || pNameLower.includes("7d") || pNameLower.includes("1 tuần")) {
+            durMatch = filtered.find(s => {
+              const sn = (s.name || "").toLowerCase();
+              return sn.includes("7 ngày") || sn.includes("7 day") || sn.includes("7d") || sn.includes("1 tuần");
+            });
+          } else if (pNameLower.includes("1 tháng") || pNameLower.includes("30 ngày") || pNameLower.includes("1 month")) {
+            durMatch = filtered.find(s => {
+              const sn = (s.name || "").toLowerCase();
+              return sn.includes("1 tháng") || sn.includes("30 ngày") || sn.includes("1 month");
+            });
+          }
+          if (durMatch) {
+            bestMatchId = String(durMatch.id);
+          } else if (filtered.length === 1) {
+            bestMatchId = String(filtered[0].id);
+          }
+        }
+      }
+
+      const activeSelectedId = bestMatchId || (shouldKeepCurrentVal ? currentVal : (filtered.some(s => String(s.id) === String(currentVal)) ? currentVal : ""));
+
       optionsHtml += filtered.map(s => {
-        const isSelected = String(s.id) === String(currentVal) ? ' selected="selected"' : '';
+        const isSelected = String(s.id) === String(activeSelectedId) ? ' selected="selected"' : '';
         const pPrice = Number(s.price || 0);
         const pStock = Number(s.amount || 0);
         const priceStr = (typeof formatVND === "function") ? formatVND(pPrice) : (pPrice.toLocaleString("vi-VN") + " đ");
@@ -3692,10 +3735,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       sSel.innerHTML = optionsHtml;
 
-      if (currentVal && (!sSel.value || sSel.value === "")) {
-        sSel.value = String(currentVal);
-      } else if (rawKw && filtered.length === 1 && (!sSel.value || sSel.value === "")) {
-        sSel.value = String(filtered[0].id);
+      if (activeSelectedId) {
+        sSel.value = String(activeSelectedId);
       }
       if (typeof handleAdmModalSourceChange === "function") handleAdmModalSourceChange();
     }
@@ -3872,16 +3913,49 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function handleAdmModalProviderChange() {
       const pSel = document.getElementById("admProdApiProvider");
       const prov = pSel ? (pSel.value || "selltainguyenmmo") : "selltainguyenmmo";
+      const sSel = document.getElementById("admProdApiSourceSelect");
+      if (sSel) {
+        sSel.value = "";
+        sSel.removeAttribute("data-pending-id");
+        sSel.setAttribute("data-active-provider", prov);
+      }
+      const info = document.getElementById("admProdApiSourceInfo");
+      if (info) info.innerHTML = '<span style="color:#94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải SP từ ' + prov + '...</span>';
+
+      // Tự động nhận diện từ khóa sản phẩm từ tên đang sửa để lọc ngay trong nguồn mới
+      const nameInput = document.getElementById("admProdName");
+      const prodName = nameInput ? nameInput.value.trim() : "";
+      let autoKw = "";
+      if (prodName) {
+        const lower = prodName.toLowerCase();
+        if (lower.includes("capcut")) autoKw = "Capcut";
+        else if (lower.includes("kling")) autoKw = "Kling";
+        else if (lower.includes("canva")) autoKw = "Canva";
+        else if (lower.includes("chatgpt") || lower.includes("gpt")) autoKw = "ChatGPT";
+        else if (lower.includes("gemini")) autoKw = "Gemini";
+        else if (lower.includes("gmail")) autoKw = "Gmail";
+        else if (lower.includes("hotmail") || lower.includes("outlook")) autoKw = "Hotmail";
+        else if (lower.includes("tiktok")) autoKw = "TikTok";
+        else if (lower.includes("facebook") || lower.includes("via") || lower.includes("clone")) autoKw = "Facebook";
+        else if (lower.includes("instagram") || lower.includes("ig")) autoKw = "Instagram";
+        else if (lower.includes("proxy")) autoKw = "Proxy";
+        else if (lower.includes("youtube")) autoKw = "Youtube";
+        else if (lower.includes("discord")) autoKw = "Discord";
+        else if (lower.includes("telegram")) autoKw = "Telegram";
+        else autoKw = prodName.split(/\s+/).slice(0, 2).join(" ");
+      }
+
       const searchInput = document.getElementById("admProdApiSourceSearch");
-      if (searchInput) searchInput.value = "";
+      if (searchInput) searchInput.value = autoKw;
       const clearBtn = document.getElementById("btnAdmClearSourceSearch");
-      if (clearBtn) clearBtn.style.display = "none";
-      filterAdmModalSourceProducts("");
+      if (clearBtn) clearBtn.style.display = autoKw ? "inline-block" : "none";
+
+      filterAdmModalSourceProducts(autoKw);
 
       if (typeof fetchSingleSourceProducts === "function") {
         if (!window._provFetchedAt) window._provFetchedAt = {};
         const lastFetch = window._provFetchedAt[prov] || 0;
-        if (Date.now() - lastFetch > 180000) {
+        if (Date.now() - lastFetch > 60000) {
           window._provFetchedAt[prov] = Date.now();
           fetchSingleSourceProducts(prov, false);
         }
@@ -3936,7 +4010,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const sSel = document.getElementById("admProdApiSourceSelect");
         if (sSel && srcId) {
           sSel.setAttribute("data-pending-id", srcId);
+          sSel.setAttribute("data-active-provider", prov);
         }
+        const sInp = document.getElementById("admProdApiSourceSearch");
+        if (sInp) sInp.value = "";
+        const cBtn = document.getElementById("btnAdmClearSourceSearch");
+        if (cBtn) cBtn.style.display = "none";
         if (typeof filterAdmModalSourceProducts === "function") {
           filterAdmModalSourceProducts("");
         }
@@ -13883,16 +13962,24 @@ function syncAllOpenViewsStock(changedProdId) {
         const sSel = document.getElementById("admProdApiSourceSelect");
         if (sSel) {
           sSel.setAttribute("data-pending-id", String(sourceProdId));
+          sSel.setAttribute("data-active-provider", provider);
+          const sInp = document.getElementById("admProdApiSourceSearch");
+          if (sInp) sInp.value = "";
+          const cBtn = document.getElementById("btnAdmClearSourceSearch");
+          if (cBtn) cBtn.style.display = "none";
           if (typeof filterAdmModalSourceProducts === "function") filterAdmModalSourceProducts("");
           sSel.value = String(sourceProdId);
-          if (!sSel.value) {
+          if (!sSel.value || sSel.selectedIndex <= 0) {
+            const oldOpt = sSel.querySelector('option[value="' + sourceProdId + '"]');
+            if (oldOpt) oldOpt.remove();
             const tempOpt = document.createElement("option");
             tempOpt.value = String(sourceProdId);
-            tempOpt.textContent = "[ID #" + sourceProdId + "] " + (sourceProdName || "SP #" + sourceProdId);
+            tempOpt.textContent = "[ID #" + sourceProdId + "] " + (sourceProdName || "SP #" + sourceProdId) + " - " + (typeof formatVND === "function" ? formatVND(numPrice) : numPrice + "đ") + " (Kho: " + numStock.toLocaleString() + ")";
             tempOpt.selected = true;
             tempOpt.setAttribute("data-stock", numStock);
             tempOpt.setAttribute("data-price", numPrice);
-            sSel.appendChild(tempOpt);
+            tempOpt.setAttribute("data-name", sourceProdName || "");
+            sSel.insertBefore(tempOpt, sSel.firstChild);
             sSel.value = String(sourceProdId);
           }
         }
@@ -14055,11 +14142,14 @@ function syncAllOpenViewsStock(changedProdId) {
       renderCompareCurrentStatus(prod || { id: effectiveId, apiMapping: mapItem, deliveryType: "api" });
       executeCompareSourcesSearch();
 
-      // 6. Thông báo thành công
+      // 6. Thông báo thành công và tự động đóng modal so sánh
       const provName = pCfg.name || provider;
       if (typeof showToast === "function") {
-        showToast("⚡ Đã chọn nguồn [" + provName + "]! Giá nhập: " + (typeof formatVND === "function" ? formatVND(numPrice) : numPrice + "đ") + " (Kho: " + numStock.toLocaleString() + " acc)", "success");
+        showToast("⚡ Đã chọn nguồn rẻ nhất [" + provName + "]! Giá nhập: " + (typeof formatVND === "function" ? formatVND(numPrice) : numPrice + "đ") + " (Kho: " + numStock.toLocaleString() + " acc) — Đã lưu thành công!", "success");
       }
+      setTimeout(function() {
+        if (typeof closeModal === "function") closeModal("admCompareSourcesModal");
+      }, 400);
     }
     window.applySwitchSource = applySwitchSource;
 
