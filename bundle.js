@@ -1727,21 +1727,66 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function getVisibleProducts() {
       if (!MOCK_DATA || !Array.isArray(MOCK_DATA.products)) return [];
-      return MOCK_DATA.products.filter(function(p) {
-        return p && p.id && !isProductDeleted(p);
-      });
+      const seenIds = new Set();
+      const seenNormNames = new Set();
+      const result = [];
+
+      for (let i = 0; i < MOCK_DATA.products.length; i++) {
+        const p = MOCK_DATA.products[i];
+        if (!p || !p.id || isProductDeleted(p)) continue;
+
+        const cleanId = String(p.id).trim();
+        if (seenIds.has(cleanId)) continue;
+
+        // Chuẩn hóa tên sản phẩm để loại bỏ triệt để sản phẩm bị trùng lặp (ví dụ Proxy Nhật trùng lặp)
+        const rawName = String(p.name || '').trim();
+        const normName = rawName.toLowerCase()
+          .replace(/[–—−-]/g, '-')
+          .replace(/\s+/g, ' ')
+          .replace(/[\(\)\[\]]/g, '')
+          .trim();
+
+        if (normName && seenNormNames.has(normName)) {
+          // Trùng tên với sản phẩm đã có -> ưu tiên giữ bản có apiMapping hoặc ID chuẩn
+          const existingIdx = result.findIndex(x => {
+            const xn = String(x.name || '').trim().toLowerCase().replace(/[–—−-]/g, '-').replace(/\s+/g, ' ').replace(/[\(\)\[\]]/g, '').trim();
+            return xn === normName;
+          });
+          if (existingIdx !== -1) {
+            const existing = result[existingIdx];
+            if ((!existing.apiMapping && p.apiMapping) || (p.id === "PROD_MUM6JQTW8C" && existing.id !== "PROD_MUM6JQTW8C")) {
+              result[existingIdx] = p;
+            }
+          }
+          continue;
+        }
+
+        seenIds.add(cleanId);
+        if (normName) seenNormNames.add(normName);
+        result.push(p);
+      }
+      return result;
     }
     window.getVisibleProducts = getVisibleProducts;
-    // Tự động dọn sạch sản phẩm demo SP_ khỏi localStorage của khách hàng nếu còn tồn dư cũ
+    // Tự động dọn sạch sản phẩm demo SP_ và loại trừ trùng lặp khỏi localStorage của khách hàng
     try {
-      const storedProdsRaw = localStorage.getItem("mmo_products");
-      if (storedProdsRaw) {
-        const storedArr = JSON.parse(storedProdsRaw);
-        if (Array.isArray(storedArr) && storedArr.some(p => p && p.id && (p.id.startsWith("SP_") || DUMMY_SEED_IDS.includes(p.id)))) {
-          const cleanedArr = storedArr.filter(p => p && p.id && !p.id.startsWith("SP_") && !DUMMY_SEED_IDS.includes(p.id));
-          localStorage.setItem("mmo_products", JSON.stringify(cleanedArr));
+      ["mmo_products", "mmo_admin_products"].forEach(function(k) {
+        const raw = localStorage.getItem(k);
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) {
+            const seen = new Set();
+            const cleaned = arr.filter(function(p) {
+              if (!p || !p.id || p.id.startsWith("SP_") || DUMMY_SEED_IDS.includes(p.id)) return false;
+              const n = String(p.name || '').toLowerCase().replace(/[–—−-]/g, '-').replace(/\s+/g, ' ').trim();
+              if (seen.has(n)) return false;
+              seen.add(n);
+              return true;
+            });
+            localStorage.setItem(k, JSON.stringify(cleaned));
+          }
         }
-      }
+      });
     } catch(e) {}
 
 
@@ -8361,24 +8406,56 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         '</div>';
       }
 
+      function normProdTitle(name) {
+        return String(name || '').toLowerCase()
+          .replace(/[–—−-]/g, '-')
+          .replace(/\s+/g, ' ')
+          .replace(/[\(\)\[\]]/g, '')
+          .trim();
+      }
+
+      const curNormTitle = currentProd ? normProdTitle(currentProd.name) : null;
+
       // 1. THANH BÊN TRÁI: "SẢN PHẨM NỔI BẬT" (Top bán chạy nhất toàn sàn, loại trừ SP đang xem)
-      const leftCandidates = prods.filter(p => !curId || String(p.id).trim() !== curId);
+      const leftCandidates = prods.filter(p => {
+        if (!p || !p.id) return false;
+        if (curId && String(p.id).trim() === curId) return false;
+        if (curNormTitle && normProdTitle(p.name) === curNormTitle) return false;
+        return true;
+      });
       leftCandidates.sort((a, b) => {
         const soldA = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(a) : (a.buffSold || a.sold || 0);
         const soldB = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(b) : (b.buffSold || b.sold || 0);
         return soldB - soldA;
       });
 
-      const leftItems = leftCandidates.slice(0, 10);
-      const leftIds = new Set(leftItems.map(p => String(p.id).trim()));
+      const leftItems = [];
+      const leftIds = new Set();
+      const leftTitles = new Set();
       if (curId) leftIds.add(curId);
+      if (curNormTitle) leftTitles.add(curNormTitle);
+
+      for (let i = 0; i < leftCandidates.length && leftItems.length < 10; i++) {
+        const item = leftCandidates[i];
+        const t = normProdTitle(item.name);
+        if (t && leftTitles.has(t)) continue; // Loại trừ sản phẩm trùng tên!
+        leftItems.push(item);
+        leftIds.add(String(item.id).trim());
+        if (t) leftTitles.add(t);
+      }
 
       if (dtlLeft) {
         dtlLeft.innerHTML = leftItems.map(renderCompactItemHtml).join("");
       }
 
       // 2. THANH BÊN PHẢI: "SẢN PHẨM ĐỀ XUẤT" (KHÔNG TRÙNG LẶP 100% VỚI THANH TRÁI & SP ĐANG XEM)
-      const rightCandidates = prods.filter(p => !leftIds.has(String(p.id).trim()));
+      const rightCandidates = prods.filter(p => {
+        if (!p || !p.id) return false;
+        if (leftIds.has(String(p.id).trim())) return false;
+        const t = normProdTitle(p.name);
+        if (t && leftTitles.has(t)) return false; // Loại trừ sản phẩm đã có ở thanh trái hoặc trùng sản phẩm đang xem
+        return true;
+      });
 
       const curCategory = currentProd ? String(currentProd.category || currentProd.cate || "").toLowerCase() : "";
       const curNameLower = currentProd ? String(currentProd.name || "").toLowerCase() : "";
@@ -8438,7 +8515,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return scoreB - scoreA;
       });
 
-      const rightItems = rightCandidates.slice(0, 10);
+      const rightItems = [];
+      const rightTitles = new Set();
+      for (let i = 0; i < rightCandidates.length && rightItems.length < 10; i++) {
+        const item = rightCandidates[i];
+        const t = normProdTitle(item.name);
+        if (t && (rightTitles.has(t) || leftTitles.has(t))) continue;
+        rightItems.push(item);
+        if (t) rightTitles.add(t);
+      }
+
       if (dtlRight) {
         dtlRight.innerHTML = rightItems.map(renderCompactItemHtml).join("");
       }
@@ -17448,6 +17534,13 @@ function syncAllOpenViewsStock(changedProdId) {
 
       const dtlNotice = document.getElementById("dtlWarrantyNotice");
       if (dtlNotice) dtlNotice.innerText = "Chính sách bảo hành: " + (p.warranty || "Bảo Hành 1 Đổi 1") + ". Vui lòng kiểm tra kỹ thông tin trước khi mua.";
+
+      // [FIX MÔ TẢ PROXY NHẬT BỊ GẮN NHẦM TELEGRAM]: Tự động nhận diện và khôi phục chuẩn xác
+      if (p && (p.id === "PROD_MUM6JQTW8C" || (p.name && p.name.includes("JAPAN") && p.name.includes("NHẬT")))) {
+        if (!p.description || p.description.includes("Telegram")) {
+          p.description = "Bạn đang cần nguồn Proxy IPv4 Nhật Bản (Japan) chất lượng cao, IP cố định, xài riêng (Dedicated Private) để phục vụ nuôi tài khoản, chạy tool MMO, làm khảo sát, cày game hoặc quản lý gian hàng quốc tế mà không lo bị trùng IP hay giới hạn tốc độ?\n\nGói PROXY IPv4 – JAPAN NHẬT (CỐ ĐỊNH) – XÀI RIÊNG tại sàn MUABANTAIKHOANMMO chính là sự lựa chọn số 1 dành cho anh em làm MMO chuyên nghiệp!\n\n💎 Ưu điểm nổi bật của Proxy IPv4 Japan (Nhật Bản):\n- 100% Xài Riêng (Dedicated Private): 1 người 1 IP riêng biệt trong suốt chu kỳ sử dụng, tuyệt đối không share chung hay dùng lại của người khác.\n- IP Cố Định 30 Ngày (Static IP): Giữ nguyên dải IP chuẩn Nhật trong suốt thời gian thuê, cực kỳ phù hợp để nuôi nick, giữ phiên đăng nhập không bị checkpoint hay đổi địa chỉ mạng.\n- Tốc Độ Cao & Băng Thông Không Giới Hạn: Hạ tầng máy chủ đặt tại Datacenter Tokyo / Osaka với đường truyền gigabit siêu nhanh, độ trễ cực thấp, ping mượt mà.\n- Đa Năng & Đa Giao Thức: Hỗ trợ cả 2 giao thức HTTP/HTTPS và SOCKS5, định dạng chuẩn IP:Port:User:Pass dễ dàng tích hợp vào mọi phần mềm.\n- Tương Thích Mọi Nền Tảng & Tool: Hoạt động hoàn hảo trên các trình duyệt ẩn danh (Gologin, AdsPower, Hidemyacc, Genlogin, MoreLogin...) và các công cụ tự động (FPlus, Ninja, MaxCare, nuôi TikTok, khảo sát Nhật, crypto/forex...).\n\n🛠️ Chính sách bảo hành & Giao nhận:\n🛡️ Bảo hành 1 Đổi 1: Đổi ngay IP mới nếu lỗi kết nối hoặc die trong quá trình sử dụng.\n⚡ Giao hàng tự động 24/7: Nhận thông tin IP ngay sau khi thanh toán thành công.\n🔒 Bảo mật tuyệt đối: Cam kết IP sạch, uy tín, không blacklist.\n\n💡 Mẹo sử dụng: Khuyến nghị gắn proxy vào trình duyệt ẩn danh (Anti-detect browser) kèm múi giờ (Asia/Tokyo) và ngôn ngữ tiếng Nhật để đạt độ trust tối đa cho tài khoản!";
+        }
+      }
 
       const dtlDesc = document.getElementById("dtlFullDesc");
       if (dtlDesc) dtlDesc.innerText = p.description || "";
