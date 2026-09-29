@@ -916,11 +916,58 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "description": "( DÙNG : 5 THIẾT BỊ ) - Key dùng cho ADR/PC Hạn 27-32 Ngày Đọc thư email ở generator.email/[email]"
         },
         {
+          "id": "PROD_MUJUGVQXET",
+          "name": "Capcut Pro Team 1 THÁNG",
+          "category": "Capcut",
+          "price": 150000,
+          "stock": 72,
+          "sold": 0,
+          "buffSold": 0,
+          "rating": 4.9,
+          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_pro.png",
+          "warranty": "Bảo Hành 7 Ngày",
+          "variants": [
+            {
+              "name": "Capcut Pro 1 THÁNG",
+              "price": 150000,
+              "stock": 72,
+              "available": true,
+              "apiMapping": {
+                "enabled": true,
+                "provider": "selltainguyenmmo",
+                "baseUrl": "https://selltainguyenmmo.com",
+                "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+                "sourceProdId": "23628",
+                "sourceProdName": "🔥Capcut Pro Team 1 THÁNG ( BẢO HÀNH FULL )",
+                "sourcePrice": 114000,
+                "sourceStock": 72,
+                "targetProdId": "PROD_MUJUGVQXET",
+                "targetProdName": "Capcut Pro Team 1 THÁNG"
+              }
+            }
+          ],
+          "deliveryType": "api",
+          "delivery_type": "api",
+          "description": "Capcut Pro Team 1 THÁNG dùng riêng, bảo hành full thời gian sử dụng.",
+          "apiMapping": {
+            "enabled": true,
+            "provider": "selltainguyenmmo",
+            "baseUrl": "https://selltainguyenmmo.com",
+            "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+            "sourceProdId": "23628",
+            "sourceProdName": "🔥Capcut Pro Team 1 THÁNG ( BẢO HÀNH FULL )",
+            "sourcePrice": 114000,
+            "sourceStock": 72,
+            "targetProdId": "PROD_MUJUGVQXET",
+            "targetProdName": "Capcut Pro Team 1 THÁNG"
+          }
+        },
+        {
           "id": "PROD_MU2B32VLQY",
-          "name": "Capcut pro Cá Nhân 7 ngày",
+          "name": "Capcut pro Cá Nhân 7 ngày Dùng Riêng",
           "category": "Capcut",
           "price": 25000,
-          "stock": 0,
+          "stock": 132,
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
@@ -930,13 +977,37 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             {
               "name": "capcut pro 7 ngày",
               "price": 25000,
-              "stock": 0,
-              "available": false
+              "stock": 132,
+              "available": true,
+              "apiMapping": {
+                "enabled": true,
+                "provider": "selltainguyenmmo",
+                "baseUrl": "https://selltainguyenmmo.com",
+                "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+                "sourceProdId": "25644",
+                "sourceProdName": "Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO",
+                "sourcePrice": 9000,
+                "sourceStock": 132,
+                "targetProdId": "PROD_MU2B32VLQY",
+                "targetProdName": "Capcut pro Cá Nhân 7 ngày Dùng Riêng"
+              }
             }
           ],
-          "deliveryType": "local",
-          "delivery_type": "local",
-          "description": "Capcut pro Cá Nhân 7 ngày"
+          "deliveryType": "api",
+          "delivery_type": "api",
+          "description": "Capcut pro Cá Nhân 7 ngày Dùng Riêng, tài khoản riêng biệt không chung đụng, check được hạn sử dụng, bảo hành full thời gian.",
+          "apiMapping": {
+            "enabled": true,
+            "provider": "selltainguyenmmo",
+            "baseUrl": "https://selltainguyenmmo.com",
+            "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+            "sourceProdId": "25644",
+            "sourceProdName": "Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO",
+            "sourcePrice": 9000,
+            "sourceStock": 132,
+            "targetProdId": "PROD_MU2B32VLQY",
+            "targetProdName": "Capcut pro Cá Nhân 7 ngày Dùng Riêng"
+          }
         },
         {
           "id": "PROD_MU2ASBNSJT",
@@ -1133,7 +1204,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "name": "Capcut pro Cá Nhân 7 ngày",
           "category": "Capcut",
           "price": 20000,
-          "stock": 132,
+          "stock": 18,
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
@@ -1143,17 +1214,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             {
               "name": "capcut pro cá nhân 7 ngày",
               "price": 20000,
-              "stock": 132,
+              "stock": 18,
               "available": true,
               "apiMapping": {
                 "enabled": true,
-                "provider": "selltainguyenmmo",
-                "baseUrl": "https://selltainguyenmmo.com",
-                "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-                "sourceProdId": "25644",
-                "sourceProdName": "Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO",
-                "sourcePrice": 9000,
-                "sourceStock": 132,
+                "provider": "sellmmo",
+                "baseUrl": "https://sellmmo.vn",
+                "apiKey": "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
+                "sourceProdId": "23154",
+                "sourceProdName": "Capcut Pro 7 Ngày [ ID 23154 ]",
+                "sourcePrice": 8000,
+                "sourceStock": 18,
                 "targetProdId": "PROD_MU1G6LJX",
                 "targetProdName": "Capcut pro Cá Nhân 7 ngày"
               }
@@ -1164,13 +1235,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "description": "Capcut pro Cá Nhân 7 ngày chính chủ, xuất video 4K 60FPS không watermark, mở khóa toàn bộ hiệu ứng VIP.",
           "apiMapping": {
             "enabled": true,
-            "provider": "selltainguyenmmo",
-            "baseUrl": "https://selltainguyenmmo.com",
-            "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-            "sourceProdId": "25644",
-            "sourceProdName": "Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO",
-            "sourcePrice": 9000,
-            "sourceStock": 132,
+            "provider": "sellmmo",
+            "baseUrl": "https://sellmmo.vn",
+            "apiKey": "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
+            "sourceProdId": "23154",
+            "sourceProdName": "Capcut Pro 7 Ngày [ ID 23154 ]",
+            "sourcePrice": 8000,
+            "sourceStock": 18,
             "targetProdId": "PROD_MU1G6LJX",
             "targetProdName": "Capcut pro Cá Nhân 7 ngày"
           }
@@ -1760,18 +1831,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           .trim();
 
         if (normName && seenNormNames.has(normName)) {
-          // Trùng tên với sản phẩm đã có -> ưu tiên giữ bản có apiMapping hoặc ID chuẩn
+          // Chỉ loại bỏ bản demo SP_ nếu đã có bản PROD_ thật
           const existingIdx = result.findIndex(x => {
             const xn = String(x.name || '').trim().toLowerCase().replace(/[–—−-]/g, '-').replace(/\s+/g, ' ').replace(/[\(\)\[\]]/g, '').trim();
             return xn === normName;
           });
           if (existingIdx !== -1) {
             const existing = result[existingIdx];
-            if ((!existing.apiMapping && p.apiMapping) || (p.id === "PROD_MUM6JQTW8C" && existing.id !== "PROD_MUM6JQTW8C")) {
+            if (existing.id.startsWith("SP_") && !p.id.startsWith("SP_")) {
               result[existingIdx] = p;
+              continue;
             }
+            if (!existing.id.startsWith("SP_") && p.id.startsWith("SP_")) {
+              continue;
+            }
+            // Nếu cả 2 đều là sản phẩm PROD_ thật với ID khác nhau -> GIỮ NGUYÊN CẢ HAI, TUYỆT ĐỐI KHÔNG XÓA!
           }
-          continue;
         }
 
         seenIds.add(cleanId);
@@ -1951,9 +2026,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                     MOCK_DATA.products.unshift(savedProd);
                   }
                 });
-                // Xóa các sản phẩm đã bị xóa
+                // Chỉ loại trừ các sản phẩm thực sự nằm trong danh sách đã xóa (getDeletedProductIds / isProductDeleted)
                 MOCK_DATA.products = MOCK_DATA.products.filter(function(p) {
-                  return parsed.some(function(sp) { return String(sp.id) === String(p.id); });
+                  return p && p.id && !deletedIds.includes(String(p.id)) && (typeof isProductDeleted !== "function" || !isProductDeleted(p));
                 });
               } else {
                 MOCK_DATA.products = parsed;
@@ -5578,7 +5653,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         isAff = true;
       }
       // [SMART SOCIAL SHARE LINK]: Dùng endpoint OG Proxy để Facebook, Zalo, Telegram, Twitter luôn hiện ảnh và tên sản phẩm 100%
-      let shareUrl = "https://mmo-shop-api.manhdongvtc.workers.dev/og?prod=" + encodeURIComponent(prodId);
+      let shareUrl = "https://mmo-shop-api.manhdongvtc.workers.dev/og?prod=" + encodeURIComponent(prodId) + "&v=" + Date.now();
       if (refCode) {
         shareUrl += "&ref=" + encodeURIComponent(refCode);
       }
@@ -6039,12 +6114,31 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
       showToast("🎉 Đã lưu sản phẩm [" + (name || actualTargetId) + "] thành công!", "success");
 
-      // Đồng bộ ngay lập tức vào LocalStorage để không bị mất khi reload
+      // Đồng bộ an toàn vào LocalStorage (chống QuotaExceededError khi ảnh Base64 lớn)
       try {
-        const prodsJson = JSON.stringify(MOCK_DATA.products);
+        const sanitizedProds = MOCK_DATA.products.map(p => {
+          if (p && p.image && String(p.image).startsWith("data:") && p.image.length > 2000) {
+            const clone = Object.assign({}, p);
+            clone.image = "https://mmo-shop-api.manhdongvtc.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image";
+            clone.image_url = clone.image;
+            return clone;
+          }
+          return p;
+        });
+        const prodsJson = JSON.stringify(sanitizedProds);
         localStorage.setItem("mmo_admin_products", prodsJson);
         localStorage.setItem("mmo_products", prodsJson);
-      } catch(eStorage) {}
+      } catch(eStorage) {
+        console.warn("Storage quota handling in handleSaveProduct:", eStorage);
+        try {
+          // Dọn dẹp cache phụ nếu đầy
+          localStorage.removeItem("mmo_transaction_history");
+          localStorage.removeItem("cached_source_products");
+          const prodsJson2 = JSON.stringify(MOCK_DATA.products.map(p => ({ id: p.id, name: p.name, price: p.price, stock: p.stock, category: p.category, delivery_type: p.delivery_type })));
+          localStorage.setItem("mmo_admin_products", prodsJson2);
+          localStorage.setItem("mmo_products", prodsJson2);
+        } catch(e2) {}
+      }
 
       if (typeof recordProductVariants === "function") recordProductVariants(actualTargetId, variants, name);
       
@@ -6112,6 +6206,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       saveProductsToStorage();
       closeModal("adminProductModal");
+      if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+      if (typeof renderProductGrid === "function") renderProductGrid();
 
       // Đồng bộ tên mới vào bảng API mappings nếu sản phẩm này có liên kết API
       try {
@@ -10509,6 +10605,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (typeof renderRecommended === "function") renderRecommended();
           if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
           if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+          if (typeof renderAdminDashboard === "function") renderAdminDashboard();
           if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
           if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
             const freshCur = MOCK_DATA.products.find(p => p && p.id === currentSelectedProduct.id);
@@ -12188,7 +12285,9 @@ function syncAllOpenViewsStock(changedProdId) {
       "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày", sourceStock: 9999 },
       "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G", sourceStock: 9999 },
       "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 9999 },
-      "PROD_MU1G6LJX": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng", sourceStock: 132 }
+      "PROD_MU1G6LJX": { enabled: true, provider: "sellmmo", baseUrl: "https://sellmmo.vn", apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO", sourceProdId: "23154", sourcePrice: 8000, sourceProdName: "Capcut Pro 7 Ngày", sourceStock: 18 },
+      "PROD_MU2B32VLQY": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng", sourceStock: 132 },
+      "PROD_MUJUGVQXET": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "23628", sourcePrice: 114000, sourceProdName: "Capcut Pro Team 1 THÁNG", sourceStock: 72 }
     };
 
     function getApiProductMappings() {
@@ -12206,10 +12305,7 @@ function syncAllOpenViewsStock(changedProdId) {
                 }
               }
             });
-            // Tự động di chuyển PROD_MU1G6LJX từ sellmmo sang selltainguyenmmo nếu còn sót cấu hình cũ
-            if (result["PROD_MU1G6LJX"] && (result["PROD_MU1G6LJX"].sourceProdId === "23154" || result["PROD_MU1G6LJX"].provider === "sellmmo")) {
-              result["PROD_MU1G6LJX"] = Object.assign({}, DEFAULT_API_PRODUCT_MAPPINGS["PROD_MU1G6LJX"]);
-            }
+            // Bảo vệ ánh xạ độc lập cho từng sản phẩm Capcut
           }
         }
       } catch(e) {}
@@ -12311,7 +12407,9 @@ function syncAllOpenViewsStock(changedProdId) {
         "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày", sourceStock: 9999 },
         "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G", sourceStock: 9999 },
         "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 9999 },
-        "PROD_MU1G6LJX": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng", sourceStock: 132 }
+        "PROD_MU1G6LJX": { enabled: true, provider: "sellmmo", baseUrl: "https://sellmmo.vn", apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO", sourceProdId: "23154", sourcePrice: 8000, sourceProdName: "Capcut Pro 7 Ngày", sourceStock: 18 },
+        "PROD_MU2B32VLQY": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng", sourceStock: 132 },
+        "PROD_MUJUGVQXET": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "23628", sourcePrice: 114000, sourceProdName: "Capcut Pro Team 1 THÁNG", sourceStock: 72 }
       };
 
       // Tự động chuyển tiếp mã cũ 13840 sang 121063 nếu có trong maps
@@ -12321,14 +12419,7 @@ function syncAllOpenViewsStock(changedProdId) {
         maps[prodId].sourceStock = 88181;
       }
 
-      // Tự động chuyển tiếp PROD_MU1G6LJX sang selltainguyenmmo nếu còn sót cấu hình cũ sellmmo
-      if ((prodId === "PROD_MU1G6LJX" || (prodObj && prodObj.id === "PROD_MU1G6LJX")) && maps["PROD_MU1G6LJX"] && (maps["PROD_MU1G6LJX"].sourceProdId === "23154" || maps["PROD_MU1G6LJX"].provider === "sellmmo")) {
-        maps["PROD_MU1G6LJX"] = Object.assign({}, defaultMappings["PROD_MU1G6LJX"]);
-        try {
-          localStorage.setItem("mmo_api_map_PROD_MU1G6LJX", JSON.stringify(maps["PROD_MU1G6LJX"]));
-          localStorage.setItem("mmo_api_product_mappings", JSON.stringify(maps));
-        } catch(e) {}
-      }
+      // Đảm bảo không ghi đè chéo giữa các sản phẩm Capcut
 
       // Bảo vệ: nếu sản phẩm chưa có mapping hợp lệ trong maps, dùng defaultMappings
       if (prodId && defaultMappings[prodId]) {
