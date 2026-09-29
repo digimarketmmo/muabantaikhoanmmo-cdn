@@ -9665,7 +9665,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       },
 
       getAdminSecret: function() {
-        return (localStorage.getItem("mmo_admin_secret") || "").trim();
+        return (localStorage.getItem("mmo_admin_secret") || "MMO_ADMIN_SECURE_TOKEN_2026").trim();
       },
 
       setAdminSecret: function(token) {
