@@ -1,8 +1,8 @@
 // =========================================================================
-// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.3.0)
+// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.0)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.3.0";
+const MMO_CURRENT_CODE_VERSION = "3.4.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // Tự động chuyển đổi toàn bộ nhãn 'Hết hàng' sang 'Đặt trước' (Chống kẹt cache 100% trên toàn bộ blog phụ)
@@ -67,7 +67,12 @@ function checkAndApplyNetworkUpdate() {
         nextScript.onload = function() {
           console.log("[MMO Universal Update] Đã nạp thành công code mới v" + data.version + " trên blog này!");
           if (typeof convertOutOfStockToPreOrder === "function") convertOutOfStockToPreOrder();
-          if (typeof initMMOApplication === "function") initMMOApplication();
+          var _curP = new URLSearchParams(window.location.search).get("prod");
+          if (_curP && typeof openProductDetailById === "function") {
+            openProductDetailById(_curP);
+          } else if (typeof initMMOApplication === "function") {
+            initMMOApplication();
+          }
         };
         document.body.appendChild(nextScript);
       }
@@ -238,7 +243,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
-          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.jpg",
+          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png",
           "warranty": "Bảo Hành 1 Đổi 1",
           "variants": [
             {
@@ -258,7 +263,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
-          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.jpg",
+          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
           "warranty": "Bảo Hành 1 Đổi 1",
           "variants": [
             {
@@ -924,7 +929,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
-          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_pro.png",
+          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_team_1m.jpg",
           "warranty": "Bảo Hành 7 Ngày",
           "variants": [
             {
@@ -971,7 +976,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
-          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_pro.png",
+          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_canhan_rieng.jpg",
           "warranty": "Bảo Hành 1 Đổi 1",
           "variants": [
             {
@@ -1208,7 +1213,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "sold": 0,
           "buffSold": 0,
           "rating": 4.9,
-          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_20k.png",
+          "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_canhan_20k.jpg",
           "warranty": "Bảo Hành 1 Đổi 1",
           "variants": [
             {
@@ -1741,6 +1746,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.REAL_PRODUCT_IDS = REAL_PRODUCT_IDS;
 
     const DUMMY_SEED_IDS = [
+      "PROD_TEST",
       "SP_CAPCUT_PRO",
       "SP_CHATGPT",
       "SP_FANPAGE",
@@ -1788,8 +1794,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const pid = typeof productOrId === "object" ? String(productOrId.id || "").trim() : String(productOrId).trim();
       if (!pid) return true;
 
-      // TUYỆT ĐỐI KHÔNG HIỂN THỊ BẤT KỲ SẢN PHẨM DEMO NÀO
-      if (pid.startsWith("SP_") || DUMMY_SEED_IDS.includes(pid)) return true;
+      // TUYỆT ĐỐI KHÔNG HIỂN THỊ BẤT KỲ SẢN PHẨM DEMO HOẶC TEST NÀO
+      if (pid === "PROD_TEST" || pid.startsWith("SP_") || DUMMY_SEED_IDS.includes(pid)) return true;
+      if (typeof productOrId === "object") {
+        const pName = String(productOrId.name || "").trim().toLowerCase();
+        if (pName === "test" || pName.startsWith("test ") || pName.startsWith("demo ") || pid.toLowerCase().includes("test")) return true;
+        if (productOrId.price <= 0 && (!productOrId.variants || productOrId.variants.length === 0)) return true;
+      }
 
       // Sản phẩm thật trong hệ thống không bao giờ bị coi là đã xóa nếu chưa có cờ isDeleted
       if (typeof REAL_PRODUCT_IDS !== "undefined" && REAL_PRODUCT_IDS.includes(pid)) {
@@ -8445,6 +8456,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const cdnBase = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/";
 
       const KNOWN_CDN_MAP = {
+        "PROD_MUJUGVQXET": cdnBase + "capcut_team_1m.jpg",
+        "PROD_MU2B32VLQY": cdnBase + "capcut_canhan_rieng.jpg",
+        "PROD_MU1G6LJX": cdnBase + "capcut_canhan_20k.jpg",
         "PROD_MU5PWT7PP7": cdnBase + "kling_ai.png",
         "PROD_MTYN7UJG": cdnBase + "youtube_channel.png",
         "PROD_MU6R34FZ4Z": cdnBase + "google_gemini_veo3.webp",
@@ -8465,8 +8479,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "PROD_MTVI44UK": cdnBase + "tiktok_ngam_lau.jpg",
         "PROD_MU2CZL38PH": cdnBase + "tiktok_france.png",
         "PROD_MTPIJ9XV": cdnBase + "tiktok_brazil.png",
-        "PROD_MUBKH47T2U": cdnBase + "rom_not8_android10.jpg",
-        "PROD_MUBJQ6JP7O": cdnBase + "rom_not9_android10.jpg",
+        "PROD_MUBKH47T2U": cdnBase + "rom_not8_android10.png",
+        "PROD_MUBJQ6JP7O": cdnBase + "rom_not9_android10.png",
         "PROD_MU9YH8D9FK": cdnBase + "canva_edu.jpg",
         "PROD_MTQQXO2E": cdnBase + "gmail_24h.png",
         "PROD_MTQWMPL5": cdnBase + "gmail_7day.png",
@@ -8478,8 +8492,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (KNOWN_CDN_MAP[idUpper]) return KNOWN_CDN_MAP[idUpper];
 
       // 4. Khớp theo từ khóa tên
-      if (idUpper.includes("NOT8") || name.includes("not8") || name.includes("note 8") || name.includes("note8")) return cdnBase + "rom_not8_android10.jpg";
-      if (idUpper.includes("NOT9") || name.includes("not 9") || name.includes("note 9") || name.includes("note9")) return cdnBase + "rom_not9_android10.jpg";
+      if (idUpper.includes("NOT8") || name.includes("not8") || name.includes("note 8") || name.includes("note8")) return cdnBase + "rom_not8_android10.png";
+      if (idUpper.includes("NOT9") || name.includes("not 9") || name.includes("note 9") || name.includes("note9")) return cdnBase + "rom_not9_android10.png";
       if (name.includes("not10") || name.includes("note 10") || name.includes("note10")) return cdnBase + "rom_not10_android12.png";
       if (name.includes("j7 pro")) return cdnBase + "rom_j7_pro.png";
       if (name.includes("j7 prime")) return cdnBase + "rom_j7_prime.png";
@@ -8491,7 +8505,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (name.includes("s9")) return cdnBase + "rom_s9_android10.png";
       if (name.includes("canva edu")) return cdnBase + "canva_edu.jpg";
       if (name.includes("canva")) return cdnBase + "canva_pro.png";
-      if (name.includes("capcut")) return cdnBase + "capcut_pro.png";
+      if (name.includes("capcut") && name.includes("team")) return cdnBase + "capcut_team_1m.jpg";
+      if (name.includes("capcut") && (name.includes("rieng") || name.includes("riêng") || name.includes("25"))) return cdnBase + "capcut_canhan_rieng.jpg";
+      if (name.includes("capcut")) return cdnBase + "capcut_canhan_20k.jpg";
       if (name.includes("kling")) return cdnBase + "kling_ai.png";
       if (name.includes("gemini pro") || name.includes("gg 5tb") || name.includes("veo 3.1")) return cdnBase + "gemini_pro_veo3.png";
       if (name.includes("gemini") || name.includes("veo3") || name.includes("veo 3")) return cdnBase + "google_gemini_veo3.webp";
@@ -8664,7 +8680,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const pNameEscaped = (typeof escapeHtml === "function") ? escapeHtml(p.name) : p.name;
         
         return '<div class="compact-product-item" onclick="openProductDetailById(\'' + pIdEscaped + '\')">' +
-          '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + pNameEscaped + '" loading="lazy" /></div>' +
+          '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + pNameEscaped + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp\';" /></div>' +
           '<div class="compact-info">' +
             '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + pNameEscaped + '</a>' +
             '<div class="compact-meta">' +
@@ -8953,7 +8969,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       return '<div class="product-card" onclick="openProductDetailById(\'' + p.id + '\')">' +
         '<div class="product-img-wrap" style="position:relative;">' +
           badgeWarningHtml +
-          '<img src="' + cardImg + '" alt="' + escapeHtml(p.name) + '" loading="lazy" />' +
+          '<img src="' + cardImg + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp\';" />' +
         '</div>' +
         '<div class="product-body">' +
           '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</a>' +
@@ -9958,7 +9974,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       fetchProduct: async function(productIdOrSlug, options) {
         const bust = (options && options.nocache) ? ("?_t=" + Date.now()) : "";
-        return await this._fetchJson(this.getApiUrl() + "/api/products/" + encodeURIComponent(productIdOrSlug) + bust, options || {}, 3500);
+        return await this._fetchJson(this.getApiUrl() + "/api/products/" + encodeURIComponent(productIdOrSlug) + bust, options || {}, 8000);
       },
 
       createOrder: async function(orderData) {
@@ -15304,7 +15320,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
           cardEl.innerHTML = 
             '<div class="sponsor-img-wrap">' +
-              '<img alt="' + escapeHtml(p.name) + '" src="' + escapeHtml(p.image || '') + '"/>' +
+              '<img alt="' + escapeHtml(p.name) + '" src="' + escapeHtml(p.image || '') + '" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp\';" />' +
             '</div>' +
             '<h4 class="sponsor-title">' +
               '<a href="?prod=' + encodeURIComponent(p.id) + '&amp;view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); openProductDetailById(\'' + escapeHtml(p.id) + '\'); }" style="color:inherit; text-decoration:none;">' +
@@ -17617,7 +17633,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
           return '<div class="product-card" style="background:#0b111e; border:1px solid #1e293b; border-radius:10px; overflow:hidden; display:flex; flex-direction:column; transition:transform 0.2s, box-shadow 0.2s;">' +
             '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; background:#070a12; display:block; text-decoration:none;">' +
-              '<img src="' + pImageEscaped + '" alt="' + pNameEscaped + '" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;" />' +
+              '<img src="' + pImageEscaped + '" alt="' + pNameEscaped + '" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp\';" />' +
               '<span style="position:absolute; top:4px; left:4px; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); color:#38bdf8; font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:3px; border:1px solid rgba(56,189,248,0.3); max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + pCatEscaped + '</span>' +
               '<span style="position:absolute; top:4px; right:4px; background:' + (inStock ? 'rgba(16,185,129,0.9)' : 'rgba(245,158,11,0.9)') + '; color:#000; font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:3px; white-space:nowrap;">' + (inStock ? 'SẴN HÀNG' : 'ĐẶT TRƯỚC') + '</span>' +
             '</a>' +
@@ -17737,32 +17753,61 @@ function syncAllOpenViewsStock(changedProdId) {
       // Nếu chưa có trong bộ nhớ cục bộ: Nạp siêu tốc từ Cloudflare Worker Turso API (100ms), KHÔNG gọi Google Sheets 10s
       if (!p) {
         const dtlTitleEl = document.getElementById("dtlTitle");
-        if (dtlTitleEl) dtlTitleEl.innerText = "Đang tải thông tin sản phẩm...";
+        if (dtlTitleEl) dtlTitleEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải thông tin sản phẩm...';
+
+        const handleProductNotFound = function() {
+          if (dtlTitleEl) dtlTitleEl.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> Không tìm thấy sản phẩm';
+          const dtlDesc = document.getElementById("dtlDesc");
+          if (dtlDesc) {
+            dtlDesc.innerHTML = '<div style="text-align:center; padding:35px 20px; background:#070a12; border:1px solid #1e293b; border-radius:12px; margin-top:20px;">' +
+              '<p style="color:#94a3b8; font-size:1rem; margin-bottom:16px;">Sản phẩm <b>' + escapeHtml(cleanId) + '</b> có thể đã được cập nhật hoặc tạm thời không khả dụng.</p>' +
+              '<button onclick="switchView(\'viewStore\')" class="btn-primary" style="padding:10px 24px; font-size:0.95rem; background:#10b981; border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:700;"><i class="fa-solid fa-house"></i> Xem các sản phẩm khác tại Cửa Hàng</button>' +
+            '</div>';
+          }
+        };
 
         if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
           MMO_WORKER_API.fetchProduct(cleanId).then(res => {
             if (res && res.success && res.product) {
               const wp = res.product;
               if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
-                MOCK_DATA.products.unshift(wp);
+                if (!MOCK_DATA.products.some(x => x && x.id === wp.id)) {
+                  MOCK_DATA.products.unshift(wp);
+                }
               }
               openProductDetailById(wp.id);
+            } else if (typeof syncTursoProductsToLocalUI === "function") {
+              syncTursoProductsToLocalUI().then(() => {
+                const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
+                if (fresh) openProductDetailById(fresh.id);
+                else handleProductNotFound();
+              }).catch(() => handleProductNotFound());
             } else {
-              showToast("Sản phẩm này không còn tồn tại hoặc đã được chuyển mục!", "warning");
-              if (typeof switchView === "function") switchView("viewStore");
+              handleProductNotFound();
             }
           }).catch(() => {
-            if (typeof switchView === "function") switchView("viewStore");
+            if (typeof syncTursoProductsToLocalUI === "function") {
+              syncTursoProductsToLocalUI().then(() => {
+                const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
+                if (fresh) openProductDetailById(fresh.id);
+                else handleProductNotFound();
+              }).catch(() => handleProductNotFound());
+            } else {
+              handleProductNotFound();
+            }
           });
+        } else if (typeof syncTursoProductsToLocalUI === "function") {
+          syncTursoProductsToLocalUI().then(() => {
+            const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
+            if (fresh) openProductDetailById(fresh.id);
+            else handleProductNotFound();
+          }).catch(() => handleProductNotFound());
         } else if (typeof syncProductsFromBackend === "function") {
           syncProductsFromBackend().then(() => {
             const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
             if (fresh) openProductDetailById(fresh.id);
-            else {
-              showToast("Sản phẩm này không còn tồn tại!", "warning");
-              if (typeof switchView === "function") switchView("viewStore");
-            }
-          });
+            else handleProductNotFound();
+          }).catch(() => handleProductNotFound());
         }
         return;
       }
@@ -26027,7 +26072,7 @@ function getProductSchemaReviews(p, idx) {
 
       return '<div class="product-card product-card-list-mode" onclick="openProductDetailById(&quot;' + p.id + '&quot;)" style="display:flex; flex-direction:row; align-items:center; gap:16px; padding:12px 16px; background:#0b111e; border:1px solid #1e293b; border-radius:10px; cursor:pointer; margin-bottom:10px; transition:border 0.2s;">' +
         '<div style="width:84px; height:84px; flex-shrink:0; border-radius:8px; overflow:hidden; background:#070a12; border:1px solid #1e293b;">' +
-          '<img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" style="width:100%; height:100%; object-fit:cover;" />' +
+          '<img src="' + p.image + '" alt="' + escapeHtml(p.name) + '" style="width:100%; height:100%; object-fit:cover;" onerror="this.onerror=null; if(typeof resolveProductImage===\'function\'){ this.src=resolveProductImage({id:\'' + (p.id || '') + '\', name:\'' + escapeHtml(p.name).replace(/'/g, "\\'") + '\', category:\'' + escapeHtml(p.category || '').replace(/'/g, "\\'") + '\'}); }" />' +
         '</div>' +
         '<div style="flex:1; min-width:0;">' +
           '<div style="font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:6px; line-height:1.3; display:flex; align-items:center; gap:8px;">' +
