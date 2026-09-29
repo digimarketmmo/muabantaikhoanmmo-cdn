@@ -5704,7 +5704,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
 
       if (!MOCK_DATA.products) MOCK_DATA.products = [];
-      const oldProd = isEditing ? MOCK_DATA.products.find(p => p && p.id === prodId) : null;
+      const oldProd = isEditing ? (
+        MOCK_DATA.products.find(p => p && String(p.id).trim().toLowerCase() === String(prodId).trim().toLowerCase()) ||
+        (typeof findShopProduct === "function" ? findShopProduct(prodId) : null)
+      ) : null;
       const actualTargetId = (oldProd && oldProd.id) ? oldProd.id : prodId;
       const inputImg = document.getElementById("admProdImage")?.value.trim();
       const image = inputImg || (oldProd && oldProd.image) || (oldProd && oldProd.image_url) || (oldProd && oldProd.imageUrl) || "https://iili.io/nFV4Rln.png";
@@ -5759,6 +5762,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (oldMap && oldMap.sourceProdId) {
           apiSourceProdIdVal = String(oldMap.sourceProdId);
         }
+      }
+      if (!apiSourceProdIdVal) {
+        try {
+          const rawM = localStorage.getItem("mmo_api_map_" + actualTargetId);
+          if (rawM) {
+            const parsedM = JSON.parse(rawM);
+            if (parsedM && parsedM.sourceProdId) apiSourceProdIdVal = String(parsedM.sourceProdId);
+          }
+        } catch(e) {}
+      }
+      if (!apiSourceProdIdVal && oldProd && Array.isArray(oldProd.variants) && oldProd.variants[0] && oldProd.variants[0].apiMapping) {
+        apiSourceProdIdVal = String(oldProd.variants[0].apiMapping.sourceProdId || "");
       }
 
       if (isApiSelected && !apiSourceProdIdVal) {
@@ -5894,14 +5909,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       } catch(e) {}
 
-      const existingIdx = isEditing ? MOCK_DATA.products.findIndex(p => p && p.id === actualTargetId) : -1;
+      const existingIdx = isEditing ? MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === String(actualTargetId).trim().toLowerCase()) : -1;
       if (existingIdx !== -1) {
         MOCK_DATA.products[existingIdx] = Object.assign({}, MOCK_DATA.products[existingIdx], prodData);
-        showToast("Cập nhật sản phẩm thành công!", "success");
       } else {
         MOCK_DATA.products.unshift(prodData);
-        showToast("Thêm sản phẩm mới thành công!", "success");
       }
+      if (typeof window !== "undefined" && window.MOCK_DATA) {
+        window.MOCK_DATA.products = MOCK_DATA.products;
+      }
+      showToast("🎉 Đã lưu sản phẩm [" + (name || actualTargetId) + "] thành công!", "success");
+
+      // Đồng bộ ngay lập tức vào LocalStorage để không bị mất khi reload
+      try {
+        const prodsJson = JSON.stringify(MOCK_DATA.products);
+        localStorage.setItem("mmo_admin_products", prodsJson);
+        localStorage.setItem("mmo_products", prodsJson);
+      } catch(eStorage) {}
 
       if (typeof recordProductVariants === "function") recordProductVariants(actualTargetId, variants, name);
       
@@ -5926,9 +5950,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       try {
         if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof TURSO_CLIENT.saveProduct === "function") {
-          TURSO_CLIENT.saveProduct(prodData).catch(e => console.warn("Turso save product error:", e));
+          TURSO_CLIENT.saveProduct(prodData).then(function(res) {
+            console.log("Turso saveProduct success:", res);
+          }).catch(e => console.warn("Turso save product error:", e));
         } else if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured() && typeof MMO_WORKER_API.adminSyncProducts === "function") {
-          MMO_WORKER_API.adminSyncProducts([prodData]).catch(e => console.warn("Worker save product error:", e));
+          MMO_WORKER_API.adminSyncProducts([prodData]).then(function(res) {
+            console.log("Worker adminSyncProducts success:", res);
+          }).catch(e => console.warn("Worker save product error:", e));
         }
       } catch(e) {}
       // [LƯU ẢNH AN TOÀN TUYỆT ĐỐI CHỐNG LỖI QUOTA]: Lưu riêng lẻ vào mmo_custom_img_
@@ -13674,7 +13702,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
         let actionBtn = '';
         if (isCurrentActive) {
-          actionBtn = '<span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.4); padding:3px 8px; border-radius:4px; font-weight:700; font-size:0.72rem; display:inline-flex; align-items:center; gap:3px;"><i class="fa-solid fa-circle-check"></i> Đang Dùng</span>';
+          actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" data-provider="' + prov + '" data-source-id="' + item.id + '" data-price="' + price + '" data-stock="' + stock + '" data-name="' + escFn(cleanName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="background:rgba(16,185,129,0.2); color:#10b981; border:1px solid #10b981; padding:3px 8px; border-radius:4px; font-weight:700; font-size:0.72rem; cursor:pointer; display:inline-flex; align-items:center; gap:3px; white-space:nowrap;" title="Đang dùng nguồn này. Bấm để lưu lại ngay!"><i class="fa-solid fa-circle-check"></i> Đang Dùng (Lưu)</button>';
         } else {
           actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" data-provider="' + prov + '" data-source-id="' + item.id + '" data-price="' + price + '" data-stock="' + stock + '" data-name="' + escFn(cleanName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="padding:3px 8px; font-size:0.72rem; font-weight:700; border-radius:4px; cursor:pointer; display:inline-flex; align-items:center; gap:3px; white-space:nowrap; ' + (isTop1 ? 'background:linear-gradient(135deg, #10b981, #059669); color:#fff; border-color:#10b981;' : '') + '" title="Đổi sang nguồn ' + escFn(shortProvName) + '">' +
             '<i class="fa-solid fa-bolt"></i> ' + (isTop1 ? 'Đổi (Rẻ nhất)' : 'Đổi nguồn') +
@@ -13735,6 +13763,14 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (isCurrentActive) {
+        const bestRegKey = prov + "__" + String(bestDeal.id);
+        window._compareRegistry[bestRegKey] = {
+          provider: prov,
+          sourceProdId: String(bestDeal.id),
+          sourcePrice: bestPrice,
+          sourceStock: bestStock,
+          sourceProdName: bestDeal.name || ""
+        };
         bannerEl.innerHTML = '<div style="background:linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.08)); border:1px solid #10b981; border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
           '<div style="display:flex; align-items:center; gap:10px;">' +
             '<div style="font-size:1.4rem;">👑</div>' +
@@ -13743,7 +13779,9 @@ function syncAllOpenViewsStock(changedProdId) {
               '<div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">Nguồn: <strong style="color:#fff;">' + (cfg.name || prov) + '</strong> | Giá nhập: <strong style="color:#fbbf24;">' + (typeof formatVND === "function" ? formatVND(bestPrice) : bestPrice + "đ") + '</strong> | Kho live: <strong style="color:#10b981;">' + bestStock.toLocaleString() + ' acc</strong></div>' +
             '</div>' +
           '</div>' +
-          '<span style="background:#10b981; color:#0b111e; font-weight:800; font-size:0.75rem; padding:4px 10px; border-radius:6px; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-check"></i> Đang tối ưu lợi nhuận cao nhất</span>' +
+          '<button type="button" class="btn-tool-primary" data-reg="' + bestRegKey + '" data-provider="' + prov + '" data-source-id="' + bestDeal.id + '" data-price="' + bestPrice + '" data-stock="' + bestStock + '" data-name="' + escFn(cleanDealName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; font-weight:800; font-size:0.8rem; padding:8px 14px; border-radius:6px; cursor:pointer; border:none; display:inline-flex; align-items:center; gap:6px; box-shadow:0 0 10px rgba(16,185,129,0.3);">' +
+            '<i class="fa-solid fa-circle-check"></i> ĐANG DÙNG NGUỒN RẺ NHẤT (BẤM ĐỂ LƯU LẠI)' +
+          '</button>' +
         '</div>';
         return;
       }
@@ -14000,6 +14038,9 @@ function syncAllOpenViewsStock(changedProdId) {
         // Cập nhật Bảng Admin Dashboard (đổi badge nguồn và số tồn kho ngay lập tức)
         if (typeof renderAdminDashboard === "function") {
           renderAdminDashboard();
+        }
+        if (typeof renderAdminProductsTable === "function") {
+          renderAdminProductsTable();
         }
         if (typeof renderApiProductMappingsTable === "function") {
           renderApiProductMappingsTable();
