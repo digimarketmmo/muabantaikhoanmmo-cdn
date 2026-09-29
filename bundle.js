@@ -1,8 +1,8 @@
 // =========================================================================
-// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.2.9)
+// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.3.0)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.2.9";
+const MMO_CURRENT_CODE_VERSION = "3.3.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // Tự động chuyển đổi toàn bộ nhãn 'Hết hàng' sang 'Đặt trước' (Chống kẹt cache 100% trên toàn bộ blog phụ)
@@ -12780,6 +12780,164 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.parseProductDuration = parseProductDuration;
 
+    // Helper chuẩn hóa bỏ dấu tiếng Việt an toàn (hỗ trợ phân biệt quốc gia không bị lỗi word boundary)
+    function removeVietnameseAccents(str) {
+      return String(str || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+    }
+    window.removeVietnameseAccents = removeVietnameseAccents;
+
+    // 1b. Hàm nhận diện quốc gia của sản phẩm (Country Recognizer - v3.3.0)
+    // Phân biệt chính xác các quốc gia cho Proxy, Mail (Gmail, Hotmail, Outlook), Nick/Tài khoản (TikTok, FB, Via, Clone...)
+    function parseProductCountry(name, category) {
+      if (!name && !category) return { key: "unknown", label: "Chung / Khác", flag: "🏳️", code: "" };
+      const raw = String(name || "") + " " + String(category || "");
+      const s = (" " + raw + " ").toLowerCase().replace(/[\-_,\(\)\[\]\.\/\+:\&\|]/g, " ");
+      const norm = (" " + removeVietnameseAccents(raw) + " ").toLowerCase().replace(/[\-_,\(\)\[\]\.\/\+:\&\|]/g, " ");
+
+      // 1. Nhận diện Global / Random / Mix IPs trước tiên
+      if (/\b(mix\s*ips?|random\s*ips?|mix\s*quoc\s*gia|mix\s*country|da\s*quoc\s*gia|all\s*country|quoc\s*te|toan\s*cau|global)\b/.test(norm)) {
+        return { key: "global_mix", label: "Ngoại / Random / Global", flag: "🌐", code: "MIX" };
+      }
+
+      // 2. Nhật Bản (Japan)
+      if (/\b(nhat\s*ban|nhat|japan|tokyo|osaka|jp)\b/.test(norm) || s.includes("日本")) {
+        return { key: "japan", label: "Nhật Bản", flag: "🇯🇵", code: "JP" };
+      }
+
+      // 3. Mỹ (Hoa Kỳ / USA / US)
+      if (/\b(hoa\s*ky|usa|united\s*states|california|texas|new\s*york|los\s*angeles|miami|florida)\b/.test(norm) ||
+          (/\bmy\b/.test(norm) && (s.includes("mỹ") || /\busa\b/.test(norm) || /\bproxy\b/.test(norm) || /\btiktok\b/.test(norm) || /\bvia\b/.test(norm) || /\bgmail\b/.test(norm) || /\bclone\b/.test(norm))) ||
+          (/\bus\b/.test(norm) && !/\b(trust|plus|bonus|user)\b/.test(norm))) {
+        return { key: "us", label: "Mỹ (US)", flag: "🇺🇸", code: "US" };
+      }
+
+      // 4. Việt Nam
+      if (/\b(viet\s*nam|viet|vietnam|vn|ha\s*noi|sai\s*gon|hcm|tp\s*hcm)\b/.test(norm) || /vinaphone|viettel|mobifone|vnpt|fpt/.test(norm)) {
+        return { key: "vietnam", label: "Việt Nam", flag: "🇻🇳", code: "VN" };
+      }
+
+      // 5. Anh (UK)
+      if (/\b(vuong\s*quoc\s*anh|nuoc\s*anh|england|united\s*kingdom|great\s*britain|london|uk|gb)\b/.test(norm) || (/\banh\b/.test(norm) && !/\b(hinh\s*anh|anh\s*bia|anh\s*avatar)\b/.test(norm) && (/\bproxy\b/.test(norm) || /\bip\b/.test(norm) || /\bvia\b/.test(norm) || /\bmail\b/.test(norm) || /\btiktok\b/.test(norm)))) {
+        return { key: "uk", label: "Anh (UK)", flag: "🇬🇧", code: "UK" };
+      }
+
+      // 6. Úc (Australia)
+      if (/\b(australia|sydney|melbourne|aus|uc)\b/.test(norm) && (s.includes("úc") || /\baustralia\b/.test(norm) || /\baus\b/.test(norm))) {
+        return { key: "australia", label: "Úc (Australia)", flag: "🇦🇺", code: "AU" };
+      }
+
+      // 7. Canada
+      if (/\b(canada|toronto|vancouver|montreal)\b/.test(norm)) {
+        return { key: "canada", label: "Canada", flag: "🇨🇦", code: "CA" };
+      }
+
+      // 8. Hàn Quốc (Korea)
+      if (/\b(han\s*quoc|korea|seoul|kr)\b/.test(norm) || (/\bhan\b/.test(norm) && s.includes("hàn"))) {
+        return { key: "korea", label: "Hàn Quốc", flag: "🇰🇷", code: "KR" };
+      }
+
+      // 9. Singapore
+      if (/\b(singapore|singapor|sing|sg)\b/.test(norm)) {
+        return { key: "singapore", label: "Singapore", flag: "🇸🇬", code: "SG" };
+      }
+
+      // 10. Pháp (France)
+      if (/\b(france|paris)\b/.test(norm) || (/\bphap\b/.test(norm) && s.includes("pháp")) || /\bfr\b/.test(norm)) {
+        return { key: "france", label: "Pháp (France)", flag: "🇫🇷", code: "FR" };
+      }
+
+      // 11. Đức (Germany)
+      if (/\b(germany|deutschland|berlin|frankfurt|de)\b/.test(norm) || (/\bduc\b/.test(norm) && s.includes("đức"))) {
+        return { key: "germany", label: "Đức (Germany)", flag: "🇩🇪", code: "DE" };
+      }
+
+      // 12. Thái Lan
+      if (/\b(thai\s*lan|bangkok)\b/.test(norm) || (/\bthai\b/.test(norm) && !/\b(thang|thang\b)/.test(norm) && (s.includes("thái") || /\bproxy\b/.test(norm) || /\btiktok\b/.test(norm)))) {
+        return { key: "thailand", label: "Thái Lan", flag: "🇹🇭", code: "TH" };
+      }
+
+      // 13. Indonesia
+      if (/\b(indonesia|indo|jakarta|id)\b/.test(norm)) {
+        return { key: "indonesia", label: "Indonesia", flag: "🇮🇩", code: "ID" };
+      }
+
+      // 14. Philippines
+      if (/\b(philippines|philippin|philip|philippine|manila|ph)\b/.test(norm)) {
+        return { key: "philippines", label: "Philippines", flag: "🇵🇭", code: "PH" };
+      }
+
+      // 15. Brazil
+      if (/\b(brazil|brasil|sao\s*paulo|br)\b/.test(norm)) {
+        return { key: "brazil", label: "Brazil", flag: "🇧🇷", code: "BR" };
+      }
+
+      // 16. Đài Loan (Taiwan)
+      if (/\b(dai\s*loan|taiwan|taipei|tw)\b/.test(norm)) {
+        return { key: "taiwan", label: "Đài Loan", flag: "🇹🇼", code: "TW" };
+      }
+
+      // 17. Hồng Kông (Hong Kong)
+      if (/\b(hong\s*kong|hongkong|hk)\b/.test(norm)) {
+        return { key: "hongkong", label: "Hồng Kông", flag: "🇭🇰", code: "HK" };
+      }
+
+      // 18. Trung Quốc (China)
+      if (/\b(trung\s*quoc|china|shanghai|beijing|cn)\b/.test(norm)) {
+        return { key: "china", label: "Trung Quốc", flag: "🇨🇳", code: "CN" };
+      }
+
+      // 19. Nga (Russia)
+      if (/\b(nuoc\s*nga|russia|moscow|ru)\b/.test(norm) || (/\bnga\b/.test(norm) && (/\bproxy\b/.test(norm) || /\btiktok\b/.test(norm) || /\bvia\b/.test(norm)))) {
+        return { key: "russia", label: "Nga (Russia)", flag: "🇷🇺", code: "RU" };
+      }
+
+      // 20. Ấn Độ (India)
+      if (/\b(an\s*do|india|mumbai|delhi)\b/.test(norm)) {
+        return { key: "india", label: "Ấn Độ", flag: "🇮🇳", code: "IN" };
+      }
+
+      // 21. Hà Lan (Netherlands)
+      if (/\b(ha\s*lan|netherlands|holland|amsterdam|nl)\b/.test(norm)) {
+        return { key: "netherlands", label: "Hà Lan", flag: "🇳🇱", code: "NL" };
+      }
+
+      // 22. Thổ Nhĩ Kỳ (Turkey)
+      if (/\b(tho\s*nhi\s*ky|turkey|istanbul|tr)\b/.test(norm)) {
+        return { key: "turkey", label: "Thổ Nhĩ Kỳ", flag: "🇹🇷", code: "TR" };
+      }
+
+      // 23. Tây Ban Nha (Spain)
+      if (/\b(tay\s*ban\s*nha|spain|madrid|barcelona|es)\b/.test(norm)) {
+        return { key: "spain", label: "Tây Ban Nha", flag: "🇪🇸", code: "ES" };
+      }
+
+      // 24. Ý (Italy)
+      if (/\b(nuoc\s*y|italia|italy|rome|milan)\b/.test(norm)) {
+        return { key: "italy", label: "Ý (Italy)", flag: "🇮🇹", code: "IT" };
+      }
+
+      // 25. Ba Lan (Poland)
+      if (/\b(ba\s*lan|poland|warsaw|pl)\b/.test(norm)) {
+        return { key: "poland", label: "Ba Lan", flag: "🇵🇱", code: "PL" };
+      }
+
+      // 26. Romania
+      if (/\b(romania|bucharest|ro)\b/.test(norm)) {
+        return { key: "romania", label: "Romania", flag: "🇷🇴", code: "RO" };
+      }
+
+      // 27. Ngoại chung (random / ngoại)
+      if (/\b(ngoai|random|mix)\b/.test(norm)) {
+        return { key: "global_mix", label: "Ngoại / Random / Global", flag: "🌐", code: "MIX" };
+      }
+
+      return { key: "unknown", label: "Chung / Khác", flag: "🏳️", code: "" };
+    }
+    window.parseProductCountry = parseProductCountry;
+
     // 2. Hàm thu gọn tên sản phẩm nguồn hiển thị tinh tế, không làm vỡ khung (hình 4)
     function cleanSourceProductName(name) {
       if (!name) return "";
@@ -12917,6 +13075,13 @@ function syncAllOpenViewsStock(changedProdId) {
         window.currentCompareProdId = String(prod.id);
         window.currentCompareProdName = String(prod.name || "");
 
+        // Tự động nhận diện quốc gia của sản phẩm đang xem (v3.3.0)
+        const curCountryObj = parseProductCountry(prod.name, prod.category);
+        const countrySel = document.getElementById("admCompareCountryFilter");
+        if (countrySel) {
+          countrySel.value = "auto";
+        }
+
         // Tự động nhận diện thời hạn của sản phẩm đang xem
         const curDurObj = parseProductDuration(prod.name);
         const durSel = document.getElementById("admCompareDurationFilter");
@@ -12929,11 +13094,15 @@ function syncAllOpenViewsStock(changedProdId) {
         const escFn = (typeof escapeHtml === "function") ? escapeHtml : function(s) { return String(s || ""); };
         if (subEl) {
           const priceStr = (typeof formatVND === "function" && prod.price > 0) ? formatVND(prod.price) : "";
+          const countryBadge = (curCountryObj.key !== "unknown" && curCountryObj.key !== "all")
+            ? ' | Quốc gia: <span style="background:rgba(6,182,212,0.2); color:#38bdf8; border:1px solid rgba(6,182,212,0.4); padding:1px 6px; border-radius:4px; font-weight:700;">' + curCountryObj.flag + ' ' + escFn(curCountryObj.label) + '</span>'
+            : '';
           const durBadge = (curDurObj.key !== "unknown" && curDurObj.key !== "all") 
             ? ' | Thời hạn: <span style="background:rgba(245,158,11,0.2); color:#fbbf24; border:1px solid rgba(245,158,11,0.4); padding:1px 6px; border-radius:4px; font-weight:700;">' + escFn(curDurObj.label) + '</span>'
             : '';
           subEl.innerHTML = '<span style="color:#ffffff; font-weight:700;">' + escFn(prod.name) + '</span> ' +
             '<span style="color:#94a3b8; font-family:monospace;">[' + escFn(prod.id) + ']</span>' +
+            countryBadge +
             durBadge +
             (priceStr ? ' | Giá bán: <strong style="color:#10b981;">' + priceStr + '</strong>' : '') +
             ' | Danh mục: <strong style="color:#38bdf8;">' + escFn(prod.category || "Chung") + '</strong>';
@@ -13082,6 +13251,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const searchInp = document.getElementById("admCompareSearchInput");
       const onlyInStockCheck = document.getElementById("admCompareOnlyInStock");
       const provFilterSel = document.getElementById("admCompareProviderFilter");
+      const countryFilterSel = document.getElementById("admCompareCountryFilter");
       const durFilterSel = document.getElementById("admCompareDurationFilter");
       const tbody = document.getElementById("admCompareTableBody");
       const banner = document.getElementById("admCompareBestBanner");
@@ -13092,6 +13262,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const qRaw = searchInp ? searchInp.value.trim().toLowerCase() : "";
       const onlyInStock = onlyInStockCheck ? onlyInStockCheck.checked : true;
       const targetProv = provFilterSel ? provFilterSel.value : "all";
+      const chosenCountry = countryFilterSel ? countryFilterSel.value : "auto";
       const chosenDur = durFilterSel ? durFilterSel.value : "auto";
 
       const prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : (window.MOCK_DATA && Array.isArray(window.MOCK_DATA.products) ? window.MOCK_DATA.products : []);
@@ -13137,8 +13308,27 @@ function syncAllOpenViewsStock(changedProdId) {
         return true;
       });
 
-      // 2. Lọc theo Thời Hạn (Khắc phục triệt để lỗi không phân biệt 1 ngày, 1 tuần, 1 tháng, 3 tháng, 1 năm)
+      // 2. Lọc theo Quốc Gia (Phân biệt Quốc gia cho Proxy, Mail, Nick, TikTok, Via...)
       const targetProdName = (currentProd && currentProd.name) ? currentProd.name : (window.currentCompareProdName || (document.getElementById("admProdName") ? document.getElementById("admProdName").value : ""));
+      const currentCountryObj = parseProductCountry(targetProdName, (currentProd && currentProd.category) || "");
+
+      let effectiveCountryKey = "all";
+      if (chosenCountry === "auto") {
+        if (currentCountryObj.key !== "unknown" && currentCountryObj.key !== "all") {
+          effectiveCountryKey = currentCountryObj.key;
+        }
+      } else if (chosenCountry !== "all") {
+        effectiveCountryKey = chosenCountry;
+      }
+
+      if (effectiveCountryKey !== "all") {
+        filtered = filtered.filter(function(s) {
+          const sCountry = parseProductCountry(s.name, s.category);
+          return sCountry.key === effectiveCountryKey;
+        });
+      }
+
+      // 3. Lọc theo Thời Hạn (Khắc phục triệt để lỗi không phân biệt 1 ngày, 1 tuần, 1 tháng, 3 tháng, 1 năm)
       const currentDurObj = parseProductDuration(targetProdName);
 
       let effectiveDurKey = "all";
@@ -13157,7 +13347,7 @@ function syncAllOpenViewsStock(changedProdId) {
         });
       }
 
-      // 3. Lọc theo từ khóa
+      // 4. Lọc theo từ khóa
       if (qRaw) {
         const tokens = qRaw.split(/\s+/).filter(Boolean);
         filtered = filtered.filter(function(s) {
@@ -13171,7 +13361,7 @@ function syncAllOpenViewsStock(changedProdId) {
         });
       }
 
-      // 4. Lọc chỉ hiện còn hàng
+      // 5. Lọc chỉ hiện còn hàng
       if (onlyInStock) {
         filtered = filtered.filter(function(s) {
           const amt = Number(s.amount !== undefined ? s.amount : s.stock) || 0;
@@ -13191,14 +13381,15 @@ function syncAllOpenViewsStock(changedProdId) {
 
       const bestDeal = filtered.find(s => (Number(s.amount !== undefined ? s.amount : s.stock) || 0) > 0) || filtered[0] || null;
 
-      renderCompareBestBanner(banner, bestDeal, currentProd, currentApiMap, effectiveDurKey, currentDurObj);
+      renderCompareBestBanner(banner, bestDeal, currentProd, currentApiMap, effectiveCountryKey, currentCountryObj, effectiveDurKey, currentDurObj);
 
       if (filtered.length === 0) {
-        const durNote = (effectiveDurKey !== "all") ? ' cho thời hạn <strong>' + (currentDurObj.label || effectiveDurKey) + '</strong>' : '';
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:32px; color:#64748b;">' +
+        const countryNote = (effectiveCountryKey !== "all") ? ' cho quốc gia <strong>' + (currentCountryObj.flag || '') + ' ' + (currentCountryObj.label || effectiveCountryKey) + '</strong>' : '';
+        const durNote = (effectiveDurKey !== "all") ? ' và thời hạn <strong>' + (currentDurObj.label || effectiveDurKey) + '</strong>' : '';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:32px; color:#64748b;">' +
           '<i class="fa-solid fa-magnifying-glass" style="font-size:1.8rem; display:block; margin-bottom:8px; opacity:0.5;"></i>' +
-          'Không tìm thấy sản phẩm nguồn nào phù hợp với từ khóa "<strong>' + escFn(qRaw) + '</strong>"' + durNote + '.' +
-          '<div style="margin-top:8px; font-size:0.75rem; color:#94a3b8;">Thử chọn lại <strong>"Tất cả thời hạn"</strong> hoặc đổi từ khóa tìm kiếm ngắn gọn hơn.</div>' +
+          'Không tìm thấy sản phẩm nguồn nào phù hợp với từ khóa "<strong>' + escFn(qRaw) + '</strong>"' + countryNote + durNote + '.' +
+          '<div style="margin-top:8px; font-size:0.75rem; color:#94a3b8;">Thử chọn lại <strong>"Tất cả quốc gia"</strong> hoặc <strong>"Tất cả thời hạn"</strong> hoặc đổi từ khóa tìm kiếm ngắn gọn hơn.</div>' +
         '</td></tr>';
         return;
       }
@@ -13224,6 +13415,15 @@ function syncAllOpenViewsStock(changedProdId) {
         if (prov === "selltainguyenmmo") shortProvName = "selltainguyen";
         else if (prov === "nguyenlieummo") shortProvName = "nguyenlieu";
         else if (prov === "shop1989nd") shortProvName = "shop1989";
+
+        // Nhận diện quốc gia sản phẩm nguồn (v3.3.0)
+        const itemCountry = parseProductCountry(item.name, item.category);
+        let countryBadge = '<span style="color:#64748b; font-size:0.7rem;">—</span>';
+        if (itemCountry.key !== "unknown" && itemCountry.key !== "all") {
+          countryBadge = '<span style="background:rgba(6,182,212,0.12); color:#38bdf8; border:1px solid rgba(6,182,212,0.3); padding:2px 5px; border-radius:4px; font-weight:700; font-size:0.7rem; white-space:nowrap;" title="' + escFn(itemCountry.label) + '">' +
+            itemCountry.flag + ' ' + escFn(itemCountry.code || itemCountry.label) +
+          '</span>';
+        }
 
         // Nhận diện thời hạn gói
         const itemDur = parseProductDuration(item.name);
@@ -13283,7 +13483,8 @@ function syncAllOpenViewsStock(changedProdId) {
               '<i class="fa-solid fa-server" style="font-size:0.65rem;"></i> ' + escFn(shortProvName) +
             '</span>' +
           '</td>' +
-          '<td style="padding:6px 8px; min-width:180px; max-width:320px;" title="' + escFn(item.name) + '">' +
+          '<td style="padding:6px 4px; text-align:center;">' + countryBadge + '</td>' +
+          '<td style="padding:6px 8px; min-width:170px; max-width:300px;" title="' + escFn(item.name) + '">' +
             '<div style="font-weight:700; color:#fff; font-size:0.78rem; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">' + escFn(cleanName) + '</div>' +
             '<span style="font-size:0.68rem; color:#94a3b8; font-family:monospace;">#' + escFn(item.id) + '</span>' +
           '</td>' +
@@ -13298,7 +13499,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.executeCompareSourcesSearch = executeCompareSourcesSearch;
 
-    function renderCompareBestBanner(bannerEl, bestDeal, currentProd, currentApiMap, effectiveDurKey, currentDurObj) {
+    function renderCompareBestBanner(bannerEl, bestDeal, currentProd, currentApiMap, effectiveCountryKey, currentCountryObj, effectiveDurKey, currentDurObj) {
       if (!bannerEl) return;
       if (!bestDeal) {
         bannerEl.innerHTML = '';
@@ -13310,6 +13511,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const cfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[prov]) ? API_SOURCES[prov] : { name: prov, badgeColor: "#06b6d4" };
       const bestPrice = Number(bestDeal.price) || 0;
       const bestStock = Number(bestDeal.amount !== undefined ? bestDeal.amount : bestDeal.stock) || 0;
+      const bestCountry = parseProductCountry(bestDeal.name, bestDeal.category);
       const bestDur = parseProductDuration(bestDeal.name);
       const cleanDealName = cleanSourceProductName(bestDeal.name);
 
@@ -13317,14 +13519,20 @@ function syncAllOpenViewsStock(changedProdId) {
         String(currentApiMap.provider) === String(prov) &&
         String(currentApiMap.sourceProdId) === String(bestDeal.id);
 
-      const durLabelStr = (bestDur.key !== "unknown" && bestDur.key !== "all") ? ' [' + bestDur.label + ']' : '';
+      let scopeLabel = '';
+      if (bestCountry.key !== "unknown" && bestCountry.key !== "all") {
+        scopeLabel += ' [' + bestCountry.flag + ' ' + bestCountry.label + ']';
+      }
+      if (bestDur.key !== "unknown" && bestDur.key !== "all") {
+        scopeLabel += ' [' + bestDur.label + ']';
+      }
 
       if (isCurrentActive) {
         bannerEl.innerHTML = '<div style="background:linear-gradient(135deg, rgba(16,185,129,0.15), rgba(5,150,105,0.08)); border:1px solid #10b981; border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
           '<div style="display:flex; align-items:center; gap:10px;">' +
             '<div style="font-size:1.4rem;">👑</div>' +
             '<div>' +
-              '<div style="color:#10b981; font-weight:800; font-size:0.88rem;">TUYỆT VỜI! SẢN PHẨM NÀY ĐANG DÙNG NGUỒN CÓ GIÁ TỐT NHẤT' + durLabelStr + '</div>' +
+              '<div style="color:#10b981; font-weight:800; font-size:0.88rem;">TUYỆT VỜI! SẢN PHẨM NÀY ĐANG DÙNG NGUỒN CÓ GIÁ TỐT NHẤT' + scopeLabel + '</div>' +
               '<div style="font-size:0.75rem; color:#cbd5e1; margin-top:2px;">Nguồn: <strong style="color:#fff;">' + (cfg.name || prov) + '</strong> | Giá nhập: <strong style="color:#fbbf24;">' + (typeof formatVND === "function" ? formatVND(bestPrice) : bestPrice + "đ") + '</strong> | Kho live: <strong style="color:#10b981;">' + bestStock.toLocaleString() + ' acc</strong></div>' +
             '</div>' +
           '</div>' +
@@ -13353,7 +13561,7 @@ function syncAllOpenViewsStock(changedProdId) {
           '<div style="font-size:1.5rem; animation:pulse 1.5s infinite;">👑</div>' +
           '<div>' +
             '<div style="color:#fbbf24; font-weight:800; font-size:0.88rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
-              'GỢI Ý NGUỒN CÓ GIÁ TỐT NHẤT &amp; CÒN HÀNG' + durLabelStr + ':' + saveDiffHtml +
+              'GỢI Ý NGUỒN CÓ GIÁ TỐT NHẤT &amp; CÒN HÀNG' + scopeLabel + ':' + saveDiffHtml +
             '</div>' +
             '<div style="font-size:0.78rem; color:#cbd5e1; margin-top:3px;">' +
               'Nguồn: <strong style="color:#fff;">' + (cfg.name || prov) + '</strong> — SP: <span style="color:#38bdf8; font-weight:700;">' + escFn(cleanDealName) + '</span> [#' + bestDeal.id + '] | ' +
