@@ -8746,14 +8746,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         } catch(e) {}
       }
 
-      // 2. [ƯU TIÊN #2]: Ảnh Data URI (Base64) hoặc URL công khai có sẵn trên đối tượng p
+      // 2. [ƯU TIÊN #2]: Ảnh Data URI (Base64) hoặc URL công khai có sẵn trên đối tượng p (bỏ qua url tự trỏ API lặp)
       const existingImg = prodObj ? (prodObj.image || prodObj.image_url || prodObj.imageUrl || "") : ((typeof p === "string" && (p.startsWith("http") || p.startsWith("data:") || p.startsWith("/"))) ? p : "");
       if (typeof existingImg === "string" && existingImg.trim() !== "") {
         const trimmed = existingImg.trim();
-        if (trimmed.startsWith("data:image/") || trimmed.startsWith("data:")) {
+        if (trimmed.startsWith("data:image/") || (trimmed.startsWith("data:") && trimmed.length > 50)) {
           return trimmed;
         }
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
+            !trimmed.includes("/api/products/") &&
             !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash")) {
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
@@ -8762,45 +8763,82 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // 3. [ƯU TIÊN #3]: Tra cứu theo KNOWN_CDN_MAP chuẩn hóa 100% không trùng lặp
       const idUpper = pId.toUpperCase();
       const name = String((typeof p === "object" && p.name) || "").toLowerCase();
+      const cat = String((typeof p === "object" && p.category) || "").toLowerCase();
       const cdnBase = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/";
 
       const KNOWN_CDN_MAP = {
+        "PROD_MUJV1YHQ6N": cdnBase + "canva_edu.jpg",
+        "PROD_MU9YH8D9FK": cdnBase + "canva_edu.jpg",
+        "PROD_MU29WM90LZ": cdnBase + "canva_pro.png",
+        "PROD_MUJZGSUPDI": cdnBase + "instagram.png",
+        "PROD_MU2PA8VNDP": cdnBase + "instagram.png",
+        "PROD_MUK6EFVE8X": cdnBase + "instagram.png",
+        "PROD_MUK7DQMKAM": cdnBase + "instagram.png",
+        "PROD_MUK5VQH55X": cdnBase + "twitter_x.png",
+        "PROD_MUK7P74YNT": cdnBase + "youtube_premium.png",
+        "PROD_MTYN7UJG": cdnBase + "youtube_channel.png",
         "PROD_MUJUGVQXET": cdnBase + "capcut_team_1m.jpg",
         "PROD_MU2B32VLQY": cdnBase + "capcut_canhan_rieng.jpg",
         "PROD_MU1G6LJX": cdnBase + "capcut_canhan_20k.jpg",
         "PROD_MU5PWT7PP7": cdnBase + "kling_ai.png",
-        "PROD_MTYN7UJG": cdnBase + "youtube_channel.png",
+        "PROD_MUH57035HQ": cdnBase + "kling_ai.png",
         "PROD_MU6R34FZ4Z": cdnBase + "google_gemini_veo3.webp",
         "PROD_MU5T3T47AE": cdnBase + "gemini_pro_veo3.png",
         "PROD_MU5SPLMSEC": cdnBase + "chatgpt_new_trial.png",
         "SP_CHATGPT": cdnBase + "chatgpt_plus.png",
         "PROD_MU2OXBZC6K": cdnBase + "chatgpt_plus.png",
+        "PROD_MUNUEKI3NM": cdnBase + "chatgpt_plus.png",
         "PROD_MTQZT2Y1": cdnBase + "hotmail_outlook.png",
         "PROD_MTRB6000": cdnBase + "outlook_trusted.jpg",
         "SP_HOTMAIL": cdnBase + "hotmail_outlook.png",
+        "PROD_MU2YQ1J3PY": cdnBase + "hotmail_oauth2.png",
         "PROD_MTU9F5HN": cdnBase + "paypal_usdt.png",
         "PROD_MTPI7PIO": cdnBase + "zalo_group.png",
-        "PROD_MU2YQ1J3PY": cdnBase + "hotmail_oauth2.png",
-        "PROD_MU2PA8VNDP": cdnBase + "instagram.png",
         "PROD_MU2LYZY5C7": cdnBase + "rom_j7_pro.png",
+        "PROD_MU2OAG3IO2": cdnBase + "rom_j7_prime.png",
+        "PROD_MU2OGW71GZ": cdnBase + "rom_j7_plus.png",
+        "PROD_MU2NSFQCMT": cdnBase + "rom_s10_android12.png",
+        "PROD_MU2MY8WCOE": cdnBase + "rom_s22_android12.png",
+        "PROD_MU2O4MW4DQ": cdnBase + "rom_s7_android10.png",
+        "PROD_MU2NX4CYEW": cdnBase + "rom_s8_android10.png",
+        "PROD_MU2NUXL1Q4": cdnBase + "rom_s9_android10.png",
+        "PROD_MUBKH47T2U": cdnBase + "rom_not8_android10.png",
+        "PROD_MU2NKET1OG": cdnBase + "rom_not8_android10.png",
+        "PROD_MUBJQ6JP7O": cdnBase + "rom_not9_android10.png",
+        "PROD_MU2N2TVDIJ": cdnBase + "rom_not9_android10.png",
+        "PROD_MU2MOON7L6": cdnBase + "rom_not10_android12.png",
         "PROD_MU2JIBBRH8": cdnBase + "tiktok_vietnam.png",
         "PROD_MU2IXVFLMW": cdnBase + "tiktok_affiliate_gio.jpg",
         "PROD_MTVI44UK": cdnBase + "tiktok_ngam_lau.jpg",
         "PROD_MU2CZL38PH": cdnBase + "tiktok_france.png",
         "PROD_MTPIJ9XV": cdnBase + "tiktok_brazil.png",
-        "PROD_MUBKH47T2U": cdnBase + "rom_not8_android10.png",
-        "PROD_MUBJQ6JP7O": cdnBase + "rom_not9_android10.png",
-        "PROD_MU9YH8D9FK": cdnBase + "canva_edu.jpg",
+        "PROD_MU1LSSJ7AZ": cdnBase + "tiktok_japan.png",
+        "PROD_MU29IZBLAK": cdnBase + "tiktok_beta.png",
+        "PROD_MU2ASBNSJT": cdnBase + "facebook_via.png",
+        "PROD_MU29RGEBH0": cdnBase + "facebook_fanpage.png",
+        "PROD_MU2BIFBBNE": cdnBase + "hma_vpn.png",
+        "PROD_MU2A2S732Y": cdnBase + "express_vpn.png",
+        "PROD_MUOIH8CW59": cdnBase + "nord_vpn.png",
+        "PROD_MUM6JQTW8C": cdnBase + "proxy_4g.png",
+        "PROD_MUK5IKCQLN": cdnBase + "proxy_4g.png",
+        "PROD_MUK50WMCNR": cdnBase + "proxy_4g.png",
+        "PROD_MUJVJCV286": cdnBase + "proxy_4g.png",
+        "PROD_MUJVFEFFNP": cdnBase + "proxy_4g.png",
+        "PROD_MUJU6XY3HK": cdnBase + "proxy_4g.png",
+        "PROD_MUJTYWFTQ7": cdnBase + "proxy_4g.png",
+        "PROD_MUJQDTNIH9": cdnBase + "proxy_4g.png",
+        "PROD_MUJGUY19DD": cdnBase + "gmail_7day.png",
         "PROD_MTQQXO2E": cdnBase + "gmail_24h.png",
         "PROD_MTQWMPL5": cdnBase + "gmail_7day.png",
         "PROD_MTQWQFZD": cdnBase + "gmail_30day.png",
         "PROD_MTQX1C7X": cdnBase + "gmail_1h.png",
         "PROD_MTQX465U": cdnBase + "gmail_10m.png",
-        "PROD_MTQX7SIK": cdnBase + "gmail_14day.png"
+        "PROD_MTQX7SIK": cdnBase + "gmail_14day.png",
+        "PROD_MTTPLODQ": cdnBase + "gmail_co.png"
       };
       if (KNOWN_CDN_MAP[idUpper]) return KNOWN_CDN_MAP[idUpper];
 
-      // 4. Khớp theo từ khóa tên
+      // 4. Khớp chính xác theo ROM thiết bị Phone Farm
       if (idUpper.includes("NOT8") || name.includes("not8") || name.includes("note 8") || name.includes("note8")) return cdnBase + "rom_not8_android10.png";
       if (idUpper.includes("NOT9") || name.includes("not 9") || name.includes("note 9") || name.includes("note9")) return cdnBase + "rom_not9_android10.png";
       if (name.includes("not10") || name.includes("note 10") || name.includes("note10")) return cdnBase + "rom_not10_android12.png";
@@ -8812,42 +8850,85 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (name.includes("s7")) return cdnBase + "rom_s7_android10.png";
       if (name.includes("s8")) return cdnBase + "rom_s8_android10.png";
       if (name.includes("s9")) return cdnBase + "rom_s9_android10.png";
-      if (name.includes("canva edu")) return cdnBase + "canva_edu.jpg";
-      if (name.includes("canva")) return cdnBase + "canva_pro.png";
-      if (name.includes("capcut") && name.includes("team")) return cdnBase + "capcut_team_1m.jpg";
-      if (name.includes("capcut") && (name.includes("rieng") || name.includes("riêng") || name.includes("25"))) return cdnBase + "capcut_canhan_rieng.jpg";
-      if (name.includes("capcut")) return cdnBase + "capcut_canhan_20k.jpg";
+
+      // 5. Khớp Canva
+      if (name.includes("canva") || cat.includes("canva")) {
+        if (name.includes("edu")) return cdnBase + "canva_edu.jpg";
+        return cdnBase + "canva_pro.png";
+      }
+
+      // 6. Khớp Capcut
+      if (name.includes("capcut") || cat.includes("capcut")) {
+        if (name.includes("team")) return cdnBase + "capcut_team_1m.jpg";
+        if (name.includes("rieng") || name.includes("riêng") || name.includes("25")) return cdnBase + "capcut_canhan_rieng.jpg";
+        return cdnBase + "capcut_canhan_20k.jpg";
+      }
+
+      // 7. Khớp Kling AI
       if (name.includes("kling")) return cdnBase + "kling_ai.png";
+
+      // 8. Khớp Google Gemini / Veo
       if (name.includes("gemini pro") || name.includes("gg 5tb") || name.includes("veo 3.1")) return cdnBase + "gemini_pro_veo3.png";
       if (name.includes("gemini") || name.includes("veo3") || name.includes("veo 3")) return cdnBase + "google_gemini_veo3.webp";
+
+      // 9. Khớp ChatGPT
       if (name.includes("gmail trial") || name.includes("new gmail trial")) return cdnBase + "chatgpt_new_trial.png";
-      if (name.includes("chatgpt") || name.includes("chat gpt") || name.includes("gpt")) return cdnBase + "chatgpt_plus.png";
+      if (name.includes("chatgpt") || name.includes("chat gpt") || name.includes("gpt") || cat.includes("chatgpt")) return cdnBase + "chatgpt_plus.png";
+
+      // 10. Khớp Hotmail / Outlook
+      if (name.includes("oauth2")) return cdnBase + "hotmail_oauth2.png";
       if (name.includes("outlook trusted") || (name.includes("outlook") && name.includes("trusted"))) return cdnBase + "outlook_trusted.jpg";
-      if (name.includes("hotmail") || name.includes("outlook")) return cdnBase + "hotmail_outlook.png";
-      if (name.includes("instagram")) return cdnBase + "instagram.png";
-      if (name.includes("tiktok brazil")) return cdnBase + "tiktok_brazil.png";
-      if (name.includes("tiktok pháp") || name.includes("tiktok phap")) return cdnBase + "tiktok_france.png";
-      if (name.includes("mở giỏ") || name.includes("affiliate")) return cdnBase + "tiktok_affiliate_gio.jpg";
-      if (name.includes("ngâm lâu")) return cdnBase + "tiktok_ngam_lau.jpg";
-      if (name.includes("tiktok việt") || name.includes("tiktok viet")) return cdnBase + "tiktok_vietnam.png";
-      if (name.includes("tiktok")) return cdnBase + "tiktok_beta.png";
-      if (name.includes("gmail 10 phút") || name.includes("10m") || name.includes("10 phút")) return cdnBase + "gmail_10m.png";
-      if (name.includes("1 giờ") || name.includes("1h")) return cdnBase + "gmail_1h.png";
-      if (name.includes("24h") || name.includes("24 giờ")) return cdnBase + "gmail_24h.png";
-      if (name.includes("7 ngày")) return cdnBase + "gmail_7day.png";
-      if (name.includes("14 ngày")) return cdnBase + "gmail_14day.png";
-      if (name.includes("30 ngày")) return cdnBase + "gmail_30day.png";
-      if (name.includes("gmail cổ") || name.includes("gmail co")) return cdnBase + "gmail_co.png";
-      if (name.includes("gmail")) return cdnBase + "blog_gmail.png";
-      if (name.includes("paypal")) return cdnBase + "paypal_usdt.png";
-      if (name.includes("youtube")) return cdnBase + "youtube_channel.png";
-      if (name.includes("zalo")) return cdnBase + "zalo_group.png";
-      if (name.includes("facebook") || name.includes("fanpage")) return cdnBase + "facebook_fanpage.png";
-      if (name.includes("via")) return cdnBase + "facebook_via.png";
-      if (name.includes("proxy")) return cdnBase + "proxy_4g.png";
-      if (name.includes("vpn") || name.includes("nord")) return cdnBase + "nord_vpn.png";
+      if (name.includes("hotmail") || name.includes("outlook") || cat.includes("hotmail")) return cdnBase + "hotmail_outlook.png";
+
+      // 11. Khớp Instagram / Threads (bắt cả từ viết sai như Intagram, ig)
+      if (name.includes("instagram") || name.includes("intagram") || name.includes("threads") || name.includes(" ig ") || name.startsWith("ig ") || name.endsWith(" ig") || cat.includes("intagram") || cat.includes("instagram")) return cdnBase + "instagram.png";
+
+      // 12. Khớp Twitter / X
+      if (name.includes("twitter") || name.includes("x.com") || cat.includes("twitter")) return cdnBase + "twitter_x.png";
+
+      // 13. Khớp YouTube
+      if (name.includes("youtube") || cat.includes("youtube")) {
+        if (name.includes("premium")) return cdnBase + "youtube_premium.png";
+        return cdnBase + "youtube_channel.png";
+      }
+
+      // 14. Khớp Facebook
+      if (name.includes("fanpage") || name.includes("page facebook") || name.includes("page ")) return cdnBase + "facebook_fanpage.png";
+      if (name.includes("via") || name.includes("facebook") || cat.includes("facebook")) return cdnBase + "facebook_via.png";
+
+      // 15. Khớp VPN & Proxy
+      if (name.includes("hma")) return cdnBase + "hma_vpn.png";
       if (name.includes("express")) return cdnBase + "express_vpn.png";
-      if (name.includes("spotify")) return cdnBase + "spotify_premium.png";
+      if (name.includes("nord") || name.includes("surfshark")) return cdnBase + "nord_vpn.png";
+      if (name.includes("proxy") || cat.includes("proxy") || cat.includes("vpn")) return cdnBase + "proxy_4g.png";
+
+      // 16. Khớp TikTok
+      if (name.includes("tiktok") || cat.includes("tiktok")) {
+        if (name.includes("brazil")) return cdnBase + "tiktok_brazil.png";
+        if (name.includes("pháp") || name.includes("phap") || name.includes("france")) return cdnBase + "tiktok_france.png";
+        if (name.includes("nhật") || name.includes("nhat") || name.includes("japan")) return cdnBase + "tiktok_japan.png";
+        if (name.includes("mở giỏ") || name.includes("affiliate")) return cdnBase + "tiktok_affiliate_gio.jpg";
+        if (name.includes("ngâm lâu")) return cdnBase + "tiktok_ngam_lau.jpg";
+        if (name.includes("việt") || name.includes("viet")) return cdnBase + "tiktok_vietnam.png";
+        return cdnBase + "tiktok_beta.png";
+      }
+
+      // 17. Khớp Gmail
+      if (name.includes("gmail") || cat.includes("gmail")) {
+        if (name.includes("10m") || name.includes("10 phút") || name.includes("10p")) return cdnBase + "gmail_10m.png";
+        if (name.includes("1h") || name.includes("1 giờ") || name.includes("60 phút")) return cdnBase + "gmail_1h.png";
+        if (name.includes("24h") || name.includes("24 giờ") || name.includes("1 ngày")) return cdnBase + "gmail_24h.png";
+        if (name.includes("7 ngày") || name.includes("7day")) return cdnBase + "gmail_7day.png";
+        if (name.includes("14 ngày") || name.includes("14day")) return cdnBase + "gmail_14day.png";
+        if (name.includes("30 ngày") || name.includes("30day")) return cdnBase + "gmail_30day.png";
+        if (name.includes("cổ") || name.includes("co")) return cdnBase + "gmail_co.png";
+        return cdnBase + "blog_gmail.png";
+      }
+
+      // 18. Khớp Paypal, Zalo, Spotify / Netflix
+      if (name.includes("paypal")) return cdnBase + "paypal_usdt.png";
+      if (name.includes("zalo")) return cdnBase + "zalo_group.png";
+      if (name.includes("spotify") || name.includes("netflix")) return cdnBase + "spotify_premium.png";
 
       return "https://iili.io/nFV4Rln.png";
     }
@@ -8861,44 +8942,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const trimmed = existingImg.trim();
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
             !trimmed.startsWith("data:") &&
+            !trimmed.includes("/api/products/") &&
             !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash")) {
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
       }
-      const id = String((typeof p === "object" && p.id) || "").toUpperCase();
-      const name = String((typeof p === "object" && p.name) || "").toLowerCase();
-      const cdnBase = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/";
-      const KNOWN_CDN_MAP = {
-        "PROD_MU5PWT7PP7": cdnBase + "kling_ai.png",
-        "PROD_MTYN7UJG": cdnBase + "youtube_channel.png",
-        "PROD_MU6R34FZ4Z": cdnBase + "google_gemini_veo3.webp",
-        "PROD_MU5T3T47AE": cdnBase + "gemini_pro_veo3.png",
-        "PROD_MU5SPLMSEC": cdnBase + "chatgpt_new_trial.png",
-        "SP_CHATGPT": cdnBase + "chatgpt_plus.png",
-        "PROD_MU2OXBZC6K": cdnBase + "chatgpt_plus.png",
-        "PROD_MTQZT2Y1": cdnBase + "hotmail_outlook.png",
-        "PROD_MTRB6000": cdnBase + "hotmail_outlook.png",
-        "SP_HOTMAIL": cdnBase + "hotmail_outlook.png",
-        "PROD_MTU9F5HN": cdnBase + "paypal_usdt.png",
-        "PROD_MTPI7PIO": cdnBase + "zalo_group.png",
-        "PROD_MU2YQ1J3PY": cdnBase + "hotmail_oauth2.png",
-        "PROD_MU2PA8VNDP": cdnBase + "instagram.png",
-        "PROD_MU2LYZY5C7": cdnBase + "rom_j7_pro.png",
-        "PROD_MU2IXVFLMW": cdnBase + "tiktok_vietnam.png",
-        "PROD_MU2CZL38PH": cdnBase + "tiktok_france.png",
-        "PROD_MTPIJ9XV": cdnBase + "tiktok_brazil.png",
-        "PROD_MTQQXO2E": cdnBase + "gmail_24h.png",
-        "PROD_MTQWMPL5": cdnBase + "gmail_7day.png",
-        "PROD_MTQWQFZD": cdnBase + "gmail_30day.png",
-        "PROD_MTQX1C7X": cdnBase + "gmail_1h.png",
-        "PROD_MTQX465U": cdnBase + "gmail_10m.png",
-        "PROD_MTQX7SIK": cdnBase + "gmail_14day.png"
-      };
-      if (KNOWN_CDN_MAP[id]) return KNOWN_CDN_MAP[id];
-      if (name.includes("gemini pro") || name.includes("veo3")) return cdnBase + "gemini_pro_veo3.png";
-      if (name.includes("gemini")) return cdnBase + "google_gemini_veo3.webp";
-      if (name.includes("kling")) return cdnBase + "kling_ai.png";
-      return "https://iili.io/nFV4Rln.png";
+      return resolveProductImage(p);
     }
     window.resolveProductSeoSchemaImage = resolveProductSeoSchemaImage;
 
@@ -8989,7 +9038,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const pNameEscaped = (typeof escapeHtml === "function") ? escapeHtml(p.name) : p.name;
         
         return '<div class="compact-product-item" onclick="openProductDetailById(\'' + pIdEscaped + '\')">' +
-          '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + pNameEscaped + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp\';" /></div>' +
+          '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + pNameEscaped + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" /></div>' +
           '<div class="compact-info">' +
             '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + pNameEscaped + '</a>' +
             '<div class="compact-meta">' +
@@ -9278,7 +9327,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       return '<div class="product-card" onclick="openProductDetailById(\'' + p.id + '\')">' +
         '<div class="product-img-wrap" style="position:relative;">' +
           badgeWarningHtml +
-          '<img src="' + cardImg + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp\';" />' +
+          '<img src="' + cardImg + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" />' +
         '</div>' +
         '<div class="product-body">' +
           '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</a>' +
@@ -17425,7 +17474,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
           cardEl.innerHTML = 
             '<div class="sponsor-img-wrap">' +
-              '<img alt="' + escapeHtml(p.name) + '" src="' + escapeHtml(p.image || '') + '" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp\';" />' +
+              '<img alt="' + escapeHtml(p.name) + '" src="' + escapeHtml((typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png")) + '" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" />' +
             '</div>' +
             '<h4 class="sponsor-title">' +
               '<a href="?prod=' + encodeURIComponent(p.id) + '&amp;view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); openProductDetailById(\'' + escapeHtml(p.id) + '\'); }" style="color:inherit; text-decoration:none;">' +
@@ -19758,7 +19807,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
           return '<div class="product-card" style="background:#0b111e; border:1px solid #1e293b; border-radius:10px; overflow:hidden; display:flex; flex-direction:column; transition:transform 0.2s, box-shadow 0.2s;">' +
             '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; background:#070a12; display:block; text-decoration:none;">' +
-              '<img src="' + pImageEscaped + '" alt="' + pNameEscaped + '" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp\';" />' +
+              '<img src="' + pImageEscaped + '" alt="' + pNameEscaped + '" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" />' +
               '<span style="position:absolute; top:4px; left:4px; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); color:#38bdf8; font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:3px; border:1px solid rgba(56,189,248,0.3); max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + pCatEscaped + '</span>' +
               '<span style="position:absolute; top:4px; right:4px; background:' + (inStock ? 'rgba(16,185,129,0.9)' : 'rgba(245,158,11,0.9)') + '; color:#000; font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:3px; white-space:nowrap;">' + (inStock ? 'SẴN HÀNG' : 'ĐẶT TRƯỚC') + '</span>' +
             '</a>' +
