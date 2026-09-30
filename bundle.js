@@ -4219,7 +4219,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       try {
         const localHistory = typeof getTransactionHistory === "function" ? getTransactionHistory() : [];
         localHistory.forEach(tx => {
-          if ((tx.userEmail || "").toLowerCase().trim() === cleanEmail) {
+          if (!tx) return;
+          const txMail = (tx.userEmail || tx.email || "").toLowerCase().trim();
+          if (txMail && txMail === cleanEmail) {
             rawLogs.push({
               id: tx.id || tx.txId,
               orderId: tx.orderId || "",
@@ -4238,7 +4240,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const extraTxs = JSON.parse(localStorage.getItem("mmo_transactions") || localStorage.getItem("mmo_wallet_transactions") || "[]");
         if (Array.isArray(extraTxs)) {
           extraTxs.forEach(etx => {
-            if ((etx.userEmail || "").toLowerCase().trim() === cleanEmail) {
+            if (!etx) return;
+            const eMail = (etx.userEmail || etx.email || "").toLowerCase().trim();
+            if (eMail && eMail === cleanEmail) {
               rawLogs.push({
                 id: etx.id || etx.txId,
                 orderId: etx.orderId || "",
@@ -4253,21 +4257,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       } catch(e) {}
 
-      // C. Quét toàn bộ đơn hàng (Cả đơn mua hàng và đơn hoàn tiền)
+      // C. Quét đơn hàng của đúng user từ getAllOrders
       try {
-        const uOrders = typeof getUserOrders === "function" ? getUserOrders() : [];
         const aOrders = typeof getAllOrders === "function" ? getAllOrders() : [];
-        const combinedOrders = [...uOrders];
-        aOrders.forEach(ao => {
-          if (!combinedOrders.some(co => (co.orderId === ao.orderId || co.id === ao.id))) {
-            combinedOrders.push(ao);
-          }
-        });
-
-        combinedOrders.forEach(o => {
-          const ordEmail = (o.email || o.userEmail || "").toLowerCase().trim();
-          if (ordEmail === cleanEmail) {
-            const oId = String(o.orderId || o.id || "").trim();
+        aOrders.forEach(o => {
+          if (!o) return;
+          const ordEmail = (o.email || o.userEmail || o.buyerEmail || o.customerEmail || "").toLowerCase().trim();
+          if (ordEmail && ordEmail === cleanEmail) {
+            const oId = String(o.orderId || o.id || o.orderCode || "").replace("#", "").trim();
             const pName = o.productName || o.prodName || "Sản phẩm";
             const vName = (o.variantName && o.variantName !== "Mặc định") ? (" (" + o.variantName + ")") : "";
             const ordAmt = Number(o.total || o.totalCost || o.totalPrice || o.totalAmount) || 0;
@@ -4290,7 +4287,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const st = String(o.status || "").toLowerCase();
             const isRefunded = o.refundedAt || o.refundAmount || st.includes("hoàn tiền") || st.includes("refund");
             if (isRefunded) {
-              const refAmt = Number(o.refundAmount) || ordAmt || 15000;
+              const refAmt = Number(o.refundAmount) || ordAmt;
               const refTime = o.refundedAt || ordTime;
               rawLogs.push({
                 id: "REFUND_" + oId,
@@ -4306,18 +4303,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         });
       } catch(e) {}
 
-      // D. Gộp từ Cloud SePay / VietQR (cachedCloudWalletHistory)
+      // D. Gộp từ Cloud SePay / VietQR (cachedCloudWalletHistory) - CHỈ KHI TRÙNG EMAIL USER
       if (typeof cachedCloudWalletHistory !== "undefined" && Array.isArray(cachedCloudWalletHistory)) {
         cachedCloudWalletHistory.forEach(ch => {
-          rawLogs.push({
-            id: ch.id,
-            orderId: ch.id,
-            time: ch.time || ch.date,
-            type: ch.type || "Nạp tiền VietQR / SePay",
-            amount: Number(ch.amount) || 0,
-            balanceAfter: null,
-            note: ch.note || ch.content || "Nạp tiền tự động qua QR"
-          });
+          if (!ch) return;
+          const chEmail = (ch.userEmail || ch.email || ch.buyerEmail || "").toLowerCase().trim();
+          if (chEmail && chEmail === cleanEmail) {
+            rawLogs.push({
+              id: ch.id,
+              orderId: ch.id,
+              time: ch.time || ch.date,
+              type: ch.type || "Nạp tiền VietQR / SePay",
+              amount: Number(ch.amount) || 0,
+              balanceAfter: null,
+              note: ch.note || ch.content || "Nạp tiền tự động qua QR"
+            });
+          }
         });
       }
 
@@ -17417,15 +17418,11 @@ function syncAllOpenViewsStock(changedProdId) {
             // - Đơn nằm trong mmo_user_orders hoặc session/memory -> LUÔN GIỮ
             // - Đơn khớp email hoặc là khách vãng lai / đơn cũ -> GIỮ
             if (cleanUserMail && !isAdm) {
-              const isMineByEmail = (oEmail === cleanUserMail);
-              const isRecentSession = (cleanId && (cleanId === lastDeliveredId || cleanId === storedLastId));
-              const isPersonalStore = (k === "mmo_user_orders");
-              const isGuestOrEmpty = (!oEmail || oEmail.startsWith("guest_") || oEmail.startsWith("khach_"));
+              const isMineByEmail = (oEmail && oEmail === cleanUserMail);
+              const isRecentSession = (cleanId && (cleanId === lastDeliveredId || cleanId === storedLastId) && (!oEmail || oEmail === cleanUserMail));
 
-              if (!isMineByEmail && !isRecentSession && !isPersonalStore && !isGuestOrEmpty) {
-                if (oEmail && oEmail !== cleanUserMail) {
-                  return;
-                }
+              if (!isMineByEmail && !isRecentSession) {
+                return;
               }
             }
 
@@ -23975,7 +23972,7 @@ function syncAllOpenViewsStock(changedProdId) {
           }
 
           if (Array.isArray(walletRes.wallet.history)) {
-            cachedCloudWalletHistory = walletRes.wallet.history;
+            cachedCloudWalletHistory = walletRes.wallet.history.map(item => Object.assign({}, item, { userEmail: cleanEmail }));
           }
         }
 
@@ -23989,6 +23986,7 @@ function syncAllOpenViewsStock(changedProdId) {
               if (!alreadyExists) {
                 cachedCloudWalletHistory.push({
                   id: o.orderId,
+                  userEmail: cleanEmail,
                   time: o.createdAt || new Date().toLocaleDateString("vi-VN"),
                   type: "Nạp tiền VietQR / SePay",
                   amount: Number(o.totalAmount) || 20000,
@@ -27720,8 +27718,53 @@ function getProductSchemaReviews(p, idx) {
     }
     window.sendChatMessage = sendChatMessage;
 
-    // 5. TRỢ LÝ BẢO HÀNH TỰ ĐỘNG KHI ADMIN CHƯA KỊP PHẢN HỒI
+    // KIỂM TRA ADMIN ĐÃ THAM GIA / TRỰC TIẾP NHẮN TIN TRONG CUỘC TRÒ CHUYỆN NÀY CHƯA
+    function isConversationHandledByAdmin(userEmail) {
+      if (!userEmail) return false;
+      const cleanEmail = userEmail.toLowerCase().trim();
+      try {
+        if (localStorage.getItem("mmo_admin_intervened_" + cleanEmail) === "true") return true;
+        const all = (typeof getAllChatMessages === "function") ? getAllChatMessages() : [];
+        return all.some(m => {
+          if (!m) return false;
+          const mEmail = (m.userEmail || "").toLowerCase().trim();
+          const isTarget = (mEmail === cleanEmail);
+          const isRealAdmin = (m.sender === "admin" && (!m.id || !String(m.id).startsWith("BOT_")));
+          return isTarget && isRealAdmin;
+        });
+      } catch(e) {
+        return false;
+      }
+    }
+    window.isConversationHandledByAdmin = isConversationHandledByAdmin;
+
+    function toggleAdminBotForChat(userEmail) {
+      if (!userEmail) return;
+      const cleanEmail = userEmail.toLowerCase().trim();
+      const currentStatus = isConversationHandledByAdmin(cleanEmail);
+      if (currentStatus) {
+        localStorage.removeItem("mmo_admin_intervened_" + cleanEmail);
+        if (typeof showToast === "function") showToast("Đã BẬT lại trợ lý bot tự động cho khách này!", "info");
+      } else {
+        localStorage.setItem("mmo_admin_intervened_" + cleanEmail, "true");
+        if (typeof showToast === "function") showToast("Đã TẮT trợ lý bot tự động. Cuộc trò chuyện do Admin trực tiếp xử lý!", "success");
+      }
+      if (typeof renderAdminActiveStream === "function") {
+        renderAdminActiveStream(cleanEmail);
+      }
+    }
+    window.toggleAdminBotForChat = toggleAdminBotForChat;
+
+    // 5. TRỢ LÝ BẢO HÀNH TỰ ĐỘNG (CHỈ CHẠY KHI ADMIN CHƯA TRỰC TIẾP NHẮN TIN)
     function triggerSmartWarrantyBotResponse(userText, userEmail) {
+      if (!userEmail) return;
+      const cleanEmail = userEmail.toLowerCase().trim();
+
+      // NẾU ADMIN ĐÃ NHẮN TIN RỒI -> TUYỆT ĐỐI KHÔNG TỰ ĐỘNG PHẢN HỒI NỮA
+      if (isConversationHandledByAdmin(cleanEmail)) {
+        return;
+      }
+
       const lower = userText.toLowerCase();
       let replyText = "";
 
@@ -27735,6 +27778,9 @@ function getProductSchemaReviews(p, idx) {
 
       if (replyText) {
         setTimeout(function() {
+          // Kiểm tra lại lần nữa trước khi gửi
+          if (isConversationHandledByAdmin(cleanEmail)) return;
+
           const autoMsg = {
             id: "BOT_" + Date.now().toString(36).toUpperCase() + "_" + Math.floor(Math.random() * 1000),
             sender: "admin",
@@ -27762,7 +27808,7 @@ function getProductSchemaReviews(p, idx) {
     // 6. XỬ LÝ QUICK ACTION CHIPS
     function handleQuickChatAction(actionType) {
       if (actionType === "warranty") {
-        sendChatMessage("🛡️ Tôi cần yêu cầu bảo hành 1 ĐỔI 1 cho đơn hàng bị lỗi.");
+        promptSendLatestOrder();
       } else if (actionType === "replace") {
         sendChatMessage("🔄 Tài khoản của tôi không đăng nhập được / bị sai pass, xin hỗ trợ đổi tài khoản mới.");
       } else if (actionType === "deposit") {
@@ -27775,15 +27821,30 @@ function getProductSchemaReviews(p, idx) {
 
     // Gửi nhanh thông tin đơn hàng mới nhất
     function promptSendLatestOrder() {
+      const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+      const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
+
       const orders = typeof getUserOrders === "function" ? getUserOrders() : [];
-      if (orders && orders.length > 0) {
-        const latest = orders[0];
+      // LỌC CHẶT CHẼ: Chỉ lấy đơn hàng THỰC SỰ THUỘC VỀ USER ĐANG ĐĂNG NHẬP và ĐÃ HOÀN TẤT / ĐÃ THANH TOÁN
+      const validOrders = orders.filter(function(o) {
+        if (!o) return false;
+        const oMail = (o.userEmail || o.email || o.buyerEmail || "").toLowerCase().trim();
+        if (cleanUserMail && oMail && oMail !== cleanUserMail) return false;
+        const st = String(o.status || "").toUpperCase();
+        // Không cho phép yêu cầu bảo hành đơn chưa trả tiền, đơn đã hủy hoặc đơn đặt trước đang chờ gom hàng
+        if (st.includes("CANCEL") || st.includes("HỦY")) return false;
+        if (st === "WAITING_CONFIRM" || st === "PROCESSING") return false;
+        const amt = Number(o.total || o.totalCost || o.totalPrice || o.totalAmount) || 0;
+        return amt > 0 && (st === "COMPLETED" || st === "PAID" || st === "ĐÃ GIAO HÀNG" || !!o.credentials || (Array.isArray(o.deliveredAccounts) && o.deliveredAccounts.length > 0));
+      });
+
+      if (validOrders && validOrders.length > 0) {
+        const latest = validOrders[0];
         const text = "📦 YÊU CẦU BẢO HÀNH ĐƠN HÀNG #" + (latest.orderId || latest.id) + " - Sản phẩm: " + latest.productName + (latest.variant ? (" (" + latest.variant + ")") : "");
         sendChatMessage(text);
       } else {
-        const oCode = prompt("Nhập mã đơn hàng bạn muốn bảo hành (VD: MMO123456 hoặc DH8076595428):");
-        if (oCode && oCode.trim()) {
-          sendChatMessage("📦 Yêu cầu bảo hành cho đơn hàng #" + oCode.trim());
+        if (typeof showToast === "function") {
+          showToast("Bạn chưa có đơn hàng đã mua hoặc đã giao nào để yêu cầu bảo hành!", "warning");
         }
       }
     }
@@ -27799,6 +27860,17 @@ function getProductSchemaReviews(p, idx) {
       let uo = uOrders.find(item => (item.orderId === cleanId || item.id === cleanId));
 
       const foundOrder = o || uo;
+      const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+      const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
+      const isAdm = (curUser && typeof isAdminUser === "function" && isAdminUser(curUser));
+      if (foundOrder && cleanUserMail && !isAdm) {
+        const orderEmail = (foundOrder.userEmail || foundOrder.email || foundOrder.buyerEmail || "").toLowerCase().trim();
+        if (orderEmail && orderEmail !== cleanUserMail) {
+          if (typeof showToast === "function") showToast("Bạn không phải chủ sở hữu của đơn hàng này!", "error");
+          return;
+        }
+      }
+
       if (o) {
         o.status = "Khiếu Nại / Bảo Hành";
         o.hasComplaint = true;
@@ -27810,9 +27882,9 @@ function getProductSchemaReviews(p, idx) {
         uo.hasComplaint = true;
         uo.isWarranty = true;
         if (typeof saveUserOrders === "function") saveUserOrders(uOrders);
-      if (typeof cancelAffiliateCommissionForOrder === "function") {
-        cancelAffiliateCommissionForOrder(orderId, "Admin hoàn tiền đơn hàng vào ví");
-      }
+        if (typeof cancelAffiliateCommissionForOrder === "function") {
+          cancelAffiliateCommissionForOrder(orderId, "Admin hoàn tiền đơn hàng vào ví");
+        }
       }
 
       // Cập nhật đồng bộ toàn bộ các mảng lưu trữ đơn hàng
@@ -28155,6 +28227,23 @@ function getProductSchemaReviews(p, idx) {
       if (nameEl) nameEl.innerText = userName;
       if (emailEl) emailEl.innerText = email;
 
+      const botBtn = document.getElementById("admChatBotToggleBtn");
+      const botTxt = document.getElementById("admChatBotToggleTxt");
+      const isBotDisabled = (typeof isConversationHandledByAdmin === "function") ? isConversationHandledByAdmin(email) : false;
+      if (botBtn && botTxt) {
+        if (isBotDisabled) {
+          botTxt.innerText = "Bot: ĐÃ TẮT (Trực Tiếp)";
+          botBtn.style.color = "#10b981";
+          botBtn.style.borderColor = "rgba(16,185,129,0.4)";
+          botBtn.title = "Admin đang trò chuyện trực tiếp (Bot tự động đã TẮT). Bấm để bật lại bot.";
+        } else {
+          botTxt.innerText = "Bot: Tự Động (Bật)";
+          botBtn.style.color = "#f59e0b";
+          botBtn.style.borderColor = "rgba(245,158,11,0.4)";
+          botBtn.title = "Bot tự động đang BẬT. Bấm để tắt bot cho khách này.";
+        }
+      }
+
       if (streamEl) {
         if (targetMsgs.length === 0) {
           streamEl.innerHTML = "<div style='text-align:center; padding:40px; color:#64748b; font-size:0.85rem;'>Chưa có tin nhắn nào trong hội thoại này.</div>";
@@ -28162,16 +28251,23 @@ function getProductSchemaReviews(p, idx) {
         }
         streamEl.innerHTML = targetMsgs.map(m => {
           const isUser = m.sender === "user";
+          const isBot = !isUser && (m.id && String(m.id).startsWith("BOT_"));
           const rowClass = isUser ? "" : "flex-direction:row-reverse;";
-          const bubbleBg = isUser ? "background:#1e293b; color:#fff; border:1px solid #334155;" : "background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:#fff;";
-          const senderTitle = isUser ? ("Khách: " + escapeHtml(m.senderName || email)) : "Admin phản hồi";
+          const bubbleBg = isUser 
+            ? "background:#1e293b; color:#fff; border:1px solid #334155;" 
+            : (isBot 
+                ? "background:linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color:#cbd5e1; border:1px solid #475569;" 
+                : "background:linear-gradient(135deg, #10b981 0%, #059669 100%); color:#fff;");
+          const senderTitle = isUser 
+            ? ("Khách: " + escapeHtml(m.senderName || email)) 
+            : (isBot ? "🤖 Trợ lý tự động (Bot)" : "👨‍💼 Admin Quản Trị");
 
           return "<div style='display:flex; gap:8px; align-items:flex-end; " + rowClass + "'>" +
             "<div style='max-width:80%; padding:10px 14px; border-radius:12px; font-size:0.85rem; line-height:1.45; " + bubbleBg + "'>" +
               "<strong style='font-size:0.7rem; opacity:0.85; display:block; margin-bottom:3px;'>" + senderTitle + "</strong>" +
               "<div>" + (function(t) {
                 let s = escapeHtml(t).replace(/\n/g, "<br/>");
-                return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}))/gi, function(match, fullCode, cleanCode) {
+                return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}|PRE\d{6,15}))/gi, function(match, fullCode, cleanCode) {
                   const code = cleanCode || fullCode.replace('#', '');
                   return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để mở Lịch Sử Đơn Hàng &amp; Xử Lý Đổi Trả / Hoàn Tiền" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
                 });
@@ -28254,6 +28350,11 @@ function getProductSchemaReviews(p, idx) {
         isReadByUser: false,
         isReadByAdmin: true
       };
+
+      // ĐÁNH DẤU ADMIN ĐÃ TRẢ LỜI ĐỂ TẮT BOT AUTO-REPLY VĨNH VIỄN CHO CUỘC TRÒ CHUYỆN NÀY
+      if (currentAdminChatTargetEmail) {
+        localStorage.setItem("mmo_admin_intervened_" + currentAdminChatTargetEmail.toLowerCase().trim(), "true");
+      }
 
       const all = getAllChatMessages();
       all.push(newMsg);
@@ -31730,6 +31831,12 @@ async function confirmRefundOrder() {
       const cleanEmail = targetEmail.toLowerCase().trim();
       const now = new Date();
       const adminName = (typeof currentUser !== "undefined" && currentUser && currentUser.name) ? currentUser.name : "Admin Quản Trị";
+
+      // ĐÁNH DẤU ADMIN ĐÃ TRẢ LỜI ĐỂ TẮT BOT AUTO-REPLY CHO KHÁCH NÀY
+      if (cleanEmail) {
+        localStorage.setItem("mmo_admin_intervened_" + cleanEmail, "true");
+      }
+
       const newMsg = {
         id: "ADM_" + Date.now().toString(36).toUpperCase() + "_" + Math.floor(Math.random() * 1000),
         sender: "admin",
