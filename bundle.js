@@ -14598,9 +14598,22 @@ function syncAllOpenViewsStock(changedProdId) {
     window.admApiCurrentFilter = "ALL";
     window.admApiCurrentProvider = "ALL";
     window.admApiSearchQuery = "";
+    window.admApiAlertsCurrentPage = 1;
+    window.admApiAlertsPageSize = 10;
+
+    function changeAdmApiAlertsPage(page) {
+      window.admApiAlertsCurrentPage = parseInt(page) || 1;
+      renderAdminApiSourcesAlertsUI();
+      const el = document.getElementById("admApiAlertsTable");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+    window.changeAdmApiAlertsPage = changeAdmApiAlertsPage;
 
     function handleProviderApiAlertFilter(val) {
       window.admApiCurrentProvider = val || "ALL";
+      window.admApiAlertsCurrentPage = 1;
       renderAdminApiSourcesAlertsUI();
     }
     window.handleProviderApiAlertFilter = handleProviderApiAlertFilter;
@@ -14812,6 +14825,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function setAdmApiAlertFilter(filter, btn) {
       window.admApiCurrentFilter = filter || "ALL";
+      window.admApiAlertsCurrentPage = 1;
       const grp = document.getElementById("admApiAlertFilterGroup");
       if (grp) {
         grp.querySelectorAll(".btn-api-filter").forEach(function(b) {
@@ -14833,6 +14847,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function handleSearchApiAlerts(val) {
       window.admApiSearchQuery = (val || "").trim();
+      window.admApiAlertsCurrentPage = 1;
       const clearBtn = document.getElementById("admApiAlertSearchClear");
       if (clearBtn) clearBtn.style.display = window.admApiSearchQuery ? "block" : "none";
       renderAdminApiSourcesAlertsUI();
@@ -14842,6 +14857,7 @@ function syncAllOpenViewsStock(changedProdId) {
     function clearApiAlertSearch() {
       const inp = document.getElementById("admApiAlertSearchInput");
       if (inp) inp.value = "";
+      window.admApiAlertsCurrentPage = 1;
       handleSearchApiAlerts("");
     }
     window.clearApiAlertSearch = clearApiAlertSearch;
@@ -14895,12 +14911,23 @@ function syncAllOpenViewsStock(changedProdId) {
         return;
       }
 
+      // PHÂN TRANG 10 SẢN PHẨM 1 TRANG (v3.4.7)
+      const pageSize = window.admApiAlertsPageSize || 10;
+      const totalItems = filtered.length;
+      const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+      const currentPage = Math.max(1, Math.min(window.admApiAlertsCurrentPage || 1, totalPages));
+      window.admApiAlertsCurrentPage = currentPage;
+
+      const startIndex = (currentPage - 1) * pageSize;
+      const endIndex = Math.min(startIndex + pageSize, totalItems);
+      const pageItems = filtered.slice(startIndex, endIndex);
+
       const esc = (typeof escapeHtml === "function") ? escapeHtml : function(s) {
         return String(s || "").replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       };
 
       let rowsHtml = "";
-      filtered.forEach(function(item) {
+      pageItems.forEach(function(item) {
         // Cột 1: Ảnh
         const imgCell = '<td style="text-align:center; padding:10px;">' +
           '<img src="' + esc(item.prodImage) + '" style="width:44px; height:44px; object-fit:cover; border-radius:6px; border:1px solid #1e293b; background:#070d1e;" onerror="this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\'"/>' +
@@ -15019,8 +15046,45 @@ function syncAllOpenViewsStock(changedProdId) {
 
       const pag = document.getElementById("admApiAlertsPagination");
       if (pag) {
-        pag.innerHTML = '<div style="font-size:0.8rem; color:#94a3b8;">Hiển thị <b>' + filtered.length + '</b> / <b>' + alerts.length + '</b> sản phẩm kết nối API</div>' +
-          '<div style="font-size:0.75rem; color:#64748b;">(Dữ liệu quét trực tiếp từ 5 nguồn: SellTaiNguyenMMO, NguyenLieuMMO, SellMMO, Shop1989nd, Mail72h)</div>';
+        let pagHtml = '<div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:12px; padding:10px 0;">' +
+          '<div style="display:flex; flex-direction:column; gap:3px;">' +
+            '<div style="font-size:0.82rem; color:#cbd5e1;">Hiển thị <b style="color:#38bdf8;">' + (startIndex + 1) + ' - ' + endIndex + '</b> / <b style="color:#fff;">' + totalItems + '</b> sản phẩm nối API <span style="color:#94a3b8; font-weight:600;">(Trang ' + currentPage + '/' + totalPages + ')</span></div>' +
+            '<div style="font-size:0.72rem; color:#64748b;">(Dữ liệu quét trực tiếp từ 5 nguồn: SellTaiNguyenMMO, NguyenLieuMMO, SellMMO, Shop1989nd, Mail72h)</div>' +
+          '</div>';
+
+        if (totalPages > 1) {
+          pagHtml += '<div style="display:inline-flex; align-items:center; gap:5px; flex-wrap:wrap;">';
+          
+          // Prev button
+          if (currentPage > 1) {
+            pagHtml += '<button type="button" onclick="changeAdmApiAlertsPage(' + (currentPage - 1) + ')" style="padding:5px 12px; background:#0d1525; border:1px solid #1e293b; color:#cbd5e1; border-radius:6px; font-size:0.78rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px; transition:all 0.2s;"><i class="fa-solid fa-chevron-left"></i> Trước</button>';
+          } else {
+            pagHtml += '<button type="button" disabled style="padding:5px 12px; background:#0d1525; border:1px solid #1e293b; color:#475569; border-radius:6px; font-size:0.78rem; cursor:not-allowed; opacity:0.5; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-chevron-left"></i> Trước</button>';
+          }
+
+          // Page numbers
+          for (let p = 1; p <= totalPages; p++) {
+            if (p === currentPage) {
+              pagHtml += '<button type="button" style="padding:5px 11px; min-width:32px; background:linear-gradient(135deg,#0284c7,#0369a1); border:1px solid #38bdf8; color:#fff; font-weight:800; border-radius:6px; font-size:0.78rem; box-shadow:0 2px 6px rgba(2,132,199,0.3);">' + p + '</button>';
+            } else if (p === 1 || p === totalPages || (p >= currentPage - 2 && p <= currentPage + 2)) {
+              pagHtml += '<button type="button" onclick="changeAdmApiAlertsPage(' + p + ')" style="padding:5px 11px; min-width:32px; background:#0d1525; border:1px solid #1e293b; color:#94a3b8; border-radius:6px; font-size:0.78rem; font-weight:600; cursor:pointer; transition:all 0.2s;">' + p + '</button>';
+            } else if (p === currentPage - 3 || p === currentPage + 3) {
+              pagHtml += '<span style="color:#475569; padding:0 3px;">...</span>';
+            }
+          }
+
+          // Next button
+          if (currentPage < totalPages) {
+            pagHtml += '<button type="button" onclick="changeAdmApiAlertsPage(' + (currentPage + 1) + ')" style="padding:5px 12px; background:#0d1525; border:1px solid #1e293b; color:#cbd5e1; border-radius:6px; font-size:0.78rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:4px; transition:all 0.2s;">Sau <i class="fa-solid fa-chevron-right"></i></button>';
+          } else {
+            pagHtml += '<button type="button" disabled style="padding:5px 12px; background:#0d1525; border:1px solid #1e293b; color:#475569; border-radius:6px; font-size:0.78rem; cursor:not-allowed; opacity:0.5; display:inline-flex; align-items:center; gap:4px;">Sau <i class="fa-solid fa-chevron-right"></i></button>';
+          }
+
+          pagHtml += '</div>';
+        }
+
+        pagHtml += '</div>';
+        pag.innerHTML = pagHtml;
       }
     }
     window.renderAdminApiSourcesAlertsUI = renderAdminApiSourcesAlertsUI;
@@ -25632,8 +25696,9 @@ function syncAllOpenViewsStock(changedProdId) {
 
       container.innerHTML = html;
     }
+    window.renderPaginationUI = renderPaginationUI;
 
-        function changeAdmPreOrdersPage(p) {
+    function changeAdmPreOrdersPage(p) {
       if (typeof paginationState !== "undefined") paginationState.admPreOrders = p;
       if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
       const el = document.getElementById("admPreOrdersTable");
