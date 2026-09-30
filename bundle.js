@@ -9509,6 +9509,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (tabId === "tabAdmApiSources") {
         if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
         if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+        if (typeof renderCustomApiSourcesUI === "function") renderCustomApiSourcesUI();
         const now = Date.now();
         if (!window._lastApiAlertsAutoScanTime || (now - window._lastApiAlertsAutoScanTime > 180000)) {
           window._lastApiAlertsAutoScanTime = now;
@@ -11827,56 +11828,410 @@ function syncAllOpenViewsStock(changedProdId) {
     
     // =========================================================================
     // =========================================================================
-    // NGUỒN HÀNG TỰ ĐỘNG QUA API: SELLMMO.VN, NGUYENLIEUMMO.COM.VN & SELLTAINGUYENMMO.COM (ĐA NGUỒN ON-DEMAND)
     // =========================================================================
-        const API_SOURCES = {
-  mail72h: {
-    id: "mail72h",
-    name: "mail72h.com",
-    badgeColor: "#10b981",
-    baseUrl: "https://mail72h.com",
-    apiKey: "83636705f8a17c6c48fcd8b7c8a32f10",
-    username: "manhdong",
-    rechargeUrl: "https://mail72h.com/client/recharge"
-  },
-  sellmmo: {
-    id: "sellmmo",
-    name: "sellmmo.vn",
-    badgeColor: "#38bdf8",
-    baseUrl: "https://sellmmo.vn",
-    apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
-    username: "manhdong",
-    rechargeUrl: "https://sellmmo.vn/recharge"
-  },
-  nguyenlieummo: {
-    id: "nguyenlieummo",
-    name: "nguyenlieummo.com.vn",
-    badgeColor: "#f59e0b",
-    baseUrl: "https://nguyenlieummo.com.vn",
-    apiKey: "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
-    username: "manhdong",
-    rechargeUrl: "https://nguyenlieummo.com.vn/client/wallet"
-  },
-  selltainguyenmmo: {
-    id: "selltainguyenmmo",
-    name: "selltainguyenmmo.com",
-    badgeColor: "#8b5cf6",
-    baseUrl: "https://selltainguyenmmo.com",
-    apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-    username: "manhdong",
-    rechargeUrl: "https://selltainguyenmmo.com/client/wallet"
-  },
-  shop1989nd: {
-    id: "shop1989nd",
-    name: "shop1989nd.com",
-    badgeColor: "#f97316",
-    baseUrl: "https://www.shop1989nd.com",
-    username: "manhdong",
-    password: "Manhdong123@",
-    rechargeUrl: "https://www.shop1989nd.com/user/recharge",
-    authType: "userpass"
-  }
-};
+    // NGUỒN HÀNG TỰ ĐỘNG QUA API: 6 NGUỒN CHÍNH THỨC & NGUỒN TÙY CHỈNH (CUSTOM API SOURCES)
+    // =========================================================================
+    var BUILTIN_API_SOURCES = {
+      mail72h: {
+        id: "mail72h",
+        name: "mail72h.com",
+        badgeColor: "#10b981",
+        baseUrl: "https://mail72h.com",
+        apiKey: "83636705f8a17c6c48fcd8b7c8a32f10",
+        username: "manhdong",
+        rechargeUrl: "https://mail72h.com/client/recharge"
+      },
+      sellmmo: {
+        id: "sellmmo",
+        name: "sellmmo.vn",
+        badgeColor: "#38bdf8",
+        baseUrl: "https://sellmmo.vn",
+        apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
+        username: "manhdong",
+        rechargeUrl: "https://sellmmo.vn/recharge"
+      },
+      nguyenlieummo: {
+        id: "nguyenlieummo",
+        name: "nguyenlieummo.com.vn",
+        badgeColor: "#f59e0b",
+        baseUrl: "https://nguyenlieummo.com.vn",
+        apiKey: "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+        username: "manhdong",
+        rechargeUrl: "https://nguyenlieummo.com.vn/client/wallet"
+      },
+      selltainguyenmmo: {
+        id: "selltainguyenmmo",
+        name: "selltainguyenmmo.com",
+        badgeColor: "#8b5cf6",
+        baseUrl: "https://selltainguyenmmo.com",
+        apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+        username: "manhdong",
+        rechargeUrl: "https://selltainguyenmmo.com/client/wallet"
+      },
+      shop1989nd: {
+        id: "shop1989nd",
+        name: "shop1989nd.com",
+        badgeColor: "#f97316",
+        baseUrl: "https://www.shop1989nd.com",
+        username: "manhdong",
+        password: "Manhdong123@",
+        rechargeUrl: "https://www.shop1989nd.com/user/recharge",
+        authType: "userpass"
+      },
+      ultrammo: {
+        id: "ultrammo",
+        name: "ultrammo.com",
+        badgeColor: "#6366f1",
+        baseUrl: "https://ultrammo.com",
+        apiKey: "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+        username: "manhdong",
+        password: "Trieudo40@",
+        rechargeUrl: "https://ultrammo.com/client/wallet"
+      }
+    };
+
+    var API_SOURCES = window.API_SOURCES = Object.assign({}, BUILTIN_API_SOURCES);
+
+    // QUẢN LÝ NGUỒN HÀNG API TỰ THÊM BẰNG TAY (CUSTOM API SOURCES)
+    function getCustomApiSources() {
+      try {
+        const raw = localStorage.getItem("mmo_custom_api_sources");
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) return arr;
+        }
+      } catch(e) {}
+      return [];
+    }
+    window.getCustomApiSources = getCustomApiSources;
+
+    function loadAndApplyCustomApiSources() {
+      try {
+        Object.keys(API_SOURCES).forEach(k => {
+          if (!BUILTIN_API_SOURCES[k]) delete API_SOURCES[k];
+        });
+        Object.assign(API_SOURCES, BUILTIN_API_SOURCES);
+
+        const customList = getCustomApiSources();
+        customList.forEach(s => {
+          if (s && s.id && s.baseUrl) {
+            API_SOURCES[s.id] = {
+              id: s.id,
+              name: s.name || s.id,
+              badgeColor: s.badgeColor || "#06b6d4",
+              baseUrl: s.baseUrl.replace(/\/+$/, ""),
+              apiKey: s.apiKey || "",
+              username: s.username || "manhdong",
+              password: s.password || "",
+              rechargeUrl: s.rechargeUrl || (s.baseUrl.replace(/\/+$/, "") + "/client/wallet"),
+              authType: s.authType || "standard",
+              isCustom: true
+            };
+          }
+        });
+      } catch(e) {
+        console.warn("loadAndApplyCustomApiSources error:", e);
+      }
+    }
+    window.loadAndApplyCustomApiSources = loadAndApplyCustomApiSources;
+    loadAndApplyCustomApiSources();
+
+    function saveCustomApiSource(cfg) {
+      if (!cfg || !cfg.baseUrl) return false;
+      let id = cfg.id;
+      if (!id) {
+        try {
+          const u = new URL(cfg.baseUrl.startsWith("http") ? cfg.baseUrl : ("https://" + cfg.baseUrl));
+          id = u.hostname.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase().replace(/^www_/, "");
+        } catch(e) {
+          id = "custom_" + Date.now();
+        }
+      }
+      cfg.id = id;
+      cfg.baseUrl = cfg.baseUrl.replace(/\/+$/, "");
+      if (!cfg.name) cfg.name = id;
+      if (!cfg.badgeColor) cfg.badgeColor = "#06b6d4";
+
+      const list = getCustomApiSources();
+      const existingIdx = list.findIndex(item => item.id === id);
+      if (existingIdx >= 0) {
+        list[existingIdx] = Object.assign({}, list[existingIdx], cfg);
+      } else {
+        list.push(cfg);
+      }
+      try {
+        localStorage.setItem("mmo_custom_api_sources", JSON.stringify(list));
+      } catch(e) {}
+
+      loadAndApplyCustomApiSources();
+      if (typeof invalidateApiProductMappingsCache === "function") invalidateApiProductMappingsCache();
+      renderCustomApiSourcesUI();
+      if (typeof fetchSingleSourceProfile === "function") fetchSingleSourceProfile(id, true);
+      return true;
+    }
+    window.saveCustomApiSource = saveCustomApiSource;
+
+    function deleteCustomApiSource(id) {
+      if (!confirm("Bạn có chắc chắn muốn xóa nguồn API [" + id + "] này không?")) return;
+      let list = getCustomApiSources();
+      list = list.filter(item => item.id !== id);
+      try {
+        localStorage.setItem("mmo_custom_api_sources", JSON.stringify(list));
+      } catch(e) {}
+      delete API_SOURCES[id];
+      loadAndApplyCustomApiSources();
+      if (typeof invalidateApiProductMappingsCache === "function") invalidateApiProductMappingsCache();
+      renderCustomApiSourcesUI();
+      if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+      if (typeof showToast === "function") showToast("Đã xóa nguồn API [" + id + "]!", "info");
+    }
+    window.deleteCustomApiSource = deleteCustomApiSource;
+
+    function renderCustomApiSourcesUI() {
+      const container = document.getElementById("customApiSourcesContainer");
+      if (!container) return;
+      const customList = getCustomApiSources();
+      if (!customList || customList.length === 0) {
+        container.innerHTML = "<div style='background:rgba(15,23,42,0.4); border:1px dashed #334155; border-radius:10px; padding:16px; text-align:center; color:#64748b; font-size:0.8rem;'>" +
+          "<i class='fa-solid fa-circle-info' style='color:#38bdf8; margin-right:6px;'></i> Chưa có nguồn hàng API tùy chỉnh nào được thêm bằng tay. Bạn có thể bấm nút <strong>[ ➕ THÊM NGUỒN API BẰNG TAY ]</strong> ở trên để kết nối thêm bất kỳ web MMO nào!" +
+          "</div>";
+        return;
+      }
+
+      let html = "<div style='margin-bottom:10px; display:flex; align-items:center; gap:8px;'>" +
+        "<span style='font-size:0.85rem; font-weight:800; color:#38bdf8;'><i class='fa-solid fa-puzzle-piece'></i> Nguồn Hàng API Tùy Chỉnh (Tự Thêm Bằng Tay: " + customList.length + ")</span>" +
+        "</div>";
+      html += "<div class='api-sources-grid' style='display:grid; grid-template-columns:repeat(auto-fill, minmax(320px, 1fr)); gap:14px;'>";
+
+      customList.forEach(s => {
+        const color = s.badgeColor || "#06b6d4";
+        const curBal = (typeof window.cachedSourceBalances !== "undefined" && typeof window.cachedSourceBalances[s.id] === "number")
+          ? formatVND(window.cachedSourceBalances[s.id]) : "0 đ";
+        html += "<div style='background:#090e17; border:1px solid #1e293b; padding:14px 18px; border-radius:10px; display:flex; justify-content:space-between; align-items:center; gap:12px; position:relative; overflow:hidden;'>" +
+          "<div>" +
+            "<div style='display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;'>" +
+              "<span style='background:" + color + "20; color:" + color + "; padding:4px 10px; border-radius:6px; font-weight:800; font-size:0.82rem; border:1px solid " + color + "40;'>" +
+                "<i class='fa-solid fa-plug'></i> " + escapeHtml(s.name || s.id) +
+              "</span>" +
+              "<span style='font-size:0.7rem; color:#10b981;'><i class='fa-solid fa-circle-check'></i> Tự thêm</span>" +
+            "</div>" +
+            "<div style='font-size:0.78rem; color:#94a3b8;'>" +
+              "Ví: <strong id='apiSourceMoneyDisplay_" + s.id + "' style='color:" + color + "; font-weight:800; font-size:1.05rem;'>" + curBal + "</strong>" +
+              "<span style='color:#64748b;'> (" + escapeHtml(s.username || "admin") + ")</span>" +
+            "</div>" +
+            "<div style='font-size:0.7rem; color:#64748b; margin-top:2px; font-family:monospace;'>" + escapeHtml(s.baseUrl) + "</div>" +
+          "</div>" +
+          "<div style='display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end;'>" +
+            "<button type='button' class='btn-tool-secondary' onclick='fetchSingleSourceProfile(\"" + s.id + "\", true)' style='font-size:0.75rem; padding:6px 10px;' title='Làm mới ví'><i class='fa-solid fa-rotate'></i></button>" +
+            (s.rechargeUrl ? ("<a href='" + escapeHtml(s.rechargeUrl) + "' target='_blank' class='btn-auth' style='background:" + color + "; color:#fff; font-weight:700; font-size:0.72rem; padding:6px 10px; text-decoration:none; border-radius:6px;'><i class='fa-solid fa-wallet'></i> Nạp</a>") : "") +
+            "<button type='button' class='btn-tool-secondary' onclick='openAddCustomApiSourceModal(\"" + s.id + "\")' style='font-size:0.75rem; padding:6px 10px; color:#f59e0b;' title='Sửa nguồn này'><i class='fa-solid fa-pen'></i></button>" +
+            "<button type='button' class='btn-tool-secondary' onclick='deleteCustomApiSource(\"" + s.id + "\")' style='font-size:0.75rem; padding:6px 10px; color:#ef4444;' title='Xóa nguồn này'><i class='fa-solid fa-trash'></i></button>" +
+          "</div>" +
+        "</div>";
+      });
+      html += "</div>";
+      container.innerHTML = html;
+    }
+    window.renderCustomApiSourcesUI = renderCustomApiSourcesUI;
+
+    function openAddCustomApiSourceModal(editId = null) {
+      let modal = document.getElementById("customApiSourceModal");
+      if (!modal) return;
+      const titleEl = document.getElementById("customApiSourceModalTitle");
+      const idInp = document.getElementById("customApiSourceId");
+      const nameInp = document.getElementById("customApiSourceName");
+      const urlInp = document.getElementById("customApiSourceUrl");
+      const keyInp = document.getElementById("customApiSourceKey");
+      const userInp = document.getElementById("customApiSourceUsername");
+      const passInp = document.getElementById("customApiSourcePassword");
+      const rechargeInp = document.getElementById("customApiSourceRechargeUrl");
+      const authTypeSel = document.getElementById("customApiSourceAuthType");
+      const colorInp = document.getElementById("customApiSourceColor");
+      const testResBox = document.getElementById("customApiSourceTestResult");
+
+      if (testResBox) testResBox.innerHTML = "";
+
+      if (editId && API_SOURCES[editId]) {
+        const item = API_SOURCES[editId];
+        if (titleEl) titleEl.innerText = "Chỉnh Sửa Nguồn Hàng API: " + (item.name || editId);
+        if (idInp) idInp.value = item.id;
+        if (nameInp) nameInp.value = item.name || "";
+        if (urlInp) urlInp.value = item.baseUrl || "";
+        if (keyInp) keyInp.value = item.apiKey || "";
+        if (userInp) userInp.value = item.username || "";
+        if (passInp) passInp.value = item.password || "";
+        if (rechargeInp) rechargeInp.value = item.rechargeUrl || "";
+        if (authTypeSel) authTypeSel.value = item.authType || "standard";
+        if (colorInp) colorInp.value = item.badgeColor || "#06b6d4";
+      } else {
+        if (titleEl) titleEl.innerText = "➕ Thêm Nguồn Hàng API Mới (Bằng Tay)";
+        if (idInp) idInp.value = "";
+        if (nameInp) nameInp.value = "";
+        if (urlInp) urlInp.value = "";
+        if (keyInp) keyInp.value = "";
+        if (userInp) userInp.value = "manhdong";
+        if (passInp) passInp.value = "";
+        if (rechargeInp) rechargeInp.value = "";
+        if (authTypeSel) authTypeSel.value = "standard";
+        if (colorInp) colorInp.value = "#06b6d4";
+      }
+
+      handleCustomApiAuthTypeChange();
+      modal.style.display = "flex";
+    }
+    window.openAddCustomApiSourceModal = openAddCustomApiSourceModal;
+
+    function closeCustomApiSourceModal() {
+      const modal = document.getElementById("customApiSourceModal");
+      if (modal) modal.style.display = "none";
+    }
+    window.closeCustomApiSourceModal = closeCustomApiSourceModal;
+
+    function handleCustomApiAuthTypeChange() {
+      const authTypeSel = document.getElementById("customApiSourceAuthType");
+      const keyGroup = document.getElementById("customApiKeyGroup");
+      const passGroup = document.getElementById("customApiPassGroup");
+      const val = authTypeSel ? authTypeSel.value : "standard";
+      if (val === "userpass") {
+        if (keyGroup) keyGroup.style.display = "none";
+        if (passGroup) passGroup.style.display = "block";
+      } else {
+        if (keyGroup) keyGroup.style.display = "block";
+        if (passGroup) passGroup.style.display = "none";
+      }
+    }
+    window.handleCustomApiAuthTypeChange = handleCustomApiAuthTypeChange;
+
+    async function testCustomApiConnection() {
+      const urlInp = document.getElementById("customApiSourceUrl");
+      const keyInp = document.getElementById("customApiSourceKey");
+      const userInp = document.getElementById("customApiSourceUsername");
+      const passInp = document.getElementById("customApiSourcePassword");
+      const authTypeSel = document.getElementById("customApiSourceAuthType");
+      const testResBox = document.getElementById("customApiSourceTestResult");
+      const btn = document.getElementById("btnTestCustomApiSource");
+
+      if (!urlInp || !urlInp.value.trim()) {
+        alert("Vui lòng nhập URL trang web nguồn (ví dụ: https://ultrammo.com)");
+        return;
+      }
+
+      const bUrl = urlInp.value.trim().replace(/\/+$/, "");
+      const aType = authTypeSel ? authTypeSel.value : "standard";
+      const apiKey = keyInp ? keyInp.value.trim() : "";
+      const uname = userInp ? userInp.value.trim() : "manhdong";
+      const pass = passInp ? passInp.value.trim() : "";
+
+      if (aType === "standard" && !apiKey) {
+        alert("Vui lòng nhập API Key của nguồn!");
+        return;
+      }
+      if (aType === "userpass" && (!uname || !pass)) {
+        alert("Vui lòng nhập Username và Mật khẩu của nguồn!");
+        return;
+      }
+
+      if (btn) btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang kết nối thử...";
+      if (testResBox) testResBox.innerHTML = "<div style='color:#38bdf8;'><i class='fa-solid fa-spinner fa-spin'></i> Đang kiểm tra API qua Cloudflare Worker Proxy...</div>";
+
+      try {
+        const res = await executeSourceApiCall("getProfile", {
+          provider: "custom_test",
+          baseUrl: bUrl,
+          apiKey: apiKey,
+          username: uname,
+          password: pass,
+          authType: aType
+        });
+
+        if (res && res.success && res.data && typeof res.data.money !== "undefined") {
+          const money = Math.round(Number(res.data.money) || 0);
+          if (testResBox) {
+            testResBox.innerHTML = "<div style='background:rgba(16,185,129,0.15); border:1px solid #10b981; color:#10b981; padding:8px 12px; border-radius:6px; font-weight:700; font-size:0.8rem;'>" +
+              "✅ Kết nối thành công 100%! Số dư ví hiện tại: <strong>" + formatVND(money) + "</strong> (User: " + escapeHtml(res.data.username || uname) + ")" +
+              "</div>";
+          }
+          if (typeof showToast === "function") showToast("Kết nối thành công! Số dư: " + formatVND(money), "success");
+        } else {
+          const errMsg = (res && (res.message || res.msg)) || (res && res.raw) || "Không thể kết nối hoặc sai API Key/Mật khẩu";
+          if (testResBox) {
+            testResBox.innerHTML = "<div style='background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; padding:8px 12px; border-radius:6px; font-size:0.8rem;'>" +
+              "❌ Kiểm tra thất bại: " + escapeHtml(typeof errMsg === "string" ? errMsg : JSON.stringify(errMsg)) +
+              "</div>";
+          }
+          if (typeof showToast === "function") showToast("Kết nối thất bại: " + (typeof errMsg === "string" ? errMsg : "Lỗi API"), "error");
+        }
+      } catch(e) {
+        if (testResBox) {
+          testResBox.innerHTML = "<div style='background:rgba(239,68,68,0.15); border:1px solid #ef4444; color:#ef4444; padding:8px 12px; border-radius:6px; font-size:0.8rem;'>" +
+            "❌ Lỗi mạng: " + escapeHtml(e.message || String(e)) +
+            "</div>";
+        }
+      } finally {
+        if (btn) btn.innerHTML = "<i class='fa-solid fa-bolt'></i> ⚡ Kiểm Tra Kết Nối";
+      }
+    }
+    window.testCustomApiConnection = testCustomApiConnection;
+
+    function handleSaveCustomApiSourceSubmit() {
+      const idInp = document.getElementById("customApiSourceId");
+      const nameInp = document.getElementById("customApiSourceName");
+      const urlInp = document.getElementById("customApiSourceUrl");
+      const keyInp = document.getElementById("customApiSourceKey");
+      const userInp = document.getElementById("customApiSourceUsername");
+      const passInp = document.getElementById("customApiSourcePassword");
+      const rechargeInp = document.getElementById("customApiSourceRechargeUrl");
+      const authTypeSel = document.getElementById("customApiSourceAuthType");
+      const colorInp = document.getElementById("customApiSourceColor");
+
+      if (!urlInp || !urlInp.value.trim()) {
+        alert("Vui lòng nhập URL trang web nguồn!");
+        return;
+      }
+
+      let rawUrl = urlInp.value.trim();
+      if (!rawUrl.startsWith("http://") && !rawUrl.startsWith("https://")) {
+        rawUrl = "https://" + rawUrl;
+      }
+      let bUrl = rawUrl.replace(/\/+$/, "");
+
+      let id = idInp ? idInp.value.trim() : "";
+      if (!id) {
+        try {
+          const u = new URL(bUrl);
+          id = u.hostname.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase().replace(/^www_/, "");
+        } catch(e) {
+          id = "src_" + Date.now();
+        }
+      }
+
+      let name = (nameInp && nameInp.value.trim()) ? nameInp.value.trim() : id;
+      let authType = authTypeSel ? authTypeSel.value : "standard";
+      let apiKey = keyInp ? keyInp.value.trim() : "";
+      let username = (userInp && userInp.value.trim()) ? userInp.value.trim() : "manhdong";
+      let password = passInp ? passInp.value.trim() : "";
+      let rechargeUrl = (rechargeInp && rechargeInp.value.trim()) ? rechargeInp.value.trim() : (bUrl + "/client/wallet");
+      let badgeColor = (colorInp && colorInp.value.trim()) ? colorInp.value.trim() : "#06b6d4";
+
+      const saved = saveCustomApiSource({
+        id: id,
+        name: name,
+        baseUrl: bUrl,
+        apiKey: apiKey,
+        username: username,
+        password: password,
+        rechargeUrl: rechargeUrl,
+        authType: authType,
+        badgeColor: badgeColor
+      });
+
+      if (saved) {
+        closeCustomApiSourceModal();
+        if (typeof showToast === "function") showToast("Đã lưu nguồn hàng API [" + name + "] thành công!", "success");
+        if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+      }
+    }
+    window.handleSaveCustomApiSourceSubmit = handleSaveCustomApiSourceSubmit;
 
 
     function switchStockImportSubTab(mode) {
@@ -11925,6 +12280,7 @@ function syncAllOpenViewsStock(changedProdId) {
     function initApiSourceStockUI() {
       if (typeof fetchBothSourceBalances === "function") fetchBothSourceBalances(false);
       if (typeof fetchApiSourceProducts === "function") fetchApiSourceProducts(false);
+      if (typeof renderCustomApiSourcesUI === "function") renderCustomApiSourcesUI();
       if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
       if (typeof populateQuickTestSelect === "function") populateQuickTestSelect();
     }
@@ -11954,8 +12310,18 @@ function syncAllOpenViewsStock(changedProdId) {
           provider = "nguyenlieummo";
         } else if (bUrlIn.includes("selltainguyenmmo")) {
           provider = "selltainguyenmmo";
+        } else if (bUrlIn.includes("ultrammo")) {
+          provider = "ultrammo";
         } else {
-          provider = "sellmmo";
+          let foundCustom = null;
+          if (typeof API_SOURCES !== "undefined") {
+            Object.keys(API_SOURCES).forEach(k => {
+              if (bUrlIn && API_SOURCES[k].baseUrl && bUrlIn.includes(API_SOURCES[k].baseUrl.toLowerCase().replace(/https?:\/\//, ''))) {
+                foundCustom = k;
+              }
+            });
+          }
+          provider = foundCustom || "sellmmo";
         }
       }
 
@@ -12425,13 +12791,8 @@ function syncAllOpenViewsStock(changedProdId) {
     window.fetchSingleSourceProfile = fetchSingleSourceProfile;
 
     async function fetchBothSourceBalances(isManual = false) {
-      await Promise.allSettled([
-        fetchSingleSourceProfile("mail72h", isManual),
-        fetchSingleSourceProfile("sellmmo", isManual),
-        fetchSingleSourceProfile("nguyenlieummo", isManual),
-        fetchSingleSourceProfile("selltainguyenmmo", isManual),
-        fetchSingleSourceProfile("shop1989nd", isManual)
-      ]);
+      const provKeys = (typeof API_SOURCES !== "undefined") ? Object.keys(API_SOURCES) : ["mail72h", "sellmmo", "nguyenlieummo", "selltainguyenmmo", "shop1989nd", "ultrammo"];
+      await Promise.allSettled(provKeys.map(k => fetchSingleSourceProfile(k, isManual)));
     }
     window.fetchBothSourceBalances = fetchBothSourceBalances;
     window.fetchApiSourceProfile = fetchBothSourceBalances;
@@ -12553,12 +12914,13 @@ function syncAllOpenViewsStock(changedProdId) {
 
     async function fetchApiSourceProducts(isManual = false) {
       try {
-        const [resMail72h, resShop1989, resSelltainguyenmmo, resSellmmo, resNguyenLieu] = await Promise.allSettled([
+        const [resMail72h, resShop1989, resSelltainguyenmmo, resSellmmo, resNguyenLieu, resUltrammo] = await Promise.allSettled([
           executeSourceApiCall("getProducts", { provider: "mail72h", baseUrl: API_SOURCES.mail72h.baseUrl, apiKey: API_SOURCES.mail72h.apiKey }),
           executeSourceApiCall("getProducts", { provider: "shop1989nd", baseUrl: API_SOURCES.shop1989nd.baseUrl, username: API_SOURCES.shop1989nd.username, password: API_SOURCES.shop1989nd.password }),
           executeSourceApiCall("getProducts", { provider: "selltainguyenmmo", baseUrl: API_SOURCES.selltainguyenmmo.baseUrl, apiKey: API_SOURCES.selltainguyenmmo.apiKey }),
           executeSourceApiCall("getProducts", { provider: "sellmmo", baseUrl: API_SOURCES.sellmmo.baseUrl, apiKey: API_SOURCES.sellmmo.apiKey }),
-          executeSourceApiCall("getProducts", { provider: "nguyenlieummo", baseUrl: API_SOURCES.nguyenlieummo.baseUrl, apiKey: API_SOURCES.nguyenlieummo.apiKey })
+          executeSourceApiCall("getProducts", { provider: "nguyenlieummo", baseUrl: API_SOURCES.nguyenlieummo.baseUrl, apiKey: API_SOURCES.nguyenlieummo.apiKey }),
+          executeSourceApiCall("getProducts", { provider: "ultrammo", baseUrl: (API_SOURCES.ultrammo ? API_SOURCES.ultrammo.baseUrl : "https://ultrammo.com"), apiKey: (API_SOURCES.ultrammo ? API_SOURCES.ultrammo.apiKey : "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F") })
         ]);
 
         let freshProducts = [];
@@ -12640,6 +13002,54 @@ function syncAllOpenViewsStock(changedProdId) {
                 provider: "mail72h"
               });
             });
+          });
+        }
+
+        // ultrammo
+        if (resUltrammo && resUltrammo.status === "fulfilled" && resUltrammo.value && resUltrammo.value.success && Array.isArray(resUltrammo.value.categories)) {
+          resUltrammo.value.categories.forEach(function(cat) {
+            (cat.products || cat.accounts || []).forEach(function(p) {
+              freshProducts.push({
+                id: String(p.id),
+                name: p.name,
+                price: Math.round(Number(p.price) || 0),
+                amount: Number(p.amount || p.accounts) || 0,
+                category: cat.name,
+                provider: "ultrammo"
+              });
+            });
+          });
+        }
+
+        // Nguồn tùy chỉnh tự thêm bằng tay (nếu có)
+        const customKeys = (typeof API_SOURCES !== "undefined") ? Object.keys(API_SOURCES).filter(k => API_SOURCES[k] && API_SOURCES[k].isCustom) : [];
+        if (customKeys.length > 0) {
+          const customFetches = await Promise.allSettled(customKeys.map(k => {
+            const cCfg = API_SOURCES[k];
+            return executeSourceApiCall("getProducts", {
+              provider: k,
+              baseUrl: cCfg.baseUrl,
+              apiKey: cCfg.apiKey,
+              username: cCfg.username,
+              password: cCfg.password
+            });
+          }));
+          customFetches.forEach((cRes, idx) => {
+            const cKey = customKeys[idx];
+            if (cRes.status === "fulfilled" && cRes.value && cRes.value.success && Array.isArray(cRes.value.categories)) {
+              cRes.value.categories.forEach(function(cat) {
+                (cat.products || cat.accounts || []).forEach(function(p) {
+                  freshProducts.push({
+                    id: String(p.id),
+                    name: p.name,
+                    price: Math.round(Number(p.price) || 0),
+                    amount: Number(p.amount || p.accounts) || 0,
+                    category: cat.name,
+                    provider: cKey
+                  });
+                });
+              });
+            }
           });
         }
 
@@ -13107,13 +13517,15 @@ function syncAllOpenViewsStock(changedProdId) {
         const isEnabled = !!map.enabled;
         const curProvider = map.provider || "shop1989nd";
 
-        // Dropdown Nguồn Hàng (Cột 2) - ĐỦ 5 NGUỒN
+        // Dropdown Nguồn Hàng (Cột 2) - TẤT CẢ NGUỒN (CHÍNH THỨC + TỰ THÊM)
         let providerSelectHtml = '<select id="mapProvider_' + p.id + '" onchange="handleProviderChange(\'' + p.id + '\')" style="width:100%; background:#0d121f; border:1px solid #1e293b; padding:6px 8px; border-radius:6px; color:#fff; font-size:0.78rem;">';
-        providerSelectHtml += '<option value="shop1989nd"' + (curProvider === 'shop1989nd' ? ' selected="selected"' : '') + '>shop1989nd.com</option>';
-        providerSelectHtml += '<option value="selltainguyenmmo"' + (curProvider === 'selltainguyenmmo' ? ' selected="selected"' : '') + '>selltainguyenmmo.com</option>';
-        providerSelectHtml += '<option value="mail72h"' + (curProvider === 'mail72h' ? ' selected="selected"' : '') + '>mail72h.com</option>';
-        providerSelectHtml += '<option value="sellmmo"' + (curProvider === 'sellmmo' ? ' selected="selected"' : '') + '>sellmmo.vn</option>';
-        providerSelectHtml += '<option value="nguyenlieummo"' + (curProvider === 'nguyenlieummo' ? ' selected="selected"' : '') + '>nguyenlieummo.com.vn</option>';
+        const allProvKeys = (typeof API_SOURCES !== "undefined") ? Object.keys(API_SOURCES) : ["mail72h", "sellmmo", "nguyenlieummo", "selltainguyenmmo", "shop1989nd", "ultrammo"];
+        allProvKeys.forEach(function(k) {
+          const cfg = API_SOURCES[k] || {};
+          const isSel = (curProvider === k) ? ' selected="selected"' : '';
+          const dispName = cfg.name || k;
+          providerSelectHtml += '<option value="' + k + '"' + isSel + '>' + (typeof escapeHtml === "function" ? escapeHtml(dispName) : dispName) + '</option>';
+        });
         providerSelectHtml += '</select>';
 
         // Dropdown Sản Phẩm Nguồn (Cột 3)
