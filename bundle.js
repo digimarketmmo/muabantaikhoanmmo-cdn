@@ -16128,17 +16128,16 @@ function syncAllOpenViewsStock(changedProdId) {
         return String(s || "").replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       };
 
-      let rowsHtml = "";
       pageItems.forEach(function(item) {
         // Cột 1: Ảnh
-        const imgCell = '<td style="text-align:center; padding:10px;">' +
-          '<img src="' + esc(item.prodImage) + '" style="width:44px; height:44px; object-fit:cover; border-radius:6px; border:1px solid #1e293b; background:#070d1e;" onerror="this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\'"/>' +
+        const imgCell = '<td style="text-align:center; padding:10px 4px; width:52px; min-width:52px; box-sizing:border-box;">' +
+          '<img src="' + esc(item.prodImage) + '" style="width:40px; height:40px; object-fit:cover; border-radius:6px; border:1px solid #1e293b; background:#070d1e; display:block; margin:0 auto;" onerror="this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\'"/>' +
         '</td>';
 
         // Cột 2: Tên SP Shop
-        const nameCell = '<td style="padding:10px;">' +
-          '<div style="font-weight:700; color:#fff; font-size:0.85rem; line-height:1.3; max-width:260px;">' + esc(item.prodName) + '</div>' +
-          '<div style="display:flex; align-items:center; gap:6px; margin-top:4px; font-size:0.72rem; color:#94a3b8;">' +
+        const nameCell = '<td style="padding:10px 10px; width:240px; min-width:200px; box-sizing:border-box; white-space:normal !important; vertical-align:middle; overflow:hidden;">' +
+          '<div style="font-weight:700; color:#fff; font-size:0.82rem; line-height:1.35; max-width:216px; word-break:break-word; white-space:normal !important; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-clamp:2; overflow:hidden;" title="' + esc(item.prodName) + '">' + esc(item.prodName) + '</div>' +
+          '<div style="display:flex; align-items:center; gap:6px; margin-top:4px; font-size:0.7rem; color:#94a3b8; flex-wrap:wrap;">' +
             '<span style="font-family:monospace; background:#0d1525; padding:1px 5px; border-radius:4px; border:1px solid #1e293b; color:#38bdf8;">' + esc(item.prodId) + '</span>' +
             '<span style="background:#1e293b; padding:1px 6px; border-radius:4px;">' + esc(item.category) + '</span>' +
           '</div>' +
@@ -16147,105 +16146,105 @@ function syncAllOpenViewsStock(changedProdId) {
         // Cột 3: Web Nguồn
         const provBadgeColor = item.providerConfig.badgeColor || '#06b6d4';
         const rechargeLink = item.providerConfig.rechargeUrl ? 
-          '<a href="' + esc(item.providerConfig.rechargeUrl) + '" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:none; margin-left:6px; font-size:0.68rem; display:inline-flex; align-items:center; gap:2px;" title="Nạp tiền vào ví web nguồn">' +
+          '<a href="' + esc(item.providerConfig.rechargeUrl) + '" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:none; margin-left:5px; font-size:0.68rem; display:inline-flex; align-items:center; gap:2px;" title="Nạp tiền vào ví web nguồn">' +
             '<i class="fa-solid fa-arrow-up-right-from-square"></i> Nạp ví' +
           '</a>' : '';
 
-        const srcCell = '<td style="padding:10px;">' +
-          '<div style="display:inline-flex; align-items:center; gap:5px; background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.3); padding:3px 8px; border-radius:6px;">' +
-            '<span style="width:8px; height:8px; border-radius:50%; background:' + provBadgeColor + ';"></span>' +
-            '<strong style="color:' + provBadgeColor + '; font-size:0.75rem;">' + esc(item.providerConfig.name || item.provider) + '</strong>' +
+        const srcCell = '<td style="padding:10px 10px; width:180px; min-width:160px; box-sizing:border-box; vertical-align:middle; overflow:hidden;">' +
+          '<div style="display:inline-flex; align-items:center; gap:5px; background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.3); padding:3px 8px; border-radius:6px; max-width:100%; box-sizing:border-box;">' +
+            '<span style="width:7px; height:7px; border-radius:50%; background:' + provBadgeColor + '; flex-shrink:0;"></span>' +
+            '<strong style="color:' + provBadgeColor + '; font-size:0.72rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + esc(item.providerConfig.name || item.provider) + '</strong>' +
             rechargeLink +
           '</div>' +
-          '<div style="font-size:0.72rem; color:#94a3b8; margin-top:4px; font-family:monospace;">' +
+          '<div style="font-size:0.71rem; color:#94a3b8; margin-top:4px; font-family:monospace;">' +
             'ID SP Nguồn: <b style="color:#e2e8f0;">#' + esc(item.sourceProdId) + '</b>' +
           '</div>' +
-          (item.sourceProdName ? '<div style="font-size:0.7rem; color:#64748b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;" title="' + esc(item.sourceProdName) + '">' + esc(item.sourceProdName) + '</div>' : '') +
-          (item.isSourceDeleted ? '<div style="font-size:0.72rem; color:#ef4444; font-weight:700; margin-top:3px; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-triangle-exclamation"></i> Web nguồn đã gỡ SP</div>' : '') +
+          (item.sourceProdName ? '<div style="font-size:0.68rem; color:#64748b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px; margin-top:2px;" title="' + esc(item.sourceProdName) + '">' + esc(item.sourceProdName) + '</div>' : '') +
+          (item.isSourceDeleted ? '<div style="font-size:0.7rem; color:#ef4444; font-weight:700; margin-top:3px; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-triangle-exclamation"></i> Web nguồn đã gỡ SP</div>' : '') +
         '</td>';
 
         // Cột 4: Tồn Kho Live
         let stockBadge = "";
         if (item.isSourceDeleted) {
-          stockBadge = '<span style="background:rgba(239,68,68,0.25); color:#ef4444; border:1px solid #ef4444; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px; animation:mmoPulseAlert 1.5s infinite;">' +
+          stockBadge = '<span style="background:rgba(239,68,68,0.25); color:#ef4444; border:1px solid #ef4444; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.73rem; display:inline-flex; align-items:center; gap:4px; animation:mmoPulseAlert 1.5s infinite;">' +
             '<i class="fa-solid fa-ban"></i> NGUỒN ĐÃ XOÁ SP (0 acc)' +
           '</span>';
         } else if (item.isOutOfStock) {
-          stockBadge = '<span style="background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px; animation:mmoPulseAlert 1.5s infinite;">' +
+          stockBadge = '<span style="background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.73rem; display:inline-flex; align-items:center; gap:4px; animation:mmoPulseAlert 1.5s infinite;">' +
             '<i class="fa-solid fa-triangle-exclamation"></i> 0 acc (HẾT HÀNG)' +
           '</span>';
         } else if (item.isLowStock) {
-          stockBadge = '<span style="background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4); padding:3px 8px; border-radius:6px; font-weight:700; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px;">' +
+          stockBadge = '<span style="background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4); padding:3px 8px; border-radius:6px; font-weight:700; font-size:0.73rem; display:inline-flex; align-items:center; gap:4px;">' +
             '<i class="fa-solid fa-hourglass-half"></i> ' + item.currentSourceStock.toLocaleString() + ' acc (Sắp hết)' +
           '</span>';
         } else {
-          stockBadge = '<span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:3px 8px; border-radius:6px; font-weight:700; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px;">' +
+          stockBadge = '<span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:3px 8px; border-radius:6px; font-weight:700; font-size:0.73rem; display:inline-flex; align-items:center; gap:4px;">' +
             '<i class="fa-solid fa-circle-check"></i> ' + item.currentSourceStock.toLocaleString() + ' acc' +
           '</span>';
         }
-        const stockCell = '<td style="text-align:center; padding:10px;">' + stockBadge + '</td>';
+        const stockCell = '<td style="text-align:center; padding:10px 6px; width:140px; min-width:130px; box-sizing:border-box; vertical-align:middle; white-space:nowrap;">' + stockBadge + '</td>';
 
         // Cột 5: Biến Động Giá Nguồn
         let priceDiffHtml = "";
         if (item.isPriceUp) {
-          priceDiffHtml = '<div style="color:#f59e0b; font-weight:800; font-size:0.88rem; display:flex; align-items:center; gap:4px;">' +
+          priceDiffHtml = '<div style="color:#f59e0b; font-weight:800; font-size:0.86rem; display:flex; align-items:center; gap:4px;">' +
               '<i class="fa-solid fa-arrow-trend-up" style="color:#ef4444;"></i> ' + formatVND(item.currentSourcePrice) +
             '</div>' +
-            '<div style="font-size:0.72rem; color:#ef4444; font-weight:700; margin-top:2px;">' +
+            '<div style="font-size:0.71rem; color:#ef4444; font-weight:700; margin-top:2px;">' +
               '🔺 TĂNG +' + formatVND(item.priceDiff) + ' (+' + item.priceDiffPercent.toFixed(1) + '%)' +
             '</div>' +
-            '<div style="font-size:0.7rem; color:#64748b; margin-top:2px;">Giá gốc trước đó: ' + formatVND(item.baselinePrice) + '</div>';
+            '<div style="font-size:0.68rem; color:#64748b; margin-top:2px;">Giá gốc trước đó: ' + formatVND(item.baselinePrice) + '</div>';
         } else if (item.isPriceDown) {
-          priceDiffHtml = '<div style="color:#10b981; font-weight:800; font-size:0.88rem; display:flex; align-items:center; gap:4px;">' +
+          priceDiffHtml = '<div style="color:#10b981; font-weight:800; font-size:0.86rem; display:flex; align-items:center; gap:4px;">' +
               '<i class="fa-solid fa-arrow-trend-down"></i> ' + formatVND(item.currentSourcePrice) +
             '</div>' +
-            '<div style="font-size:0.72rem; color:#10b981; font-weight:700; margin-top:2px;">' +
+            '<div style="font-size:0.71rem; color:#10b981; font-weight:700; margin-top:2px;">' +
               '🔻 GIẢM -' + formatVND(Math.abs(item.priceDiff)) + ' (-' + Math.abs(item.priceDiffPercent).toFixed(1) + '%)' +
             '</div>' +
-            '<div style="font-size:0.7rem; color:#64748b; margin-top:2px;">Giá gốc trước đó: ' + formatVND(item.baselinePrice) + '</div>';
+            '<div style="font-size:0.68rem; color:#64748b; margin-top:2px;">Giá gốc trước đó: ' + formatVND(item.baselinePrice) + '</div>';
         } else {
-          priceDiffHtml = '<div style="color:#e2e8f0; font-weight:700; font-size:0.85rem;">' + formatVND(item.currentSourcePrice) + '</div>' +
-            '<div style="font-size:0.72rem; color:#10b981; margin-top:2px;">✅ Không đổi</div>';
+          priceDiffHtml = '<div style="color:#e2e8f0; font-weight:700; font-size:0.84rem;">' + formatVND(item.currentSourcePrice) + '</div>' +
+            '<div style="font-size:0.71rem; color:#10b981; margin-top:2px;">✅ Không đổi</div>';
         }
-        const priceDiffCell = '<td style="padding:10px;">' + priceDiffHtml + '</td>';
+        const priceDiffCell = '<td style="padding:10px 8px; width:155px; min-width:130px; box-sizing:border-box; vertical-align:middle;">' + priceDiffHtml + '</td>';
 
         // Cột 6: Giá Shop & Biên Lãi
         let profitHtml = "";
         if (item.isLoss) {
-          profitHtml = '<div style="font-size:0.9rem; font-weight:800; color:#fff;">' + formatVND(item.shopPrice) + '</div>' +
-            '<div style="display:inline-block; margin-top:3px; background:rgba(239,68,68,0.25); color:#ef4444; border:1px solid #ef4444; padding:2px 8px; border-radius:4px; font-size:0.72rem; font-weight:800; animation:mmoPulseAlert 1.5s infinite;">' +
+          profitHtml = '<div style="font-size:0.88rem; font-weight:800; color:#fff;">' + formatVND(item.shopPrice) + '</div>' +
+            '<div style="display:inline-block; margin-top:3px; background:rgba(239,68,68,0.25); color:#ef4444; border:1px solid #ef4444; padding:2px 7px; border-radius:4px; font-size:0.71rem; font-weight:800; animation:mmoPulseAlert 1.5s infinite;">' +
               '🚨 BÁN LỖ ' + formatVND(Math.abs(item.profit)) + ' (' + item.marginPercent.toFixed(1) + '%)' +
             '</div>';
         } else {
           const profitColor = item.profit > 0 ? (item.marginPercent >= 20 ? '#10b981' : '#f59e0b') : '#ef4444';
-          profitHtml = '<div style="font-size:0.9rem; font-weight:800; color:#38bdf8;">' + formatVND(item.shopPrice) + '</div>' +
-            '<div style="font-size:0.74rem; color:' + profitColor + '; font-weight:700; margin-top:3px;">' +
+          profitHtml = '<div style="font-size:0.88rem; font-weight:800; color:#38bdf8;">' + formatVND(item.shopPrice) + '</div>' +
+            '<div style="font-size:0.72rem; color:' + profitColor + '; font-weight:700; margin-top:3px;">' +
               'Lãi: +' + formatVND(item.profit) + ' (' + item.marginPercent.toFixed(1) + '%)' +
             '</div>';
         }
-        const profitCell = '<td style="padding:10px;">' + profitHtml + '</td>';
+        const profitCell = '<td style="padding:10px 8px; width:155px; min-width:130px; box-sizing:border-box; vertical-align:middle;">' + profitHtml + '</td>';
 
         // Cột 7: Hành Động
         let compareBtnHtml = '';
         if (item.isSourceDeleted || item.isOutOfStock) {
-          compareBtnHtml = '<button type="button" onclick="openSourceCompareModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:linear-gradient(135deg,#9333ea,#7c3aed); color:#fff; border:1px solid #c084fc; padding:6px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 8px rgba(147,51,234,0.35);">' +
-            '<i class="fa-solid fa-arrows-split-up-and-left"></i> Đổi Nguồn Gấp (5 Web)' +
+          compareBtnHtml = '<button type="button" onclick="openSourceCompareModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:linear-gradient(135deg,#9333ea,#7c3aed); color:#fff; border:1px solid #c084fc; padding:5px 8px; border-radius:6px; font-size:0.73rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 8px rgba(147,51,234,0.35);">' +
+            '<i class="fa-solid fa-arrows-split-up-and-left"></i> Đổi Nguồn (6 Web)' +
           '</button>';
         } else {
-          compareBtnHtml = '<button type="button" onclick="openSourceCompareModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:#1e293b; color:#a855f7; border:1px solid #475569; padding:5px 10px; border-radius:6px; font-size:0.74rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;">' +
-            '<i class="fa-solid fa-arrows-split-up-and-left"></i> Đổi Nguồn (5 Web)' +
+          compareBtnHtml = '<button type="button" onclick="openSourceCompareModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:#1e293b; color:#a855f7; border:1px solid #475569; padding:5px 8px; border-radius:6px; font-size:0.73rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;">' +
+            '<i class="fa-solid fa-arrows-split-up-and-left"></i> Đổi Nguồn (6 Web)' +
           '</button>';
         }
 
-        let actCell = '<td style="text-align:center; padding:10px;">' +
-          '<div style="display:flex; flex-direction:column; gap:6px; align-items:center;">' +
-            '<button type="button" onclick="openQuickPriceEditModal(\'' + esc(item.prodId) + '\', ' + item.currentSourcePrice + ', ' + item.shopPrice + ')" style="width:100%; background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 6px rgba(2,132,199,0.3);">' +
+        let actCell = '<td style="text-align:center; padding:10px 8px; width:158px; min-width:150px; box-sizing:border-box; vertical-align:middle;">' +
+          '<div style="display:flex; flex-direction:column; gap:5px; align-items:stretch; max-width:148px; margin:0 auto;">' +
+            '<button type="button" onclick="openQuickPriceEditModal(\'' + esc(item.prodId) + '\', ' + item.currentSourcePrice + ', ' + item.shopPrice + ')" style="width:100%; background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:0.74rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 6px rgba(2,132,199,0.3);">' +
               '<i class="fa-solid fa-bolt"></i> Sửa Giá Bán' +
             '</button>' +
             compareBtnHtml;
 
         if (item.isPriceUp || item.isPriceDown) {
-          actCell += '<button type="button" onclick="acknowledgeApiPriceChange(\'' + esc(item.prodId) + '\', ' + item.currentSourcePrice + ')" style="width:100%; background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:4px 8px; border-radius:6px; font-size:0.7rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Xác nhận giá vốn mới làm chuẩn để tắt cảnh báo">' +
+          actCell += '<button type="button" onclick="acknowledgeApiPriceChange(\'' + esc(item.prodId) + '\', ' + item.currentSourcePrice + ')" style="width:100%; background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:4px 6px; border-radius:6px; font-size:0.68rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Xác nhận giá vốn mới làm chuẩn để tắt cảnh báo">' +
               '<i class="fa-solid fa-check"></i> Đã Duyệt Giá Vốn' +
             '</button>';
         }
