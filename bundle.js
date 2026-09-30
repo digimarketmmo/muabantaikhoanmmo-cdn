@@ -85,7 +85,6 @@ function checkAndApplyNetworkUpdate() {
 window.checkAndApplyNetworkUpdate = checkAndApplyNetworkUpdate;
 
 if (typeof window !== "undefined") {
-  setInterval(convertOutOfStockToPreOrder, 250);
   setTimeout(checkAndApplyNetworkUpdate, 300);
   setInterval(checkAndApplyNetworkUpdate, 300000);
   window.addEventListener("focus", checkAndApplyNetworkUpdate);
@@ -139,6 +138,69 @@ if (typeof window !== "undefined") {
       return result;
     })();
     window.cachedSourceProducts = cachedSourceProducts;
+
+    // =========================================================================
+    // O(1) FAST SOURCE PRODUCTS INDEX & LOOKUP (ZERO LAG ACCELERATION)
+    // =========================================================================
+    var _sourceProductsFastMap = null;
+    var _sourceProductsProviderSet = null;
+
+    function rebuildSourceProductsFastIndex(prods) {
+      try {
+        var list = prods || (typeof window !== "undefined" && window.cachedSourceProducts) || (typeof cachedSourceProducts !== "undefined" && cachedSourceProducts) || [];
+        var map = new Map();
+        var provSet = new Set();
+        for (var i = 0; i < list.length; i++) {
+          var p = list[i];
+          if (!p) continue;
+          var prov = p.provider || "";
+          if (prov) provSet.add(prov);
+          var idStr = String(p.id);
+          if (prov) {
+            map.set(prov + ":" + idStr, p);
+          }
+          if (!map.has("any:" + idStr)) {
+            map.set("any:" + idStr, p);
+          }
+        }
+        _sourceProductsFastMap = map;
+        _sourceProductsProviderSet = provSet;
+        if (typeof window !== "undefined") {
+          window._sourceProductsFastMap = map;
+          window._sourceProductsProviderSet = provSet;
+          if (typeof window.invalidateApiProductMappingsCache === "function") {
+            window.invalidateApiProductMappingsCache();
+          }
+        }
+      } catch(e) {}
+    }
+    window.rebuildSourceProductsFastIndex = rebuildSourceProductsFastIndex;
+
+    function getFastSourceProduct(provider, id) {
+      if (!_sourceProductsFastMap) {
+        rebuildSourceProductsFastIndex();
+      }
+      if (!_sourceProductsFastMap) return null;
+      var idStr = String(id);
+      if (provider) {
+        var item = _sourceProductsFastMap.get(provider + ":" + idStr);
+        if (item) return item;
+      }
+      return _sourceProductsFastMap.get("any:" + idStr) || null;
+    }
+    window.getFastSourceProduct = getFastSourceProduct;
+
+    function isFastSourceProviderLoaded(provider) {
+      if (!_sourceProductsFastMap) {
+        rebuildSourceProductsFastIndex();
+      }
+      if (!_sourceProductsFastMap) return false;
+      if (!provider) return (_sourceProductsFastMap.size > 0);
+      return _sourceProductsProviderSet ? _sourceProductsProviderSet.has(provider) : false;
+    }
+    window.isFastSourceProviderLoaded = isFastSourceProviderLoaded;
+
+    rebuildSourceProductsFastIndex(cachedSourceProducts);
 
 // GLOBAL CORE CONSTANTS
     var ITEMS_PER_PAGE = 10;
@@ -4124,6 +4186,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
           window.cachedSourceProducts = merged;
           cachedSourceProducts = merged;
+          if (typeof rebuildSourceProductsFastIndex === "function") {
+            rebuildSourceProductsFastIndex(merged);
+          }
 
           try {
             localStorage.setItem("mmo_cached_source_products", JSON.stringify(merged));
@@ -9447,7 +9512,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const now = Date.now();
         if (!window._lastApiAlertsAutoScanTime || (now - window._lastApiAlertsAutoScanTime > 180000)) {
           window._lastApiAlertsAutoScanTime = now;
-          if (typeof refreshApiSourceAlerts === "function") refreshApiSourceAlerts(false);
+          setTimeout(function() {
+            if (typeof refreshApiSourceAlerts === "function") refreshApiSourceAlerts(false);
+          }, 100);
         }
       }
       if (tabId === "tabAdmChat") {
@@ -9894,13 +9961,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
           let st = 0;
           let hasLiveSource = false;
-          const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
-            ? window.cachedSourceProducts
-            : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
-          if (apiMap && apiMap.sourceProdId && prods && prods.length > 0) {
-            const inSrc = prods.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
-              || prods.find(s => String(s.id) === String(apiMap.sourceProdId));
-            const provHasProds = apiMap.provider ? prods.some(s => s.provider === apiMap.provider) : false;
+          if (apiMap && apiMap.sourceProdId) {
+            const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, apiMap.sourceProdId) : null;
+            const provHasProds = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
             if (inSrc && typeof inSrc.amount === "number") {
               st = inSrc.amount;
               apiMap.sourceStock = st;
@@ -12583,6 +12646,9 @@ function syncAllOpenViewsStock(changedProdId) {
         if (freshProducts.length > 0) {
           window.cachedSourceProducts = freshProducts;
           cachedSourceProducts = freshProducts;
+          if (typeof rebuildSourceProductsFastIndex === "function") {
+            rebuildSourceProductsFastIndex(freshProducts);
+          }
           try { localStorage.setItem("mmo_cached_source_products", JSON.stringify(freshProducts)); } catch(e) {}
 
           // Tự động đồng bộ tồn kho API cho toàn bộ sản phẩm đang hiển thị
@@ -12594,8 +12660,7 @@ function syncAllOpenViewsStock(changedProdId) {
               if (!isApiProd) return;
               const map = (typeof getApiProductMapping === "function") ? getApiProductMapping(p) : (p.apiMapping || null);
               if (map && map.sourceProdId) {
-                const inSrc = freshProducts.find(s => String(s.id) === String(map.sourceProdId) && (!map.provider || s.provider === map.provider))
-                  || freshProducts.find(s => String(s.id) === String(map.sourceProdId));
+                const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(map.provider, map.sourceProdId) : null;
                 if (inSrc && typeof inSrc.amount === "number") {
                   map.sourceStock = inSrc.amount;
                   map.isSourceDeleted = false;
@@ -12704,7 +12769,19 @@ function syncAllOpenViewsStock(changedProdId) {
       "PROD_MUJUGVQXET": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "23628", sourcePrice: 114000, sourceProdName: "Capcut Pro Team 1 THÁNG", sourceStock: 0 }
     };
 
+    var _cachedApiProductMappings = null;
+    function invalidateApiProductMappingsCache() {
+      _cachedApiProductMappings = null;
+      if (typeof _cachedApiSourceAlerts !== "undefined") {
+        _cachedApiSourceAlerts = null;
+      }
+    }
+    window.invalidateApiProductMappingsCache = invalidateApiProductMappingsCache;
+
     function getApiProductMappings() {
+      if (_cachedApiProductMappings) {
+        return _cachedApiProductMappings;
+      }
       let result = Object.assign({}, DEFAULT_API_PRODUCT_MAPPINGS);
       try {
         const stored = localStorage.getItem("mmo_api_product_mappings");
@@ -12725,12 +12802,7 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       } catch(e) {}
 
-      // Đồng bộ trạng thái đã gỡ/xoá SP nếu cache sản phẩm nguồn đã nạp
-      const cachedSrcs = (typeof window !== "undefined" && Array.isArray(window.cachedSourceProducts))
-        ? window.cachedSourceProducts
-        : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
-
-      // Quét sạch toàn bộ result lần cuối
+      // Đồng bộ trạng thái đã gỡ/xoá SP qua O(1) index siêu tốc
       Object.keys(result).forEach(k => {
         const item = result[k];
         if (!item) return;
@@ -12748,10 +12820,9 @@ function syncAllOpenViewsStock(changedProdId) {
         if (item.isSourceDeleted) {
           item.sourceStock = 0;
         }
-        if (cachedSrcs && cachedSrcs.length > 0 && item.sourceProdId) {
-          const provLoaded = cachedSrcs.some(s => (!item.provider || s.provider === item.provider));
-          const inSrc = cachedSrcs.find(s => String(s.id) === String(item.sourceProdId) && (!item.provider || s.provider === item.provider))
-            || cachedSrcs.find(s => String(s.id) === String(item.sourceProdId));
+        if (item.sourceProdId) {
+          const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(item.provider) : false;
+          const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(item.provider, item.sourceProdId) : null;
           if (provLoaded && !inSrc) {
             item.isSourceDeleted = true;
             item.sourceStock = 0;
@@ -12761,12 +12832,16 @@ function syncAllOpenViewsStock(changedProdId) {
           }
         }
       });
+      _cachedApiProductMappings = result;
       return result;
     }
     window.getApiProductMappings = getApiProductMappings;
 
     function saveApiProductMappings(maps) {
       try {
+        if (typeof invalidateApiProductMappingsCache === "function") {
+          invalidateApiProductMappingsCache();
+        }
         localStorage.setItem("mmo_api_product_mappings", JSON.stringify(maps || {}));
         if (typeof callGasApi === "function") {
           callGasApi("adminSaveSettings", {
@@ -12821,25 +12896,19 @@ function syncAllOpenViewsStock(changedProdId) {
         }
         let stock = (res.sourceStock !== undefined && res.sourceStock !== null) ? Number(res.sourceStock) : 0;
         if (stock === 9999) stock = 0;
-        const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
-          ? window.cachedSourceProducts
-          : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
-        if (prods && prods.length > 0) {
-          const inSrc = prods.find(s => String(s.id) === String(res.sourceProdId) && (!res.provider || s.provider === res.provider))
-            || prods.find(s => String(s.id) === String(res.sourceProdId));
-          if (inSrc && typeof inSrc.amount === "number") {
-            stock = inSrc.amount;
-            res.sourceStock = stock;
-            res.isSourceDeleted = false;
-            if (inSrc.price) res.sourcePrice = inSrc.price;
-            if (inSrc.name) res.sourceProdName = inSrc.name;
-          } else {
-            const provLoaded = prods.some(s => (!res.provider || s.provider === res.provider));
-            if (provLoaded || res.isSourceDeleted) {
-              stock = 0;
-              res.sourceStock = 0;
-              res.isSourceDeleted = true;
-            }
+        const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(res.provider, res.sourceProdId) : null;
+        if (inSrc && typeof inSrc.amount === "number") {
+          stock = inSrc.amount;
+          res.sourceStock = stock;
+          res.isSourceDeleted = false;
+          if (inSrc.price) res.sourcePrice = inSrc.price;
+          if (inSrc.name) res.sourceProdName = inSrc.name;
+        } else {
+          const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(res.provider) : false;
+          if (provLoaded || res.isSourceDeleted) {
+            stock = 0;
+            res.sourceStock = 0;
+            res.isSourceDeleted = true;
           }
         }
         res.sourceStock = Math.max(0, stock);
@@ -15143,7 +15212,15 @@ function syncAllOpenViewsStock(changedProdId) {
       } catch(e) {}
     }
 
-    function computeApiSourceAlerts() {
+    var _cachedApiSourceAlerts = null;
+    var _lastApiAlertsComputeTime = 0;
+
+    function computeApiSourceAlerts(force) {
+      const now = Date.now();
+      if (!force && _cachedApiSourceAlerts && (now - _lastApiAlertsComputeTime < 2500)) {
+        return _cachedApiSourceAlerts;
+      }
+
       const results = [];
       const prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products))
         ? MOCK_DATA.products
@@ -15152,10 +15229,6 @@ function syncAllOpenViewsStock(changedProdId) {
             : []);
 
       if (!prods || prods.length === 0) return results;
-
-      const cachedSrcs = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
-        ? window.cachedSourceProducts
-        : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
 
       const baselineMap = getApiSourceBaselinePrices();
       let hasNewBaselines = false;
@@ -15176,16 +15249,9 @@ function syncAllOpenViewsStock(changedProdId) {
           ? API_SOURCES[prov]
           : { id: prov, name: prov, badgeColor: "#06b6d4", baseUrl: "#" };
 
-        // Tìm sản phẩm trong bộ nhớ live cache 5 nguồn
-        const inSrc = cachedSrcs.find(function(s) {
-          return String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider);
-        }) || cachedSrcs.find(function(s) {
-          return String(s.id) === String(apiMap.sourceProdId);
-        });
-
-        const provLoaded = cachedSrcs.some(function(s) {
-          return (!apiMap.provider || s.provider === apiMap.provider);
-        });
+        // Tìm sản phẩm trong bộ nhớ live cache 5 nguồn qua O(1) fast index
+        const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, apiMap.sourceProdId) : null;
+        const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
         const isSourceDeleted = (!inSrc && provLoaded) || (apiMap.isSourceDeleted === true);
 
         const livePrice = inSrc ? (Number(inSrc.price) || 0) : (Number(apiMap.sourcePrice) || 0);
@@ -15280,6 +15346,8 @@ function syncAllOpenViewsStock(changedProdId) {
         return a.prodName.localeCompare(b.prodName);
       });
 
+      _cachedApiSourceAlerts = results;
+      _lastApiAlertsComputeTime = Date.now();
       return results;
     }
     window.computeApiSourceAlerts = computeApiSourceAlerts;
@@ -19002,9 +19070,13 @@ function syncAllOpenViewsStock(changedProdId) {
           let freshAmount = null;
           let isDeleted = !!apiMap.isSourceDeleted;
           if (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
-            const inCache = cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
-              || cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId));
-            const provLoaded = cachedSourceProducts.some(s => (!apiMap.provider || s.provider === apiMap.provider));
+            const inCache = (typeof getFastSourceProduct === "function")
+              ? getFastSourceProduct(apiMap.provider, apiMap.sourceProdId)
+              : (cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
+                || cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId)));
+            const provLoaded = (typeof isFastSourceProviderLoaded === "function")
+              ? isFastSourceProviderLoaded(apiMap.provider)
+              : cachedSourceProducts.some(s => (!apiMap.provider || s.provider === apiMap.provider));
             if (inCache && typeof inCache.amount === "number") {
               freshAmount = inCache.amount;
             } else if (provLoaded && !inCache) {
