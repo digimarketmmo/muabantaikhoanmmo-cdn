@@ -16254,11 +16254,8 @@ function syncAllOpenViewsStock(changedProdId) {
 
         let actCell = '<td style="text-align:center; padding:10px 8px; width:158px; min-width:150px; box-sizing:border-box; vertical-align:middle;">' +
           '<div style="display:flex; flex-direction:column; gap:5px; align-items:stretch; max-width:148px; margin:0 auto;">' +
-            '<button type="button" onclick="openEditProductModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:0.74rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 6px rgba(245,158,11,0.3);" title="Mở modal chỉnh sửa chi tiết sản phẩm">' +
+            '<button type="button" onclick="openEditProductModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:0.74rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 6px rgba(2,132,199,0.3);" title="Mở modal chỉnh sửa chi tiết sản phẩm">' +
               '<i class="fa-solid fa-pen-to-square"></i> Sửa Sản Phẩm' +
-            '</button>' +
-            '<button type="button" onclick="openQuickPriceEditModal(\'' + esc(item.prodId) + '\', ' + item.currentSourcePrice + ', ' + item.shopPrice + ')" style="width:100%; background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:0.74rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 6px rgba(2,132,199,0.3);">' +
-              '<i class="fa-solid fa-bolt"></i> Sửa Giá Bán' +
             '</button>' +
             compareBtnHtml;
 
