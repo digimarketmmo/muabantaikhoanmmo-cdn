@@ -2324,16 +2324,142 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.saveRegisteredUsers = saveRegisteredUsers;
 
 
+    function isUserLocked(email) {
+      if (!email) return false;
+      const cleanEmail = String(email).trim().toLowerCase();
+      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
+      if (cleanEmail === rootEmail) return false;
+
+      try {
+        const lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
+        if (Array.isArray(lockedList) && lockedList.map(e => String(e||"").toLowerCase().trim()).includes(cleanEmail)) {
+          return true;
+        }
+      } catch(e) {}
+
+      if (typeof getRegisteredUsers === "function") {
+        try {
+          const users = getRegisteredUsers();
+          const u = users.find(x => String(x.email || "").toLowerCase().trim() === cleanEmail);
+          if (u && (u.isLocked === true || u.status === "LOCKED")) {
+            return true;
+          }
+        } catch(e) {}
+      }
+
+      return false;
+    }
+    window.isUserLocked = isUserLocked;
+
+    function showAccountLockedModal(email) {
+      let modal = document.getElementById("accountLockedModal");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "accountLockedModal";
+        modal.className = "mmo-modal-backdrop";
+        modal.style.cssText = "display:flex; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:16px;";
+        modal.innerHTML = `
+          <div style="background:#0f172a; border:2px solid #ef4444; border-radius:16px; max-width:480px; width:100%; box-shadow:0 20px 50px rgba(239,68,68,0.4); overflow:hidden; animation:modalPopIn 0.3s ease;">
+            <div style="background:linear-gradient(135deg, rgba(239,68,68,0.25), rgba(185,28,28,0.45)); padding:22px; text-align:center; border-bottom:1px solid rgba(239,68,68,0.3);">
+              <div style="width:64px; height:64px; border-radius:50%; background:rgba(239,68,68,0.2); border:2px solid #ef4444; color:#ef4444; font-size:30px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; box-shadow:0 0 20px rgba(239,68,68,0.4);">
+                <i class="fa-solid fa-user-lock"></i>
+              </div>
+              <h3 style="color:#ef4444; margin:0; font-size:1.3rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">Tài Khoản Tạm Khóa</h3>
+            </div>
+            <div style="padding:24px 20px; text-align:center;">
+              <p style="color:#fca5a5; font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 18px 0;">
+                Tài khoản tạm khóa do nghi ngờ gian lận.<br/>Liên hệ Admin để mở khóa
+              </p>
+              <div id="accountLockedEmailNotice" style="font-size:0.85rem; color:#94a3b8; margin-bottom:14px; display:none;"></div>
+              <div style="background:#090e17; border:1px solid #1e293b; border-radius:10px; padding:14px; text-align:left; font-size:0.88rem; color:#cbd5e1; margin-bottom:20px; display:flex; flex-direction:column; gap:10px;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <span style="color:#94a3b8;"><i class="fa-solid fa-phone" style="color:#38bdf8; width:18px;"></i> Hotline / Zalo:</span>
+                  <a href="https://zalo.me/0968033451" target="_blank" style="color:#38bdf8; font-weight:700; text-decoration:none;">0968.033.451</a>
+                </div>
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <span style="color:#94a3b8;"><i class="fa-brands fa-telegram" style="color:#0ea5e9; width:18px;"></i> Telegram:</span>
+                  <a href="https://t.me/muabantaikhoanmmo" target="_blank" style="color:#38bdf8; font-weight:700; text-decoration:none;">@muabantaikhoanmmo</a>
+                </div>
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <span style="color:#94a3b8;"><i class="fa-solid fa-envelope" style="color:#f59e0b; width:18px;"></i> Email:</span>
+                  <span style="color:#fff; font-weight:600;">manhdongvtc@gmail.com</span>
+                </div>
+              </div>
+              <div style="display:flex; gap:10px; justify-content:center;">
+                <a href="https://zalo.me/0968033451" target="_blank" style="flex:1; padding:12px 16px; background:#0284c7; color:#fff; border-radius:8px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; font-size:0.9rem;">
+                  <i class="fa-solid fa-comment-dots"></i> Liên Hệ Mở Khóa (Zalo)
+                </a>
+                <button type="button" onclick="closeAccountLockedModal()" style="padding:12px 20px; background:#1e293b; color:#94a3b8; border:1px solid #334155; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.9rem;">
+                  Đóng
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(modal);
+      } else {
+        modal.style.display = "flex";
+      }
+
+      if (email) {
+        const emailNotice = document.getElementById("accountLockedEmailNotice");
+        if (emailNotice) {
+          emailNotice.innerHTML = 'Tài khoản: <strong style="color:#f87171;">' + (typeof escapeHtml === "function" ? escapeHtml(email) : email) + '</strong>';
+          emailNotice.style.display = "block";
+        }
+      }
+
+      if (typeof showToast === "function") {
+        showToast("🚫 Tài khoản tạm khóa do nghi ngờ gian lận. Liên hệ Admin để mở khóa", "danger", 8000);
+      }
+    }
+    window.showAccountLockedModal = showAccountLockedModal;
+
+    function closeAccountLockedModal() {
+      const m = document.getElementById("accountLockedModal");
+      if (m) m.style.display = "none";
+    }
+    window.closeAccountLockedModal = closeAccountLockedModal;
+
+    function forceLogoutLockedUser(email) {
+      currentUser = null;
+      try { localStorage.removeItem("mmo_user"); } catch(e) {}
+      try { sessionStorage.removeItem("mmo_user"); } catch(e) {}
+      try { localStorage.setItem("mmo_current_view", "viewStore"); } catch(e) {}
+      if (typeof updateUserUI === "function") updateUserUI();
+      if (typeof switchView === "function") switchView("viewStore");
+      showAccountLockedModal(email);
+    }
+    window.forceLogoutLockedUser = forceLogoutLockedUser;
     
     function loadStoredUser() {
       try {
         const stored = localStorage.getItem("mmo_user");
         if (stored) {
           currentUser = JSON.parse(stored);
+          if (currentUser) {
+            // Dọn dẹp phiên thử nghiệm ADMIN_ROOT nếu còn sót
+            if (currentUser.userId === "ADMIN_ROOT") {
+              localStorage.removeItem("mmo_user");
+              currentUser = null;
+              if (typeof updateUserUI === "function") updateUserUI();
+              return;
+            }
+
+            // Kiểm tra tài khoản có bị khóa không
+            if (currentUser.email && isUserLocked(currentUser.email)) {
+              forceLogoutLockedUser(currentUser.email);
+              return;
+            }
+          }
           if (currentUser && currentUser.email) {
             const users = getRegisteredUsers();
             const found = users.find(u => (u.email || "").toLowerCase().trim() === currentUser.email.toLowerCase().trim());
             if (found) {
+              if (found.isLocked) {
+                forceLogoutLockedUser(currentUser.email);
+                return;
+              }
               // Đồng bộ số dư chuẩn từ database thành viên (không để 0 đè lên số dư thật)
               if (found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
                 currentUser.balance = Number(found.balance);
@@ -2746,7 +2872,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const isAdm = (emailLower === rootEmail || emailLower === "muabantaikhoanmmo@gmail.com" || (typeof isAdminUser === "function" && isAdminUser(u)) || u.role === "Quản Trị Viên");
         const roleHtml = isAdm ? '<span class="badge-trust" style="font-size:0.7rem; background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4);">Quản Trị Viên</span>' : '<span class="badge-verified" style="font-size:0.7rem;">' + (u.role || "Thành Viên") + '</span>';
         
-        const isLocked = !!u.isLocked;
+        const isLocked = (typeof isUserLocked === "function") ? isUserLocked(u.email) : !!u.isLocked;
         const statusHtml = isLocked 
           ? '<span style="color:#ef4444; font-size:0.75rem; font-weight:700; background:rgba(239,68,68,0.15); padding:3px 8px; border-radius:4px; border:1px solid rgba(239,68,68,0.3);"><i class="fa-solid fa-lock"></i> Đã Khóa</span>'
           : '<span style="color:#10b981; font-size:0.75rem; font-weight:700; background:rgba(16,185,129,0.15); padding:3px 8px; border-radius:4px; border:1px solid rgba(16,185,129,0.3);"><i class="fa-solid fa-circle-check"></i> Hoạt Động</span>';
@@ -7274,10 +7400,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
         email = email.trim().toLowerCase();
 
+        // KIỂM TRA TÀI KHOẢN CÓ ĐANG BỊ KHÓA DO GIAN LẬN KHÔNG
+        if (typeof isUserLocked === "function" && isUserLocked(email)) {
+          closeModal("authModal");
+          showAccountLockedModal(email);
+          return;
+        }
+
         // Check if this email exists in registered members to preserve proper name and balance
         let users = getRegisteredUsers();
         const existingIdx = users.findIndex(u => (u.email || "").toLowerCase().trim() === email);
         const existingUser = existingIdx !== -1 ? users[existingIdx] : null;
+
+        if (existingUser && (existingUser.isLocked || existingUser.status === "LOCKED")) {
+          closeModal("authModal");
+          showAccountLockedModal(email);
+          return;
+        }
 
         name = name || (existingUser && existingUser.name) || email.split("@")[0];
         picture = picture || (existingUser && existingUser.avatar) || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email));
@@ -7332,6 +7471,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             role: currentUser.role
           }).then(function(res) {
             if (res && res.success && res.user) {
+              if (res.user.is_locked || res.user.isLocked || res.user.status === "LOCKED") {
+                forceLogoutLockedUser(email);
+                return;
+              }
               currentUser.userId = res.user.userId || currentUser.userId;
               if (res.user.balance !== undefined) {
                 currentUser.balance = Number(res.user.balance);
@@ -7375,6 +7518,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return;
       }
 
+      // KIỂM TRA TÀI KHOẢN CÓ ĐANG BỊ KHÓA DO GIAN LẬN KHÔNG
+      if (typeof isUserLocked === "function" && isUserLocked(email)) {
+        closeModal("authModal");
+        showAccountLockedModal(email);
+        return;
+      }
+
       showToast("⏳ Đang xác thực đăng nhập...", "info");
 
       const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
@@ -7383,6 +7533,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // Instant local check
       let users = getRegisteredUsers();
       const found = users.find(u => (u.email || "").toLowerCase().trim() === email);
+
+      if (found && (found.isLocked || found.status === "LOCKED")) {
+        closeModal("authModal");
+        showAccountLockedModal(email);
+        return;
+      }
 
       const savedRefCode = (localStorage.getItem("mmo_ref_code") || sessionStorage.getItem("mmo_ref_code") || "").trim().toLowerCase();
       let refToAssign = "";
@@ -7603,19 +7759,36 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const headerWalletBalance = document.getElementById("headerWalletBalance");
       const authArea = document.getElementById("authArea");
       const navAdmin = document.getElementById("navAdmin");
+      const profAdminBtn = document.getElementById("profAdminShortcutBtn");
 
       if (currentUser && currentUser.email) {
+        // Kiểm tra nếu tài khoản đang bị khóa
+        if (typeof isUserLocked === "function" && isUserLocked(currentUser.email)) {
+          forceLogoutLockedUser(currentUser.email);
+          return;
+        }
+
         const balStr = formatVND(currentUser.balance || 0);
-        const isAdmin = isAdminUser(currentUser);
+        const isAdmin = (typeof isAdminUser === "function") && isAdminUser(currentUser);
+
+        // Quản lý class body và hiển thị Admin
+        if (document.body) {
+          if (isAdmin) {
+            document.body.classList.add("is-admin");
+          } else {
+            document.body.classList.remove("is-admin");
+          }
+        }
+
         if (headerWalletBalance) headerWalletBalance.innerText = balStr;
         const mobBal = document.getElementById("mobDrawerBalance");
         if (mobBal) mobBal.innerText = "Số dư: " + balStr;
         const mobName = document.getElementById("mobDrawerName");
         if (mobName) mobName.innerText = currentUser.name || currentUser.email.split("@")[0];
         const mobAdm = document.getElementById("mobDrawerAdminLink");
-        if (mobAdm) mobAdm.style.display = isAdmin ? "flex" : "none";
-
-        if (navAdmin) navAdmin.style.display = isAdmin ? "flex" : "none";
+        if (mobAdm) mobAdm.style.setProperty("display", isAdmin ? "flex" : "none", "important");
+        if (navAdmin) navAdmin.style.setProperty("display", isAdmin ? "flex" : "none", "important");
+        if (profAdminBtn) profAdminBtn.style.setProperty("display", isAdmin ? "flex" : "none", "important");
 
         if (authArea) {
           const avatarUrl = currentUser.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(currentUser.email));
@@ -7662,7 +7835,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const profRoleEl = document.getElementById("profUserBadge") || document.getElementById("profUserRole");
         const profAvatarEl = document.getElementById("profUserAvatar");
         const profBalanceEl = document.getElementById("profDisplayBalance") || document.getElementById("profBalanceDisplay");
-        const profAdminBtn = document.getElementById("profAdminShortcutBtn");
 
         if (profNameEl) profNameEl.innerText = currentUser.name || currentUser.email.split("@")[0];
         if (profEmailEl) profEmailEl.innerText = currentUser.email;
@@ -7673,17 +7845,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
         if (profAvatarEl) profAvatarEl.src = currentUser.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(currentUser.email));
         if (profBalanceEl) profBalanceEl.innerText = balStr;
-        if (profAdminBtn) profAdminBtn.style.display = isAdmin ? "flex" : "none";
 
       } else {
+        if (document.body) document.body.classList.remove("is-admin");
         if (headerWalletBalance) headerWalletBalance.innerText = "0 đ";
         const mobBalOut = document.getElementById("mobDrawerBalance");
         if (mobBalOut) mobBalOut.innerText = "Chưa đăng nhập";
         const mobNameOut = document.getElementById("mobDrawerName");
         if (mobNameOut) mobNameOut.innerText = "Khách vãng lai";
         const mobAdmOut = document.getElementById("mobDrawerAdminLink");
-        if (mobAdmOut) mobAdmOut.style.display = "none";
-        if (navAdmin) navAdmin.style.display = "none";
+        if (mobAdmOut) mobAdmOut.style.setProperty("display", "none", "important");
+        if (navAdmin) navAdmin.style.setProperty("display", "none", "important");
+        if (profAdminBtn) profAdminBtn.style.setProperty("display", "none", "important");
         if (authArea) {
           authArea.innerHTML = `
             <button class="btn-auth" onclick="openAuthModal('login')">
@@ -8220,6 +8393,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           showToast("🔒 Vui lòng đăng nhập để truy cập trang này!", "info");
           switchView("viewStore");
           openAuthModal("login");
+          return;
+        }
+
+        if (typeof isUserLocked === "function" && isUserLocked(checkUser.email)) {
+          forceLogoutLockedUser(checkUser.email);
           return;
         }
 
@@ -25529,28 +25707,80 @@ function syncAllOpenViewsStock(changedProdId) {
     // ==================== MEMBER LOCK & DELETE SYSTEM ====================
     function toggleLockUser(email) {
       const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
-      if (email.toLowerCase().trim() === rootEmail) {
+      const targetEmail = (email || "").toLowerCase().trim();
+      if (targetEmail === rootEmail) {
         showToast("Không thể khóa tài khoản Root Admin!", "warning");
         return;
       }
-      if (currentUser && currentUser.email.toLowerCase().trim() === email.toLowerCase().trim()) {
+      if (currentUser && (currentUser.email || "").toLowerCase().trim() === targetEmail) {
         showToast("Bạn không thể tự khóa tài khoản của chính mình!", "warning");
         return;
       }
 
       let users = getRegisteredUsers();
-      const idx = users.findIndex(u => (u.email || "").toLowerCase() === email.toLowerCase());
+      const idx = users.findIndex(u => (u.email || "").toLowerCase().trim() === targetEmail);
       if (idx === -1) {
         showToast("Không tìm thấy người dùng!", "danger");
         return;
       }
 
-      users[idx].isLocked = !users[idx].isLocked;
+      const willBeLocked = !users[idx].isLocked;
+      users[idx].isLocked = willBeLocked;
+      users[idx].status = willBeLocked ? "LOCKED" : "ACTIVE";
       saveRegisteredUsers(users);
+
+      // Cập nhật danh sách mmo_locked_emails trong localStorage
+      try {
+        let lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
+        if (!Array.isArray(lockedList)) lockedList = [];
+        if (willBeLocked) {
+          if (!lockedList.includes(targetEmail)) lockedList.push(targetEmail);
+        } else {
+          lockedList = lockedList.filter(e => String(e||"").toLowerCase().trim() !== targetEmail);
+        }
+        localStorage.setItem("mmo_locked_emails", JSON.stringify(lockedList));
+      } catch(e) {}
+
+      // Phát sóng tức thì 0ms qua BroadcastChannel tới tất cả các tab & cửa sổ
+      try {
+        const bc = new BroadcastChannel("mmo_channel");
+        bc.postMessage({
+          type: "USER_LOCK_STATUS_CHANGED",
+          email: targetEmail,
+          isLocked: willBeLocked,
+          timestamp: Date.now()
+        });
+      } catch(e) {}
+
+      // Đồng bộ trạng thái khóa lên Cloudflare Worker Turso Database
+      try {
+        fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/admin/user/lock", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: targetEmail, isLocked: willBeLocked })
+        }).catch(function(err) {
+          console.warn("Sync lock to cloud warning:", err);
+        });
+      } catch(e) {}
+
+      // Cập nhật lại giao diện modal chi tiết nếu đang mở cho tài khoản này
+      const modalEmailEl = document.getElementById("admDetailUserEmail");
+      if (modalEmailEl && modalEmailEl.innerText.toLowerCase().trim() === targetEmail) {
+        const statusBadge = document.getElementById("admDetailUserStatusBadge");
+        if (statusBadge) {
+          statusBadge.innerText = willBeLocked ? "Đã Khóa" : "Hoạt Động";
+          statusBadge.style.color = willBeLocked ? "#ef4444" : "#10b981";
+        }
+        const btnLock = document.getElementById("admDetailBtnLock");
+        if (btnLock) {
+          btnLock.innerHTML = willBeLocked ? '<i class="fa-solid fa-unlock"></i> Mở Khóa' : '<i class="fa-solid fa-lock"></i> Khóa Acc';
+        }
+      }
+
       renderAdminUsersTable();
 
-      if (users[idx].isLocked) {
-        showToast("🔒 Đã khóa tài khoản: " + users[idx].name, "warning");
+      if (willBeLocked) {
+        showToast("🔒 Đã khóa tài khoản: " + users[idx].name + " (" + targetEmail + "). Tài khoản đang online sẽ bị ép đăng xuất ngay lập tức!", "warning", 5000);
       } else {
         showToast("🔓 Đã mở khóa tài khoản: " + users[idx].name, "success");
       }
@@ -25586,6 +25816,16 @@ function syncAllOpenViewsStock(changedProdId) {
         adminList = adminList.filter(e => (e || "").toLowerCase().trim() !== targetEmail);
         saveAdminEmails(adminList);
       }
+
+      // Broadcast user deleted
+      try {
+        const bc = new BroadcastChannel("mmo_channel");
+        bc.postMessage({
+          type: "USER_DELETED",
+          email: targetEmail,
+          timestamp: Date.now()
+        });
+      } catch(e) {}
 
       // Also delete from Google Sheet in real time!
       try {
@@ -26022,8 +26262,26 @@ function changeAdmUsersPage(p) {
       if (!window._mmoPersistentGlobalBc) {
         window._mmoPersistentGlobalBc = new BroadcastChannel("mmo_channel");
         window._mmoPersistentGlobalBc.onmessage = function(ev) {
-          if (ev && ev.data && (ev.data.type === "NEW_PREORDER" || ev.data.type === "ORDER_STATUS_CHANGED" || ev.data.type === "PREORDERS_UPDATED")) {
+          if (!ev || !ev.data) return;
+          if (ev.data.type === "NEW_PREORDER" || ev.data.type === "ORDER_STATUS_CHANGED" || ev.data.type === "PREORDERS_UPDATED") {
             handlePreOrdersBroadcastMessage(ev.data);
+          }
+          if (ev.data.type === "USER_LOCK_STATUS_CHANGED") {
+            const targetEmail = (ev.data.email || "").toLowerCase().trim();
+            const willBeLocked = !!ev.data.isLocked;
+            try {
+              let lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
+              if (!Array.isArray(lockedList)) lockedList = [];
+              if (willBeLocked) {
+                if (!lockedList.includes(targetEmail)) lockedList.push(targetEmail);
+              } else {
+                lockedList = lockedList.filter(e => String(e||"").toLowerCase().trim() !== targetEmail);
+              }
+              localStorage.setItem("mmo_locked_emails", JSON.stringify(lockedList));
+            } catch(e) {}
+            if (willBeLocked && typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === targetEmail) {
+              forceLogoutLockedUser(targetEmail);
+            }
           }
         };
       }
@@ -26215,6 +26473,46 @@ function changeAdmUsersPage(p) {
             if (typeof updateUserUI === "function") updateUserUI();
             if (typeof renderUserWalletTransactions === "function") renderUserWalletTransactions();
             if (typeof renderUserBalanceLogs === "function") renderUserBalanceLogs();
+            if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
+          }
+          if (ev && ev.data && ev.data.type === "USER_LOCK_STATUS_CHANGED") {
+            const targetEmail = (ev.data.email || "").toLowerCase().trim();
+            const willBeLocked = !!ev.data.isLocked;
+            try {
+              let lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
+              if (!Array.isArray(lockedList)) lockedList = [];
+              if (willBeLocked) {
+                if (!lockedList.includes(targetEmail)) lockedList.push(targetEmail);
+              } else {
+                lockedList = lockedList.filter(e => String(e||"").toLowerCase().trim() !== targetEmail);
+              }
+              localStorage.setItem("mmo_locked_emails", JSON.stringify(lockedList));
+            } catch(e) {}
+
+            try {
+              let users = getRegisteredUsers();
+              const uIdx = users.findIndex(u => (u.email || "").toLowerCase().trim() === targetEmail);
+              if (uIdx !== -1) {
+                users[uIdx].isLocked = willBeLocked;
+                users[uIdx].status = willBeLocked ? "LOCKED" : "ACTIVE";
+                saveRegisteredUsers(users);
+              }
+            } catch(e) {}
+
+            if (willBeLocked && typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === targetEmail) {
+              forceLogoutLockedUser(targetEmail);
+            }
+            if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
+          }
+          if (ev && ev.data && ev.data.type === "USER_DELETED") {
+            const targetEmail = (ev.data.email || "").toLowerCase().trim();
+            if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === targetEmail) {
+              currentUser = null;
+              try { localStorage.removeItem("mmo_user"); } catch(e) {}
+              if (typeof updateUserUI === "function") updateUserUI();
+              if (typeof switchView === "function") switchView("viewStore");
+              showToast("Tài khoản của bạn đã bị xóa khỏi hệ thống!", "warning");
+            }
             if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
           }
           if (ev && ev.data && ev.data.type === "STOCK_UPDATED") {

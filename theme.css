@@ -6282,3 +6282,17 @@ a, button, [onclick], .nav-link, .product-card, .blog-item, .category-card, .sid
   color: #38bdf8 !important;
   border-color: #334155 !important;
 }
+
+/* ==================== STRICT ADMIN HIDING & LOCK MODAL ==================== */
+#navAdmin, #mobDrawerAdminLink, #profAdminShortcutBtn {
+  display: none !important;
+}
+body.is-admin #navAdmin {
+  display: flex !important;
+}
+body.is-admin #mobDrawerAdminLink {
+  display: flex !important;
+}
+body.is-admin #profAdminShortcutBtn {
+  display: flex !important;
+}
