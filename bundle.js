@@ -16005,6 +16005,20 @@ function syncAllOpenViewsStock(changedProdId) {
             lossBanner.style.display = "none";
           }
         }
+
+        // Cập nhật trạng thái badge Auto Price
+        if (typeof updateAutoPriceBadgesUI === "function") {
+          updateAutoPriceBadgesUI();
+        }
+
+        // Tự động bảo vệ chống bán lỗ nếu phát hiện lossCount > 0 và chế độ Auto Protect đang bật
+        if (lossCount > 0 && typeof isAutoPriceProtectEnabled === "function" && isAutoPriceProtectEnabled()) {
+          setTimeout(function() {
+            if (typeof checkAndAutoProtectLossProductsOnScan === "function") {
+              checkAndAutoProtectLossProductsOnScan();
+            }
+          }, 300);
+        }
       } catch(e) {
         console.warn("updateApiSourceAlertsBadge error:", e);
       }
@@ -16472,6 +16486,493 @@ function syncAllOpenViewsStock(changedProdId) {
       updateApiSourceAlertsBadge();
     }
     window.acknowledgeApiPriceChange = acknowledgeApiPriceChange;
+
+    // =========================================================================
+    // HỆ THỐNG CHỐNG BÁN LỖ TỰ ĐỘNG & TỰ ĐỘNG TĂNG GIÁ THÔNG MINH (ANTI-LOSS AUTO PRICING)
+    // =========================================================================
+    const STORAGE_KEY_AUTO_PRICE_MARGIN = "mmo_auto_price_margin_percent";
+    const STORAGE_KEY_AUTO_PRICE_PROTECT_ENABLED = "mmo_auto_price_protect_enabled";
+    const STORAGE_KEY_AUTO_PRICE_LOGS = "mmo_auto_price_adjust_logs";
+
+    function getAutoPriceMarginPercent() {
+      try {
+        const val = localStorage.getItem(STORAGE_KEY_AUTO_PRICE_MARGIN);
+        if (val !== null && val !== undefined && val !== "") {
+          const num = Number(val);
+          if (!isNaN(num) && num > 0) return num;
+        }
+      } catch(e) {}
+      return 20; // Mặc định 20%
+    }
+    window.getAutoPriceMarginPercent = getAutoPriceMarginPercent;
+
+    function setAutoPriceMarginPercent(pct) {
+      const num = Number(pct);
+      const safePct = (!isNaN(num) && num > 0) ? num : 20;
+      try {
+        localStorage.setItem(STORAGE_KEY_AUTO_PRICE_MARGIN, String(safePct));
+      } catch(e) {}
+      updateAutoPriceBadgesUI(safePct);
+      return safePct;
+    }
+    window.setAutoPriceMarginPercent = setAutoPriceMarginPercent;
+
+    function isAutoPriceProtectEnabled() {
+      try {
+        const val = localStorage.getItem(STORAGE_KEY_AUTO_PRICE_PROTECT_ENABLED);
+        if (val === "false") return false;
+      } catch(e) {}
+      return true; // Mặc định BẬT bảo vệ chống bán lỗ
+    }
+    window.isAutoPriceProtectEnabled = isAutoPriceProtectEnabled;
+
+    function setAutoPriceProtectEnabled(enabled) {
+      try {
+        localStorage.setItem(STORAGE_KEY_AUTO_PRICE_PROTECT_ENABLED, enabled ? "true" : "false");
+      } catch(e) {}
+      updateAutoPriceBadgesUI();
+    }
+    window.setAutoPriceProtectEnabled = setAutoPriceProtectEnabled;
+
+    function getAutoPriceAdjustLogs() {
+      try {
+        const str = localStorage.getItem(STORAGE_KEY_AUTO_PRICE_LOGS);
+        if (str) {
+          const parsed = JSON.parse(str);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch(e) {}
+      return [];
+    }
+    window.getAutoPriceAdjustLogs = getAutoPriceAdjustLogs;
+
+    function addAutoPriceAdjustLog(log) {
+      try {
+        const logs = getAutoPriceAdjustLogs();
+        logs.unshift(Object.assign({
+          id: "APLOG_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+          timestamp: Date.now(),
+          timeStr: new Date().toLocaleTimeString("vi-VN") + " " + new Date().toLocaleDateString("vi-VN")
+        }, log));
+        localStorage.setItem(STORAGE_KEY_AUTO_PRICE_LOGS, JSON.stringify(logs.slice(0, 50)));
+      } catch(e) {}
+    }
+    window.addAutoPriceAdjustLog = addAutoPriceAdjustLog;
+
+    function clearAutoPriceLogs() {
+      try {
+        localStorage.removeItem(STORAGE_KEY_AUTO_PRICE_LOGS);
+        renderAutoPriceLogs();
+        if (typeof showToast === "function") showToast("Đã xóa lịch sử điều chỉnh giá tự động", "info");
+      } catch(e) {}
+    }
+    window.clearAutoPriceLogs = clearAutoPriceLogs;
+
+    // Tính giá an toàn chống bán lỗ:
+    // newPrice = cost * (1 + margin / 100)
+    // Nếu cost >= 1000đ: làm tròn lên bội số 1000đ để giá đẹp chuyên nghiệp (10.000, 12.000, 25.000, ...)
+    // Tuyệt đối đảm bảo newPrice > cost
+    function calculateSafePriceForLoss(cost, pct) {
+      const c = Number(cost) || 0;
+      const p = Number(pct) || 20;
+      if (c <= 0) return 0;
+      const raw = c * (1 + p / 100);
+      let calculated = 0;
+      if (c >= 1000) {
+        calculated = Math.ceil(raw / 1000) * 1000;
+      } else {
+        calculated = Math.ceil(raw);
+      }
+      if (calculated <= c) {
+        calculated = c + (c >= 1000 ? 1000 : 1);
+      }
+      return calculated;
+    }
+    window.calculateSafePriceForLoss = calculateSafePriceForLoss;
+
+    function updateAutoPriceBadgesUI(pct) {
+      const currentPct = pct !== undefined ? pct : getAutoPriceMarginPercent();
+      const enabled = isAutoPriceProtectEnabled();
+      const text = enabled ? ("+" + currentPct + "%") : "TẮT";
+      const bg = enabled ? "#10b981" : "#64748b";
+
+      ["admAutoPriceNavBadge", "admAutoPriceBadgeStatus", "admAutoPriceSubtabBadge"].forEach(function(bId) {
+        const el = document.getElementById(bId);
+        if (el) {
+          el.innerText = text;
+          el.style.background = bg;
+        }
+      });
+      const modalBadge = document.getElementById("admAutoPriceModalActiveBadge");
+      if (modalBadge) {
+        modalBadge.innerText = enabled ? ("BẢO VỆ 24/7 (+" + currentPct + "%)") : "ĐANG TẮT";
+        modalBadge.style.background = bg;
+      }
+    }
+    window.updateAutoPriceBadgesUI = updateAutoPriceBadgesUI;
+
+    function setAutoPricePercentPreset(pct) {
+      const inp = document.getElementById("inpAutoPriceMarginPercent");
+      if (inp) inp.value = pct;
+      document.querySelectorAll(".btn-auto-pct-preset").forEach(function(b) {
+        b.classList.remove("active");
+        b.style.background = "#1e293b";
+        b.style.color = "#94a3b8";
+        b.style.borderColor = "#334155";
+      });
+      if (typeof event !== "undefined" && event && event.currentTarget) {
+        event.currentTarget.classList.add("active");
+        event.currentTarget.style.background = "rgba(16,185,129,0.2)";
+        event.currentTarget.style.color = "#10b981";
+        event.currentTarget.style.borderColor = "#10b981";
+      }
+      updateAutoPriceFormulaPreview();
+    }
+    window.setAutoPricePercentPreset = setAutoPricePercentPreset;
+
+    function updateAutoPriceFormulaPreview() {
+      const inp = document.getElementById("inpAutoPriceMarginPercent");
+      const pct = Number(inp ? inp.value : 20) || 20;
+      const txtPreview = document.getElementById("txtPreviewPercent");
+      if (txtPreview) txtPreview.innerText = pct + "%";
+
+      const previewBox = document.getElementById("autoPriceFormulaPreview");
+      if (previewBox) {
+        const sampleCost = 10000;
+        const sampleSafe = calculateSafePriceForLoss(sampleCost, pct);
+        const profit = sampleSafe - sampleCost;
+        previewBox.innerHTML = "<b>💡 Công thức áp dụng:</b> Giá bán shop = Giá vốn nguồn + <span style='color:#10b981; font-weight:800;'>" + pct + "%</span> (Làm tròn 1.000đ an toàn).<br/>" +
+          "<b>Ví dụ:</b> Giá vốn nguồn tăng lên <span style='color:#f59e0b; font-weight:700;'>" + formatVND(sampleCost) + "</span> &rarr; Giá bán shop tự động nhảy lên <span style='color:#10b981; font-weight:800;'>" + formatVND(sampleSafe) + "</span> (Lợi nhuận an toàn <b>" + formatVND(profit) + "</b>).";
+      }
+    }
+    window.updateAutoPriceFormulaPreview = updateAutoPriceFormulaPreview;
+
+    function toggleAutoPriceProtectState(enabled) {
+      setAutoPriceProtectEnabled(enabled);
+      if (typeof showToast === "function") {
+        showToast(enabled ? "🛡️ Đã BẬT chế độ tự động bảo vệ chống bán lỗ 24/7!" : "⚠️ Đã TẮT chế độ tự động chống bán lỗ.", enabled ? "success" : "info");
+      }
+      updateAutoPriceBadgesUI();
+    }
+    window.toggleAutoPriceProtectState = toggleAutoPriceProtectState;
+
+    function saveAutoPriceConfig() {
+      const inp = document.getElementById("inpAutoPriceMarginPercent");
+      const pct = Number(inp ? inp.value : 20) || 20;
+      if (pct <= 0) {
+        if (typeof showToast === "function") showToast("Tỷ lệ % tăng giá phải lớn hơn 0%", "warning");
+        return;
+      }
+      setAutoPriceMarginPercent(pct);
+      const chk = document.getElementById("chkAutoPriceProtectEnabled");
+      if (chk) setAutoPriceProtectEnabled(chk.checked);
+      if (typeof showToast === "function") {
+        showToast("💾 Đã lưu cấu hình chống bán lỗ: Tự động tăng +" + pct + "% khi phát hiện giá nguồn tăng!", "success");
+      }
+      renderAutoPriceLossTable();
+    }
+    window.saveAutoPriceConfig = saveAutoPriceConfig;
+
+    function openAutoPriceAdjustModal() {
+      const modal = document.getElementById("admAutoPriceModal");
+      if (!modal) return;
+      modal.style.display = "flex";
+
+      const currentPct = getAutoPriceMarginPercent();
+      const inp = document.getElementById("inpAutoPriceMarginPercent");
+      if (inp) inp.value = currentPct;
+
+      const chk = document.getElementById("chkAutoPriceProtectEnabled");
+      if (chk) chk.checked = isAutoPriceProtectEnabled();
+
+      document.querySelectorAll(".btn-auto-pct-preset").forEach(function(b) {
+        const text = b.innerText;
+        if (text.includes("+" + currentPct + "%")) {
+          b.classList.add("active");
+          b.style.background = "rgba(16,185,129,0.2)";
+          b.style.color = "#10b981";
+          b.style.borderColor = "#10b981";
+        } else {
+          b.classList.remove("active");
+          b.style.background = "#1e293b";
+          b.style.color = "#94a3b8";
+          b.style.borderColor = "#334155";
+        }
+      });
+
+      updateAutoPriceFormulaPreview();
+      updateAutoPriceBadgesUI(currentPct);
+      renderAutoPriceLossTable();
+      renderAutoPriceLogs();
+    }
+    window.openAutoPriceAdjustModal = openAutoPriceAdjustModal;
+
+    function closeAutoPriceAdjustModal() {
+      const modal = document.getElementById("admAutoPriceModal");
+      if (modal) modal.style.display = "none";
+    }
+    window.closeAutoPriceAdjustModal = closeAutoPriceAdjustModal;
+
+    function handleLossBannerAction() {
+      openAutoPriceAdjustModal();
+    }
+    window.handleLossBannerAction = handleLossBannerAction;
+
+    function renderAutoPriceLossTable() {
+      const container = document.getElementById("autoPriceLossListContainer");
+      const badge = document.getElementById("autoPriceLossCountBadge");
+      const btnAll = document.getElementById("btnApplyAllLossBoost");
+      if (!container) return;
+
+      const alerts = (typeof computeApiSourceAlerts === "function") ? computeApiSourceAlerts() : [];
+      // CHỈ LẤY CÁC SẢN PHẨM CÓ NGUY CƠ BÁN LỖ (isLoss === true)
+      const lossAlerts = alerts.filter(a => a.isLoss && a.product);
+      const count = lossAlerts.length;
+
+      if (badge) {
+        badge.innerText = count + " SP";
+        badge.style.background = count > 0 ? "#ef4444" : "#10b981";
+      }
+      if (btnAll) {
+        btnAll.style.display = count > 0 ? "inline-flex" : "none";
+        btnAll.innerHTML = "<i class='fa-solid fa-bolt'></i> Tăng Giá Toàn Bộ (" + count + " SP Bị Lỗ) Ngay";
+      }
+
+      if (count === 0) {
+        container.innerHTML = `
+          <div style='background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.3); border-radius:8px; padding:16px; text-align:center;'>
+            <div style='font-size:1.8rem; color:#10b981; margin-bottom:6px;'><i class='fa-solid fa-circle-check'></i></div>
+            <div style='font-size:0.9rem; font-weight:800; color:#fff;'>Tuyệt vời! Toàn bộ sản phẩm đều an toàn</div>
+            <div style='font-size:0.78rem; color:#94a3b8; margin-top:3px;'>
+              Không có sản phẩm nào có giá vốn vượt quá giá bán shop. Hệ thống tự động giám sát 24/7 và nâng giá ngay khi có biến động.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      const configuredPct = getAutoPriceMarginPercent();
+      let html = `<div style='display:flex; flex-direction:column; gap:10px;'>`;
+
+      lossAlerts.forEach(function(alert) {
+        const prod = alert.product;
+        const liveCost = alert.livePrice || 0;
+        const shopPrice = alert.shopPrice || 0;
+        const lossAmount = liveCost - shopPrice;
+        const safePrice = calculateSafePriceForLoss(liveCost, configuredPct);
+        const expectedProfit = safePrice - liveCost;
+        const sourceName = alert.sourceName || (alert.source ? alert.source.name : "Nguồn API");
+        const badgeColor = alert.source && alert.source.badgeColor ? alert.source.badgeColor : "#06b6d4";
+        const prodImg = (prod && prod.image) ? prod.image : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp";
+
+        html += `
+          <div style='background:#070d1e; border:1px solid rgba(239,68,68,0.35); border-radius:8px; padding:12px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;'>
+            <div style='display:flex; align-items:center; gap:10px; flex:1; min-width:240px;'>
+              <img src='${prodImg}' style='width:44px; height:44px; border-radius:6px; object-fit:cover; border:1px solid #334155;' onerror="this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp'"/>
+              <div style='min-width:0;'>
+                <div style='font-size:0.85rem; font-weight:800; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;'>
+                  ${prod.name || prod.id}
+                </div>
+                <div style='display:flex; align-items:center; gap:8px; margin-top:2px; font-size:0.73rem;'>
+                  <span style='background:${badgeColor}; color:#fff; padding:1px 6px; border-radius:4px; font-weight:700;'>${sourceName}</span>
+                  <span style='color:#ef4444; font-weight:700;'>Đang bán lỗ: -${formatVND(lossAmount)}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div style='display:flex; align-items:center; gap:14px; flex-wrap:wrap;'>
+              <div style='text-align:right;'>
+                <div style='font-size:0.7rem; color:#94a3b8;'>Giá vốn nguồn</div>
+                <div style='font-size:0.88rem; font-weight:800; color:#f59e0b;'>${formatVND(liveCost)}</div>
+              </div>
+              <div style='text-align:right;'>
+                <div style='font-size:0.7rem; color:#94a3b8;'>Giá bán cũ</div>
+                <div style='font-size:0.88rem; font-weight:800; color:#ef4444; text-decoration:line-through;'>${formatVND(shopPrice)}</div>
+              </div>
+              <div style='text-align:right; background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); border-radius:6px; padding:4px 10px;'>
+                <div style='font-size:0.68rem; color:#10b981; font-weight:700;'>Giá đề xuất (+${configuredPct}%)</div>
+                <div style='font-size:0.95rem; font-weight:800; color:#10b981;'>${formatVND(safePrice)}</div>
+                <div style='font-size:0.65rem; color:#94a3b8;'>Lãi: +${formatVND(expectedProfit)}</div>
+              </div>
+              <button type='button' onclick='applyAutoPriceBoostToProduct("${prod.id}", ${liveCost}, ${configuredPct}, false)' style='background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:none; padding:7px 14px; border-radius:6px; font-size:0.78rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 6px rgba(2,132,199,0.3);'>
+                <i class='fa-solid fa-bolt'></i> Tăng Giá Ngay
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+    window.renderAutoPriceLossTable = renderAutoPriceLossTable;
+
+    function renderAutoPriceLogs() {
+      const container = document.getElementById("autoPriceLogsContainer");
+      if (!container) return;
+      const logs = getAutoPriceAdjustLogs();
+      if (logs.length === 0) {
+        container.innerHTML = "<div style='color:#64748b; font-style:italic; padding:8px 0;'>Chưa có lịch sử điều chỉnh giá tự động nào.</div>";
+        return;
+      }
+
+      let html = "<div style='display:flex; flex-direction:column; gap:6px;'>";
+      logs.forEach(function(l) {
+        html += `
+          <div style='background:#070d1e; border:1px solid #1e293b; border-radius:6px; padding:8px 10px; display:flex; justify-content:space-between; align-items:center; gap:10px;'>
+            <div>
+              <span style='color:#38bdf8; font-weight:700;'>[${l.timeStr || ""}]</span>
+              <span style='color:#fff; font-weight:700; margin-left:6px;'>${l.prodName || l.prodId}</span>:
+              <span style='color:#ef4444; text-decoration:line-through; margin-left:4px;'>${formatVND(l.oldPrice)}</span> &rarr;
+              <span style='color:#10b981; font-weight:800;'>${formatVND(l.newPrice)}</span>
+              <span style='color:#94a3b8; font-size:0.7rem;'> (Vốn: ${formatVND(l.cost)} +${l.pct}%)</span>
+            </div>
+            <span style='background:${l.isAuto ? "rgba(16,185,129,0.15)" : "rgba(56,189,248,0.15)"}; color:${l.isAuto ? "#10b981" : "#38bdf8"}; padding:1px 6px; border-radius:4px; font-weight:700; font-size:0.68rem;'>
+              ${l.isAuto ? "Tự Động Quét" : "Thủ Công"}
+            </span>
+          </div>
+        `;
+      });
+      html += "</div>";
+      container.innerHTML = html;
+    }
+    window.renderAutoPriceLogs = renderAutoPriceLogs;
+
+    // Áp dụng tăng giá cho DUY NHẤT 1 sản phẩm bị lỗ
+    function applyAutoPriceBoostToProduct(prodId, cost, pct, isSilent = false) {
+      if (!prodId) return null;
+      const targetPct = Number(pct) || getAutoPriceMarginPercent();
+      let prod = null;
+      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+        prod = MOCK_DATA.products.find(p => p && String(p.id) === String(prodId));
+      }
+      if (!prod) {
+        if (!isSilent && typeof showToast === "function") showToast("Không tìm thấy sản phẩm [" + prodId + "]", "warning");
+        return null;
+      }
+
+      const oldPrice = Number(prod.price) || 0;
+      const liveCost = Number(cost) > 0 ? Number(cost) : (prod.originalPrice || oldPrice);
+      const newSafePrice = calculateSafePriceForLoss(liveCost, targetPct);
+
+      if (newSafePrice <= 0) return null;
+
+      // Cập nhật giá sản phẩm
+      prod.price = newSafePrice;
+      if (Array.isArray(prod.variants) && prod.variants.length > 0 && prod.variants[0]) {
+        prod.variants[0].price = newSafePrice;
+      }
+
+      // Cập nhật baseline chuẩn
+      const baselineMap = getApiSourceBaselinePrices();
+      baselineMap[prod.id] = liveCost;
+      saveApiSourceBaselinePrices(baselineMap);
+
+      // Lưu LocalStorage
+      if (typeof saveProductsToStorage === "function") saveProductsToStorage();
+
+      // Đồng bộ Turso SQLite Cloud SSOT
+      try {
+        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof TURSO_CLIENT.saveProduct === "function") {
+          TURSO_CLIENT.saveProduct(prod).catch(e => console.warn("Turso auto protect save error:", e));
+        } else if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured() && typeof MMO_WORKER_API.adminSyncProducts === "function") {
+          MMO_WORKER_API.adminSyncProducts([prod]).catch(e => console.warn("Worker auto protect save error:", e));
+        }
+      } catch(eTurso) {}
+
+      // Ghi log
+      addAutoPriceAdjustLog({
+        prodId: prod.id,
+        prodName: prod.name || prod.id,
+        oldPrice: oldPrice,
+        newPrice: newSafePrice,
+        cost: liveCost,
+        pct: targetPct,
+        isAuto: isSilent
+      });
+
+      // Thông báo chuông & popup
+      const msg = "Đã tự động tăng giá [" + (prod.name || prod.id) + "] từ " + formatVND(oldPrice) + " lên " + formatVND(newSafePrice) + " (+" + targetPct + "% so với vốn " + formatVND(liveCost) + ") chống bán lỗ!";
+      if (typeof addUserNotification === "function") {
+        addUserNotification({
+          title: "🛡️ Tự Động Tăng Giá Chống Bán Lỗ",
+          message: msg,
+          type: "PRICE_ADJUST",
+          forAdmin: true,
+          playSound: true
+        });
+      }
+      if (!isSilent && typeof showToast === "function") {
+        showToast("🎉 " + msg, "success");
+      }
+
+      return { prod, oldPrice, newSafePrice, liveCost };
+    }
+    window.applyAutoPriceBoostToProduct = applyAutoPriceBoostToProduct;
+
+    // Áp dụng tăng giá cho TẤT CẢ các sản phẩm đang có nguy cơ bán lỗ
+    // TUYỆT ĐỐI CHỈ ĐIỀU CHỈNH SẢN PHẨM CÓ NGUY CƠ LỖ (isLoss === true), TẤT CẢ SẢN PHẨM KHÁC GIỮ NGUYÊN 100%!
+    function applyAutoPriceBoostToAllLoss(isManual = true) {
+      const alerts = (typeof computeApiSourceAlerts === "function") ? computeApiSourceAlerts() : [];
+      const lossAlerts = alerts.filter(a => a.isLoss && a.product);
+
+      if (lossAlerts.length === 0) {
+        if (isManual && typeof showToast === "function") {
+          showToast("🎉 Không có sản phẩm nào có nguy cơ bán lỗ! Toàn bộ sản phẩm đều an toàn.", "info");
+        }
+        return 0;
+      }
+
+      const configuredPct = getAutoPriceMarginPercent();
+      let adjustedCount = 0;
+
+      lossAlerts.forEach(function(alert) {
+        const prod = alert.product;
+        const liveCost = alert.livePrice || 0;
+        if (prod && liveCost > 0) {
+          applyAutoPriceBoostToProduct(prod.id, liveCost, configuredPct, !isManual);
+          adjustedCount++;
+        }
+      });
+
+      // Cập nhật lại UI toàn hệ thống
+      updateApiSourceAlertsBadge();
+      renderAdminApiSourcesAlertsUI();
+      renderAutoPriceLossTable();
+      renderAutoPriceLogs();
+      if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+
+      if (isManual && typeof showToast === "function") {
+        showToast("⚡ Đã tự động tăng giá an toàn cho toàn bộ " + adjustedCount + " sản phẩm bị lỗ (+" + configuredPct + "% so với giá vốn)!", "success");
+      }
+
+      return adjustedCount;
+    }
+    window.applyAutoPriceBoostToAllLoss = applyAutoPriceBoostToAllLoss;
+
+    // Hook tự động bảo vệ khi quét giá nguồn hoặc cập nhật alerts:
+    // Nếu isAutoPriceProtectEnabled() === true và có sản phẩm bị lỗ -> Tự động kích hoạt chống bán lỗ ngay!
+    let _lastAutoProtectCheckTime = 0;
+    function checkAndAutoProtectLossProductsOnScan() {
+      if (!isAutoPriceProtectEnabled()) return;
+      const now = Date.now();
+      // Chống spam: tối đa 1 lần mỗi 5 giây
+      if (now - _lastAutoProtectCheckTime < 5000) return;
+      _lastAutoProtectCheckTime = now;
+
+      try {
+        const alerts = (typeof computeApiSourceAlerts === "function") ? computeApiSourceAlerts() : [];
+        const lossAlerts = alerts.filter(a => a.isLoss && a.product);
+        if (lossAlerts.length > 0) {
+          console.log("[AutoPriceProtect] Phát hiện " + lossAlerts.length + " sản phẩm có nguy cơ bán lỗ -> Tự động tăng giá bảo vệ!");
+          applyAutoPriceBoostToAllLoss(false);
+        }
+      } catch(e) {
+        console.warn("checkAndAutoProtectLossProductsOnScan error:", e);
+      }
+    }
+    window.checkAndAutoProtectLossProductsOnScan = checkAndAutoProtectLossProductsOnScan;
 
     async function refreshApiSourceAlerts(isManual = true) {
       const icon = document.getElementById("iconRefreshApiAlerts");
