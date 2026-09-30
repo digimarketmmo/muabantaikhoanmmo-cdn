@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.4.7";
+const MMO_CURRENT_CODE_VERSION = "3.4.8";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // Tự động chuyển đổi toàn bộ nhãn 'Hết hàng' sang 'Đặt trước' (Chống kẹt cache 100% trên toàn bộ blog phụ)
