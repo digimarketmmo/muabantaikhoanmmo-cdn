@@ -9181,8 +9181,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         targetViewId = "tabAdmTxLogs";
         isOrdersTab = true;
       }
+      if (tabId === "api_sources" || tabId === "apiSources" || tabId === "tabAdmApiSources") {
+        tabId = "tabAdmApiSources";
+        targetViewId = "tabAdmApiSources";
+      }
 
-      const tabs = ["tabAdmDashboard", "tabAdmProducts", "tabAdmStock", "tabAdmUsers", "tabAdmWithdrawals", "tabAdmTxLogs", "tabAdmPayment", "tabAdmGeneral", "tabAdmAdmins", "tabAdmBlog", "tabAdmChat"];
+      const tabs = ["tabAdmDashboard", "tabAdmProducts", "tabAdmApiSources", "tabAdmStock", "tabAdmUsers", "tabAdmWithdrawals", "tabAdmTxLogs", "tabAdmPayment", "tabAdmGeneral", "tabAdmAdmins", "tabAdmBlog", "tabAdmChat"];
       tabs.forEach(function(t) {
         const el = document.getElementById(t);
         if (el) el.style.display = (t === targetViewId ? "block" : "none");
@@ -9191,6 +9195,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const btnMap = {
         tabAdmDashboard: "tabBtnAdmDashboard",
         tabAdmProducts: "tabBtnAdmProducts",
+        tabAdmApiSources: "tabBtnAdmApiSources",
         tabAdmStock: "tabBtnAdmStock",
         tabAdmUsers: "tabBtnAdmUsers",
         tabAdmWithdrawals: "tabBtnAdmWithdrawals",
@@ -9210,6 +9215,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const activeBtn = document.getElementById(btnMap[tabId]);
         if (activeBtn) activeBtn.classList.add("active");
       }
+
+      // Đồng bộ trạng thái active của sub-tabs bar trên đỉnh
+      const subProd1 = document.getElementById("subTabBtnProdList");
+      const subProd2 = document.getElementById("subTabBtnProdList2");
+      const subApi1 = document.getElementById("subTabBtnApiSources");
+      const subApi2 = document.getElementById("subTabBtnApiSources2");
+      if (tabId === "tabAdmProducts") {
+        if (subProd1) { subProd1.classList.add("active"); subProd1.style.background = "#1e293b"; subProd1.style.color = "#38bdf8"; subProd1.style.borderColor = "#334155"; }
+        if (subApi1) { subApi1.classList.remove("active"); subApi1.style.background = "transparent"; subApi1.style.color = "#94a3b8"; subApi1.style.borderColor = "transparent"; }
+      } else if (tabId === "tabAdmApiSources") {
+        if (subProd2) { subProd2.classList.remove("active"); subProd2.style.background = "transparent"; subProd2.style.color = "#94a3b8"; subProd2.style.borderColor = "transparent"; }
+        if (subApi2) { subApi2.classList.add("active"); subApi2.style.background = "#1e293b"; subApi2.style.color = "#38bdf8"; subApi2.style.borderColor = "#334155"; }
+      }
+
       // Ẩn bong bóng chat khi vào tab Chat Admin để tránh che khuất ô nhập và nút gửi
       const chatBubbleWidget = document.getElementById("mmoChatWidgetContainer");
       if (chatBubbleWidget) {
@@ -9221,6 +9240,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (tabId === "tabAdmProducts") {
         if (typeof renderAdminDashboard === "function") renderAdminDashboard();
         if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+        if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+      }
+      if (tabId === "tabAdmApiSources") {
+        if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
+        if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
       }
       if (tabId === "tabAdmChat") {
         if (typeof renderAdminChatUI === "function") renderAdminChatUI();
@@ -12285,6 +12309,8 @@ function syncAllOpenViewsStock(changedProdId) {
           try { localStorage.setItem("mmo_cached_source_products", JSON.stringify(freshProducts)); } catch(e) {}
           if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
           if (typeof handleAdmModalProviderChange === "function") handleAdmModalProviderChange();
+          if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+          if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
         }
       } catch(e) {
         console.warn("fetchApiSourceProducts error:", e);
@@ -14558,6 +14584,621 @@ function syncAllOpenViewsStock(changedProdId) {
       }, 400);
     }
     window.applySwitchSource = applySwitchSource;
+
+    // ============================================================================
+    // ADMIN API SOURCES & PRICE/STOCK ALERTS ENGINE (v3.4.7)
+    // Giám sát 5 nguồn hàng live, phát hiện tăng/giảm giá vốn, nguy cơ bán lỗ và hết hàng
+    // ============================================================================
+    window.admApiCurrentFilter = "ALL";
+    window.admApiSearchQuery = "";
+
+    function getApiSourceBaselinePrices() {
+      try {
+        const stored = localStorage.getItem("mmo_api_source_baseline_prices");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (parsed && typeof parsed === "object") return parsed;
+        }
+      } catch(e) {}
+      return {};
+    }
+
+    function saveApiSourceBaselinePrices(map) {
+      try {
+        localStorage.setItem("mmo_api_source_baseline_prices", JSON.stringify(map || {}));
+      } catch(e) {}
+    }
+
+    function computeApiSourceAlerts() {
+      const results = [];
+      const prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products))
+        ? MOCK_DATA.products
+        : ((typeof window !== "undefined" && window.MOCK_DATA && Array.isArray(window.MOCK_DATA.products))
+            ? window.MOCK_DATA.products
+            : []);
+
+      if (!prods || prods.length === 0) return results;
+
+      const cachedSrcs = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+        ? window.cachedSourceProducts
+        : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+
+      const baselineMap = getApiSourceBaselinePrices();
+      let hasNewBaselines = false;
+
+      prods.forEach(function(p) {
+        if (!p || !p.id) return;
+
+        // Bỏ qua nếu là sản phẩm kho nội bộ và không có liên kết API
+        const isLocalOnly = (p.deliveryType === "local" || p.delivery_type === "local" || p.deliveryType === "manual" || p.delivery_type === "manual");
+        const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null);
+        if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
+          if (isLocalOnly) return;
+        }
+        if (!apiMap || !apiMap.sourceProdId) return;
+
+        const prov = apiMap.provider || "selltainguyenmmo";
+        const cfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[prov])
+          ? API_SOURCES[prov]
+          : { id: prov, name: prov, badgeColor: "#06b6d4", baseUrl: "#" };
+
+        // Tìm sản phẩm trong bộ nhớ live cache 5 nguồn
+        const inSrc = cachedSrcs.find(function(s) {
+          return String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider);
+        }) || cachedSrcs.find(function(s) {
+          return String(s.id) === String(apiMap.sourceProdId);
+        });
+
+        const livePrice = inSrc ? (Number(inSrc.price) || 0) : (Number(apiMap.sourcePrice) || 0);
+        const liveStock = inSrc
+          ? (typeof inSrc.amount === "number" ? inSrc.amount : (Number(inSrc.amount) || 0))
+          : (Number(apiMap.sourceStock !== undefined ? apiMap.sourceStock : (p.stock || 0)));
+        const liveName = inSrc && inSrc.name ? inSrc.name : (apiMap.sourceProdName || p.name || "");
+
+        // Lấy hoặc khởi tạo baseline price (giá vốn gốc đã ghi nhận)
+        let baseCost = baselineMap[p.id];
+        if (baseCost === undefined || baseCost === null || isNaN(baseCost) || baseCost <= 0) {
+          baseCost = Number(apiMap.sourcePrice) || (inSrc ? Number(inSrc.price) : Math.round(Number(p.price) * 0.7));
+          if (baseCost <= 0) baseCost = livePrice;
+          baselineMap[p.id] = baseCost;
+          hasNewBaselines = true;
+        }
+
+        const shopPrice = Number(p.price) || 0;
+        const profit = shopPrice - livePrice;
+        const marginPercent = shopPrice > 0 ? ((profit / shopPrice) * 100) : 0;
+        const priceDiff = livePrice - baseCost;
+        const priceDiffPercent = baseCost > 0 ? ((priceDiff / baseCost) * 100) : 0;
+
+        // Trạng thái đánh giá
+        const isLoss = livePrice >= shopPrice;
+        const isPriceUp = priceDiff > 0;
+        const isPriceDown = priceDiff < 0;
+        const isOutOfStock = liveStock <= 0;
+        const isLowStock = liveStock > 0 && liveStock <= 10;
+        const isStable = !isLoss && !isPriceUp && !isPriceDown && !isOutOfStock;
+        const isUrgent = isLoss || isPriceUp || isOutOfStock;
+
+        results.push({
+          product: p,
+          prodId: String(p.id),
+          prodName: p.name || "Sản phẩm",
+          prodImage: p.image || p.imageUrl || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
+          category: p.category || "MMO",
+          provider: prov,
+          providerConfig: cfg,
+          sourceProdId: String(apiMap.sourceProdId),
+          sourceProdName: liveName,
+          baselinePrice: baseCost,
+          currentSourcePrice: livePrice,
+          priceDiff: priceDiff,
+          priceDiffPercent: priceDiffPercent,
+          currentSourceStock: liveStock,
+          shopPrice: shopPrice,
+          profit: profit,
+          marginPercent: marginPercent,
+          isLoss: isLoss,
+          isPriceUp: isPriceUp,
+          isPriceDown: isPriceDown,
+          isOutOfStock: isOutOfStock,
+          isLowStock: isLowStock,
+          isStable: isStable,
+          isUrgent: isUrgent
+        });
+      });
+
+      if (hasNewBaselines) {
+        saveApiSourceBaselinePrices(baselineMap);
+      }
+
+      // Sắp xếp ưu tiên: Nguy cơ lỗ lên đầu -> Nguồn tăng giá -> Hết hàng -> Giảm giá -> Ổn định
+      results.sort(function(a, b) {
+        if (a.isLoss && !b.isLoss) return -1;
+        if (!a.isLoss && b.isLoss) return 1;
+        if (a.isPriceUp && !b.isPriceUp) return -1;
+        if (!a.isPriceUp && b.isPriceUp) return 1;
+        if (a.isOutOfStock && !b.isOutOfStock) return -1;
+        if (!a.isOutOfStock && b.isOutOfStock) return 1;
+        if (a.isPriceDown && !b.isPriceDown) return -1;
+        if (!a.isPriceDown && b.isPriceDown) return 1;
+        return a.prodName.localeCompare(b.prodName);
+      });
+
+      return results;
+    }
+    window.computeApiSourceAlerts = computeApiSourceAlerts;
+
+    function updateApiSourceAlertsBadge() {
+      try {
+        const alerts = computeApiSourceAlerts();
+        const urgentCount = alerts.filter(a => a.isUrgent).length;
+        const lossCount = alerts.filter(a => a.isLoss).length;
+        const priceUpCount = alerts.filter(a => a.isPriceUp).length;
+        const outOfStockCount = alerts.filter(a => a.isOutOfStock).length;
+        const priceDownCount = alerts.filter(a => a.isPriceDown).length;
+        const totalCount = alerts.length;
+
+        // Badge sidebar
+        const navBadge = document.getElementById("admApiNavBadge");
+        if (navBadge) {
+          if (urgentCount > 0) {
+            navBadge.style.display = "inline-flex";
+            navBadge.innerText = urgentCount > 99 ? "99+" : urgentCount;
+            navBadge.style.background = lossCount > 0 ? "#ef4444" : "#f59e0b";
+          } else {
+            navBadge.style.display = "none";
+          }
+        }
+
+        // Badges top tabs
+        ["admTopApiBadge", "admTopApiBadge2"].forEach(function(bId) {
+          const topBadge = document.getElementById(bId);
+          if (topBadge) {
+            if (urgentCount > 0) {
+              topBadge.style.display = "inline-flex";
+              topBadge.innerText = urgentCount > 99 ? "99+" : urgentCount;
+              topBadge.style.background = lossCount > 0 ? "#ef4444" : "#f59e0b";
+            } else {
+              topBadge.style.display = "none";
+            }
+          }
+        });
+
+        // Stat cards
+        const lossEl = document.getElementById("statCountLoss");
+        if (lossEl) lossEl.innerText = lossCount;
+        const upEl = document.getElementById("statCountPriceUp");
+        if (upEl) upEl.innerText = priceUpCount;
+        const oosEl = document.getElementById("statCountOutOfStock");
+        if (oosEl) oosEl.innerText = outOfStockCount;
+        const downEl = document.getElementById("statCountPriceDown");
+        if (downEl) downEl.innerText = priceDownCount;
+        const totalEl = document.getElementById("statCountTotalApi");
+        if (totalEl) totalEl.innerText = totalCount;
+        const filterUrgentEl = document.getElementById("filterCountUrgent");
+        if (filterUrgentEl) filterUrgentEl.innerText = urgentCount;
+      } catch(e) {
+        console.warn("updateApiSourceAlertsBadge error:", e);
+      }
+    }
+    window.updateApiSourceAlertsBadge = updateApiSourceAlertsBadge;
+
+    function setAdmApiAlertFilter(filter, btn) {
+      window.admApiCurrentFilter = filter || "ALL";
+      const grp = document.getElementById("admApiAlertFilterGroup");
+      if (grp) {
+        grp.querySelectorAll(".btn-api-filter").forEach(function(b) {
+          b.classList.remove("active");
+          b.style.background = "transparent";
+          b.style.color = "#94a3b8";
+          b.style.borderColor = "transparent";
+        });
+        if (btn) {
+          btn.classList.add("active");
+          btn.style.background = "#1e293b";
+          btn.style.color = "#38bdf8";
+          btn.style.borderColor = "#334155";
+        }
+      }
+      renderAdminApiSourcesAlertsUI();
+    }
+    window.setAdmApiAlertFilter = setAdmApiAlertFilter;
+
+    function handleSearchApiAlerts(val) {
+      window.admApiSearchQuery = (val || "").trim();
+      const clearBtn = document.getElementById("admApiAlertSearchClear");
+      if (clearBtn) clearBtn.style.display = window.admApiSearchQuery ? "block" : "none";
+      renderAdminApiSourcesAlertsUI();
+    }
+    window.handleSearchApiAlerts = handleSearchApiAlerts;
+
+    function clearApiAlertSearch() {
+      const inp = document.getElementById("admApiAlertSearchInput");
+      if (inp) inp.value = "";
+      handleSearchApiAlerts("");
+    }
+    window.clearApiAlertSearch = clearApiAlertSearch;
+
+    function renderAdminApiSourcesAlertsUI() {
+      const tbody = document.getElementById("admApiAlertsTableBody");
+      if (!tbody) return;
+
+      const alerts = computeApiSourceAlerts();
+      const filter = window.admApiCurrentFilter || "ALL";
+      const q = (window.admApiSearchQuery || "").toLowerCase();
+
+      let filtered = alerts.filter(function(item) {
+        if (filter === "URGENT") return item.isUrgent;
+        if (filter === "LOSS") return item.isLoss;
+        if (filter === "PRICE_UP") return item.isPriceUp;
+        if (filter === "OUT_OF_STOCK") return item.isOutOfStock;
+        if (filter === "PRICE_DOWN") return item.isPriceDown;
+        if (filter === "STABLE") return item.isStable;
+        return true;
+      });
+
+      if (q) {
+        const removeAccents = function(str) {
+          return String(str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+        };
+        const qNorm = removeAccents(q);
+        filtered = filtered.filter(function(item) {
+          const pid = item.prodId.toLowerCase();
+          const name = item.prodName.toLowerCase();
+          const nameNorm = removeAccents(item.prodName);
+          const prov = (item.provider || "").toLowerCase();
+          const provName = (item.providerConfig.name || "").toLowerCase();
+          const srcId = item.sourceProdId.toLowerCase();
+          const srcName = (item.sourceProdName || "").toLowerCase();
+          return pid.includes(q) || name.includes(q) || nameNorm.includes(qNorm) ||
+                 prov.includes(q) || provName.includes(q) || srcId.includes(q) || srcName.includes(q);
+        });
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:36px 16px; color:#94a3b8;">' +
+          '<div style="font-size:2rem; margin-bottom:8px; color:#38bdf8;"><i class="fa-solid fa-circle-check"></i></div>' +
+          '<div style="font-size:0.95rem; font-weight:700; color:#fff;">Không có sản phẩm nào thuộc điều kiện lọc này</div>' +
+          '<div style="font-size:0.8rem; color:#64748b; margin-top:4px;">Tất cả nguồn hàng đều đang ổn định hoặc đã được cập nhật giá mới nhất.</div>' +
+        '</td></tr>';
+        const pag = document.getElementById("admApiAlertsPagination");
+        if (pag) pag.innerHTML = "";
+        return;
+      }
+
+      const esc = (typeof escapeHtml === "function") ? escapeHtml : function(s) {
+        return String(s || "").replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      };
+
+      let rowsHtml = "";
+      filtered.forEach(function(item) {
+        // Cột 1: Ảnh
+        const imgCell = '<td style="text-align:center; padding:10px;">' +
+          '<img src="' + esc(item.prodImage) + '" style="width:44px; height:44px; object-fit:cover; border-radius:6px; border:1px solid #1e293b; background:#070d1e;" onerror="this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\'"/>' +
+        '</td>';
+
+        // Cột 2: Tên SP Shop
+        const nameCell = '<td style="padding:10px;">' +
+          '<div style="font-weight:700; color:#fff; font-size:0.85rem; line-height:1.3; max-width:260px;">' + esc(item.prodName) + '</div>' +
+          '<div style="display:flex; align-items:center; gap:6px; margin-top:4px; font-size:0.72rem; color:#94a3b8;">' +
+            '<span style="font-family:monospace; background:#0d1525; padding:1px 5px; border-radius:4px; border:1px solid #1e293b; color:#38bdf8;">' + esc(item.prodId) + '</span>' +
+            '<span style="background:#1e293b; padding:1px 6px; border-radius:4px;">' + esc(item.category) + '</span>' +
+          '</div>' +
+        '</td>';
+
+        // Cột 3: Web Nguồn
+        const provBadgeColor = item.providerConfig.badgeColor || '#06b6d4';
+        const srcCell = '<td style="padding:10px;">' +
+          '<div style="display:inline-flex; align-items:center; gap:5px; background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.3); padding:3px 8px; border-radius:6px;">' +
+            '<span style="width:8px; height:8px; border-radius:50%; background:' + provBadgeColor + ';"></span>' +
+            '<strong style="color:' + provBadgeColor + '; font-size:0.75rem;">' + esc(item.providerConfig.name || item.provider) + '</strong>' +
+          '</div>' +
+          '<div style="font-size:0.72rem; color:#94a3b8; margin-top:4px; font-family:monospace;">' +
+            'ID SP Nguồn: <b style="color:#e2e8f0;">#' + esc(item.sourceProdId) + '</b>' +
+          '</div>' +
+          (item.sourceProdName ? '<div style="font-size:0.7rem; color:#64748b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;" title="' + esc(item.sourceProdName) + '">' + esc(item.sourceProdName) + '</div>' : '') +
+        '</td>';
+
+        // Cột 4: Tồn Kho Live
+        let stockBadge = "";
+        if (item.isOutOfStock) {
+          stockBadge = '<span style="background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px; animation:mmoPulseAlert 1.5s infinite;">' +
+            '<i class="fa-solid fa-triangle-exclamation"></i> 0 acc (HẾT HÀNG)' +
+          '</span>';
+        } else if (item.isLowStock) {
+          stockBadge = '<span style="background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4); padding:3px 8px; border-radius:6px; font-weight:700; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px;">' +
+            '<i class="fa-solid fa-hourglass-half"></i> ' + item.currentSourceStock.toLocaleString() + ' acc (Sắp hết)' +
+          '</span>';
+        } else {
+          stockBadge = '<span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:3px 8px; border-radius:6px; font-weight:700; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px;">' +
+            '<i class="fa-solid fa-circle-check"></i> ' + item.currentSourceStock.toLocaleString() + ' acc' +
+          '</span>';
+        }
+        const stockCell = '<td style="text-align:center; padding:10px;">' + stockBadge + '</td>';
+
+        // Cột 5: Biến Động Giá Nguồn
+        let priceDiffHtml = "";
+        if (item.isPriceUp) {
+          priceDiffHtml = '<div style="color:#f59e0b; font-weight:800; font-size:0.88rem; display:flex; align-items:center; gap:4px;">' +
+              '<i class="fa-solid fa-arrow-trend-up" style="color:#ef4444;"></i> ' + formatVND(item.currentSourcePrice) +
+            '</div>' +
+            '<div style="font-size:0.72rem; color:#ef4444; font-weight:700; margin-top:2px;">' +
+              '🔺 TĂNG +' + formatVND(item.priceDiff) + ' (+' + item.priceDiffPercent.toFixed(1) + '%)' +
+            '</div>' +
+            '<div style="font-size:0.7rem; color:#64748b; margin-top:2px;">Giá gốc trước đó: ' + formatVND(item.baselinePrice) + '</div>';
+        } else if (item.isPriceDown) {
+          priceDiffHtml = '<div style="color:#10b981; font-weight:800; font-size:0.88rem; display:flex; align-items:center; gap:4px;">' +
+              '<i class="fa-solid fa-arrow-trend-down"></i> ' + formatVND(item.currentSourcePrice) +
+            '</div>' +
+            '<div style="font-size:0.72rem; color:#10b981; font-weight:700; margin-top:2px;">' +
+              '🔻 GIẢM -' + formatVND(Math.abs(item.priceDiff)) + ' (-' + Math.abs(item.priceDiffPercent).toFixed(1) + '%)' +
+            '</div>' +
+            '<div style="font-size:0.7rem; color:#64748b; margin-top:2px;">Giá gốc trước đó: ' + formatVND(item.baselinePrice) + '</div>';
+        } else {
+          priceDiffHtml = '<div style="color:#e2e8f0; font-weight:700; font-size:0.85rem;">' + formatVND(item.currentSourcePrice) + '</div>' +
+            '<div style="font-size:0.72rem; color:#10b981; margin-top:2px;">✅ Không đổi</div>';
+        }
+        const priceDiffCell = '<td style="padding:10px;">' + priceDiffHtml + '</td>';
+
+        // Cột 6: Giá Shop & Biên Lãi
+        let profitHtml = "";
+        if (item.isLoss) {
+          profitHtml = '<div style="font-size:0.9rem; font-weight:800; color:#fff;">' + formatVND(item.shopPrice) + '</div>' +
+            '<div style="display:inline-block; margin-top:3px; background:rgba(239,68,68,0.25); color:#ef4444; border:1px solid #ef4444; padding:2px 8px; border-radius:4px; font-size:0.72rem; font-weight:800; animation:mmoPulseAlert 1.5s infinite;">' +
+              '🚨 BÁN LỖ ' + formatVND(Math.abs(item.profit)) + ' (' + item.marginPercent.toFixed(1) + '%)' +
+            '</div>';
+        } else {
+          const profitColor = item.profit > 0 ? (item.marginPercent >= 20 ? '#10b981' : '#f59e0b') : '#ef4444';
+          profitHtml = '<div style="font-size:0.9rem; font-weight:800; color:#38bdf8;">' + formatVND(item.shopPrice) + '</div>' +
+            '<div style="font-size:0.74rem; color:' + profitColor + '; font-weight:700; margin-top:3px;">' +
+              'Lãi: +' + formatVND(item.profit) + ' (' + item.marginPercent.toFixed(1) + '%)' +
+            '</div>';
+        }
+        const profitCell = '<td style="padding:10px;">' + profitHtml + '</td>';
+
+        // Cột 7: Hành Động
+        let actCell = '<td style="text-align:center; padding:10px;">' +
+          '<div style="display:flex; flex-direction:column; gap:6px; align-items:center;">' +
+            '<button type="button" onclick="openQuickPriceEditModal(\'' + esc(item.prodId) + '\', ' + item.currentSourcePrice + ', ' + item.shopPrice + ')" style="width:100%; background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 6px rgba(2,132,199,0.3);">' +
+              '<i class="fa-solid fa-bolt"></i> Sửa Giá Bán' +
+            '</button>' +
+            '<button type="button" onclick="openSourceCompareModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:#1e293b; color:#a855f7; border:1px solid #475569; padding:5px 10px; border-radius:6px; font-size:0.74rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;">' +
+              '<i class="fa-solid fa-arrows-split-up-and-left"></i> Đổi Nguồn (5 Web)' +
+            '</button>';
+
+        if (item.isPriceUp || item.isPriceDown) {
+          actCell += '<button type="button" onclick="acknowledgeApiPriceChange(\'' + esc(item.prodId) + '\', ' + item.currentSourcePrice + ')" style="width:100%; background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:4px 8px; border-radius:6px; font-size:0.7rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Xác nhận giá vốn mới làm chuẩn để tắt cảnh báo">' +
+              '<i class="fa-solid fa-check"></i> Đã Duyệt Giá Vốn' +
+            '</button>';
+        }
+
+        actCell += '</div></td>';
+
+        const rowBg = item.isLoss ? 'background:rgba(239,68,68,0.06); border-left:3px solid #ef4444;' : (item.isPriceUp ? 'background:rgba(245,158,11,0.04); border-left:3px solid #f59e0b;' : '');
+        rowsHtml += '<tr style="border-bottom:1px solid #1e293b; ' + rowBg + '">' +
+          imgCell + nameCell + srcCell + stockCell + priceDiffCell + profitCell + actCell +
+        '</tr>';
+      });
+
+      tbody.innerHTML = rowsHtml;
+
+      const pag = document.getElementById("admApiAlertsPagination");
+      if (pag) {
+        pag.innerHTML = '<div style="font-size:0.8rem; color:#94a3b8;">Hiển thị <b>' + filtered.length + '</b> / <b>' + alerts.length + '</b> sản phẩm kết nối API</div>' +
+          '<div style="font-size:0.75rem; color:#64748b;">(Dữ liệu quét trực tiếp từ 5 nguồn: SellTaiNguyenMMO, NguyenLieuMMO, SellMMO, Shop1989nd, Mail72h)</div>';
+      }
+    }
+    window.renderAdminApiSourcesAlertsUI = renderAdminApiSourcesAlertsUI;
+
+    // ============================================================================
+    // QUICK PRICE ADJUSTMENT MODAL (v3.4.7)
+    // ============================================================================
+    window.quickPriceLiveCost = 0;
+    window.quickPriceCurrentTargetProd = null;
+
+    function openQuickPriceEditModal(prodId, currentSourcePrice, currentShopPrice) {
+      const modal = document.getElementById("admQuickPriceModal");
+      if (!modal) return;
+
+      const cleanId = String(prodId || "").trim();
+      let prod = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
+      if (!prod && typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+        prod = MOCK_DATA.products.find(p => p && String(p.id) === cleanId);
+      }
+      if (!prod) {
+        if (typeof showToast === "function") showToast("Không tìm thấy sản phẩm [" + cleanId + "]", "warning");
+        return;
+      }
+
+      window.quickPriceCurrentTargetProd = prod;
+      window.quickPriceLiveCost = Number(currentSourcePrice) || 0;
+
+      const idInp = document.getElementById("quickPriceProdId");
+      if (idInp) idInp.value = prod.id;
+
+      const nameEl = document.getElementById("quickPriceProdName");
+      if (nameEl) nameEl.innerText = prod.name || cleanId;
+
+      const imgEl = document.getElementById("quickPriceProdImg");
+      if (imgEl) imgEl.src = prod.image || prod.imageUrl || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
+
+      const costEl = document.getElementById("quickPriceLiveCost");
+      if (costEl) costEl.innerText = formatVND(window.quickPriceLiveCost);
+
+      const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(prod.id) : null;
+      const srcTag = document.getElementById("quickPriceSourceTag");
+      if (srcTag && apiMap) {
+        const prov = apiMap.provider || "nguồn";
+        const cfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[prov]) ? API_SOURCES[prov] : { name: prov, badgeColor: "#06b6d4" };
+        srcTag.innerText = cfg.name || prov;
+        srcTag.style.background = "rgba(6,182,212,0.2)";
+        srcTag.style.color = cfg.badgeColor || "#06b6d4";
+      }
+
+      const shopEl = document.getElementById("quickPriceCurrentShop");
+      if (shopEl) shopEl.innerText = formatVND(prod.price || 0);
+
+      const profitEl = document.getElementById("quickPriceCurrentProfit");
+      if (profitEl) {
+        const curProfit = (prod.price || 0) - window.quickPriceLiveCost;
+        if (curProfit < 0) {
+          profitEl.innerHTML = '<span style="color:#ef4444;">-' + formatVND(Math.abs(curProfit)) + ' (LỖ)</span>';
+        } else {
+          profitEl.innerHTML = '<span style="color:#10b981;">+' + formatVND(curProfit) + '</span>';
+        }
+      }
+
+      const priceInp = document.getElementById("quickPriceNewInput");
+      if (priceInp) {
+        // Gợi ý giá mới nếu đang lỗ hoặc tăng giá: tự động set +30% lãi làm tròn 1.000đ
+        let suggested = prod.price || 0;
+        if (window.quickPriceLiveCost >= suggested) {
+          suggested = Math.ceil((window.quickPriceLiveCost * 1.3) / 1000) * 1000;
+        }
+        priceInp.value = suggested;
+      }
+
+      calculateQuickPricePreview();
+      modal.style.display = "flex";
+    }
+    window.openQuickPriceEditModal = openQuickPriceEditModal;
+
+    function closeQuickPriceEditModal() {
+      const modal = document.getElementById("admQuickPriceModal");
+      if (modal) modal.style.display = "none";
+      window.quickPriceCurrentTargetProd = null;
+    }
+    window.closeQuickPriceEditModal = closeQuickPriceEditModal;
+
+    function applyQuickMarginPreset(percent) {
+      const priceInp = document.getElementById("quickPriceNewInput");
+      if (!priceInp) return;
+      const cost = window.quickPriceLiveCost || 0;
+      let newPrice = cost > 0 ? Math.ceil((cost * (1 + percent)) / 1000) * 1000 : 0;
+      if (newPrice < 1000 && cost > 0) newPrice = Math.ceil(cost * (1 + percent));
+      priceInp.value = newPrice;
+      calculateQuickPricePreview();
+    }
+    window.applyQuickMarginPreset = applyQuickMarginPreset;
+
+    function calculateQuickPricePreview() {
+      const priceInp = document.getElementById("quickPriceNewInput");
+      const prevEl = document.getElementById("quickPricePreviewProfit");
+      if (!priceInp || !prevEl) return;
+
+      const newPrice = Number(priceInp.value) || 0;
+      const cost = window.quickPriceLiveCost || 0;
+      const profit = newPrice - cost;
+      const margin = newPrice > 0 ? ((profit / newPrice) * 100) : 0;
+
+      if (profit < 0) {
+        prevEl.innerHTML = 'Lãi dự kiến: <b style="color:#ef4444;">-' + formatVND(Math.abs(profit)) + ' (🚨 CẢNH BÁO BÁN LỖ!)</b> (Tỷ suất: <b style="color:#ef4444;">' + margin.toFixed(1) + '%</b>)';
+      } else {
+        prevEl.innerHTML = 'Lãi dự kiến: <b style="color:#10b981;">+' + formatVND(profit) + '</b> (Tỷ suất lợi nhuận: <b style="color:#38bdf8;">' + margin.toFixed(1) + '%</b>)';
+      }
+    }
+    window.calculateQuickPricePreview = calculateQuickPricePreview;
+
+    function saveQuickPriceEdit() {
+      const prod = window.quickPriceCurrentTargetProd;
+      if (!prod) {
+        showToast("Không tìm thấy thông tin sản phẩm cần cập nhật!", "warning");
+        return;
+      }
+      const priceInp = document.getElementById("quickPriceNewInput");
+      const newPrice = Number(priceInp ? priceInp.value : 0);
+      if (isNaN(newPrice) || newPrice <= 0) {
+        showToast("Vui lòng nhập giá bán hợp lệ lớn hơn 0đ!", "warning");
+        return;
+      }
+
+      // Cập nhật giá sản phẩm
+      prod.price = newPrice;
+      if (Array.isArray(prod.variants) && prod.variants.length > 0 && prod.variants[0]) {
+        prod.variants[0].price = newPrice;
+      }
+
+      // Lưu giá vốn live hiện tại làm baseline chuẩn mới để giải quyết cảnh báo
+      const baselineMap = getApiSourceBaselinePrices();
+      if (window.quickPriceLiveCost > 0) {
+        baselineMap[prod.id] = window.quickPriceLiveCost;
+        saveApiSourceBaselinePrices(baselineMap);
+      }
+
+      // Đồng bộ vào MOCK_DATA
+      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+        const idx = MOCK_DATA.products.findIndex(p => p && String(p.id) === String(prod.id));
+        if (idx !== -1) {
+          MOCK_DATA.products[idx].price = newPrice;
+          if (MOCK_DATA.products[idx].variants && MOCK_DATA.products[idx].variants[0]) {
+            MOCK_DATA.products[idx].variants[0].price = newPrice;
+          }
+        }
+      }
+
+      // Lưu vào LocalStorage
+      if (typeof saveProductsToStorage === "function") saveProductsToStorage();
+
+      // Đồng bộ trực tiếp lên Turso SQLite Cloud SSOT
+      try {
+        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof TURSO_CLIENT.saveProduct === "function") {
+          TURSO_CLIENT.saveProduct(prod).catch(e => console.warn("Turso quick save price error:", e));
+        } else if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured() && typeof MMO_WORKER_API.adminSyncProducts === "function") {
+          MMO_WORKER_API.adminSyncProducts([prod]).catch(e => console.warn("Worker quick save price error:", e));
+        }
+      } catch(eTurso) {}
+
+      // Refresh UI
+      closeQuickPriceEditModal();
+      if (typeof showToast === "function") {
+        showToast("🎉 Đã cập nhật giá bán mới: " + formatVND(newPrice) + " cho [" + (prod.name || prod.id) + "]!", "success");
+      }
+      renderAdminApiSourcesAlertsUI();
+      updateApiSourceAlertsBadge();
+      if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+    }
+    window.saveQuickPriceEdit = saveQuickPriceEdit;
+
+    function acknowledgeApiPriceChange(prodId, newBaselinePrice) {
+      if (!prodId) return;
+      const baselineMap = getApiSourceBaselinePrices();
+      baselineMap[prodId] = Number(newBaselinePrice) || 0;
+      saveApiSourceBaselinePrices(baselineMap);
+      if (typeof showToast === "function") {
+        showToast("✅ Đã duyệt giá vốn mới (" + formatVND(newBaselinePrice) + ") làm chuẩn!", "success");
+      }
+      renderAdminApiSourcesAlertsUI();
+      updateApiSourceAlertsBadge();
+    }
+    window.acknowledgeApiPriceChange = acknowledgeApiPriceChange;
+
+    async function refreshApiSourceAlerts(isManual = true) {
+      const icon = document.getElementById("iconRefreshApiAlerts");
+      if (icon) icon.classList.add("fa-spin");
+
+      if (isManual && typeof showToast === "function") {
+        showToast("🔄 Đang đồng bộ giá và tồn kho thời gian thực từ 5 web nguồn...", "info");
+      }
+
+      try {
+        if (typeof fetchApiSourceProducts === "function") {
+          await fetchApiSourceProducts(true);
+        }
+        updateApiSourceAlertsBadge();
+        renderAdminApiSourcesAlertsUI();
+        if (isManual && typeof showToast === "function") {
+          showToast("⚡ Đã quét xong giá 5 nguồn hàng! Dữ liệu đã được cập nhật.", "success");
+        }
+      } catch(e) {
+        console.warn("refreshApiSourceAlerts error:", e);
+        if (isManual && typeof showToast === "function") {
+          showToast("⚠️ Có lỗi khi quét giá từ một số web nguồn.", "warning");
+        }
+      } finally {
+        if (icon) icon.classList.remove("fa-spin");
+      }
+    }
+    window.refreshApiSourceAlerts = refreshApiSourceAlerts;
 
     async function initStockManagementUI() {
       // 1. Phản hồi chuyển tab tức thì trong 0ms từ bộ nhớ cache
@@ -34446,11 +35087,13 @@ if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", function() {
       ensureUniversalComponentsExist();
       renderHeaderNotifications();
+      if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
     });
   } else {
     setTimeout(function() {
       ensureUniversalComponentsExist();
       renderHeaderNotifications();
+      if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
     }, 100);
   }
 }
