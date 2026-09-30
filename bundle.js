@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.4.6";
+const MMO_CURRENT_CODE_VERSION = "3.4.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // Tự động chuyển đổi toàn bộ nhãn 'Hết hàng' sang 'Đặt trước' (Chống kẹt cache 100% trên toàn bộ blog phụ)
@@ -28,6 +28,7 @@ window.convertOutOfStockToPreOrder = convertOutOfStockToPreOrder;
 // Cơ chế Tự Nâng Cấp Ngầm Realtime (Self-Healing Hot-Reload Bootstrapper)
 function checkAndApplyNetworkUpdate() {
   try {
+    if (window._mmoHotReloadInProgress || (window._lastHotReloadTime && Date.now() - window._lastHotReloadTime < 300000)) return;
     if (typeof ensureProductApiTabDom === "function") ensureProductApiTabDom();
     if (typeof sanitizeSatelliteLegacyDom === "function") sanitizeSatelliteLegacyDom();
     if (typeof convertOutOfStockToPreOrder === "function") convertOutOfStockToPreOrder();
@@ -39,6 +40,8 @@ function checkAndApplyNetworkUpdate() {
       return res.json();
     }).then(function(data) {
       if (data && data.version && data.version !== MMO_CURRENT_CODE_VERSION) {
+        window._mmoHotReloadInProgress = true;
+        window._lastHotReloadTime = Date.now();
         console.warn("[MMO Universal Update] Phát hiện phiên bản code mới: v" + data.version + " (Bản hiện tại: v" + MMO_CURRENT_CODE_VERSION + ")");
         localStorage.setItem("mmo_network_code_version", data.version);
         
@@ -13533,10 +13536,50 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.parseProductCountry = parseProductCountry;
 
-    // 2. Hàm thu gọn tên sản phẩm nguồn hiển thị tinh tế, không làm vỡ khung (hình 4)
+    // 2. Hàm thu gọn tên sản phẩm nguồn hiển thị tinh tế, không làm vỡ khung
     function cleanSourceProductName(name) {
       if (!name) return "";
       let s = String(name).trim();
+
+      // 1. Loại bỏ các URL và đường dẫn web thừa
+      s = s.replace(/https?:\/\/[^\s]+/gi, "");
+      s = s.replace(/[a-zA-Z0-9_\-\.]+\.(com|vn|net|org|xyz|site|top|live|io|info)\S*/gi, "");
+      s = s.replace(/VIEWemail/gi, "");
+      s = s.replace(/đọc thư tại\s*\S*/gi, "");
+      s = s.replace(/doc thu tai\s*\S*/gi, "");
+
+      // 2. Loại bỏ các biểu tượng và ghi chú spam, điều kiện rác
+      s = s.replace(/[✔✓★⭐⚡●]/g, "");
+      s = s.replace(/\(\s*mail die[^\)]*\)/gi, "");
+      s = s.replace(/mail die van doc thu duoc/gi, "");
+      s = s.replace(/mail die vẫn đọc thư được/gi, "");
+      s = s.replace(/mail die[^\s,–\-]*/gi, "");
+      s = s.replace(/[\-–\.]*\s*số lượng tồn kho ảo/gi, "");
+      s = s.replace(/số lượng tồn kho ảo/gi, "");
+      s = s.replace(/so luong ton kho ao/gi, "");
+      s = s.replace(/xxx@RanDom/gi, "");
+      s = s.replace(/xxx@random/gi, "");
+      s = s.replace(/@RanDom/gi, "");
+      s = s.replace(/@random/gi, "");
+      s = s.replace(/\(\s*vui lòng đổi pass[^\)]*\)/gi, "");
+      s = s.replace(/vui lòng đổi pass[^\s,]*/gi, "");
+      s = s.replace(/[\-–\.]*\s*trùng dv/gi, "");
+      s = s.replace(/trùng dv/gi, "");
+      s = s.replace(/trung dv/gi, "");
+      s = s.replace(/[\-–\.]*\s*No Gmail/gi, "");
+      s = s.replace(/No Gmail/gi, "");
+
+      // 3. Rút gọn các cụm thời lượng live thường gặp
+      s = s.replace(/live\s*30phut\s*[\-–]\s*2h/gi, "[30p-2h]");
+      s = s.replace(/live\s*2h\s*[\-–]\s*4h/gi, "[2h-4h]");
+      s = s.replace(/\.live\s*10\s*phút/gi, "[10p]");
+      s = s.replace(/live\s*10\s*phút/gi, "[10p]");
+      s = s.replace(/live\s*2\s*phút/gi, "[2p]");
+      s = s.replace(/live\s*(\d+)\s*(phút|phut)/gi, "[$1p]");
+      s = s.replace(/live\s*(\d+)\s*(giờ|gio|h)/gi, "[$1h]");
+      s = s.replace(/live\s*(\d+)\s*(ngày|ngay|d)/gi, "[$1d]");
+
+      // 4. Rút gọn các cụm từ Canva, bảo hành
       s = s.replace(/CANVA PRO – CANVA PRO NON – PROFITS GÓI CAO CẤP NHẤT CỦA CANVA/gi, "Canva Pro Non-Profits");
       s = s.replace(/Canva Pro – CANVA EDU PRO NÂNG CHÍNH CHỦ/gi, "Canva Edu Pro Chính Chủ");
       s = s.replace(/CANVA PRO 7 – 14 NGÀY – DÙNG RIÊNG CẤP TÀI KHOẢN \( HOTMAIL TRUST \)/gi, "Canva Pro (Hotmail Trust)");
@@ -13550,8 +13593,20 @@ function syncAllOpenViewsStock(changedProdId) {
       s = s.replace(/FULL TÍNH NĂNG AI/gi, "[AI]");
       s = s.replace(/FULL TÍNH NĂNG/gi, "");
       s = s.replace(/GÓI CAO CẤP NHẤT CỦA CANVA/gi, "");
-      s = s.replace(/\s*–\s*–\s*/g, " – ");
+
+      // Dọn dẹp khoảng trắng, gạch ngang thừa, dấu ngoặc rỗng
+      s = s.replace(/\(\s*\)/g, "");
+      s = s.replace(/\[\s*\]/g, "");
+      s = s.replace(/\s*[\-\–]\s*[\-\–]\s*/g, " - ");
+      s = s.replace(/[\-\–\.\s]+$/g, "");
+      s = s.replace(/^[\-\–\.\s]+/g, "");
       s = s.replace(/\s+/g, " ").trim();
+
+      // Giới hạn độ dài tối đa 42 ký tự để không bao giờ làm vỡ bảng
+      if (s.length > 45) {
+        s = s.substring(0, 42).trim() + "...";
+      }
+
       return s;
     }
     window.cleanSourceProductName = cleanSourceProductName;
@@ -13676,18 +13731,17 @@ function syncAllOpenViewsStock(changedProdId) {
         window.currentCompareProdId = String(prod.id);
         window.currentCompareProdName = String(prod.name || "");
 
-        // Tự động nhận diện quốc gia của sản phẩm đang xem (v3.3.0)
+        // Mặc định chọn Tất cả quốc gia và Tất cả thời hạn để luôn tìm thấy toàn bộ sản phẩm từ 5 nguồn (không bị ẩn)
         const curCountryObj = parseProductCountry(prod.name, prod.category);
         const countrySel = document.getElementById("admCompareCountryFilter");
         if (countrySel) {
-          countrySel.value = "auto";
+          countrySel.value = "all";
         }
 
-        // Tự động nhận diện thời hạn của sản phẩm đang xem
         const curDurObj = parseProductDuration(prod.name);
         const durSel = document.getElementById("admCompareDurationFilter");
         if (durSel) {
-          durSel.value = "auto";
+          durSel.value = "all";
         }
 
         // 2. Cập nhật Subtitle
@@ -13885,34 +13939,63 @@ function syncAllOpenViewsStock(changedProdId) {
     };
     window.COMPARE_PRODUCT_FAMILIES = COMPARE_PRODUCT_FAMILIES;
 
+    function removeAccentsCompare(str) {
+      return String(str || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+    }
+    window.removeAccentsCompare = removeAccentsCompare;
+
     function matchesCompareProductFamily(item, qRaw) {
       if (!item) return false;
-      const sName = (item.name || "").toLowerCase();
-      const sCat = (item.category || "").toLowerCase();
-      const sProv = (item.provider || "").toLowerCase();
-      const sId = String(item.id || "");
-      if (sId === qRaw) return true;
+      const q = String(qRaw || "").trim().toLowerCase();
+      if (!q) return true;
+      const qNorm = removeAccentsCompare(q);
+
+      const sName = String(item.name || "").toLowerCase();
+      const sNameNorm = removeAccentsCompare(item.name);
+      const sCat = String(item.category || "").toLowerCase();
+      const sCatNorm = removeAccentsCompare(item.category);
+      const sProv = String(item.provider || "").toLowerCase();
+      const sId = String(item.id || "").toLowerCase();
+
+      // Khớp chính xác ID sản phẩm
+      if (sId === q || sId.includes(q)) return true;
 
       // Tìm xem query có thuộc gia đình sản phẩm nào không
       let matchedFamily = null;
       for (const famKey in COMPARE_PRODUCT_FAMILIES) {
         const fam = COMPARE_PRODUCT_FAMILIES[famKey];
-        if (fam.keywords.some(k => qRaw.includes(k))) {
+        if (fam.keywords.some(k => qNorm.includes(removeAccentsCompare(k)))) {
           matchedFamily = fam;
           break;
         }
       }
 
       if (matchedFamily) {
-        // Nếu thuộc cùng họ sản phẩm (ví dụ tìm Outlook thì Hotmail cũng khớp)
-        if (matchedFamily.keywords.some(k => sName.includes(k) || sCat.includes(k))) {
+        // Nếu thuộc cùng họ sản phẩm (ví dụ tìm Outlook thì Hotmail cũng khớp, tìm Gmail thì Google/Domain mail cũng khớp)
+        if (matchedFamily.keywords.some(k => {
+          const kNorm = removeAccentsCompare(k);
+          return sNameNorm.includes(kNorm) || sCatNorm.includes(kNorm);
+        })) {
           return true;
         }
       }
 
-      // Khớp theo các token từ khóa thông thường
-      const tokens = qRaw.split(/\s+/).filter(Boolean);
-      return tokens.every(tok => sName.includes(tok) || sCat.includes(tok) || sProv.includes(tok));
+      // Khớp theo các token từ khóa thông thường (hỗ trợ cả có dấu và không dấu)
+      const tokens = qNorm.split(/\s+/).filter(Boolean);
+      if (tokens.length === 0) return true;
+
+      // 1. Nếu tất cả tokens khớp
+      if (tokens.every(tok => sNameNorm.includes(tok) || sCatNorm.includes(tok) || sProv.includes(tok))) {
+        return true;
+      }
+
+      // 2. Thử khớp theo từ khóa dài quan trọng (>= 3 ký tự, ví dụ: "gmail", "hotmail", "thue", "kling")
+      const sigTokens = tokens.filter(tok => tok.length >= 3 && !["cho", "the", "cac", "nhung", "ngay", "thang", "nam", "live"].includes(tok));
+      if (sigTokens.length > 0) {
+        return sigTokens.some(tok => sNameNorm.includes(tok) || sCatNorm.includes(tok));
+      }
+
+      return false;
     }
     window.matchesCompareProductFamily = matchesCompareProductFamily;
 
@@ -14135,14 +14218,20 @@ function syncAllOpenViewsStock(changedProdId) {
       renderCompareBestBanner(banner, bestDeal, currentProd, currentApiMap, effectiveCountryKey, currentCountryObj, effectiveDurKey, currentDurObj, filterRelaxed, relaxedNote);
 
       if (filtered.length === 0) {
-        const countryNote = (effectiveCountryKey !== "all") ? ' cho quốc gia <strong>' + (currentCountryObj.flag || '') + ' ' + (currentCountryObj.label || effectiveCountryKey) + '</strong>' : '';
-        const durNote = (effectiveDurKey !== "all") ? ' và thời hạn <strong>' + (currentDurObj.label || effectiveDurKey) + '</strong>' : '';
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:32px; color:#64748b;">' +
-          '<i class="fa-solid fa-magnifying-glass" style="font-size:1.8rem; display:block; margin-bottom:8px; opacity:0.5;"></i>' +
-          'Không tìm thấy sản phẩm nguồn nào phù hợp với từ khóa "<strong>' + escFn(qRaw) + '</strong>"' + countryNote + durNote + '.' +
-          '<div style="margin-top:8px; font-size:0.75rem; color:#94a3b8;">Thử chọn lại <strong>"Tất cả quốc gia"</strong> hoặc <strong>"Tất cả thời hạn"</strong> hoặc đổi từ khóa tìm kiếm ngắn gọn hơn.</div>' +
-        '</td></tr>';
-        return;
+        if (candidates.length > 0) {
+          filtered = candidates.slice();
+          filterRelaxed = true;
+          relaxedNote = "Đã tự động hiển thị " + candidates.length + " sản phẩm khớp từ khóa từ 5 nguồn hàng";
+        } else {
+          const countryNote = (effectiveCountryKey !== "all") ? ' cho quốc gia <strong>' + (currentCountryObj.flag || '') + ' ' + (currentCountryObj.label || effectiveCountryKey) + '</strong>' : '';
+          const durNote = (effectiveDurKey !== "all") ? ' và thời hạn <strong>' + (currentDurObj.label || effectiveDurKey) + '</strong>' : '';
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:32px; color:#64748b;">' +
+            '<i class="fa-solid fa-magnifying-glass" style="font-size:1.8rem; display:block; margin-bottom:8px; opacity:0.5;"></i>' +
+            'Không tìm thấy sản phẩm nguồn nào phù hợp với từ khóa "<strong>' + escFn(qRaw) + '</strong>"' + countryNote + durNote + '.' +
+            '<div style="margin-top:8px; font-size:0.75rem; color:#94a3b8;">Thử chọn lại <strong>"Tất cả quốc gia"</strong> hoặc <strong>"Tất cả thời hạn"</strong> hoặc đổi từ khóa tìm kiếm ngắn gọn hơn.</div>' +
+          '</td></tr>';
+          return;
+        }
       }
 
       const rowsHtml = filtered.map(function(item, idx) {
@@ -14218,9 +14307,9 @@ function syncAllOpenViewsStock(changedProdId) {
 
         let actionBtn = '';
         if (isCurrentActive) {
-          actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" data-provider="' + prov + '" data-source-id="' + item.id + '" data-price="' + price + '" data-stock="' + stock + '" data-name="' + escFn(cleanName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="background:rgba(16,185,129,0.2); color:#10b981; border:1px solid #10b981; padding:5px 10px; border-radius:5px; font-weight:700; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; width:100%; box-shadow:0 2px 6px rgba(16,185,129,0.2);" title="Đang dùng nguồn này. Bấm để lưu lại ngay!"><i class="fa-solid fa-circle-check"></i> Đang Dùng</button>';
+          actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" data-provider="' + prov + '" data-source-id="' + item.id + '" data-price="' + price + '" data-stock="' + stock + '" data-name="' + escFn(cleanName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="background:rgba(16,185,129,0.2); color:#10b981; border:1px solid #10b981; padding:5px 8px; border-radius:5px; font-weight:700; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; width:100%; box-shadow:0 2px 6px rgba(16,185,129,0.2);" title="Đang dùng nguồn này. Bấm để lưu lại ngay!"><i class="fa-solid fa-circle-check"></i> Đang Dùng</button>';
         } else {
-          actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" data-provider="' + prov + '" data-source-id="' + item.id + '" data-price="' + price + '" data-stock="' + stock + '" data-name="' + escFn(cleanName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="padding:5px 10px; font-size:0.75rem; font-weight:700; border-radius:5px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; width:100%; ' + (isTop1 ? 'background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:1px solid #10b981; box-shadow:0 2px 8px rgba(16,185,129,0.35);' : 'background:#1e293b; color:#38bdf8; border:1px solid #334155;') + '" title="Đổi sang nguồn ' + escFn(shortProvName) + '">' +
+          actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" data-provider="' + prov + '" data-source-id="' + item.id + '" data-price="' + price + '" data-stock="' + stock + '" data-name="' + escFn(cleanName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="padding:5px 8px; font-size:0.75rem; font-weight:700; border-radius:5px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; width:100%; ' + (isTop1 ? 'background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:1px solid #10b981; box-shadow:0 2px 8px rgba(16,185,129,0.35);' : 'background:#1e293b; color:#38bdf8; border:1px solid #334155;') + '" title="Đổi sang nguồn ' + escFn(shortProvName) + '">' +
             '<i class="fa-solid fa-bolt"></i> ' + (isTop1 ? '⚡ Đổi (Rẻ nhất)' : 'Đổi nguồn') +
           '</button>';
         }
@@ -14229,20 +14318,20 @@ function syncAllOpenViewsStock(changedProdId) {
 
         return '<tr style="' + trBg + '">' +
           '<td style="text-align:center; padding:8px 4px; font-weight:700;">' + rankBadge + '</td>' +
-          '<td style="padding:8px 8px; text-align:center; white-space:nowrap;">' +
-            '<span style="background:' + (cfg.badgeColor || '#06b6d4') + '22; color:' + (cfg.badgeColor || '#06b6d4') + '; border:1px solid ' + (cfg.badgeColor || '#06b6d4') + '55; padding:3px 8px; border-radius:5px; font-weight:700; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" title="' + escFn(cfg.name || prov) + '">' +
+          '<td style="padding:8px 6px; text-align:center; white-space:nowrap;">' +
+            '<span style="background:' + (cfg.badgeColor || '#06b6d4') + '22; color:' + (cfg.badgeColor || '#06b6d4') + '; border:1px solid ' + (cfg.badgeColor || '#06b6d4') + '55; padding:3px 6px; border-radius:5px; font-weight:700; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" title="' + escFn(cfg.name || prov) + '">' +
               '<i class="fa-solid fa-server" style="font-size:0.65rem;"></i> ' + escFn(shortProvName) +
             '</span>' +
           '</td>' +
-          '<td style="padding:8px 6px; text-align:center; white-space:nowrap;">' + countryBadge + '</td>' +
-          '<td style="padding:8px 12px; min-width:240px;" title="' + escFn(item.name) + '">' +
-            '<div style="font-weight:700; color:#fff; font-size:0.82rem; line-height:1.35; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">' + escFn(cleanName) + '</div>' +
+          '<td style="padding:8px 4px; text-align:center; white-space:nowrap;">' + countryBadge + '</td>' +
+          '<td style="padding:8px 8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + escFn(item.name) + '">' +
+            '<div style="font-weight:700; color:#fff; font-size:0.82rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + escFn(item.name) + '">' + escFn(cleanName) + '</div>' +
             '<span style="font-size:0.68rem; color:#94a3b8; font-family:monospace;">#' + escFn(item.id) + '</span>' +
           '</td>' +
-          '<td style="padding:8px 6px; text-align:center; white-space:nowrap;">' + durBadge + '</td>' +
-          '<td style="padding:8px 10px; text-align:right; white-space:nowrap;"><span style="' + priceStyle + '">' + (typeof formatVND === "function" ? formatVND(price) : price + "đ") + '</span></td>' +
-          '<td style="padding:8px 6px; text-align:center; white-space:nowrap;">' + stockHtml + '</td>' +
-          '<td style="padding:8px 10px; text-align:center; white-space:nowrap;">' + actionBtn + '</td>' +
+          '<td style="padding:8px 4px; text-align:center; white-space:nowrap;">' + durBadge + '</td>' +
+          '<td style="padding:8px 6px; text-align:right; white-space:nowrap;"><span style="' + priceStyle + '">' + (typeof formatVND === "function" ? formatVND(price) : price + "đ") + '</span></td>' +
+          '<td style="padding:8px 4px; text-align:center; white-space:nowrap;">' + stockHtml + '</td>' +
+          '<td style="padding:8px 6px; text-align:center; white-space:nowrap;">' + actionBtn + '</td>' +
         '</tr>';
       }).join("");
 
