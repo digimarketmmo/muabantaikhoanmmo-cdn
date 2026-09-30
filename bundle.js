@@ -112,8 +112,18 @@ if (typeof window !== "undefined") {
         }
       } catch(e) {}
 
+      // Vệ sinh toàn bộ số lượng tồn ảo 9999 trong cache cũ
+      result.forEach(function(item) {
+        if (item && (item.amount === 9999 || item.amount === "9999" || (item.name && item.name.toLowerCase().includes("proxy") && item.provider === "selltainguyenmmo"))) {
+          item.amount = 0;
+        }
+      });
+
       // BẮT BUỘC gộp initialSourceProducts (chứa toàn bộ SP shop1989nd & selltainguyenmmo)
       initialSourceProducts.forEach(function(initP) {
+        if (initP.amount === 9999 || initP.amount === "9999" || (initP.name && initP.name.toLowerCase().includes("proxy") && initP.provider === "selltainguyenmmo")) {
+          initP.amount = 0;
+        }
         var exists = result.some(function(r) {
           return String(r.id) === String(initP.id) && (r.provider || "sellmmo") === (initP.provider || "sellmmo");
         });
@@ -1587,7 +1597,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             "sourceProdId": "19745",
             "sourceProdName": "Gmail Domain Cho Thuê  live 12h+",
             "sourcePrice": 138.6,
-            "sourceStock": 9999,
+            "sourceStock": 0,
             "targetProdId": "PROD_MTQX1C7X",
             "targetProdName": "Gmail cho thuê 1 giờ live 60 phút"
           }
@@ -1623,7 +1633,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             "sourceProdId": "19768",
             "sourceProdName": "Gmail Domain Cho Thuê .live 10 phút",
             "sourcePrice": 53.2,
-            "sourceStock": 9999,
+            "sourceStock": 0,
             "targetProdId": "PROD_MTQX465U",
             "targetProdName": "Gmail cho Thuế 10 phút live 10 phút"
           }
@@ -3206,6 +3216,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                     const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
                     const isApi = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
                     if (isApi) {
+                      if (apiMap.isSourceDeleted) {
+                        return '<span style="font-size:0.68rem; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.35); padding:1px 6px; border-radius:4px; font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-right:6px;" title="Web nguồn đã xoá hoặc gỡ sản phẩm này"><i class="fa-solid fa-ban"></i> API: ' + (apiMap.provider || 'Nguồn') + ' [#' + (apiMap.sourceProdId) + ' - ĐÃ XOÁ SP]</span>';
+                      }
                       return '<span style="font-size:0.68rem; background:rgba(6,182,212,0.15); color:#06b6d4; border:1px solid rgba(6,182,212,0.3); padding:1px 6px; border-radius:4px; font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-right:6px;"><i class="fa-solid fa-bolt"></i> API: ' + (apiMap.provider || 'Nguồn') + ' [#' + (apiMap.sourceProdId) + ']</span>';
                     }
                     return '<span style="font-size:0.68rem; background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:1px 6px; border-radius:4px; font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-right:6px;"><i class="fa-solid fa-box"></i> Kho Nội Bộ</span>';
@@ -3216,6 +3229,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 '<td style="color:#10b981; font-weight:700;">' + formatVND(p.price) + '</td>' +
                 '<td>' + (function() {
                   const stk = typeof getProductStockCount === "function" ? getProductStockCount(p) : (p.stock || 0);
+                  const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
+                  if (apiMap && apiMap.isSourceDeleted) {
+                    return '<span style="color:#ef4444; font-weight:800; background:rgba(239,68,68,0.15); padding:3px 8px; border-radius:4px; border:1px solid rgba(239,68,68,0.3); font-size:0.75rem;" title="Web nguồn đã gỡ sản phẩm - Tồn kho = 0 (Cho phép đặt trước)"><i class="fa-solid fa-ban"></i> 0 (Nguồn đã xoá SP)</span>';
+                  }
                   if (stk === 0) return '<span style="color:#ef4444; font-weight:800; background:rgba(239,68,68,0.15); padding:3px 8px; border-radius:4px; border:1px solid rgba(239,68,68,0.3); font-size:0.75rem;"><i class="fa-solid fa-circle-xmark"></i> 0 (Hết hàng)</span>';
                   if (stk < 5) return '<span style="color:#f59e0b; font-weight:800; background:rgba(245,158,11,0.15); padding:3px 8px; border-radius:4px; border:1px solid rgba(245,158,11,0.3); font-size:0.75rem;"><i class="fa-solid fa-triangle-exclamation"></i> ' + stk + ' (Sắp hết)</span>';
                   return '<span class="badge-verified" style="font-weight:700;">' + stk + ' acc</span>';
@@ -3929,7 +3946,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
 
       if (shouldKeepCurrentVal && !filtered.some(s => String(s.id) === String(currentVal))) {
-        optionsHtml += '<option value="' + currentVal + '" selected="selected" data-stock="9999">[Đang liên kết: #' + currentVal + '] Giữ nguyên sản phẩm nguồn này</option>';
+        optionsHtml += '<option value="' + currentVal + '" selected="selected" data-stock="0">[Đang liên kết: #' + currentVal + ' - Nguồn Đã Xoá SP] Giữ nguyên sản phẩm nguồn này</option>';
       }
 
       // Tìm sản phẩm tốt nhất để auto-select nếu đang tìm kiếm
@@ -4271,7 +4288,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             tempOpt.value = srcId;
             tempOpt.textContent = "[ID #" + srcId + "] " + ((existingMap && existingMap.sourceProdName) || "Sản phẩm nguồn #" + srcId);
             tempOpt.selected = true;
-            tempOpt.setAttribute("data-stock", (existingMap && existingMap.sourceStock) ? existingMap.sourceStock : (p.stock || 9999));
+            tempOpt.setAttribute("data-stock", (existingMap && existingMap.sourceStock !== undefined) ? existingMap.sourceStock : (p.stock || 0));
             tempOpt.setAttribute("data-price", (existingMap && existingMap.sourcePrice) ? existingMap.sourcePrice : (p.price || 0));
             sSel.appendChild(tempOpt);
             sSel.value = srcId;
@@ -6146,9 +6163,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           liveSourcePrice = optPrice;
           liveSourceName = optName;
         } else {
-          liveSourceStock = (oldProd && typeof oldProd.stock === "number" && oldProd.stock > 0) ? oldProd.stock : 9999;
+          liveSourceStock = (oldProd && typeof oldProd.stock === "number" && oldProd.stock > 0) ? oldProd.stock : 0;
         }
-        if (liveSourceStock <= 0) liveSourceStock = 9999;
+        if (liveSourceStock === 9999) liveSourceStock = 0;
         variants.forEach(v => { v.stock = liveSourceStock; });
       }
 
@@ -9873,21 +9890,34 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (apiMap && apiMap.sourceProdId && prods && prods.length > 0) {
             const inSrc = prods.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
               || prods.find(s => String(s.id) === String(apiMap.sourceProdId));
+            const provHasProds = apiMap.provider ? prods.some(s => s.provider === apiMap.provider) : false;
             if (inSrc && typeof inSrc.amount === "number") {
               st = inSrc.amount;
               apiMap.sourceStock = st;
+              apiMap.isSourceDeleted = false;
+              hasLiveSource = true;
+            } else if (provHasProds || !inSrc) {
+              // Sản phẩm không còn trên web nguồn hoặc nguồn đã xoá/gỡ SP
+              st = 0;
+              apiMap.sourceStock = 0;
+              apiMap.isSourceDeleted = true;
               hasLiveSource = true;
             }
           }
           if (!hasLiveSource && apiMap && apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) {
             st = Number(apiMap.sourceStock);
+            if (st === 9999 || (apiMap.sourceProdName && apiMap.sourceProdName.toLowerCase().includes("proxy") && apiMap.provider === "selltainguyenmmo")) {
+              st = 0;
+              apiMap.sourceStock = 0;
+              apiMap.isSourceDeleted = true;
+            }
             hasLiveSource = true;
           }
           if (hasLiveSource) {
             // Nguồn API đã xác định số lượng tồn kho (kể cả khi st === 0 -> Hết hàng)
             return Math.max(0, st);
           }
-          if (typeof prod.stock === "number" && prod.stock > 0) {
+          if (typeof prod.stock === "number" && prod.stock > 0 && prod.stock !== 9999) {
             st = prod.stock;
           }
           return Math.max(0, st);
@@ -10739,14 +10769,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               } else {
                 cur.deliveryType = 'api';
                 cur.delivery_type = 'api';
-                if (effectiveMapping && effectiveMapping.sourceStock !== undefined && effectiveMapping.sourceStock !== null) {
+                if (effectiveMapping && (effectiveMapping.isSourceDeleted || effectiveMapping.sourceStock === 0)) {
+                  updatedStock = 0;
+                } else if (effectiveMapping && effectiveMapping.sourceStock !== undefined && effectiveMapping.sourceStock !== null) {
                   updatedStock = Number(effectiveMapping.sourceStock) || 0;
                 } else if (typeof getShopVariantStock === 'function') {
                   updatedStock = getShopVariantStock(cur, 0);
                 } else {
                   updatedStock = Number(cur.stock) || 0;
                 }
-                if (updatedStock <= 0) updatedStock = 9999;
+                if (updatedStock === 9999) updatedStock = 0;
                 if (Array.isArray(variants)) variants.forEach(v => { v.stock = updatedStock; });
                 if (Array.isArray(cur.variants)) cur.variants.forEach(v => { v.stock = updatedStock; });
               }
@@ -10792,9 +10824,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 localStorage.setItem("mmo_api_map_" + tp.id, JSON.stringify(newMapping));
               } catch(eMapSync) {}
             }
-            if (isApiTypeNew && newStock <= 0) newStock = 9999;
+            if (newStock === 9999) newStock = 0;
             if (isApiTypeNew && Array.isArray(variants)) {
-              variants.forEach(v => { if ((Number(v.stock) || 0) <= 0) v.stock = newStock; });
+              variants.forEach(v => { if ((Number(v.stock) || 0) === 9999) v.stock = 0; });
             }
             const isImgValidNew = function(val) {
               return typeof val === "string" && val.trim() !== "" && !val.includes("placeholder") && !val.includes("unsplash") && !val.includes("undefined") && !val.includes("null");
@@ -11132,13 +11164,24 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
           let stock = (apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) ? Number(apiMap.sourceStock) : 0;
+          if (stock === 9999 || (apiMap.sourceProdName && apiMap.sourceProdName.toLowerCase().includes("proxy") && apiMap.provider === "selltainguyenmmo")) {
+            stock = 0;
+            apiMap.sourceStock = 0;
+          }
           const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
             ? window.cachedSourceProducts
             : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
           if (prods && prods.length > 0) {
             const inSrc = prods.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
               || prods.find(s => String(s.id) === String(apiMap.sourceProdId));
-            if (inSrc && typeof inSrc.amount === "number") stock = inSrc.amount;
+            const provHasProds = apiMap.provider ? prods.some(s => s.provider === apiMap.provider) : false;
+            if (inSrc && typeof inSrc.amount === "number") {
+              stock = inSrc.amount;
+              apiMap.isSourceDeleted = false;
+            } else if (provHasProds || !inSrc) {
+              stock = 0;
+              apiMap.isSourceDeleted = true;
+            }
           }
           return Math.max(0, stock);
         }
@@ -12512,6 +12555,7 @@ function syncAllOpenViewsStock(changedProdId) {
           try { localStorage.setItem("mmo_cached_source_products", JSON.stringify(freshProducts)); } catch(e) {}
 
           // Tự động đồng bộ tồn kho API cho toàn bộ sản phẩm đang hiển thị
+          const updatedMappings = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
           if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
             MOCK_DATA.products.forEach(p => {
               if (!p) return;
@@ -12523,13 +12567,33 @@ function syncAllOpenViewsStock(changedProdId) {
                   || freshProducts.find(s => String(s.id) === String(map.sourceProdId));
                 if (inSrc && typeof inSrc.amount === "number") {
                   map.sourceStock = inSrc.amount;
+                  map.isSourceDeleted = false;
                   p.stock = inSrc.amount;
                   if (Array.isArray(p.variants)) {
                     p.variants.forEach(v => { if (v) v.stock = inSrc.amount; });
                   }
+                  if (updatedMappings[p.id]) {
+                    updatedMappings[p.id].sourceStock = inSrc.amount;
+                    updatedMappings[p.id].isSourceDeleted = false;
+                  }
+                } else {
+                  // SẢN PHẨM KHÔNG CÒN TRÊN NGUỒN HOẶC WEB NGUỒN ĐÃ GỠ/XOÁ SẢN PHẨM
+                  map.sourceStock = 0;
+                  map.isSourceDeleted = true;
+                  p.stock = 0;
+                  if (Array.isArray(p.variants)) {
+                    p.variants.forEach(v => { if (v) v.stock = 0; });
+                  }
+                  if (updatedMappings[p.id]) {
+                    updatedMappings[p.id].sourceStock = 0;
+                    updatedMappings[p.id].isSourceDeleted = true;
+                  }
                 }
               }
             });
+            if (typeof saveApiProductMappings === "function") {
+              saveApiProductMappings(updatedMappings);
+            }
           }
 
           // Nếu đang xem trang chi tiết một sản phẩm API, làm mới ngay UI trong 0ms
@@ -12540,28 +12604,28 @@ function syncAllOpenViewsStock(changedProdId) {
               if (curMap && curMap.sourceProdId) {
                 const inSrc = freshProducts.find(s => String(s.id) === String(curMap.sourceProdId) && (!curMap.provider || s.provider === curMap.provider))
                   || freshProducts.find(s => String(s.id) === String(curMap.sourceProdId));
-                if (inSrc && typeof inSrc.amount === "number") {
-                  curMap.sourceStock = inSrc.amount;
-                  currentSelectedProduct.stock = inSrc.amount;
-                  if (Array.isArray(currentSelectedProduct.variants)) {
-                    currentSelectedProduct.variants.forEach(v => { if (v) v.stock = inSrc.amount; });
-                  }
-                  if (typeof syncDetailStockUI === "function") {
-                    syncDetailStockUI(inSrc.amount);
-                  }
-                  const pillsContainer = document.getElementById("dtlVariantPills");
-                  if (pillsContainer && Array.isArray(currentSelectedProduct.variants) && currentSelectedProduct.variants.length > 0) {
-                    const cIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
-                    pillsContainer.innerHTML = currentSelectedProduct.variants.map((v, idx) => {
-                      const stockBadge = inSrc.amount > 0
-                        ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(inSrc.amount).toLocaleString("vi-VN") + ' acc)</small>'
-                        : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-                      return '<div class="variant-pill-option ' + (idx === cIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                        '<span>' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
-                        '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
-                      '</div>';
-                    }).join("");
-                  }
+                const targetStock = (inSrc && typeof inSrc.amount === "number") ? inSrc.amount : 0;
+                curMap.sourceStock = targetStock;
+                curMap.isSourceDeleted = !inSrc;
+                currentSelectedProduct.stock = targetStock;
+                if (Array.isArray(currentSelectedProduct.variants)) {
+                  currentSelectedProduct.variants.forEach(v => { if (v) v.stock = targetStock; });
+                }
+                if (typeof syncDetailStockUI === "function") {
+                  syncDetailStockUI(targetStock);
+                }
+                const pillsContainer = document.getElementById("dtlVariantPills");
+                if (pillsContainer && Array.isArray(currentSelectedProduct.variants) && currentSelectedProduct.variants.length > 0) {
+                  const cIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+                  pillsContainer.innerHTML = currentSelectedProduct.variants.map((v, idx) => {
+                    const stockBadge = targetStock > 0
+                      ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(targetStock).toLocaleString("vi-VN") + ' acc)</small>'
+                      : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+                    return '<div class="variant-pill-option ' + (idx === cIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                      '<span>' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
+                      '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
+                    '</div>';
+                  }).join("");
                 }
               }
             }
@@ -12571,6 +12635,8 @@ function syncAllOpenViewsStock(changedProdId) {
           if (typeof handleAdmModalProviderChange === "function") handleAdmModalProviderChange();
           if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
           if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
+          if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+          if (typeof renderProductGrid === "function") renderProductGrid();
         }
       } catch(e) {
         console.warn("fetchApiSourceProducts error:", e);
@@ -12594,11 +12660,11 @@ function syncAllOpenViewsStock(changedProdId) {
       "PROD_MU5SPLMSEC": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23960", sourcePrice: 2900, sourceProdName: "ChatGPT New Gmail Trial", sourceStock: 16037 },
       "PROD_MU5T3T47AE": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23607", sourcePrice: 27000, sourceProdName: "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3", sourceStock: 994 },
       "PROD_MU6R34FZ4Z": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23586", sourcePrice: 1560000, sourceProdName: "Google Gemini AI Veo3 - 18 Tháng", sourceStock: 45 },
-      "PROD_MUJVJCV286": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26435", sourcePrice: 10000, sourceProdName: "Proxy 4Gvinaphone - 1 ngày", sourceStock: 9999 },
-      "PROD_MUJU6XY3HK": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26437", sourcePrice: 100000, sourceProdName: "Proxy 4Gvinaphone - 30 ngày", sourceStock: 9999 },
-      "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày", sourceStock: 9999 },
-      "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G", sourceStock: 9999 },
-      "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 9999 },
+      "PROD_MUJVJCV286": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26435", sourcePrice: 10000, sourceProdName: "Proxy 4Gvinaphone - 1 ngày", sourceStock: 0 },
+      "PROD_MUJU6XY3HK": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26437", sourcePrice: 100000, sourceProdName: "Proxy 4Gvinaphone - 30 ngày", sourceStock: 0 },
+      "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày", sourceStock: 0 },
+      "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G", sourceStock: 0 },
+      "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 0 },
       "PROD_MU1G6LJX": { enabled: true, provider: "sellmmo", baseUrl: "https://sellmmo.vn", apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO", sourceProdId: "23154", sourcePrice: 8000, sourceProdName: "Capcut Pro 7 Ngày", sourceStock: 18 },
       "PROD_MU2B32VLQY": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng", sourceStock: 132 },
       "PROD_MUJUGVQXET": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "23628", sourcePrice: 114000, sourceProdName: "Capcut Pro Team 1 THÁNG", sourceStock: 72 }
@@ -12614,15 +12680,21 @@ function syncAllOpenViewsStock(changedProdId) {
             Object.keys(parsed).forEach(k => {
               if (parsed[k] && typeof parsed[k] === "object") {
                 result[k] = Object.assign({}, result[k] || {}, parsed[k]);
-                if ((result[k].sourceStock === undefined || result[k].sourceStock === null) && DEFAULT_API_PRODUCT_MAPPINGS[k] && DEFAULT_API_PRODUCT_MAPPINGS[k].sourceStock) {
-                  result[k].sourceStock = DEFAULT_API_PRODUCT_MAPPINGS[k].sourceStock;
+                // Vệ sinh tồn kho ảo 9999
+                if (result[k].sourceStock === 9999 || result[k].sourceStock === "9999" || (result[k].sourceProdName && result[k].sourceProdName.toLowerCase().includes("proxy") && result[k].provider === "selltainguyenmmo")) {
+                  result[k].sourceStock = 0;
                 }
               }
             });
-            // Bảo vệ ánh xạ độc lập cho từng sản phẩm Capcut
           }
         }
       } catch(e) {}
+      // Quét sạch toàn bộ result lần cuối
+      Object.keys(result).forEach(k => {
+        if (result[k] && (result[k].sourceStock === 9999 || result[k].sourceStock === "9999" || (result[k].sourceProdName && result[k].sourceProdName.toLowerCase().includes("proxy") && result[k].provider === "selltainguyenmmo"))) {
+          result[k].sourceStock = 0;
+        }
+      });
       return result;
     }
     window.getApiProductMappings = getApiProductMappings;
@@ -12678,6 +12750,7 @@ function syncAllOpenViewsStock(changedProdId) {
         if (!m || !m.enabled || !m.sourceProdId) return null;
         const res = Object.assign({}, m);
         let stock = (res.sourceStock !== undefined && res.sourceStock !== null) ? Number(res.sourceStock) : 0;
+        if (stock === 9999) stock = 0;
         const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
           ? window.cachedSourceProducts
           : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
@@ -12687,8 +12760,16 @@ function syncAllOpenViewsStock(changedProdId) {
           if (inSrc && typeof inSrc.amount === "number") {
             stock = inSrc.amount;
             res.sourceStock = stock;
+            res.isSourceDeleted = false;
             if (inSrc.price) res.sourcePrice = inSrc.price;
             if (inSrc.name) res.sourceProdName = inSrc.name;
+          } else {
+            const provLoaded = prods.some(s => (!res.provider || s.provider === res.provider));
+            if (provLoaded) {
+              stock = 0;
+              res.sourceStock = 0;
+              res.isSourceDeleted = true;
+            }
           }
         }
         res.sourceStock = Math.max(0, stock);
@@ -12716,11 +12797,11 @@ function syncAllOpenViewsStock(changedProdId) {
         "PROD_MU5SPLMSEC": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23960", sourcePrice: 2900, sourceProdName: "ChatGPT New Gmail Trial", sourceStock: 16037 },
         "PROD_MU5T3T47AE": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23607", sourcePrice: 27000, sourceProdName: "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3", sourceStock: 994 },
         "PROD_MU6R34FZ4Z": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23586", sourcePrice: 1560000, sourceProdName: "Google Gemini AI Veo3 - 18 Tháng", sourceStock: 45 },
-        "PROD_MUJVJCV286": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26435", sourcePrice: 10000, sourceProdName: "Proxy 4Gvinaphone - 1 ngày", sourceStock: 9999 },
-        "PROD_MUJU6XY3HK": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26437", sourcePrice: 100000, sourceProdName: "Proxy 4Gvinaphone - 30 ngày", sourceStock: 9999 },
-        "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày", sourceStock: 9999 },
-        "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G", sourceStock: 9999 },
-        "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 9999 },
+        "PROD_MUJVJCV286": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26435", sourcePrice: 10000, sourceProdName: "Proxy 4Gvinaphone - 1 ngày", sourceStock: 0, isSourceDeleted: true },
+        "PROD_MUJU6XY3HK": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26437", sourcePrice: 100000, sourceProdName: "Proxy 4Gvinaphone - 30 ngày", sourceStock: 0, isSourceDeleted: true },
+        "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày", sourceStock: 0, isSourceDeleted: true },
+        "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G", sourceStock: 0, isSourceDeleted: true },
+        "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 0, isSourceDeleted: true },
         "PROD_MU1G6LJX": { enabled: true, provider: "sellmmo", baseUrl: "https://sellmmo.vn", apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO", sourceProdId: "23154", sourcePrice: 8000, sourceProdName: "Capcut Pro 7 Ngày", sourceStock: 18 },
         "PROD_MU2B32VLQY": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng", sourceStock: 132 },
         "PROD_MUJUGVQXET": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "23628", sourcePrice: 114000, sourceProdName: "Capcut Pro Team 1 THÁNG", sourceStock: 72 }
@@ -14727,7 +14808,8 @@ function syncAllOpenViewsStock(changedProdId) {
 
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : { name: provider, baseUrl: "", apiKey: "" };
       const numPrice = Number(sourcePrice) || 0;
-      const numStock = (Number(sourceStock) > 0) ? Number(sourceStock) : 9999;
+      let numStock = (Number(sourceStock) >= 0) ? Number(sourceStock) : 0;
+      if (numStock === 9999) numStock = 0;
       const cleanProdId = String(targetProdId || window.currentCompareProdId || "").trim();
 
       // 1. Cập nhật trực tiếp Form Chỉnh Sửa Sản Phẩm (#adminProductModal) nếu đang mở
@@ -15021,10 +15103,21 @@ function syncAllOpenViewsStock(changedProdId) {
           return String(s.id) === String(apiMap.sourceProdId);
         });
 
+        const provLoaded = cachedSrcs.some(function(s) {
+          return (!apiMap.provider || s.provider === apiMap.provider);
+        });
+        const isSourceDeleted = (!inSrc && provLoaded) || (apiMap.isSourceDeleted === true);
+
         const livePrice = inSrc ? (Number(inSrc.price) || 0) : (Number(apiMap.sourcePrice) || 0);
-        const liveStock = inSrc
-          ? (typeof inSrc.amount === "number" ? inSrc.amount : (Number(inSrc.amount) || 0))
-          : (Number(apiMap.sourceStock !== undefined ? apiMap.sourceStock : (p.stock || 0)));
+        let liveStock = 0;
+        if (isSourceDeleted) {
+          liveStock = 0;
+        } else if (inSrc) {
+          liveStock = typeof inSrc.amount === "number" ? inSrc.amount : (Number(inSrc.amount) || 0);
+        } else {
+          liveStock = Number(apiMap.sourceStock !== undefined ? apiMap.sourceStock : (p.stock || 0));
+          if (liveStock === 9999) liveStock = 0;
+        }
         const liveName = inSrc && inSrc.name ? inSrc.name : (apiMap.sourceProdName || p.name || "");
 
         // Lấy hoặc khởi tạo baseline price (giá vốn gốc đã ghi nhận)
@@ -15046,10 +15139,10 @@ function syncAllOpenViewsStock(changedProdId) {
         const isLoss = livePrice >= shopPrice;
         const isPriceUp = priceDiff > 0;
         const isPriceDown = priceDiff < 0;
-        const isOutOfStock = liveStock <= 0;
-        const isLowStock = liveStock > 0 && liveStock <= 10;
-        const isStable = !isLoss && !isPriceUp && !isPriceDown && !isOutOfStock;
-        const isUrgent = isLoss || isPriceUp || isOutOfStock;
+        const isOutOfStock = liveStock <= 0 || isSourceDeleted;
+        const isLowStock = !isSourceDeleted && liveStock > 0 && liveStock <= 10;
+        const isStable = !isLoss && !isPriceUp && !isPriceDown && !isOutOfStock && !isSourceDeleted;
+        const isUrgent = isLoss || isPriceUp || isOutOfStock || isSourceDeleted;
 
         results.push({
           product: p,
@@ -15073,6 +15166,7 @@ function syncAllOpenViewsStock(changedProdId) {
           isPriceUp: isPriceUp,
           isPriceDown: isPriceDown,
           isOutOfStock: isOutOfStock,
+          isSourceDeleted: isSourceDeleted,
           isLowStock: isLowStock,
           isStable: isStable,
           isUrgent: isUrgent
@@ -15083,14 +15177,16 @@ function syncAllOpenViewsStock(changedProdId) {
         saveApiSourceBaselinePrices(baselineMap);
       }
 
-      // Sắp xếp ưu tiên: Nguy cơ lỗ lên đầu -> Nguồn tăng giá -> Hết hàng -> Giảm giá -> Ổn định
+      // Sắp xếp ưu tiên: Nguy cơ lỗ lên đầu -> Nguồn xoá SP / Hết hàng -> Nguồn tăng giá -> Giảm giá -> Ổn định
       results.sort(function(a, b) {
         if (a.isLoss && !b.isLoss) return -1;
         if (!a.isLoss && b.isLoss) return 1;
-        if (a.isPriceUp && !b.isPriceUp) return -1;
-        if (!a.isPriceUp && b.isPriceUp) return 1;
+        if (a.isSourceDeleted && !b.isSourceDeleted) return -1;
+        if (!a.isSourceDeleted && b.isSourceDeleted) return 1;
         if (a.isOutOfStock && !b.isOutOfStock) return -1;
         if (!a.isOutOfStock && b.isOutOfStock) return 1;
+        if (a.isPriceUp && !b.isPriceUp) return -1;
+        if (!a.isPriceUp && b.isPriceUp) return 1;
         if (a.isPriceDown && !b.isPriceDown) return -1;
         if (!a.isPriceDown && b.isPriceDown) return 1;
         return a.prodName.localeCompare(b.prodName);
@@ -15305,11 +15401,16 @@ function syncAllOpenViewsStock(changedProdId) {
             'ID SP Nguồn: <b style="color:#e2e8f0;">#' + esc(item.sourceProdId) + '</b>' +
           '</div>' +
           (item.sourceProdName ? '<div style="font-size:0.7rem; color:#64748b; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:180px;" title="' + esc(item.sourceProdName) + '">' + esc(item.sourceProdName) + '</div>' : '') +
+          (item.isSourceDeleted ? '<div style="font-size:0.72rem; color:#ef4444; font-weight:700; margin-top:3px; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-triangle-exclamation"></i> Web nguồn đã gỡ SP</div>' : '') +
         '</td>';
 
         // Cột 4: Tồn Kho Live
         let stockBadge = "";
-        if (item.isOutOfStock) {
+        if (item.isSourceDeleted) {
+          stockBadge = '<span style="background:rgba(239,68,68,0.25); color:#ef4444; border:1px solid #ef4444; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px; animation:mmoPulseAlert 1.5s infinite;">' +
+            '<i class="fa-solid fa-ban"></i> NGUỒN ĐÃ XOÁ SP (0 acc)' +
+          '</span>';
+        } else if (item.isOutOfStock) {
           stockBadge = '<span style="background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px; animation:mmoPulseAlert 1.5s infinite;">' +
             '<i class="fa-solid fa-triangle-exclamation"></i> 0 acc (HẾT HÀNG)' +
           '</span>';
@@ -15365,14 +15466,23 @@ function syncAllOpenViewsStock(changedProdId) {
         const profitCell = '<td style="padding:10px;">' + profitHtml + '</td>';
 
         // Cột 7: Hành Động
+        let compareBtnHtml = '';
+        if (item.isSourceDeleted || item.isOutOfStock) {
+          compareBtnHtml = '<button type="button" onclick="openSourceCompareModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:linear-gradient(135deg,#9333ea,#7c3aed); color:#fff; border:1px solid #c084fc; padding:6px 10px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 8px rgba(147,51,234,0.35);">' +
+            '<i class="fa-solid fa-arrows-split-up-and-left"></i> Đổi Nguồn Gấp (5 Web)' +
+          '</button>';
+        } else {
+          compareBtnHtml = '<button type="button" onclick="openSourceCompareModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:#1e293b; color:#a855f7; border:1px solid #475569; padding:5px 10px; border-radius:6px; font-size:0.74rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;">' +
+            '<i class="fa-solid fa-arrows-split-up-and-left"></i> Đổi Nguồn (5 Web)' +
+          '</button>';
+        }
+
         let actCell = '<td style="text-align:center; padding:10px;">' +
           '<div style="display:flex; flex-direction:column; gap:6px; align-items:center;">' +
             '<button type="button" onclick="openQuickPriceEditModal(\'' + esc(item.prodId) + '\', ' + item.currentSourcePrice + ', ' + item.shopPrice + ')" style="width:100%; background:linear-gradient(135deg,#0284c7,#0369a1); color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 6px rgba(2,132,199,0.3);">' +
               '<i class="fa-solid fa-bolt"></i> Sửa Giá Bán' +
             '</button>' +
-            '<button type="button" onclick="openSourceCompareModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:#1e293b; color:#a855f7; border:1px solid #475569; padding:5px 10px; border-radius:6px; font-size:0.74rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px;">' +
-              '<i class="fa-solid fa-arrows-split-up-and-left"></i> Đổi Nguồn (5 Web)' +
-            '</button>';
+            compareBtnHtml;
 
         if (item.isPriceUp || item.isPriceDown) {
           actCell += '<button type="button" onclick="acknowledgeApiPriceChange(\'' + esc(item.prodId) + '\', ' + item.currentSourcePrice + ')" style="width:100%; background:rgba(16,185,129,0.12); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:4px 8px; border-radius:6px; font-size:0.7rem; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px;" title="Xác nhận giá vốn mới làm chuẩn để tắt cảnh báo">' +
