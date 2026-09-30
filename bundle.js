@@ -9125,14 +9125,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       let badgeWarningHtml = '';
       let apiBadgeHtml = '';
 
-      if (totalStock === 0 && !isApi) {
+      if (totalStock === 0) {
         stockHtml = '<span style="color:#f59e0b; font-weight:700;"><i class="fa-solid fa-clock"></i> Đặt trước</span>';
         badgeWarningHtml = '<span style="position:absolute; top:8px; left:8px; background:linear-gradient(135deg,#f59e0b,#ea580c); color:#fff; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.5); z-index:2;"><i class="fa-solid fa-clock"></i> Đặt trước</span>';
-      } else if (totalStock > 0 && totalStock < 5 && !isApi) {
+      } else if (totalStock > 0 && totalStock < 5) {
         stockHtml = '<span style="color:#f59e0b; font-weight:700;"><i class="fa-solid fa-triangle-exclamation"></i> Sắp hết (' + totalStock + ')</span>';
         badgeWarningHtml = '<span style="position:absolute; top:8px; left:8px; background:linear-gradient(135deg,#f59e0b,#d97706); color:#fff; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.5); z-index:2;"><i class="fa-solid fa-triangle-exclamation"></i> Sắp hết (' + totalStock + ')</span>';
       } else {
-        const displayStockVal = totalStock > 99 ? '99+' : (totalStock > 0 ? totalStock : (isApi ? '99+' : 0));
+        const displayStockVal = totalStock > 99 ? '99+' : totalStock;
         stockHtml = '<span style="color:#94a3b8;">Kho: ' + displayStockVal + '</span>';
       }
 
@@ -9866,23 +9866,28 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         if ((apiMap && apiMap.enabled && apiMap.sourceProdId) || isApiDelivery) {
           let st = 0;
-          if (apiMap && apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) {
-            st = Number(apiMap.sourceStock);
-          }
-          if (st <= 0) {
-            const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
-              ? window.cachedSourceProducts
-              : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
-            if (apiMap && apiMap.sourceProdId && prods && prods.length > 0) {
-              const inSrc = prods.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
-                || prods.find(s => String(s.id) === String(apiMap.sourceProdId));
-              if (inSrc && typeof inSrc.amount === "number" && inSrc.amount > 0) {
-                st = inSrc.amount;
-                apiMap.sourceStock = st;
-              }
+          let hasLiveSource = false;
+          const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+            ? window.cachedSourceProducts
+            : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+          if (apiMap && apiMap.sourceProdId && prods && prods.length > 0) {
+            const inSrc = prods.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
+              || prods.find(s => String(s.id) === String(apiMap.sourceProdId));
+            if (inSrc && typeof inSrc.amount === "number") {
+              st = inSrc.amount;
+              apiMap.sourceStock = st;
+              hasLiveSource = true;
             }
           }
-          if (st <= 0 && typeof prod.stock === "number" && prod.stock > 0) {
+          if (!hasLiveSource && apiMap && apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) {
+            st = Number(apiMap.sourceStock);
+            hasLiveSource = true;
+          }
+          if (hasLiveSource) {
+            // Nguồn API đã xác định số lượng tồn kho (kể cả khi st === 0 -> Hết hàng)
+            return Math.max(0, st);
+          }
+          if (typeof prod.stock === "number" && prod.stock > 0) {
             st = prod.stock;
           }
           return Math.max(0, st);
@@ -11127,11 +11132,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
           let stock = (apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) ? Number(apiMap.sourceStock) : 0;
-          if (stock <= 0 && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
-            const inSrc = cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId));
-            if (inSrc && inSrc.amount > 0) stock = inSrc.amount;
+          const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+            ? window.cachedSourceProducts
+            : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+          if (prods && prods.length > 0) {
+            const inSrc = prods.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
+              || prods.find(s => String(s.id) === String(apiMap.sourceProdId));
+            if (inSrc && typeof inSrc.amount === "number") stock = inSrc.amount;
           }
-          if (stock > 0) return stock;
+          return Math.max(0, stock);
         }
       }
 
@@ -11217,18 +11226,25 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const refreshIconHtml = ' <span onclick="triggerLiveDetailStockSync(this)" class="stock-refresh-icon-btn" title="Bấm để đồng bộ tồn kho mới nhất" style="cursor:pointer; margin-left:6px; color:#38bdf8; font-size:0.85rem; padding:2px 4px; display:inline-flex; align-items:center; vertical-align:middle;"><i class="fa-solid fa-arrows-rotate" id="iconDtlLiveSync"></i></span>';
 
       let effectiveStock = (typeof stock === "number") ? stock : 0;
-      if (effectiveStock <= 0 && curP && typeof getShopVariantStock === "function") {
-        effectiveStock = getShopVariantStock(curP, curVIdx);
-      }
-      const isCurApi = curP && (curP.deliveryType === "api" || curP.delivery_type === "api" || (typeof isProductApi === "function" && isProductApi(curP)));
-      if (isCurApi && effectiveStock <= 0) {
-        const m = (curP.apiMapping || (typeof getApiProductMapping === "function" ? getApiProductMapping(curP) : null));
-        if (m && typeof m.sourceStock === "number" && m.sourceStock > 0) {
-          effectiveStock = m.sourceStock;
-        } else if (curP.stock > 0) {
-          effectiveStock = curP.stock;
-        } else {
-          effectiveStock = 9999;
+      if (curP) {
+        const isCurApi = (curP.deliveryType === "api" || curP.delivery_type === "api" || (typeof isProductApi === "function" && isProductApi(curP)));
+        if (isCurApi) {
+          const m = (curP.apiMapping || (typeof getApiProductMapping === "function" ? getApiProductMapping(curP) : null));
+          if (m && m.enabled && m.sourceProdId) {
+            const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+              ? window.cachedSourceProducts
+              : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+            const inSrc = prods.find(s => String(s.id) === String(m.sourceProdId) && (!m.provider || s.provider === m.provider))
+              || prods.find(s => String(s.id) === String(m.sourceProdId));
+            if (inSrc && typeof inSrc.amount === "number") {
+              effectiveStock = inSrc.amount;
+              m.sourceStock = inSrc.amount;
+            } else if (typeof m.sourceStock === "number") {
+              effectiveStock = m.sourceStock;
+            }
+          }
+        } else if (effectiveStock <= 0 && typeof getShopVariantStock === "function") {
+          effectiveStock = getShopVariantStock(curP, curVIdx);
         }
       }
 
@@ -11252,7 +11268,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           dtlWarnBanner.style.background = "rgba(245, 158, 11, 0.12)";
           dtlWarnBanner.style.border = "1px solid rgba(245, 158, 11, 0.35)";
           dtlWarnBanner.style.color = "#f59e0b";
-          if (dtlWarnText) dtlWarnText.innerText = "Sản phẩm hiện đang tạm hết hàng. Bạn có thể bấm ĐẶT TRƯỚC bên dưới để shop chuẩn bị đơn riêng cho bạn!";
+          if (dtlWarnText) dtlWarnText.innerText = "Sản phẩm hiện đang tạm hết hàng. Bạn có thể bấm ĐẶT HÀNG TRƯỚC bên dưới để shop chuẩn bị đơn riêng cho bạn!";
         } else {
           dtlWarnBanner.style.display = "none";
         }
@@ -11260,7 +11276,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       if (btnBuy) {
         // [STRICT OUT-OF-STOCK LOCK]: Chỉ hiển thị MUA NGAY khi THỰC SỰ CÒN HÀNG (effectiveStock > 0).
-        // Khi hết hàng hoặc hết tiền (effectiveStock <= 0), BẮT BUỘC chuyển sang ĐẶT TRƯỚC!
+        // Khi hết hàng hoặc nguồn báo 0 (effectiveStock <= 0), BẮT BUỘC chuyển sang ĐẶT HÀNG TRƯỚC!
         if (effectiveStock > 0) {
           btnBuy.disabled = false;
           btnBuy.classList.remove("btn-pre-order");
@@ -11277,7 +11293,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         } else {
           btnBuy.disabled = false;
           btnBuy.classList.add("btn-pre-order");
-          btnBuy.innerHTML = '<i class="fa-solid fa-clock"></i> ĐẶT TRƯỚC';
+          btnBuy.innerHTML = '<i class="fa-solid fa-clock"></i> ĐẶT HÀNG TRƯỚC';
           btnBuy.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
           btnBuy.style.color = "#fff";
           btnBuy.style.opacity = "1";
@@ -12494,6 +12510,63 @@ function syncAllOpenViewsStock(changedProdId) {
           window.cachedSourceProducts = freshProducts;
           cachedSourceProducts = freshProducts;
           try { localStorage.setItem("mmo_cached_source_products", JSON.stringify(freshProducts)); } catch(e) {}
+
+          // Tự động đồng bộ tồn kho API cho toàn bộ sản phẩm đang hiển thị
+          if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+            MOCK_DATA.products.forEach(p => {
+              if (!p) return;
+              const isApiProd = (p.deliveryType === "api" || p.delivery_type === "api" || (typeof isProductApi === "function" && isProductApi(p)));
+              if (!isApiProd) return;
+              const map = (typeof getApiProductMapping === "function") ? getApiProductMapping(p) : (p.apiMapping || null);
+              if (map && map.sourceProdId) {
+                const inSrc = freshProducts.find(s => String(s.id) === String(map.sourceProdId) && (!map.provider || s.provider === map.provider))
+                  || freshProducts.find(s => String(s.id) === String(map.sourceProdId));
+                if (inSrc && typeof inSrc.amount === "number") {
+                  map.sourceStock = inSrc.amount;
+                  p.stock = inSrc.amount;
+                  if (Array.isArray(p.variants)) {
+                    p.variants.forEach(v => { if (v) v.stock = inSrc.amount; });
+                  }
+                }
+              }
+            });
+          }
+
+          // Nếu đang xem trang chi tiết một sản phẩm API, làm mới ngay UI trong 0ms
+          if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
+            const isCurApi = (currentSelectedProduct.deliveryType === "api" || currentSelectedProduct.delivery_type === "api" || (typeof isProductApi === "function" && isProductApi(currentSelectedProduct)));
+            if (isCurApi) {
+              const curMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(currentSelectedProduct) : (currentSelectedProduct.apiMapping || null);
+              if (curMap && curMap.sourceProdId) {
+                const inSrc = freshProducts.find(s => String(s.id) === String(curMap.sourceProdId) && (!curMap.provider || s.provider === curMap.provider))
+                  || freshProducts.find(s => String(s.id) === String(curMap.sourceProdId));
+                if (inSrc && typeof inSrc.amount === "number") {
+                  curMap.sourceStock = inSrc.amount;
+                  currentSelectedProduct.stock = inSrc.amount;
+                  if (Array.isArray(currentSelectedProduct.variants)) {
+                    currentSelectedProduct.variants.forEach(v => { if (v) v.stock = inSrc.amount; });
+                  }
+                  if (typeof syncDetailStockUI === "function") {
+                    syncDetailStockUI(inSrc.amount);
+                  }
+                  const pillsContainer = document.getElementById("dtlVariantPills");
+                  if (pillsContainer && Array.isArray(currentSelectedProduct.variants) && currentSelectedProduct.variants.length > 0) {
+                    const cIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+                    pillsContainer.innerHTML = currentSelectedProduct.variants.map((v, idx) => {
+                      const stockBadge = inSrc.amount > 0
+                        ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(inSrc.amount).toLocaleString("vi-VN") + ' acc)</small>'
+                        : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+                      return '<div class="variant-pill-option ' + (idx === cIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                        '<span>' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
+                        '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
+                      '</div>';
+                    }).join("");
+                  }
+                }
+              }
+            }
+          }
+
           if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
           if (typeof handleAdmModalProviderChange === "function") handleAdmModalProviderChange();
           if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
@@ -12541,7 +12614,7 @@ function syncAllOpenViewsStock(changedProdId) {
             Object.keys(parsed).forEach(k => {
               if (parsed[k] && typeof parsed[k] === "object") {
                 result[k] = Object.assign({}, result[k] || {}, parsed[k]);
-                if ((!result[k].sourceStock || result[k].sourceStock === 0) && DEFAULT_API_PRODUCT_MAPPINGS[k] && DEFAULT_API_PRODUCT_MAPPINGS[k].sourceStock) {
+                if ((result[k].sourceStock === undefined || result[k].sourceStock === null) && DEFAULT_API_PRODUCT_MAPPINGS[k] && DEFAULT_API_PRODUCT_MAPPINGS[k].sourceStock) {
                   result[k].sourceStock = DEFAULT_API_PRODUCT_MAPPINGS[k].sourceStock;
                 }
               }
@@ -12611,7 +12684,7 @@ function syncAllOpenViewsStock(changedProdId) {
         if (prods && prods.length > 0) {
           const inSrc = prods.find(s => String(s.id) === String(res.sourceProdId) && (!res.provider || s.provider === res.provider))
             || prods.find(s => String(s.id) === String(res.sourceProdId));
-          if (inSrc && typeof inSrc.amount === "number" && inSrc.amount > 0) {
+          if (inSrc && typeof inSrc.amount === "number") {
             stock = inSrc.amount;
             res.sourceStock = stock;
             if (inSrc.price) res.sourcePrice = inSrc.price;
@@ -18777,14 +18850,14 @@ function syncAllOpenViewsStock(changedProdId) {
 
         // 3. Cập nhật hiển thị trang chi tiết
         const curVIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
-        const activeStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(curP, curVIdx) : (curP.stock || 0);
+        const activeStock = (freshAmount !== null) ? freshAmount : ((typeof getShopVariantStock === "function") ? getShopVariantStock(curP, curVIdx) : (curP.stock || 0));
         if (typeof syncDetailStockUI === "function") syncDetailStockUI(activeStock);
 
         // 4. Cập nhật các nút biến thể (pills)
         const pillsContainer = document.getElementById("dtlVariantPills");
         if (pillsContainer && Array.isArray(curP.variants) && curP.variants.length > 0) {
           pillsContainer.innerHTML = curP.variants.map((v, idx) => {
-            let vStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(curP, idx) : (v.stock || 0);
+            let vStock = (freshAmount !== null) ? freshAmount : ((typeof getShopVariantStock === "function") ? getShopVariantStock(curP, idx) : (v.stock || 0));
             v.stock = vStock;
             const stockBadge = vStock > 0
               ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
@@ -19091,9 +19164,34 @@ function syncAllOpenViewsStock(changedProdId) {
       const apiBadgeEl = document.getElementById("dtlApiSourceBadge");
       if (apiBadgeEl) apiBadgeEl.remove();
 
-      let initialVariantStock = isProdApi
-        ? ((apiMapInfo && typeof apiMapInfo.sourceStock === "number" && apiMapInfo.sourceStock > 0) ? apiMapInfo.sourceStock : (p.stock > 0 ? p.stock : 9999))
-        : (typeof getShopVariantStock === "function" ? getShopVariantStock(p, currentSelectedVariantIndex) : (p.stock || 0));
+      let initialVariantStock = 0;
+      if (isProdApi) {
+        let liveMapStock = null;
+        if (apiMapInfo && apiMapInfo.sourceProdId) {
+          const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+            ? window.cachedSourceProducts
+            : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+          const inSrc = prods.find(s => String(s.id) === String(apiMapInfo.sourceProdId) && (!apiMapInfo.provider || s.provider === apiMapInfo.provider))
+            || prods.find(s => String(s.id) === String(apiMapInfo.sourceProdId));
+          if (inSrc && typeof inSrc.amount === "number") {
+            liveMapStock = inSrc.amount;
+            apiMapInfo.sourceStock = inSrc.amount;
+          } else if (typeof apiMapInfo.sourceStock === "number") {
+            liveMapStock = apiMapInfo.sourceStock;
+          }
+        }
+        if (liveMapStock !== null) {
+          initialVariantStock = Math.max(0, liveMapStock);
+          p.stock = initialVariantStock;
+          if (Array.isArray(p.variants)) {
+            p.variants.forEach(v => { if (v) v.stock = initialVariantStock; });
+          }
+        } else {
+          initialVariantStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(p, currentSelectedVariantIndex) : (p.stock || 0);
+        }
+      } else {
+        initialVariantStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(p, currentSelectedVariantIndex) : (p.stock || 0);
+      }
       if (typeof syncDetailStockUI === "function") syncDetailStockUI(initialVariantStock);
 
       if (isProdApi && typeof triggerLiveDetailStockSync === "function") {
@@ -19129,9 +19227,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const pillsContainer = document.getElementById("dtlVariantPills");
       if (pillsContainer && Array.isArray(p.variants) && p.variants.length > 0) {
         pillsContainer.innerHTML = p.variants.map((v, idx) => {
-          let vStock = isProdApi
-            ? ((apiMapInfo && typeof apiMapInfo.sourceStock === "number" && apiMapInfo.sourceStock > 0) ? apiMapInfo.sourceStock : (v.stock > 0 ? v.stock : (p.stock > 0 ? p.stock : 9999)))
-            : (typeof getShopVariantStock === "function" ? getShopVariantStock(p, idx) : (v.stock || 0));
+          let vStock = isProdApi ? initialVariantStock : ((typeof getShopVariantStock === "function") ? getShopVariantStock(p, idx) : (v.stock || 0));
           v.stock = vStock;
           const stockBadge = vStock > 0
             ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
