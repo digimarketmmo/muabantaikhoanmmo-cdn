@@ -9245,6 +9245,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (tabId === "tabAdmApiSources") {
         if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
         if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+        const now = Date.now();
+        if (!window._lastApiAlertsAutoScanTime || (now - window._lastApiAlertsAutoScanTime > 180000)) {
+          window._lastApiAlertsAutoScanTime = now;
+          if (typeof refreshApiSourceAlerts === "function") refreshApiSourceAlerts(false);
+        }
       }
       if (tabId === "tabAdmChat") {
         if (typeof renderAdminChatUI === "function") renderAdminChatUI();
@@ -14590,7 +14595,14 @@ function syncAllOpenViewsStock(changedProdId) {
     // Giám sát 5 nguồn hàng live, phát hiện tăng/giảm giá vốn, nguy cơ bán lỗ và hết hàng
     // ============================================================================
     window.admApiCurrentFilter = "ALL";
+    window.admApiCurrentProvider = "ALL";
     window.admApiSearchQuery = "";
+
+    function handleProviderApiAlertFilter(val) {
+      window.admApiCurrentProvider = val || "ALL";
+      renderAdminApiSourcesAlertsUI();
+    }
+    window.handleProviderApiAlertFilter = handleProviderApiAlertFilter;
 
     function getApiSourceBaselinePrices() {
       try {
@@ -14777,6 +14789,20 @@ function syncAllOpenViewsStock(changedProdId) {
         if (totalEl) totalEl.innerText = totalCount;
         const filterUrgentEl = document.getElementById("filterCountUrgent");
         if (filterUrgentEl) filterUrgentEl.innerText = urgentCount;
+
+        // Cập nhật Banner cảnh báo bán lỗ
+        const lossBanner = document.getElementById("admApiLossBanner");
+        if (lossBanner) {
+          if (lossCount > 0) {
+            lossBanner.style.display = "flex";
+            const bannerTitle = document.getElementById("admApiLossBannerTitle");
+            if (bannerTitle) bannerTitle.innerText = "🚨 CẢNH BÁO NGUY CƠ BÁN LỖ (" + lossCount + " SẢN PHẨM)!";
+            const bannerDesc = document.getElementById("admApiLossBannerDesc");
+            if (bannerDesc) bannerDesc.innerText = "Phát hiện " + lossCount + " sản phẩm có giá vốn web nguồn tăng cao hơn hoặc bằng giá bán shop. Vui lòng bấm nút bên dưới để điều chỉnh giá bán hoặc đổi nguồn ngay.";
+          } else {
+            lossBanner.style.display = "none";
+          }
+        }
       } catch(e) {
         console.warn("updateApiSourceAlertsBadge error:", e);
       }
@@ -14825,9 +14851,11 @@ function syncAllOpenViewsStock(changedProdId) {
 
       const alerts = computeApiSourceAlerts();
       const filter = window.admApiCurrentFilter || "ALL";
+      const provFilter = window.admApiCurrentProvider || "ALL";
       const q = (window.admApiSearchQuery || "").toLowerCase();
 
       let filtered = alerts.filter(function(item) {
+        if (provFilter !== "ALL" && item.provider !== provFilter) return false;
         if (filter === "URGENT") return item.isUrgent;
         if (filter === "LOSS") return item.isLoss;
         if (filter === "PRICE_UP") return item.isPriceUp;
@@ -14888,10 +14916,16 @@ function syncAllOpenViewsStock(changedProdId) {
 
         // Cột 3: Web Nguồn
         const provBadgeColor = item.providerConfig.badgeColor || '#06b6d4';
+        const rechargeLink = item.providerConfig.rechargeUrl ? 
+          '<a href="' + esc(item.providerConfig.rechargeUrl) + '" target="_blank" rel="noopener noreferrer" style="color:#38bdf8; text-decoration:none; margin-left:6px; font-size:0.68rem; display:inline-flex; align-items:center; gap:2px;" title="Nạp tiền vào ví web nguồn">' +
+            '<i class="fa-solid fa-arrow-up-right-from-square"></i> Nạp ví' +
+          '</a>' : '';
+
         const srcCell = '<td style="padding:10px;">' +
           '<div style="display:inline-flex; align-items:center; gap:5px; background:rgba(6,182,212,0.1); border:1px solid rgba(6,182,212,0.3); padding:3px 8px; border-radius:6px;">' +
             '<span style="width:8px; height:8px; border-radius:50%; background:' + provBadgeColor + ';"></span>' +
             '<strong style="color:' + provBadgeColor + '; font-size:0.75rem;">' + esc(item.providerConfig.name || item.provider) + '</strong>' +
+            rechargeLink +
           '</div>' +
           '<div style="font-size:0.72rem; color:#94a3b8; margin-top:4px; font-family:monospace;">' +
             'ID SP Nguồn: <b style="color:#e2e8f0;">#' + esc(item.sourceProdId) + '</b>' +
