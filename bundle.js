@@ -13609,6 +13609,12 @@ function syncAllOpenViewsStock(changedProdId) {
       // 1. Luôn mở modal ngay lập tức với z-index cao nhất
       modal.style.display = "flex";
       modal.style.zIndex = "999999";
+      const card = modal.querySelector(".modal-card");
+      if (card) {
+        card.style.maxWidth = "1420px";
+        card.style.width = "96%";
+        card.style.maxHeight = "92vh";
+      }
 
       try {
         const cleanId = String(prodId || "").trim();
@@ -14212,31 +14218,31 @@ function syncAllOpenViewsStock(changedProdId) {
 
         let actionBtn = '';
         if (isCurrentActive) {
-          actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" data-provider="' + prov + '" data-source-id="' + item.id + '" data-price="' + price + '" data-stock="' + stock + '" data-name="' + escFn(cleanName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="background:rgba(16,185,129,0.2); color:#10b981; border:1px solid #10b981; padding:3px 8px; border-radius:4px; font-weight:700; font-size:0.72rem; cursor:pointer; display:inline-flex; align-items:center; gap:3px; white-space:nowrap;" title="Đang dùng nguồn này. Bấm để lưu lại ngay!"><i class="fa-solid fa-circle-check"></i> Đang Dùng (Lưu)</button>';
+          actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" data-provider="' + prov + '" data-source-id="' + item.id + '" data-price="' + price + '" data-stock="' + stock + '" data-name="' + escFn(cleanName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="background:rgba(16,185,129,0.2); color:#10b981; border:1px solid #10b981; padding:5px 10px; border-radius:5px; font-weight:700; font-size:0.75rem; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; width:100%; box-shadow:0 2px 6px rgba(16,185,129,0.2);" title="Đang dùng nguồn này. Bấm để lưu lại ngay!"><i class="fa-solid fa-circle-check"></i> Đang Dùng</button>';
         } else {
-          actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" data-provider="' + prov + '" data-source-id="' + item.id + '" data-price="' + price + '" data-stock="' + stock + '" data-name="' + escFn(cleanName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="padding:3px 8px; font-size:0.72rem; font-weight:700; border-radius:4px; cursor:pointer; display:inline-flex; align-items:center; gap:3px; white-space:nowrap; ' + (isTop1 ? 'background:linear-gradient(135deg, #10b981, #059669); color:#fff; border-color:#10b981;' : '') + '" title="Đổi sang nguồn ' + escFn(shortProvName) + '">' +
-            '<i class="fa-solid fa-bolt"></i> ' + (isTop1 ? 'Đổi (Rẻ nhất)' : 'Đổi nguồn') +
+          actionBtn = '<button type="button" class="btn-tool-primary" data-reg="' + regKey + '" data-provider="' + prov + '" data-source-id="' + item.id + '" data-price="' + price + '" data-stock="' + stock + '" data-name="' + escFn(cleanName) + '" onclick="window.switchSourceByRegistry(this.getAttribute(\'data-reg\'), this)" style="padding:5px 10px; font-size:0.75rem; font-weight:700; border-radius:5px; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; white-space:nowrap; width:100%; ' + (isTop1 ? 'background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:1px solid #10b981; box-shadow:0 2px 8px rgba(16,185,129,0.35);' : 'background:#1e293b; color:#38bdf8; border:1px solid #334155;') + '" title="Đổi sang nguồn ' + escFn(shortProvName) + '">' +
+            '<i class="fa-solid fa-bolt"></i> ' + (isTop1 ? '⚡ Đổi (Rẻ nhất)' : 'Đổi nguồn') +
           '</button>';
         }
 
         const trBg = isCurrentActive ? 'background:rgba(16,185,129,0.06);' : (isTop1 ? 'background:rgba(245,158,11,0.05);' : '');
 
         return '<tr style="' + trBg + '">' +
-          '<td style="text-align:center; padding:6px 4px;">' + rankBadge + '</td>' +
-          '<td style="padding:6px 6px;">' +
-            '<span style="background:' + (cfg.badgeColor || '#06b6d4') + '22; color:' + (cfg.badgeColor || '#06b6d4') + '; border:1px solid ' + (cfg.badgeColor || '#06b6d4') + '55; padding:2px 5px; border-radius:4px; font-weight:700; font-size:0.7rem; display:inline-flex; align-items:center; gap:3px; white-space:nowrap;" title="' + escFn(cfg.name || prov) + '">' +
+          '<td style="text-align:center; padding:8px 4px; font-weight:700;">' + rankBadge + '</td>' +
+          '<td style="padding:8px 8px; text-align:center; white-space:nowrap;">' +
+            '<span style="background:' + (cfg.badgeColor || '#06b6d4') + '22; color:' + (cfg.badgeColor || '#06b6d4') + '; border:1px solid ' + (cfg.badgeColor || '#06b6d4') + '55; padding:3px 8px; border-radius:5px; font-weight:700; font-size:0.72rem; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" title="' + escFn(cfg.name || prov) + '">' +
               '<i class="fa-solid fa-server" style="font-size:0.65rem;"></i> ' + escFn(shortProvName) +
             '</span>' +
           '</td>' +
-          '<td style="padding:6px 4px; text-align:center;">' + countryBadge + '</td>' +
-          '<td style="padding:6px 8px; min-width:170px; max-width:300px;" title="' + escFn(item.name) + '">' +
-            '<div style="font-weight:700; color:#fff; font-size:0.78rem; line-height:1.3; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">' + escFn(cleanName) + '</div>' +
+          '<td style="padding:8px 6px; text-align:center; white-space:nowrap;">' + countryBadge + '</td>' +
+          '<td style="padding:8px 12px; min-width:240px;" title="' + escFn(item.name) + '">' +
+            '<div style="font-weight:700; color:#fff; font-size:0.82rem; line-height:1.35; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">' + escFn(cleanName) + '</div>' +
             '<span style="font-size:0.68rem; color:#94a3b8; font-family:monospace;">#' + escFn(item.id) + '</span>' +
           '</td>' +
-          '<td style="padding:6px 4px; text-align:center;">' + durBadge + '</td>' +
-          '<td style="padding:6px 6px; text-align:right;"><span style="' + priceStyle + '">' + (typeof formatVND === "function" ? formatVND(price) : price + "đ") + '</span></td>' +
-          '<td style="padding:6px 4px; text-align:center;">' + stockHtml + '</td>' +
-          '<td style="padding:6px 6px; text-align:center;">' + actionBtn + '</td>' +
+          '<td style="padding:8px 6px; text-align:center; white-space:nowrap;">' + durBadge + '</td>' +
+          '<td style="padding:8px 10px; text-align:right; white-space:nowrap;"><span style="' + priceStyle + '">' + (typeof formatVND === "function" ? formatVND(price) : price + "đ") + '</span></td>' +
+          '<td style="padding:8px 6px; text-align:center; white-space:nowrap;">' + stockHtml + '</td>' +
+          '<td style="padding:8px 10px; text-align:center; white-space:nowrap;">' + actionBtn + '</td>' +
         '</tr>';
       }).join("");
 
