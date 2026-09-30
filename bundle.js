@@ -16026,24 +16026,38 @@ function syncAllOpenViewsStock(changedProdId) {
     window.updateApiSourceAlertsBadge = updateApiSourceAlertsBadge;
 
     function setAdmApiAlertFilter(filter, btn) {
-      window.admApiCurrentFilter = filter || "ALL";
+      const activeFilter = filter || "ALL";
+      window.admApiCurrentFilter = activeFilter;
       window.admApiAlertsCurrentPage = 1;
       const grp = document.getElementById("admApiAlertFilterGroup");
       if (grp) {
+        let matchedBtn = btn || null;
         grp.querySelectorAll(".btn-api-filter").forEach(function(b) {
           b.classList.remove("active");
           b.style.background = "transparent";
           b.style.color = "#94a3b8";
           b.style.borderColor = "transparent";
+          const onclickAttr = b.getAttribute("onclick") || "";
+          if (!matchedBtn && onclickAttr.includes('"' + activeFilter + '"')) {
+            matchedBtn = b;
+          }
         });
-        if (btn) {
-          btn.classList.add("active");
-          btn.style.background = "#1e293b";
-          btn.style.color = "#38bdf8";
-          btn.style.borderColor = "#334155";
+        if (matchedBtn) {
+          matchedBtn.classList.add("active");
+          matchedBtn.style.background = "#1e293b";
+          matchedBtn.style.color = "#38bdf8";
+          matchedBtn.style.borderColor = "#334155";
         }
       }
       renderAdminApiSourcesAlertsUI();
+
+      // Nếu bấm từ Stat Card (btn không truyền), cuộn nhẹ đến bảng để người dùng thấy ngay kết quả
+      if (!btn) {
+        const el = document.getElementById("admApiAlertsTable");
+        if (el && typeof el.scrollIntoView === "function") {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
     }
     window.setAdmApiAlertFilter = setAdmApiAlertFilter;
 
@@ -16127,6 +16141,8 @@ function syncAllOpenViewsStock(changedProdId) {
       const esc = (typeof escapeHtml === "function") ? escapeHtml : function(s) {
         return String(s || "").replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       };
+
+      let rowsHtml = "";
 
       pageItems.forEach(function(item) {
         // Cột 1: Ảnh
