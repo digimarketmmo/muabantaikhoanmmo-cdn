@@ -1237,7 +1237,12 @@
     @media (max-width: 1350px) {
       .detail-container-3col { grid-template-columns: 270px 1fr 270px; }
     }
-    @media (max-width: 1200px) {
+    @media (min-width: 768px) and (max-width: 1200px) {
+      .detail-container-3col { display: grid !important; grid-template-columns: minmax(260px, 280px) minmax(0, 1fr) !important; width: 100% !important; }
+      .detail-col-left { display: block !important; }
+      .detail-col-right { display: none !important; }
+    }
+    @media (max-width: 767px) {
       .detail-container-3col { display: flex !important; flex-direction: column !important; grid-template-columns: 1fr !important; width: 100% !important; }
       .detail-col-left, .detail-col-right { display: none !important; }
     }
@@ -4483,12 +4488,86 @@ html, body { overflow-x: clip !important; max-width: 100vw !important; }
   .detail-container-3col { grid-template-columns: 290px minmax(0, 1fr) 290px !important; gap: 14px !important; }
 }
 
-/* Tablet & Mobile: Hiển thị như trên điện thoại, lấp đầy khoảng trống đen, ảnh lên trên, ẩn 2 thanh bên (<= 1200px) */
-@media (max-width: 1200px) {
+/* Tablet (768px - 1200px): VẪN ĐỂ THANH BÊN TRÁI NHƯ HÌNH 2, ẩn thanh bên phải, lấp đầy khoảng trống đen */
+@media (min-width: 768px) and (max-width: 1200px) {
   #viewProductDetail {
     width: 100% !important;
     max-width: 100% !important;
-    padding: 0 10px !important;
+    padding: 0 12px !important;
+    margin: 0 auto !important;
+    box-sizing: border-box !important;
+  }
+  .detail-container-3col {
+    display: grid !important;
+    grid-template-columns: minmax(260px, 285px) minmax(0, 1fr) !important;
+    gap: 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    align-items: start !important;
+  }
+  .detail-col-left {
+    display: block !important;
+    width: 100% !important;
+    position: sticky !important;
+    top: 80px !important;
+  }
+  .detail-col-right {
+    display: none !important;
+  }
+  .detail-col-center {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    min-width: 0 !important;
+  }
+  .detail-card-center {
+    display: grid !important;
+    grid-template-columns: minmax(220px, 280px) minmax(0, 1fr) !important;
+    gap: 16px !important;
+    padding: 18px 16px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .detail-img-box {
+    width: 100% !important;
+    max-width: 280px !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #090e17 !important;
+    border: 1px solid #1e293b !important;
+    border-radius: 12px !important;
+    padding: 10px !important;
+    box-sizing: border-box !important;
+  }
+  .detail-img-box img,
+  #dtlImage {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    border-radius: 8px !important;
+  }
+  .detail-info-col {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* Mobile (< 768px): 1 cột dọc, ẩn 2 thanh bên */
+@media (max-width: 767px) {
+  #viewProductDetail {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 8px !important;
     margin: 0 auto !important;
     box-sizing: border-box !important;
   }
@@ -4496,7 +4575,7 @@ html, body { overflow-x: clip !important; max-width: 100vw !important; }
     display: flex !important;
     flex-direction: column !important;
     grid-template-columns: 1fr !important;
-    gap: 14px !important;
+    gap: 12px !important;
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
@@ -4514,33 +4593,31 @@ html, body { overflow-x: clip !important; max-width: 100vw !important; }
     display: flex !important;
     flex-direction: column !important;
     grid-template-columns: 1fr !important;
-    padding: 18px 14px !important;
-    gap: 16px !important;
+    padding: 14px 12px !important;
+    gap: 14px !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
   .detail-img-box {
     width: 100% !important;
-    max-width: 440px !important;
+    max-width: 100% !important;
     height: auto !important;
-    aspect-ratio: 1 / 1 !important;
-    max-height: 420px !important;
-    margin: 0 auto 12px auto !important;
+    max-height: 340px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     background: #090e17 !important;
-    border: 1px solid #1e293b !important;
-    border-radius: 12px !important;
-    padding: 12px !important;
+    border-radius: 10px !important;
+    padding: 10px !important;
     box-sizing: border-box !important;
+    margin: 0 auto 12px auto !important;
   }
   .detail-img-box img,
   #dtlImage {
-    width: 100% !important;
-    height: 100% !important;
+    width: auto !important;
     max-width: 100% !important;
-    max-height: 400px !important;
+    height: auto !important;
+    max-height: 300px !important;
     object-fit: contain !important;
     border-radius: 8px !important;
   }
@@ -4790,19 +4867,19 @@ footer .logo-text {
    SỬA TOÀN DIỆN HIỂN THỊ TRÊN ĐIỆN THOẠI - CHỐNG CHỒNG CHÉO, CHỐNG CO ÉP
    ========================================================================== */
 
-/* 1. TRANG CHI TIẾT SẢN PHẨM TRÊN MOBILE & TABLET (<= 1200px) */
-@media (max-width: 1200px) {
+/* 1. TRANG CHI TIẾT SẢN PHẨM TRÊN MOBILE (< 768px) */
+@media (max-width: 767px) {
   #viewProductDetail {
     width: 100% !important;
     max-width: 100% !important;
-    padding: 0 10px !important;
+    padding: 0 8px !important;
     box-sizing: border-box !important;
   }
   .detail-container-3col {
     display: flex !important;
     flex-direction: column !important;
     grid-template-columns: 1fr !important;
-    gap: 14px !important;
+    gap: 12px !important;
     width: 100% !important;
     max-width: 100% !important;
   }
@@ -4819,33 +4896,31 @@ footer .logo-text {
     display: flex !important;
     flex-direction: column !important;
     grid-template-columns: 1fr !important;
-    padding: 18px 14px !important;
-    gap: 16px !important;
+    padding: 14px 12px !important;
+    gap: 14px !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
   .detail-img-box {
     width: 100% !important;
-    max-width: 440px !important;
+    max-width: 100% !important;
     height: auto !important;
-    aspect-ratio: 1 / 1 !important;
-    max-height: 420px !important;
-    margin: 0 auto 12px auto !important;
+    max-height: 340px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     background: #090e17 !important;
-    border: 1px solid #1e293b !important;
-    border-radius: 12px !important;
-    padding: 12px !important;
+    border-radius: 10px !important;
+    padding: 10px !important;
     box-sizing: border-box !important;
+    margin: 0 auto 12px auto !important;
   }
   .detail-img-box img,
   #dtlImage {
-    width: 100% !important;
-    height: 100% !important;
+    width: auto !important;
     max-width: 100% !important;
-    max-height: 400px !important;
+    height: auto !important;
+    max-height: 300px !important;
     object-fit: contain !important;
     border-radius: 8px !important;
   }
@@ -4856,7 +4931,7 @@ footer .logo-text {
     box-sizing: border-box !important;
   }
   .detail-title {
-    font-size: 1.2rem !important;
+    font-size: 1.15rem !important;
     line-height: 1.35 !important;
     margin-bottom: 8px !important;
   }
