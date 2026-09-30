@@ -1,8 +1,8 @@
 // =========================================================================
-// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.0)
+// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.1)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.4.0";
+const MMO_CURRENT_CODE_VERSION = "3.4.1";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // Tự động chuyển đổi toàn bộ nhãn 'Hết hàng' sang 'Đặt trước' (Chống kẹt cache 100% trên toàn bộ blog phụ)
@@ -9159,6 +9159,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
 // ADMIN TABS SWITCHER
     function switchAdminTab(tabId) {
+      if (tabId === "stock") tabId = "tabAdmStock";
+      if (tabId === "products") tabId = "tabAdmProducts";
+      if (tabId === "dashboard") tabId = "tabAdmDashboard";
+      if (tabId === "users") tabId = "tabAdmUsers";
+      if (tabId === "withdrawals") tabId = "tabAdmWithdrawals";
+      if (tabId === "orders") tabId = "tabAdmOrders";
+      if (tabId === "chat") tabId = "tabAdmChat";
+      if (tabId === "blog") tabId = "tabAdmBlog";
+      if (tabId === "payment") tabId = "tabAdmPayment";
+      if (tabId === "general") tabId = "tabAdmGeneral";
+      if (tabId === "admins") tabId = "tabAdmAdmins";
+
       try {
         localStorage.setItem("mmo_admin_tab", tabId);
       } catch(e) {}
@@ -17951,6 +17963,26 @@ function syncAllOpenViewsStock(changedProdId) {
       if (quickStockWrap) {
         const isAdm = (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser))));
         quickStockWrap.style.display = isAdm ? "block" : "none";
+        if (isAdm) {
+          const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null);
+          const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p)) || !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
+          const btn = quickStockWrap.querySelector("button");
+          if (btn) {
+            if (isApi) {
+              btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> <span>[Quản trị viên] Đổi Kho API / Sửa Nguồn Hàng</span>';
+              btn.style.background = 'rgba(6,182,212,0.15)';
+              btn.style.color = '#06b6d4';
+              btn.style.borderColor = 'rgba(6,182,212,0.4)';
+              btn.title = 'Sản phẩm mua qua API: Nhấn để mở form Sửa Sản Phẩm và đổi kho nguồn API';
+            } else {
+              btn.innerHTML = '<i class="fa-solid fa-boxes-stacked"></i> <span>[Quản trị viên] Nạp Kho Nhanh Cho Sản Phẩm Này</span>';
+              btn.style.background = 'rgba(56,189,248,0.12)';
+              btn.style.color = '#38bdf8';
+              btn.style.borderColor = 'rgba(56,189,248,0.4)';
+              btn.title = 'Sản phẩm kho thủ công: Nhấn để chuyển đến mục Quản Lý Kho Hàng để nạp tài khoản';
+            }
+          }
+        }
       }
 
       try {
@@ -18099,23 +18131,85 @@ function syncAllOpenViewsStock(changedProdId) {
     window.openProductDetailFromModal = openProductDetailFromModal;
 
     function quickOpenAdminStockForCurrentProduct() {
-      if (!currentSelectedProduct) {
+      // 1. Kiểm tra quyền Admin
+      const isAdm = (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser))));
+      if (!isAdm) {
+        showToast("⚠️ Vui lòng đăng nhập tài khoản Quản Trị Viên để sử dụng tính năng này!", "warning");
+        if (typeof openAuthModal === "function") openAuthModal("login");
+        return;
+      }
+
+      // 2. Lấy thông tin sản phẩm đang xem
+      let p = (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) ? currentSelectedProduct : (window._currentActiveDetailProduct || null);
+      if (!p) {
+        const dtlIdEl = document.getElementById("dtlId");
+        const curId = dtlIdEl ? dtlIdEl.innerText.trim() : new URLSearchParams(window.location.search).get("prod");
+        if (curId && typeof findShopProduct === "function") {
+          p = findShopProduct(curId);
+        }
+      }
+      if (!p) {
         showToast("Không tìm thấy thông tin sản phẩm!", "warning");
         return;
       }
-      const prodId = currentSelectedProduct.id;
-      const varIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
 
+      const prodId = p.id;
+      const varIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+      const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(prodId) : (p.apiMapping || null);
+      const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || 
+                    (typeof isProductApi === "function" && isProductApi(p)) || 
+                    !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
+
+      // Chuyển sang giao diện Quản Trị
       if (typeof switchView === "function") {
         switchView("viewAdmin");
       }
+
+      // [TRƯỜNG HỢP 1: SẢN PHẨM MUA QUA API]
+      // Nếu là sản phẩm API -> Chuyển đến phần sửa sản phẩm để đổi kho API
+      if (isApi) {
+        if (typeof switchAdminTab === "function") {
+          switchAdminTab("tabAdmProducts");
+        }
+        if (typeof openEditProductModal === "function") {
+          openEditProductModal(prodId);
+        }
+        setTimeout(() => {
+          const apiRadio = document.getElementById("admProdTypeApi");
+          if (apiRadio) {
+            apiRadio.checked = true;
+            if (typeof toggleAdmProductSourceFields === "function") toggleAdmProductSourceFields();
+          }
+          const panel = document.getElementById("admProdApiConfigPanel");
+          if (panel) {
+            panel.style.display = "block";
+            panel.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+          const srcSearch = document.getElementById("admProdApiSourceSearch");
+          if (srcSearch) {
+            srcSearch.focus();
+          }
+        }, 150);
+        showToast("⚡ Đã mở cấu hình đổi kho API cho: " + (p.name || prodId), "info");
+        return;
+      }
+
+      // [TRƯỜNG HỢP 2: SẢN PHẨM KHO THỦ CÔNG / NỘI BỘ]
+      // Nếu là sản phẩm kho thủ công -> Chuyển đến tab Quản Lý Kho Hàng
       if (typeof switchAdminTab === "function") {
-        switchAdminTab("stock");
+        switchAdminTab("tabAdmStock");
       }
 
       try {
         localStorage.setItem("mmo_last_admin_stock_prod_id", prodId);
       } catch(e) {}
+
+      if (typeof refreshAllShopStockUI === "function") {
+        refreshAllShopStockUI(prodId);
+      }
+      if (typeof initStockManagementUI === "function") {
+        initStockManagementUI();
+      }
 
       setTimeout(() => {
         const prodSel = document.getElementById("admStockProductSelect");
@@ -18138,8 +18232,8 @@ function syncAllOpenViewsStock(changedProdId) {
             bulkInput.focus();
             bulkInput.scrollIntoView({ behavior: "smooth", block: "center" });
           }
-          const varName = (currentSelectedProduct.variants && currentSelectedProduct.variants[varIdx]) ? currentSelectedProduct.variants[varIdx].name : "";
-          showToast("Đã chọn sẵn: " + (currentSelectedProduct.name || prodId) + (varName ? " (" + varName + ")" : ""), "info");
+          const varName = (p.variants && p.variants[varIdx]) ? p.variants[varIdx].name : "";
+          showToast("📦 Đã mở kho hàng cho: " + (p.name || prodId) + (varName ? " (" + varName + ")" : ""), "success");
         }, 120);
       }, 80);
     }
