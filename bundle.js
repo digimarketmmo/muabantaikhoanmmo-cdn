@@ -19324,7 +19324,7 @@ function syncAllOpenViewsStock(changedProdId) {
             // - Đơn khớp email hoặc là khách vãng lai / đơn cũ -> GIỮ
             if (cleanUserMail && !isAdm) {
               const isMineByEmail = (oEmail && oEmail === cleanUserMail);
-              const isRecentSession = (cleanId && (cleanId === lastDeliveredId || cleanId === storedLastId) && (!oEmail || oEmail === cleanUserMail));
+              const isRecentSession = (cleanId && (cleanId === lastDeliveredId || cleanId === storedLastId));
 
               if (!isMineByEmail && !isRecentSession) {
                 return;
@@ -19377,13 +19377,14 @@ function syncAllOpenViewsStock(changedProdId) {
       try {
         const preOrders = (typeof getPreOrders === "function") ? getPreOrders(true) : [];
         preOrders.forEach(function(po) {
-          const poEmail = String(po.buyerEmail || po.userEmail || po.email || "").toLowerCase().trim();
-          if (cleanUserMail && !isAdm && poEmail && poEmail !== cleanUserMail) return;
-
           const pId = String(po.orderCode || po.id || po.orderId || "");
           if (!pId) return;
 
           const cleanId = pId.startsWith("#") ? pId.replace("#", "").trim() : pId;
+          const poEmail = String(po.buyerEmail || po.userEmail || po.email || "").toLowerCase().trim();
+          const isRecent = cleanId && (cleanId === lastDeliveredId || cleanId === storedLastId);
+          if (cleanUserMail && !isAdm && poEmail && poEmail !== cleanUserMail && !isRecent) return;
+
           const ts = (typeof getOrderTimestamp === "function") ? getOrderTimestamp(po) : Number(po.createdTimestamp || po.createdAt || 0);
           const formattedDate = (typeof formatOrderDate === "function") ? formatOrderDate(po.createdAt || po.date || po.time, ts) : (po.createdAt || po.date || "");
 
@@ -19408,7 +19409,7 @@ function syncAllOpenViewsStock(changedProdId) {
               userOrders[uIdx].createdTimestamp = ts;
             }
           } else {
-            userOrders.push({
+            userOrders.unshift({
               id: cleanId,
               orderId: cleanId,
               orderCode: cleanId,
@@ -19486,6 +19487,9 @@ function syncAllOpenViewsStock(changedProdId) {
     window.saveUserOrders = saveUserOrders;
 
     function goToMyOrders() {
+      if (typeof window.paginationState !== "undefined" && window.paginationState) {
+        window.paginationState.userOrders = 1;
+      }
       if (typeof switchView === "function") switchView("viewProfile");
       if (typeof filterProfileOrdersTab === "function") filterProfileOrdersTab("ALL");
       if (typeof switchProfileTab === "function") switchProfileTab("tabProfOrders");
@@ -31559,22 +31563,60 @@ function getProductSchemaReviews(p, idx) {
         uOrders.unshift(newPreOrder);
         localStorage.setItem("mmo_user_orders", JSON.stringify(uOrders));
       } catch(e) {}
+      // CẬP NHẬT LAST DELIVERED ORDER ID & DANH SÁCH ĐƠN MỚI TRONG PHIÊN (ĐƠN MỚI LUÔN LÊN DÒNG 1)
+      window.lastDeliveredOrderId = orderCode;
+      window.currentThankYouOrderId = orderCode;
+      if (!window._recentOrderIds) window._recentOrderIds = [];
+      window._recentOrderIds = window._recentOrderIds.filter(id => id !== orderCode);
+      window._recentOrderIds.unshift(orderCode);
+      try {
+        localStorage.setItem("mmo_last_order_id", orderCode);
+        let recents = JSON.parse(sessionStorage.getItem("mmo_recent_order_ids") || "[]");
+        recents = recents.filter(id => id !== orderCode);
+        recents.unshift(orderCode);
+        sessionStorage.setItem("mmo_recent_order_ids", JSON.stringify(recents.slice(0, 50)));
+      } catch(e) {}
+
+      // Lưu In-Memory
+      if (!window._mmoInMemoryOrders) window._mmoInMemoryOrders = [];
+      window._mmoInMemoryOrders = window._mmoInMemoryOrders.filter(o => o && String(o.id || o.orderId || o.orderCode || "").replace("#","").trim() !== orderCode);
+      window._mmoInMemoryOrders.unshift(newPreOrder);
+
+      // Lưu SessionStorage
+      try {
+        let sess = JSON.parse(sessionStorage.getItem("mmo_session_orders") || "[]");
+        sess = sess.filter(o => o && String(o.id || o.orderId || o.orderCode || "").replace("#","").trim() !== orderCode);
+        sess.unshift(newPreOrder);
+        sessionStorage.setItem("mmo_session_orders", JSON.stringify(sess.slice(0, 100)));
+      } catch(e) {}
+
+      // Reset phân trang đơn hàng người dùng về Trang 1
+      if (typeof window.paginationState !== "undefined" && window.paginationState) {
+        window.paginationState.userOrders = 1;
+      }
+
       if (typeof recordAffiliateCommissionForOrder === "function") {
         recordAffiliateCommissionForOrder(newPreOrder);
       }
 
       // Tạo thông báo chuông và popup thông báo cho khách hàng
+      try {
+        if (typeof playNotificationSound === "function") playNotificationSound();
+        else {
+          const audio = new Audio("https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/audio/success.mp3");
+          audio.play().catch(function(){});
+        }
+      } catch(eAudio) {}
+
       if (typeof addUserNotification === "function") {
         addUserNotification({
           title: "🎉 Đặt trước thành công #" + orderCode,
-          message: "Bạn đã đặt trước " + qty + "x " + fullProdTitle + " thành công. Hệ thống đang tiến hành chuẩn bị hàng.",
+          message: "Bạn đã đặt trước " + qty + "x " + fullProdTitle + " thành công (" + (typeof formatVND === "function" ? formatVND(finalTotal) : finalTotal.toLocaleString("vi-VN") + " đ") + "). Shop đang chuẩn bị tài khoản.",
           type: "PRE_ORDER",
           orderId: orderCode,
           email: user.email,
           playSound: true
         });
-      } else if (typeof playNotificationSound === "function") {
-        playNotificationSound();
       }
 
       // Đồng bộ lên Google Sheets trung tâm qua API payOrderByWallet
@@ -31624,11 +31666,36 @@ function getProductSchemaReviews(p, idx) {
     }
     window.submitPreOrderAction = submitPreOrderAction;
 
+    // Hàm Quay Lại Trang Trước (Hoạt động cho nút Quay lại ở màn hình chi tiết đơn đặt trước)
+    function goBackToPreviousView() {
+      let target = window._previousView || _previousView;
+      if (!target || target === "viewPreOrderDetail") {
+        const curProd = (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && currentSelectedProduct.id) ? currentSelectedProduct : null;
+        if (curProd) {
+          target = "viewProductDetail";
+        } else {
+          target = "viewStore";
+        }
+      }
+      if (typeof switchView === "function") {
+        switchView(target);
+      } else {
+        const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
+        views.forEach(function(v) {
+          const el = document.getElementById(v);
+          if (el) el.style.display = (v === target) ? "block" : "none";
+        });
+      }
+      try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch(e) {}
+    }
+    window.goBackToPreviousView = goBackToPreviousView;
+
     // Xem chi tiết đơn hàng đặt trước (Hình 4 - Nền Đen Dark Theme)
     function openPreOrderDetailView(orderId) {
       const activeViewNow = localStorage.getItem("mmo_current_view") || "viewStore";
       if (activeViewNow !== "viewPreOrderDetail") {
         _previousView = activeViewNow;
+        window._previousView = activeViewNow;
       }
       if (!orderId) {
         if (typeof showToast === "function") showToast("Mã đơn đặt trước không hợp lệ!", "warning");
@@ -31781,7 +31848,10 @@ function getProductSchemaReviews(p, idx) {
       if (elBuyer) elBuyer.innerText = order.buyerUsername || order.buyerEmail || "Khách hàng";
 
       const elCreated = document.getElementById("podCreatedAt");
-      if (elCreated) elCreated.innerText = order.createdAt || "-";
+      if (elCreated) {
+        const rawCr = order.date || order.createdAt || "-";
+        elCreated.innerText = (typeof formatOrderDate === "function") ? formatOrderDate(rawCr, order.createdTimestamp) : rawCr;
+      }
 
       const elDisc = document.getElementById("podDiscount");
       if (elDisc) elDisc.innerText = (order.discountAmount > 0) ? (typeof formatVND === "function" ? formatVND(order.discountAmount) : (order.discountAmount.toLocaleString("vi-VN") + " đ")) : "-";
