@@ -17728,37 +17728,97 @@ function syncAllOpenViewsStock(changedProdId) {
     function handleUploadBrandFile(e, inputId, previewId, hintId, resetBtnId) {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
-      if (file.size > 5 * 1024 * 1024) {
-        if (typeof showToast === "function") showToast("⚠️ Kích thước ảnh quá lớn! Vui lòng chọn ảnh dưới 5MB.", "warning");
+      if (file.size > 10 * 1024 * 1024) {
+        if (typeof showToast === "function") showToast("⚠️ Kích thước ảnh quá lớn! Vui lòng chọn ảnh dưới 10MB.", "warning");
         return;
       }
-      if (typeof showToast === "function") showToast("⏳ Đang xử lý tải ảnh lên máy chủ CDN công khai...", "info");
-      
-      const formData = new FormData();
-      formData.append("key", "6d207e02198a847aa98d0a2a901485a5");
-      formData.append("action", "upload");
-      formData.append("source", file);
-      formData.append("format", "json");
+      if (typeof showToast === "function") showToast("⏳ Đang tối ưu và tải ảnh lên máy chủ CDN...", "info");
 
-      fetch("https://freeimage.host/api/1/upload", {
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.image && data.image.url) {
-          const directUrl = data.image.url;
-          const input = document.getElementById(inputId);
-          if (input) input.value = directUrl;
-          previewBrandUrl(directUrl, previewId, hintId, resetBtnId);
-          if (typeof showToast === "function") showToast("✅ Tải ảnh thành công lên CDN công khai! Bấm 'Lưu Cài Đặt Hệ Thống' để áp dụng.", "success");
-        } else {
+      // 1. Dùng FileReader & Canvas để nén và resize ảnh siêu nhẹ, chống tràn bộ nhớ localStorage
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const rawDataUrl = evt.target.result;
+        const img = new Image();
+        img.onload = function() {
+          try {
+            const isLogo = String(inputId).toLowerCase().includes("logo");
+            const isFavicon = String(inputId).toLowerCase().includes("favicon");
+
+            let maxW = 400;
+            let maxH = 140;
+            if (isFavicon) {
+              maxW = 64;
+              maxH = 64;
+            } else if (!isLogo) {
+              maxW = 600;
+              maxH = 315;
+            }
+
+            let width = img.width;
+            let height = img.height;
+            if (width > maxW || height > maxH) {
+              const ratio = Math.min(maxW / width, maxH / height);
+              width = Math.round(width * ratio);
+              height = Math.round(height * ratio);
+            }
+
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Xuất compact base64
+            const mimeType = (file.type && file.type.includes("png")) ? "image/png" : "image/jpeg";
+            const compactDataUrl = canvas.toDataURL(mimeType, 0.88);
+
+            // Cập nhật preview và tạm lưu vào ô input ngay lập tức
+            const input = document.getElementById(inputId);
+            if (input) input.value = compactDataUrl;
+            previewBrandUrl(compactDataUrl, previewId, hintId, resetBtnId);
+
+            // 2. Tải lên máy chủ Cloudflare Worker để lấy URL CDN vĩnh viễn (Bypass CORS 100%)
+            fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/upload-image", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                image: compactDataUrl,
+                mimeType: mimeType,
+                name: file.name
+              })
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data && data.success && data.url) {
+                const cdnUrl = data.url;
+                if (input) input.value = cdnUrl;
+                previewBrandUrl(cdnUrl, previewId, hintId, resetBtnId);
+                if (typeof showToast === "function") {
+                  showToast("✅ Tải ảnh thành công lên Cloudflare CDN! Bấm 'Lưu Cài Đặt Hệ Thống' để áp dụng.", "success");
+                }
+              } else {
+                if (typeof showToast === "function") {
+                  showToast("✅ Đã tối ưu ảnh gọn nhẹ! Bấm 'Lưu Cài Đặt Hệ Thống' để áp dụng.", "success");
+                }
+              }
+            })
+            .catch(errUpload => {
+              console.warn("Upload to worker notice, using optimized local data:", errUpload);
+              if (typeof showToast === "function") {
+                showToast("✅ Đã tối ưu ảnh gọn nhẹ! Bấm 'Lưu Cài Đặt Hệ Thống' để áp dụng.", "success");
+              }
+            });
+          } catch (errCanvas) {
+            console.error("Canvas compression error:", errCanvas);
+            fallbackLocalBrandUpload(file, inputId, previewId, hintId, resetBtnId);
+          }
+        };
+        img.onerror = function() {
           fallbackLocalBrandUpload(file, inputId, previewId, hintId, resetBtnId);
-        }
-      })
-      .catch(() => {
-        fallbackLocalBrandUpload(file, inputId, previewId, hintId, resetBtnId);
-      });
+        };
+        img.src = rawDataUrl;
+      };
+      reader.readAsDataURL(file);
     }
     function fallbackLocalBrandUpload(file, inputId, previewId, hintId, resetBtnId) {
       const reader = new FileReader();
@@ -18064,15 +18124,25 @@ function syncAllOpenViewsStock(changedProdId) {
           }
         });
 
-        localStorage.setItem("mmo_system_settings", JSON.stringify(settings));
-        localStorage.setItem("mmo_general_settings", JSON.stringify(settings));
+        try {
+          localStorage.setItem("mmo_system_settings", JSON.stringify(settings));
+        } catch(eSet1) {
+          console.warn("Storage warning mmo_system_settings:", eSet1);
+        }
+        try {
+          localStorage.setItem("mmo_general_settings", JSON.stringify(settings));
+        } catch(eSet2) {
+          console.warn("Storage warning mmo_general_settings:", eSet2);
+        }
 
         // Lưu bản backup độc lập vĩnh viễn không thể bị ghi đè
         try {
           const permBackup = JSON.parse(localStorage.getItem('mmo_settings_permanent_backup') || '{}');
           Object.assign(permBackup, settings);
           localStorage.setItem('mmo_settings_permanent_backup', JSON.stringify(permBackup));
-        } catch(e) {}
+        } catch(eSet3) {
+          console.warn("Storage warning mmo_settings_permanent_backup:", eSet3);
+        }
 
         // Đồng bộ lưu lên Turso Cloud Worker
         try {
