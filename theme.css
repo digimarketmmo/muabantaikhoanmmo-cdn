@@ -6313,3 +6313,26 @@ body.is-admin #mobDrawerAdminLink {
 body.is-admin #profAdminShortcutBtn {
   display: flex !important;
 }
+
+
+/* =========================================================================
+   TỐI ƯU THU GỌN BẢNG ĐƠN HÀNG ADMIN (KHÔNG TRÀN NGANG, HIỂN THỊ ĐỦ THÔNG TIN)
+   ========================================================================= */
+#admOrdersTable {
+  width: 100% !important;
+  min-width: 0 !important;
+  border-collapse: collapse !important;
+  font-size: 0.75rem !important;
+}
+#admOrdersTable th {
+  padding: 8px 6px !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  background: #111827 !important;
+}
+#admOrdersTable td {
+  padding: 6px 6px !important;
+  font-size: 0.74rem !important;
+  vertical-align: middle !important;
+}

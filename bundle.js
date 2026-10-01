@@ -32634,82 +32634,127 @@ function getProductSchemaReviews(p, idx) {
         const oid = o.orderId || o.id || "";
         const email = o.email || o.userEmail || "Khách Hàng";
         const name = o.userName || email.split("@")[0];
-        const pTitle = o.productName || o.prodName || "Tài khoản MMO";
-        const pVariant = o.variant || o.variantName || "Mặc định";
-        const qty = o.quantity || o.qty || 1;
+        const pTitle = String(o.productName || o.prodName || "Tài khoản MMO").trim();
+        const pVariant = String(o.variant || o.variantName || "Mặc định").trim();
+        const qty = Number(o.quantity || o.qty) || 1;
+        if (typeof autoFixPreOrderZeroTotal === "function") autoFixPreOrderZeroTotal(o);
         const total = Number(o.total || o.totalPrice || o.totalAmount) || 0;
-        const time = o.date || o.createdAt || "--";
-        const creds = o.credentials || o.accounts || "";
+        
+        // Chuẩn hóa thời gian 2 dòng gọn gàng
+        const rawTime = o.date || o.createdAt || "--";
+        let timeFormattedHtml = "--";
+        let ts = (typeof getOrderTimestamp === "function") ? getOrderTimestamp(o) : 0;
+        if (!ts && rawTime) {
+          const num = Number(rawTime);
+          if (!isNaN(num) && num > 1000000000) ts = num < 10000000000 ? num * 1000 : num;
+          else {
+            const parsed = Date.parse(rawTime);
+            if (!isNaN(parsed)) ts = parsed;
+          }
+        }
+        if (ts > 0) {
+          try {
+            const dt = new Date(ts);
+            const pad = function(n) { return String(n).padStart(2, "0"); };
+            const tStr = pad(dt.getHours()) + ":" + pad(dt.getMinutes()) + ":" + pad(dt.getSeconds());
+            const dStr = pad(dt.getDate()) + "/" + pad(dt.getMonth() + 1) + "/" + dt.getFullYear();
+            timeFormattedHtml = '<div style="line-height:1.2; font-size:0.7rem;">' +
+              '<span style="color:#e2e8f0; font-weight:700;">' + tStr + '</span><br/>' +
+              '<span style="color:#64748b; font-size:0.65rem;">' + dStr + '</span>' +
+            '</div>';
+          } catch(e) {
+            timeFormattedHtml = '<span style="font-size:0.7rem; color:#94a3b8;">' + escapeHtml(String(rawTime)) + '</span>';
+          }
+        } else {
+          timeFormattedHtml = '<span style="font-size:0.7rem; color:#94a3b8;">' + escapeHtml(String(rawTime)) + '</span>';
+        }
+
+        // Rút gọn thông minh tên sản phẩm & biến thể
+        let cleanTitle = pTitle;
+        if (cleanTitle.startsWith("Đặt trước:")) {
+          cleanTitle = cleanTitle.replace(/^Đặt trước:\s*/gi, "").trim();
+        }
+        cleanTitle = cleanTitle.replace(/\(Đặt trước\s*\([0-9]+\s*ngày\)\)/gi, "").trim();
+        cleanTitle = cleanTitle.replace(/\s+-\s+Mã đơn.*$/gi, "").trim();
+
+        let cleanVariant = pVariant;
+        if (cleanVariant.startsWith("Đặt trước")) {
+          cleanVariant = cleanVariant.replace(/^Đặt trước\s*\([0-9]+\s*ngày\)/gi, "").trim() || "Đặt trước";
+        }
 
         let statusText = o.status || "Đã Giao Tự Động";
-        let statusBadge = "<span class='badge-verified' style='background:rgba(59,130,246,0.18); border:1px solid #3b82f6; color:#60a5fa; white-space:nowrap !important; display:inline-flex; align-items:center; gap:4px;'>Đã Giao Tự Động</span>";
         const stLower = String(statusText).toLowerCase();
-
         const isPreOrder = o.type === "PRE_ORDER" || String(oid).startsWith("PRE") || String(o.id).startsWith("PRE");
+
+        let statusBadge = "<span class='badge-verified' style='background:rgba(59,130,246,0.18); border:1px solid #3b82f6; color:#60a5fa; font-size:0.68rem; padding:2px 5px; border-radius:4px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-bolt' style='font-size:0.6rem;'></i> Đã giao</span>";
 
         if (isPreOrder) {
           if (o.status === "WAITING_CONFIRM" || stLower.includes("chờ")) {
-            statusBadge = "<span class='badge-verified' style='background:rgba(245,158,11,0.25); border:1px solid #f59e0b; color:#fbbf24; font-weight:800; white-space:nowrap !important; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-calendar-check'></i> ĐẶT TRƯỚC - Chờ xác nhận</span>";
-          } else if (o.status === "PROCESSING" || stLower.includes("xử lý")) {
-            statusBadge = "<span class='badge-verified' style='background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; font-weight:800; white-space:nowrap !important; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-spinner fa-spin'></i> ĐẶT TRƯỚC - Đang xử lý</span>";
+            statusBadge = "<span class='badge-verified' style='background:rgba(245,158,11,0.2); border:1px solid #f59e0b; color:#fbbf24; font-size:0.68rem; padding:2px 5px; border-radius:4px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-clock' style='font-size:0.6rem;'></i> [ĐT] Chờ duyệt</span>";
+          } else if (o.status === "PROCESSING" || stLower.includes("xử lý") || stLower.includes("gom")) {
+            statusBadge = "<span class='badge-verified' style='background:rgba(56,189,248,0.2); border:1px solid #38bdf8; color:#38bdf8; font-size:0.68rem; padding:2px 5px; border-radius:4px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-spinner fa-spin' style='font-size:0.6rem;'></i> [ĐT] Gom hàng</span>";
           } else if (o.status === "COMPLETED" || stLower.includes("giao") || stLower.includes("hoàn thành")) {
-            statusBadge = "<span class='badge-verified' style='background:rgba(16,185,129,0.25); border:1px solid #10b981; color:#34d399; font-weight:800; white-space:nowrap !important; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-circle-check'></i> ĐẶT TRƯỚC - Đã giao</span>";
-          } else if (o.status === "CANCELLED" || stLower.includes("hủy")) {
-            statusBadge = "<span class='badge-verified' style='background:rgba(239,68,68,0.25); border:1px solid #ef4444; color:#f87171; font-weight:800; white-space:nowrap !important; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-ban'></i> ĐẶT TRƯỚC - Đã hủy</span>";
+            statusBadge = "<span class='badge-verified' style='background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#34d399; font-size:0.68rem; padding:2px 5px; border-radius:4px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-circle-check' style='font-size:0.6rem;'></i> [ĐT] Đã giao</span>";
+          } else if (o.status === "CANCELLED" || stLower.includes("hủy") || o.isCancelled) {
+            statusBadge = "<span class='badge-verified' style='background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#f87171; font-size:0.68rem; padding:2px 5px; border-radius:4px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-ban' style='font-size:0.6rem;'></i> [ĐT] Đã hủy</span>";
           }
         } else if (stLower.includes("khiếu nại") || (stLower.includes("bảo hành") && !stLower.includes("đã bảo hành") && !stLower.includes("đã đổi trả"))) {
-          statusBadge = "<span class='badge-verified' style='background:rgba(239,68,68,0.25); border:1px solid #ef4444; color:#f87171; animation:pulse 1.5s infinite;'><i class='fa-solid fa-triangle-exclamation'></i> Cần Bảo Hành / Đổi Trả</span>";
+          statusBadge = "<span class='badge-verified' style='background:rgba(239,68,68,0.2); border:1px solid #ef4444; color:#f87171; font-size:0.68rem; padding:2px 5px; border-radius:4px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-triangle-exclamation' style='font-size:0.6rem;'></i> Cần BH</span>";
         } else if (stLower.includes("đổi trả") || stLower.includes("1-đổi-1") || stLower.includes("đã bảo hành")) {
-          statusBadge = "<span class='badge-verified' style='background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#34d399; white-space:nowrap !important; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-rotate'></i> Đã Đổi Trả 1-1</span>";
+          statusBadge = "<span class='badge-verified' style='background:rgba(16,185,129,0.2); border:1px solid #10b981; color:#34d399; font-size:0.68rem; padding:2px 5px; border-radius:4px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-rotate' style='font-size:0.6rem;'></i> Đã đổi 1-1</span>";
         } else if (stLower.includes("hoàn tiền")) {
-          statusBadge = "<span class='badge-verified' style='background:rgba(168,85,247,0.2); border:1px solid #a855f7; color:#c084fc; white-space:nowrap !important; display:inline-flex; align-items:center; gap:4px;'><i class='fa-solid fa-hand-holding-dollar'></i> Đã Hoàn Tiền Ví</span>";
+          statusBadge = "<span class='badge-verified' style='background:rgba(168,85,247,0.2); border:1px solid #a855f7; color:#c084fc; font-size:0.68rem; padding:2px 5px; border-radius:4px; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:3px;'><i class='fa-solid fa-hand-holding-dollar' style='font-size:0.6rem;'></i> Đã hoàn ví</span>";
         }
 
         let actionButtons = "";
         if (isPreOrder) {
           if (o.status === "WAITING_CONFIRM") {
-            actionButtons = "<div style='display:inline-flex; gap:4px;'>" +
-              "<button type='button' class='btn-tool-secondary' onclick='adminConfirmPreOrder(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;'>Duyệt</button>" +
-              "<button type='button' class='btn-tool-secondary' onclick='openAdminFulfillModal(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;'>Giao acc</button>" +
-              "<button type='button' class='btn-tool-secondary' onclick='adminCancelAndRefundPreOrder(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;'>Hủy</button>" +
+            actionButtons = "<div style='display:inline-flex; gap:3px; justify-content:center;'>" +
+              "<button type='button' class='btn-tool-secondary' onclick='adminConfirmPreOrder(\"" + oid + "\")' style='font-size:0.68rem; padding:2px 5px; background:#38bdf8; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;'>Duyệt</button>" +
+              "<button type='button' class='btn-tool-secondary' onclick='openAdminFulfillModal(\"" + oid + "\")' style='font-size:0.68rem; padding:2px 5px; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;'>Giao</button>" +
+              "<button type='button' class='btn-tool-secondary' onclick='adminCancelAndRefundPreOrder(\"" + oid + "\")' style='font-size:0.68rem; padding:2px 5px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;'>Hủy</button>" +
             "</div>";
           } else if (o.status === "PROCESSING") {
-            actionButtons = "<div style='display:inline-flex; gap:4px;'>" +
-              "<button type='button' class='btn-tool-secondary' onclick='openAdminFulfillModal(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 8px; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;'>Giao acc</button>" +
-              "<button type='button' class='btn-tool-secondary' onclick='adminCancelAndRefundPreOrder(\"" + oid + "\")' style='font-size:0.72rem; padding:4px 7px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;'>Hủy</button>" +
+            actionButtons = "<div style='display:inline-flex; gap:3px; justify-content:center;'>" +
+              "<button type='button' class='btn-tool-secondary' onclick='openAdminFulfillModal(\"" + oid + "\")' style='font-size:0.68rem; padding:2px 6px; background:#10b981; color:#0b111e; font-weight:700; border:none; border-radius:4px; cursor:pointer;'>Giao</button>" +
+              "<button type='button' class='btn-tool-secondary' onclick='adminCancelAndRefundPreOrder(\"" + oid + "\")' style='font-size:0.68rem; padding:2px 5px; background:#ef4444; color:#fff; border:none; border-radius:4px; cursor:pointer;'>Hủy</button>" +
             "</div>";
           } else {
-            actionButtons = "<button type='button' class='btn-copy-small' onclick='openPreOrderDetailView(\"" + oid + "\")' style='font-size:0.72rem;'><i class='fa-solid fa-eye'></i> Chi tiết</button>";
+            actionButtons = "<button type='button' class='btn-copy-small' onclick='openPreOrderDetailView(\"" + oid + "\")' style='font-size:0.68rem; padding:2px 6px;'><i class='fa-solid fa-eye'></i> Xem</button>";
           }
         } else {
-          actionButtons = "<div style='display:inline-flex; gap:5px;'>" +
-            "<button type='button' class='btn-tool-secondary' onclick='openAdminOrderDetailModal(\"" + oid + "\", \"exchange\")' title='Đổi trả 1-Đổi-1' style='font-size:0.72rem; padding:4px 8px; background:#10b981; color:#fff; border:none; border-radius:5px; cursor:pointer;'><i class='fa-solid fa-rotate'></i> Đổi 1-1</button>" +
-            "<button type='button' class='btn-tool-secondary' onclick='openAdminOrderDetailModal(\"" + oid + "\", \"refund\")' title='Hoàn tiền vào ví' style='font-size:0.72rem; padding:4px 8px; background:#7c3aed; color:#fff; border:none; border-radius:5px; cursor:pointer;'><i class='fa-solid fa-money-bill-wave'></i> Hoàn Tiền</button>" +
+          actionButtons = "<div style='display:inline-flex; gap:3px; justify-content:center;'>" +
+            "<button type='button' class='btn-tool-secondary' onclick='openAdminOrderDetailModal(\"" + oid + "\", \"exchange\")' title='Đổi trả 1-Đổi-1' style='font-size:0.68rem; padding:2px 5px; background:#10b981; color:#fff; border:none; border-radius:4px; cursor:pointer;'><i class='fa-solid fa-rotate'></i> Đổi 1-1</button>" +
+            "<button type='button' class='btn-tool-secondary' onclick='openAdminOrderDetailModal(\"" + oid + "\", \"refund\")' title='Hoàn tiền vào ví' style='font-size:0.68rem; padding:2px 5px; background:#7c3aed; color:#fff; border:none; border-radius:4px; cursor:pointer;'><i class='fa-solid fa-money-bill-wave'></i> Hoàn</button>" +
           "</div>";
         }
 
         return "<tr id='admOrderRow_" + oid + "'>" +
-          "<td style='font-family:monospace; font-weight:800; color:#38bdf8; font-size:0.82rem; white-space:nowrap;'>" +
+          "<td style='font-family:monospace; font-weight:700; color:#38bdf8; font-size:0.75rem; white-space:nowrap; padding:6px 6px;'>" +
             "<a href='javascript:void(0)' onclick='" + (isPreOrder ? "openPreOrderDetailView(\"" + oid + "\")" : "openAdminOrderDetailModal(\"" + oid + "\")") + "' style='color:#38bdf8; text-decoration:underline;' title='Bấm để xem chi tiết'>" +
               "#" + oid +
             "</a>" +
           "</td>" +
-          "<td style='font-size:0.75rem; color:#94a3b8; white-space:nowrap;'>" + time + "</td>" +
-          "<td style='min-width:130px;'>" +
-            "<strong style='color:#fff; font-size:0.82rem; display:block;'>" + escapeHtml(name) + "</strong>" +
-            "<span style='font-size:0.72rem; color:#94a3b8; font-family:monospace;'>" + escapeHtml(email) + "</span>" +
+          "<td style='white-space:nowrap; padding:6px 6px;'>" + timeFormattedHtml + "</td>" +
+          "<td style='padding:6px 6px;'>" +
+            "<div style='max-width:115px; line-height:1.2;'>" +
+              "<strong style='color:#f8fafc; font-size:0.75rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block;' title='" + escapeHtml(name) + "'>" + escapeHtml(name) + "</strong>" +
+              "<span style='font-size:0.68rem; color:#94a3b8; font-family:monospace; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block;' title='" + escapeHtml(email) + "'>" + escapeHtml(email) + "</span>" +
+            "</div>" +
           "</td>" +
-          "<td style='min-width:140px;'>" +
-            "<strong style='color:#fff; font-size:0.82rem; display:block;'>" + escapeHtml(pTitle) + "</strong>" +
-            "<span style='font-size:0.72rem; color:#a855f7; font-weight:700;'>" + escapeHtml(pVariant) + "</span>" +
+          "<td style='padding:6px 6px;'>" +
+            "<div style='max-width:170px; line-height:1.25;'>" +
+              "<strong style='color:#f8fafc; font-size:0.73rem; font-weight:700; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; word-break:break-word;' title='" + escapeHtml(pTitle) + "'>" + escapeHtml(cleanTitle) + "</strong>" +
+              "<span style='font-size:0.67rem; color:#c084fc; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; display:block; margin-top:2px;' title='" + escapeHtml(pVariant) + "'><i class='fa-solid fa-layer-group' style='font-size:0.6rem; margin-right:2px;'></i> " + escapeHtml(cleanVariant) + "</span>" +
+            "</div>" +
           "</td>" +
-          "<td style='font-weight:700; color:#f59e0b; font-size:0.82rem; text-align:center; white-space:nowrap;'>" + qty + "</td>" +
-          "<td style='color:#10b981; font-weight:800; font-size:0.85rem; white-space:nowrap;'>" + formatVND(total) + "</td>" +
-          "<td style='white-space:nowrap;'>" + statusBadge + "</td>" +
-          "<td style='white-space:nowrap;'>" +
-            (isPreOrder ? "<button type='button' class='btn-copy-small' onclick='openPreOrderDetailView(\"" + oid + "\")' style='font-size:0.72rem; white-space:nowrap;'><i class='fa-solid fa-receipt'></i> Xem đơn</button>" : "<button type='button' class='btn-copy-small' onclick='openAdminOrderDetailModal(\"" + oid + "\")' style='font-size:0.72rem; white-space:nowrap;'><i class='fa-solid fa-key'></i> Xem Acc</button>") +
+          "<td style='font-weight:700; color:#f59e0b; font-size:0.78rem; text-align:center; white-space:nowrap; padding:6px 6px;'>" + qty + "</td>" +
+          "<td style='color:#10b981; font-weight:800; font-size:0.78rem; white-space:nowrap; padding:6px 6px;'>" + formatVND(total) + "</td>" +
+          "<td style='white-space:nowrap; padding:6px 6px;'>" + statusBadge + "</td>" +
+          "<td style='white-space:nowrap; padding:6px 6px;'>" +
+            (isPreOrder ? "<button type='button' class='btn-copy-small' onclick='openPreOrderDetailView(\"" + oid + "\")' style='font-size:0.68rem; padding:2px 6px; white-space:nowrap; border-radius:4px;'><i class='fa-solid fa-receipt'></i> Xem đơn</button>" : "<button type='button' class='btn-copy-small' onclick='openAdminOrderDetailModal(\"" + oid + "\")' style='font-size:0.68rem; padding:2px 6px; white-space:nowrap; border-radius:4px;'><i class='fa-solid fa-key'></i> Xem Acc</button>") +
           "</td>" +
-          "<td style='text-align:center; white-space:nowrap;'>" +
+          "<td style='text-align:center; white-space:nowrap; padding:6px 6px;'>" +
             actionButtons +
           "</td>" +
         "</tr>";
