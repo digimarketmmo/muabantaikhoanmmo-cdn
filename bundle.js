@@ -18590,7 +18590,12 @@ function syncAllOpenViewsStock(changedProdId) {
         ts = getOrderTimestamp(item);
       }
       if (!ts || isNaN(ts) || ts <= 0) {
-        ts = Number(item.createdTimestamp || item.createdAt || 0);
+        ts = Number(item.createdTimestamp || item.createdAt || item.timestamp || 0);
+      }
+      if (!ts || isNaN(ts) || ts <= 0) {
+        if (typeof getOrderTimestamp === "function") {
+          ts = getOrderTimestamp({ date: item.date || item.createdAt || item.time });
+        }
       }
       if (!ts || isNaN(ts) || ts <= 0) {
         ts = Date.parse(item.date || item.createdAt || "") || 0;
@@ -19287,7 +19292,7 @@ function syncAllOpenViewsStock(changedProdId) {
       } catch(e) {}
 
       // Nguồn 3: LocalStorage
-      const scanKeys = ["mmo_user_orders", "mmo_orders", "mmo_all_orders"];
+      const scanKeys = ["mmo_pre_orders", "mmo_user_orders", "mmo_orders", "mmo_all_orders"];
       scanKeys.forEach(function(k) {
         try {
           const raw = localStorage.getItem(k);
@@ -19304,6 +19309,10 @@ function syncAllOpenViewsStock(changedProdId) {
             // Bỏ qua bản ghi TX_PO_ rác
             if (rawId.startsWith("TX_PO_") && (!o.credentials && !o.deliveredAccounts) && (!o.total || o.total <= 0)) {
               return;
+            }
+
+            if (k === "mmo_pre_orders" || cleanId.startsWith("PRE") || cleanId.startsWith("POD_")) {
+              o.type = "PRE_ORDER";
             }
 
             const oEmail = String(o.userEmail || o.email || o.buyerEmail || "").toLowerCase().trim();
@@ -19336,6 +19345,9 @@ function syncAllOpenViewsStock(changedProdId) {
               }));
             } else {
               const existing = idMap.get(cleanId);
+              if (o.type === "PRE_ORDER" || cleanId.startsWith("PRE") || cleanId.startsWith("POD_")) {
+                existing.type = "PRE_ORDER";
+              }
               if (isOrderWarrantyOrExchange(o)) {
                 existing.status = o.status;
                 if (o.credentials) existing.credentials = o.credentials;
@@ -19381,8 +19393,13 @@ function syncAllOpenViewsStock(changedProdId) {
           });
 
           if (uIdx !== -1) {
+            userOrders[uIdx].type = "PRE_ORDER";
             userOrders[uIdx].status = po.status;
             userOrders[uIdx].statusText = po.statusText;
+            if (po.total || po.totalPrice) {
+              userOrders[uIdx].total = po.total || po.totalPrice;
+              userOrders[uIdx].totalPrice = po.total || po.totalPrice;
+            }
             userOrders[uIdx].deliveredAccounts = po.deliveredAccounts;
             if (po.deliveredAccounts && po.deliveredAccounts.length > 0) {
               userOrders[uIdx].credentials = Array.isArray(po.deliveredAccounts) ? po.deliveredAccounts.join("\n") : po.deliveredAccounts;
@@ -19418,6 +19435,15 @@ function syncAllOpenViewsStock(changedProdId) {
           }
         });
       } catch(e) {}
+
+      // Đảm bảo toàn bộ đơn có mã PRE... hoặc POD_... đều được gán type = PRE_ORDER
+      userOrders.forEach(function(uo) {
+        if (!uo) return;
+        const uId = String(uo.id || uo.orderId || uo.orderCode || "");
+        if (uId.startsWith("PRE") || uId.startsWith("POD_") || (uo.statusText && uo.statusText.includes("đặt trước"))) {
+          uo.type = "PRE_ORDER";
+        }
+      });
 
       // SẮP XẾP CHÍNH XÁC: ĐƠN HÀNG MỚI NHẤT LUÔN LÊN ĐẦU TIÊN (NEWEST FIRST)
       const getExactUserTs = function(item) {
@@ -19945,20 +19971,22 @@ function syncAllOpenViewsStock(changedProdId) {
         return;
       }
 
+      // Helper xác định đơn hàng đặt trước chuẩn xác 100%
+      const isPreOrderCheck = function(o) {
+        if (!o) return false;
+        const oId = String(o.orderId || o.id || o.orderCode || "");
+        return o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.startsWith("POD_") || (o.statusText && o.statusText.includes("đặt trước"));
+      };
+
       // Đếm số lượng đơn theo phân loại
       const countAll = orders.length;
-      const countPre = orders.filter(function(o) {
-        const oId = String(o.orderId || o.id || "");
-        return o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_");
-      }).length;
+      const countPre = orders.filter(isPreOrderCheck).length;
       const countExchanged = orders.filter(function(o) {
-        const oId = String(o.orderId || o.id || "");
-        if (o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_")) return false;
+        if (isPreOrderCheck(o)) return false;
         return isOrderWarrantyOrExchange(o);
       }).length;
       const countCompleted = orders.filter(function(o) {
-        const oId = String(o.orderId || o.id || "");
-        if (o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_")) return false;
+        if (isPreOrderCheck(o)) return false;
         return !isOrderWarrantyOrExchange(o);
       }).length;
 
@@ -19973,20 +20001,15 @@ function syncAllOpenViewsStock(changedProdId) {
 
       // Lọc theo sub-tab đang chọn
       if (profileOrdersActiveTab === "PRE_ORDER") {
-        orders = orders.filter(function(o) {
-          const oId = String(o.orderId || o.id || "");
-          return o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_");
-        });
+        orders = orders.filter(isPreOrderCheck);
       } else if (profileOrdersActiveTab === "EXCHANGED") {
         orders = orders.filter(function(o) {
-          const oId = String(o.orderId || o.id || "");
-          if (o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_")) return false;
+          if (isPreOrderCheck(o)) return false;
           return isOrderWarrantyOrExchange(o);
         });
       } else if (profileOrdersActiveTab === "COMPLETED") {
         orders = orders.filter(function(o) {
-          const oId = String(o.orderId || o.id || "");
-          if (o.type === "PRE_ORDER" || oId.startsWith("PRE") || oId.includes("PO_")) return false;
+          if (isPreOrderCheck(o)) return false;
           return !isOrderWarrantyOrExchange(o);
         });
       }
@@ -20052,7 +20075,7 @@ function syncAllOpenViewsStock(changedProdId) {
                 const stLow = String(order.status || order.statusText || '').toLowerCase();
                 const credLow = String(order.credentials || order.accounts || '').toLowerCase();
 
-                const isPreOrder = order.type === 'PRE_ORDER' || oId.startsWith('PRE') || oId.includes('PO_');
+                const isPreOrder = isPreOrderCheck(order);
                 const isRefunded = !isPreOrder && (stLow.includes('hoàn tiền') || stLow.includes('hoan tien') || stLow.includes('refund') || Boolean(order.refundedAt) || Boolean(order.isRefunded) || Boolean(order.refundAmount));
                 const isExchanged = !isPreOrder && !isRefunded && (stLow.includes('đổi trả') || stLow.includes('doi tra') || stLow.includes('1-đổi-1') || stLow.includes('1-doi-1') || stLow.includes('đổi 1-1') || stLow.includes('doi 1-1') || stLow.includes('đã bảo hành') || stLow.includes('da bao hanh') || credLow.includes('đổi trả') || credLow.includes('doi tra') || credLow.includes('tài khoản mới đổi trả') || Boolean(order.replacementAccount) || Boolean(order.isExchanged));
                 const isComplain = !isPreOrder && !isRefunded && !isExchanged && (stLow.includes('khiếu nại') || stLow.includes('khieu nai') || stLow.includes('bảo hành') || stLow.includes('bao hanh') || stLow.includes('warranty') || stLow.includes('complain') || Boolean(order.hasComplaint) || Boolean(order.isWarranty));
@@ -21327,7 +21350,7 @@ function syncAllOpenViewsStock(changedProdId) {
     const currentStockCheck = (p && typeof getShopVariantStock === "function") ? getShopVariantStock(p, vIdxCheck) : (p ? (p.stock || 0) : 0);
     if (currentStockCheck <= 0) {
       if (typeof openPreOrderModal === "function") {
-        openPreOrderModal();
+        openPreOrderModal(p, vIdxCheck);
       }
       return;
     }
@@ -21614,7 +21637,7 @@ function syncAllOpenViewsStock(changedProdId) {
             restoreBtn();
             showToast("⚠️ Rất tiếc, kho hàng tạm thời không đủ số lượng tài khoản khả dụng!", "warning");
             if (typeof openPreOrderModal === "function") {
-              setTimeout(() => openPreOrderModal(), 600);
+              setTimeout(() => openPreOrderModal(p, vIdx), 600);
             }
             return;
           }
@@ -31173,6 +31196,14 @@ function getProductSchemaReviews(p, idx) {
       let prodId = curP ? curP.id : (document.getElementById("dtlId") ? document.getElementById("dtlId").innerText.trim() : "");
       let prodName = curP ? curP.name : (document.getElementById("dtlTitle") ? document.getElementById("dtlTitle").innerText.trim() : "");
 
+      if (!curP && prodId && typeof findShopProduct === "function") {
+        curP = findShopProduct(prodId);
+      }
+      if (curP) {
+        if (!prodId) prodId = curP.id;
+        if (!prodName) prodName = curP.name;
+      }
+
       // Lấy biến thể & đơn giá
       let curVIdx = (typeof variantIdx === "number") ? variantIdx : ((typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0);
       let vName = "";
@@ -31201,6 +31232,22 @@ function getProductSchemaReviews(p, idx) {
         } else {
           const rawDtlPrice = document.getElementById("dtlPrice") ? document.getElementById("dtlPrice").innerText : "";
           unitPrice = parseInt(rawDtlPrice.replace(/[^0-9]/g, "")) || 0;
+        }
+      }
+
+      // Fallback 5: Quét qua variants của curP nếu có
+      if (!unitPrice && curP) {
+        if (Array.isArray(curP.variants) && curP.variants.length > 0) {
+          for (let vi = 0; vi < curP.variants.length; vi++) {
+            if (Number(curP.variants[vi].price) > 0) {
+              unitPrice = Number(curP.variants[vi].price);
+              if (!vName) vName = curP.variants[vi].name || "";
+              break;
+            }
+          }
+        }
+        if (!unitPrice && Number(curP.price) > 0) {
+          unitPrice = Number(curP.price);
         }
       }
 
@@ -31262,13 +31309,37 @@ function getProductSchemaReviews(p, idx) {
       const varIdx = parseInt(document.getElementById("poModalVarIdx") ? document.getElementById("poModalVarIdx").value : 0) || 0;
 
       const unitPriceInput = document.getElementById("poModalUnitPrice");
-      let unitPrice = unitPriceInput && unitPriceInput.dataset ? (Number(unitPriceInput.dataset.price) || 0) : 0;
+      let unitPrice = 0;
+      if (unitPriceInput && unitPriceInput.dataset && Number(unitPriceInput.dataset.price) > 0) {
+        unitPrice = Number(unitPriceInput.dataset.price);
+      }
+      if (!unitPrice && unitPriceInput && unitPriceInput.value) {
+        unitPrice = parseInt(String(unitPriceInput.value).replace(/[^0-9]/g, "")) || 0;
+      }
+      if (!unitPrice && prodId && typeof findShopProduct === "function") {
+        const pObj = findShopProduct(prodId);
+        if (pObj) {
+          if (Array.isArray(pObj.variants) && pObj.variants[varIdx] && Number(pObj.variants[varIdx].price) > 0) {
+            unitPrice = Number(pObj.variants[varIdx].price);
+          } else if (Number(pObj.price) > 0) {
+            unitPrice = Number(pObj.price);
+          }
+        }
+      }
       if (!unitPrice && typeof currentSelectedPrice === "number" && currentSelectedPrice > 0) {
         unitPrice = currentSelectedPrice;
       }
       if (!unitPrice) {
         const rawDtlPrice = document.getElementById("dtlPrice") ? document.getElementById("dtlPrice").innerText : "";
         unitPrice = parseInt(rawDtlPrice.replace(/[^0-9]/g, "")) || 0;
+      }
+
+      // MANDATORY PRICE GUARD: Tuyệt đối không cho phép tạo đơn với đơn giá <= 0
+      if (unitPrice <= 0) {
+        if (typeof showToast === "function") {
+          showToast("Lỗi: Không xác định được đơn giá sản phẩm hợp lệ (> 0đ). Vui lòng thử lại!", "error");
+        }
+        return;
       }
 
       const qtyInput = document.getElementById("poModalQty");
@@ -31284,6 +31355,13 @@ function getProductSchemaReviews(p, idx) {
       const rawTotal = unitPrice * qty;
       const discountAmount = Math.round(rawTotal * discountPercent / 100);
       const finalTotal = Math.max(0, rawTotal - discountAmount);
+
+      if (finalTotal <= 0) {
+        if (typeof showToast === "function") {
+          showToast("Lỗi: Tổng tiền đơn đặt trước không hợp lệ (> 0đ)!", "error");
+        }
+        return;
+      }
 
       // Khởi tạo mã đơn và thời gian đặt ngay từ đầu để tránh lỗi TDZ
       const orderCode = "PRE" + Math.floor(100000 + Math.random() * 900000);
