@@ -20071,6 +20071,8 @@ function syncAllOpenViewsStock(changedProdId) {
             <tbody>
               ${pageOrders.map(function(order) {
                 const oId = order.orderId || order.id || order.orderCode || '';
+                const rawStatus = String(order.status || '').toUpperCase().trim();
+                const rawCreds = String(order.credentials || order.accounts || '').trim();
                 const pName = escapeHtml(order.productName || 'Sản phẩm');
                 const vName = escapeHtml(order.variant || order.variantName || 'Mặc định');
                 const tot = (typeof formatVND === "function") ? formatVND(order.total || order.totalPrice || 0) : ((order.total || 0).toLocaleString("vi-VN") + " đ");
@@ -31661,10 +31663,68 @@ function getProductSchemaReviews(p, idx) {
       } catch(eTurso) {}
       broadcastPreOrderEvent({ type: "NEW_PREORDER", order: newPreOrder });
 
-      // 6. Chuyển sang xem đơn đặt trước (Hình 4)
-      openPreOrderDetailView(orderCode);
+      // 6. Hiển thị Popup Modal thông báo đặt hàng trước thành công
+      openPreOrderSuccessModal(newPreOrder);
     }
     window.submitPreOrderAction = submitPreOrderAction;
+
+    // =========================================================================
+    // MODAL POPUP THÔNG BÁO ĐẶT HÀNG TRƯỚC THÀNH CÔNG
+    // =========================================================================
+    function openPreOrderSuccessModal(order) {
+      if (!order) return;
+      window._lastPreOrderCreated = order;
+
+      const codeEl = document.getElementById("posmOrderCode");
+      if (codeEl) codeEl.innerText = "#" + (order.orderCode || order.id || "");
+
+      const prodEl = document.getElementById("posmProdName");
+      if (prodEl) {
+        const cl = (typeof formatCleanPreOrderProduct === "function") ? formatCleanPreOrderProduct(order.productName, order.variantName) : { cleanTitle: order.productName, cleanVariant: order.variantName };
+        prodEl.innerText = cl.cleanTitle + (cl.cleanVariant ? " (" + cl.cleanVariant + ")" : "");
+      }
+
+      const qtyEl = document.getElementById("posmQty");
+      if (qtyEl) qtyEl.innerText = order.qty || order.quantity || 1;
+
+      const totEl = document.getElementById("posmTotal");
+      if (totEl) {
+        const val = order.total || order.totalPrice || 0;
+        totEl.innerText = (typeof formatVND === "function") ? formatVND(val) : (val.toLocaleString("vi-VN") + " đ");
+      }
+
+      const modal = document.getElementById("preOrderSuccessModal");
+      if (modal) {
+        modal.style.display = "flex";
+      }
+    }
+    window.openPreOrderSuccessModal = openPreOrderSuccessModal;
+
+    function closePreOrderSuccessModal() {
+      const modal = document.getElementById("preOrderSuccessModal");
+      if (modal) {
+        modal.style.display = "none";
+      }
+    }
+    window.closePreOrderSuccessModal = closePreOrderSuccessModal;
+
+    function handlePosmViewDetail() {
+      closePreOrderSuccessModal();
+      const ord = window._lastPreOrderCreated;
+      const oCode = ord ? (ord.orderCode || ord.id) : window.lastDeliveredOrderId;
+      if (oCode && typeof openPreOrderDetailView === "function") {
+        openPreOrderDetailView(oCode);
+      }
+    }
+    window.handlePosmViewDetail = handlePosmViewDetail;
+
+    function handlePosmMyOrders() {
+      closePreOrderSuccessModal();
+      if (typeof goToMyOrders === "function") {
+        goToMyOrders();
+      }
+    }
+    window.handlePosmMyOrders = handlePosmMyOrders;
 
     // Hàm Quay Lại Trang Trước (Hoạt động cho nút Quay lại ở màn hình chi tiết đơn đặt trước)
     function goBackToPreviousView() {
@@ -31849,8 +31909,22 @@ function getProductSchemaReviews(p, idx) {
 
       const elCreated = document.getElementById("podCreatedAt");
       if (elCreated) {
-        const rawCr = order.date || order.createdAt || "-";
-        elCreated.innerText = (typeof formatOrderDate === "function") ? formatOrderDate(rawCr, order.createdTimestamp) : rawCr;
+        let dispDate = "";
+        try {
+          const rawCr = String(order.date || order.createdAt || "").trim();
+          if (rawCr && !rawCr.includes("T") && !rawCr.includes("Z")) {
+            dispDate = rawCr;
+          } else {
+            const rawTs = Number(order.createdTimestamp || order.timestamp || (rawCr ? Date.parse(rawCr) : Date.now()));
+            if (rawTs > 0 && !isNaN(rawTs)) {
+              const d = new Date(rawTs);
+              dispDate = ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2) + ":" + ("0" + d.getSeconds()).slice(-2) + " " + ("0" + d.getDate()).slice(-2) + "/" + ("0" + (d.getMonth() + 1)).slice(-2) + "/" + d.getFullYear();
+            }
+          }
+        } catch(eDate) {
+          dispDate = new Date().toLocaleString("vi-VN");
+        }
+        elCreated.innerText = dispDate || "-";
       }
 
       const elDisc = document.getElementById("podDiscount");
