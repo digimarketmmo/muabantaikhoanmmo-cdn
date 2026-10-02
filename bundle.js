@@ -33,7 +33,7 @@ function checkAndApplyNetworkUpdate() {
     if (typeof sanitizeSatelliteLegacyDom === "function") sanitizeSatelliteLegacyDom();
     if (typeof convertOutOfStockToPreOrder === "function") convertOutOfStockToPreOrder();
     
-    fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/v1/version?t=" + Date.now(), {
+    fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/v1/version?t=" + Date.now(), {
       cache: "no-store",
       headers: { "Pragma": "no-cache", "Cache-Control": "no-cache" }
     }).then(function(res) {
@@ -5331,7 +5331,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (!cleanEmail || !cleanRef || cleanEmail === cleanRef || cleanEmail.split("@")[0] === cleanRef) return;
 
         // 1. Post trực tiếp lên Cloudflare Worker Turso Database (SSOT tập trung toàn cầu)
-        fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/affiliate/register", {
+        fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/affiliate/register", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -5370,7 +5370,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       try {
         if (!referrerCode) return [];
         const cleanRef = String(referrerCode).trim().toLowerCase();
-        const res = await fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/affiliate/members?referrer=" + encodeURIComponent(cleanRef), {
+        const res = await fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/affiliate/members?referrer=" + encodeURIComponent(cleanRef), {
           method: "GET",
           headers: { "Accept": "application/json" }
         });
@@ -6136,7 +6136,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         isAff = true;
       }
       // [SMART SOCIAL SHARE LINK]: Dùng endpoint OG Proxy để Facebook, Zalo, Telegram, Twitter luôn hiện ảnh và tên sản phẩm 100%
-      let shareUrl = "https://mmo-shop-api.manhdongvtc.workers.dev/og?prod=" + encodeURIComponent(prodId) + "&v=" + Date.now();
+      let shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?prod=" + encodeURIComponent(prodId) + "&v=" + Date.now();
       if (refCode) {
         shareUrl += "&ref=" + encodeURIComponent(refCode);
       }
@@ -6189,7 +6189,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
       let shareUrl = "https://www.muabantaikhoanmmo.com/";
       if (prodId) {
-        shareUrl = "https://mmo-shop-api.manhdongvtc.workers.dev/og?prod=" + encodeURIComponent(prodId) + "&v=" + Date.now();
+        shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?prod=" + encodeURIComponent(prodId) + "&v=" + Date.now();
         if (refCode) shareUrl += "&ref=" + encodeURIComponent(refCode);
         const curOrigin = window.location.origin;
         if (curOrigin && !curOrigin.includes("muabantaikhoanmmo.com") && curOrigin.startsWith("http")) {
@@ -6610,7 +6610,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const sanitizedProds = MOCK_DATA.products.map(p => {
           if (p && p.image && String(p.image).startsWith("data:") && p.image.length > 2000) {
             const clone = Object.assign({}, p);
-            clone.image = "https://mmo-shop-api.manhdongvtc.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image";
+            clone.image = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image";
             clone.image_url = clone.image;
             return clone;
           }
@@ -6679,7 +6679,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // [KEEPALIVE CLOUD SYNC]: Đảm bảo 100% gửi thẳng lên Worker và lưu vào Turso SQLite kể cả khi reload
       try {
         const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SECURE_TOKEN_2026";
-        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.manhdongvtc.workers.dev";
+        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
         fetch(workerUrl + "/api/admin/products/save", {
           method: "POST",
           headers: {
@@ -10547,7 +10547,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // [CLOUDFLARE WORKER API CLIENT - KIẾN TRÚC 3 TẦNG BẢO MẬT & SSOT TURSO]
     // =========================================================================
     var MMO_WORKER_API = window.MMO_WORKER_API = {
-      DEFAULT_API_URL: "https://mmo-shop-api.manhdongvtc.workers.dev",
+      DEFAULT_API_URL: "https://mmo-shop-api.muabantaikhoanmmo.workers.dev",
       _workerDeadUntil: 0,
       _checkWorkerAvailable: function() {
         return Date.now() >= this._workerDeadUntil;
@@ -12711,7 +12711,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? Object.assign({}, API_SOURCES[provider]) : { baseUrl: "https://sellmmo.vn", apiKey: "" };
       const baseUrl = pCfg.baseUrl || (payload && payload.baseUrl) || "https://sellmmo.vn";
       const apiKey = pCfg.apiKey || (payload && payload.apiKey) || "";
-      const workerProxy = (typeof sourceProxyUrl !== "undefined" && sourceProxyUrl) ? sourceProxyUrl.replace(/\/+$/, "") : "https://mmo-api-proxy.manhdongvtc.workers.dev";
+      const workerProxy = (typeof sourceProxyUrl !== "undefined" && sourceProxyUrl) ? sourceProxyUrl.replace(/\/+$/, "") : "https://mmo-api-proxy.muabantaikhoanmmo.workers.dev";
 
       function createFastSignal(ms = 5000) {
         if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
@@ -12858,7 +12858,7 @@ function syncAllOpenViewsStock(changedProdId) {
           try {
             const wBuyUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
               ? (MMO_WORKER_API.getApiUrl() + "/api/admin/source-buy")
-              : "https://mmo-shop-api.manhdongvtc.workers.dev/api/admin/source-buy";
+              : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/source-buy";
             const wRes = await fetch(wBuyUrl, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -13015,7 +13015,7 @@ function syncAllOpenViewsStock(changedProdId) {
         try {
           const wBuyUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
             ? (MMO_WORKER_API.getApiUrl() + "/api/admin/source-buy")
-            : "https://mmo-shop-api.manhdongvtc.workers.dev/api/admin/source-buy";
+            : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/source-buy";
           const wRes = await fetch(wBuyUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -17884,8 +17884,8 @@ function syncAllOpenViewsStock(changedProdId) {
         telegram: "https://t.me/groupmuabantaikhoanmmo",
         marqueeText: "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!",
         gasUrl: "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec",
-        brandLogo: "https://mmo-shop-api.manhdongvtc.workers.dev/api/images/img_1790888969056_z00fh5.png",
-        brandFavicon: "https://mmo-shop-api.manhdongvtc.workers.dev/api/images/img_1790888988353_677lyw.png",
+        brandLogo: "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888969056_z00fh5.png",
+        brandFavicon: "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888988353_677lyw.png",
         brandOgImage: "https://iili.io/nFV4Rln.png"
       };
       try {
@@ -17993,7 +17993,7 @@ function syncAllOpenViewsStock(changedProdId) {
             previewBrandUrl(compactDataUrl, previewId, hintId, resetBtnId);
 
             // 2. Tải lên máy chủ Cloudflare Worker để lấy URL CDN vĩnh viễn (Bypass CORS 100%)
-            fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/upload-image", {
+            fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/upload-image", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -18025,7 +18025,7 @@ function syncAllOpenViewsStock(changedProdId) {
                 try { localStorage.setItem("mmo_settings_permanent_backup", JSON.stringify(curSettings)); } catch(e3) {}
 
                 // Lưu lên Turso Cloud Worker SSOT
-                fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/admin/settings", {
+                fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ settings: curSettings })
@@ -18173,7 +18173,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
     async function syncSettingsFromCloud() {
       try {
-        const res = await fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/admin/settings");
+        const res = await fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings");
         if (!res.ok) return;
         const data = await res.json();
         if (data && data.success && data.settings && typeof data.settings === "object") {
@@ -18272,12 +18272,12 @@ function syncAllOpenViewsStock(changedProdId) {
       });
 
       // Logo URL & Preview
-      const logoUrl = (s.brandLogo && s.brandLogo.trim()) ? s.brandLogo.trim() : "https://mmo-shop-api.manhdongvtc.workers.dev/api/images/img_1790888969056_z00fh5.png";
+      const logoUrl = (s.brandLogo && s.brandLogo.trim()) ? s.brandLogo.trim() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888969056_z00fh5.png";
       if (document.getElementById("setSiteLogoUrl")) document.getElementById("setSiteLogoUrl").value = logoUrl;
       previewBrandUrl(logoUrl, "setSiteLogoPreview", "setSiteLogoHint", "btnResetLogo");
 
       // Favicon URL & Preview
-      const faviconUrl = (s.brandFavicon && s.brandFavicon.trim()) ? s.brandFavicon.trim() : "https://mmo-shop-api.manhdongvtc.workers.dev/api/images/img_1790888988353_677lyw.png";
+      const faviconUrl = (s.brandFavicon && s.brandFavicon.trim()) ? s.brandFavicon.trim() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888988353_677lyw.png";
       if (document.getElementById("setSiteFaviconUrl")) document.getElementById("setSiteFaviconUrl").value = faviconUrl;
       previewBrandUrl(faviconUrl, "setSiteFaviconPreview", "setSiteFaviconHint", "btnResetFavicon");
 
@@ -18327,7 +18327,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       // Đồng bộ ngầm lên Turso Cloud Worker
       try {
-        fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/admin/settings", {
+        fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ settings: keyObj })
@@ -18373,13 +18373,13 @@ function syncAllOpenViewsStock(changedProdId) {
         // Brand Assets (Logo, Favicon, OG Image) - Chống rỗng
         let brandLogo = document.getElementById("setSiteLogoUrl") ? document.getElementById("setSiteLogoUrl").value.trim() : "";
         if (!brandLogo || brandLogo === "https://iili.io/nFV4Rln.png") {
-          brandLogo = "https://mmo-shop-api.manhdongvtc.workers.dev/api/images/img_1790888969056_z00fh5.png";
+          brandLogo = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888969056_z00fh5.png";
           if (document.getElementById("setSiteLogoUrl")) document.getElementById("setSiteLogoUrl").value = brandLogo;
         }
 
         let brandFavicon = document.getElementById("setSiteFaviconUrl") ? document.getElementById("setSiteFaviconUrl").value.trim() : "";
         if (!brandFavicon || brandFavicon === "https://iili.io/nFV4Rln.png") {
-          brandFavicon = "https://mmo-shop-api.manhdongvtc.workers.dev/api/images/img_1790888988353_677lyw.png";
+          brandFavicon = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888988353_677lyw.png";
           if (document.getElementById("setSiteFaviconUrl")) document.getElementById("setSiteFaviconUrl").value = brandFavicon;
         }
 
@@ -18443,7 +18443,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
         // Đồng bộ lưu lên Turso Cloud Worker
         try {
-          fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/admin/settings", {
+          fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ settings: settings })
@@ -19490,7 +19490,7 @@ function syncAllOpenViewsStock(changedProdId) {
       try {
         const apiUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
           ? MMO_WORKER_API.getApiUrl()
-          : "https://mmo-shop-api.manhdongvtc.workers.dev";
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
 
         const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
         const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
@@ -21988,7 +21988,7 @@ function syncAllOpenViewsStock(changedProdId) {
       try {
         const workerCheckoutUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
           ? (MMO_WORKER_API.getApiUrl() + "/api/orders/checkout")
-          : "https://mmo-shop-api.manhdongvtc.workers.dev/api/orders/checkout";
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/orders/checkout";
 
         const checkoutPayload = {
           product_id: p.id,
@@ -27898,7 +27898,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       // Đồng bộ trạng thái khóa lên Cloudflare Worker Turso Database
       try {
-        fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/admin/user/lock", {
+        fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/user/lock", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: targetEmail, isLocked: willBeLocked })
@@ -35171,7 +35171,7 @@ async function confirmRefundOrder() {
 
       const curlEl = document.getElementById("dtlApiCurlCode");
       if (curlEl) {
-        curlEl.innerText = 'curl -X POST "https://mmo-shop-api.manhdongvtc.workers.dev/api/orders/checkout" \\\n  -H "Content-Type: application/json" \\\n  -d \'{"apiKey":"YOUR_API_KEY","productId":"' + (p.id || 'PROD_ID') + '","variantIndex":' + curVIdx + ',"quantity":1}\'';
+        curlEl.innerText = 'curl -X POST "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/orders/checkout" \\\n  -H "Content-Type: application/json" \\\n  -d \'{"apiKey":"YOUR_API_KEY","productId":"' + (p.id || 'PROD_ID') + '","variantIndex":' + curVIdx + ',"quantity":1}\'';
       }
     }
     window.renderProductApiIntegration = renderProductApiIntegration;
@@ -35323,7 +35323,7 @@ const MMO_AI_KEYS = {
       try {
         const payload = {};
         payload['ai_key_' + p] = clean;
-        fetch("https://mmo-shop-api.manhdongvtc.workers.dev/api/admin/settings", {
+        fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ settings: payload })
@@ -37866,7 +37866,7 @@ function renderProductApiIntegration() {
 
   var curlEl = document.getElementById("dtlApiCurlCode");
   if (curlEl) {
-    curlEl.innerText = 'curl -X POST "https://mmo-shop-api.manhdongvtc.workers.dev/api/orders/checkout" \\\n' +
+    curlEl.innerText = 'curl -X POST "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/orders/checkout" \\\n' +
       '  -H "Content-Type: application/json" \\\n' +
       '  -d \'' + JSON.stringify(payloadObj) + '\'';
   }
@@ -38160,7 +38160,7 @@ function ensureUniversalComponentsExist(currentProd) {
         "  <span style='font-size:0.78rem; font-weight:700; color:#cbd5e1;'><i class='fa-solid fa-terminal' style='color:#10b981;'></i> Lệnh cURL chạy thử:</span>" +
         "  <button type='button' onclick='copyApiCode(\"dtlApiCurlCode\", this)' style='background:none; border:none; color:#10b981; font-size:0.72rem; font-weight:700; cursor:pointer;'><i class='fa-regular fa-copy'></i> Sao chép cURL</button>" +
         "</div>" +
-        "<pre class='api-code-block' id='dtlApiCurlCode'>curl -X POST &quot;https://mmo-shop-api.manhdongvtc.workers.dev/api/orders/checkout&quot;</pre>" +
+        "<pre class='api-code-block' id='dtlApiCurlCode'>curl -X POST &quot;https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/orders/checkout&quot;</pre>" +
         "</div>" +
         "<div style='font-size:0.78rem; color:#94a3b8; line-height:1.6; background:rgba(56,189,248,0.05); border:1px solid rgba(56,189,248,0.2); border-radius:8px; padding:10px 12px;'>" +
         "  <div><i class='fa-solid fa-circle-check' style='color:#10b981;'></i> <strong>Tự động 100%:</strong> Tài khoản trả về trực tiếp trong mảng <code>accounts</code> sau 1 giây.</div>" +
