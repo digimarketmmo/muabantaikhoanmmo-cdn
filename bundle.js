@@ -6189,7 +6189,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
       let shareUrl = "https://www.muabantaikhoanmmo.com/";
       if (prodId) {
-        shareUrl = "https://mmo-shop-api.manhdongvtc.workers.dev/og?prod=" + encodeURIComponent(prodId);
+        shareUrl = "https://mmo-shop-api.manhdongvtc.workers.dev/og?prod=" + encodeURIComponent(prodId) + "&v=" + Date.now();
         if (refCode) shareUrl += "&ref=" + encodeURIComponent(refCode);
         const curOrigin = window.location.origin;
         if (curOrigin && !curOrigin.includes("muabantaikhoanmmo.com") && curOrigin.startsWith("http")) {
