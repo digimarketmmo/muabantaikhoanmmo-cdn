@@ -6061,33 +6061,43 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.handleLogout = handleLogout;
 
-    function copyTextDirect(text) {
+    function copyTextDirect(text, customMsg) {
       if (!text) return;
+      const doToast = () => {
+        if (customMsg !== false && typeof showToast === "function") {
+          showToast(customMsg || "Đã sao chép vào bộ nhớ tạm!", "success");
+        }
+      };
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(() => {
-          showToast("Đã sao chép vào bộ nhớ tạm!", "success");
+          doToast();
         }).catch(() => {
-          fallbackCopy(text);
+          fallbackCopy(text, customMsg);
         });
       } else {
-        fallbackCopy(text);
+        fallbackCopy(text, customMsg);
       }
     }
-    function fallbackCopy(text) {
-      const ta = document.createElement("textarea");
-      ta.value = text;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-      showToast("Đã sao chép!", "success");
+    function fallbackCopy(text, customMsg) {
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        if (customMsg !== false && typeof showToast === "function") {
+          showToast(customMsg || "Đã sao chép!", "success");
+        }
+      } catch(e) {}
     }
     window.copyTextDirect = copyTextDirect;
 
     function copyToClipboard(text, msg) {
       if (!text) return;
-      copyTextDirect(text);
-      if (msg) showToast(msg, "success");
+      copyTextDirect(text, msg || "Đã sao chép!");
     }
     window.copyToClipboard = copyToClipboard;
 
@@ -6122,9 +6132,35 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.copyAffiliateLink = copyAffiliateLink;
 
+    function getActiveProductForSharing() {
+      let p = (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct)
+        || window._currentActiveDetailProduct
+        || window.currentSelectedProduct
+        || null;
+      if (!p) {
+        try {
+          const sp = new URLSearchParams(window.location.search);
+          const pid = sp.get('prod') || sp.get('product') || sp.get('q');
+          if (pid && typeof findShopProduct === "function") p = findShopProduct(pid);
+        } catch(e) {}
+      }
+      if (!p) {
+        try {
+          const dtlIdEl = document.getElementById("dtlId");
+          if (dtlIdEl && dtlIdEl.innerText && typeof findShopProduct === "function") {
+            p = findShopProduct(dtlIdEl.innerText.trim());
+          }
+        } catch(e) {}
+      }
+      return p;
+    }
+
     function copyProductAffiliateLink(withCaption) {
-      const p = window.currentSelectedProduct || (typeof getVisibleProducts === "function" ? getVisibleProducts().find(x => x.id === new URLSearchParams(window.location.search).get('prod')) : null);
-      const prodId = (p && p.id) || new URLSearchParams(window.location.search).get('prod');
+      const p = getActiveProductForSharing();
+      const dtlIdEl = document.getElementById("dtlId");
+      const dtlIdText = (dtlIdEl && dtlIdEl.innerText && dtlIdEl.innerText.trim()) ? dtlIdEl.innerText.trim() : "";
+      const sp = new URLSearchParams(window.location.search);
+      const prodId = (p && p.id) || dtlIdText || sp.get('prod') || sp.get('product') || sp.get('q');
       if (!prodId) {
         if (typeof showToast === "function") showToast("Không tìm thấy thông tin sản phẩm để lấy link!", "warning");
         return;
@@ -6163,12 +6199,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "💰 Giá chỉ: " + pPrice + "\n" +
           "🛡️ Bảo hành: " + ((p && p.warranty) ? p.warranty : "Bảo hành 1 đổi 1") + " - Giao tự động 24/7\n" +
           "👉 Mua ngay tại: " + shareUrl;
-        copyTextDirect(caption);
+        copyTextDirect(caption, false);
         if (typeof showToast === "function") {
           showToast("🎉 Đã sao chép nội dung bài đăng kèm link giới thiệu!", "success");
         }
       } else {
-        copyTextDirect(shareUrl);
+        copyTextDirect(shareUrl, false);
         if (typeof showToast === "function") {
           if (isAff) {
             showToast("🎉 Đã sao chép link sản phẩm (kèm mã hoa hồng " + commRate + "% của bạn):\n" + shareUrl, "success");
@@ -6181,8 +6217,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.copyProductAffiliateLink = copyProductAffiliateLink;
 
     function shareProductToSocial(platform) {
-      const p = window.currentSelectedProduct || (typeof getVisibleProducts === "function" ? getVisibleProducts().find(x => x.id === new URLSearchParams(window.location.search).get('prod')) : null);
-      const prodId = (p && p.id) || new URLSearchParams(window.location.search).get('prod') || "";
+      const p = getActiveProductForSharing();
+      const dtlIdEl = document.getElementById("dtlId");
+      const dtlIdText = (dtlIdEl && dtlIdEl.innerText && dtlIdEl.innerText.trim()) ? dtlIdEl.innerText.trim() : "";
+      const sp = new URLSearchParams(window.location.search);
+      const prodId = (p && p.id) || dtlIdText || sp.get('prod') || sp.get('product') || sp.get('q') || "";
       let refCode = "";
       if (typeof currentUser !== "undefined" && currentUser && prodId) {
         refCode = (currentUser.email ? currentUser.email.split('@')[0] : (currentUser.userId || "aff")).toLowerCase();
@@ -21150,6 +21189,8 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof restoreProductVariants === "function") restoreProductVariants(p);
 
       currentSelectedProduct = p;
+      window.currentSelectedProduct = p;
+      window._currentActiveDetailProduct = p;
       let initialVarIdx = 0;
       if (p.variants && Array.isArray(p.variants) && p.variants.length > 0) {
         const firstInStock = p.variants.findIndex((v, i) => (typeof getVariantStockCount === "function" ? getVariantStockCount(p, i) : 0) > 0);
@@ -21344,8 +21385,8 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       try {
-        const newUrl = window.location.origin + "/search?q=" + encodeURIComponent(p.id);
-        window.history.replaceState({ prod: p.id }, "", newUrl);
+        const newUrl = (window.location.origin || "https://www.muabantaikhoanmmo.com") + "/?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
+        window.history.replaceState({ prod: p.id, view: "viewProductDetail" }, "", newUrl);
       } catch(e) {}
 
       window._currentActiveDetailProduct = p;
