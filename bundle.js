@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.8.2";
+const MMO_CURRENT_CODE_VERSION = "3.8.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION
@@ -32235,11 +32235,7 @@ function getProductSchemaReviews(p, idx) {
 
     // 6. XỬ LÝ QUICK ACTION CHIPS
     function handleQuickChatAction(actionType) {
-      if (actionType === "warranty") {
-        promptSendLatestOrder();
-      } else if (actionType === "replace") {
-        sendChatMessage("🔄 Tài khoản của tôi không đăng nhập được / bị sai pass, xin hỗ trợ đổi tài khoản mới.");
-      } else if (actionType === "deposit") {
+      if (actionType === "deposit") {
         sendChatMessage("💰 Tôi đã chuyển khoản nạp tiền nhưng cần kiểm tra hỗ trợ ví.");
       } else if (actionType === "human") {
         sendChatMessage("👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.");
@@ -32247,33 +32243,13 @@ function getProductSchemaReviews(p, idx) {
     }
     window.handleQuickChatAction = handleQuickChatAction;
 
-    // Gửi nhanh thông tin đơn hàng mới nhất
+    // Hướng dẫn người dùng chọn chính xác đơn hàng cần bảo hành
     function promptSendLatestOrder() {
-      const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
-      const cleanUserMail = (curUser && curUser.email) ? curUser.email.toLowerCase().trim() : "";
-
-      const orders = typeof getUserOrders === "function" ? getUserOrders() : [];
-      // LỌC CHẶT CHẼ: Chỉ lấy đơn hàng THỰC SỰ THUỘC VỀ USER ĐANG ĐĂNG NHẬP và ĐÃ HOÀN TẤT / ĐÃ THANH TOÁN
-      const validOrders = orders.filter(function(o) {
-        if (!o) return false;
-        const oMail = (o.userEmail || o.email || o.buyerEmail || "").toLowerCase().trim();
-        if (cleanUserMail && oMail && oMail !== cleanUserMail) return false;
-        const st = String(o.status || "").toUpperCase();
-        // Không cho phép yêu cầu bảo hành đơn chưa trả tiền, đơn đã hủy hoặc đơn đặt trước đang chờ gom hàng
-        if (st.includes("CANCEL") || st.includes("HỦY")) return false;
-        if (st === "WAITING_CONFIRM" || st === "PROCESSING") return false;
-        const amt = Number(o.total || o.totalCost || o.totalPrice || o.totalAmount) || 0;
-        return amt > 0 && (st === "COMPLETED" || st === "PAID" || st === "ĐÃ GIAO HÀNG" || !!o.credentials || (Array.isArray(o.deliveredAccounts) && o.deliveredAccounts.length > 0));
-      });
-
-      if (validOrders && validOrders.length > 0) {
-        const latest = validOrders[0];
-        const text = "📦 YÊU CẦU BẢO HÀNH ĐƠN HÀNG #" + (latest.orderId || latest.id) + " - Sản phẩm: " + latest.productName + (latest.variant ? (" (" + latest.variant + ")") : "");
-        sendChatMessage(text);
-      } else {
-        if (typeof showToast === "function") {
-          showToast("Bạn chưa có đơn hàng đã mua hoặc đã giao nào để yêu cầu bảo hành!", "warning");
-        }
+      if (typeof viewProfile === "function") {
+        viewProfile("tabProfOrders");
+      }
+      if (typeof showToast === "function") {
+        showToast("Vui lòng chọn đúng đơn hàng cần bảo hành trong Lịch Sử Đơn Hàng và bấm 'Khiếu Nại'!", "info");
       }
     }
     window.promptSendLatestOrder = promptSendLatestOrder;
