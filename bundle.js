@@ -3929,7 +3929,111 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.populateCategorySelects = populateCategorySelects;
 
-    
+    function toggleDeliveryTypeClick() {
+      const radioLocal = document.getElementById("admProdTypeLocal");
+      const radioApi = document.getElementById("admProdTypeApi");
+      if (!radioLocal || !radioApi) return;
+      if (radioLocal.checked) {
+        radioLocal.checked = false;
+        radioApi.checked = true;
+      } else {
+        radioLocal.checked = true;
+        radioApi.checked = false;
+      }
+      toggleAdmProductSourceFields();
+    }
+    window.toggleDeliveryTypeClick = toggleDeliveryTypeClick;
+
+    function autoDetectBestProviderForName(name) {
+      if (!name || typeof name !== "string") return null;
+      const raw = name.toLowerCase().trim();
+      const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+        ? window.cachedSourceProducts
+        : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+      if (!prods.length) return null;
+
+      let kw = "";
+      if (raw.includes("gemini") || raw.includes("veo")) kw = "gemini";
+      else if (raw.includes("chatgpt") || raw.includes("gpt") || raw.includes("openai")) kw = "chatgpt";
+      else if (raw.includes("canva")) kw = "canva";
+      else if (raw.includes("capcut")) kw = "capcut";
+      else if (raw.includes("kling")) kw = "kling";
+      else if (raw.includes("claude")) kw = "claude";
+      else if (raw.includes("midjourney")) kw = "midjourney";
+      else if (raw.includes("tiktok") || raw.includes("tik tok")) kw = "tiktok";
+      else if (raw.includes("instagram") || raw.includes("ig")) kw = "instagram";
+      else if (raw.includes("facebook") || raw.includes("fb") || raw.includes("via") || raw.includes("clone")) kw = "facebook";
+      else if (raw.includes("gmail") || raw.includes("mail domain") || raw.includes("edu")) kw = "gmail";
+      else if (raw.includes("hotmail") || raw.includes("outlook")) kw = "hotmail";
+      else if (raw.includes("proxy") || raw.includes("socks") || raw.includes("ipv4")) kw = "proxy";
+      else if (raw.includes("youtube") || raw.includes("ytb")) kw = "youtube";
+      else if (raw.includes("discord")) kw = "discord";
+      else if (raw.includes("telegram")) kw = "telegram";
+      else kw = raw.split(/\s+/).filter(w => w.length >= 2).slice(0, 2).join(" ");
+
+      if (!kw) return null;
+
+      const counts = {};
+      prods.forEach(p => {
+        if (!p || !p.provider) return;
+        const txt = ((p.name || "") + " " + (p.category || "")).toLowerCase();
+        if (txt.includes(kw)) {
+          counts[p.provider] = (counts[p.provider] || 0) + (p.amount > 0 ? 2 : 1);
+        }
+      });
+
+      const sorted = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
+      return sorted.length > 0 ? sorted[0] : null;
+    }
+    window.autoDetectBestProviderForName = autoDetectBestProviderForName;
+
+    function updateModalProviderPillsUI(activeProv) {
+      activeProv = activeProv || "nguyenlieummo";
+      const pills = document.querySelectorAll(".adm-prov-pill");
+      const badge = document.getElementById("admModalActiveProvBadge");
+      const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[activeProv]) ? API_SOURCES[activeProv] : null;
+      const pName = pCfg ? pCfg.name : (activeProv + ".com");
+      if (badge) {
+        badge.innerHTML = 'Đang chọn: <strong style="color:#38bdf8;">' + pName + '</strong>';
+      }
+      pills.forEach(btn => {
+        const p = btn.getAttribute("data-prov");
+        if (p === activeProv) {
+          btn.classList.add("active");
+          btn.style.background = "rgba(6,182,212,0.2)";
+          btn.style.borderColor = "#06b6d4";
+          btn.style.color = "#38bdf8";
+          btn.style.boxShadow = "0 0 10px rgba(6,182,212,0.35)";
+          const icon = btn.querySelector("i");
+          if (icon && !icon.classList.contains("fa-check")) {
+            btn.setAttribute("data-old-icon", icon.className);
+            icon.className = "fa-solid fa-check";
+          }
+        } else {
+          btn.classList.remove("active");
+          btn.style.background = "#0d121f";
+          btn.style.borderColor = "rgba(255,255,255,0.1)";
+          btn.style.color = "#cbd5e1";
+          btn.style.boxShadow = "none";
+          const oldIcon = btn.getAttribute("data-old-icon");
+          const icon = btn.querySelector("i");
+          if (icon && oldIcon) {
+            icon.className = oldIcon;
+          }
+        }
+      });
+    }
+    window.updateModalProviderPillsUI = updateModalProviderPillsUI;
+
+    function selectModalApiProvider(prov) {
+      if (!prov) return;
+      const pSel = document.getElementById("admProdApiProvider");
+      if (pSel) pSel.value = prov;
+      updateModalProviderPillsUI(prov);
+      handleAdmModalProviderChange();
+    }
+    window.selectModalApiProvider = selectModalApiProvider;
+
     function toggleAdmProductSourceFields() {
       const isApi = document.getElementById("admProdTypeApi")?.checked;
       const panel = document.getElementById("admProdApiConfigPanel");
@@ -3949,6 +4053,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
       if (isApi) {
+        const nameInput = document.getElementById("admProdName");
+        const prodName = nameInput ? nameInput.value.trim() : "";
+        if (prodName && typeof autoDetectBestProviderForName === "function") {
+          const detected = autoDetectBestProviderForName(prodName);
+          if (detected) {
+            const pSel = document.getElementById("admProdApiProvider");
+            if (pSel) pSel.value = detected;
+          }
+        }
         handleAdmModalProviderChange();
       }
     }
@@ -4186,7 +4299,39 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       searchInput.value = finalKw;
       searchInput.focus();
+
+      // Kiểm tra xem nhà cung cấp hiện tại có SP nào khớp finalKw không
+      const pSel = document.getElementById("admProdApiProvider");
+      const curProv = pSel ? pSel.value : "nguyenlieummo";
+      const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+        ? window.cachedSourceProducts
+        : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+      
+      const curMatches = prods.filter(s => (!s.provider || s.provider === curProv) && ((s.name||"") + " " + (s.category||"")).toLowerCase().includes(finalKw.toLowerCase()));
+      if (curMatches.length === 0) {
+        // Tìm nhà cung cấp có nhiều SP khớp từ khóa nhất
+        const provCounts = {};
+        prods.forEach(s => {
+          if (!s || !s.provider) return;
+          if (((s.name||"") + " " + (s.category||"")).toLowerCase().includes(finalKw.toLowerCase())) {
+            provCounts[s.provider] = (provCounts[s.provider] || 0) + (s.amount > 0 ? 2 : 1);
+          }
+        });
+        const bestProv = Object.keys(provCounts).sort((a,b) => provCounts[b] - provCounts[a])[0];
+        if (bestProv && bestProv !== curProv) {
+          selectModalApiProvider(bestProv);
+          if (typeof showToast === "function") {
+            const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[bestProv]) ? API_SOURCES[bestProv] : null;
+            showToast("🪄 Đã tự động chuyển sang [" + (pCfg ? pCfg.name : bestProv) + "] vì có SP khớp \"" + finalKw + "\"!", "success");
+          }
+          return;
+        }
+      }
+
       filterAdmModalSourceProducts(finalKw);
+      if (typeof renderModalProviderSuggestions === "function") {
+        renderModalProviderSuggestions(finalKw, curProv);
+      }
       if (typeof showToast === "function") showToast("🪄 Đã tìm nhanh SP nguồn theo: \"" + finalKw + "\"", "info");
     }
     window.autoFillSourceSearchFromName = autoFillSourceSearchFromName;
@@ -4287,9 +4432,63 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.rescanCurrentModalProvider = rescanCurrentModalProvider;
 
+    function renderModalProviderSuggestions(keyword, currentProvider) {
+      const box = document.getElementById("admModalProviderSuggestions");
+      if (!box) return;
+      const rawKw = (keyword || "").trim().toLowerCase();
+      if (!rawKw) {
+        box.style.display = "none";
+        box.innerHTML = "";
+        return;
+      }
+
+      const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+        ? window.cachedSourceProducts
+        : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+
+      const otherMatches = {};
+      prods.forEach(p => {
+        if (!p || !p.provider || p.provider === currentProvider) return;
+        const txt = ((p.name || "") + " " + (p.category || "")).toLowerCase();
+        if (txt.includes(rawKw)) {
+          if (!otherMatches[p.provider]) otherMatches[p.provider] = 0;
+          otherMatches[p.provider]++;
+        }
+      });
+
+      const matchedProvs = Object.keys(otherMatches).filter(k => otherMatches[k] > 0);
+      if (matchedProvs.length === 0) {
+        box.style.display = "none";
+        box.innerHTML = "";
+        return;
+      }
+
+      let html = '<div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">' +
+        '<span style="color:#fbbf24;"><i class="fa-solid fa-lightbulb"></i> Tìm thấy SP khớp "<strong>' + (typeof escapeHtml === "function" ? escapeHtml(keyword) : keyword) + '</strong>" tại nguồn khác:</span>' +
+        '<div style="display:flex; gap:6px; flex-wrap:wrap;">';
+
+      matchedProvs.forEach(prov => {
+        const count = otherMatches[prov];
+        const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[prov]) ? API_SOURCES[prov] : null;
+        const provName = pCfg ? pCfg.name : prov;
+        html += '<button type="button" onclick="selectModalApiProvider(\'' + prov + '\')" ' +
+          'style="padding:3px 8px; border-radius:4px; font-size:0.72rem; font-weight:700; cursor:pointer; background:rgba(56,189,248,0.18); border:1px solid #38bdf8; color:#38bdf8; display:inline-flex; align-items:center; gap:4px;">' +
+          '<i class="fa-solid fa-arrow-right-arrow-left"></i> Chuyển sang ' + (typeof escapeHtml === "function" ? escapeHtml(provName) : provName) + ' (' + count + ' SP)' +
+        '</button>';
+      });
+
+      html += '</div></div>';
+      box.innerHTML = html;
+      box.style.display = "block";
+    }
+    window.renderModalProviderSuggestions = renderModalProviderSuggestions;
+
     function handleAdmModalProviderChange() {
       const pSel = document.getElementById("admProdApiProvider");
-      const prov = pSel ? (pSel.value || "selltainguyenmmo") : "selltainguyenmmo";
+      const prov = pSel ? (pSel.value || "nguyenlieummo") : "nguyenlieummo";
+      if (typeof updateModalProviderPillsUI === "function") {
+        updateModalProviderPillsUI(prov);
+      }
       const sSel = document.getElementById("admProdApiSourceSelect");
       if (sSel) {
         sSel.value = "";
@@ -4328,6 +4527,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (clearBtn) clearBtn.style.display = autoKw ? "inline-block" : "none";
 
       filterAdmModalSourceProducts(autoKw);
+
+      // Hiển thị gợi ý nguồn khác nếu từ khóa có trên nguồn khác
+      if (typeof renderModalProviderSuggestions === "function") {
+        renderModalProviderSuggestions(autoKw, prov);
+      }
 
       if (typeof fetchSingleSourceProducts === "function") {
         if (!window._provFetchedAt) window._provFetchedAt = {};
@@ -4389,6 +4593,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (pSel) {
           pSel.value = prov;
         }
+        if (typeof updateModalProviderPillsUI === "function") updateModalProviderPillsUI(prov);
         const sSel = document.getElementById("admProdApiSourceSelect");
         if (sSel && srcId) {
           sSel.setAttribute("data-pending-id", srcId);
@@ -6048,6 +6253,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         sSel.removeAttribute("data-pending-id");
         sSel.innerHTML = '<option value="">-- Chọn sản phẩm nguồn --</option>';
       }
+
+      // Đặt mặc định nhà cung cấp chính nguyenlieummo (thay vì mail72h chỉ có 7 mail)
+      const pSel = document.getElementById("admProdApiProvider");
+      if (pSel) pSel.value = "nguyenlieummo";
+      if (typeof updateModalProviderPillsUI === "function") updateModalProviderPillsUI("nguyenlieummo");
+      const sugBox = document.getElementById("admModalProviderSuggestions");
+      if (sugBox) { sugBox.style.display = "none"; sugBox.innerHTML = ""; }
+
       if (typeof toggleAdmProductSourceFields === "function") toggleAdmProductSourceFields();
 
       renderVariantInputs([{ name: "Gói Chuẩn", price: 50000 }]);
@@ -15620,10 +15833,12 @@ function syncAllOpenViewsStock(changedProdId) {
           rApi.checked = true;
           rLoc.checked = false;
         }
-        if (typeof toggleAdmProductSourceFields === "function") toggleAdmProductSourceFields();
 
         const pSel = document.getElementById("admProdApiProvider");
         if (pSel) pSel.value = provider;
+        if (typeof updateModalProviderPillsUI === "function") updateModalProviderPillsUI(provider);
+
+        if (typeof toggleAdmProductSourceFields === "function") toggleAdmProductSourceFields();
 
         const sSel = document.getElementById("admProdApiSourceSelect");
         if (sSel) {
