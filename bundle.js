@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.7.9";
+const MMO_CURRENT_CODE_VERSION = "3.8.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION
@@ -21,6 +21,15 @@ try {
     const raw = localStorage.getItem(k);
     if (raw && raw.includes(_badSub)) {
       localStorage.setItem(k, raw.replaceAll(_badSub, _goodSub));
+    }
+    if (raw && raw.includes("NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY")) {
+      try {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr)) {
+          const filtered = arr.filter(p => p && p.id !== "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY");
+          localStorage.setItem(k, JSON.stringify(filtered));
+        }
+      } catch(e) {}
     }
   });
 } catch(eBootClean) {}
@@ -394,54 +403,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "sourceStock": 550,
       "targetProdId": "PROD_MUQIMRJYG0",
       "targetProdName": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY"
-    }
-  },
-  {
-    "id": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY",
-    "name": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 Tháng",
-    "category": "AI & Video",
-    "price": 150000,
-    "stock": 331,
-    "sold": 0,
-    "buffSold": 0,
-    "rating": 4.9,
-    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/N%C3%82NG%20C%E1%BA%A4P%20GEMINI%20PRO%20CH%C3%8DNH%20CH%E1%BB%A6%201%20N%C4%82M%20-%20365%20NG%C3%80Y/image",
-    "warranty": "Bảo Hành 1 Ngày",
-    "description": "Bạn đang cần một trợ lý trí tuệ nhân tạo mạnh mẽ, thông minh vượt trội để hỗ trợ viết code, phân tích dữ liệu, lên ý tưởng nội dung, dịch thuật hay xử lý công việc chuyên sâu mỗi ngày với thời hạn dài lâu mà không phải bận tâm gia hạn hàng tháng?\n\nGói Gemini Pro (Advanced) Chính Chủ Hạn 1 Năm (18 Tháng) tại shop chính là lựa chọn tối ưu, tiết kiệm và đẳng cấp nhất dành cho bạn!\n\n✨ Trọn bộ quyền năng cao cấp của Gemini Pro:\n🧠 Trợ lý AI thế hệ mới: Sử dụng các mô hình ngôn ngữ và tư duy tiên tiến nhất từ Google, xử lý mượt mà các tác vụ phức tạp từ lập trình, toán học đến sáng tạo nội dung.\n\n📊 Phân tích dữ liệu & Tải file siêu lớn: Tải lên các tệp tài liệu dày, bảng tính Excel hay file code nặng để AI tự động đọc hiểu, tổng hợp và phân tích trong tích tắc.\n\n⚡ Tốc độ phản hồi cực nhanh: Không lo giật lag hay giới hạn khung giờ cao điểm, luôn sẵn sàng phục vụ 24/7 với hiệu suất cao nhất.\n\n🌐 Tích hợp sâu vào hệ sinh thái Google: Làm việc trơn tru cùng Google Docs, Gmail, Drive và các công cụ quen thuộc khác để tối ưu hóa toàn diện quy trình làm việc.\n\n🔒 Tại sao nên chọn nâng cấp chính chủ tại shop?\n👤 Nâng cấp trực tiếp trên Email cá nhân: Giữ nguyên lịch sử trò chuyện, các dự án và dữ liệu cá nhân của riêng bạn, bảo mật tuyệt đối 100%.\n\n⏳ Thời hạn dài lâu (12 Tháng): Đầu tư một lần, yên tâm sử dụng ổn định suốt cả năm mà không lo gián đoạn công việc.\n\n💰 Siêu tiết kiệm chi phí: Trải nghiệm trọn vẹn mọi tính năng cao cấp của gói Pro với mức giá cực kỳ dễ chịu so với giá gốc.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành\n\n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin từ bạn.\n\n💬 Hỗ trợ kỹ thuật 24/7, hướng dẫn tận tình các tính năng AI mới nhất.\n\n💡 Phù hợp cho: Lập trình viên, Content Creator, Marketer, nghiên cứu sinh, nhà quản lý hoặc bất kỳ ai muốn bứt phá hiệu suất công việc bằng công nghệ AI đỉnh cao!",
-    "variants": [
-      {
-        "name": "GEMINI PRO CHÍNH CHỦ 18 THÁNG",
-        "price": 150000,
-        "stock": 331,
-        "apiMapping": {
-          "enabled": true,
-          "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-          "sourceProdId": "32428",
-          "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-          "sourcePrice": 48000,
-          "sourceStock": 331,
-          "targetProdId": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY",
-          "targetProdName": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 Tháng"
-        },
-        "available": true,
-        "accounts": []
-      }
-    ],
-    "deliveryType": "api",
-    "delivery_type": "api",
-    "apiMapping": {
-      "enabled": true,
-      "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-      "sourceProdId": "32428",
-      "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-      "sourcePrice": 48000,
-      "sourceStock": 331,
-      "targetProdId": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY",
-      "targetProdName": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 Tháng"
     }
   },
   {
@@ -3693,6 +3654,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     const DUMMY_SEED_IDS = [
       "PROD_TEST",
+      "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY",
       "SP_CAPCUT_PRO",
       "SP_CHATGPT",
       "SP_FANPAGE",
@@ -3728,9 +3690,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         ids = JSON.parse(localStorage.getItem("mmo_deleted_product_ids") || "[]");
       } catch(e) { ids = []; }
       if (!Array.isArray(ids)) ids = [];
-      // Lọc bỏ văn bản tên tiếng Việt, chỉ giữ lại product ID thực tế
       return ids.filter(function(id) {
-        return typeof id === "string" && id.length >= 3 && !id.includes(" ") && !/[àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/i.test(id);
+        return typeof id === "string" && id.trim().length > 0;
       });
     }
     window.getDeletedProductIds = getDeletedProductIds;
@@ -3748,19 +3709,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (productOrId.price <= 0 && (!productOrId.variants || productOrId.variants.length === 0)) return true;
       }
 
-      // Sản phẩm thật trong hệ thống không bao giờ bị coi là đã xóa nếu chưa có cờ isDeleted
-      if (typeof REAL_PRODUCT_IDS !== "undefined" && REAL_PRODUCT_IDS.includes(pid)) {
-        if (typeof productOrId === "object" && productOrId.isDeleted === true) return true;
-        return false;
-      }
-
-      // 1. DUMMY_SEED_IDS (các sản phẩm mẫu lúc khởi tạo hệ thống)
-      if (DUMMY_SEED_IDS.includes(pid)) return true;
+      // Đã đánh dấu cờ xóa trực tiếp
       if (typeof productOrId === "object" && productOrId.isDeleted === true) return true;
 
-      // 2. Danh sách ID đã bị admin xóa (chỉ đối chiếu theo mã ID)
+      // Kiểm tra danh sách đã bị admin xóa
       const deletedIds = getDeletedProductIds();
       if (deletedIds.includes(pid)) return true;
+      if (typeof productOrId === "object" && productOrId.name && deletedIds.includes(productOrId.name)) return true;
 
       return false;
     }
@@ -3823,6 +3778,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const seen = new Set();
             const cleaned = arr.filter(function(p) {
               if (!p || !p.id || p.id.startsWith("SP_") || DUMMY_SEED_IDS.includes(p.id)) return false;
+              if (p.id === "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY") return false;
+              if (typeof isProductDeleted === "function" && isProductDeleted(p)) return false;
               const n = String(p.name || '').toLowerCase().replace(/[–—−-]/g, '-').replace(/\s+/g, ' ').trim();
               if (seen.has(n)) return false;
               seen.add(n);
@@ -5067,6 +5024,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const tbody = document.querySelector("#admProductsTable tbody");
         if (tbody) {
           let prods = (MOCK_DATA && MOCK_DATA.products) ? [...MOCK_DATA.products] : [];
+          prods = prods.filter(function(p) {
+            return p && p.id && (typeof isProductDeleted !== "function" || !isProductDeleted(p));
+          });
           
           // Áp dụng bộ lọc tồn kho thông minh
           if (admProductStockFilter === "IN_STOCK") {
@@ -31722,11 +31682,14 @@ function getProductSchemaReviews(p, idx) {
         return;
       }
 
-      // 1. Ghi nhận ID vào danh sách đen đã xóa vĩnh viễn (mmo_deleted_product_ids) - CHỈ LƯU ID, KHÔNG LƯU TÊN
+      if (p) p.isDeleted = true;
+
+      // 1. Ghi nhận ID vào danh sách đen đã xóa vĩnh viễn (mmo_deleted_product_ids)
       try {
         let deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
         if (targetId && !deletedIds.includes(targetId)) deletedIds.push(targetId);
         if (pid && !deletedIds.includes(pid)) deletedIds.push(pid);
+        if (prodName && !deletedIds.includes(prodName)) deletedIds.push(prodName);
         localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(deletedIds));
       } catch(e) {}
 
