@@ -29013,7 +29013,8 @@ function changeAdmUsersPage(p) {
         const hash = (window.location.hash || "").replace("#", "").trim();
         const savedView = localStorage.getItem("mmo_current_view");
         const urlParams = new URLSearchParams(window.location.search);
-        const explicitProdId = urlParams.get("prod") || urlParams.get("product") || (hash.startsWith("product_") ? hash.replace("product_", "").split("?")[0] : null);
+        const qSearchParam = urlParams.get("q");
+        const explicitProdId = urlParams.get("prod") || urlParams.get("product") || ((qSearchParam && (qSearchParam.includes("PROD_") || qSearchParam.includes("SP_"))) ? qSearchParam.trim() : null) || (hash.startsWith("product_") ? hash.replace("product_", "").split("?")[0] : null);
         const hasProdParam = !!explicitProdId;
         const hasBlogParam = !!(urlParams.get("post") || urlParams.get("blog"));
         const curPath = (window.location.pathname || "").toLowerCase();
