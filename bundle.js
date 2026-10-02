@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.8.0";
+const MMO_CURRENT_CODE_VERSION = "3.8.1";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION
@@ -7948,7 +7948,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         isAff = true;
       }
       // [SMART SOCIAL SHARE LINK]: Dùng endpoint OG Proxy để Facebook, Zalo, Telegram, Twitter luôn hiện ảnh và tên sản phẩm 100%
-      let shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?prod=" + encodeURIComponent(prodId) + "&v=" + Date.now();
+      let shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?prod=" + encodeURIComponent(prodId);
       if (refCode) {
         shareUrl += "&ref=" + encodeURIComponent(refCode);
       }
@@ -8004,7 +8004,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
       let shareUrl = "https://www.muabantaikhoanmmo.com/";
       if (prodId) {
-        shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?prod=" + encodeURIComponent(prodId) + "&v=" + Date.now();
+        shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?prod=" + encodeURIComponent(prodId);
         if (refCode) shareUrl += "&ref=" + encodeURIComponent(refCode);
         const curOrigin = window.location.origin;
         if (curOrigin && !curOrigin.includes("muabantaikhoanmmo.com") && curOrigin.startsWith("http")) {
