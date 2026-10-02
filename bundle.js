@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.8.4";
+const MMO_CURRENT_CODE_VERSION = "3.8.5";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION
@@ -37106,9 +37106,7 @@ const MMO_AI_KEYS = {
         k = ps['ai_key_' + p] || '';
       } catch(e) {}
     }
-    if (!k && p === 'gemini') {
-      k = 'AIzaSyC9sF4GpjjE3maBpVDi35wVIrsaPbZ3EZg';
-    }
+    // Gemini requires user's own valid key
     if (k && (k.includes('...') || k.includes('…'))) {
       return '';
     }
@@ -37194,7 +37192,7 @@ const MMO_AI_KEYS = {
 };
 window.MMO_AI_KEYS = MMO_AI_KEYS;
 
-const DEFAULT_GEMINI_API_KEY = 'AIzaSyC9sF4GpjjE3maBpVDi35wVIrsaPbZ3EZg';
+const DEFAULT_GEMINI_API_KEY = '';
 const AI_PROVIDERS = {
   groq: {
     name: 'Groq',
@@ -37268,10 +37266,10 @@ const AI_PROVIDERS = {
     keyLink: 'https://aistudio.google.com/app/apikey',
     defaultModel: 'gemini-2.5-flash',
     models: [
-      { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (Khuyên dùng - Nhanh & Mới nhất 2026)' },
-      { id: 'gemini-1.5-flash-latest', name: 'Gemini 1.5 Flash Latest (Tự động cập nhật)' },
-      { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro (Chuyên sâu)' },
-      { id: 'gemini-1.5-pro-latest', name: 'Gemini 1.5 Pro Latest' }
+      { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (Khuyên dùng)' },
+      { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Siêu nhanh)' },
+      { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash' },
+      { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro' }
     ]
   }
 };
@@ -37298,10 +37296,6 @@ function onAiProviderChange() {
   if (keyLink) { keyLink.href = prov.keyLink; keyLink.textContent = "👉 Lấy " + prov.name + " API Key"; }
 
   let savedKey = MMO_AI_KEYS.get(pKey);
-  if (!savedKey && pKey === 'gemini') {
-    savedKey = 'AIzaSyC9sF4GpjjE3maBpVDi35wVIrsaPbZ3EZg';
-    MMO_AI_KEYS.set('gemini', savedKey);
-  }
   if (keyInput) keyInput.value = savedKey;
   if (keyDefaultHint) {
     keyDefaultHint.style.display = 'none';
@@ -37419,10 +37413,16 @@ function openAiWriterModal() {
   const modal = document.getElementById('aiWriterModal');
   if (modal) { modal.style.setProperty('display', 'flex', 'important'); document.body.style.overflow = 'hidden'; }
   let savedPKey = localStorage.getItem('mmo_ai_selected_provider');
-  if (!savedPKey || !MMO_AI_KEYS.get(savedPKey)) {
-    const _aiProviders = ['gemini', 'groq', 'cerebras', 'openrouter', 'mistral', 'nvidia'];
+  
+  // Ưu tiên số 1 luôn là Groq nếu có key hoặc nếu savedPKey là gemini nhưng gemini không có key riêng
+  const hasGroqKey = !!MMO_AI_KEYS.get('groq');
+  if (hasGroqKey && (!savedPKey || savedPKey === 'gemini' || !MMO_AI_KEYS.get(savedPKey))) {
+    savedPKey = 'groq';
+    try { localStorage.setItem('mmo_ai_selected_provider', 'groq'); } catch(e) {}
+  } else if (!savedPKey || !MMO_AI_KEYS.get(savedPKey)) {
+    const _aiProviders = ['groq', 'openrouter', 'cerebras', 'gemini', 'mistral', 'nvidia'];
     const withKey = _aiProviders.find(p => !!MMO_AI_KEYS.get(p));
-    savedPKey = withKey || 'gemini';
+    savedPKey = withKey || 'groq';
   }
   const pSel = document.getElementById('aiProviderSelect');
   if (pSel) { pSel.value = savedPKey; }
@@ -37573,57 +37573,53 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens
   } else {
     let targetModels = [];
     if (modelId) {
-      // Map old deprecated names
       let m = modelId;
-      if (m === 'gemini-1.5-flash' || m === 'gemini-2.0-flash') m = 'gemini-2.5-flash';
+      if (m.includes('pro-latest')) m = 'gemini-1.5-pro';
       targetModels.push(m);
     }
-    const fallbackList = ['gemini-2.5-flash', 'gemini-1.5-flash-latest', 'gemini-2.0-flash-exp', 'gemini-1.5-flash', 'gemini-1.5-pro-latest'];
+    const fallbackList = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro'];
     for (const fb of fallbackList) {
       if (!targetModels.includes(fb)) targetModels.push(fb);
     }
 
     let lastErrText = '';
     for (const curModel of targetModels) {
-      const apiVersions = ['v1beta', 'v1'];
-      for (const apiVer of apiVersions) {
-        try {
-          const url = `https://generativelanguage.googleapis.com/${apiVer}/models/${curModel}:generateContent?key=${apiKey}`;
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 45000);
-          const res = await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            signal: controller.signal,
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
-              generationConfig: { maxOutputTokens: effectiveMaxTokens, temperature: 0.7 }
-            })
-          });
-          clearTimeout(timeoutId);
-          if (res.ok) {
-            const json = await res.json();
-            const reply = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] ? json.candidates[0].content.parts[0].text : '';
-            if (reply) return reply;
-          } else {
-            const errBody = await res.text();
-            lastErrText = errBody;
-            if (res.status === 429) {
-              throw new Error('Gemini Quota Exceeded (429): Quota tài khoản Gemini của bạn đã hết. Vui lòng đổi sang nền tảng ⚡ Groq (Llama 3.3 70B) để viết bài miễn phí siêu tốc!');
-            }
-            if (res.status === 400 && errBody.includes('API_KEY_INVALID')) {
-              throw new Error('Gemini API Key không hợp lệ. Vui lòng kiểm tra lại key trong Cấu hình AI.');
-            }
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${curModel}:generateContent?key=${apiKey}`;
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 20000);
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: (sysPrompt ? sysPrompt + "\n\n" : "") + promptText }] }],
+            generationConfig: { maxOutputTokens: effectiveMaxTokens, temperature: 0.7 }
+          })
+        });
+        clearTimeout(timeoutId);
+        if (res.ok) {
+          const json = await res.json();
+          const reply = json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0] ? json.candidates[0].content.parts[0].text : '';
+          if (reply) return reply;
+        } else {
+          const errBody = await res.text();
+          lastErrText = errBody;
+          if (res.status === 429) {
+            throw new Error('Gemini Quota Exceeded (429): Quota Gemini của bạn đã hết. Vui lòng bấm nút đổi sang ⚡ Groq để viết bài siêu tốc miễn phí!');
           }
-        } catch(eCur) {
-          if (eCur.message && (eCur.message.includes('Quota') || eCur.message.includes('API_KEY_INVALID'))) {
-            throw eCur;
+          if (res.status === 403 || errBody.includes('leaked') || errBody.includes('PERMISSION_DENIED') || errBody.includes('API_KEY_INVALID')) {
+            throw new Error('Gemini API Key không hợp lệ hoặc đã bị khóa/hết hạn. Vui lòng đổi sang ⚡ Groq (Khuyên dùng - 3 giây) để viết bài ngay!');
           }
-          lastErrText = eCur.message;
         }
+      } catch(eCur) {
+        if (eCur.message && (eCur.message.includes('Quota') || eCur.message.includes('không hợp lệ') || eCur.message.includes('Groq'))) {
+          throw eCur;
+        }
+        lastErrText = eCur.message;
       }
     }
-    throw new Error('Gemini Error: ' + (lastErrText ? lastErrText.slice(0, 220) : 'Tất cả model Gemini đều không phản hồi. Vui lòng kiểm tra lại API Key hoặc đổi sang Groq.'));
+    throw new Error('Gemini Error: ' + (lastErrText ? lastErrText.slice(0, 220) : 'Tất cả model Gemini đều không phản hồi. Vui lòng bấm đổi sang ⚡ Groq để viết bài ngay!'));
   }
 }
 
@@ -38981,7 +38977,7 @@ META: [Đoạn mô tả ngắn Meta Description chuẩn SEO E-E-A-T, chứa từ
 LABELS: [2-3 nhãn danh mục cách nhau bằng dấu phẩy, ví dụ: MMO, Hướng dẫn, Dịch vụ]
 ===SEO_META_END===`;
 
-  const FAILOVER_CHAIN = ["groq", "cerebras", "openrouter", "gemini", "mistral", "nvidia"];
+  const FAILOVER_CHAIN = ["groq", "openrouter", "cerebras", "gemini", "mistral", "nvidia"];
   let currentIdx = FAILOVER_CHAIN.indexOf(pKey);
   if (currentIdx === -1) currentIdx = 0;
 
