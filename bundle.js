@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.8.3";
+const MMO_CURRENT_CODE_VERSION = "3.8.4";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION
@@ -37109,6 +37109,9 @@ const MMO_AI_KEYS = {
     if (!k && p === 'gemini') {
       k = 'AIzaSyC9sF4GpjjE3maBpVDi35wVIrsaPbZ3EZg';
     }
+    if (k && (k.includes('...') || k.includes('…'))) {
+      return '';
+    }
     // Tự động khôi phục vào localStorage nếu tìm thấy trong backup
     if (k && !localStorage.getItem('mmo_ai_key_' + p)) {
       try { localStorage.setItem('mmo_ai_key_' + p, k); } catch(e) {}
@@ -37199,11 +37202,11 @@ const AI_PROVIDERS = {
     endpoint: 'https://api.groq.com/openai/v1/chat/completions',
     isOpenAiFormat: true,
     keyLink: 'https://console.groq.com/keys',
-    defaultModel: 'llama-3.3-70b-versatile',
+    defaultModel: 'qwen/qwen3.8-27b',
     models: [
-      { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B Versatile (Khuyên dùng)' },
-      { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B Instant (Siêu nhanh)' },
-      { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7B (Đa ngôn ngữ)' }
+      { id: 'qwen/qwen3.8-27b', name: 'Qwen 3.8 27B (Khuyên dùng - Tiếng Việt chuẩn SEO)' },
+      { id: 'openai/gpt-oss-120b', name: 'OpenAI GPT-OSS 120B (Mô hình lớn nhất)' },
+      { id: 'openai/gpt-oss-20b', name: 'OpenAI GPT-OSS 20B (Siêu tốc 0.5s)' }
     ]
   },
   openrouter: {
@@ -37484,6 +37487,15 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens
     throw new Error('Chưa có API Key cho ' + prov.name + '. Vui lòng bấm link bên dưới lấy key miễn phí và bấm Lưu!');
   }
 
+  // Tự động sửa model cũ của Groq nếu bị lỗi thời
+  let targetModel = modelId || prov.defaultModel;
+  if (pKey === 'groq') {
+    const validGroqModels = ['qwen/qwen3.8-27b', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
+    if (!validGroqModels.includes(targetModel)) {
+      targetModel = 'qwen/qwen3.8-27b';
+    }
+  }
+
   const effectiveMaxTokens = Math.min(maxTokens || 8192, 8192);
 
   if (prov.isOpenAiFormat) {
@@ -37493,22 +37505,35 @@ async function callAiChatService(pKey, modelId, promptText, sysPrompt, maxTokens
     };
     if (prov.extraHeaders) Object.assign(headers, prov.extraHeaders);
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 45000);
-    const res = await fetch(prov.endpoint, {
-      method: 'POST',
-      headers: headers,
-      signal: controller.signal,
-      body: JSON.stringify({
-        model: modelId || prov.defaultModel,
-        messages: [
-          { role: 'system', content: sysPrompt || 'Bạn là chuyên gia SEO Content Writer tiếng Việt hàng đầu.' },
-          { role: 'user', content: promptText }
-        ],
-        temperature: 0.7,
-        max_tokens: effectiveMaxTokens
-      })
-    });
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    let res;
+    try {
+      res = await fetch(prov.endpoint, {
+        method: 'POST',
+        headers: headers,
+        signal: controller.signal,
+        body: JSON.stringify({
+          model: targetModel,
+          messages: [
+            { role: 'system', content: sysPrompt || 'Bạn là chuyên gia SEO Content Writer tiếng Việt hàng đầu.' },
+            { role: 'user', content: promptText }
+          ],
+          temperature: 0.7,
+          max_tokens: effectiveMaxTokens
+        })
+      });
+    } catch(fetchErr) {
+      clearTimeout(timeoutId);
+      throw new Error(prov.name + ' kết nối bị gián đoạn hoặc quá hạn: ' + fetchErr.message);
+    }
     clearTimeout(timeoutId);
+
+    // Tự động thử lại với Qwen 3.8 27B nếu Groq trả về 404 model not found
+    if (pKey === 'groq' && !res.ok && res.status === 404 && targetModel !== 'qwen/qwen3.8-27b') {
+      console.warn('Groq model ' + targetModel + ' trả về 404, tự động chuyển sang qwen/qwen3.8-27b...');
+      return await callAiChatService('groq', 'qwen/qwen3.8-27b', promptText, sysPrompt, maxTokens);
+    }
+
     if (!res.ok) {
       const errText = await res.text();
       // XỬ LÝ THÔNG MINH CHO LỖI 429 RATE LIMIT HOẶC HẾT QUOTA
@@ -38737,8 +38762,17 @@ async function generateAiArticle() {
   const pSel = document.getElementById('aiProviderSelect');
   const mSel = document.getElementById('aiModelSelect');
   const pKey = pSel ? pSel.value : 'groq';
-  const modelId = mSel ? mSel.value : '';
+  let modelId = mSel ? mSel.value : '';
   const prov = AI_PROVIDERS[pKey] || AI_PROVIDERS.groq;
+
+  // Tự động chuyển đổi các model Groq cũ đã bị dừng hoạt động sang Qwen 3.8 27B
+  if (pKey === 'groq') {
+    const validGroqModels = ['qwen/qwen3.8-27b', 'openai/gpt-oss-120b', 'openai/gpt-oss-20b'];
+    if (!validGroqModels.includes(modelId)) {
+      modelId = 'qwen/qwen3.8-27b';
+      if (mSel) mSel.value = modelId;
+    }
+  }
 
   const btn = document.getElementById('aiGenerateBtn');
   const statusEl = document.getElementById('aiGenerateStatus');
@@ -39265,6 +39299,8 @@ Chỉ xuất các thẻ HTML tiếp theo và khối SEO_META, tuyệt đối kh�
         btn.innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:14px;"><i class="fa-solid fa-wand-magic-sparkles"></i> 🚀 Viết Bài Tự Động Bám Sát Bài Mẫu (Kèm Ảnh Thật)</div><div style="font-size:10px;color:rgba(255,255,255,0.85);font-weight:400;">Bám sát cấu trúc link mẫu • Trích xuất ảnh thật • Tự sinh SEO Meta Full</div>';
       }
     }
+    const liveEditorStatus = document.getElementById('aiEditorLiveStatus');
+    if (liveEditorStatus) liveEditorStatus.style.display = 'none';
   }
 }
 window.generateAiArticle = generateAiArticle;
