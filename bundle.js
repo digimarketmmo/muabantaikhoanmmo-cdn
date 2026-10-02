@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.8.1";
+const MMO_CURRENT_CODE_VERSION = "3.8.2";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION
@@ -31906,7 +31906,7 @@ function getProductSchemaReviews(p, idx) {
         {
           id: "MSG_INIT",
           sender: "admin",
-          senderName: "Admin Hỗ Trợ 24/7",
+          senderName: "Admin Quản Trị",
           userEmail: "system",
           text: "Chào bạn! Cửa hàng cam kết BẢO HÀNH 1-ĐỔI-1 NGAY LẬP TỨC nếu tài khoản bị lỗi, sai pass hoặc không đăng nhập được. Bạn vui lòng gửi mã đơn hàng hoặc mô tả lỗi để Admin hỗ trợ ngay nhé!",
           time: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
@@ -32399,9 +32399,16 @@ function getProductSchemaReviews(p, idx) {
       const msgsHtml = myMsgs.map(m => {
         const isUser = m.sender === "user";
         const isSystem = m.sender === "system";
+        const isBot = !isUser && (m.id && String(m.id).startsWith("BOT_"));
         const bubbleClass = isSystem ? "system" : (isUser ? "user" : "admin");
         const rowClass = isUser ? "user" : "admin";
-        const senderLabel = isUser ? "" : "<strong style='font-size:0.68rem; color:#10b981; display:block; margin-bottom:2px;'>" + escapeHtml(m.senderName || "Admin CSKH") + "</strong>";
+        let displaySenderName = isUser ? "" : "👨‍💼 Admin Quản Trị";
+        if (isBot) {
+          displaySenderName = "🤖 Trợ lý tự động (Bot)";
+        } else if (isSystem) {
+          displaySenderName = "🔔 Hệ Thống";
+        }
+        const senderLabel = isUser ? "" : "<strong style='font-size:0.68rem; color:#10b981; display:block; margin-bottom:2px;'>" + escapeHtml(displaySenderName) + "</strong>";
 
         return "<div class='chat-msg-row " + rowClass + "'>" +
           "<div class='chat-msg-bubble " + bubbleClass + "'>" +
@@ -32765,7 +32772,7 @@ function getProductSchemaReviews(p, idx) {
       if (!text) return;
 
       const now = new Date();
-      const adminName = (typeof currentUser !== "undefined" && currentUser && currentUser.name) ? currentUser.name : "Admin Quản Trị";
+      const adminName = "Admin Quản Trị";
       const newMsg = {
         id: "ADM_" + Date.now().toString(36).toUpperCase() + "_" + Math.floor(Math.random() * 1000),
         sender: "admin",
@@ -36571,7 +36578,7 @@ async function confirmRefundOrder() {
       if (!targetEmail || !messageText) return;
       const cleanEmail = targetEmail.toLowerCase().trim();
       const now = new Date();
-      const adminName = (typeof currentUser !== "undefined" && currentUser && currentUser.name) ? currentUser.name : "Admin Quản Trị";
+      const adminName = "Admin Quản Trị";
 
       // ĐÁNH DẤU ADMIN ĐÃ TRẢ LỜI ĐỂ TẮT BOT AUTO-REPLY CHO KHÁCH NÀY
       if (cleanEmail) {
