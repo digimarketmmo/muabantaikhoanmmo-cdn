@@ -21344,12 +21344,7 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       try {
-        const url = new URL(window.location.href);
-        url.searchParams.set("prod", p.id);
-        url.searchParams.set("view", "viewProductDetail");
-        url.searchParams.delete("m");
-        url.hash = "";
-        const newUrl = url.pathname + "?" + url.searchParams.toString();
+        const newUrl = window.location.origin + "/search?q=" + encodeURIComponent(p.id);
         window.history.replaceState({ prod: p.id }, "", newUrl);
       } catch(e) {}
 
@@ -29325,7 +29320,7 @@ function getProductSchemaReviews(p, idx) {
               detailScriptEl.type = "application/ld+json";
               document.head.appendChild(detailScriptEl);
             }
-            const prodUrl = baseUrl + "?prod=" + encodeURIComponent(curP.id) + "&view=viewProductDetail";
+            const prodUrl = baseUrl + "/search?q=" + encodeURIComponent(curP.id);
             const price = (curP.variants && curP.variants[0] && curP.variants[0].price) ? curP.variants[0].price : (curP.price || 0);
             const imgUrl = (typeof resolveProductSeoSchemaImage === "function") ? resolveProductSeoSchemaImage(curP) : ((curP.image && !curP.image.startsWith("data:")) ? curP.image : "https://iili.io/nFV4Rln.png");
             const ratingData = getProductSchemaReviews(curP, 0);
@@ -29400,7 +29395,7 @@ function getProductSchemaReviews(p, idx) {
               "name": "Danh Sach San Pham Tai Khoan MMO - MUABANTAIKHOANMMO.COM",
               "numberOfItems": visibleProds.length,
               "itemListElement": visibleProds.map((p, idx) => {
-                const prodUrl = baseUrl + "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
+                const prodUrl = baseUrl + "/search?q=" + encodeURIComponent(p.id);
                 const price = (p.variants && p.variants[0] && p.variants[0].price) ? p.variants[0].price : (p.price || 0);
                 const imgUrl = (typeof resolveProductSeoSchemaImage === "function") ? resolveProductSeoSchemaImage(p) : ((p.image && !p.image.startsWith("data:")) ? p.image : "https://iili.io/nFV4Rln.png");
                 const ratingData = getProductSchemaReviews(p, idx);
