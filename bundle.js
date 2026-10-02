@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.7.8";
+const MMO_CURRENT_CODE_VERSION = "3.7.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION
@@ -10615,8 +10615,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       if (viewId === "viewProductDetail") {
         const _sp = new URLSearchParams(window.location.search);
-        const _hasProd = _sp.get("prod") || _sp.get("product") || (window.location.hash && window.location.hash.startsWith("#product_")) || (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && currentSelectedProduct.id);
-        if (!_hasProd) {
+        const _hasProd = _sp.get("prod") || _sp.get("product") || (window.location.hash && window.location.hash.startsWith("#product_")) || (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && currentSelectedProduct.id) || (typeof window._currentActiveDetailProduct !== "undefined" && window._currentActiveDetailProduct && window._currentActiveDetailProduct.id) || window._isOpeningProductDetail || window._openingProductId;
+        if (!_hasProd && !window._isOpeningProductDetail) {
           viewId = "viewStore";
         }
       }
@@ -11120,7 +11120,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return '<div class="compact-product-item" onclick="openProductDetailById(\'' + pIdEscaped + '\')">' +
           '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + pNameEscaped + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" /></div>' +
           '<div class="compact-info">' +
-            '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + pNameEscaped + '</a>' +
+            '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + pIdEscaped + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + pNameEscaped + '</a>' +
             '<div class="compact-meta">' +
               '<span class="compact-price">' + priceDisplay + '</span>' +
               '<span class="compact-sold">Đã bán: ' + displaySold + '</span>' +
@@ -11274,7 +11274,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return '<div class="compact-product-item" onclick="openProductDetailById(\'' + p.id + '\')">' +
           '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + escapeHtml(p.name) + '" loading="lazy" /></div>' +
           '<div class="compact-info">' +
-            '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + escapeHtml(p.name) + '</a>' +
+            '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + escapeHtml(p.name) + '</a>' +
             '<div class="compact-meta">' +
               '<span class="compact-price">' + ((typeof getProductPriceDisplay === "function") ? getProductPriceDisplay(p) : formatVND(p.price)) + '</span>' +
               '<span class="compact-sold">Đã bán: ' + displaySold + '</span>' +
@@ -11410,7 +11410,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           '<img src="' + cardImg + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" />' +
         '</div>' +
         '<div class="product-body">' +
-          '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</a>' +
+          '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</a>' +
           commTagHtml +
           '<div class="product-footer-row">' +
             '<span class="product-price">' + ((typeof getProductPriceDisplay === "function") ? getProductPriceDisplay(p) : formatVND(p.price)) + '</span>' +
@@ -20389,7 +20389,7 @@ function syncAllOpenViewsStock(changedProdId) {
               '<img alt="' + escapeHtml(p.name) + '" src="' + escapeHtml((typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png")) + '" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" />' +
             '</div>' +
             '<h4 class="sponsor-title">' +
-              '<a href="?prod=' + encodeURIComponent(p.id) + '&amp;view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); openProductDetailById(\'' + escapeHtml(p.id) + '\'); }" style="color:inherit; text-decoration:none;">' +
+              '<a href="?prod=' + encodeURIComponent(p.id) + '&amp;view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + escapeHtml(p.id) + '\'); }" style="color:inherit; text-decoration:none;">' +
                 escapeHtml(p.name) +
               '</a>' +
             '</h4>' +
@@ -22878,15 +22878,13 @@ function syncAllOpenViewsStock(changedProdId) {
       if (!id) return;
       const cleanId = String(id).trim();
 
-      // [TỐI ƯU CỐT LÕI - 0MS INSTANT TRANSITION]: Chuyển view tức thì 0ms, không chờ đợi bất kỳ tác vụ nào
-      const activeNow = localStorage.getItem("mmo_current_view") || "viewStore";
-      if (activeNow !== "viewProductDetail" && activeNow !== "viewPreOrderDetail") {
-        _previousView = activeNow;
-      }
-      if (typeof switchView === "function") {
-        switchView("viewProductDetail");
-      }
-      try { window.scrollTo(0, 0); } catch(e) {}
+      // [TỐI ƯU CỐT LÕI - 1 LẦN BẤM TỚI NGAY TRANG ĐÍCH 0MS]: Đánh dấu mở sản phẩm & cập nhật URL tức thì
+      window._isOpeningProductDetail = true;
+      window._openingProductId = cleanId;
+      try {
+        const newUrl = (window.location.origin || "https://www.muabantaikhoanmmo.com") + "/?prod=" + encodeURIComponent(cleanId) + "&view=viewProductDetail";
+        window.history.replaceState({ prod: cleanId, view: "viewProductDetail" }, "", newUrl);
+      } catch(e) {}
 
       // TÌM SẢN PHẨM ĐA TẦNG SIÊU TỐC TRONG BỘ NHỚ (0ms)
       const allProds = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products : []);
@@ -22934,6 +22932,21 @@ function syncAllOpenViewsStock(changedProdId) {
       if (!p && (cleanId === "PROD_MTPG0PUD" || cleanId === "PROD_MTPIJ9XV" || cleanId === "SP_TIKTOK_BRAZIL")) {
         p = allProds.find(item => item && (item.id === "PROD_MTPIJ9XV" || item.id === "PROD_MTPG0PUD" || (item.name && item.name.toUpperCase().includes("TIKTOK") && item.name.toUpperCase().includes("BRAZIL"))));
       }
+
+      // Khởi tạo đối tượng sản phẩm tức thì và kích hoạt switchView ngay lập tức 0ms
+      const curP = p || { id: cleanId, name: cleanId };
+      currentSelectedProduct = curP;
+      window.currentSelectedProduct = curP;
+      window._currentActiveDetailProduct = curP;
+
+      const activeNow = localStorage.getItem("mmo_current_view") || "viewStore";
+      if (activeNow !== "viewProductDetail" && activeNow !== "viewPreOrderDetail") {
+        _previousView = activeNow;
+      }
+      if (typeof switchView === "function") {
+        switchView("viewProductDetail");
+      }
+      try { window.scrollTo(0, 0); } catch(e) {}
 
       // Nếu chưa có trong bộ nhớ cục bộ: Nạp siêu tốc từ Cloudflare Worker Turso API (100ms), KHÔNG gọi Google Sheets 10s
       if (!p) {
@@ -23213,6 +23226,15 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (typeof switchProductDescTab === "function") switchProductDescTab("desc");
+
+      // Khóa chặt 100% hiển thị trang chi tiết sản phẩm ngay lần bấm đầu tiên
+      const dtlEl = document.getElementById("viewProductDetail");
+      if (dtlEl) dtlEl.style.setProperty("display", "block", "important");
+      const storeEl = document.getElementById("viewStore");
+      if (storeEl) storeEl.style.setProperty("display", "none", "important");
+      localStorage.setItem("mmo_current_view", "viewProductDetail");
+      window._isOpeningProductDetail = false;
+      window._openingProductId = null;
 
       // [NON-BLOCKING DEFERRED TASKS]: Trì hoãn các tác vụ nền nặng (SEO, Live sync, Sidebar) để UI chuyển tức thì 0ms
       setTimeout(function() {
@@ -31487,7 +31509,7 @@ function getProductSchemaReviews(p, idx) {
         '<div style="flex:1; min-width:0;">' +
           '<div style="font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:6px; line-height:1.3; display:flex; align-items:center; gap:8px;">' +
             '' +
-            '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); openProductDetailById(\'' + p.id + '\'); }" style="color:#fff; text-decoration:none;" onmouseover="this.style.color=\'#10b981\'" onmouseout="this.style.color=\'#fff\'"><span>' + escapeHtml(p.name) + '</span></a>' +
+            '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + p.id + '\'); }" style="color:#fff; text-decoration:none;" onmouseover="this.style.color=\'#10b981\'" onmouseout="this.style.color=\'#fff\'"><span>' + escapeHtml(p.name) + '</span></a>' +
           '</div>' +
           '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;">' +
             '<span style="font-size:0.75rem; color:#10b981; background:rgba(16,185,129,0.1); padding:2px 8px; border-radius:4px; font-weight:700;">' +
