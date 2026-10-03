@@ -5879,23 +5879,30 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       const normalizeSearchText = function(str) {
         let s = removeAccents(str);
-        s = s.replace(/\b(intagram|inta)\b/g, "instagram");
+        s = s.replace(/\b(intagram|inta|insta|ig)\b/g, "instagram");
         s = s.replace(/\b(titok|tik tok)\b/g, "tiktok");
         s = s.replace(/\bytb\b/g, "youtube");
-        s = s.replace(/\bfb\b/g, "facebook");
+        s = s.replace(/\b(fb|face)\b/g, "facebook");
+        s = s.replace(/\bluoi\b/g, "nuoi");
+        s = s.replace(/\bgmai\b/g, "gmail");
         return s;
       };
 
+      const STOP_WORDS = new Set(["da", "va", "cho", "cac", "nhung", "cuc", "ky", "sieu", "loai", "la", "co", "rat", "cap"]);
+      let crossProviderMatches = [];
+
       if (rawKw) {
         const normKw = normalizeSearchText(rawKw);
-        const words = normKw.split(/\s+/).filter(w => w.length >= 2);
+        const allWords = normKw.split(/\s+/).filter(w => w.length >= 2);
+        const meaningfulWords = allWords.filter(w => !STOP_WORDS.has(w));
+        const words = meaningfulWords.length > 0 ? meaningfulWords : allWords;
 
         // 1. Thử tìm kiếm chặt chẽ (Strict match: tất cả từ đều xuất hiện)
         let strictMatched = filtered.filter(s => {
           const rawId = String(s.id || "").trim();
           if (rawId === normKw || rawId.includes(normKw)) return true;
           const rawText = normalizeSearchText((s.category || "") + " " + (s.name || "") + " " + rawId);
-          return words.every(w => rawText.includes(w));
+          return words.length > 0 && words.every(w => rawText.includes(w));
         });
 
         if (strictMatched.length > 0) {
@@ -5921,11 +5928,40 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             filtered = [];
           }
         }
+
+        // 3. Nếu không tìm thấy ở provider hiện tại, quét các provider khác để gợi ý 1 chạm
+        if (filtered.length === 0) {
+          crossProviderMatches = prods.filter(s => {
+            if (s.provider === provider) return false;
+            const rawId = String(s.id || "").trim();
+            if (rawId === normKw || rawId.includes(normKw)) return true;
+            const rawText = normalizeSearchText((s.category || "") + " " + (s.name || "") + " " + rawId);
+            return words.length > 0 && words.every(w => rawText.includes(w));
+          });
+        }
+      }
+
+      let topProv = "";
+      let topProvName = "";
+      if (crossProviderMatches.length > 0) {
+        const provCounts = {};
+        crossProviderMatches.forEach(item => {
+          provCounts[item.provider] = (provCounts[item.provider] || 0) + 1;
+        });
+        topProv = Object.keys(provCounts).sort((a, b) => provCounts[b] - provCounts[a])[0];
+        const topProvCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[topProv]) ? API_SOURCES[topProv] : { name: topProv };
+        topProvName = topProvCfg.name || topProv;
       }
 
       if (countSpan) {
         if (rawKw) {
-          countSpan.innerHTML = '<span style="color:' + (filtered.length > 0 ? '#10b981' : '#f87171') + ';"><i class="fa-solid ' + (filtered.length > 0 ? 'fa-check' : 'fa-triangle-exclamation') + '"></i> ' + filtered.length + '/' + totalInProvider + ' SP</span>';
+          if (filtered.length > 0) {
+            countSpan.innerHTML = '<span style="color:#10b981;"><i class="fa-solid fa-check"></i> ' + filtered.length + '/' + totalInProvider + ' SP</span>';
+          } else if (crossProviderMatches.length > 0) {
+            countSpan.innerHTML = '<span style="color:#38bdf8; cursor:pointer; font-weight:700;" onclick="window.switchAdmModalProvider(\'' + topProv + '\')" title="Bấm để chuyển sang ' + topProvName + '"><i class="fa-solid fa-arrow-right-arrow-left"></i> Có ' + crossProviderMatches.length + ' SP ở ' + topProvName + ' (Bấm đổi)</span>';
+          } else {
+            countSpan.innerHTML = '<span style="color:#f87171;"><i class="fa-solid fa-triangle-exclamation"></i> 0/' + totalInProvider + ' SP</span>';
+          }
         } else {
           countSpan.innerHTML = '<span style="color:#94a3b8;">' + totalInProvider + ' SP</span>';
         }
@@ -5936,16 +5972,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       let optionsHtml = '';
 
       if (filtered.length === 0) {
-        optionsHtml = '<option value="">-- Không tìm thấy SP nào khớp "' + escapeHtml(rawKw) + '". Hãy thử gõ từ khóa ngắn hơn (VD: IG, Mail, Kling...) --</option>';
+        if (crossProviderMatches.length > 0) {
+          optionsHtml = '<option value="">-- Không có ở ' + provider + ' | Có ' + crossProviderMatches.length + ' SP ở [' + topProvName + '] (Bấm đổi ở nhãn góc phải) --</option>';
+        } else {
+          optionsHtml = '<option value="">-- Không tìm thấy SP nào khớp "' + escapeHtml(rawKw) + '". Hãy thử gõ từ khóa ngắn hơn (VD: IG, Mail, Kling...) --</option>';
+        }
       } else {
         optionsHtml = '<option value="">-- ' + (rawKw ? ('Tìm thấy ' + filtered.length + ' SP (Bấm để chọn)') : ('Chọn sản phẩm nguồn (' + filtered.length + ' SP)')) + ' --</option>';
       }
 
-      // Giữ lại currentVal nếu đang sửa sản phẩm hoặc đang liên kết sản phẩm này
+      // Giữ lại currentVal nếu KHÔNG có từ khóa tìm kiếm (chỉ giữ khi duyệt bình thường)
       let shouldKeepCurrentVal = false;
       const currentProdId = document.getElementById("admProdId")?.value;
       const curMap = (typeof getApiProductMapping === "function" && currentProdId) ? getApiProductMapping(currentProdId) : null;
-      if (currentVal) {
+      if (currentVal && !rawKw) {
         if (curMap && String(curMap.sourceProdId) === String(currentVal)) {
           shouldKeepCurrentVal = true;
         } else if (sSel.getAttribute("data-active-provider") === provider || !sSel.getAttribute("data-active-provider")) {
@@ -5989,7 +6029,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
 
-      const activeSelectedId = (bestMatchId && !shouldKeepCurrentVal) ? bestMatchId : (shouldKeepCurrentVal ? currentVal : (filtered.some(s => String(s.id) === String(currentVal)) ? currentVal : (bestMatchId || "")));
+      let activeSelectedId = "";
+      if (rawKw) {
+        if (bestMatchId) {
+          activeSelectedId = bestMatchId;
+        } else if (filtered.some(s => String(s.id) === String(currentVal))) {
+          activeSelectedId = currentVal;
+        } else if (filtered.length === 1) {
+          activeSelectedId = String(filtered[0].id);
+        }
+      } else {
+        activeSelectedId = shouldKeepCurrentVal ? currentVal : (filtered.some(s => String(s.id) === String(currentVal)) ? currentVal : (bestMatchId || ""));
+      }
 
       optionsHtml += filtered.map(s => {
         const isSelected = String(s.id) === String(activeSelectedId) ? ' selected="selected"' : '';
@@ -6009,6 +6060,29 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (typeof handleAdmModalSourceChange === "function") handleAdmModalSourceChange();
     }
     window.filterAdmModalSourceProducts = filterAdmModalSourceProducts;
+
+    function switchAdmModalProvider(newProvider) {
+      if (!newProvider) return;
+      const pSel = document.getElementById("admProdApiProvider");
+      if (pSel) {
+        pSel.value = newProvider;
+        if (typeof updateModalProviderPillsUI === "function") updateModalProviderPillsUI(newProvider);
+        const searchInput = document.getElementById("admProdApiSourceSearch");
+        filterAdmModalSourceProducts(searchInput ? searchInput.value : "");
+        const cfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[newProvider]) ? API_SOURCES[newProvider] : { name: newProvider };
+        if (typeof showToast === "function") showToast("Đã chuyển sang nguồn " + (cfg.name || newProvider), "info");
+      }
+    }
+    window.switchAdmModalProvider = switchAdmModalProvider;
+
+    let _admModalSourceFilterTimer = null;
+    function debouncedAdmModalSourceFilter(val, delay = 120) {
+      if (_admModalSourceFilterTimer) clearTimeout(_admModalSourceFilterTimer);
+      _admModalSourceFilterTimer = setTimeout(function() {
+        filterAdmModalSourceProducts(val);
+      }, delay);
+    }
+    window.debouncedAdmModalSourceFilter = debouncedAdmModalSourceFilter;
 
     function clearAdmModalSourceSearch() {
       const searchInput = document.getElementById("admProdApiSourceSearch");
@@ -6177,11 +6251,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             try { sessionStorage.setItem("mmo_cached_source_products", JSON.stringify(merged)); } catch(e) {}
           }
 
-          if (typeof filterAdmModalSourceProducts === "function") {
-            const searchInput = document.getElementById("admProdApiSourceSearch");
-            filterAdmModalSourceProducts(searchInput ? searchInput.value : "");
-          }
-
           if (isManual && typeof showToast === "function") {
             showToast("Đã quét thành công " + freshProds.length + " sản phẩm từ " + pCfg.name + "!", "success");
           }
@@ -6197,7 +6266,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           showToast("Lỗi kết nối tới " + (pCfg ? pCfg.name : provider) + ": " + err.message, "error");
         }
       } finally {
-        if (typeof filterAdmModalSourceProducts === "function") {
+        const modal = document.getElementById("adminProductModal");
+        if (modal && modal.style.display !== "none" && typeof filterAdmModalSourceProducts === "function") {
           const searchInput = document.getElementById("admProdApiSourceSearch");
           filterAdmModalSourceProducts(searchInput ? searchInput.value : "");
         }
@@ -8245,8 +8315,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       });
 
       if (variants.length === 0) {
-        showToast("Vui lòng thêm ít nhất 1 biến thể với tên và giá bán!", "warning");
-        return;
+        if (oldProd && Array.isArray(oldProd.variants) && oldProd.variants.length > 0) {
+          variants = oldProd.variants.slice();
+        } else {
+          const fallbackPrice = parseInt(document.getElementById("admProdPrice")?.value) || (oldProd ? oldProd.price : 0) || 50000;
+          variants.push({
+            name: "Mặc định",
+            price: fallbackPrice,
+            stock: oldProd ? (oldProd.stock || 0) : 0,
+            accounts: (oldProd && oldProd.variants && oldProd.variants[0] && Array.isArray(oldProd.variants[0].accounts)) ? oldProd.variants[0].accounts : [],
+            soldAccounts: []
+          });
+        }
       }
 
       const effectivePrice = variants[0] ? (Number(variants[0].price) || 0) : 0;
@@ -8305,11 +8385,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       let liveSourceStock = 0;
       let liveSourcePrice = 0;
       let liveSourceName = "";
+      let foundSrc = null;
       if (isApiSelected && apiSourceProdIdVal) {
         const prodsSrc = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
           ? window.cachedSourceProducts
           : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
-        const foundSrc = prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal) && (!apiProviderVal || s.provider === apiProviderVal))
+        foundSrc = prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal) && (!apiProviderVal || s.provider === apiProviderVal))
           || prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal));
         
         const srcSelect = document.getElementById("admProdApiSourceSelect");
@@ -8532,6 +8613,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       saveProductsToStorage();
       closeModal("adminProductModal");
       if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+      if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
       if (typeof renderProductGrid === "function") renderProductGrid();
 
       // Đồng bộ tên mới vào bảng API mappings nếu sản phẩm này có liên kết API
@@ -15176,6 +15258,8 @@ function syncAllOpenViewsStock(changedProdId) {
     window.renderSourceBalanceWarning = renderSourceBalanceWarning;
 
     async function fetchApiSourceProducts(isManual = false) {
+      if (window._isFetchingApiSourceProducts) return;
+      window._isFetchingApiSourceProducts = true;
       try {
         const [resMail72h, resShop1989, resSelltainguyenmmo, resSellmmo, resNguyenLieu, resUltrammo] = await Promise.allSettled([
           executeSourceApiCall("getProducts", { provider: "mail72h", baseUrl: API_SOURCES.mail72h.baseUrl, apiKey: API_SOURCES.mail72h.apiKey }),
@@ -15420,15 +15504,39 @@ function syncAllOpenViewsStock(changedProdId) {
             }
           }
 
-          if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
-          if (typeof handleAdmModalProviderChange === "function") handleAdmModalProviderChange();
+          // Render có chọn lọc: chỉ render giao diện đang hiển thị, tránh đơ/lag
+          const admSourcesTab = document.getElementById("tabAdmApiSources");
+          if (admSourcesTab && admSourcesTab.style.display !== "none") {
+            if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+            if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
+          }
           if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
-          if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
-          if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
-          if (typeof renderProductGrid === "function") renderProductGrid();
+
+          const admProdsTab = document.getElementById("tabAdmProducts");
+          if (admProdsTab && admProdsTab.style.display !== "none") {
+            if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+          }
+
+          // Cập nhật lại dropdown modal nguồn CHỈ KHI modal đang mở và người dùng chưa gõ từ khóa
+          const modalProd = document.getElementById("adminProductModal");
+          if (modalProd && modalProd.style.display !== "none") {
+            const sInp = document.getElementById("admProdApiSourceSearch");
+            if (!sInp || !sInp.value.trim()) {
+              if (typeof filterAdmModalSourceProducts === "function") filterAdmModalSourceProducts("");
+            }
+          }
+
+          // Chỉ render grid sản phẩm nếu đang ở màn hình trang chủ
+          const shopGrid = document.getElementById("productGrid");
+          const adminView = document.getElementById("adminView");
+          if (shopGrid && (!adminView || adminView.style.display === "none")) {
+            if (typeof renderProductGrid === "function") renderProductGrid();
+          }
         }
       } catch(e) {
         console.warn("fetchApiSourceProducts error:", e);
+      } finally {
+        window._isFetchingApiSourceProducts = false;
       }
     }
     window.fetchApiSourceProducts = fetchApiSourceProducts;
@@ -16965,9 +17073,11 @@ function syncAllOpenViewsStock(changedProdId) {
         // 5. Chạy tìm kiếm và dựng bảng so sánh
         executeCompareSourcesSearch();
 
-        // 6. Tự động đồng bộ ngầm giá & tồn kho thời gian thực từ cả 5 nguồn API mỗi khi mở modal
+        // 6. Đồng bộ ngầm giá & tồn kho thời gian thực thông minh (10 phút nếu đã có data, tránh lag đơ khi mở modal)
         const now = Date.now();
-        if (!window._lastCompareSourcesSyncTime || (now - window._lastCompareSourcesSyncTime > 60000)) {
+        const hasLoadedSources = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts) && window.cachedSourceProducts.length > 50);
+        const syncInterval = hasLoadedSources ? 600000 : 60000;
+        if (!window._lastCompareSourcesSyncTime || (now - window._lastCompareSourcesSyncTime > syncInterval)) {
           window._lastCompareSourcesSyncTime = now;
           refreshCompareSourcesLive(false).then(() => {
             if (modal.style.display !== "none") {
@@ -16980,6 +17090,15 @@ function syncAllOpenViewsStock(changedProdId) {
       }
     }
     window.openSourceCompareModal = openSourceCompareModal;
+
+    let _compareSourcesSearchTimer = null;
+    function debouncedCompareSourcesSearch(delay = 150) {
+      if (_compareSourcesSearchTimer) clearTimeout(_compareSourcesSearchTimer);
+      _compareSourcesSearchTimer = setTimeout(function() {
+        executeCompareSourcesSearch();
+      }, delay);
+    }
+    window.debouncedCompareSourcesSearch = debouncedCompareSourcesSearch;
 
     function openCompareModalFromCurrentEdit() {
       const inp = document.getElementById("admProdId");
@@ -17097,9 +17216,13 @@ function syncAllOpenViewsStock(changedProdId) {
         canonical: "TikTok",
         keywords: ["tiktok", "tik tok"]
       },
+      instagram: {
+        canonical: "Instagram (Clone / VIA / Đã nuôi)",
+        keywords: ["instagram", "inta", "ig", "insta"]
+      },
       facebook: {
         canonical: "Facebook / Via / Clone",
-        keywords: ["facebook", "fb", "via", "clone", "bm"]
+        keywords: ["facebook", "fb", "via fb", "via facebook", "clone fb", "clone facebook", "bm"]
       },
       proxy: {
         canonical: "Proxy",
@@ -17129,7 +17252,12 @@ function syncAllOpenViewsStock(changedProdId) {
       if (!item) return false;
       const q = String(qRaw || "").trim().toLowerCase();
       if (!q) return true;
-      const qNorm = removeAccentsCompare(q);
+      let qNorm = removeAccentsCompare(q);
+      qNorm = qNorm.replace(/\b(intagram|inta)\b/g, "instagram")
+                   .replace(/\b(luoi|nuoi)\b/g, "nuoi")
+                   .replace(/\b(titok|tik tok)\b/g, "tiktok")
+                   .replace(/\bytb\b/g, "youtube")
+                   .replace(/\bfb\b/g, "facebook");
 
       const sName = String(item.name || "").toLowerCase();
       const sNameNorm = removeAccentsCompare(item.name);
@@ -17140,6 +17268,18 @@ function syncAllOpenViewsStock(changedProdId) {
 
       // Khớp chính xác ID sản phẩm
       if (sId === q || sId.includes(q)) return true;
+
+      // [LOẠI TRỪ DỊCH VỤ KHÔNG TƯƠNG THÍCH]:
+      // Nếu sản phẩm của shop là TÀI KHOẢN (Clone, VIA, Nuôi, Trâu...) thì TUYỆT ĐỐI KHÔNG gợi ý dịch vụ Thuê OTP / Code / SIM
+      const targetName = removeAccentsCompare(window.currentCompareProdName || "").toLowerCase();
+      const isTargetOtp = /\b(otp|sms|thue sim|code|thue mail)\b/i.test(targetName);
+      const isItemOtp = /\b(otp|sms|thue sim|code|thue mail)\b/i.test(sNameNorm);
+      if (!isTargetOtp && isItemOtp) {
+        return false;
+      }
+      if (isTargetOtp && !isItemOtp) {
+        return false;
+      }
 
       // Tìm xem query có thuộc gia đình sản phẩm nào không
       let matchedFamily = null;
@@ -17162,6 +17302,7 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       // Khớp theo các token từ khóa thông thường (hỗ trợ cả có dấu và không dấu)
+      const stopWords = ["cho", "the", "cac", "nhung", "ngay", "thang", "nam", "live", "da", "cuc", "ky", "sieu", "gia", "re", "chat", "luong", "trau"];
       const tokens = qNorm.split(/\s+/).filter(Boolean);
       if (tokens.length === 0) return true;
 
@@ -17170,8 +17311,8 @@ function syncAllOpenViewsStock(changedProdId) {
         return true;
       }
 
-      // 2. Thử khớp theo từ khóa dài quan trọng (>= 3 ký tự, ví dụ: "gmail", "hotmail", "thue", "kling")
-      const sigTokens = tokens.filter(tok => tok.length >= 3 && !["cho", "the", "cac", "nhung", "ngay", "thang", "nam", "live"].includes(tok));
+      // 2. Thử khớp theo từ khóa chính quan trọng (bỏ qua các hư từ / tính từ tiếng Việt)
+      const sigTokens = tokens.filter(tok => tok.length >= 2 && !stopWords.includes(tok));
       if (sigTokens.length > 0) {
         return sigTokens.some(tok => sNameNorm.includes(tok) || sCatNorm.includes(tok));
       }
@@ -17187,6 +17328,7 @@ function syncAllOpenViewsStock(changedProdId) {
       s = s.replace(/tài khoản|tai khoan|chính chủ|chinh chu|giá rẻ|gia re|bảo hành|bao hanh|vĩnh viễn|vinh vien|cực rẻ|cuc re|siêu rẻ|sieu re|mua|bán|ban/gi, " ");
       s = s.trim();
 
+      if (s.includes("instagram") || s.includes("inta") || s.includes("ig") || s.includes("insta")) return "Instagram";
       if (s.includes("kling")) return "Kling";
       if (s.includes("chatgpt") || s.includes("chat gpt") || s.includes("gpt")) return "ChatGPT";
       if (s.includes("canva")) return "Canva";
@@ -17199,7 +17341,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (s.includes("outlook")) return "Outlook";
       if (s.includes("proxy")) return "Proxy";
       if (s.includes("tiktok")) return "TikTok";
-      if (s.includes("facebook") || s.includes("via") || s.includes("clone")) return "Facebook";
+      if (s.includes("facebook") || s.includes("fb") || s.includes("via fb") || s.includes("clone fb")) return "Facebook";
       if (s.includes("discord")) return "Discord";
       if (s.includes("telegram")) return "Telegram";
 
