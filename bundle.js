@@ -6761,11 +6761,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     // Tự động đồng bộ nạp tiền khi mở chi tiết thành viên
     async function fetchAndSyncMemberCloudDeposits(cleanEmail) {
-      if (!cleanEmail || typeof callGasApi !== "function") return;
+      if (!cleanEmail) return;
       try {
-        const [ordersRes, walletRes] = await Promise.allSettled([
-          callGasApi("getUserOrders", { email: cleanEmail }),
-          callGasApi("getUserWallet", { email: cleanEmail })
+        const workerApiUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+
+        const [ordersRes, walletRes, workerRes] = await Promise.allSettled([
+          typeof callGasApi === "function" ? callGasApi("getUserOrders", { email: cleanEmail }) : Promise.resolve(null),
+          typeof callGasApi === "function" ? callGasApi("getUserWallet", { email: cleanEmail }) : Promise.resolve(null),
+          fetch(workerApiUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail)).then(r => r.json()).catch(() => null)
         ]);
 
         let newDeps = [];
@@ -6819,56 +6824,92 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         if (newDeps.length > 0) {
           savePlatformDeposits(newDeps);
-          const modal = document.getElementById("adminUserDetailModal");
-          const curEmailEl = document.getElementById("admDetailUserEmail");
-          if (modal && modal.style.display === "flex" && curEmailEl && (curEmailEl.innerText || "").toLowerCase().trim() === cleanEmail) {
-            const res = getUserComprehensiveTransactions(cleanEmail);
-            const allTx = res.transactions;
-            const txCountEl = document.getElementById("admDetailTxCount");
-            const balanceEl = document.getElementById("admDetailUserBalance");
-            const tbody = document.getElementById("admDetailUserTxTableBody");
-            if (txCountEl) txCountEl.innerText = allTx.length + " giao dịch";
-            if (balanceEl) balanceEl.innerText = formatVND(res.currentBalance);
-            if (tbody && allTx.length > 0) {
-              tbody.innerHTML = allTx.map(tx => {
-                const amt = Number(tx.amount) || 0;
-                const isPlus = amt > 0;
-                const amtHtml = isPlus 
-                  ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(amt) + '</span>' 
-                  : '<span style="color:#ef4444; font-weight:800;">' + formatVND(amt) + '</span>';
-                const tLow = String(tx.type || "").toLowerCase();
-                const nLow = String(tx.note || "").toLowerCase();
-                const isRefund = tLow.includes("hoàn tiền") || nLow.includes("hoàn tiền");
-                const isPurchase = tLow.includes("thanh toán") || tLow.includes("mua hàng") || amt < 0;
+        }
 
-                let typeHtml = "";
-                if (isRefund) {
-                  typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.1);"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền bảo hành</span>';
-                } else if (isPurchase) {
-                  typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#f87171; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.1);"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
-                } else if (tLow.includes("rút")) {
-                  typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#fbbf24; border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.1);"><i class="fa-solid fa-arrow-up-right-from-square"></i> Rút tiền</span>';
-                } else if (tLow.includes("thủ công") || nLow.includes("thủ công")) {
-                  typeHtml = '<span class="badge-trust" style="font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.3); background:rgba(56,189,248,0.1);"><i class="fa-solid fa-user-shield"></i> Nạp thủ công Admin</span>';
-                } else {
-                  typeHtml = '<span class="badge-trust" style="font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.3); background:rgba(56,189,248,0.1);"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
-                }
+        // Lấy số dư thực tế lớn nhất từ GAS và Turso Worker
+        let cloudBal = 0;
+        if (walletRes.status === "fulfilled" && walletRes.value && walletRes.value.wallet && !isNaN(Number(walletRes.value.wallet.balance))) {
+          cloudBal = Math.max(cloudBal, Number(walletRes.value.wallet.balance));
+        }
+        let workerBal = 0;
+        if (workerRes.status === "fulfilled" && workerRes.value && workerRes.value.user && !isNaN(Number(workerRes.value.user.balance))) {
+          workerBal = Number(workerRes.value.user.balance);
+          cloudBal = Math.max(cloudBal, workerBal);
+        }
 
-                let balAfterStr = (tx.balanceAfter !== undefined && tx.balanceAfter !== null && !isNaN(Number(tx.balanceAfter))) ? formatVND(Math.max(0, tx.balanceAfter)) : "-";
-                let displayNote = tx.note || "";
-                if (isRefund && (!displayNote || displayNote.includes("NAP ") || displayNote.includes("SePay"))) {
-                  displayNote = "Hoàn tiền đơn hàng bảo hành mã đơn #" + (tx.orderId || "");
-                }
+        if (cloudBal > 0) {
+          let allUsers = getRegisteredUsers();
+          const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
+          if (uIdx !== -1) {
+            allUsers[uIdx].balance = Math.max(Number(allUsers[uIdx].balance || 0), cloudBal);
+            saveRegisteredUsers(allUsers);
+          }
+          if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
+            currentUser.balance = Math.max(Number(currentUser.balance || 0), cloudBal);
+            try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+            if (typeof updateUserUI === "function") updateUserUI();
+          }
+          if (cloudBal > workerBal) {
+            fetch(workerApiUrl + "/api/user/sync", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-admin-token": "MMO_ADMIN_SECURE_TOKEN_2026" },
+              body: JSON.stringify({ email: cleanEmail, balance: cloudBal })
+            }).catch(() => {});
+          }
+          if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
+        }
 
-                return '<tr>' +
-                  '<td style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">' + (tx.time || tx.date || '') + '</td>' +
-                  '<td>' + typeHtml + '</td>' +
-                  '<td>' + amtHtml + '</td>' +
-                  '<td style="color:#38bdf8; font-weight:700; font-size:0.82rem; font-family:monospace; white-space:nowrap;">' + balAfterStr + '</td>' +
-                  '<td style="font-size:0.75rem; color:#cbd5e1;">' + escapeHtml(displayNote) + '</td>' +
-                '</tr>';
-              }).join("");
-            }
+        // Luôn cập nhật modal chi tiết thành viên nếu đang mở
+        const modal = document.getElementById("adminUserDetailModal");
+        const curEmailEl = document.getElementById("admDetailUserEmail");
+        if (modal && modal.style.display === "flex" && curEmailEl && (curEmailEl.innerText || "").toLowerCase().trim() === cleanEmail) {
+          const res = getUserComprehensiveTransactions(cleanEmail);
+          const allTx = res.transactions;
+          const txCountEl = document.getElementById("admDetailTxCount");
+          const balanceEl = document.getElementById("admDetailUserBalance");
+          const tbody = document.getElementById("admDetailUserTxTableBody");
+          if (txCountEl) txCountEl.innerText = allTx.length + " giao dịch";
+          const finalModalBal = Math.max(res.currentBalance, cloudBal);
+          if (balanceEl) balanceEl.innerText = formatVND(finalModalBal);
+          if (tbody && allTx.length > 0) {
+            tbody.innerHTML = allTx.map(tx => {
+              const amt = Number(tx.amount) || 0;
+              const isPlus = amt > 0;
+              const amtHtml = isPlus 
+                ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(amt) + '</span>' 
+                : '<span style="color:#ef4444; font-weight:800;">' + formatVND(amt) + '</span>';
+              const tLow = String(tx.type || "").toLowerCase();
+              const nLow = String(tx.note || "").toLowerCase();
+              const isRefund = tLow.includes("hoàn tiền") || nLow.includes("hoàn tiền");
+              const isPurchase = tLow.includes("thanh toán") || tLow.includes("mua hàng") || amt < 0;
+
+              let typeHtml = "";
+              if (isRefund) {
+                typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.1);"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền bảo hành</span>';
+              } else if (isPurchase) {
+                typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#f87171; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.1);"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
+              } else if (tLow.includes("rút")) {
+                typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#fbbf24; border-color:rgba(245,158,11,0.3); background:rgba(245,158,11,0.1);"><i class="fa-solid fa-arrow-up-right-from-square"></i> Rút tiền</span>';
+              } else if (tLow.includes("thủ công") || nLow.includes("thủ công")) {
+                typeHtml = '<span class="badge-trust" style="font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.3); background:rgba(56,189,248,0.1);"><i class="fa-solid fa-user-shield"></i> Nạp thủ công Admin</span>';
+              } else {
+                typeHtml = '<span class="badge-trust" style="font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.3); background:rgba(56,189,248,0.1);"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
+              }
+
+              let balAfterStr = (tx.balanceAfter !== undefined && tx.balanceAfter !== null && !isNaN(Number(tx.balanceAfter))) ? formatVND(Math.max(0, tx.balanceAfter)) : "-";
+              let displayNote = tx.note || "";
+              if (isRefund && (!displayNote || displayNote.includes("NAP ") || displayNote.includes("SePay"))) {
+                displayNote = "Hoàn tiền đơn hàng bảo hành mã đơn #" + (tx.orderId || "");
+              }
+
+              return '<tr>' +
+                '<td style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">' + (tx.time || tx.date || '') + '</td>' +
+                '<td>' + typeHtml + '</td>' +
+                '<td>' + amtHtml + '</td>' +
+                '<td style="color:#38bdf8; font-weight:700; font-size:0.82rem; font-family:monospace; white-space:nowrap;">' + balAfterStr + '</td>' +
+                '<td style="font-size:0.75rem; color:#cbd5e1;">' + escapeHtml(displayNote) + '</td>' +
+              '</tr>';
+            }).join("");
           }
         }
       } catch(e) {}
@@ -7068,7 +7109,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const seenMap = new Map();
       rawLogs.forEach(item => {
         const amt = Number(item.amount) || 0;
-        const oId = String(item.orderId || item.id || "").replace(/^REFUND_|^ORD_|^DEP_/, "").trim();
+        const rawStr = ((item.orderId || '') + ' ' + (item.note || '') + ' ' + (item.id || '')).trim();
+        const dhMatch = rawStr.match(/(DH\d+|NAP[\d\w_]+)/i);
+        const extractedCode = dhMatch ? dhMatch[1].toUpperCase() : '';
+        const oId = extractedCode || String(item.orderId || item.id || '').replace(/^REFUND_|^ORD_|^DEP_/, '').trim();
         const isRef = amt > 0 && (String(item.type).toLowerCase().includes("hoàn tiền") || String(item.note).toLowerCase().includes("hoàn tiền"));
         const isDep = amt > 0 && (String(item.type).toLowerCase().includes("nạp") || String(item.note).toLowerCase().includes("nạp") || oId.startsWith("DH") || oId.startsWith("NAP"));
         const isPurchase = amt < 0;
@@ -7090,7 +7134,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           seenMap.set(key, item);
         } else {
           const existing = seenMap.get(key);
-          if (!existing.balanceAfter && item.balanceAfter) {
+          // Ưu tiên bản ghi có chi tiết ngân hàng thực tế (MBVCB/CT) hoặc có balanceAfter
+          if ((item.note && (item.note.includes("MBVCB") || item.note.includes("CT tu"))) || (!existing.balanceAfter && item.balanceAfter)) {
             seenMap.set(key, item);
           }
         }
@@ -7144,6 +7189,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
 
+      // Đối chiếu số dư với dòng tiền thực tế từ các giao dịch đã xác nhận (nạp - mua)
+      let totalSpentBefore = 0;
+      let totalDepositedBefore = 0;
+      allLogs.forEach(tx => {
+        const amt = Number(tx.amount) || 0;
+        if (amt < 0) totalSpentBefore += Math.abs(amt);
+        else if (amt > 0 && !String(tx.type || "").toLowerCase().includes("hoàn tiền")) totalDepositedBefore += amt;
+      });
+      const netCashFlow = Math.max(0, totalDepositedBefore - totalSpentBefore);
+      if (curBal < netCashFlow && netCashFlow > 0) {
+        curBal = netCashFlow;
+      }
+
       // J. CƠ CHẾ BẢO ĐẢM TỰ ĐỘNG (AUTO-BALANCING SAFEGUARD):
       // Nếu tổng tiền nạp đã ghi nhận chưa đủ bù đắp cho tổng tiền mua hàng + số dư hiện tại (do chưa tải kịp từ cloud),
       // tự động suy đoán bản ghi nạp tiền ban đầu để thành viên không bao giờ bị hiển thị "chỉ trừ tiền mà không thấy nạp tiền"
@@ -7190,6 +7248,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           runningBal = runningBal - prevAmt;
           tx.balanceAfter = Math.max(0, runningBal);
         }
+      }
+      if (allLogs.length === 1 && allLogs[0].amount > 0) {
+        allLogs[0].balanceAfter = Math.max(Number(allLogs[0].amount) || 0, curBal);
       }
 
       return { transactions: allLogs, currentBalance: curBal };
@@ -21996,10 +22057,24 @@ function syncAllOpenViewsStock(changedProdId) {
             .then(uData => {
               if (uData && uData.success && uData.user && uData.user.balance !== undefined) {
                 const tursoBal = Number(uData.user.balance);
-                if (!isNaN(tursoBal) && currentUser && currentUser.balance !== tursoBal) {
-                  currentUser.balance = tursoBal;
-                  try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
-                  if (typeof updateUserUI === "function") updateUserUI();
+                const curLocalBal = Number(currentUser?.balance || 0);
+                if (!isNaN(tursoBal)) {
+                  if (tursoBal > curLocalBal) {
+                    currentUser.balance = tursoBal;
+                    try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+                    if (typeof updateUserUI === "function") updateUserUI();
+                  } else if (curLocalBal > tursoBal && tursoBal === 0) {
+                    // Local có số dư dương (ví dụ vừa nạp SePay) nhưng Turso = 0 -> Sync số dư lên Turso
+                    fetch(apiUrl + "/api/user/sync", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json", "x-admin-token": "MMO_ADMIN_SECURE_TOKEN_2026" },
+                      body: JSON.stringify({ email: cleanUserMail, balance: curLocalBal })
+                    }).catch(() => {});
+                  } else if (tursoBal !== curLocalBal && tursoBal > 0) {
+                    currentUser.balance = tursoBal;
+                    try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+                    if (typeof updateUserUI === "function") updateUserUI();
+                  }
                 }
               }
             }).catch(() => {});
