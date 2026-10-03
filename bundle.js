@@ -29012,6 +29012,8 @@ function syncAllOpenViewsStock(changedProdId) {
       const cleanEmail = currentUser ? (currentUser.email || "").toLowerCase().trim() : "";
       if (!cleanEmail) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Vui lòng đăng nhập để xem lịch sử nạp / rút tiền.</td></tr>';
+        const pagWrap = document.getElementById("profDepositPaginationWrap");
+        if (pagWrap) pagWrap.innerHTML = "";
         return;
       }
 
@@ -29036,6 +29038,8 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (allHistory.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Chưa có lịch sử nạp / rút tiền nào.</td></tr>';
+        const pagWrap = document.getElementById("profDepositPaginationWrap");
+        if (pagWrap) pagWrap.innerHTML = "";
         return;
       }
 
@@ -29069,7 +29073,17 @@ function syncAllOpenViewsStock(changedProdId) {
 
       allHistory.sort((a, b) => parseVietnamDateTime(b.time || b.date) - parseVietnamDateTime(a.time || a.date));
 
-      tbody.innerHTML = allHistory.map(tx => {
+      const WALLET_PAGE_SIZE = 10;
+      const totalItems = allHistory.length;
+      const totalPages = Math.ceil(totalItems / WALLET_PAGE_SIZE) || 1;
+      let curPage = (typeof paginationState !== "undefined" && paginationState.profDeposit) ? paginationState.profDeposit : 1;
+      if (curPage > totalPages) curPage = totalPages;
+      if (curPage < 1) curPage = 1;
+      if (typeof paginationState !== "undefined") paginationState.profDeposit = curPage;
+
+      const pagedHistory = allHistory.slice((curPage - 1) * WALLET_PAGE_SIZE, curPage * WALLET_PAGE_SIZE);
+
+      tbody.innerHTML = pagedHistory.map(tx => {
         const amt = Number(tx.amount) || 0;
         const isPlus = amt > 0;
         const amtHtml = isPlus 
@@ -29098,6 +29112,10 @@ function syncAllOpenViewsStock(changedProdId) {
           '<td style="font-size:0.78rem; color:#cbd5e1; white-space:nowrap;">' + escapeHtml(tx.note || tx.content || '') + '</td>' +
         '</tr>';
       }).join("");
+
+      if (typeof renderPaginationUI === "function") {
+        renderPaginationUI("profDepositPaginationWrap", curPage, totalItems, "changeProfDepositPage", WALLET_PAGE_SIZE);
+      }
     }
 
     // SubTab 2: BIẾN ĐỘNG SỐ DƯ (Hiển thị đầy đủ 5 cột: Thời gian | Giao dịch | Số tiền | Số dư sau | Ghi chú)
@@ -29115,6 +29133,8 @@ function syncAllOpenViewsStock(changedProdId) {
       const cleanEmail = currentUser ? (currentUser.email || "").toLowerCase().trim() : "";
       if (!cleanEmail) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Vui lòng đăng nhập để xem biến động số dư.</td></tr>';
+        const pagWrap = document.getElementById("profBalanceLogsPaginationWrap");
+        if (pagWrap) pagWrap.innerHTML = "";
         return;
       }
 
@@ -29124,10 +29144,22 @@ function syncAllOpenViewsStock(changedProdId) {
 
         if (allLogs.length === 0) {
           tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Chưa có biến động số dư nào.</td></tr>';
+          const pagWrap = document.getElementById("profBalanceLogsPaginationWrap");
+          if (pagWrap) pagWrap.innerHTML = "";
           return;
         }
 
-        tbody.innerHTML = allLogs.map(tx => {
+        const WALLET_PAGE_SIZE = 10;
+        const totalItems = allLogs.length;
+        const totalPages = Math.ceil(totalItems / WALLET_PAGE_SIZE) || 1;
+        let curPage = (typeof paginationState !== "undefined" && paginationState.profBalanceLogs) ? paginationState.profBalanceLogs : 1;
+        if (curPage > totalPages) curPage = totalPages;
+        if (curPage < 1) curPage = 1;
+        if (typeof paginationState !== "undefined") paginationState.profBalanceLogs = curPage;
+
+        const pagedLogs = allLogs.slice((curPage - 1) * WALLET_PAGE_SIZE, curPage * WALLET_PAGE_SIZE);
+
+        tbody.innerHTML = pagedLogs.map(tx => {
           const amt = Number(tx.amount) || 0;
           const isPlus = amt > 0;
           const amtHtml = isPlus 
@@ -29167,6 +29199,10 @@ function syncAllOpenViewsStock(changedProdId) {
             '<td style="font-size:0.78rem; color:#cbd5e1; white-space:nowrap;">' + escapeHtml(displayNote) + '</td>' +
           '</tr>';
         }).join("");
+
+        if (typeof renderPaginationUI === "function") {
+          renderPaginationUI("profBalanceLogsPaginationWrap", curPage, totalItems, "changeProfBalanceLogsPage", WALLET_PAGE_SIZE);
+        }
         return;
       }
 
@@ -29309,6 +29345,8 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (allLogs.length === 0) {
         tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Chưa có biến động số dư nào.</td></tr>';
+        const pagWrap = document.getElementById("profBalanceLogsPaginationWrap");
+        if (pagWrap) pagWrap.innerHTML = "";
         return;
       }
 
@@ -29350,13 +29388,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const curBal = currentUser && currentUser.balance !== undefined ? Number(currentUser.balance) : 0;
       let runningBal = curBal;
 
-      tbody.innerHTML = allLogs.map((tx, idx) => {
-        const amt = Number(tx.amount) || 0;
-        const isPlus = amt > 0;
-        const amtHtml = isPlus 
-          ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(amt) + '</span>' 
-          : '<span style="color:#ef4444; font-weight:800;">' + formatVND(amt) + '</span>';
-        
+      const processedLogs = allLogs.map((tx, idx) => {
         let rowBal = null;
         if (idx === 0) {
           rowBal = (tx.balanceAfter !== null && tx.balanceAfter !== undefined && tx.balanceAfter !== "") ? Number(tx.balanceAfter) : curBal;
@@ -29367,7 +29399,27 @@ function syncAllOpenViewsStock(changedProdId) {
           runningBal = runningBal - prevAmt;
           rowBal = (tx.balanceAfter !== null && tx.balanceAfter !== undefined && tx.balanceAfter !== "") ? Number(tx.balanceAfter) : runningBal;
         }
+        return Object.assign({}, tx, { computedRowBal: rowBal });
+      });
 
+      const WALLET_PAGE_SIZE = 10;
+      const totalItems = processedLogs.length;
+      const totalPages = Math.ceil(totalItems / WALLET_PAGE_SIZE) || 1;
+      let curPage = (typeof paginationState !== "undefined" && paginationState.profBalanceLogs) ? paginationState.profBalanceLogs : 1;
+      if (curPage > totalPages) curPage = totalPages;
+      if (curPage < 1) curPage = 1;
+      if (typeof paginationState !== "undefined") paginationState.profBalanceLogs = curPage;
+
+      const pagedLogs = processedLogs.slice((curPage - 1) * WALLET_PAGE_SIZE, curPage * WALLET_PAGE_SIZE);
+
+      tbody.innerHTML = pagedLogs.map(tx => {
+        const amt = Number(tx.amount) || 0;
+        const isPlus = amt > 0;
+        const amtHtml = isPlus 
+          ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(amt) + '</span>' 
+          : '<span style="color:#ef4444; font-weight:800;">' + formatVND(amt) + '</span>';
+        
+        const rowBal = tx.computedRowBal;
         let balAfterStr = (rowBal !== null && !isNaN(rowBal)) ? formatVND(Math.max(0, rowBal)) : "-";
 
         const tLow = String(tx.type || "").toLowerCase();
@@ -29399,6 +29451,10 @@ function syncAllOpenViewsStock(changedProdId) {
           '<td style="font-size:0.78rem; color:#cbd5e1; white-space:nowrap;">' + escapeHtml(displayNote) + '</td>' +
         '</tr>';
       }).join("");
+
+      if (typeof renderPaginationUI === "function") {
+        renderPaginationUI("profBalanceLogsPaginationWrap", curPage, totalItems, "changeProfBalanceLogsPage", WALLET_PAGE_SIZE);
+      }
     }
     function handleProfileWithdraw() {
       showToast("Chức năng Rút Tiền: Số dư tối thiểu 50.000 đ. Vui lòng cập nhật Tài Khoản Ngân Hàng để rút.", "info");
@@ -30615,7 +30671,6 @@ function syncAllOpenViewsStock(changedProdId) {
     var paginationState = {
       admPreOrders: 1,
       admUsers: 1,
-      admUsers: 1,
       admWithdraw: 1,
       admTx: 1,
       admProd: 1,
@@ -30624,6 +30679,8 @@ function syncAllOpenViewsStock(changedProdId) {
       storeProd: 1,
       userOrders: 1,
       userWallet: 1,
+      profDeposit: 1,
+      profBalanceLogs: 1,
       blogPage: 1
     };
 
@@ -30761,6 +30818,23 @@ function changeAdmUsersPage(p) {
       paginationState.userOrders = p;
       renderProfileOrders();
     }
+    window.changeUserOrdersPage = changeUserOrdersPage;
+
+    function changeProfDepositPage(p) {
+      if (typeof paginationState !== "undefined") paginationState.profDeposit = p;
+      if (typeof renderUserWalletTransactions === "function") renderUserWalletTransactions();
+      const el = document.getElementById("profWalletSubDeposit") || document.getElementById("profDepositPaginationWrap");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    window.changeProfDepositPage = changeProfDepositPage;
+
+    function changeProfBalanceLogsPage(p) {
+      if (typeof paginationState !== "undefined") paginationState.profBalanceLogs = p;
+      if (typeof renderUserBalanceLogs === "function") renderUserBalanceLogs();
+      const el = document.getElementById("profWalletSubLogs") || document.getElementById("profBalanceLogsPaginationWrap");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+    window.changeProfBalanceLogsPage = changeProfBalanceLogsPage;
 
 
     // Tự động kiểm tra và quyết toán hoa hồng tiếp thị đã qua 3 ngày
