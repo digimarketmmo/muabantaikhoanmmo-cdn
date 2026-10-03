@@ -5116,7 +5116,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                     }
                     return '<span style="font-size:0.68rem; background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:1px 6px; border-radius:4px; font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-right:6px;"><i class="fa-solid fa-box"></i> Kho Nội Bộ</span>';
                   })() +
-                  '<button type="button" onclick="openSourceCompareModal(\'' + p.id + '\')" style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.35); font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:3px; margin-right:6px; vertical-align:middle; transition:all 0.2s;" onmouseover="this.style.background=\'rgba(245,158,11,0.3)\'" onmouseout="this.style.background=\'rgba(245,158,11,0.15)\'" title="So sánh giá sản phẩm này ở cả 5 nguồn hàng API & Gợi ý giá tốt nhất"><i class="fa-solid fa-scale-balanced"></i> So sánh 5 nguồn</button>' +
+                  '<button type="button" onclick="openSourceCompareModal(\'' + p.id + '\')" style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.35); font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:3px; margin-right:6px; vertical-align:middle; transition:all 0.2s;" onmouseover="this.style.background=\'rgba(245,158,11,0.3)\'" onmouseout="this.style.background=\'rgba(245,158,11,0.15)\'" title="So sánh giá sản phẩm này ở các nguồn hàng API & Gợi ý giá tốt nhất"><i class="fa-solid fa-scale-balanced"></i> So sánh nguồn</button>' +
                   '<span style="font-size:0.75rem; color:#38bdf8;">' + vCount + ' Biến thể</span></td>' +
                 '<td>' + esc(p.category) + '</td>' +
                 '<td style="color:#10b981; font-weight:700;">' + formatVND(p.price) + '</td>' +
@@ -5133,7 +5133,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 '<td>' +
                   '<div style="display:flex; gap:6px;">' +
                     '<button class="btn-copy-small" onclick="openEditProductModal(\'' + p.id + '\')" title="Sửa"><i class="fa-regular fa-pen-to-square"></i></button>' +
-                    '<button class="btn-copy-small" onclick="openSourceCompareModal(\'' + p.id + '\')" title="So sánh giá 5 nguồn hàng & Gợi ý giá rẻ nhất" style="color:#fbbf24; border-color:rgba(245,158,11,0.4);"><i class="fa-solid fa-scale-balanced"></i></button>' +
+                    '<button class="btn-copy-small" onclick="openSourceCompareModal(\'' + p.id + '\')" title="So sánh giá các nguồn hàng API & Gợi ý giá rẻ nhất" style="color:#fbbf24; border-color:rgba(245,158,11,0.4);"><i class="fa-solid fa-scale-balanced"></i></button>' +
                     '<button class="btn-copy-small" onclick="quickOpenStockForProduct(\'' + p.id + '\')" title="Nạp Kho"><i class="fa-solid fa-warehouse"></i></button>' +
                     '<button class="btn-copy-small" onclick="deleteProduct(\'' + p.id + '\')" title="Xóa tài khoản / sản phẩm" style="color:#ef4444; border-color:rgba(239,68,68,0.4);"><i class="fa-solid fa-trash"></i></button>' +
                   '</div>' +
@@ -16243,11 +16243,12 @@ function syncAllOpenViewsStock(changedProdId) {
       if (syncBtn) {
         prevBtnHtml = syncBtn.innerHTML;
         syncBtn.disabled = true;
-        syncBtn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang quét 5 nguồn...";
+        const numSources = (typeof API_SOURCES !== "undefined" && API_SOURCES) ? Object.keys(API_SOURCES).length : 6;
+        syncBtn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang quét " + numSources + " nguồn...";
       }
 
       try {
-        // Luôn fetch dữ liệu mới nhất từ 5 nguồn API khi người dùng bấm đồng bộ
+        // Luôn fetch dữ liệu mới nhất từ các nguồn API khi người dùng bấm đồng bộ
         if (isManual || !Array.isArray(cachedSourceProducts) || cachedSourceProducts.length === 0) {
           if (typeof fetchApiSourceProducts === "function") {
             await fetchApiSourceProducts(true);
@@ -16325,7 +16326,8 @@ function syncAllOpenViewsStock(changedProdId) {
         }
 
         if (isManual && typeof showToast === "function") {
-          showToast("🔄 Đã đồng bộ thành công tồn kho On-Demand cho " + syncCount + " sản phẩm từ 5 nguồn API!", "success");
+          const numSources = (typeof API_SOURCES !== "undefined" && API_SOURCES) ? Object.keys(API_SOURCES).length : 6;
+          showToast("🔄 Đã đồng bộ thành công tồn kho On-Demand cho " + syncCount + " sản phẩm từ " + numSources + " nguồn API!", "success");
         }
       } catch(err) {
         console.error("Lỗi đồng bộ nguồn API:", err);
@@ -17501,13 +17503,13 @@ function syncAllOpenViewsStock(changedProdId) {
           }
         }
 
-        // Fallback 3: Không có quốc gia hoặc thời hạn khớp, cứ rẻ nhất từ cả 5 nguồn mà đề xuất!
+        // Fallback 3: Không có quốc gia hoặc thời hạn khớp, cứ rẻ nhất từ cả các nguồn mà đề xuất!
         if (filterRelaxed === false && (effectiveCountryKey !== "all" || effectiveDurKey !== "all")) {
           let anyInStock = candidates.filter(s => (Number(s.amount !== undefined ? s.amount : s.stock) || 0) > 0);
           if (anyInStock.length > 0) {
             filtered = candidates;
             filterRelaxed = true;
-            relaxedNote = "Tự động đề xuất sản phẩm rẻ nhất còn hàng từ cả 5 nguồn hàng";
+            relaxedNote = "Tự động đề xuất sản phẩm rẻ nhất còn hàng từ cả các nguồn hàng";
           }
         }
       }
@@ -17544,7 +17546,7 @@ function syncAllOpenViewsStock(changedProdId) {
         if (candidates.length > 0) {
           filtered = candidates.slice();
           filterRelaxed = true;
-          relaxedNote = "Đã tự động hiển thị " + candidates.length + " sản phẩm khớp từ khóa từ 5 nguồn hàng";
+          relaxedNote = "Đã tự động hiển thị " + candidates.length + " sản phẩm khớp từ khóa từ các nguồn hàng";
         } else {
           const countryNote = (effectiveCountryKey !== "all") ? ' cho quốc gia <strong>' + (currentCountryObj.flag || '') + ' ' + (currentCountryObj.label || effectiveCountryKey) + '</strong>' : '';
           const durNote = (effectiveDurKey !== "all") ? ' và thời hạn <strong>' + (currentDurObj.label || effectiveDurKey) + '</strong>' : '';
@@ -17759,14 +17761,15 @@ function syncAllOpenViewsStock(changedProdId) {
     async function refreshCompareSourcesLive(showLoadingToast = true) {
       const btn = document.getElementById("btnAdmCompareRescan");
       let prevHtml = "";
+      const numSources = (typeof API_SOURCES !== "undefined" && API_SOURCES) ? Object.keys(API_SOURCES).length : 6;
       if (btn) {
         prevHtml = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang quét 5 nguồn...';
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang quét ' + numSources + ' nguồn...';
       }
 
       if (showLoadingToast && typeof showToast === "function") {
-        showToast("Đang đồng bộ giá và tồn kho thời gian thực từ 5 nguồn API...", "info");
+        showToast("🔄 Đang đồng bộ giá và tồn kho thời gian thực từ " + numSources + " nguồn API...", "info");
       }
 
       try {
@@ -17775,7 +17778,7 @@ function syncAllOpenViewsStock(changedProdId) {
         }
         executeCompareSourcesSearch();
         if (showLoadingToast && typeof showToast === "function") {
-          showToast("Đã cập nhật giá và kho mới nhất từ 5 nguồn API!", "success");
+          showToast("⚡ Đã cập nhật giá và kho mới nhất từ " + numSources + " nguồn API!", "success");
         }
       } catch(e) {
         console.warn("refreshCompareSourcesLive error:", e);
@@ -17785,7 +17788,7 @@ function syncAllOpenViewsStock(changedProdId) {
       } finally {
         if (btn) {
           btn.disabled = false;
-          btn.innerHTML = prevHtml || '<i class="fa-solid fa-rotate"></i> Quét lại giá 5 nguồn';
+          btn.innerHTML = prevHtml || ('<i class="fa-solid fa-rotate"></i> Quét lại giá ' + numSources + ' nguồn');
         }
       }
     }
@@ -18243,6 +18246,11 @@ function syncAllOpenViewsStock(changedProdId) {
         if (downEl) downEl.innerText = priceDownCount;
         const totalEl = document.getElementById("statCountTotalApi");
         if (totalEl) totalEl.innerText = totalCount;
+        const connectedSourcesEl = document.getElementById("statCountConnectedSources");
+        if (connectedSourcesEl) {
+          const numSources = (typeof API_SOURCES !== "undefined" && API_SOURCES) ? Object.keys(API_SOURCES).length : 6;
+          connectedSourcesEl.innerText = numSources + " web nguồn kết nối";
+        }
         const filterUrgentEl = document.getElementById("filterCountUrgent");
         if (filterUrgentEl) filterUrgentEl.innerText = urgentCount;
 
@@ -18534,7 +18542,7 @@ function syncAllOpenViewsStock(changedProdId) {
         let pagHtml = '<div style="display:flex; justify-content:space-between; align-items:center; width:100%; flex-wrap:wrap; gap:12px; padding:10px 0;">' +
           '<div style="display:flex; flex-direction:column; gap:3px;">' +
             '<div style="font-size:0.82rem; color:#cbd5e1;">Hiển thị <b style="color:#38bdf8;">' + (startIndex + 1) + ' - ' + endIndex + '</b> / <b style="color:#fff;">' + totalItems + '</b> sản phẩm nối API <span style="color:#94a3b8; font-weight:600;">(Trang ' + currentPage + '/' + totalPages + ')</span></div>' +
-            '<div style="font-size:0.72rem; color:#64748b;">(Dữ liệu quét trực tiếp từ 5 nguồn: SellTaiNguyenMMO, NguyenLieuMMO, SellMMO, Shop1989nd, Mail72h)</div>' +
+            '<div style="font-size:0.72rem; color:#64748b;">(Dữ liệu quét trực tiếp từ ' + ((typeof API_SOURCES !== "undefined" && API_SOURCES) ? Object.keys(API_SOURCES).length : 6) + ' nguồn: ' + ((typeof API_SOURCES !== "undefined" && API_SOURCES) ? Object.values(API_SOURCES).map(s => s.name || s.id).join(", ") : "SellTaiNguyenMMO, NguyenLieuMMO, SellMMO, Shop1989nd, Mail72h, UltraMMO") + ')</div>' +
           '</div>';
 
         if (totalPages > 1) {
@@ -19247,8 +19255,10 @@ function syncAllOpenViewsStock(changedProdId) {
       const icon = document.getElementById("iconRefreshApiAlerts");
       if (icon) icon.classList.add("fa-spin");
 
+      const numSources = (typeof API_SOURCES !== "undefined" && API_SOURCES) ? Object.keys(API_SOURCES).length : 6;
+
       if (isManual && typeof showToast === "function") {
-        showToast("🔄 Đang đồng bộ giá và tồn kho thời gian thực từ 5 web nguồn...", "info");
+        showToast("🔄 Đang đồng bộ giá và tồn kho thời gian thực từ " + numSources + " web nguồn...", "info");
       }
 
       try {
@@ -19258,7 +19268,7 @@ function syncAllOpenViewsStock(changedProdId) {
         updateApiSourceAlertsBadge();
         renderAdminApiSourcesAlertsUI();
         if (isManual && typeof showToast === "function") {
-          showToast("⚡ Đã quét xong giá 5 nguồn hàng! Dữ liệu đã được cập nhật.", "success");
+          showToast("⚡ Đã quét xong giá " + numSources + " nguồn hàng! Dữ liệu đã được cập nhật.", "success");
         }
       } catch(e) {
         console.warn("refreshApiSourceAlerts error:", e);
