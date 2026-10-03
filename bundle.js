@@ -15469,9 +15469,19 @@ function syncAllOpenViewsStock(changedProdId) {
           }
 
           if (json.status !== "success") {
+            let errMsg = json.msg || json.message || "Mua hàng từ nguồn thất bại hoặc kho nguồn tạm hết!";
+            if (provider === "ultrammo") {
+              if (errMsg.includes("Hàng trong kho không đủ") || errMsg.includes("kho không đủ") || errMsg.includes("hết hàng")) {
+                errMsg = "Kho hàng nhà cung cấp ultrammo.com tạm thời hết tài khoản hoặc đang cập nhật kho mới. Vui lòng chọn gói khác hoặc thử lại sau!";
+              } else if (errMsg.includes("Mất kết nối đến kho hàng") || errMsg.includes("404 Not Found")) {
+                errMsg = "Nhà cung cấp ultrammo.com đang bảo trì hoặc mất kết nối tới kho hàng đối tác. Vui lòng chọn sản phẩm khác hoặc thử lại sau!";
+              } else if ((errMsg.includes("Số dư không đủ") || errMsg.includes("số dư") || errMsg.includes("nạp thêm") || errMsg.includes("liên hệ Admin")) && !errMsg.includes("kho không đủ")) {
+                errMsg = "Số dư ví Admin trên ultrammo.com không đủ tiền để mua sản phẩm này! Vui lòng nạp thêm tiền vào ví ultrammo.com.";
+              }
+            }
             return {
               success: false,
-              message: json.msg || json.message || "Mua hàng từ nguồn thất bại hoặc kho nguồn tạm hết!",
+              message: errMsg,
               provider: provider,
               raw: json
             };
@@ -15839,15 +15849,16 @@ function syncAllOpenViewsStock(changedProdId) {
         }
 
         // ultrammo
-        if (resUltrammo && resUltrammo.status === "fulfilled" && resUltrammo.value && resUltrammo.value.success && Array.isArray(resUltrammo.value.categories)) {
+        if (resUltrammo && resUltrammo.status === "fulfilled" && resUltrammo.value && (resUltrammo.value.success || resUltrammo.value.status === "success" || Array.isArray(resUltrammo.value.categories))) {
           if (typeof window !== "undefined" && window._liveLoadedProviders) window._liveLoadedProviders.add("ultrammo");
-          resUltrammo.value.categories.forEach(function(cat) {
+          (resUltrammo.value.categories || []).forEach(function(cat) {
             (cat.products || cat.accounts || []).forEach(function(p) {
+              const pAmt = (typeof p.amount !== "undefined") ? Number(p.amount) : ((typeof p.accounts !== "undefined") ? Number(p.accounts) : (Number(p.stock) || 0));
               freshProducts.push({
                 id: String(p.id),
                 name: p.name,
                 price: Math.round(Number(p.price) || 0),
-                amount: Number(p.amount || p.accounts) || 0,
+                amount: isNaN(pAmt) ? 0 : pAmt,
                 category: cat.name,
                 provider: "ultrammo"
               });
@@ -16031,27 +16042,49 @@ function syncAllOpenViewsStock(changedProdId) {
     // LIÊN KẾT SẢN PHẨM ON-DEMAND API (MAPPING ENGINE v1.9.3)
     // ============================================================================
     const DEFAULT_API_PRODUCT_MAPPINGS = {
-      "PROD_MTQQXO2E": { enabled: true, provider: "mail72h", sourceProdId: "712", sourcePrice: 259, sourceProdName: "24h [ ID 712 ]" },
-      "PROD_MTQWMPL5": { enabled: true, provider: "mail72h", sourceProdId: "818", sourcePrice: 979, sourceProdName: "7 ngày [ ID 818 ]" },
-      "PROD_MTQWQFZD": { enabled: true, provider: "mail72h", sourceProdId: "817", sourcePrice: 3879, sourceProdName: "30 ngày [ ID 817 ]" },
-      "PROD_MTQX1C7X": { enabled: true, provider: "shop1989nd", sourceProdId: "19745", sourcePrice: 138.6, sourceProdName: "Gmail Domain Cho Thuê live 12h+" },
-      "PROD_MTQX465U": { enabled: true, provider: "shop1989nd", sourceProdId: "19768", sourcePrice: 53.2, sourceProdName: "Gmail Domain Cho Thuê .live 10 phút" },
-      "PROD_MU5PWT7PP7": { enabled: true, provider: "nguyenlieummo", sourceProdId: "119284", sourcePrice: 3220, sourceProdName: "TÀI KHOẢN KLING AI 65 CREDIT" },
-      "PROD_MTQZT2Y1": { enabled: true, provider: "nguyenlieummo", sourceProdId: "121063", sourcePrice: 656, sourceProdName: "Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months" },
-      "PROD_MU5SPLMSEC": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "31699", sourcePrice: 16000, sourceProdName: "🔥ChatGPT Free đã verify phone codex" },
-      "PROD_MU5T3T47AE": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23607", sourcePrice: 27000, sourceProdName: "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3" },
-      "PROD_MU6R34FZ4Z": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23586", sourcePrice: 1560000, sourceProdName: "Google Gemini AI Veo3 - 18 Tháng" },
-      "PROD_MTPJ88O9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25289", sourcePrice: 60000, sourceProdName: "NÂNG CẤP CANVA PRO 1 NĂM" },
-      "PROD_MUAULFFCDT": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "31694", sourcePrice: 300000, sourceProdName: "CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG )" },
-      "PROD_MU4YOZEU2M": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25646", sourcePrice: 198, sourceProdName: "Outlook Hotmail Trusted - OAuth2 Live 6 - 12 tháng" },
-      "PROD_MUJVJCV286": { enabled: true, provider: "ultrammo", sourceProdId: "34234", sourcePrice: 13500, sourceProdName: "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)" },
-      "PROD_MUJU6XY3HK": { enabled: true, provider: "ultrammo", sourceProdId: "34238", sourcePrice: 220000, sourceProdName: "Đổi IP Mobile 4G VinaPhone 5 Phút (30 Ngày)" },
-      "PROD_MUJVFEFFNP": { enabled: true, provider: "nguyenlieummo", sourceProdId: "122260", sourcePrice: 2818, sourceProdName: "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH" },
-      "PROD_MUJTYWFTQ7": { enabled: true, provider: "ultrammo", sourceProdId: "34234", sourcePrice: 13500, sourceProdName: "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)" },
-      "PROD_MUJQDTNIH9": { enabled: true, provider: "nguyenlieummo", sourceProdId: "122260", sourcePrice: 2817.5, sourceProdName: "Proxy Datacenter us - 1 ngày" },
-      "PROD_MU1G6LJX": { enabled: true, provider: "sellmmo", baseUrl: "https://sellmmo.vn", apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO", sourceProdId: "23154", sourcePrice: 8000, sourceProdName: "Capcut Pro 7 Ngày" },
-      "PROD_MU2B32VLQY": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng" },
-      "PROD_MUJUGVQXET": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "23628", sourcePrice: 114000, sourceProdName: "Capcut Pro Team 1 THÁNG" }
+      "PROD_MTQQXO2E": {"enabled":true,"provider":"mail72h","sourceProdId":"712","sourcePrice":259,"sourceProdName":"24h [ ID 712 ]"},
+      "PROD_MTQWMPL5": {"enabled":true,"provider":"mail72h","sourceProdId":"818","sourcePrice":979,"sourceProdName":"7 ngày [ ID 818 ]"},
+      "PROD_MTQWQFZD": {"enabled":true,"provider":"mail72h","sourceProdId":"817","sourcePrice":3879,"sourceProdName":"30 ngày [ ID 817 ]"},
+      "PROD_MTQX1C7X": {"enabled":true,"provider":"shop1989nd","sourceProdId":"19745","sourcePrice":138.6,"sourceProdName":"Gmail Domain Cho Thuê live 12h+"},
+      "PROD_MTQX465U": {"enabled":true,"provider":"shop1989nd","sourceProdId":"19768","sourcePrice":53.2,"sourceProdName":"Gmail Domain Cho Thuê .live 10 phút"},
+      "PROD_MU5PWT7PP7": {"enabled":true,"provider":"ultrammo","sourceProdId":"13629","sourcePrice":1200,"sourceProdName":"TÀI KHOẢN KLING AI 65 CREDIT","baseUrl":"https://ultrammo.com"},
+      "PROD_MTQZT2Y1": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"121063","sourcePrice":656,"sourceProdName":"Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months"},
+      "PROD_MU5SPLMSEC": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"31699","sourcePrice":16000,"sourceProdName":"🔥ChatGPT Free đã verify phone codex"},
+      "PROD_MU5T3T47AE": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"23607","sourcePrice":27000,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3"},
+      "PROD_MU6R34FZ4Z": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"23586","sourcePrice":1560000,"sourceProdName":"Google Gemini AI Veo3 - 18 Tháng"},
+      "PROD_MTPJ88O9": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"25289","sourcePrice":60000,"sourceProdName":"NÂNG CẤP CANVA PRO 1 NĂM"},
+      "PROD_MUAULFFCDT": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"31694","sourcePrice":300000,"sourceProdName":"CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG )"},
+      "PROD_MU4YOZEU2M": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"25646","sourcePrice":198,"sourceProdName":"Outlook Hotmail Trusted - OAuth2 Live 6 - 12 tháng"},
+      "PROD_MUJVFEFFNP": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"122260","sourcePrice":2818,"sourceProdName":"Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH"},
+      "PROD_MUJQDTNIH9": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"122260","sourcePrice":2817.5,"sourceProdName":"Proxy Datacenter us - 1 ngày"},
+      "PROD_MUP5LB7VAB": {"enabled":true,"provider":"ultrammo","sourceProdId":"32822","sourcePrice":34000,"sourceProdName":"MAIL VIỆT CỔ KÈM KÊNH RANDOM 200x-2026 - GMAIL CỔ KÈM KÊNH CỔ RANDOM 200x-2018 – TRUST CAO, CHƯA QUA DỊCH VỤ | KHÔNG DÍNH SĐT ẨN","baseUrl":"https://ultrammo.com"},
+      "PROD_MUOSDN0FCU": {"enabled":true,"provider":"ultrammo","sourceProdId":"26784","sourcePrice":13000,"sourceProdName":"gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa","baseUrl":"https://ultrammo.com"},
+      "PROD_MUORGNEQOE": {"enabled":true,"provider":"ultrammo","sourceProdId":"26774","sourcePrice":80000,"sourceProdName":"Youtube Premium: 3 Tháng","baseUrl":"https://ultrammo.com"},
+      "PROD_MUOQS3DOIU": {"enabled":true,"provider":"ultrammo","sourceProdId":"33131","sourcePrice":2400,"sourceProdName":"TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ","baseUrl":"https://ultrammo.com"},
+      "PROD_MUOQDRL4F0": {"enabled":true,"provider":"ultrammo","sourceProdId":"5759","sourcePrice":2200,"sourceProdName":"TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )","baseUrl":"https://ultrammo.com"},
+      "PROD_MUOIH8CW59": {"enabled":true,"provider":"ultrammo","sourceProdId":"25412","sourcePrice":6500,"sourceProdName":"NordVPN (7 Days)","baseUrl":"https://ultrammo.com"},
+      "MUNUEKI3NM": {"enabled":true,"provider":"ultrammo","sourceProdId":"32088","sourcePrice":167000,"sourceProdName":"🔥Chat GPT Plus GGPay | 1 tháng - Bảo hành 24h - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full","baseUrl":"https://ultrammo.com"},
+      "PROD_MUNUEKI3NM": {"enabled":true,"provider":"ultrammo","sourceProdId":"32088","sourcePrice":167000,"sourceProdName":"🔥Chat GPT Plus GGPay | 1 tháng - Bảo hành 24h - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full","baseUrl":"https://ultrammo.com"},
+      "PROD_MUKAXC4Q9T": {"enabled":true,"provider":"ultrammo","sourceProdId":"25460","sourcePrice":6500,"sourceProdName":"Surfshark VPN (7 Days)","baseUrl":"https://ultrammo.com"},
+      "PROD_MUK7P74YNT": {"enabled":true,"provider":"ultrammo","sourceProdId":"26777","sourcePrice":30000,"sourceProdName":"Youtube Premium: 1 Tháng","baseUrl":"https://ultrammo.com"},
+      "PROD_MUK75H3HAR": {"enabled":true,"provider":"ultrammo","sourceProdId":"32021","sourcePrice":75000,"sourceProdName":"[Slot] Netflix Full HD 4K HDR: 1 Tháng - BHF","baseUrl":"https://ultrammo.com"},
+      "PROD_MUK5VQH55X": {"enabled":true,"provider":"ultrammo","sourceProdId":"32748","sourcePrice":2900,"sourceProdName":"X > 2 month - X - NO GMAIL  - TWITTER SIÊU TRÂU BÒ - REG BẰNG PHONE","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJZGSUPDI": {"enabled":true,"provider":"ultrammo","sourceProdId":"17406","sourcePrice":7500,"sourceProdName":"IG khỏe ngâm trên 6 tháng - IG strong over 6 months","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJVJCV286": {"enabled":true,"provider":"ultrammo","sourceProdId":"34234","sourcePrice":13500,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJV1YHQ6N": {"enabled":true,"provider":"ultrammo","sourceProdId":"26818","sourcePrice":13000,"sourceProdName":"Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJUGVQXET": {"enabled":true,"provider":"ultrammo","sourceProdId":"19388","sourcePrice":67000,"sourceProdName":"🔥Capcut Pro Team 1 THÁNG ( BẢO HÀNH FULL )","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJU6XY3HK": {"enabled":true,"provider":"ultrammo","sourceProdId":"34238","sourcePrice":220000,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (30 Ngày)","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJTYWFTQ7": {"enabled":true,"provider":"ultrammo","sourceProdId":"34234","sourcePrice":13500,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJGUY19DD": {"enabled":true,"provider":"ultrammo","sourceProdId":"26784","sourcePrice":13000,"sourceProdName":"gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa","baseUrl":"https://ultrammo.com"},
+      "PROD_MUH57035HQ": {"enabled":true,"provider":"ultrammo","sourceProdId":"13629","sourcePrice":1200,"sourceProdName":"TÀI KHOẢN KLING AI 65 CREDIT","baseUrl":"https://ultrammo.com"},
+      "PROD_MU9YH8D9FK": {"enabled":true,"provider":"ultrammo","sourceProdId":"26818","sourcePrice":13000,"sourceProdName":"Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ","baseUrl":"https://ultrammo.com"},
+      "PROD_MU2YQ1J3PY": {"enabled":true,"provider":"ultrammo","sourceProdId":"32561","sourcePrice":325,"sourceProdName":"Hotmail Trusted Còn skip 7 days (Đã bật Oauth2)","baseUrl":"https://ultrammo.com"},
+      "PROD_MU2BIFBBNE": {"enabled":true,"provider":"ultrammo","sourceProdId":"16159","sourcePrice":8500,"sourceProdName":"Key HMA Android/PC 20-30 Ngày ( Bảo Hành Full )","baseUrl":"https://ultrammo.com"},
+      "PROD_MU2B32VLQY": {"enabled":true,"provider":"ultrammo","sourceProdId":"32035","sourcePrice":14000,"sourceProdName":"Capcut Pro 6-7 ngày dùng riêng 2 tb, bảo hành full","baseUrl":"https://ultrammo.com"},
+      "PROD_MU2A2S732Y": {"enabled":true,"provider":"ultrammo","sourceProdId":"25265","sourcePrice":5500,"sourceProdName":"ExpressVPN (3 Days)","baseUrl":"https://ultrammo.com"},
+      "PROD_MU29WM90LZ": {"enabled":true,"provider":"ultrammo","sourceProdId":"26819","sourcePrice":6000,"sourceProdName":"Canva Edu - 1 Tháng - Standard - Canva Education - Nâng cấp chính chủ","baseUrl":"https://ultrammo.com"},
+      "PROD_MU1G6LJX": {"enabled":true,"provider":"ultrammo","sourceProdId":"32035","sourcePrice":14000,"sourceProdName":"Capcut Pro 6-7 ngày dùng riêng 2 tb, bảo hành full","baseUrl":"https://ultrammo.com"},
+      "PROD_MTQX7SIK": {"enabled":true,"provider":"ultrammo","sourceProdId":"34752","sourcePrice":225,"sourceProdName":"12h Tiếng Anh","baseUrl":"https://ultrammo.com"}
     };
 
     var _cachedApiProductMappings = null;
@@ -16207,29 +16240,7 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       // [BUILT-IN DEFAULT MAPPINGS FOR ON-DEMAND PRODUCTS]
-      const defaultMappings = {
-        "PROD_MTQQXO2E": { enabled: true, provider: "shop1989nd", sourceProdId: "19897", sourcePrice: 210, sourceProdName: "Cho thuê 24h   ( id 19897 )", sourceStock: 2364 },
-        "PROD_MTQWMPL5": { enabled: true, provider: "mail72h", sourceProdId: "818", sourcePrice: 979, sourceProdName: "7 ngày [ ID 818 ]" },
-        "PROD_MTQWQFZD": { enabled: true, provider: "mail72h", sourceProdId: "817", sourcePrice: 3879, sourceProdName: "30 ngày [ ID 817 ]" },
-        "PROD_MTQX1C7X": { enabled: true, provider: "shop1989nd", sourceProdId: "19745", sourcePrice: 138.6, sourceProdName: "Gmail Domain Cho Thuê live 12h+" },
-        "PROD_MTQX465U": { enabled: true, provider: "shop1989nd", sourceProdId: "19768", sourcePrice: 53.2, sourceProdName: "Gmail Domain Cho Thuê .live 10 phút" },
-        "PROD_MU5PWT7PP7": { enabled: true, provider: "nguyenlieummo", sourceProdId: "119284", sourcePrice: 3220, sourceProdName: "TÀI KHOẢN KLING AI 65 CREDIT" },
-        "PROD_MTQZT2Y1": { enabled: true, provider: "nguyenlieummo", sourceProdId: "121063", sourcePrice: 656, sourceProdName: "Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months", sourceStock: 0 },
-        "PROD_MU5SPLMSEC": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23960", sourcePrice: 2900, sourceProdName: "ChatGPT New Gmail Trial", sourceStock: 0 },
-        "PROD_MU5T3T47AE": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23607", sourcePrice: 27000, sourceProdName: "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3" },
-        "PROD_MU6R34FZ4Z": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23586", sourcePrice: 1560000, sourceProdName: "Google Gemini AI Veo3 - 18 Tháng", sourceStock: 0 },
-        "PROD_MTPJ88O9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25289", sourcePrice: 60000, sourceProdName: "NÂNG CẤP CANVA PRO 1 NĂM" },
-        "PROD_MUAULFFCDT": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26758", sourcePrice: 256500, sourceProdName: "Nâng Cấp ChatGPT Plus Giá Rẻ" },
-        "PROD_MU4YOZEU2M": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25646", sourcePrice: 198, sourceProdName: "Outlook Hotmail Trusted - OAuth2 Live 6 - 12 tháng" },
-        "PROD_MUJVJCV286": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26435", sourcePrice: 10000, sourceProdName: "Proxy 4Gvinaphone - 1 ngày" },
-        "PROD_MUJU6XY3HK": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26437", sourcePrice: 100000, sourceProdName: "Proxy 4Gvinaphone - 30 ngày" },
-        "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày" },
-        "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G" },
-        "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB" },
-        "PROD_MU1G6LJX": { enabled: true, provider: "sellmmo", baseUrl: "https://sellmmo.vn", apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO", sourceProdId: "23154", sourcePrice: 8000, sourceProdName: "Capcut Pro 7 Ngày", sourceStock: 0 },
-        "PROD_MU2B32VLQY": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng" },
-        "PROD_MUJUGVQXET": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "23628", sourcePrice: 114000, sourceProdName: "Capcut Pro Team 1 THÁNG", sourceStock: 0 }
-      };
+      const defaultMappings = Object.assign({}, DEFAULT_API_PRODUCT_MAPPINGS);
 
       // Tự động chuyển tiếp mã cũ 13840 sang 121063 nếu có trong maps
       if (prodId && maps[prodId] && (maps[prodId].sourceProdId === "13840" || maps[prodId].sourceProdId === "138400")) {
@@ -16774,8 +16785,8 @@ function syncAllOpenViewsStock(changedProdId) {
 
             const targetStock = (typeof map.sourceStock === "number") ? map.sourceStock : 0;
 
-            // Nếu ví nguồn không đủ tiền HOẶC nguồn hết hàng (targetStock <= 0)
-            if (sourceBal < minPriceNeeded || targetStock <= 0) {
+            // NGUYÊN TẮC GEMINI.MD: KHÔNG GHI ĐÈ LÀM MẤT SỐ TỒN KHO CỦA SẢN PHẨM DỰA VÀO SỐ DƯ NGUỒN (CHỈ DỰA VÀO TỒN KHO LIVE NGUỒN)
+            if (targetStock <= 0) {
               p.stock = 0;
               if (Array.isArray(p.variants)) {
                 p.variants.forEach(v => { if (v) v.stock = 0; });
