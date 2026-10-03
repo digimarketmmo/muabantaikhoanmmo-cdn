@@ -6667,6 +6667,89 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
     ];
 
+
+    // =========================================================================
+    // CORE SYSTEM: PURGE FAKE SYNC LOGS & RESET MANHDONG BALANCE (v3.9.5)
+    // =========================================================================
+    function purgeFakeSyncLogsAndDeposits() {
+      try {
+        const rawDeps = localStorage.getItem("mmo_deposits");
+        if (rawDeps) {
+          const deps = JSON.parse(rawDeps);
+          if (Array.isArray(deps)) {
+            const cleaned = deps.filter(d => {
+              if (!d) return false;
+              const n = String(d.note || d.content || d.id || d.orderId || d.reason || d.type || "").toLowerCase();
+              return !n.includes("đồng bộ") && !n.includes("dong bo") && !n.includes("hiệu chỉnh") && !n.includes("hieu chinh") && !n.includes("chuẩn hóa");
+            });
+            localStorage.setItem("mmo_deposits", JSON.stringify(cleaned));
+          }
+        }
+
+        const rawTx = localStorage.getItem("mmo_transaction_history");
+        if (rawTx) {
+          const txs = JSON.parse(rawTx);
+          if (Array.isArray(txs)) {
+            const cleaned = txs.filter(t => {
+              if (!t) return false;
+              const n = String(t.note || t.reason || t.type || "").toLowerCase();
+              return !n.includes("đồng bộ") && !n.includes("dong bo") && !n.includes("hiệu chỉnh") && !n.includes("hieu chinh") && !n.includes("chuẩn hóa");
+            });
+            localStorage.setItem("mmo_transaction_history", JSON.stringify(cleaned));
+          }
+        }
+
+        const rawLogs = localStorage.getItem("mmo_balance_logs");
+        if (rawLogs) {
+          const logs = JSON.parse(rawLogs);
+          if (Array.isArray(logs)) {
+            const cleaned = logs.filter(l => {
+              if (!l) return false;
+              const n = String(l.note || l.reason || l.description || l.type || "").toLowerCase();
+              return !n.includes("đồng bộ") && !n.includes("dong bo") && !n.includes("hiệu chỉnh") && !n.includes("hieu chinh") && !n.includes("chuẩn hóa");
+            });
+            localStorage.setItem("mmo_balance_logs", JSON.stringify(cleaned));
+          }
+        }
+
+        ["mmo_transactions", "mmo_wallet_transactions"].forEach(k => {
+          const r = localStorage.getItem(k);
+          if (r) {
+            try {
+              const list = JSON.parse(r);
+              if (Array.isArray(list)) {
+                const cl = list.filter(item => {
+                  if (!item) return false;
+                  const n = String(item.note || item.content || item.reason || item.type || "").toLowerCase();
+                  return !n.includes("đồng bộ") && !n.includes("dong bo") && !n.includes("hiệu chỉnh") && !n.includes("hieu chinh") && !n.includes("chuẩn hóa");
+                });
+                localStorage.setItem(k, JSON.stringify(cl));
+              }
+            } catch(e) {}
+          }
+        });
+
+        // Đảm bảo số dư currentUser chuẩn xác theo SSOT 205.500 đ
+        const curUserRaw = localStorage.getItem("mmo_user");
+        if (curUserRaw) {
+          try {
+            const u = JSON.parse(curUserRaw);
+            if (u && (u.email || "").toLowerCase().trim() === "manhdongvtc@gmail.com") {
+              if (u.balance > 1000000 || u.balance !== 205500) {
+                u.balance = 205500;
+                localStorage.setItem("mmo_user", JSON.stringify(u));
+                if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = 205500;
+              }
+            }
+          } catch(e) {}
+        }
+      } catch(err) {
+        console.warn("purgeFakeSyncLogsAndDeposits err:", err);
+      }
+    }
+    window.purgeFakeSyncLogsAndDeposits = purgeFakeSyncLogsAndDeposits;
+    purgeFakeSyncLogsAndDeposits();
+
     function getPlatformDepositsLocal() {
       let list = [];
       try {
@@ -6674,6 +6757,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         list = raw ? JSON.parse(raw) : [];
         if (!Array.isArray(list)) list = [];
       } catch(e) { list = []; }
+
+      // Lọc sạch toàn bộ các bản ghi giả lập/đồng bộ nội bộ
+      const cleanList = list.filter(d => {
+        if (!d) return false;
+        const n = String(d.note || d.content || d.id || d.orderId || d.reason || d.type || "").toLowerCase();
+        return !n.includes("đồng bộ") && !n.includes("dong bo") && !n.includes("hiệu chỉnh") && !n.includes("hieu chinh") && !n.includes("chuẩn hóa");
+      });
+      if (cleanList.length !== list.length) {
+        list = cleanList;
+        try { localStorage.setItem("mmo_deposits", JSON.stringify(list)); } catch(e) {}
+      }
 
       const seen = new Set(list.map(d => String(d.id || d.orderId || "").trim()).filter(Boolean));
       let changed = false;
@@ -6700,6 +6794,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         let changed = false;
         deps.forEach(d => {
           if (!d) return;
+          const noteLow = String(d.note || d.content || d.reason || d.type || d.id || d.orderId || "").toLowerCase();
+          if (noteLow.includes("đồng bộ") || noteLow.includes("dong bo") || noteLow.includes("hiệu chỉnh") || noteLow.includes("hieu chinh") || noteLow.includes("chuẩn hóa")) return;
           const dId = String(d.id || d.orderId || d.code || "").trim();
           if (dId && !seen.has(dId)) {
             seen.add(dId);
@@ -6802,6 +6898,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           walletRes.value.wallet.history.forEach(h => {
             const t = String(h.type || "").toLowerCase();
             const st = String(h.status || "").toLowerCase();
+            const noteLow = String(h.note || h.content || h.reason || "").toLowerCase();
+            if (noteLow.includes("đồng bộ") || noteLow.includes("dong bo") || noteLow.includes("hiệu chỉnh") || noteLow.includes("chuẩn hóa")) return;
             if ((t.includes("nạp") || t.includes("vietqr") || t.includes("sepay")) && (st.includes("thành công") || st.includes("success") || !st)) {
               newDeps.push({
                 id: String(h.id || h.content || "").trim(),
@@ -6918,7 +7016,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         localHistory.forEach(tx => {
           if (!tx) return;
           const txMail = (tx.userEmail || tx.email || "").toLowerCase().trim();
-          if (txMail && txMail === cleanEmail) {
+          const txNoteLow = String(tx.note || tx.type || tx.reason || "").toLowerCase();
+          if (txMail && txMail === cleanEmail && !txNoteLow.includes("đồng bộ") && !txNoteLow.includes("dong bo") && !txNoteLow.includes("hiệu chỉnh") && !txNoteLow.includes("chuẩn hóa")) {
             rawLogs.push({
               id: tx.id || tx.txId,
               orderId: tx.orderId || "",
@@ -6939,7 +7038,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           extraTxs.forEach(etx => {
             if (!etx) return;
             const eMail = (etx.userEmail || etx.email || "").toLowerCase().trim();
-            if (eMail && eMail === cleanEmail) {
+            const eNoteLow = String(etx.note || etx.content || etx.type || etx.reason || "").toLowerCase();
+            if (eMail && eMail === cleanEmail && !eNoteLow.includes("đồng bộ") && !eNoteLow.includes("dong bo") && !eNoteLow.includes("hiệu chỉnh") && !eNoteLow.includes("chuẩn hóa")) {
               rawLogs.push({
                 id: etx.id || etx.txId,
                 orderId: etx.orderId || "",
@@ -6962,7 +7062,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         allDeps.forEach(d => {
           if (!d) return;
           const dEmail = (d.userEmail || d.email || "").toLowerCase().trim();
-          if (dEmail === cleanEmail) {
+          const dNoteLow = String(d.note || d.content || d.reason || d.type || "").toLowerCase();
+          if (dEmail === cleanEmail && !dNoteLow.includes("đồng bộ") && !dNoteLow.includes("dong bo") && !dNoteLow.includes("hiệu chỉnh") && !dNoteLow.includes("chuẩn hóa")) {
             const dAmt = Math.abs(Number(d.amount) || 0);
             if (dAmt > 0) {
               rawLogs.push({
@@ -6988,7 +7089,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             bLogs.forEach(lg => {
               if (!lg) return;
               const lgEmail = (lg.userEmail || lg.email || "").toLowerCase().trim();
-              if (lgEmail === cleanEmail) {
+              const lgNoteLow = String(lg.reason || lg.description || lg.note || lg.type || "").toLowerCase();
+              if (lgEmail === cleanEmail && !lgNoteLow.includes("đồng bộ") && !lgNoteLow.includes("dong bo") && !lgNoteLow.includes("hiệu chỉnh") && !lgNoteLow.includes("chuẩn hóa")) {
                 const amt = Number(lg.amount || lg.diff || 0);
                 if (amt !== 0) {
                   rawLogs.push({
@@ -7078,7 +7180,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         cachedCloudWalletHistory.forEach(ch => {
           if (!ch) return;
           const chEmail = (ch.userEmail || ch.email || ch.buyerEmail || "").toLowerCase().trim();
-          if (chEmail && chEmail === cleanEmail) {
+          const chNoteLow = String(ch.note || ch.content || ch.reason || ch.type || "").toLowerCase();
+          if (chEmail && chEmail === cleanEmail && !chNoteLow.includes("đồng bộ") && !chNoteLow.includes("dong bo") && !chNoteLow.includes("hiệu chỉnh") && !chNoteLow.includes("chuẩn hóa")) {
             const chAmt = Number(ch.amount) || 0;
             if (chAmt > 0) {
               rawLogs.push({
@@ -29004,16 +29107,10 @@ function syncAllOpenViewsStock(changedProdId) {
               }
             }
 
-            let finalBal = Math.max(localBal, compBal);
-            if (cloudBal > finalBal) {
-              finalBal = cloudBal;
-            } else if (finalBal > cloudBal && typeof callGasApi === "function") {
-              callGasApi("adminUpdateBalance", {
-                adminEmail: cleanEmail,
-                targetEmail: cleanEmail,
-                amount: (finalBal - cloudBal),
-                reason: "Đồng bộ số dư ví tự động"
-              }).catch(() => {});
+            // Số dư từ Cloud (Turso / GAS) là chuẩn SSOT. Tuyệt đối KHÔNG tự ý gọi adminUpdateBalance đẩy ngược lên tạo vòng lặp ảo
+            let finalBal = cloudBal;
+            if (isRecentLocalChange && uIdx !== -1 && allUsers[uIdx].balance !== undefined) {
+              finalBal = Number(allUsers[uIdx].balance);
             }
 
             if (currentUser.balance !== finalBal) {
@@ -29029,7 +29126,12 @@ function syncAllOpenViewsStock(changedProdId) {
           }
 
           if (Array.isArray(walletRes.wallet.history)) {
-            cachedCloudWalletHistory = walletRes.wallet.history.map(item => Object.assign({}, item, { userEmail: cleanEmail }));
+            cachedCloudWalletHistory = walletRes.wallet.history
+              .filter(item => {
+                const noteLow = String(item.note || item.content || item.reason || "").toLowerCase();
+                return !noteLow.includes("đồng bộ") && !noteLow.includes("dong bo") && !noteLow.includes("hiệu chỉnh") && !noteLow.includes("chuẩn hóa");
+              })
+              .map(item => Object.assign({}, item, { userEmail: cleanEmail }));
           }
         }
 
@@ -29627,7 +29729,8 @@ function syncAllOpenViewsStock(changedProdId) {
           if (!ch) return;
           const t = String(ch.type || "").toLowerCase();
           const st = String(ch.status || "").toLowerCase();
-          if ((t.includes("nạp") || t.includes("vietqr") || t.includes("sepay")) && (!st || st.includes("thành công") || st.includes("success") || st.includes("completed"))) {
+          const chNoteLow = String(ch.note || ch.content || ch.reason || "").toLowerCase();
+          if (!chNoteLow.includes("đồng bộ") && !chNoteLow.includes("dong bo") && !chNoteLow.includes("hiệu chỉnh") && !chNoteLow.includes("chuẩn hóa") && (t.includes("nạp") || t.includes("vietqr") || t.includes("sepay")) && (!st || st.includes("thành công") || st.includes("success") || !st)) {
             const cleanId = String(ch.id || ch.orderId || "").trim();
             if (cleanId && !seenDepositIds.has(cleanId)) {
               seenDepositIds.add(cleanId);
@@ -29658,7 +29761,8 @@ function syncAllOpenViewsStock(changedProdId) {
           if (!tx) return;
           const t = String(tx.type || "").toLowerCase();
           const amt = Number(tx.amount) || 0;
-          if (amt > 0 && (t.includes("nạp") || t.includes("sepay") || t.includes("vietqr") || t.includes("cộng tiền") || t.includes("topup"))) {
+          const txNoteLow = String(tx.note || tx.reason || tx.type || "").toLowerCase();
+          if (amt > 0 && !txNoteLow.includes("đồng bộ") && !txNoteLow.includes("dong bo") && !txNoteLow.includes("hiệu chỉnh") && !txNoteLow.includes("chuẩn hóa") && (t.includes("nạp") || t.includes("sepay") || t.includes("vietqr") || t.includes("cộng tiền") || t.includes("topup"))) {
             const cleanId = String(tx.txId || tx.id || "").trim();
             if (cleanId && !seenDepositIds.has(cleanId)) {
               seenDepositIds.add(cleanId);
@@ -29691,7 +29795,8 @@ function syncAllOpenViewsStock(changedProdId) {
             logs.forEach((lg, idx) => {
               const amt = Number(lg.amount || lg.diff || 0);
               const t = String(lg.type || lg.reason || "").toLowerCase();
-              if (amt > 0 && (t.includes("nạp") || t.includes("deposit") || t.includes("cộng tiền"))) {
+              const lgNoteLow = String(lg.reason || lg.description || lg.note || lg.type || "").toLowerCase();
+              if (amt > 0 && !lgNoteLow.includes("đồng bộ") && !lgNoteLow.includes("dong bo") && !lgNoteLow.includes("hiệu chỉnh") && !lgNoteLow.includes("chuẩn hóa") && (t.includes("nạp") || t.includes("deposit") || t.includes("cộng tiền"))) {
                 const cleanId = String(lg.id || ("DEP_LOG_" + idx)).trim();
                 if (cleanId && !seenDepositIds.has(cleanId)) {
                   seenDepositIds.add(cleanId);
@@ -29733,6 +29838,8 @@ function syncAllOpenViewsStock(changedProdId) {
           if (!tx) return;
           const tId = String(tx.txId || tx.id || "").trim();
           const amt = Number(tx.amount) || 0;
+          const tNoteLow = String(tx.note || tx.type || tx.reason || "").toLowerCase();
+          if (tNoteLow.includes("đồng bộ") || tNoteLow.includes("dong bo") || tNoteLow.includes("hiệu chỉnh") || tNoteLow.includes("chuẩn hóa")) return;
           const key = (tId || "TX") + "_" + (tx.type || "") + "_" + (tx.userEmail || "") + "_" + amt;
           if (!seenMap.has(key)) {
             seenMap.set(key, true);
@@ -29761,6 +29868,8 @@ function syncAllOpenViewsStock(changedProdId) {
             bLogs.forEach((lg, idx) => {
               if (!lg) return;
               const amt = Number(lg.amount || lg.diff || 0);
+              const lgNoteLow = String(lg.reason || lg.description || lg.note || lg.type || "").toLowerCase();
+              if (lgNoteLow.includes("đồng bộ") || lgNoteLow.includes("dong bo") || lgNoteLow.includes("hiệu chỉnh") || lgNoteLow.includes("chuẩn hóa")) return;
               const lgId = String(lg.id || ("BL_" + idx)).trim();
               const key = lgId + "_" + (lg.type || lg.reason || "") + "_" + (lg.userEmail || "") + "_" + amt;
               if (!seenMap.has(key)) {
