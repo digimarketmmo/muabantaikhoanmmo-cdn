@@ -140,18 +140,8 @@ if (typeof window !== "undefined") {
         }
       } catch(e) {}
 
-      // Vệ sinh toàn bộ số lượng tồn ảo 9999 trong cache cũ
-      result.forEach(function(item) {
-        if (item && (item.amount === 9999 || item.amount === "9999")) {
-          item.amount = 0;
-        }
-      });
-
       // BẮT BUỘC gộp initialSourceProducts (chứa toàn bộ SP shop1989nd & selltainguyenmmo)
       initialSourceProducts.forEach(function(initP) {
-        if (initP.amount === 9999 || initP.amount === "9999") {
-          initP.amount = 0;
-        }
         var exists = result.some(function(r) {
           return String(r.id) === String(initP.id) && (r.provider || "sellmmo") === (initP.provider || "sellmmo");
         });
@@ -200,12 +190,17 @@ if (typeof window !== "undefined") {
           if (!p) continue;
           var prov = p.provider || "";
           if (prov) provSet.add(prov);
-          var idStr = String(p.id);
+          var idStr = String(p.id || "").trim();
+          var cleanId = idStr.replace(/^#/, "");
           if (prov) {
             map.set(prov + ":" + idStr, p);
+            map.set(prov + ":" + cleanId, p);
           }
           if (!map.has("any:" + idStr)) {
             map.set("any:" + idStr, p);
+          }
+          if (!map.has("any:" + cleanId)) {
+            map.set("any:" + cleanId, p);
           }
         }
         _sourceProductsFastMap = map;
@@ -226,12 +221,13 @@ if (typeof window !== "undefined") {
         rebuildSourceProductsFastIndex();
       }
       if (!_sourceProductsFastMap) return null;
-      var idStr = String(id);
+      var idStr = String(id || "").trim();
+      var cleanId = idStr.replace(/^#/, "");
       if (provider) {
-        var item = _sourceProductsFastMap.get(provider + ":" + idStr);
+        var item = _sourceProductsFastMap.get(provider + ":" + idStr) || _sourceProductsFastMap.get(provider + ":" + cleanId);
         if (item) return item;
       }
-      return _sourceProductsFastMap.get("any:" + idStr) || null;
+      return _sourceProductsFastMap.get("any:" + idStr) || _sourceProductsFastMap.get("any:" + cleanId) || null;
     }
     window.getFastSourceProduct = getFastSourceProduct;
 
@@ -5109,6 +5105,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                     const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
                     const isApi = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
                     if (isApi) {
+                      const cleanSrcId = String(apiMap.sourceProdId || "").replace(/^#/, "").trim();
+                      const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, cleanSrcId) : null;
+                      if (inSrc) {
+                        apiMap.isSourceDeleted = false;
+                        if (typeof inSrc.amount === "number") apiMap.sourceStock = inSrc.amount;
+                      }
                       if (apiMap.isSourceDeleted) {
                         return '<span style="font-size:0.68rem; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.35); padding:1px 6px; border-radius:4px; font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-right:6px;" title="Web nguồn đã xoá hoặc gỡ sản phẩm này"><i class="fa-solid fa-ban"></i> API: ' + (apiMap.provider || 'Nguồn') + ' [#' + (apiMap.sourceProdId) + ' - ĐÃ XOÁ SP]</span>';
                       }
@@ -5123,6 +5125,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 '<td>' + (function() {
                   const stk = typeof getProductStockCount === "function" ? getProductStockCount(p) : (p.stock || 0);
                   const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
+                  if (apiMap && apiMap.sourceProdId) {
+                    const cleanSrcId = String(apiMap.sourceProdId || "").replace(/^#/, "").trim();
+                    const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, cleanSrcId) : null;
+                    if (inSrc) {
+                      apiMap.isSourceDeleted = false;
+                      if (typeof inSrc.amount === "number") apiMap.sourceStock = inSrc.amount;
+                    }
+                  }
                   if (apiMap && apiMap.isSourceDeleted) {
                     return '<span style="color:#ef4444; font-weight:800; background:rgba(239,68,68,0.15); padding:3px 8px; border-radius:4px; border:1px solid rgba(239,68,68,0.3); font-size:0.75rem;" title="Web nguồn đã gỡ sản phẩm - Tồn kho = 0 (Cho phép đặt trước)"><i class="fa-solid fa-ban"></i> 0 (Nguồn đã xoá SP)</span>';
                   }
@@ -8410,7 +8420,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         } else {
           liveSourceStock = (oldProd && typeof oldProd.stock === "number" && oldProd.stock > 0) ? oldProd.stock : 0;
         }
-        if (liveSourceStock === 9999) liveSourceStock = 0;
         variants.forEach(v => { v.stock = liveSourceStock; });
       }
 
@@ -8442,17 +8451,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (isApiSelected && apiSourceProdIdVal) {
           const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[apiProviderVal]) ? API_SOURCES[apiProviderVal] : { baseUrl: "https://sellmmo.vn", apiKey: "" };
           const oldMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(actualTargetId) : (oldProd?.apiMapping || null);
-          const wasDeleted = oldMap ? !!oldMap.isSourceDeleted : false;
+          const cleanSrcId = String(apiSourceProdIdVal).trim().replace(/^#/, "");
           const mapItem = {
             enabled: true,
             provider: apiProviderVal,
             baseUrl: pCfg.baseUrl,
             apiKey: pCfg.apiKey,
-            sourceProdId: String(apiSourceProdIdVal),
-            sourceProdName: liveSourceName || (oldMap && oldMap.sourceProdName) || ("Sản phẩm #" + apiSourceProdIdVal),
+            sourceProdId: cleanSrcId,
+            sourceProdName: liveSourceName || (oldMap && oldMap.sourceProdName) || ("Sản phẩm #" + cleanSrcId),
             sourcePrice: liveSourcePrice || (oldMap && oldMap.sourcePrice) || 0,
             sourceStock: liveSourceStock,
-            isSourceDeleted: (!foundSrc && wasDeleted) || (apiSourceProdIdVal === "0"),
+            isSourceDeleted: (cleanSrcId === "0" || !cleanSrcId),
             targetProdId: actualTargetId,
             targetProdName: name
           };
@@ -8615,6 +8624,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (typeof renderAdminDashboard === "function") renderAdminDashboard();
       if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
       if (typeof renderProductGrid === "function") renderProductGrid();
+
+      // Làm mới tức thì bảng Cảnh báo Nguồn Hàng API nếu đang mở
+      try {
+        _cachedApiSourceAlerts = null;
+        if (typeof invalidateApiProductMappingsCache === "function") invalidateApiProductMappingsCache();
+        if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+        if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
+        if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+      } catch(eAlert) {}
 
       // Đồng bộ tên mới vào bảng API mappings nếu sản phẩm này có liên kết API
       try {
@@ -12185,20 +12203,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
 
         if ((apiMap && apiMap.enabled && apiMap.sourceProdId) || isApiDelivery) {
-          // [CHẶN ĐẦU 1]: Nếu mapping đã được đánh dấu nguồn đã xóa/gỡ SP -> Ép trả về 0 acc ngay lập tức!
-          if (apiMap && apiMap.isSourceDeleted) {
-            apiMap.sourceStock = 0;
-            if (prod) {
-              prod.stock = 0;
-              if (Array.isArray(prod.variants)) prod.variants.forEach(v => { if (v) v.stock = 0; });
-            }
-            return 0;
-          }
-
           let st = 0;
           let hasLiveSource = false;
           if (apiMap && apiMap.sourceProdId) {
-            const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, apiMap.sourceProdId) : null;
+            const cleanSrcId = String(apiMap.sourceProdId).trim().replace(/^#/, "");
+            let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, cleanSrcId) : null;
+            if (!inSrc && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+              inSrc = cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!apiMap.provider || s.provider === apiMap.provider))
+                   || cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
+            }
             const provHasProds = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
             if (inSrc && typeof inSrc.amount === "number") {
               if (inSrc.amount > 0 || provHasProds) {
@@ -12220,12 +12233,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               return 0;
             }
           }
+
+          // Nếu mapping đã được xác nhận nguồn đã xóa/gỡ SP -> Ép trả về 0 acc ngay lập tức!
+          if (apiMap && apiMap.isSourceDeleted) {
+            apiMap.sourceStock = 0;
+            if (prod) {
+              prod.stock = 0;
+              if (Array.isArray(prod.variants)) prod.variants.forEach(v => { if (v) v.stock = 0; });
+            }
+            return 0;
+          }
           if (!hasLiveSource && apiMap && apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) {
             st = Number(apiMap.sourceStock);
-            if (st === 9999 || apiMap.isSourceDeleted) {
+            if (apiMap.isSourceDeleted) {
               st = 0;
               apiMap.sourceStock = 0;
-              apiMap.isSourceDeleted = true;
             }
             if (st > 0) {
               hasLiveSource = true;
@@ -13094,6 +13116,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               } else {
                 cur.deliveryType = 'api';
                 cur.delivery_type = 'api';
+                if (effectiveMapping && effectiveMapping.sourceProdId) {
+                  const cleanEffSrcId = String(effectiveMapping.sourceProdId || "").replace(/^#/, "").trim();
+                  const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(effectiveMapping.provider, cleanEffSrcId) : null;
+                  if (inSrc) {
+                    effectiveMapping.isSourceDeleted = false;
+                    if (typeof inSrc.amount === "number") effectiveMapping.sourceStock = inSrc.amount;
+                  }
+                }
                 if (tp.stock !== undefined && Number(tp.stock) > 0) {
                   updatedStock = Number(tp.stock);
                 } else if (effectiveMapping && !effectiveMapping.isSourceDeleted && effectiveMapping.sourceStock !== undefined && effectiveMapping.sourceStock !== null && Number(effectiveMapping.sourceStock) > 0) {
@@ -13105,7 +13135,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 } else {
                   updatedStock = (tp.stock !== undefined) ? Number(tp.stock) : (Number(cur.stock) || 0);
                 }
-                if (updatedStock === 9999) updatedStock = 0;
                 if (Array.isArray(variants) && variants.length > 0) {
                   variants.forEach((v, vI) => {
                     if (typeof v.stock !== "number" || isNaN(v.stock)) {
@@ -13164,10 +13193,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 }
                 localStorage.setItem("mmo_api_map_" + tp.id, JSON.stringify(newMapping));
               } catch(eMapSync) {}
-            }
-            if (newStock === 9999) newStock = 0;
-            if (isApiTypeNew && Array.isArray(variants)) {
-              variants.forEach(v => { if ((Number(v.stock) || 0) === 9999) v.stock = 0; });
             }
             const isImgValidNew = function(val) {
               return typeof val === "string" && val.trim() !== "" && !val.includes("placeholder") && !val.includes("unsplash") && !val.includes("undefined") && !val.includes("null");
@@ -13524,31 +13549,28 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
 
         if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
-          if (apiMap.isSourceDeleted) {
-            apiMap.sourceStock = 0;
-            return 0;
-          }
+          const cleanSrcId = String(apiMap.sourceProdId).trim().replace(/^#/, "");
           let stock = (apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) ? Number(apiMap.sourceStock) : 0;
-          if (stock === 9999 || apiMap.isSourceDeleted) {
-            stock = 0;
-            apiMap.sourceStock = 0;
-            apiMap.isSourceDeleted = true;
-          }
           const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
             ? window.cachedSourceProducts
             : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
           const provHasProds = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
           if (prods && prods.length > 0 && provHasProds) {
-            const inSrc = prods.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
-              || prods.find(s => String(s.id) === String(apiMap.sourceProdId));
+            const inSrc = (typeof getFastSourceProduct === "function")
+              ? getFastSourceProduct(apiMap.provider, cleanSrcId)
+              : (prods.find(s => String(s.id) === cleanSrcId && (!apiMap.provider || s.provider === apiMap.provider))
+                || prods.find(s => String(s.id) === cleanSrcId));
             if (inSrc && typeof inSrc.amount === "number") {
               stock = inSrc.amount;
               apiMap.isSourceDeleted = false;
+              apiMap.sourceStock = inSrc.amount;
             } else if (provHasProds && !inSrc) {
               stock = 0;
               apiMap.isSourceDeleted = true;
               apiMap.sourceStock = 0;
             }
+          } else if (apiMap.isSourceDeleted) {
+            stock = 0;
           } else {
             // Khi provider chưa nạp live: ưu tiên lấy stock thực từ Turso SSOT của sản phẩm/biến thể
             if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL" && variantIdx !== "" && prod && Array.isArray(prod.variants) && prod.variants[Number(variantIdx)]) {
@@ -13658,17 +13680,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const provLoaded = (typeof isFastSourceProviderLoaded === "function")
               ? isFastSourceProviderLoaded(m.provider)
               : false;
+            const cleanMId = String(m.sourceProdId || "").replace(/^#/, "").trim();
             const inSrc = (typeof getFastSourceProduct === "function")
-              ? getFastSourceProduct(m.provider, m.sourceProdId)
-              : (prods.find(s => String(s.id) === String(m.sourceProdId) && (!m.provider || s.provider === m.provider))
-                || prods.find(s => String(s.id) === String(m.sourceProdId)));
-            if (m.isSourceDeleted || (provLoaded && !inSrc)) {
+              ? getFastSourceProduct(m.provider, cleanMId)
+              : (prods.find(s => (String(s.id).replace(/^#/, "").trim() === cleanMId || String(s.id) === String(m.sourceProdId)) && (!m.provider || s.provider === m.provider))
+                || prods.find(s => (String(s.id).replace(/^#/, "").trim() === cleanMId || String(s.id) === String(m.sourceProdId))));
+            if (inSrc && typeof inSrc.amount === "number") {
+              effectiveStock = inSrc.amount;
+              m.sourceStock = inSrc.amount;
+              m.isSourceDeleted = false;
+            } else if (m.isSourceDeleted || (provLoaded && !inSrc)) {
               effectiveStock = 0;
               m.sourceStock = 0;
               m.isSourceDeleted = true;
-            } else if (inSrc && typeof inSrc.amount === "number") {
-              effectiveStock = inSrc.amount;
-              m.sourceStock = inSrc.amount;
             } else if (typeof m.sourceStock === "number" && m.sourceStock > 0) {
               effectiveStock = m.sourceStock;
             } else if (curV && typeof curV.stock === "number" && curV.stock > 0) {
@@ -15428,7 +15452,12 @@ function syncAllOpenViewsStock(changedProdId) {
               if (!isApiProd) return;
               const map = (typeof getApiProductMapping === "function") ? getApiProductMapping(p) : (p.apiMapping || null);
               if (map && map.sourceProdId) {
-                const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(map.provider, map.sourceProdId) : null;
+                const cleanSrcId = String(map.sourceProdId || "").trim().replace(/^#/, "");
+                let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(map.provider, cleanSrcId) : null;
+                if (!inSrc && Array.isArray(freshProducts)) {
+                  inSrc = freshProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!map.provider || s.provider === map.provider))
+                       || freshProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
+                }
                 if (inSrc && typeof inSrc.amount === "number") {
                   map.sourceStock = inSrc.amount;
                   map.isSourceDeleted = false;
@@ -15466,9 +15495,11 @@ function syncAllOpenViewsStock(changedProdId) {
             if (isCurApi) {
               const curMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(currentSelectedProduct) : (currentSelectedProduct.apiMapping || null);
               if (curMap && curMap.sourceProdId) {
-                const inSrc = freshProducts.find(s => String(s.id) === String(curMap.sourceProdId) && (!curMap.provider || s.provider === curMap.provider))
-                  || freshProducts.find(s => String(s.id) === String(curMap.sourceProdId));
-                const isLoadedProv = (window._liveLoadedProviders && window._liveLoadedProviders.has(curMap.provider));
+                const cleanCurMapSrcId = String(curMap.sourceProdId || "").replace(/^#/, "").trim();
+                const inSrc = (typeof getFastSourceProduct === "function" ? getFastSourceProduct(curMap.provider, cleanCurMapSrcId) : null)
+                  || (Array.isArray(freshProducts) ? (freshProducts.find(s => (String(s.id).replace(/^#/, "").trim() === cleanCurMapSrcId || String(s.id) === String(curMap.sourceProdId)) && (!curMap.provider || s.provider === curMap.provider))
+                  || freshProducts.find(s => String(s.id).replace(/^#/, "").trim() === cleanCurMapSrcId || String(s.id) === String(curMap.sourceProdId))) : null);
+                const isLoadedProv = (typeof isFastSourceProviderLoaded === "function" ? isFastSourceProviderLoaded(curMap.provider) : false) || (window._liveLoadedProviders && window._liveLoadedProviders.has(curMap.provider));
                 if (inSrc && typeof inSrc.amount === "number") {
                   curMap.sourceStock = inSrc.amount;
                   curMap.isSourceDeleted = false;
@@ -15476,7 +15507,7 @@ function syncAllOpenViewsStock(changedProdId) {
                   if (Array.isArray(currentSelectedProduct.variants)) {
                     currentSelectedProduct.variants.forEach(v => { if (v) v.stock = inSrc.amount; });
                   }
-                } else if (isLoadedProv) {
+                } else if (isLoadedProv && !inSrc) {
                   curMap.sourceStock = 0;
                   curMap.isSourceDeleted = true;
                   currentSelectedProduct.stock = 0;
@@ -15553,21 +15584,21 @@ function syncAllOpenViewsStock(changedProdId) {
       "PROD_MTQX1C7X": { enabled: true, provider: "shop1989nd", sourceProdId: "19745", sourcePrice: 138.6, sourceProdName: "Gmail Domain Cho Thuê live 12h+" },
       "PROD_MTQX465U": { enabled: true, provider: "shop1989nd", sourceProdId: "19768", sourcePrice: 53.2, sourceProdName: "Gmail Domain Cho Thuê .live 10 phút" },
       "PROD_MU5PWT7PP7": { enabled: true, provider: "nguyenlieummo", sourceProdId: "119284", sourcePrice: 3220, sourceProdName: "TÀI KHOẢN KLING AI 65 CREDIT" },
-      "PROD_MTQZT2Y1": { enabled: true, provider: "nguyenlieummo", sourceProdId: "121063", sourcePrice: 656, sourceProdName: "Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months", sourceStock: 0 },
-      "PROD_MU5SPLMSEC": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23960", sourcePrice: 2900, sourceProdName: "ChatGPT New Gmail Trial", sourceStock: 0 },
-      "PROD_MU5T3T47AE": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23607", sourcePrice: 27000, sourceProdName: "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3", sourceStock: 0, isSourceDeleted: true },
-      "PROD_MU6R34FZ4Z": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23586", sourcePrice: 1560000, sourceProdName: "Google Gemini AI Veo3 - 18 Tháng", sourceStock: 0 },
-      "PROD_MTPJ88O9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25289", sourcePrice: 60000, sourceProdName: "NÂNG CẤP CANVA PRO 1 NĂM", sourceStock: 0, isSourceDeleted: true },
-      "PROD_MUAULFFCDT": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26758", sourcePrice: 256500, sourceProdName: "Nâng Cấp ChatGPT Plus Giá Rẻ", sourceStock: 0, isSourceDeleted: true },
-      "PROD_MU4YOZEU2M": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25646", sourcePrice: 198, sourceProdName: "Outlook Hotmail Trusted - OAuth2 Live 6 - 12 tháng", sourceStock: 0, isSourceDeleted: true },
-      "PROD_MUJVJCV286": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26435", sourcePrice: 10000, sourceProdName: "Proxy 4Gvinaphone - 1 ngày", sourceStock: 0, isSourceDeleted: true },
-      "PROD_MUJU6XY3HK": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26437", sourcePrice: 100000, sourceProdName: "Proxy 4Gvinaphone - 30 ngày", sourceStock: 0, isSourceDeleted: true },
-      "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày", sourceStock: 0, isSourceDeleted: true },
-      "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G", sourceStock: 0, isSourceDeleted: true },
-      "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 0, isSourceDeleted: true },
-      "PROD_MU1G6LJX": { enabled: true, provider: "sellmmo", baseUrl: "https://sellmmo.vn", apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO", sourceProdId: "23154", sourcePrice: 8000, sourceProdName: "Capcut Pro 7 Ngày", sourceStock: 0 },
-      "PROD_MU2B32VLQY": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng", sourceStock: 0, isSourceDeleted: true },
-      "PROD_MUJUGVQXET": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "23628", sourcePrice: 114000, sourceProdName: "Capcut Pro Team 1 THÁNG", sourceStock: 0 }
+      "PROD_MTQZT2Y1": { enabled: true, provider: "nguyenlieummo", sourceProdId: "121063", sourcePrice: 656, sourceProdName: "Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months" },
+      "PROD_MU5SPLMSEC": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "31699", sourcePrice: 16000, sourceProdName: "🔥ChatGPT Free đã verify phone codex" },
+      "PROD_MU5T3T47AE": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23607", sourcePrice: 27000, sourceProdName: "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3" },
+      "PROD_MU6R34FZ4Z": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23586", sourcePrice: 1560000, sourceProdName: "Google Gemini AI Veo3 - 18 Tháng" },
+      "PROD_MTPJ88O9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25289", sourcePrice: 60000, sourceProdName: "NÂNG CẤP CANVA PRO 1 NĂM" },
+      "PROD_MUAULFFCDT": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "31694", sourcePrice: 300000, sourceProdName: "CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG )" },
+      "PROD_MU4YOZEU2M": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25646", sourcePrice: 198, sourceProdName: "Outlook Hotmail Trusted - OAuth2 Live 6 - 12 tháng" },
+      "PROD_MUJVJCV286": { enabled: true, provider: "ultrammo", sourceProdId: "34234", sourcePrice: 13500, sourceProdName: "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)" },
+      "PROD_MUJU6XY3HK": { enabled: true, provider: "ultrammo", sourceProdId: "34238", sourcePrice: 220000, sourceProdName: "Đổi IP Mobile 4G VinaPhone 5 Phút (30 Ngày)" },
+      "PROD_MUJVFEFFNP": { enabled: true, provider: "nguyenlieummo", sourceProdId: "122260", sourcePrice: 2818, sourceProdName: "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH" },
+      "PROD_MUJTYWFTQ7": { enabled: true, provider: "ultrammo", sourceProdId: "34234", sourcePrice: 13500, sourceProdName: "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)" },
+      "PROD_MUJQDTNIH9": { enabled: true, provider: "nguyenlieummo", sourceProdId: "122260", sourcePrice: 2817.5, sourceProdName: "Proxy Datacenter us - 1 ngày" },
+      "PROD_MU1G6LJX": { enabled: true, provider: "sellmmo", baseUrl: "https://sellmmo.vn", apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO", sourceProdId: "23154", sourcePrice: 8000, sourceProdName: "Capcut Pro 7 Ngày" },
+      "PROD_MU2B32VLQY": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng" },
+      "PROD_MUJUGVQXET": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "23628", sourcePrice: 114000, sourceProdName: "Capcut Pro Team 1 THÁNG" }
     };
 
     var _cachedApiProductMappings = null;
@@ -15592,11 +15623,6 @@ function syncAllOpenViewsStock(changedProdId) {
             Object.keys(parsed).forEach(k => {
               if (parsed[k] && typeof parsed[k] === "object") {
                 result[k] = Object.assign({}, result[k] || {}, parsed[k]);
-                // Vệ sinh tồn kho ảo 9999
-                if (result[k].sourceStock === 9999 || result[k].sourceStock === "9999" || (result[k].sourceProdName && result[k].sourceProdName.toLowerCase().includes("proxy") && result[k].provider === "selltainguyenmmo")) {
-                  result[k].sourceStock = 0;
-                  result[k].isSourceDeleted = true;
-                }
               }
             });
           }
@@ -15608,29 +15634,26 @@ function syncAllOpenViewsStock(changedProdId) {
         const item = result[k];
         if (!item) return;
 
-        // Bảo vệ mặc định các sản phẩm đã xác nhận nguồn xóa
-        if (DEFAULT_API_PRODUCT_MAPPINGS[k] && DEFAULT_API_PRODUCT_MAPPINGS[k].isSourceDeleted) {
-          item.isSourceDeleted = true;
-          item.sourceStock = 0;
-        }
-
-        if (item.sourceStock === 9999 || item.sourceStock === "9999" || (item.sourceProdName && item.sourceProdName.toLowerCase().includes("proxy") && item.provider === "selltainguyenmmo")) {
-          item.sourceStock = 0;
-          item.isSourceDeleted = true;
+        if (item.sourceProdId) {
+          const cleanSrcId = String(item.sourceProdId || "").trim().replace(/^#/, "");
+          let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(item.provider, cleanSrcId) : null;
+          if (!inSrc && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+            inSrc = cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!item.provider || s.provider === item.provider))
+                 || cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
+          }
+          const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(item.provider) : false;
+          if (inSrc && typeof inSrc.amount === "number") {
+            item.sourceStock = inSrc.amount;
+            item.isSourceDeleted = false;
+            if (inSrc.price) item.sourcePrice = inSrc.price;
+            if (inSrc.name) item.sourceProdName = inSrc.name;
+          } else if (provLoaded) {
+            item.isSourceDeleted = true;
+            item.sourceStock = 0;
+          }
         }
         if (item.isSourceDeleted) {
           item.sourceStock = 0;
-        }
-        if (item.sourceProdId) {
-          const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(item.provider) : false;
-          const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(item.provider, item.sourceProdId) : null;
-          if (provLoaded && !inSrc) {
-            item.isSourceDeleted = true;
-            item.sourceStock = 0;
-          } else if (inSrc && typeof inSrc.amount === "number") {
-            item.sourceStock = inSrc.amount;
-            item.isSourceDeleted = false;
-          }
         }
       });
       _cachedApiProductMappings = result;
@@ -15691,13 +15714,13 @@ function syncAllOpenViewsStock(changedProdId) {
       function enrichMapping(m) {
         if (!m || !m.enabled || !m.sourceProdId) return null;
         const res = Object.assign({}, m);
-        if (res.isSourceDeleted) {
-          res.sourceStock = 0;
-          return res;
-        }
+        const cleanSrcId = String(res.sourceProdId || "").trim().replace(/^#/, "");
         let stock = (res.sourceStock !== undefined && res.sourceStock !== null) ? Number(res.sourceStock) : 0;
-        if (stock === 9999) stock = 0;
-        const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(res.provider, res.sourceProdId) : null;
+        let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(res.provider, cleanSrcId) : null;
+        if (!inSrc && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+          inSrc = cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!res.provider || s.provider === res.provider))
+               || cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
+        }
         if (inSrc && typeof inSrc.amount === "number") {
           stock = inSrc.amount;
           res.sourceStock = stock;
@@ -15706,10 +15729,15 @@ function syncAllOpenViewsStock(changedProdId) {
           if (inSrc.name) res.sourceProdName = inSrc.name;
         } else {
           const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(res.provider) : false;
-          if (provLoaded || res.isSourceDeleted) {
+          if (provLoaded) {
             stock = 0;
             res.sourceStock = 0;
             res.isSourceDeleted = true;
+          } else {
+            if (res.isSourceDeleted) {
+              stock = 0;
+              res.sourceStock = 0;
+            }
           }
         }
         res.sourceStock = Math.max(0, stock);
@@ -15735,18 +15763,18 @@ function syncAllOpenViewsStock(changedProdId) {
         "PROD_MU5PWT7PP7": { enabled: true, provider: "nguyenlieummo", sourceProdId: "119284", sourcePrice: 3220, sourceProdName: "TÀI KHOẢN KLING AI 65 CREDIT" },
         "PROD_MTQZT2Y1": { enabled: true, provider: "nguyenlieummo", sourceProdId: "121063", sourcePrice: 656, sourceProdName: "Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months", sourceStock: 0 },
         "PROD_MU5SPLMSEC": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23960", sourcePrice: 2900, sourceProdName: "ChatGPT New Gmail Trial", sourceStock: 0 },
-        "PROD_MU5T3T47AE": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23607", sourcePrice: 27000, sourceProdName: "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3", sourceStock: 0, isSourceDeleted: true },
+        "PROD_MU5T3T47AE": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23607", sourcePrice: 27000, sourceProdName: "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3" },
         "PROD_MU6R34FZ4Z": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "23586", sourcePrice: 1560000, sourceProdName: "Google Gemini AI Veo3 - 18 Tháng", sourceStock: 0 },
-        "PROD_MTPJ88O9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25289", sourcePrice: 60000, sourceProdName: "NÂNG CẤP CANVA PRO 1 NĂM", sourceStock: 0, isSourceDeleted: true },
-        "PROD_MUAULFFCDT": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26758", sourcePrice: 256500, sourceProdName: "Nâng Cấp ChatGPT Plus Giá Rẻ", sourceStock: 0, isSourceDeleted: true },
-        "PROD_MU4YOZEU2M": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25646", sourcePrice: 198, sourceProdName: "Outlook Hotmail Trusted - OAuth2 Live 6 - 12 tháng", sourceStock: 0, isSourceDeleted: true },
-        "PROD_MUJVJCV286": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26435", sourcePrice: 10000, sourceProdName: "Proxy 4Gvinaphone - 1 ngày", sourceStock: 0, isSourceDeleted: true },
-        "PROD_MUJU6XY3HK": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26437", sourcePrice: 100000, sourceProdName: "Proxy 4Gvinaphone - 30 ngày", sourceStock: 0, isSourceDeleted: true },
-        "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày", sourceStock: 0, isSourceDeleted: true },
-        "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G", sourceStock: 0, isSourceDeleted: true },
-        "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB", sourceStock: 0, isSourceDeleted: true },
+        "PROD_MTPJ88O9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25289", sourcePrice: 60000, sourceProdName: "NÂNG CẤP CANVA PRO 1 NĂM" },
+        "PROD_MUAULFFCDT": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26758", sourcePrice: 256500, sourceProdName: "Nâng Cấp ChatGPT Plus Giá Rẻ" },
+        "PROD_MU4YOZEU2M": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "25646", sourcePrice: 198, sourceProdName: "Outlook Hotmail Trusted - OAuth2 Live 6 - 12 tháng" },
+        "PROD_MUJVJCV286": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26435", sourcePrice: 10000, sourceProdName: "Proxy 4Gvinaphone - 1 ngày" },
+        "PROD_MUJU6XY3HK": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26437", sourcePrice: 100000, sourceProdName: "Proxy 4Gvinaphone - 30 ngày" },
+        "PROD_MUJVFEFFNP": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26209", sourcePrice: 10000, sourceProdName: "Proxy 4G Viettel - 1 ngày" },
+        "PROD_MUJTYWFTQ7": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "29575", sourcePrice: 10000, sourceProdName: "Proxy Xoay 4G" },
+        "PROD_MUJQDTNIH9": { enabled: true, provider: "selltainguyenmmo", sourceProdId: "26221", sourcePrice: 10000, sourceProdName: "Proxy DatacenterB" },
         "PROD_MU1G6LJX": { enabled: true, provider: "sellmmo", baseUrl: "https://sellmmo.vn", apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO", sourceProdId: "23154", sourcePrice: 8000, sourceProdName: "Capcut Pro 7 Ngày", sourceStock: 0 },
-        "PROD_MU2B32VLQY": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng", sourceStock: 0, isSourceDeleted: true },
+        "PROD_MU2B32VLQY": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "25644", sourcePrice: 9000, sourceProdName: "Capcut Pro 7 Ngày - Dùng Riêng" },
         "PROD_MUJUGVQXET": { enabled: true, provider: "selltainguyenmmo", baseUrl: "https://selltainguyenmmo.com", apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ", sourceProdId: "23628", sourcePrice: 114000, sourceProdName: "Capcut Pro Team 1 THÁNG", sourceStock: 0 }
       };
 
@@ -16273,8 +16301,10 @@ function syncAllOpenViewsStock(changedProdId) {
             const sourceBal = (typeof getSourceBalance === "function") ? getSourceBalance(provider) : 999999;
             const minPriceNeeded = Number(map.sourcePrice) || 50;
 
-            const src = sourceList.find(s => String(s.id) === String(map.sourceProdId) && (!map.provider || s.provider === map.provider))
-              || sourceList.find(s => String(s.id) === String(map.sourceProdId));
+            const cleanMapSrcId = String(map.sourceProdId || "").replace(/^#/, "").trim();
+            const src = (typeof getFastSourceProduct === "function" ? getFastSourceProduct(map.provider, cleanMapSrcId) : null)
+              || sourceList.find(s => (String(s.id).replace(/^#/, "").trim() === cleanMapSrcId || String(s.id) === String(map.sourceProdId)) && (!map.provider || s.provider === map.provider))
+              || sourceList.find(s => String(s.id).replace(/^#/, "").trim() === cleanMapSrcId || String(s.id) === String(map.sourceProdId));
 
             if (src) {
               map.sourceStock = Number(src.amount) || 0;
@@ -16282,7 +16312,7 @@ function syncAllOpenViewsStock(changedProdId) {
               map.sourceProdName = src.name || map.sourceProdName;
               map.isSourceDeleted = false;
             } else {
-              const provLoaded = sourceList.some(s => (!map.provider || s.provider === map.provider));
+              const provLoaded = (typeof isFastSourceProviderLoaded === "function" ? isFastSourceProviderLoaded(map.provider) : false) || sourceList.some(s => (!map.provider || s.provider === map.provider));
               if (provLoaded || map.isSourceDeleted) {
                 map.sourceStock = 0;
                 map.isSourceDeleted = true;
@@ -17803,7 +17833,6 @@ function syncAllOpenViewsStock(changedProdId) {
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? API_SOURCES[provider] : { name: provider, baseUrl: "", apiKey: "" };
       const numPrice = Number(sourcePrice) || 0;
       let numStock = (Number(sourceStock) >= 0) ? Number(sourceStock) : 0;
-      if (numStock === 9999) numStock = 0;
       const cleanProdId = String(targetProdId || window.currentCompareProdId || "").trim();
 
       // 1. Cập nhật trực tiếp Form Chỉnh Sửa Sản Phẩm (#adminProductModal) nếu đang mở
@@ -17911,6 +17940,7 @@ function syncAllOpenViewsStock(changedProdId) {
         sourceProdName: sourceProdName || ("Sản phẩm #" + sourceProdId),
         sourcePrice: numPrice,
         sourceStock: numStock,
+        isSourceDeleted: false,
         targetProdId: effectiveId,
         targetProdName: effectiveName
       };
@@ -17994,6 +18024,10 @@ function syncAllOpenViewsStock(changedProdId) {
         if (typeof renderApiProductMappingsTable === "function") {
           renderApiProductMappingsTable();
         }
+        if (typeof _cachedApiSourceAlerts !== "undefined") _cachedApiSourceAlerts = null;
+        if (typeof invalidateApiProductMappingsCache === "function") invalidateApiProductMappingsCache();
+        if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+        if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
       }
 
       // 5. GHI NHỚ MAPPING VỪA ĐỔI ĐỂ CẬP NHẬT MODAL SO SÁNH TỨC THÌ 0MS
@@ -18097,9 +18131,13 @@ function syncAllOpenViewsStock(changedProdId) {
           : { id: prov, name: prov, badgeColor: "#06b6d4", baseUrl: "#" };
 
         // Tìm sản phẩm trong bộ nhớ live cache 5 nguồn qua O(1) fast index
-        const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, apiMap.sourceProdId) : null;
+        const cleanSrcId = String(apiMap.sourceProdId || "").replace(/^#/, "").trim();
+        let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, cleanSrcId) : null;
+        if (!inSrc && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts[apiMap.provider])) {
+          inSrc = cachedSourceProducts[apiMap.provider].find(sp => sp && (String(sp.id).replace(/^#/, "").trim() === cleanSrcId || String(sp.id) === String(apiMap.sourceProdId)));
+        }
         const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
-        const isSourceDeleted = (!inSrc && provLoaded) || (apiMap.isSourceDeleted === true);
+        const isSourceDeleted = (!inSrc && provLoaded) || (apiMap.isSourceDeleted === true && !inSrc);
 
         const livePrice = inSrc ? (Number(inSrc.price) || 0) : (Number(apiMap.sourcePrice) || 0);
         let liveStock = 0;
@@ -18115,9 +18153,12 @@ function syncAllOpenViewsStock(changedProdId) {
           }
         } else if (inSrc) {
           liveStock = typeof inSrc.amount === "number" ? inSrc.amount : (Number(inSrc.amount) || 0);
+          if (apiMap) {
+            apiMap.isSourceDeleted = false;
+            apiMap.sourceStock = liveStock;
+          }
         } else {
           liveStock = Number(apiMap.sourceStock !== undefined ? apiMap.sourceStock : (p.stock || 0));
-          if (liveStock === 9999) liveStock = 0;
         }
         const liveName = inSrc && inSrc.name ? inSrc.name : (apiMap.sourceProdName || p.name || "");
 
