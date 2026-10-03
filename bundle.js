@@ -33019,11 +33019,179 @@ function getProductSchemaReviews(p, idx) {
       }
     }
 
+
+    // =========================================================================
+    // CORE SYSTEM: REALTIME CHAT IMAGE UPLOAD & LIGHTBOX ENGINE (v3.9.6)
+    // =========================================================================
+    var pendingUserChatImage = null;
+    var pendingAdminChatImage = null;
+    window.pendingUserChatImage = null;
+    window.pendingAdminChatImage = null;
+
+    function compressChatImage(file, callback) {
+      if (!file || !file.type || !file.type.startsWith("image/")) {
+        if (typeof showToast === "function") showToast("Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WEBP)!", "warning");
+        return;
+      }
+      if (file.size > 15 * 1024 * 1024) {
+        if (typeof showToast === "function") showToast("Ảnh quá lớn, vui lòng chọn ảnh dung lượng dưới 15MB!", "warning");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const maxDim = 1200;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.78);
+          callback(dataUrl);
+        };
+        img.onerror = function() {
+          if (typeof showToast === "function") showToast("Không thể nạp tệp hình ảnh này!", "error");
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    window.compressChatImage = compressChatImage;
+
+    function handleChatImageFileChange(e, role) {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      compressChatImage(file, function(dataUrl) {
+        if (role === "admin") {
+          pendingAdminChatImage = dataUrl;
+          window.pendingAdminChatImage = dataUrl;
+          const bar = document.getElementById("admChatImgPreviewBar");
+          const thumb = document.getElementById("admChatImgPreviewThumb");
+          if (bar) bar.style.display = "flex";
+          if (thumb) thumb.src = dataUrl;
+          const inp = document.getElementById("admChatReplyInput");
+          if (inp) inp.focus();
+        } else {
+          pendingUserChatImage = dataUrl;
+          window.pendingUserChatImage = dataUrl;
+          const bar = document.getElementById("mmoChatImgPreviewBar");
+          const thumb = document.getElementById("mmoChatImgPreviewThumb");
+          if (bar) bar.style.display = "flex";
+          if (thumb) thumb.src = dataUrl;
+          const inp = document.getElementById("mmoChatInput");
+          if (inp) inp.focus();
+        }
+      });
+    }
+    window.handleChatImageFileChange = handleChatImageFileChange;
+
+    function cancelChatImageUpload(role) {
+      if (role === "admin") {
+        pendingAdminChatImage = null;
+        window.pendingAdminChatImage = null;
+        const bar = document.getElementById("admChatImgPreviewBar");
+        const thumb = document.getElementById("admChatImgPreviewThumb");
+        const fileInp = document.getElementById("admChatImageInput");
+        if (bar) bar.style.display = "none";
+        if (thumb) thumb.src = "";
+        if (fileInp) fileInp.value = "";
+      } else {
+        pendingUserChatImage = null;
+        window.pendingUserChatImage = null;
+        const bar = document.getElementById("mmoChatImgPreviewBar");
+        const thumb = document.getElementById("mmoChatImgPreviewThumb");
+        const fileInp = document.getElementById("mmoChatImageInput");
+        if (bar) bar.style.display = "none";
+        if (thumb) thumb.src = "";
+        if (fileInp) fileInp.value = "";
+      }
+    }
+    window.cancelChatImageUpload = cancelChatImageUpload;
+
+    function openChatImageLightbox(src) {
+      if (!src) return;
+      const modal = document.getElementById("chatImageLightbox");
+      const img = document.getElementById("chatImageLightboxImg");
+      const dl = document.getElementById("chatImageLightboxDownload");
+      if (modal && img) {
+        img.src = src;
+        if (dl) dl.href = src;
+        modal.style.display = "flex";
+      }
+    }
+    window.openChatImageLightbox = openChatImageLightbox;
+
+    function closeChatImageLightbox() {
+      const modal = document.getElementById("chatImageLightbox");
+      if (modal) modal.style.display = "none";
+    }
+    window.closeChatImageLightbox = closeChatImageLightbox;
+
+    function initChatPasteListeners() {
+      const userInp = document.getElementById("mmoChatInput");
+      if (userInp && !userInp._hasChatPasteListener) {
+        userInp._hasChatPasteListener = true;
+        userInp.addEventListener("paste", function(e) {
+          if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
+            const f = e.clipboardData.files[0];
+            if (f.type && f.type.startsWith("image/")) {
+              e.preventDefault();
+              compressChatImage(f, function(dataUrl) {
+                pendingUserChatImage = dataUrl;
+                window.pendingUserChatImage = dataUrl;
+                const bar = document.getElementById("mmoChatImgPreviewBar");
+                const thumb = document.getElementById("mmoChatImgPreviewThumb");
+                if (bar) bar.style.display = "flex";
+                if (thumb) thumb.src = dataUrl;
+              });
+            }
+          }
+        });
+      }
+
+      const admInp = document.getElementById("admChatReplyInput");
+      if (admInp && !admInp._hasChatPasteListener) {
+        admInp._hasChatPasteListener = true;
+        admInp.addEventListener("paste", function(e) {
+          if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length > 0) {
+            const f = e.clipboardData.files[0];
+            if (f.type && f.type.startsWith("image/")) {
+              e.preventDefault();
+              compressChatImage(f, function(dataUrl) {
+                pendingAdminChatImage = dataUrl;
+                window.pendingAdminChatImage = dataUrl;
+                const bar = document.getElementById("admChatImgPreviewBar");
+                const thumb = document.getElementById("admChatImgPreviewThumb");
+                if (bar) bar.style.display = "flex";
+                if (thumb) thumb.src = dataUrl;
+              });
+            }
+          }
+        });
+      }
+    }
+    window.initChatPasteListeners = initChatPasteListeners;
+
     // 4. GỬI TIN NHẮN TỪ PHÍA NGƯỜI DÙNG
     function sendChatMessage(presetText = "", extraData = null) {
       const inp = document.getElementById("mmoChatInput");
       const text = (presetText || (inp ? inp.value : "")).trim();
-      if (!text) return;
+      const hasImage = !!pendingUserChatImage;
+      if (!text && !hasImage) return;
 
       const userEmail = getCurrentChatUserEmail();
       const userName = getCurrentChatUserName();
@@ -33035,7 +33203,8 @@ function getProductSchemaReviews(p, idx) {
         sender: "user",
         userEmail: userEmail,
         senderName: userName,
-        text: text,
+        text: text || "[Hình ảnh]",
+        imageUrl: pendingUserChatImage || null,
         time: timeStr,
         date: now.toLocaleDateString("vi-VN"),
         timestamp: Date.now(),
@@ -33043,6 +33212,14 @@ function getProductSchemaReviews(p, idx) {
         isReadByAdmin: false,
         orderData: (extraData && typeof extraData === "object") ? extraData : null
       };
+
+      // Reset pending user chat image
+      pendingUserChatImage = null;
+      window.pendingUserChatImage = null;
+      const userBar = document.getElementById("mmoChatImgPreviewBar");
+      if (userBar) userBar.style.display = "none";
+      const userFileInp = document.getElementById("mmoChatImageInput");
+      if (userFileInp) userFileInp.value = "";
 
       const msgs = getAllChatMessages();
       msgs.push(newMsg);
@@ -33303,16 +33480,22 @@ function getProductSchemaReviews(p, idx) {
         }
         const senderLabel = isUser ? "" : "<strong style='font-size:0.68rem; color:#10b981; display:block; margin-bottom:2px;'>" + escapeHtml(displaySenderName) + "</strong>";
 
+        const hasImg = !!m.imageUrl;
+        const imgBlock = hasImg ? "<div style='margin-top:6px; cursor:pointer;' onclick='openChatImageLightbox(\"" + m.imageUrl + "\")'><img src='" + m.imageUrl + "' alt='Ảnh đính kèm' style='max-width:100%; max-height:220px; border-radius:8px; border:1px solid rgba(255,255,255,0.18); object-fit:cover; display:block; transition:transform 0.2s;' onmouseover='this.style.transform=\"scale(1.02)\"' onmouseout='this.style.transform=\"scale(1)\"' /></div>" : "";
+        const showText = (!hasImg || (m.text && m.text !== "[Hình ảnh]"));
+        const textBlock = showText ? ("<div>" + (function(t) {
+          let s = escapeHtml(t).replace(/\n/g, "<br/>");
+          return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}))/gi, function(match, fullCode, cleanCode) {
+            const code = cleanCode || fullCode.replace('#', '');
+            return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để mở Lịch Sử Đơn Hàng &amp; Xử Lý Đổi Trả / Hoàn Tiền" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
+          });
+        })(m.text) + "</div>") : "";
+
         return "<div class='chat-msg-row " + rowClass + "'>" +
           "<div class='chat-msg-bubble " + bubbleClass + "'>" +
             senderLabel +
-              "<div>" + (function(t) {
-                let s = escapeHtml(t).replace(/\n/g, "<br/>");
-                return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}))/gi, function(match, fullCode, cleanCode) {
-                  const code = cleanCode || fullCode.replace('#', '');
-                  return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để mở Lịch Sử Đơn Hàng &amp; Xử Lý Đổi Trả / Hoàn Tiền" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
-                });
-              })(m.text) + "</div>" +
+            textBlock +
+            imgBlock +
             "<span class='chat-msg-time'>" + (m.time || "") + "</span>" +
           "</div>" +
         "</div>";
@@ -33590,16 +33773,22 @@ function getProductSchemaReviews(p, idx) {
             ? ("Khách: " + escapeHtml(m.senderName || email)) 
             : (isBot ? "🤖 Trợ lý tự động (Bot)" : "👨‍💼 Admin Quản Trị");
 
+          const hasImg = !!m.imageUrl;
+          const imgBlock = hasImg ? "<div style='margin-top:6px; cursor:pointer;' onclick='openChatImageLightbox(\"" + m.imageUrl + "\")'><img src='" + m.imageUrl + "' alt='Ảnh đính kèm' style='max-width:100%; max-height:240px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); object-fit:cover; display:block; transition:transform 0.2s;' onmouseover='this.style.transform=\"scale(1.02)\"' onmouseout='this.style.transform=\"scale(1)\"' /></div>" : "";
+          const showText = (!hasImg || (m.text && m.text !== "[Hình ảnh]"));
+          const textBlock = showText ? ("<div>" + (function(t) {
+            let s = escapeHtml(t).replace(/\n/g, "<br/>");
+            return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}|PRE\d{6,15}))/gi, function(match, fullCode, cleanCode) {
+              const code = cleanCode || fullCode.replace('#', '');
+              return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để mở Lịch Sử Đơn Hàng &amp; Xử Lý Đổi Trả / Hoàn Tiền" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
+            });
+          })(m.text) + "</div>") : "";
+
           return "<div style='display:flex; gap:8px; align-items:flex-end; " + rowClass + "'>" +
             "<div style='max-width:80%; padding:10px 14px; border-radius:12px; font-size:0.85rem; line-height:1.45; " + bubbleBg + "'>" +
               "<strong style='font-size:0.7rem; opacity:0.85; display:block; margin-bottom:3px;'>" + senderTitle + "</strong>" +
-              "<div>" + (function(t) {
-                let s = escapeHtml(t).replace(/\n/g, "<br/>");
-                return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}|PRE\d{6,15}))/gi, function(match, fullCode, cleanCode) {
-                  const code = cleanCode || fullCode.replace('#', '');
-                  return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để mở Lịch Sử Đơn Hàng &amp; Xử Lý Đổi Trả / Hoàn Tiền" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
-                });
-              })(m.text) + "</div>" +
+              textBlock +
+              imgBlock +
               "<span style='font-size:0.65rem; opacity:0.7; display:block; margin-top:4px; text-align:right;'>" + (m.time || "") + "</span>" +
             "</div>" +
           "</div>";
@@ -33662,7 +33851,8 @@ function getProductSchemaReviews(p, idx) {
       }
       const inp = document.getElementById("admChatReplyInput");
       const text = (inp ? inp.value : "").trim();
-      if (!text) return;
+      const hasImage = !!pendingAdminChatImage;
+      if (!text && !hasImage) return;
 
       const now = new Date();
       const adminName = "Admin Quản Trị";
@@ -33671,13 +33861,22 @@ function getProductSchemaReviews(p, idx) {
         sender: "admin",
         userEmail: currentAdminChatTargetEmail,
         senderName: adminName,
-        text: text,
+        text: text || "[Hình ảnh]",
+        imageUrl: pendingAdminChatImage || null,
         time: now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
         date: now.toLocaleDateString("vi-VN"),
         timestamp: Date.now(),
         isReadByUser: false,
         isReadByAdmin: true
       };
+
+      // Reset pending admin chat image
+      pendingAdminChatImage = null;
+      window.pendingAdminChatImage = null;
+      const admBar = document.getElementById("admChatImgPreviewBar");
+      if (admBar) admBar.style.display = "none";
+      const admFileInp = document.getElementById("admChatImageInput");
+      if (admFileInp) admFileInp.value = "";
 
       // ĐÁNH DẤU ADMIN ĐÃ TRẢ LỜI ĐỂ TẮT BOT AUTO-REPLY VĨNH VIỄN CHO CUỘC TRÒ CHUYỆN NÀY
       if (currentAdminChatTargetEmail) {
@@ -33759,6 +33958,7 @@ function getProductSchemaReviews(p, idx) {
 
       // Kết nối Realtime SSE (Server-Sent Events) nhận tin tức thì <100ms
       initChatRealtimeSSE();
+      if (typeof initChatPasteListeners === "function") initChatPasteListeners();
 
       // Kéo lịch sử chat từ Backend Google Sheets khi mở trang
       syncCloudMessages(true);
