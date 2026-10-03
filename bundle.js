@@ -6826,35 +6826,25 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           savePlatformDeposits(newDeps);
         }
 
-        // Lấy số dư thực tế lớn nhất từ GAS và Turso Worker
-        let cloudBal = 0;
-        if (walletRes.status === "fulfilled" && walletRes.value && walletRes.value.wallet && !isNaN(Number(walletRes.value.wallet.balance))) {
-          cloudBal = Math.max(cloudBal, Number(walletRes.value.wallet.balance));
-        }
-        let workerBal = 0;
+        // Lấy số dư thực tế từ Turso Worker hoặc GAS
+        let cloudBal = null;
         if (workerRes.status === "fulfilled" && workerRes.value && workerRes.value.user && !isNaN(Number(workerRes.value.user.balance))) {
-          workerBal = Number(workerRes.value.user.balance);
-          cloudBal = Math.max(cloudBal, workerBal);
+          cloudBal = Number(workerRes.value.user.balance);
+        } else if (walletRes.status === "fulfilled" && walletRes.value && walletRes.value.wallet && !isNaN(Number(walletRes.value.wallet.balance))) {
+          cloudBal = Number(walletRes.value.wallet.balance);
         }
 
-        if (cloudBal > 0) {
+        if (cloudBal !== null && !isNaN(cloudBal)) {
           let allUsers = getRegisteredUsers();
           const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
           if (uIdx !== -1) {
-            allUsers[uIdx].balance = Math.max(Number(allUsers[uIdx].balance || 0), cloudBal);
+            allUsers[uIdx].balance = cloudBal;
             saveRegisteredUsers(allUsers);
           }
           if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
-            currentUser.balance = Math.max(Number(currentUser.balance || 0), cloudBal);
+            currentUser.balance = cloudBal;
             try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
             if (typeof updateUserUI === "function") updateUserUI();
-          }
-          if (cloudBal > workerBal) {
-            fetch(workerApiUrl + "/api/user/sync", {
-              method: "POST",
-              headers: { "Content-Type": "application/json", "x-admin-token": "MMO_ADMIN_SECURE_TOKEN_2026" },
-              body: JSON.stringify({ email: cleanEmail, balance: cloudBal })
-            }).catch(() => {});
           }
           if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
         }
@@ -6869,7 +6859,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           const balanceEl = document.getElementById("admDetailUserBalance");
           const tbody = document.getElementById("admDetailUserTxTableBody");
           if (txCountEl) txCountEl.innerText = allTx.length + " giao dịch";
-          const finalModalBal = Math.max(res.currentBalance, cloudBal);
+          const finalModalBal = (cloudBal !== null && !isNaN(cloudBal)) ? cloudBal : res.currentBalance;
           if (balanceEl) balanceEl.innerText = formatVND(finalModalBal);
           if (tbody && allTx.length > 0) {
             tbody.innerHTML = allTx.map(tx => {
@@ -7190,21 +7180,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
 
       // Đối chiếu số dư với dòng tiền thực tế từ các giao dịch đã xác nhận (nạp - mua)
-      let totalSpentBefore = 0;
-      let totalDepositedBefore = 0;
-      allLogs.forEach(tx => {
-        const amt = Number(tx.amount) || 0;
-        if (amt < 0) totalSpentBefore += Math.abs(amt);
-        else if (amt > 0 && !String(tx.type || "").toLowerCase().includes("hoàn tiền")) totalDepositedBefore += amt;
-      });
-      const netCashFlow = Math.max(0, totalDepositedBefore - totalSpentBefore);
-      if (curBal < netCashFlow && netCashFlow > 0) {
-        curBal = netCashFlow;
-      }
-
-      // J. CƠ CHẾ BẢO ĐẢM TỰ ĐỘNG (AUTO-BALANCING SAFEGUARD):
-      // Nếu tổng tiền nạp đã ghi nhận chưa đủ bù đắp cho tổng tiền mua hàng + số dư hiện tại (do chưa tải kịp từ cloud),
-      // tự động suy đoán bản ghi nạp tiền ban đầu để thành viên không bao giờ bị hiển thị "chỉ trừ tiền mà không thấy nạp tiền"
       let totalSpent = 0;
       let totalDeposited = 0;
       allLogs.forEach(tx => {
@@ -7212,8 +7187,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (amt < 0) totalSpent += Math.abs(amt);
         else if (amt > 0 && !String(tx.type || "").toLowerCase().includes("hoàn tiền")) totalDeposited += amt;
       });
+      const netCashFlow = Math.max(0, totalDeposited - totalSpent);
+      if (totalSpent > 0 && totalDeposited >= totalSpent) {
+        // Đã có chi tiêu mua hàng và tổng nạp đã đủ bù đắp -> số dư thực tế chính xác là netCashFlow
+        curBal = netCashFlow;
+      } else if (curBal < netCashFlow && netCashFlow > 0) {
+        curBal = netCashFlow;
+      }
 
-      const unbackedAmount = (totalSpent + curBal) - totalDeposited;
+      // J. CƠ CHẾ BẢO ĐẢM TỰ ĐỘNG (AUTO-BALANCING SAFEGUARD):
+      // Chỉ tự động suy đoán bản ghi nạp tiền NẾU VÀ CHỈ NẾU tổng chi tiêu VƯỢT QUÁ tổng tiền nạp (do đơn nạp bị sót trên cloud)
+      const unbackedAmount = Math.max(0, totalSpent - totalDeposited);
       if (unbackedAmount > 0) {
         let earliestPurchaseTime = "";
         for (let i = allLogs.length - 1; i >= 0; i--) {
