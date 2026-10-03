@@ -5829,16 +5829,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
       if (isApi) {
-        const nameInput = document.getElementById("admProdName");
-        const prodName = nameInput ? nameInput.value.trim() : "";
-        if (prodName && typeof autoDetectBestProviderForName === "function") {
-          const detected = autoDetectBestProviderForName(prodName);
-          if (detected) {
-            const pSel = document.getElementById("admProdApiProvider");
-            if (pSel) pSel.value = detected;
+        const isEditing = !!(document.getElementById("admProdId")?.value);
+        if (!isEditing) {
+          const nameInput = document.getElementById("admProdName");
+          const prodName = nameInput ? nameInput.value.trim() : "";
+          if (prodName && typeof autoDetectBestProviderForName === "function") {
+            const detected = autoDetectBestProviderForName(prodName);
+            if (detected) {
+              const pSel = document.getElementById("admProdApiProvider");
+              if (pSel) pSel.value = detected;
+            }
           }
+          handleAdmModalProviderChange();
         }
-        handleAdmModalProviderChange();
       }
     }
     window.toggleAdmProductSourceFields = toggleAdmProductSourceFields;
@@ -5938,21 +5941,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         optionsHtml = '<option value="">-- ' + (rawKw ? ('Tìm thấy ' + filtered.length + ' SP (Bấm để chọn)') : ('Chọn sản phẩm nguồn (' + filtered.length + ' SP)')) + ' --</option>';
       }
 
-      // CHỈ giữ lại currentVal nếu nó THỰC SỰ THUỘC VỀ NHÀ CUNG CẤP NÀY
-      // VÀ chỉ khi người dùng KHÔNG đang gõ từ khóa tìm kiếm (để tránh làm nghẽn kết quả tìm kiếm)
+      // Giữ lại currentVal nếu đang sửa sản phẩm hoặc đang liên kết sản phẩm này
       let shouldKeepCurrentVal = false;
-      if (!rawKw && currentVal) {
-        const currentProdId = document.getElementById("admProdId")?.value;
-        const curMap = (typeof getApiProductMapping === "function" && currentProdId) ? getApiProductMapping(currentProdId) : null;
-        if (curMap && curMap.provider === provider && String(curMap.sourceProdId) === String(currentVal)) {
+      const currentProdId = document.getElementById("admProdId")?.value;
+      const curMap = (typeof getApiProductMapping === "function" && currentProdId) ? getApiProductMapping(currentProdId) : null;
+      if (currentVal) {
+        if (curMap && String(curMap.sourceProdId) === String(currentVal)) {
           shouldKeepCurrentVal = true;
-        } else if (sSel.getAttribute("data-active-provider") === provider) {
+        } else if (sSel.getAttribute("data-active-provider") === provider || !sSel.getAttribute("data-active-provider")) {
+          shouldKeepCurrentVal = true;
+        } else if (pendingVal && String(pendingVal) === String(currentVal)) {
           shouldKeepCurrentVal = true;
         }
       }
 
       if (shouldKeepCurrentVal && !filtered.some(s => String(s.id) === String(currentVal))) {
-        optionsHtml += '<option value="' + currentVal + '" selected="selected" data-stock="0">[Đang liên kết: #' + currentVal + ' - Nguồn Đã Xoá SP] Giữ nguyên sản phẩm nguồn này</option>';
+        const delName = (curMap && curMap.sourceProdName) || "Nguồn Đã Xoá SP";
+        optionsHtml += '<option value="' + currentVal + '" selected="selected" data-stock="0">[Đang liên kết: #' + currentVal + ' - ' + delName + '] Giữ nguyên sản phẩm nguồn này</option>';
       }
 
       // Tìm sản phẩm tốt nhất để auto-select nếu đang tìm kiếm
@@ -5984,7 +5989,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
 
-      const activeSelectedId = bestMatchId || (shouldKeepCurrentVal ? currentVal : (filtered.some(s => String(s.id) === String(currentVal)) ? currentVal : ""));
+      const activeSelectedId = (bestMatchId && !shouldKeepCurrentVal) ? bestMatchId : (shouldKeepCurrentVal ? currentVal : (filtered.some(s => String(s.id) === String(currentVal)) ? currentVal : (bestMatchId || "")));
 
       optionsHtml += filtered.map(s => {
         const isSelected = String(s.id) === String(activeSelectedId) ? ' selected="selected"' : '';
@@ -8263,20 +8268,31 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
       if (!apiSourceProdIdVal) {
         try {
-          const rawM = localStorage.getItem("mmo_api_map_" + actualTargetId);
-          if (rawM) {
-            const parsedM = JSON.parse(rawM);
-            if (parsedM && parsedM.sourceProdId) apiSourceProdIdVal = String(parsedM.sourceProdId);
+          const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+          if (maps[actualTargetId] && maps[actualTargetId].sourceProdId) {
+            apiSourceProdIdVal = String(maps[actualTargetId].sourceProdId);
           }
         } catch(e) {}
       }
       if (!apiSourceProdIdVal && oldProd && Array.isArray(oldProd.variants) && oldProd.variants[0] && oldProd.variants[0].apiMapping) {
         apiSourceProdIdVal = String(oldProd.variants[0].apiMapping.sourceProdId || "");
       }
+      if (!apiSourceProdIdVal && isEditing) {
+        if (typeof window.admApiSourceAlertsCache !== "undefined" && Array.isArray(window.admApiSourceAlertsCache)) {
+          const itemInCache = window.admApiSourceAlertsCache.find(a => a.prodId === actualTargetId);
+          if (itemInCache && itemInCache.sourceProdId) {
+            apiSourceProdIdVal = String(itemInCache.sourceProdId);
+          }
+        }
+      }
 
       if (isApiSelected && !apiSourceProdIdVal) {
-        showToast("⚠️ Vui lòng chọn sản phẩm nguồn API tương ứng trước khi lưu!", "warning");
-        return;
+        if (!isEditing) {
+          showToast("⚠️ Vui lòng chọn sản phẩm nguồn API tương ứng trước khi lưu!", "warning");
+          return;
+        } else {
+          apiSourceProdIdVal = "0";
+        }
       }
 
       let totalCalculatedStock = 0;
@@ -8344,15 +8360,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
         if (isApiSelected && apiSourceProdIdVal) {
           const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[apiProviderVal]) ? API_SOURCES[apiProviderVal] : { baseUrl: "https://sellmmo.vn", apiKey: "" };
+          const oldMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(actualTargetId) : (oldProd?.apiMapping || null);
+          const wasDeleted = oldMap ? !!oldMap.isSourceDeleted : false;
           const mapItem = {
             enabled: true,
             provider: apiProviderVal,
             baseUrl: pCfg.baseUrl,
             apiKey: pCfg.apiKey,
             sourceProdId: String(apiSourceProdIdVal),
-            sourceProdName: liveSourceName || ("Sản phẩm #" + apiSourceProdIdVal),
-            sourcePrice: liveSourcePrice,
+            sourceProdName: liveSourceName || (oldMap && oldMap.sourceProdName) || ("Sản phẩm #" + apiSourceProdIdVal),
+            sourcePrice: liveSourcePrice || (oldMap && oldMap.sourcePrice) || 0,
             sourceStock: liveSourceStock,
+            isSourceDeleted: (!foundSrc && wasDeleted) || (apiSourceProdIdVal === "0"),
             targetProdId: actualTargetId,
             targetProdName: name
           };
