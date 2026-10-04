@@ -4303,6 +4303,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               }
             } catch(e) {}
 
+            // Đồng bộ số dư chuẩn từ Turso Database (SSOT 24/7)
+            if (data.user.balance !== undefined && !isNaN(Number(data.user.balance))) {
+              const cloudBal = Number(data.user.balance);
+              if (idx !== -1) {
+                users[idx].balance = cloudBal;
+                saveRegisteredUsers(users);
+              }
+              if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
+                currentUser.balance = cloudBal;
+                try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+                if (typeof updateUserUI === "function") updateUserUI();
+              }
+            }
+
             // Nếu tài khoản đã được mở khóa trên Cloud, tự động đóng modal thông báo khóa
             if (!isLocked) {
               const modal = document.getElementById("accountLockedModal");
@@ -7422,6 +7436,32 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         });
       }
 
+      // G1. Quét từ danh sách rút tiền mmo_withdraw_requests
+      try {
+        const wdList = (typeof getWithdrawRequests === "function") ? getWithdrawRequests() : [];
+        wdList.forEach(w => {
+          if (!w) return;
+          const wEmail = (w.userEmail || w.email || "").toLowerCase().trim();
+          if (wEmail === cleanEmail) {
+            const wAmt = Math.abs(Number(w.amount) || 0);
+            if (wAmt > 0) {
+              const isApproved = String(w.status || "").toLowerCase().includes("duyệt") || String(w.status || "").toLowerCase().includes("chuyển") || String(w.status || "").toLowerCase().includes("thành công");
+              rawLogs.push({
+                id: "WD_" + (w.id || Math.random()),
+                orderId: w.id || "",
+                time: w.handledTime || w.time || (new Date().toLocaleString("vi-VN")),
+                type: "Rút tiền ngân hàng",
+                amount: -wAmt,
+                balanceAfter: null,
+                note: isApproved 
+                  ? ("Duyệt & Chuyển QR bởi Admin: " + (w.handledBy || "Mạnh Đồng Official") + " | STK: " + w.bankAcc + " (" + w.bankName + ")")
+                  : ("Mã rút " + w.id + " - Đang chờ duyệt | STK: " + w.bankAcc + " (" + w.bankName + ")")
+              });
+            }
+          }
+        });
+      } catch(e) {}
+
       // G. Lọc trùng thông minh theo mã giao dịch và loại
       const seenMap = new Map();
       rawLogs.forEach(item => {
@@ -7515,10 +7555,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         else if (amt > 0 && !String(tx.type || "").toLowerCase().includes("hoàn tiền")) totalDeposited += amt;
       });
       const netCashFlow = Math.max(0, totalDeposited - totalSpent);
-      if (totalSpent > 0 && totalDeposited >= totalSpent) {
-        // Đã có chi tiêu mua hàng và tổng nạp đã đủ bù đắp -> số dư thực tế chính xác là netCashFlow
-        curBal = netCashFlow;
-      } else if (curBal < netCashFlow && netCashFlow > 0) {
+      // Chỉ fallback tính từ giao dịch NẾU số dư trong tài khoản chưa từng được khởi tạo (bằng 0)
+      if (curBal === 0 && totalSpent > 0 && totalDeposited >= totalSpent) {
         curBal = netCashFlow;
       }
 
@@ -29356,44 +29394,41 @@ function syncAllOpenViewsStock(changedProdId) {
       const cleanEmail = (currentUser.email || "").toLowerCase().trim();
 
       try {
-        // 1. Quét từ Cloud getUserWallet để lấy số dư thực tế và lịch sử nạp tiền
-        const walletRes = await callGasApi("getUserWallet", { email: cleanEmail });
-        if (walletRes && walletRes.wallet) {
-          const cloudBal = Number(walletRes.wallet.balance);
-          if (!isNaN(cloudBal)) {
-            let allUsers = getRegisteredUsers();
-            const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
-            const localBal = (uIdx !== -1 && allUsers[uIdx].balance !== undefined) ? Number(allUsers[uIdx].balance) : 0;
+        // 1. LẤY SỐ DƯ CHUẨN XÁC 100% TỪ CLOUDFLARE WORKER TURSO DATABASE (SSOT 24/7)
+        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
 
-            const lastChangeTime = Number(localStorage.getItem("mmo_last_balance_change_time") || 0);
-            const isRecentLocalChange = (Date.now() - lastChangeTime) < 60000;
+        const [tursoRes, walletRes] = await Promise.all([
+          fetch(workerUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail), { cache: "no-store" })
+            .then(r => r.json()).catch(() => null),
+          (typeof callGasApi === "function") 
+            ? callGasApi("getUserWallet", { email: cleanEmail }).catch(() => null) 
+            : Promise.resolve(null)
+        ]);
 
-            let compBal = localBal;
-            if (typeof getUserComprehensiveTransactions === "function") {
-              const comp = getUserComprehensiveTransactions(cleanEmail);
-              if (comp && comp.currentBalance !== undefined && !isNaN(Number(comp.currentBalance))) {
-                compBal = Number(comp.currentBalance);
-              }
-            }
+        let cloudBal = null;
+        if (tursoRes && tursoRes.success && tursoRes.user && tursoRes.user.balance !== undefined && !isNaN(Number(tursoRes.user.balance))) {
+          cloudBal = Number(tursoRes.user.balance);
+        } else if (walletRes && walletRes.wallet && !isNaN(Number(walletRes.wallet.balance))) {
+          cloudBal = Number(walletRes.wallet.balance);
+        }
 
-            // Số dư từ Cloud (Turso / GAS) là chuẩn SSOT. Tuyệt đối KHÔNG tự ý gọi adminUpdateBalance đẩy ngược lên tạo vòng lặp ảo
-            let finalBal = cloudBal;
-            if (isRecentLocalChange && uIdx !== -1 && allUsers[uIdx].balance !== undefined) {
-              finalBal = Number(allUsers[uIdx].balance);
-            }
+        if (cloudBal !== null && !isNaN(cloudBal)) {
+          let allUsers = getRegisteredUsers();
+          const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
 
-            if (currentUser.balance !== finalBal) {
-              currentUser.balance = finalBal;
-              localStorage.setItem("mmo_user", JSON.stringify(currentUser));
-            }
+          currentUser.balance = cloudBal;
+          try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
 
-            if (uIdx !== -1 && allUsers[uIdx].balance !== finalBal) {
-              allUsers[uIdx].balance = finalBal;
-              saveRegisteredUsers(allUsers);
-            }
-            updateUserUI();
+          if (uIdx !== -1) {
+            allUsers[uIdx].balance = cloudBal;
+            saveRegisteredUsers(allUsers);
           }
+          if (typeof updateUserUI === "function") updateUserUI();
+        }
 
+        if (walletRes && walletRes.wallet) {
           if (Array.isArray(walletRes.wallet.history)) {
             cachedCloudWalletHistory = walletRes.wallet.history
               .filter(item => {
