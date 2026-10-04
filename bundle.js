@@ -4224,7 +4224,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!email) return false;
       const cleanEmail = String(email).trim().toLowerCase();
       const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
-      if (cleanEmail === rootEmail) return false;
+      if (cleanEmail === rootEmail || cleanEmail === "muabantaikhoanmmo@gmail.com") return false;
 
       try {
         const lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
@@ -4252,7 +4252,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!email) return false;
       const cleanEmail = String(email).trim().toLowerCase();
       const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
-      if (cleanEmail === rootEmail) return false;
+      if (cleanEmail === rootEmail || cleanEmail === "muabantaikhoanmmo@gmail.com") return false;
 
       // 1. Kiểm tra nhanh từ localStorage
       if (typeof isUserLocked === "function" && isUserLocked(cleanEmail)) {
@@ -4307,63 +4307,108 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.checkUserLockedFromCloud = checkUserLockedFromCloud;
 
+    // HÀM LẤY TOÀN BỘ THÔNG TIN LIÊN HỆ ĐỘNG 100% THEO CÀI ĐẶT HỆ THỐNG
+    function getSystemContactInfo() {
+      let s = {};
+      try {
+        if (typeof getGeneralSettings === "function") {
+          s = getGeneralSettings();
+        } else {
+          const stored = localStorage.getItem("mmo_system_settings") || localStorage.getItem("mmo_general_settings");
+          if (stored) s = JSON.parse(stored);
+        }
+      } catch(e) {}
+
+      // 1. Hotline / Zalo Phone
+      let rawPhone = String(s.hotline || s.phone || s.zalo || "0975902076").trim();
+      let cleanPhone = rawPhone.replace(/[^0-9]/g, "");
+      if (!cleanPhone || cleanPhone.length < 9 || cleanPhone === "0968033451") cleanPhone = "0975902076";
+      if (!cleanPhone.startsWith("0")) cleanPhone = "0" + cleanPhone;
+
+      let formattedPhone = cleanPhone;
+      if (cleanPhone.length === 10) {
+        formattedPhone = cleanPhone.slice(0, 4) + "." + cleanPhone.slice(4, 7) + "." + cleanPhone.slice(7);
+      } else if (cleanPhone.length === 11) {
+        formattedPhone = cleanPhone.slice(0, 5) + "." + cleanPhone.slice(5, 8) + "." + cleanPhone.slice(8);
+      }
+
+      // 2. Email hỗ trợ chính thức
+      let email = String(s.email || s.supportEmail || s.adminEmail || s.contactEmail || "muabantaikhoanmmo@gmail.com").trim().toLowerCase();
+      if (!email || !email.includes("@") || email === "manhdongvtc@gmail.com") email = "muabantaikhoanmmo@gmail.com";
+
+      // 3. Telegram
+      let rawTele = String(s.telegram || s.tele || "https://t.me/groupmuabantaikhoanmmo").trim();
+      let teleUrl = rawTele;
+      if (!teleUrl.startsWith("http://") && !teleUrl.startsWith("https://")) {
+        teleUrl = "https://" + teleUrl.replace(/^@/, "t.me/");
+      }
+      let teleHandle = rawTele.replace(/^https?:\/\/t\.me\//, "@").replace(/^https?:\/\/telegram\.me\//, "@");
+      if (!teleHandle.startsWith("@")) teleHandle = "@" + teleHandle;
+
+      return {
+        phone: cleanPhone,
+        formattedPhone: formattedPhone,
+        zaloUrl: "https://zalo.me/" + cleanPhone,
+        email: email,
+        telegramUrl: teleUrl,
+        telegramHandle: teleHandle
+      };
+    }
+    window.getSystemContactInfo = getSystemContactInfo;
+
     function showAccountLockedModal(email) {
+      const contact = getSystemContactInfo();
       let modal = document.getElementById("accountLockedModal");
       if (!modal) {
         modal = document.createElement("div");
         modal.id = "accountLockedModal";
         modal.className = "mmo-modal-backdrop";
         modal.style.cssText = "display:flex; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:16px;";
-        modal.innerHTML = `
-          <div style="background:#0f172a; border:2px solid #ef4444; border-radius:16px; max-width:480px; width:100%; box-shadow:0 20px 50px rgba(239,68,68,0.4); overflow:hidden; animation:modalPopIn 0.3s ease;">
-            <div style="background:linear-gradient(135deg, rgba(239,68,68,0.25), rgba(185,28,28,0.45)); padding:22px; text-align:center; border-bottom:1px solid rgba(239,68,68,0.3);">
-              <div style="width:64px; height:64px; border-radius:50%; background:rgba(239,68,68,0.2); border:2px solid #ef4444; color:#ef4444; font-size:30px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; box-shadow:0 0 20px rgba(239,68,68,0.4);">
-                <i class="fa-solid fa-user-lock"></i>
-              </div>
-              <h3 style="color:#ef4444; margin:0; font-size:1.3rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">Tài Khoản Tạm Khóa</h3>
-            </div>
-            <div style="padding:24px 20px; text-align:center;">
-              <p style="color:#fca5a5; font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 18px 0;">
-                Tài khoản nghi ngờ gian lận, vui lòng liên hệ admin để mở khóa.
-              </p>
-              <div id="accountLockedEmailNotice" style="font-size:0.85rem; color:#94a3b8; margin-bottom:14px; display:none;"></div>
-              <div style="background:#090e17; border:1px solid #1e293b; border-radius:10px; padding:14px; text-align:left; font-size:0.88rem; color:#cbd5e1; margin-bottom:20px; display:flex; flex-direction:column; gap:10px;">
-                <div style="display:flex; align-items:center; justify-content:space-between;">
-                  <span style="color:#94a3b8;"><i class="fa-solid fa-phone" style="color:#38bdf8; width:18px;"></i> Hotline / Zalo:</span>
-                  <a href="https://zalo.me/0968033451" target="_blank" style="color:#38bdf8; font-weight:700; text-decoration:none;">0968.033.451</a>
-                </div>
-                <div style="display:flex; align-items:center; justify-content:space-between;">
-                  <span style="color:#94a3b8;"><i class="fa-brands fa-telegram" style="color:#0ea5e9; width:18px;"></i> Telegram:</span>
-                  <a href="https://t.me/muabantaikhoanmmo" target="_blank" style="color:#38bdf8; font-weight:700; text-decoration:none;">@muabantaikhoanmmo</a>
-                </div>
-                <div style="display:flex; align-items:center; justify-content:space-between;">
-                  <span style="color:#94a3b8;"><i class="fa-solid fa-envelope" style="color:#f59e0b; width:18px;"></i> Email:</span>
-                  <span style="color:#fff; font-weight:600;">manhdongvtc@gmail.com</span>
-                </div>
-              </div>
-              <div style="display:flex; gap:10px; justify-content:center;">
-                <a href="https://zalo.me/0968033451" target="_blank" style="flex:1; padding:12px 16px; background:#0284c7; color:#fff; border-radius:8px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; font-size:0.9rem;">
-                  <i class="fa-solid fa-comment-dots"></i> Liên Hệ Mở Khóa (Zalo)
-                </a>
-                <button type="button" onclick="closeAccountLockedModal()" style="padding:12px 20px; background:#1e293b; color:#94a3b8; border:1px solid #334155; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.9rem;">
-                  Đóng
-                </button>
-              </div>
-            </div>
-          </div>
-        `;
         document.body.appendChild(modal);
-      } else {
-        modal.style.display = "flex";
       }
 
-      if (email) {
-        const emailNotice = document.getElementById("accountLockedEmailNotice");
-        if (emailNotice) {
-          emailNotice.innerHTML = 'Tài khoản: <strong style="color:#f87171;">' + (typeof escapeHtml === "function" ? escapeHtml(email) : email) + '</strong>';
-          emailNotice.style.display = "block";
-        }
-      }
+      modal.innerHTML = `
+        <div style="background:#0f172a; border:2px solid #ef4444; border-radius:16px; max-width:480px; width:100%; box-shadow:0 20px 50px rgba(239,68,68,0.4); overflow:hidden; animation:modalPopIn 0.3s ease;">
+          <div style="background:linear-gradient(135deg, rgba(239,68,68,0.25), rgba(185,28,28,0.45)); padding:22px; text-align:center; border-bottom:1px solid rgba(239,68,68,0.3);">
+            <div style="width:64px; height:64px; border-radius:50%; background:rgba(239,68,68,0.2); border:2px solid #ef4444; color:#ef4444; font-size:30px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; box-shadow:0 0 20px rgba(239,68,68,0.4);">
+              <i class="fa-solid fa-user-lock"></i>
+            </div>
+            <h3 style="color:#ef4444; margin:0; font-size:1.3rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">Tài Khoản Tạm Khóa</h3>
+          </div>
+          <div style="padding:24px 20px; text-align:center;">
+            <p style="color:#fca5a5; font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 18px 0;">
+              Tài khoản nghi ngờ gian lận, vui lòng liên hệ admin để mở khóa.
+            </p>
+            <div id="accountLockedEmailNotice" style="font-size:0.85rem; color:#94a3b8; margin-bottom:14px; display:${email ? 'block' : 'none'};">
+              Tài khoản: <strong style="color:#f87171;">${email ? (typeof escapeHtml === "function" ? escapeHtml(email) : email) : ''}</strong>
+            </div>
+            <div style="background:#090e17; border:1px solid #1e293b; border-radius:10px; padding:14px; text-align:left; font-size:0.88rem; color:#cbd5e1; margin-bottom:20px; display:flex; flex-direction:column; gap:10px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="color:#94a3b8;"><i class="fa-solid fa-phone" style="color:#38bdf8; width:18px;"></i> Hotline / Zalo:</span>
+                <a href="${contact.zaloUrl}" target="_blank" style="color:#38bdf8; font-weight:700; text-decoration:none;">${contact.formattedPhone}</a>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="color:#94a3b8;"><i class="fa-brands fa-telegram" style="color:#0ea5e9; width:18px;"></i> Telegram:</span>
+                <a href="${contact.telegramUrl}" target="_blank" style="color:#38bdf8; font-weight:700; text-decoration:none;">${contact.telegramHandle}</a>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="color:#94a3b8;"><i class="fa-solid fa-envelope" style="color:#f59e0b; width:18px;"></i> Email:</span>
+                <a href="mailto:${contact.email}" style="color:#fff; font-weight:600; text-decoration:none;">${contact.email}</a>
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:center;">
+              <a href="${contact.zaloUrl}" target="_blank" style="flex:1; padding:12px 16px; background:#0284c7; color:#fff; border-radius:8px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; font-size:0.9rem;">
+                <i class="fa-solid fa-comment-dots"></i> Liên Hệ Mở Khóa (Zalo)
+              </a>
+              <button type="button" onclick="closeAccountLockedModal()" style="padding:12px 20px; background:#1e293b; color:#94a3b8; border:1px solid #334155; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.9rem;">
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      modal.style.display = "flex";
 
       if (typeof showToast === "function") {
         showToast("🚫 Tài khoản nghi ngờ gian lận, vui lòng liên hệ admin để mở khóa", "danger", 8000);
@@ -4474,7 +4519,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     // ROOT_ADMIN_EMAIL already declared above
     const DEFAULT_ADMIN_EMAILS = [
-      ROOT_ADMIN_EMAIL
+      ROOT_ADMIN_EMAIL,
+      "muabantaikhoanmmo@gmail.com"
     ];
 
     function getAdminEmails() {
@@ -4485,7 +4531,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (Array.isArray(list) && list.length > 0) return list;
         }
       } catch (e) {}
-      const initial = [ROOT_ADMIN_EMAIL];
+      const initial = [ROOT_ADMIN_EMAIL, "muabantaikhoanmmo@gmail.com"];
       try { localStorage.setItem("mmo_admin_emails", JSON.stringify(initial)); } catch(e) {}
       return initial;
     }
@@ -20645,12 +20691,15 @@ function syncAllOpenViewsStock(changedProdId) {
         const stored = localStorage.getItem("mmo_payment_settings");
         if (stored) {
           const parsed = JSON.parse(stored);
-          if (parsed && typeof parsed === "object") return parsed;
+          if (parsed && typeof parsed === "object") {
+            if (!parsed.bankAccount || parsed.bankAccount === "0968033451") parsed.bankAccount = "0975902076";
+            return parsed;
+          }
         }
       } catch(e) {}
       return {
         bankCode: "MB",
-        bankAccount: "0968033451",
+        bankAccount: "0975902076",
         accountName: "NGUYEN MANH DONG",
         depositPrefix: "NAP TIEN MMO",
         sepayApiKey: "YOUR_SEPAY_API_KEY"
@@ -20661,7 +20710,7 @@ function syncAllOpenViewsStock(changedProdId) {
     function loadPaymentSettingsUI() {
       const s = getPaymentSettings();
       if (document.getElementById("setBankCode")) document.getElementById("setBankCode").value = s.bankCode || "MB";
-      if (document.getElementById("setBankAccount")) document.getElementById("setBankAccount").value = s.bankAccount || "0968033451";
+      if (document.getElementById("setBankAccount")) document.getElementById("setBankAccount").value = s.bankAccount || "0975902076";
       if (document.getElementById("setAccountName")) document.getElementById("setAccountName").value = s.accountName || "NGUYEN MANH DONG";
       if (document.getElementById("setDepositPrefix")) document.getElementById("setDepositPrefix").value = s.depositPrefix || "NAP TIEN MMO";
       if (document.getElementById("setSepayApiKey")) document.getElementById("setSepayApiKey").value = s.sepayApiKey || "";
@@ -20672,7 +20721,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (e && e.preventDefault) e.preventDefault();
       const settings = {
         bankCode: document.getElementById("setBankCode") ? document.getElementById("setBankCode").value : "MB",
-        bankAccount: document.getElementById("setBankAccount") ? document.getElementById("setBankAccount").value : "0968033451",
+        bankAccount: document.getElementById("setBankAccount") ? document.getElementById("setBankAccount").value : "0975902076",
         accountName: document.getElementById("setAccountName") ? document.getElementById("setAccountName").value : "NGUYEN MANH DONG",
         depositPrefix: document.getElementById("setDepositPrefix") ? document.getElementById("setDepositPrefix").value : "NAP TIEN MMO",
         sepayApiKey: document.getElementById("setSepayApiKey") ? document.getElementById("setSepayApiKey").value : ""
@@ -20695,7 +20744,9 @@ function syncAllOpenViewsStock(changedProdId) {
         siteName: "MUABANTAIKHOANMMO",
         googleClientId: "788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com",
         affiliateRate: 10,
-        hotline: "0968033451",
+        hotline: "0975902076",
+        email: "muabantaikhoanmmo@gmail.com",
+        supportEmail: "muabantaikhoanmmo@gmail.com",
         telegram: "https://t.me/groupmuabantaikhoanmmo",
         marqueeText: "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!",
         gasUrl: "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec",
@@ -20711,8 +20762,14 @@ function syncAllOpenViewsStock(changedProdId) {
           const parsed = JSON.parse(stored);
           if (parsed && typeof parsed === "object") {
             const merged = Object.assign({}, defaultSettings, parsed);
-            if (!merged.hotline || !String(merged.hotline).trim()) {
+            if (!merged.hotline || !String(merged.hotline).trim() || merged.hotline.includes("0968033451") || merged.hotline.includes("0968.033.451")) {
               merged.hotline = defaultSettings.hotline;
+            }
+            if (!merged.email || !String(merged.email).trim() || merged.email === "manhdongvtc@gmail.com") {
+              merged.email = defaultSettings.email;
+            }
+            if (!merged.supportEmail || !String(merged.supportEmail).trim() || merged.supportEmail === "manhdongvtc@gmail.com") {
+              merged.supportEmail = defaultSettings.supportEmail;
             }
             if (!merged.gasUrl || !String(merged.gasUrl).trim()) {
               merged.gasUrl = defaultSettings.gasUrl;
@@ -21041,12 +21098,41 @@ function syncAllOpenViewsStock(changedProdId) {
             const nameInp = document.getElementById("setSiteName");
             if (nameInp) nameInp.value = curSettings.siteName;
           }
+          if (cs.hotline && cs.hotline.trim()) {
+            curSettings.hotline = cs.hotline.trim();
+            settingsChanged = true;
+            const hotInp = document.getElementById("setHotline");
+            if (hotInp && document.activeElement !== hotInp) hotInp.value = curSettings.hotline;
+          }
+          if (cs.email && cs.email.trim()) {
+            curSettings.email = cs.email.trim();
+            settingsChanged = true;
+          }
+          if (cs.supportEmail && cs.supportEmail.trim()) {
+            curSettings.supportEmail = cs.supportEmail.trim();
+            settingsChanged = true;
+          }
+          if (cs.telegram && cs.telegram.trim()) {
+            curSettings.telegram = cs.telegram.trim();
+            settingsChanged = true;
+            const teleInp = document.getElementById("setTelegram");
+            if (teleInp && document.activeElement !== teleInp) teleInp.value = curSettings.telegram;
+          }
+          if (cs.marqueeText && cs.marqueeText.trim()) {
+            curSettings.marqueeText = cs.marqueeText.trim();
+            settingsChanged = true;
+            const marqInp = document.getElementById("setMarqueeText");
+            if (marqInp && document.activeElement !== marqInp) marqInp.value = curSettings.marqueeText;
+          }
 
           if (settingsChanged) {
             try { localStorage.setItem("mmo_system_settings", JSON.stringify(curSettings)); } catch(e1) {}
             try { localStorage.setItem("mmo_general_settings", JSON.stringify(curSettings)); } catch(e2) {}
             try { localStorage.setItem("mmo_settings_permanent_backup", JSON.stringify(curSettings)); } catch(e3) {}
-            applyBrandCustomizations(curSettings);
+          }
+          applyBrandCustomizations(curSettings);
+          if (typeof syncContactInfoToUI === "function") {
+            syncContactInfoToUI();
           }
         }
       } catch(e) {}
@@ -21058,7 +21144,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (document.getElementById("setSiteName")) document.getElementById("setSiteName").value = s.siteName || "MUABANTAIKHOANMMO";
       if (document.getElementById("setGoogleClientId")) document.getElementById("setGoogleClientId").value = s.googleClientId || "788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com";
       if (document.getElementById("setAffiliateRate")) document.getElementById("setAffiliateRate").value = s.affiliateRate || 10;
-      if (document.getElementById("setHotline")) document.getElementById("setHotline").value = s.hotline || "0968033451";
+      if (document.getElementById("setHotline")) document.getElementById("setHotline").value = s.hotline || "0975902076";
       if (document.getElementById("setTelegram")) document.getElementById("setTelegram").value = s.telegram || "https://t.me/groupmuabantaikhoanmmo";
       
       // Marquee text
@@ -21170,7 +21256,7 @@ function syncAllOpenViewsStock(changedProdId) {
         const siteName = document.getElementById("setSiteName") ? document.getElementById("setSiteName").value.trim() : "MUABANTAIKHOANMMO";
         const googleClientId = document.getElementById("setGoogleClientId") ? document.getElementById("setGoogleClientId").value.trim() : "788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com";
         const affiliateRate = parseInt(document.getElementById("setAffiliateRate") ? document.getElementById("setAffiliateRate").value : 10) || 10;
-        const hotline = document.getElementById("setHotline") ? document.getElementById("setHotline").value.trim() : "0968033451";
+        const hotline = document.getElementById("setHotline") ? document.getElementById("setHotline").value.trim() : "0975902076";
         const telegram = document.getElementById("setTelegram") ? document.getElementById("setTelegram").value.trim() : "https://t.me/groupmuabantaikhoanmmo";
         
         // Marquee text (lấy đúng giá trị người dùng vừa gõ vào ô)
@@ -21375,23 +21461,9 @@ function syncAllOpenViewsStock(changedProdId) {
     // ĐỒNG BỘ SỐ HOTLINE & LINK ZALO TỰ ĐỘNG ĐẾN TOÀN BỘ WEBSITE
     function syncZaloLinks(zaloPhone) {
       try {
-        let p = zaloPhone;
-        if (!p) {
-          const s = (typeof getGeneralSettings === "function") ? getGeneralSettings() : {};
-          p = (s && s.hotline) ? s.hotline.trim() : "0968033451";
-        }
-        p = (p || "").trim();
-        const cleanDigits = p.replace(/[^0-9]/g, "");
-        const cleanPhone = cleanDigits || "0968033451";
-
-        // Định dạng hiển thị chuẩn (VD: 0975.902.076)
-        let formattedPhone = cleanPhone;
-        if (cleanPhone.length === 10) {
-          formattedPhone = cleanPhone.slice(0, 4) + "." + cleanPhone.slice(4, 7) + "." + cleanPhone.slice(7);
-        } else if (cleanPhone.length === 11) {
-          formattedPhone = cleanPhone.slice(0, 5) + "." + cleanPhone.slice(5, 8) + "." + cleanPhone.slice(8);
-        }
-
+        const contact = (typeof getSystemContactInfo === "function") ? getSystemContactInfo() : { phone: "0975902076", formattedPhone: "0975.902.076", zaloUrl: "https://zalo.me/0975902076" };
+        const cleanPhone = (zaloPhone && String(zaloPhone).replace(/[^0-9]/g, "")) || contact.phone;
+        const formattedPhone = (zaloPhone ? (cleanPhone.length === 10 ? cleanPhone.slice(0, 4) + "." + cleanPhone.slice(4, 7) + "." + cleanPhone.slice(7) : cleanPhone) : contact.formattedPhone);
         const zaloUrl = "https://zalo.me/" + cleanPhone;
 
         // 1. Cập nhật tất cả các thẻ a Zalo (loại trừ link chia sẻ zalo.me/share)
@@ -21434,6 +21506,33 @@ function syncAllOpenViewsStock(changedProdId) {
       }
     }
     window.syncZaloLinks = syncZaloLinks;
+
+    // ĐỒNG BỘ EMAIL LIÊN HỆ ĐẾN TẤT CẢ LIÊN KẾT & TEXT TRÊN TRANG
+    function syncEmailLinks(emailStr) {
+      try {
+        const contact = (typeof getSystemContactInfo === "function") ? getSystemContactInfo() : { email: "muabantaikhoanmmo@gmail.com" };
+        const finalEmail = (emailStr || contact.email || "muabantaikhoanmmo@gmail.com").trim().toLowerCase();
+
+        document.querySelectorAll("a[href^='mailto:'], .mmo-contact-email-link").forEach(function(el) {
+          el.href = "mailto:" + finalEmail;
+        });
+        document.querySelectorAll(".mmo-contact-email-display").forEach(function(el) {
+          el.innerText = finalEmail;
+        });
+      } catch(e) {}
+    }
+    window.syncEmailLinks = syncEmailLinks;
+
+    // ĐỒNG BỘ TOÀN DIỆN THÔNG TIN LIÊN HỆ TỪ CÀI ĐẶT
+    function syncContactInfoToUI() {
+      try {
+        const contact = getSystemContactInfo();
+        syncZaloLinks(contact.phone);
+        syncTelegramLinks(contact.telegramUrl);
+        syncEmailLinks(contact.email);
+      } catch(e) {}
+    }
+    window.syncContactInfoToUI = syncContactInfoToUI;
 
     // ĐỒNG BỘ LINK TELEGRAM ĐẾN TẤT CẢ NÚT/LIÊN KẾT TRÊN TRANG
     function syncTelegramLinks(teleUrl) {
@@ -29059,7 +29158,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const pay = typeof getPaymentSettings === "function" ? getPaymentSettings() : {
         bankCode: "MB",
         bankName: "MB Bank",
-        accountNumber: "0968033451",
+        accountNumber: "0975902076",
         accountOwner: "NGUYEN MANH DONG",
         depositPrefix: "MMO"
       };
@@ -29095,11 +29194,11 @@ function syncAllOpenViewsStock(changedProdId) {
         curActiveBtn.style.border = "1px solid #10b981";
       }
       if (bankNameEl) bankNameEl.innerText = pay.bankName || "MB Bank";
-      if (bankAccEl) bankAccEl.innerText = pay.accountNumber || "0968033451";
+      if (bankAccEl) bankAccEl.innerText = pay.accountNumber || "0975902076";
       if (bankOwnerEl) bankOwnerEl.innerText = pay.accountOwner || "NGUYEN MANH DONG";
 
       const bankCode = (pay.bankCode || "MB").toUpperCase();
-      const bankAcc = pay.accountNumber || "0968033451";
+      const bankAcc = pay.accountNumber || "0975902076";
       const bankOwner = encodeURIComponent(pay.accountOwner || "NGUYEN MANH DONG");
       const memo = encodeURIComponent(depositOrderCode);
 
@@ -30437,6 +30536,9 @@ function syncAllOpenViewsStock(changedProdId) {
       // Kích hoạt đồng bộ đám mây Turso ngầm (đảm bảo hiển thị ngay cả khi mở trên trình duyệt/thiết bị khác)
       if (typeof syncWithdrawRequestsFromCloud === "function") {
         syncWithdrawRequestsFromCloud();
+      }
+      if (typeof syncContactInfoToUI === "function") {
+        syncContactInfoToUI();
       }
 
       // Quét tự động trạng thái khóa tài khoản người dùng mỗi 3 giây (cưỡng chế đăng xuất nếu Admin vừa khóa)
@@ -33188,7 +33290,7 @@ function getProductSchemaReviews(p, idx) {
       } catch(e) { return true; }
     })();
 
-    const CHAT_REALTIME_TOPIC = "mmo_chat_live_v2_0968033451";
+    const CHAT_REALTIME_TOPIC = "mmo_chat_live_v2_0975902076";
     var chatBroadcast = null;
     window.chatBroadcast = null;
     try {
