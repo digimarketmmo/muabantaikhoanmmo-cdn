@@ -4226,22 +4226,34 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
       if (cleanEmail === rootEmail || cleanEmail === "muabantaikhoanmmo@gmail.com") return false;
 
+      // Ưu tiên kiểm tra danh sách thành viên thực tế
+      if (typeof getRegisteredUsers === "function") {
+        try {
+          const users = getRegisteredUsers();
+          const u = users.find(x => String(x.email || "").toLowerCase().trim() === cleanEmail);
+          if (u) {
+            const locked = Boolean(u.isLocked === true || u.status === "LOCKED");
+            if (!locked) {
+              // Tự động dọn dẹp mmo_locked_emails nếu tài khoản đang Hoạt Động
+              try {
+                let lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
+                if (Array.isArray(lockedList) && lockedList.includes(cleanEmail)) {
+                  lockedList = lockedList.filter(e => String(e||"").toLowerCase().trim() !== cleanEmail);
+                  localStorage.setItem("mmo_locked_emails", JSON.stringify(lockedList));
+                }
+              } catch(e) {}
+            }
+            return locked;
+          }
+        } catch(e) {}
+      }
+
       try {
         const lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
         if (Array.isArray(lockedList) && lockedList.map(e => String(e||"").toLowerCase().trim()).includes(cleanEmail)) {
           return true;
         }
       } catch(e) {}
-
-      if (typeof getRegisteredUsers === "function") {
-        try {
-          const users = getRegisteredUsers();
-          const u = users.find(x => String(x.email || "").toLowerCase().trim() === cleanEmail);
-          if (u && (u.isLocked === true || u.status === "LOCKED")) {
-            return true;
-          }
-        } catch(e) {}
-      }
 
       return false;
     }
@@ -4254,12 +4266,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
       if (cleanEmail === rootEmail || cleanEmail === "muabantaikhoanmmo@gmail.com") return false;
 
-      // 1. Kiểm tra nhanh từ localStorage
-      if (typeof isUserLocked === "function" && isUserLocked(cleanEmail)) {
-        return true;
-      }
-
-      // 2. Kiểm tra trực tiếp từ Cloudflare Worker Turso Database
+      // 1. TRUY VẤN TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO DATABASE (SSOT 24/7)
       try {
         const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
           ? MMO_WORKER_API.getApiUrl()
@@ -4273,7 +4280,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (data && data.success && data.user) {
             const isLocked = Boolean(data.user.is_locked || data.user.isLocked || data.user.status === "LOCKED");
 
-            // Cập nhật lại mmo_locked_emails trong localStorage
+            // Cập nhật lại mmo_locked_emails trong localStorage theo đúng Cloud
             try {
               let lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
               if (!Array.isArray(lockedList)) lockedList = [];
@@ -4285,7 +4292,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               localStorage.setItem("mmo_locked_emails", JSON.stringify(lockedList));
             } catch(e) {}
 
-            // Cập nhật lại mmo_registered_users
+            // Cập nhật lại mmo_registered_users theo đúng Cloud
             try {
               let users = getRegisteredUsers();
               const idx = users.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
@@ -4296,11 +4303,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               }
             } catch(e) {}
 
+            // Nếu tài khoản đã được mở khóa trên Cloud, tự động đóng modal thông báo khóa
+            if (!isLocked) {
+              const modal = document.getElementById("accountLockedModal");
+              if (modal) modal.style.display = "none";
+            }
+
             return isLocked;
           }
         }
       } catch(err) {
         console.warn("checkUserLockedFromCloud warning:", err);
+      }
+
+      // 2. Chỉ khi mất mạng hoàn toàn / lỗi kết nối mới fallback về localStorage
+      if (typeof isUserLocked === "function") {
+        return isUserLocked(cleanEmail);
       }
 
       return false;
@@ -4464,13 +4482,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               return;
             }
 
-            // Kiểm tra tài khoản có bị khóa không từ bộ nhớ
-            if (currentUser.email && isUserLocked(currentUser.email)) {
-              forceLogoutLockedUser(currentUser.email);
-              return;
-            }
-
-            // Kiểm tra tài khoản có bị khóa từ Cloudflare Worker Turso Database
+            // Kiểm tra tài khoản có bị khóa từ Cloudflare Worker Turso Database (SSOT)
             if (currentUser.email) {
               checkUserLockedFromCloud(currentUser.email).then(isLocked => {
                 if (isLocked) {
@@ -4484,8 +4496,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const found = users.find(u => (u.email || "").toLowerCase().trim() === currentUser.email.toLowerCase().trim());
             if (found) {
               if (found.isLocked) {
-                forceLogoutLockedUser(currentUser.email);
-                return;
+                checkUserLockedFromCloud(currentUser.email).then(isLocked => {
+                  if (isLocked) forceLogoutLockedUser(currentUser.email);
+                }).catch(() => {});
               }
               // Đồng bộ số dư chuẩn từ database thành viên (không để 0 đè lên số dư thật)
               if (found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
@@ -10502,21 +10515,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           return;
         }
 
-        if (typeof isUserLocked === "function" && isUserLocked(email)) {
-          closeModal("authModal");
-          forceLogoutLockedUser(email);
-          return;
-        }
-
         // Check if this email exists in registered members to preserve proper name and balance
         let users = getRegisteredUsers();
         const existingIdx = users.findIndex(u => (u.email || "").toLowerCase().trim() === email);
         const existingUser = existingIdx !== -1 ? users[existingIdx] : null;
-
-        if (existingUser && (existingUser.isLocked || existingUser.status === "LOCKED")) {
-          closeModal("authModal");
-          showAccountLockedModal(email);
-          return;
+        if (existingUser) {
+          existingUser.isLocked = false;
+          existingUser.status = "ACTIVE";
         }
 
         name = name || (existingUser && existingUser.name) || email.split("@")[0];
@@ -10629,23 +10634,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return;
       }
 
-      if (typeof isUserLocked === "function" && isUserLocked(email)) {
-        closeModal("authModal");
-        forceLogoutLockedUser(email);
-        return;
-      }
-
       const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
       const role = isAdm ? "Quản Trị Viên" : "MEMBER";
 
       // Instant local check
       let users = getRegisteredUsers();
       const found = users.find(u => (u.email || "").toLowerCase().trim() === email);
-
-      if (found && (found.isLocked || found.status === "LOCKED")) {
-        closeModal("authModal");
-        showAccountLockedModal(email);
-        return;
+      if (found) {
+        found.isLocked = false;
+        found.status = "ACTIVE";
       }
 
       const savedRefCode = (localStorage.getItem("mmo_ref_code") || sessionStorage.getItem("mmo_ref_code") || "").trim().toLowerCase();
@@ -10870,11 +10867,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const profAdminBtn = document.getElementById("profAdminShortcutBtn");
 
       if (currentUser && currentUser.email) {
-        // Kiểm tra nếu tài khoản đang bị khóa
-        if (typeof isUserLocked === "function" && isUserLocked(currentUser.email)) {
-          forceLogoutLockedUser(currentUser.email);
-          return;
-        }
+        // Kiểm tra trạng thái khóa từ Cloud định kỳ qua _mmoLockedUserPollTimer
 
         const balStr = formatVND(currentUser.balance || 0);
         const isAdmin = (typeof isAdminUser === "function") && isAdminUser(currentUser);
@@ -11504,10 +11497,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           return;
         }
 
-        if (typeof isUserLocked === "function" && isUserLocked(checkUser.email)) {
-          forceLogoutLockedUser(checkUser.email);
-          return;
-        }
+        // Trạng thái khóa được quản lý tự động bởi checkUserLockedFromCloud
 
         if (viewId === "viewAdmin" && !isAdminUser(checkUser)) {
           showToast("⚠️ Tài khoản [" + checkUser.email + "] không có quyền truy cập Quản Trị!", "warning");
