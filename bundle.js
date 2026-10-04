@@ -12464,6 +12464,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (typeof syncAllDepositsFromCloud === "function") syncAllDepositsFromCloud();
       }
       if (tabId === "tabAdmWithdrawals") {
+        if (typeof syncWithdrawRequestsFromCloud === "function") syncWithdrawRequestsFromCloud(true);
         renderAdminWithdrawTable();
       }
       if (isOrdersTab) {
@@ -29754,6 +29755,39 @@ function syncAllOpenViewsStock(changedProdId) {
         const stored = localStorage.getItem("mmo_withdraw_requests");
         let list = stored ? JSON.parse(stored) : [];
         if (!Array.isArray(list)) list = [];
+
+        // TỰ ĐỘNG PHỤC HỒI / QUÉT TỪ LỊCH SỬ GIAO DỊCH (mmo_transaction_history) ĐẢM BẢO KHÔNG BAO GIỜ MẤT ĐƠN RÚT
+        try {
+          const txHist = JSON.parse(localStorage.getItem("mmo_transaction_history") || "[]");
+          if (Array.isArray(txHist)) {
+            txHist.forEach(tx => {
+              if (!tx) return;
+              const t = String(tx.type || "").toLowerCase();
+              const n = String(tx.note || "").toLowerCase();
+              if (t.includes("rút tiền") || n.includes("rút tiền") || n.includes("chờ duyệt") || (tx.orderId && String(tx.orderId).startsWith("WD"))) {
+                const wdMatch = (String(tx.note || '') + ' ' + String(tx.orderId || '') + ' ' + String(tx.id || '')).match(/WD\d+/i);
+                const wdId = wdMatch ? wdMatch[0].toUpperCase() : (String(tx.orderId || '').startsWith('WD') ? tx.orderId : '');
+                if (wdId && !list.some(w => w.id === wdId)) {
+                  const bankMatch = String(tx.note || '').match(/STK:\s*([^\s(]+)(?:\s*\(([^)]+)\))?/i);
+                  list.push({
+                    id: wdId,
+                    userEmail: tx.userEmail || tx.email || "",
+                    userName: tx.userName || (tx.userEmail ? tx.userEmail.split("@")[0] : "Khách Hàng"),
+                    amount: Math.abs(Number(tx.amount) || 0),
+                    bankName: bankMatch ? (bankMatch[2] || "Ngân hàng") : "Ngân hàng",
+                    bankAcc: bankMatch ? bankMatch[1] : "",
+                    bankOwner: tx.userName || "Chủ tài khoản",
+                    time: tx.time || tx.date || new Date().toLocaleString("vi-VN"),
+                    status: (t.includes("duyệt") || n.includes("đã duyệt")) ? "Đã duyệt & Đã chuyển" : (n.includes("từ chối") ? "Đã từ chối (Hoàn tiền)" : "Chờ Duyệt"),
+                    handledBy: "",
+                    note: tx.note || ""
+                  });
+                }
+              }
+            });
+          }
+        } catch(eTx) {}
+
         const seenWdIds = new Set();
         const cleanList = [];
         list.forEach(w => {
@@ -29761,9 +29795,9 @@ function syncAllOpenViewsStock(changedProdId) {
           const em = String(w.userEmail || "").toLowerCase().trim();
           const nm = String(w.userName || "").toLowerCase().trim();
           const id = String(w.id || "").trim();
-          if (!id || em.includes("demo") || em.includes("sample") || em === "test@gmail.com") return false;
-          if (nm.includes("demo") || nm.includes("mẫu")) return false;
-          if (id.includes("demo") || id.includes("sample")) return false;
+          if (!id || em.includes("demo") || em.includes("sample") || em === "test@gmail.com") return;
+          if (nm.includes("demo") || nm.includes("mẫu")) return;
+          if (id.includes("demo") || id.includes("sample")) return;
           if (!seenWdIds.has(id)) {
             seenWdIds.add(id);
             cleanList.push(w);
@@ -29777,9 +29811,98 @@ function syncAllOpenViewsStock(changedProdId) {
     window.getWithdrawRequests = getWithdrawRequests;
 
     function saveWithdrawRequests(list) {
-      localStorage.setItem("mmo_withdraw_requests", JSON.stringify(list));
+      try {
+        localStorage.setItem("mmo_withdraw_requests", JSON.stringify(list));
+      } catch(e) {}
     }
     window.saveWithdrawRequests = saveWithdrawRequests;
+
+    // ĐỒNG BỘ YÊU CẦU RÚT TIỀN TỪ CLOUDFLARE WORKER TURSO (SSOT 24/7)
+    let _lastWithdrawSyncTime = 0;
+    let _isSyncingWithdraw = false;
+
+    async function syncWithdrawRequestsFromCloud(force = false) {
+      const now = Date.now();
+      if (!force && (now - _lastWithdrawSyncTime < 3500 || _isSyncingWithdraw)) return;
+      _isSyncingWithdraw = true;
+      _lastWithdrawSyncTime = now;
+
+      try {
+        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+
+        const res = await fetch(workerUrl + "/api/withdrawals");
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success && Array.isArray(data.withdrawals)) {
+            const cloudList = data.withdrawals;
+            const currentLocal = getWithdrawRequests();
+            const map = new Map();
+
+            currentLocal.forEach(w => { if (w && w.id) map.set(w.id, w); });
+
+            let hasNewOrUpdated = false;
+            cloudList.forEach(cw => {
+              if (!cw || !cw.id) return;
+              const existing = map.get(cw.id);
+              if (!existing) {
+                map.set(cw.id, cw);
+                hasNewOrUpdated = true;
+              } else {
+                if (existing.status !== cw.status || (cw.handledBy && existing.handledBy !== cw.handledBy)) {
+                  existing.status = cw.status;
+                  existing.handledBy = cw.handledBy || existing.handledBy;
+                  existing.handledTime = cw.handledTime || existing.handledTime;
+                  existing.rejectReason = cw.rejectReason || existing.rejectReason;
+                  hasNewOrUpdated = true;
+                }
+              }
+            });
+
+            if (hasNewOrUpdated || currentLocal.length === 0) {
+              const mergedList = Array.from(map.values());
+              saveWithdrawRequests(mergedList);
+              if (typeof renderAdminWithdrawTable === "function") {
+                renderAdminWithdrawTable();
+              }
+              if (typeof renderUserWalletTransactions === "function") {
+                renderUserWalletTransactions();
+              }
+            }
+          }
+        }
+      } catch(e) {
+        console.warn("syncWithdrawRequestsFromCloud notice:", e);
+      } finally {
+        _isSyncingWithdraw = false;
+      }
+    }
+    window.syncWithdrawRequestsFromCloud = syncWithdrawRequestsFromCloud;
+
+    // Lắng nghe BroadcastChannel thời gian thực (0ms đa tab)
+    if (typeof window !== "undefined" && typeof BroadcastChannel !== "undefined") {
+      try {
+        const wdBcListener = new BroadcastChannel("mmo_withdraw_channel");
+        wdBcListener.onmessage = function(ev) {
+          if (ev && ev.data && (ev.data.type === "NEW_WITHDRAWAL" || ev.data.type === "WITHDRAW_STATUS_UPDATED")) {
+            const wd = ev.data.withdrawal;
+            if (wd && wd.id) {
+              const curList = getWithdrawRequests();
+              const idx = curList.findIndex(w => w.id === wd.id);
+              if (idx !== -1) {
+                curList[idx] = Object.assign({}, curList[idx], wd);
+              } else {
+                curList.unshift(wd);
+              }
+              saveWithdrawRequests(curList);
+              if (typeof renderAdminWithdrawTable === "function") renderAdminWithdrawTable();
+              if (typeof renderUserWalletTransactions === "function") renderUserWalletTransactions();
+            }
+          }
+        };
+      } catch(eBc) {}
+    }
 
     // Helper: Lấy danh sách giao dịch nạp tiền thành công toàn sàn (Khử trùng lặp 100%, đồng nhất SePay & Order)
     function getPlatformDeposits() {
@@ -30217,6 +30340,11 @@ function syncAllOpenViewsStock(changedProdId) {
       const tbody = document.getElementById("admWithdrawTableBody");
       if (!tbody) return;
 
+      // Kích hoạt đồng bộ đám mây Turso ngầm (đảm bảo hiển thị ngay cả khi mở trên trình duyệt/thiết bị khác)
+      if (typeof syncWithdrawRequestsFromCloud === "function") {
+        syncWithdrawRequestsFromCloud();
+      }
+
       const withdrawList = getWithdrawRequests();
       const deposits = (typeof getPlatformDeposits === "function") ? getPlatformDeposits() : [];
 
@@ -30619,6 +30747,33 @@ function syncAllOpenViewsStock(changedProdId) {
         recordTransaction(item.userEmail, item.userName, "Rút tiền ngân hàng", -item.amount, "Đã chi", "Duyệt & Chuyển QR bởi Admin: " + adminName + " | STK: " + item.bankAcc + " (" + item.bankName + ")");
       }
 
+      // ĐỒNG BỘ TRẠNG THÁI DUYỆT LÊN CLOUDFLARE WORKER TURSO
+      try {
+        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+        fetch(workerUrl + "/api/admin/withdrawals/status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: item.id,
+            status: item.status,
+            handledBy: adminName,
+            handledTime: item.handledTime
+          }),
+          keepalive: true
+        }).catch(function(eW) { console.warn("Approve withdraw cloud status error:", eW); });
+      } catch(eApproveW) {}
+
+      // PHÁT SÓNG REALTIME
+      if (typeof BroadcastChannel !== "undefined") {
+        try {
+          const wBc = new BroadcastChannel("mmo_withdraw_channel");
+          wBc.postMessage({ type: "WITHDRAW_STATUS_UPDATED", withdrawal: item });
+          setTimeout(() => wBc.close(), 100);
+        } catch(eBc) {}
+      }
+
       closeModal("adminWithdrawQrModal");
       currentApproveWithdrawItem = null;
 
@@ -30695,6 +30850,34 @@ function syncAllOpenViewsStock(changedProdId) {
 
       // Record refund log
       recordTransaction(item.userEmail, item.userName, "Hoàn tiền rút (Từ chối)", item.amount, newBal, "Từ chối bởi Admin " + adminName + " - Lý do: " + (reason || "Thông tin không hợp lệ"));
+
+      // ĐỒNG BỘ TRẠNG THÁI TỪ CHỐI LÊN CLOUDFLARE WORKER TURSO
+      try {
+        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+        fetch(workerUrl + "/api/admin/withdrawals/status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: item.id,
+            status: item.status,
+            handledBy: adminName,
+            handledTime: item.handledTime,
+            rejectReason: reason || "Từ chối bởi Admin"
+          }),
+          keepalive: true
+        }).catch(function(eW) { console.warn("Reject withdraw cloud status error:", eW); });
+      } catch(eRejectW) {}
+
+      // PHÁT SÓNG REALTIME
+      if (typeof BroadcastChannel !== "undefined") {
+        try {
+          const wBc = new BroadcastChannel("mmo_withdraw_channel");
+          wBc.postMessage({ type: "WITHDRAW_STATUS_UPDATED", withdrawal: item });
+          setTimeout(() => wBc.close(), 100);
+        } catch(eBc) {}
+      }
 
       renderAdminWithdrawTable();
       renderAdminUsersTable();
@@ -30944,8 +31127,61 @@ function syncAllOpenViewsStock(changedProdId) {
       });
       saveWithdrawRequests(wdList);
 
+      const newWdItem = {
+        id: wdId,
+        userEmail: currentUser.email,
+        userName: currentUser.name,
+        amount: amount,
+        bankName: bankName,
+        bankAcc: bankAcc,
+        bankOwner: bankOwner,
+        time: timeStr,
+        status: "Chờ Duyệt",
+        handledBy: "",
+        note: note
+      };
+
       // Record platform transaction log
       recordTransaction(currentUser.email, currentUser.name, "Yêu cầu rút tiền", -amount, currentUser.balance, "Mã rút " + wdId + " - Đang chờ duyệt | STK: " + bankAcc + " (" + bankName + ")");
+
+      // 1. ĐỒNG BỘ LÊN CLOUDFLARE WORKER TURSO NGAY LẬP TỨC (24/7 SSOT)
+      try {
+        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+        fetch(workerUrl + "/api/withdrawals", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ withdrawals: [newWdItem] }),
+          keepalive: true
+        }).catch(function(eW) { console.warn("Cloud worker withdraw sync error:", eW); });
+      } catch(eWorker) {}
+
+      // 2. ĐỒNG BỘ GOOGLE APPS SCRIPT
+      if (typeof callGasApi === "function") {
+        callGasApi("adminSaveWithdrawRequests", { withdrawals: [newWdItem] }).catch(function(){});
+        callGasApi("requestWithdraw", {
+          email: currentUser.email,
+          amount: amount,
+          bankName: bankName,
+          accountNo: bankAcc,
+          accountName: bankOwner
+        }).catch(function(){});
+      }
+
+      // 3. PHÁT SÓNG REALTIME QUA BROADCAST CHANNEL 0ms CHO TẤT CẢ CÁC TAB ĐANG MỞ
+      if (typeof BroadcastChannel !== "undefined") {
+        try {
+          const wBc = new BroadcastChannel("mmo_withdraw_channel");
+          wBc.postMessage({ type: "NEW_WITHDRAWAL", withdrawal: newWdItem });
+          setTimeout(() => wBc.close(), 100);
+        } catch(eBc) {}
+        try {
+          const gBc = new BroadcastChannel("mmo_channel");
+          gBc.postMessage({ type: "NEW_WITHDRAWAL", withdrawal: newWdItem });
+          setTimeout(() => gBc.close(), 100);
+        } catch(eBc2) {}
+      }
 
       updateUserUI();
       closeModal("withdrawModal");
@@ -31839,15 +32075,21 @@ function changeAdmUsersPage(p) {
       }, 250);
       if (typeof updateLiveRealTimeClock === "function") updateLiveRealTimeClock();
       if (typeof initPreOrdersRealtimeSSE === "function") initPreOrdersRealtimeSSE();
-      // Polling thời gian thực đơn hàng & đơn đặt trước cho Admin mỗi 3 giây (khi Admin đang mở trình duyệt)
+      // Polling thời gian thực đơn hàng, đơn đặt trước & yêu cầu rút tiền cho Admin mỗi 3 giây (khi Admin đang mở trình duyệt)
       if (!window._mmoAdminOrdersRealtimePollTimer) {
         window._mmoAdminOrdersRealtimePollTimer = setInterval(function() {
           if (typeof isAdminUser === "function" && isAdminUser() && !document.hidden) {
             if (typeof syncCloudOrdersToLocalUI === "function") {
               syncCloudOrdersToLocalUI(true).catch(function() {});
             }
+            if (typeof syncWithdrawRequestsFromCloud === "function") {
+              syncWithdrawRequestsFromCloud();
+            }
           }
         }, 3000);
+      }
+      if (typeof syncWithdrawRequestsFromCloud === "function") {
+        syncWithdrawRequestsFromCloud();
       }
       if (typeof initGoogleAuth === "function") initGoogleAuth();
       if (typeof initTursoUI === "function") initTursoUI();
