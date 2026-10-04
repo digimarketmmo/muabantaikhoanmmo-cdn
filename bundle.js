@@ -6669,8 +6669,96 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
 
     // =========================================================================
-    // CORE SYSTEM: PURGE FAKE SYNC LOGS & RESET MANHDONG BALANCE (v3.9.5)
+    // CORE SYSTEM: PURGE FAKE SYNC LOGS & DEDUPLICATE DEPOSITS & WITHDRAWS (v3.9.8)
     // =========================================================================
+    // Helper cốt lõi: Khử trùng lặp giao dịch nạp tiền toàn diện (tránh lặp giữa SePay ID và Order DH...)
+    function deduplicatePlatformDeposits(depositList) {
+      if (!Array.isArray(depositList)) return [];
+      const result = [];
+      const seenOrderCodes = new Set();
+      const seenSepayIds = new Set();
+      const seenGeneralIds = new Set();
+      const seenFingerprints = new Set();
+
+      depositList.forEach(rawItem => {
+        if (!rawItem) return;
+        const rawId = String(rawItem.id || rawItem.orderId || rawItem.code || "").trim();
+        const rawOrderId = String(rawItem.orderId || rawItem.id || "").trim();
+        const rawNote = String(rawItem.note || rawItem.content || rawItem.description || rawItem.transferContent || "").trim();
+        const email = (rawItem.userEmail || rawItem.email || "").toLowerCase().trim();
+        const amt = Math.abs(Number(rawItem.amount) || 0);
+        if (amt <= 0) return;
+
+        // Bóc tách mã đơn nạp DH... / NAP... / MMO...
+        const combined = (rawId + " " + rawOrderId + " " + rawNote).toUpperCase();
+        const matchDH = combined.match(/(DH\d{6,15}|NAP[\w_]+|MMO\d{6,15})/i);
+        const orderCode = matchDH ? matchDH[1].toUpperCase() : "";
+
+        // Bóc tách mã SePay số (7-10 chữ số)
+        const isSepayNum = /^\d{7,10}$/.test(rawId);
+        const sepayMatch = rawNote.match(/\b\d{7,10}\b/);
+        const sepayId = isSepayNum ? rawId : (sepayMatch ? sepayMatch[0] : "");
+
+        // 1. Kiểm tra trùng theo mã đơn hàng DH...
+        if (orderCode && seenOrderCodes.has(orderCode)) {
+          return;
+        }
+
+        // 2. Kiểm tra trùng theo mã GD SePay
+        if (sepayId && seenSepayIds.has(sepayId)) {
+          return;
+        }
+
+        // 3. Kiểm tra trùng theo mã ID tổng quát
+        if (rawId && seenGeneralIds.has(rawId)) {
+          return;
+        }
+
+        // 4. Kiểm tra trùng theo dấu vân tay (email + số tiền + ngày)
+        const dOnly = String(rawItem.time || rawItem.date || "").split(/\s+/).find(p => p.includes("/")) || "";
+        const fingerprint = email ? (email + "_" + amt + "_" + dOnly) : "";
+        if (fingerprint && seenFingerprints.has(fingerprint)) {
+          const isDup = result.some(ex => {
+            const exMail = (ex.userEmail || ex.email || "").toLowerCase().trim();
+            const exAmt = Math.abs(Number(ex.amount) || 0);
+            if (exMail !== email || exAmt !== amt) return false;
+            const exCombined = (String(ex.id) + " " + String(ex.orderId || "") + " " + String(ex.note || "")).toUpperCase();
+            if (orderCode && exCombined.includes(orderCode)) return true;
+            const exMatch = exCombined.match(/(DH\d{6,15}|NAP[\w_]+|MMO\d{6,15})/i);
+            if (exMatch && combined.includes(exMatch[1])) return true;
+            return false;
+          });
+          if (isDup) return;
+        }
+
+        // Đánh dấu đã thấy
+        if (orderCode) seenOrderCodes.add(orderCode);
+        if (sepayId) seenSepayIds.add(sepayId);
+        if (rawId) seenGeneralIds.add(rawId);
+        if (rawOrderId) seenGeneralIds.add(rawOrderId);
+        if (fingerprint) seenFingerprints.add(fingerprint);
+
+        // Chuẩn hóa hiển thị: Ưu tiên mã đơn DH... làm ID chính
+        const displayId = orderCode || rawId;
+        const itemOut = Object.assign({}, rawItem, {
+          id: displayId,
+          orderId: displayId,
+          sepayId: sepayId || rawItem.sepayId || "",
+          amount: amt,
+          userEmail: email || rawItem.userEmail || "",
+          userName: rawItem.userName || rawItem.name || (email ? email.split("@")[0] : "Khách Hàng"),
+          type: rawItem.type || "Nạp tiền VietQR / SePay",
+          status: "Thành công",
+          handledBy: rawItem.handledBy || "Tự động SePay 24/7"
+        });
+
+        result.push(itemOut);
+      });
+
+      return result;
+    }
+    window.deduplicatePlatformDeposits = deduplicatePlatformDeposits;
+
     function purgeFakeSyncLogsAndDeposits() {
       try {
         const rawDeps = localStorage.getItem("mmo_deposits");
@@ -6682,7 +6770,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               const n = String(d.note || d.content || d.id || d.orderId || d.reason || d.type || "").toLowerCase();
               return !n.includes("đồng bộ") && !n.includes("dong bo") && !n.includes("hiệu chỉnh") && !n.includes("hieu chinh") && !n.includes("chuẩn hóa");
             });
-            localStorage.setItem("mmo_deposits", JSON.stringify(cleaned));
+            const dedupped = deduplicatePlatformDeposits(cleaned);
+            localStorage.setItem("mmo_deposits", JSON.stringify(dedupped));
           }
         }
 
@@ -6764,25 +6853,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const n = String(d.note || d.content || d.id || d.orderId || d.reason || d.type || "").toLowerCase();
         return !n.includes("đồng bộ") && !n.includes("dong bo") && !n.includes("hiệu chỉnh") && !n.includes("hieu chinh") && !n.includes("chuẩn hóa");
       });
-      if (cleanList.length !== list.length) {
-        list = cleanList;
-        try { localStorage.setItem("mmo_deposits", JSON.stringify(list)); } catch(e) {}
-      }
 
-      const seen = new Set(list.map(d => String(d.id || d.orderId || "").trim()).filter(Boolean));
-      let changed = false;
-      INITIAL_COMPLETED_DEPOSITS.forEach(initD => {
-        const dId = String(initD.orderId || initD.id).trim();
-        if (!seen.has(dId)) {
-          seen.add(dId);
-          list.push(initD);
-          changed = true;
-        }
-      });
-      if (changed) {
-        try { localStorage.setItem("mmo_deposits", JSON.stringify(list)); } catch(e) {}
+      // Hợp nhất INITIAL_COMPLETED_DEPOSITS nếu chưa có
+      const combined = cleanList.concat(INITIAL_COMPLETED_DEPOSITS);
+      const dedupped = deduplicatePlatformDeposits(combined);
+
+      if (dedupped.length !== list.length) {
+        try { localStorage.setItem("mmo_deposits", JSON.stringify(dedupped)); } catch(e) {}
       }
-      return list;
+      return dedupped;
     }
     window.getPlatformDepositsLocal = getPlatformDepositsLocal;
 
@@ -29675,18 +29754,22 @@ function syncAllOpenViewsStock(changedProdId) {
         const stored = localStorage.getItem("mmo_withdraw_requests");
         let list = stored ? JSON.parse(stored) : [];
         if (!Array.isArray(list)) list = [];
-        // Lọc bỏ yêu cầu rút demo hoặc dữ liệu mẫu nếu có, chỉ giữ dữ liệu thực tế
-        list = list.filter(w => {
-          if (!w) return false;
+        const seenWdIds = new Set();
+        const cleanList = [];
+        list.forEach(w => {
+          if (!w) return;
           const em = String(w.userEmail || "").toLowerCase().trim();
           const nm = String(w.userName || "").toLowerCase().trim();
-          const id = String(w.id || "").toLowerCase().trim();
-          if (em.includes("demo") || em.includes("sample") || em === "test@gmail.com") return false;
+          const id = String(w.id || "").trim();
+          if (!id || em.includes("demo") || em.includes("sample") || em === "test@gmail.com") return false;
           if (nm.includes("demo") || nm.includes("mẫu")) return false;
           if (id.includes("demo") || id.includes("sample")) return false;
-          return true;
+          if (!seenWdIds.has(id)) {
+            seenWdIds.add(id);
+            cleanList.push(w);
+          }
         });
-        return list;
+        return cleanList;
       } catch(e) {
         return [];
       }
@@ -29698,10 +29781,9 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.saveWithdrawRequests = saveWithdrawRequests;
 
-    // Helper: Lấy danh sách giao dịch nạp tiền thành công toàn sàn (Dữ liệu thực tế 100%, không demo)
+    // Helper: Lấy danh sách giao dịch nạp tiền thành công toàn sàn (Khử trùng lặp 100%, đồng nhất SePay & Order)
     function getPlatformDeposits() {
-      const depositList = [];
-      const seenDepositIds = new Set();
+      const rawAllDeposits = [];
 
       // 1. From localStorage 'mmo_deposits' & INITIAL_COMPLETED_DEPOSITS
       try {
@@ -29713,11 +29795,7 @@ function syncAllOpenViewsStock(changedProdId) {
             if (!d) return;
             const st = String(d.status || "").toLowerCase();
             if (st.includes("thành công") || st.includes("success") || st.includes("completed") || st.includes("paid") || !st) {
-              const cleanId = String(d.id || d.orderId || d.code || "").trim();
-              if (cleanId && !seenDepositIds.has(cleanId)) {
-                seenDepositIds.add(cleanId);
-                depositList.push(d);
-              }
+              rawAllDeposits.push(d);
             }
           });
         }
@@ -29732,24 +29810,21 @@ function syncAllOpenViewsStock(changedProdId) {
           const chNoteLow = String(ch.note || ch.content || ch.reason || "").toLowerCase();
           if (!chNoteLow.includes("đồng bộ") && !chNoteLow.includes("dong bo") && !chNoteLow.includes("hiệu chỉnh") && !chNoteLow.includes("chuẩn hóa") && (t.includes("nạp") || t.includes("vietqr") || t.includes("sepay")) && (!st || st.includes("thành công") || st.includes("success") || !st)) {
             const cleanId = String(ch.id || ch.orderId || "").trim();
-            if (cleanId && !seenDepositIds.has(cleanId)) {
-              seenDepositIds.add(cleanId);
-              depositList.push({
-                id: cleanId,
-                orderId: cleanId,
-                userEmail: ch.userEmail || ch.email || "khachhang@gmail.com",
-                userName: ch.userName || ch.name || "Khách Hàng",
-                type: "Nạp tiền VietQR / SePay",
-                amount: Number(ch.amount) || 0,
-                bankName: ch.bank || "MBBank (VietQR SePay)",
-                bankAcc: ch.bankAcc || "0988888888",
-                bankOwner: "NGUYEN MANH DONG",
-                time: ch.time || ch.date || (new Date().toLocaleDateString("vi-VN")),
-                status: "Thành công",
-                handledBy: "Tự động SePay 24/7",
-                note: ch.note || ch.content || "Nạp tiền tự động qua VietQR"
-              });
-            }
+            rawAllDeposits.push({
+              id: cleanId,
+              orderId: cleanId,
+              userEmail: ch.userEmail || ch.email || "khachhang@gmail.com",
+              userName: ch.userName || ch.name || "Khách Hàng",
+              type: "Nạp tiền VietQR / SePay",
+              amount: Number(ch.amount) || 0,
+              bankName: ch.bank || "MBBank (VietQR SePay)",
+              bankAcc: ch.bankAcc || "0988888888",
+              bankOwner: "NGUYEN MANH DONG",
+              time: ch.time || ch.date || (new Date().toLocaleDateString("vi-VN")),
+              status: "Thành công",
+              handledBy: "Tự động SePay 24/7",
+              note: ch.note || ch.content || "Nạp tiền tự động qua VietQR"
+            });
           }
         });
       }
@@ -29764,24 +29839,21 @@ function syncAllOpenViewsStock(changedProdId) {
           const txNoteLow = String(tx.note || tx.reason || tx.type || "").toLowerCase();
           if (amt > 0 && !txNoteLow.includes("đồng bộ") && !txNoteLow.includes("dong bo") && !txNoteLow.includes("hiệu chỉnh") && !txNoteLow.includes("chuẩn hóa") && (t.includes("nạp") || t.includes("sepay") || t.includes("vietqr") || t.includes("cộng tiền") || t.includes("topup"))) {
             const cleanId = String(tx.txId || tx.id || "").trim();
-            if (cleanId && !seenDepositIds.has(cleanId)) {
-              seenDepositIds.add(cleanId);
-              depositList.push({
-                id: cleanId,
-                orderId: cleanId,
-                userEmail: tx.userEmail || "khachhang@gmail.com",
-                userName: tx.userName || "Khách Hàng",
-                type: tx.type || "Nạp tiền VietQR / SePay",
-                amount: amt,
-                bankName: "MBBank (VietQR SePay)",
-                bankAcc: "0988888888",
-                bankOwner: "NGUYEN MANH DONG",
-                time: tx.time || tx.date || (new Date().toLocaleDateString("vi-VN")),
-                status: "Thành công",
-                handledBy: t.includes("admin") ? "Admin" : "Tự động SePay 24/7",
-                note: tx.note || "Nạp tiền tự động qua VietQR"
-              });
-            }
+            rawAllDeposits.push({
+              id: cleanId,
+              orderId: cleanId,
+              userEmail: tx.userEmail || "khachhang@gmail.com",
+              userName: tx.userName || "Khách Hàng",
+              type: tx.type || "Nạp tiền VietQR / SePay",
+              amount: amt,
+              bankName: "MBBank (VietQR SePay)",
+              bankAcc: "0988888888",
+              bankOwner: "NGUYEN MANH DONG",
+              time: tx.time || tx.date || (new Date().toLocaleDateString("vi-VN")),
+              status: "Thành công",
+              handledBy: t.includes("admin") ? "Admin" : "Tự động SePay 24/7",
+              note: tx.note || "Nạp tiền tự động qua VietQR"
+            });
           }
         });
       } catch(e) {}
@@ -29798,38 +29870,35 @@ function syncAllOpenViewsStock(changedProdId) {
               const lgNoteLow = String(lg.reason || lg.description || lg.note || lg.type || "").toLowerCase();
               if (amt > 0 && !lgNoteLow.includes("đồng bộ") && !lgNoteLow.includes("dong bo") && !lgNoteLow.includes("hiệu chỉnh") && !lgNoteLow.includes("chuẩn hóa") && (t.includes("nạp") || t.includes("deposit") || t.includes("cộng tiền"))) {
                 const cleanId = String(lg.id || ("DEP_LOG_" + idx)).trim();
-                if (cleanId && !seenDepositIds.has(cleanId)) {
-                  seenDepositIds.add(cleanId);
-                  depositList.push({
-                    id: cleanId,
-                    orderId: cleanId,
-                    userEmail: lg.userEmail || lg.email || "khachhang@gmail.com",
-                    userName: lg.userName || lg.name || "Khách Hàng",
-                    type: "Nạp tiền VietQR / SePay",
-                    amount: amt,
-                    bankName: "MBBank (VietQR SePay)",
-                    bankAcc: "0988888888",
-                    bankOwner: "NGUYEN MANH DONG",
-                    time: lg.time || lg.date || (new Date().toLocaleDateString("vi-VN")),
-                    status: "Thành công",
-                    handledBy: "Tự động SePay 24/7",
-                    note: lg.reason || lg.description || "Nạp tiền thành công"
-                  });
-                }
+                rawAllDeposits.push({
+                  id: cleanId,
+                  orderId: cleanId,
+                  userEmail: lg.userEmail || lg.email || "khachhang@gmail.com",
+                  userName: lg.userName || lg.name || "Khách Hàng",
+                  type: "Nạp tiền VietQR / SePay",
+                  amount: amt,
+                  bankName: "MBBank (VietQR SePay)",
+                  bankAcc: "0988888888",
+                  bankOwner: "NGUYEN MANH DONG",
+                  time: lg.time || lg.date || (new Date().toLocaleDateString("vi-VN")),
+                  status: "Thành công",
+                  handledBy: "Tự động SePay 24/7",
+                  note: lg.reason || lg.description || "Nạp tiền thành công"
+                });
               }
             });
           }
         }
       } catch(e) {}
 
-      return depositList;
+      // KHỬ TRÙNG LẶP TRIỆT ĐỂ: Gộp SePay ID và Order DH... thành 1 bản ghi duy nhất
+      return deduplicatePlatformDeposits(rawAllDeposits);
     }
     window.getPlatformDeposits = getPlatformDeposits;
 
     // Helper: Tổng hợp toàn bộ biến động số dư ví toàn sàn
     function getAllPlatformWalletTransactions() {
-      const txList = [];
-      const seenMap = new Map();
+      const rawItems = [];
 
       // 1. Transaction History (mmo_transaction_history)
       try {
@@ -29840,22 +29909,18 @@ function syncAllOpenViewsStock(changedProdId) {
           const amt = Number(tx.amount) || 0;
           const tNoteLow = String(tx.note || tx.type || tx.reason || "").toLowerCase();
           if (tNoteLow.includes("đồng bộ") || tNoteLow.includes("dong bo") || tNoteLow.includes("hiệu chỉnh") || tNoteLow.includes("chuẩn hóa")) return;
-          const key = (tId || "TX") + "_" + (tx.type || "") + "_" + (tx.userEmail || "") + "_" + amt;
-          if (!seenMap.has(key)) {
-            seenMap.set(key, true);
-            txList.push({
-              id: tId || ("TX" + Math.floor(10000000 + Math.random() * 90000000)),
-              txId: tId,
-              orderId: tx.orderId || "",
-              userEmail: tx.userEmail || "khach@gmail.com",
-              userName: tx.userName || (tx.userEmail ? tx.userEmail.split("@")[0] : "Khách Hàng"),
-              type: tx.type || (amt > 0 ? "Nạp tiền ví" : "Thanh toán mua hàng"),
-              amount: amt,
-              balanceAfter: tx.balanceAfter !== undefined && tx.balanceAfter !== null ? tx.balanceAfter : null,
-              time: tx.time || tx.date || (new Date().toLocaleDateString("vi-VN")),
-              note: tx.note || ""
-            });
-          }
+          rawItems.push({
+            id: tId || ("TX" + Math.floor(10000000 + Math.random() * 90000000)),
+            txId: tId,
+            orderId: tx.orderId || "",
+            userEmail: tx.userEmail || "khach@gmail.com",
+            userName: tx.userName || (tx.userEmail ? tx.userEmail.split("@")[0] : "Khách Hàng"),
+            type: tx.type || (amt > 0 ? "Nạp tiền ví" : "Thanh toán mua hàng"),
+            amount: amt,
+            balanceAfter: tx.balanceAfter !== undefined && tx.balanceAfter !== null ? tx.balanceAfter : null,
+            time: tx.time || tx.date || (new Date().toLocaleDateString("vi-VN")),
+            note: tx.note || ""
+          });
         });
       } catch(e) {}
 
@@ -29871,22 +29936,18 @@ function syncAllOpenViewsStock(changedProdId) {
               const lgNoteLow = String(lg.reason || lg.description || lg.note || lg.type || "").toLowerCase();
               if (lgNoteLow.includes("đồng bộ") || lgNoteLow.includes("dong bo") || lgNoteLow.includes("hiệu chỉnh") || lgNoteLow.includes("chuẩn hóa")) return;
               const lgId = String(lg.id || ("BL_" + idx)).trim();
-              const key = lgId + "_" + (lg.type || lg.reason || "") + "_" + (lg.userEmail || "") + "_" + amt;
-              if (!seenMap.has(key)) {
-                seenMap.set(key, true);
-                txList.push({
-                  id: lgId,
-                  txId: lgId,
-                  orderId: lg.orderId || "",
-                  userEmail: lg.userEmail || lg.email || "khach@gmail.com",
-                  userName: lg.userName || lg.name || "Khách Hàng",
-                  type: lg.type || (amt > 0 ? "Cộng tiền ví" : "Trừ tiền ví"),
-                  amount: amt,
-                  balanceAfter: lg.balanceAfter !== undefined && lg.balanceAfter !== null ? lg.balanceAfter : null,
-                  time: lg.time || lg.date || (new Date().toLocaleDateString("vi-VN")),
-                  note: lg.reason || lg.description || ""
-                });
-              }
+              rawItems.push({
+                id: lgId,
+                txId: lgId,
+                orderId: lg.orderId || "",
+                userEmail: lg.userEmail || lg.email || "khach@gmail.com",
+                userName: lg.userName || lg.name || "Khách Hàng",
+                type: lg.type || (amt > 0 ? "Cộng tiền ví" : "Trừ tiền ví"),
+                amount: amt,
+                balanceAfter: lg.balanceAfter !== undefined && lg.balanceAfter !== null ? lg.balanceAfter : null,
+                time: lg.time || lg.date || (new Date().toLocaleDateString("vi-VN")),
+                note: lg.reason || lg.description || ""
+              });
             });
           }
         }
@@ -29905,46 +29966,36 @@ function syncAllOpenViewsStock(changedProdId) {
           const oTime = o.date || o.createdAt || (new Date().toLocaleDateString("vi-VN"));
           const pName = o.productName || o.prodName || "Tài khoản MMO";
 
-          // 3.1. Purchase tx
           if (amt > 0) {
-            const pKey = "ORD_" + oid;
-            if (!seenMap.has(pKey)) {
-              seenMap.set(pKey, true);
-              txList.push({
-                id: pKey,
-                txId: pKey,
-                orderId: oid,
-                userEmail: uEmail,
-                userName: uName,
-                type: "Thanh toán mua hàng",
-                amount: -amt,
-                balanceAfter: o.balanceAfter !== undefined ? o.balanceAfter : null,
-                time: oTime,
-                note: "Mua SP: " + pName + (o.variantName && o.variantName !== "Mặc định" ? " (" + o.variantName + ")" : "") + " - Đơn #" + oid
-              });
-            }
+            rawItems.push({
+              id: "ORD_" + oid,
+              txId: "ORD_" + oid,
+              orderId: oid,
+              userEmail: uEmail,
+              userName: uName,
+              type: "Thanh toán mua hàng",
+              amount: -amt,
+              balanceAfter: o.balanceAfter !== undefined ? o.balanceAfter : null,
+              time: oTime,
+              note: "Mua SP: " + pName + (o.variantName && o.variantName !== "Mặc định" ? " (" + o.variantName + ")" : "") + " - Đơn #" + oid
+            });
           }
 
-          // 3.2. Refund tx if refunded
           const st = String(o.status || "").toLowerCase();
           if (o.isRefunded || o.refundedAt || o.refundAmount || st.includes("hoàn tiền") || st.includes("refund")) {
-            const refKey = "REFUND_" + oid;
             const refAmt = Number(o.refundAmount || amt) || 15000;
-            if (!seenMap.has(refKey)) {
-              seenMap.set(refKey, true);
-              txList.push({
-                id: refKey,
-                txId: refKey,
-                orderId: oid,
-                userEmail: uEmail,
-                userName: uName,
-                type: "Hoàn tiền bảo hành & đổi trả",
-                amount: +refAmt,
-                balanceAfter: o.refundBalanceAfter !== undefined ? o.refundBalanceAfter : null,
-                time: o.refundedAt || oTime,
-                note: "Hoàn tiền bảo hành đơn #" + oid + " (" + pName + ")"
-              });
-            }
+            rawItems.push({
+              id: "REFUND_" + oid,
+              txId: "REFUND_" + oid,
+              orderId: oid,
+              userEmail: uEmail,
+              userName: uName,
+              type: "Hoàn tiền bảo hành & đổi trả",
+              amount: +refAmt,
+              balanceAfter: o.refundBalanceAfter !== undefined ? o.refundBalanceAfter : null,
+              time: o.refundedAt || oTime,
+              note: "Hoàn tiền bảo hành đơn #" + oid + " (" + pName + ")"
+            });
           }
         });
       } catch(e) {}
@@ -29962,42 +30013,34 @@ function syncAllOpenViewsStock(changedProdId) {
           const poTime = po.createdAt || po.date || (new Date().toLocaleDateString("vi-VN"));
 
           if (pAmt > 0) {
-            const poKey = "TX_PO_" + poid;
-            if (!seenMap.has(poKey)) {
-              seenMap.set(poKey, true);
-              txList.push({
-                id: poKey,
-                txId: poKey,
-                orderId: poid,
-                userEmail: puEmail,
-                userName: puName,
-                type: "Thanh toán đặt hàng trước",
-                amount: -pAmt,
-                balanceAfter: po.balanceAfter !== undefined ? po.balanceAfter : null,
-                time: poTime,
-                note: "Đặt trước " + (po.quantity || 1) + "x " + (po.productName || "Sản phẩm") + " - Đơn #" + poid
-              });
-            }
+            rawItems.push({
+              id: "TX_PO_" + poid,
+              txId: "TX_PO_" + poid,
+              orderId: poid,
+              userEmail: puEmail,
+              userName: puName,
+              type: "Thanh toán đặt hàng trước",
+              amount: -pAmt,
+              balanceAfter: po.balanceAfter !== undefined ? po.balanceAfter : null,
+              time: poTime,
+              note: "Đặt trước " + (po.quantity || 1) + "x " + (po.productName || "Sản phẩm") + " - Đơn #" + poid
+            });
           }
 
           if (po.status === "CANCELLED" || po.isRefunded) {
-            const poRefKey = "REFUND_PO_" + poid;
             const refAmt = Number(po.refundAmount || pAmt);
-            if (!seenMap.has(poRefKey)) {
-              seenMap.set(poRefKey, true);
-              txList.push({
-                id: poRefKey,
-                txId: poRefKey,
-                orderId: poid,
-                userEmail: puEmail,
-                userName: puName,
-                type: "Hoàn tiền hủy đơn đặt trước",
-                amount: +refAmt,
-                balanceAfter: po.refundBalanceAfter !== undefined ? po.refundBalanceAfter : null,
-                time: po.refundedAt || po.updatedAt || poTime,
-                note: "Hoàn tiền 100% hủy đơn đặt trước #" + poid
-              });
-            }
+            rawItems.push({
+              id: "REFUND_PO_" + poid,
+              txId: "REFUND_PO_" + poid,
+              orderId: poid,
+              userEmail: puEmail,
+              userName: puName,
+              type: "Hoàn tiền hủy đơn đặt trước",
+              amount: +refAmt,
+              balanceAfter: po.refundBalanceAfter !== undefined ? po.refundBalanceAfter : null,
+              time: po.refundedAt || po.updatedAt || poTime,
+              note: "Hoàn tiền 100% hủy đơn đặt trước #" + poid
+            });
           }
         });
       } catch(e) {}
@@ -30009,50 +30052,81 @@ function syncAllOpenViewsStock(changedProdId) {
           if (!w) return;
           const wid = String(w.id || "").trim();
           const wAmt = Number(w.amount) || 0;
-          const wKey = "WD_" + wid;
-          if (!seenMap.has(wKey)) {
-            seenMap.set(wKey, true);
-            txList.push({
-              id: wKey,
-              txId: wid,
-              orderId: wid,
-              userEmail: w.userEmail || "khach@gmail.com",
-              userName: w.userName || "Khách Hàng",
-              type: "Rút tiền ngân hàng",
-              amount: -wAmt,
-              balanceAfter: w.status === "Đã từ chối (Hoàn tiền)" ? "Đã hoàn" : "Đã trừ",
-              time: w.time || (new Date().toLocaleDateString("vi-VN")),
-              note: "Rút tiền về STK: " + (w.bankAcc || "") + " (" + (w.bankName || "") + ") - " + (w.status || "Chờ Duyệt")
-            });
-          }
+          rawItems.push({
+            id: "WD_" + wid,
+            txId: wid,
+            orderId: wid,
+            userEmail: w.userEmail || "khach@gmail.com",
+            userName: w.userName || "Khách Hàng",
+            type: "Rút tiền ngân hàng",
+            amount: -wAmt,
+            balanceAfter: w.status === "Đã từ chối (Hoàn tiền)" ? "Đã hoàn" : "Đã trừ",
+            time: w.time || (new Date().toLocaleDateString("vi-VN")),
+            note: "Rút tiền về STK: " + (w.bankAcc || "") + " (" + (w.bankName || "") + ") - " + (w.status || "Chờ Duyệt")
+          });
         });
       } catch(e) {}
 
-      // 6. Deposits
+      // 6. Deposits (deduplicated)
       try {
         const deps = typeof getPlatformDeposits === "function" ? getPlatformDeposits() : [];
         deps.forEach(d => {
           if (!d) return;
           const did = String(d.id || d.orderId || "").trim();
           const dAmt = Number(d.amount) || 0;
-          const dKey = "DEP_" + did;
-          if (!seenMap.has(dKey)) {
-            seenMap.set(dKey, true);
-            txList.push({
-              id: dKey,
-              txId: did,
-              orderId: did,
-              userEmail: d.userEmail || "khach@gmail.com",
-              userName: d.userName || "Khách Hàng",
-              type: d.type || "Nạp tiền VietQR / SePay",
-              amount: +dAmt,
-              balanceAfter: null,
-              time: d.time || (new Date().toLocaleDateString("vi-VN")),
-              note: d.note || "Nạp tiền tự động qua VietQR SePay"
-            });
-          }
+          rawItems.push({
+            id: "DEP_" + did,
+            txId: did,
+            orderId: did,
+            userEmail: d.userEmail || "khach@gmail.com",
+            userName: d.userName || "Khách Hàng",
+            type: d.type || "Nạp tiền VietQR / SePay",
+            amount: +dAmt,
+            balanceAfter: null,
+            time: d.time || (new Date().toLocaleDateString("vi-VN")),
+            note: d.note || "Nạp tiền tự động qua VietQR SePay"
+          });
         });
       } catch(e) {}
+
+      // BƯỚC KHỬ TRÙNG LẶP TOÀN SÀN THÔNG MINH (SMART GLOBAL DEDUPLICATION)
+      const dedupMap = new Map();
+      rawItems.forEach(item => {
+        const amt = Number(item.amount) || 0;
+        const uEmail = String(item.userEmail || "").toLowerCase().trim();
+        const rawStr = ((item.orderId || '') + ' ' + (item.note || '') + ' ' + (item.id || '') + ' ' + (item.txId || '')).trim();
+        const dhMatch = rawStr.match(/(DH\d+|NAP[\d\w_]+)/i);
+        const wdMatch = rawStr.match(/(WD[\d\w_]+)/i);
+        const typeStr = String(item.type || '').toLowerCase();
+
+        let dedupKey = "";
+        if (dhMatch) {
+          dedupKey = "DEP_" + dhMatch[1].toUpperCase();
+        } else if (wdMatch) {
+          dedupKey = "WD_" + wdMatch[1].toUpperCase();
+        } else if (typeStr.includes("rút tiền") || typeStr.includes("rut tien")) {
+          dedupKey = "WD_" + uEmail + "_" + Math.abs(amt);
+        } else if (item.orderId && !item.orderId.startsWith("TX_")) {
+          dedupKey = (amt > 0 ? "INC_" : "DEC_") + item.orderId;
+        } else if (item.id && !item.id.startsWith("TX_BL_") && !item.id.startsWith("BL_")) {
+          dedupKey = "ID_" + item.id;
+        } else {
+          dedupKey = "TX_" + uEmail + "_" + (item.time || "") + "_" + amt;
+        }
+
+        if (!dedupMap.has(dedupKey)) {
+          dedupMap.set(dedupKey, item);
+        } else {
+          const cur = dedupMap.get(dedupKey);
+          if ((!cur.balanceAfter && item.balanceAfter) || (item.note && item.note.includes("Đã duyệt"))) {
+            dedupMap.set(dedupKey, item);
+          } else if ((item.note || '').length > (cur.note || '').length) {
+            dedupMap.set(dedupKey, item);
+          }
+        }
+      });
+
+      const txList = Array.from(dedupMap.values());
 
       function parseDateForSort(str) {
         if (!str) return 0;
@@ -30519,8 +30593,31 @@ function syncAllOpenViewsStock(changedProdId) {
       item.handledTime = new Date().toLocaleDateString("vi-VN") + " " + new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
       saveWithdrawRequests(list);
 
-      // Record platform transaction log
-      recordTransaction(item.userEmail, item.userName, "Rút tiền ngân hàng", -item.amount, "Đã chi", "Duyệt & Chuyển QR bởi Admin: " + adminName + " | STK: " + item.bankAcc + " (" + item.bankName + ")");
+      // CẬP NHẬT LỊCH SỬ GIAO DỊCH (Tránh nhân đôi bản ghi rút tiền: chỉ cập nhật trạng thái đơn rút hiện có)
+      let txHistory = [];
+      try { txHistory = JSON.parse(localStorage.getItem("mmo_transaction_history") || "[]"); } catch(e) {}
+      let foundPendingTx = false;
+      for (let i = 0; i < txHistory.length; i++) {
+        const tx = txHistory[i];
+        if (!tx) continue;
+        const txNote = String(tx.note || "");
+        const txType = String(tx.type || "");
+        const isMatchUser = (tx.userEmail || "").toLowerCase().trim() === (item.userEmail || "").toLowerCase().trim();
+        const isMatchAmt = Math.abs(Number(tx.amount)) === Math.abs(Number(item.amount));
+        const isMatchWd = tx.id === wdId || tx.txId === wdId || txNote.includes(wdId) || txType.includes("rút");
+        if (isMatchUser && isMatchAmt && isMatchWd) {
+          tx.type = "Rút tiền ngân hàng";
+          tx.status = "Thành công";
+          tx.note = "Duyệt & Chuyển QR bởi Admin: " + adminName + " | STK: " + item.bankAcc + " (" + item.bankName + ")";
+          foundPendingTx = true;
+          break;
+        }
+      }
+      if (foundPendingTx) {
+        try { localStorage.setItem("mmo_transaction_history", JSON.stringify(txHistory)); } catch(e) {}
+      } else {
+        recordTransaction(item.userEmail, item.userName, "Rút tiền ngân hàng", -item.amount, "Đã chi", "Duyệt & Chuyển QR bởi Admin: " + adminName + " | STK: " + item.bankAcc + " (" + item.bankName + ")");
+      }
 
       closeModal("adminWithdrawQrModal");
       currentApproveWithdrawItem = null;
@@ -30578,6 +30675,23 @@ function syncAllOpenViewsStock(changedProdId) {
         localStorage.setItem("mmo_user", JSON.stringify(currentUser));
         updateUserUI();
       }
+
+      // Cập nhật trạng thái giao dịch rút tiền bị từ chối trong lịch sử
+      let txHistory = [];
+      try { txHistory = JSON.parse(localStorage.getItem("mmo_transaction_history") || "[]"); } catch(e) {}
+      for (let i = 0; i < txHistory.length; i++) {
+        const tx = txHistory[i];
+        if (!tx) continue;
+        const txNote = String(tx.note || "");
+        const isMatchUser = (tx.userEmail || "").toLowerCase().trim() === (item.userEmail || "").toLowerCase().trim();
+        const isMatchWd = tx.id === wdId || tx.txId === wdId || txNote.includes(wdId);
+        if (isMatchUser && isMatchWd) {
+          tx.type = "Rút tiền (Đã từ chối)";
+          tx.note = "Từ chối bởi Admin " + adminName + " - Lý do: " + (reason || "Thông tin không hợp lệ") + " (Đã hoàn +" + formatVND(item.amount) + " vào ví)";
+          break;
+        }
+      }
+      try { localStorage.setItem("mmo_transaction_history", JSON.stringify(txHistory)); } catch(e) {}
 
       // Record refund log
       recordTransaction(item.userEmail, item.userName, "Hoàn tiền rút (Từ chối)", item.amount, newBal, "Từ chối bởi Admin " + adminName + " - Lý do: " + (reason || "Thông tin không hợp lệ"));
@@ -30831,7 +30945,7 @@ function syncAllOpenViewsStock(changedProdId) {
       saveWithdrawRequests(wdList);
 
       // Record platform transaction log
-      recordTransaction(currentUser.email, currentUser.name, "Yêu cầu rút tiền", -amount, currentUser.balance, "Đang chờ duyệt | STK: " + bankAcc + " (" + bankName + ")");
+      recordTransaction(currentUser.email, currentUser.name, "Yêu cầu rút tiền", -amount, currentUser.balance, "Mã rút " + wdId + " - Đang chờ duyệt | STK: " + bankAcc + " (" + bankName + ")");
 
       updateUserUI();
       closeModal("withdrawModal");
