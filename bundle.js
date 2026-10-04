@@ -8313,6 +8313,539 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
     } catch(e) {}
 
+    // =========================================================================
+    // QUẢN LÝ THỐNG KÊ & LỊCH SỬ CHI TRẢ AFFILIATE TOÀN SÀN (ADMIN PANEL)
+    // =========================================================================
+    var currentAdminAffFilter = "ALL";
+    var currentAdminAffSearch = "";
+
+    function getAllAffiliatePayoutRecords() {
+      let affOrders = [];
+      try {
+        const raw = localStorage.getItem("mmo_affiliate_orders");
+        affOrders = raw ? JSON.parse(raw) : [];
+      } catch(e) {
+        affOrders = [];
+      }
+      if (!Array.isArray(affOrders)) affOrders = [];
+
+      // Quét thêm từ mmo_transaction_history để bảo đảm đồng bộ 100% với Card 4 Dashboard
+      try {
+        const txHistory = (typeof getTransactionHistory === "function") ? getTransactionHistory() : JSON.parse(localStorage.getItem("mmo_transaction_history") || "[]");
+        if (Array.isArray(txHistory)) {
+          txHistory.forEach(function(tx) {
+            if (!tx) return;
+            const typeStr = ((tx.type || "") + " " + (tx.note || "")).toLowerCase();
+            if (typeStr.includes("hoa hồng") || typeStr.includes("affiliate") || typeStr.includes("giới thiệu")) {
+              const amt = Math.abs(Number(tx.amount) || 0);
+              if (amt > 0) {
+                const alreadyExists = affOrders.some(function(a) {
+                  if (tx.orderId && a.orderId === tx.orderId) return true;
+                  if (a.id === tx.id || a.id === tx.txId) return true;
+                  if (a.orderId && (tx.note || "").includes(a.orderId)) return true;
+                  return false;
+                });
+                if (!alreadyExists) {
+                  const mOrder = String(tx.note || "").match(/(?:đơn|#)([A-Za-z0-9_-]+)/i);
+                  const extractedOrderId = mOrder ? mOrder[1] : (tx.orderId || tx.id || "AFF_TX");
+                  let buyerEmail = tx.buyerEmail || "";
+                  const mBuyer = String(tx.note || "").match(/F1\s*\(([^)]+)\)/i);
+                  if (mBuyer) buyerEmail = mBuyer[1];
+                  if (!buyerEmail) buyerEmail = "Thành viên F1";
+
+                  let rEmail = (tx.userEmail || tx.email || "admin@gmail.com").toLowerCase().trim();
+                  let rName = tx.userName || tx.name || rEmail.split("@")[0];
+
+                  let txTs = Date.now();
+                  if (tx.time) {
+                    const parsedTs = new Date(tx.time).getTime();
+                    if (!isNaN(parsedTs)) txTs = parsedTs;
+                  }
+
+                  affOrders.push({
+                    id: tx.id || tx.txId || ("TX_AFF_" + txTs),
+                    orderId: extractedOrderId,
+                    buyerEmail: buyerEmail,
+                    buyerName: tx.buyerName || buyerEmail.split("@")[0],
+                    referrerEmail: rEmail,
+                    referrerCode: tx.refCode || rEmail.split("@")[0],
+                    referrerName: rName,
+                    productId: tx.productId || "",
+                    productName: tx.productName || (tx.note ? tx.note : "Hoa hồng tiếp thị liên kết"),
+                    variant: tx.variant || "Mặc định",
+                    orderTotal: tx.orderTotal || amt,
+                    commissionRate: tx.commissionRate || 10,
+                    commissionAmount: amt,
+                    createdAt: txTs,
+                    time: tx.time || "",
+                    holdUntil: txTs,
+                    holdDays: 3,
+                    status: "APPROVED",
+                    statusText: "Đã cộng vào ví",
+                    settledAt: txTs,
+                    cancelledAt: null,
+                    cancelReason: "",
+                    isFromTxLog: true
+                  });
+                }
+              }
+            }
+          });
+        }
+      } catch(eTx) {
+        console.warn("getAllAffiliatePayoutRecords txHistory scan error:", eTx);
+      }
+
+      affOrders.sort(function(a, b) {
+        const tA = Number(a.createdAt) || 0;
+        const tB = Number(b.createdAt) || 0;
+        return tB - tA;
+      });
+      return affOrders;
+    }
+    window.getAllAffiliatePayoutRecords = getAllAffiliatePayoutRecords;
+
+    function handleFilterAdminAffiliate(status) {
+      currentAdminAffFilter = status || "ALL";
+      if (typeof paginationState !== "undefined") {
+        paginationState.admAffiliate = 1;
+      }
+      document.querySelectorAll("#tabAdmAffiliate .adm-filter-btn").forEach(function(b) {
+        b.classList.remove("active");
+        b.style.background = "#0f172a";
+        b.style.borderColor = "#1e293b";
+        b.style.color = "#ffffff";
+      });
+      const btnMap = {
+        ALL: "btnAffFilterAll",
+        HOLDING: "btnAffFilterHolding",
+        APPROVED: "btnAffFilterApproved",
+        CANCELLED: "btnAffFilterCancelled"
+      };
+      const activeBtn = document.getElementById(btnMap[currentAdminAffFilter]);
+      if (activeBtn) {
+        activeBtn.classList.add("active");
+        activeBtn.style.background = "#1e293b";
+        activeBtn.style.borderColor = "#f43f5e";
+      }
+      renderAdminAffiliateTable();
+    }
+    window.handleFilterAdminAffiliate = handleFilterAdminAffiliate;
+
+    function handleSearchAdminAffiliate(query) {
+      currentAdminAffSearch = (query || "").trim().toLowerCase();
+      if (typeof paginationState !== "undefined") {
+        paginationState.admAffiliate = 1;
+      }
+      renderAdminAffiliateTable();
+    }
+    window.handleSearchAdminAffiliate = handleSearchAdminAffiliate;
+
+    function changeAdmAffiliatePage(p) {
+      if (typeof paginationState !== "undefined") {
+        paginationState.admAffiliate = p;
+      }
+      renderAdminAffiliateTable();
+      const el = document.getElementById("tabAdmAffiliate");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    window.changeAdmAffiliatePage = changeAdmAffiliatePage;
+
+    function renderAdminAffiliateTable() {
+      const tbody = document.getElementById("admAffiliateTableBody");
+      if (!tbody) return;
+
+      if (typeof processAffiliateSettlement === "function") {
+        try { processAffiliateSettlement(); } catch(eS) {}
+      }
+
+      const allRecords = getAllAffiliatePayoutRecords();
+
+      // Tính toán các chỉ số KPI
+      let totalPayout = 0;
+      let totalHolding = 0;
+      let totalApproved = 0;
+      let totalOrders = 0;
+
+      let countAll = allRecords.length;
+      let countHolding = 0;
+      let countApproved = 0;
+      let countCancelled = 0;
+
+      allRecords.forEach(function(item) {
+        const amt = Number(item.commissionAmount) || 0;
+        const st = String(item.status || "").toUpperCase();
+
+        if (st === "HOLDING") {
+          countHolding++;
+          totalHolding += amt;
+          totalPayout += amt;
+          totalOrders++;
+        } else if (st === "APPROVED") {
+          countApproved++;
+          totalApproved += amt;
+          totalPayout += amt;
+          totalOrders++;
+        } else if (st === "CANCELLED") {
+          countCancelled++;
+        } else {
+          totalPayout += amt;
+          totalOrders++;
+        }
+      });
+
+      // Cập nhật 4 Card KPI
+      const elTotal = document.getElementById("admStatAffTotalPayout");
+      if (elTotal) elTotal.innerText = (typeof formatVND === "function") ? formatVND(totalPayout) : (totalPayout.toLocaleString("vi-VN") + " đ");
+
+      const elHolding = document.getElementById("admStatAffHolding");
+      if (elHolding) elHolding.innerText = (typeof formatVND === "function") ? formatVND(totalHolding) : (totalHolding.toLocaleString("vi-VN") + " đ");
+
+      const elApproved = document.getElementById("admStatAffApproved");
+      if (elApproved) elApproved.innerText = (typeof formatVND === "function") ? formatVND(totalApproved) : (totalApproved.toLocaleString("vi-VN") + " đ");
+
+      const elOrders = document.getElementById("admStatAffTotalOrders");
+      if (elOrders) elOrders.innerText = totalOrders + " đơn";
+
+      // Đồng bộ với Card 4 Dashboard nếu có
+      const elCard4 = document.getElementById("ovwAffiliatePayout");
+      if (elCard4) elCard4.innerText = (typeof formatVND === "function") ? formatVND(totalPayout) : (totalPayout.toLocaleString("vi-VN") + " đ");
+
+      // Cập nhật số lượng trên các nút bộ lọc
+      const badgeAll = document.getElementById("badgeAffAll");
+      if (badgeAll) badgeAll.innerText = countAll;
+      const badgeHolding = document.getElementById("badgeAffHolding");
+      if (badgeHolding) badgeHolding.innerText = countHolding;
+      const badgeApproved = document.getElementById("badgeAffApproved");
+      if (badgeApproved) badgeApproved.innerText = countApproved;
+      const badgeCancelled = document.getElementById("badgeAffCancelled");
+      if (badgeCancelled) badgeCancelled.innerText = countCancelled;
+
+      // Cập nhật Nav Badge trên Sidebar Admin
+      const navBadge = document.getElementById("admAffNavBadge");
+      if (navBadge) {
+        if (countHolding > 0) {
+          navBadge.style.display = "inline-block";
+          navBadge.innerText = countHolding;
+        } else {
+          navBadge.style.display = "none";
+        }
+      }
+
+      // Lọc danh sách theo Tab Filter và Tìm kiếm
+      let filtered = allRecords.filter(function(item) {
+        const st = String(item.status || "").toUpperCase();
+        if (currentAdminAffFilter !== "ALL" && st !== currentAdminAffFilter) {
+          return false;
+        }
+        if (currentAdminAffSearch) {
+          const q = currentAdminAffSearch;
+          const matchId = String(item.orderId || item.id || "").toLowerCase().includes(q);
+          const matchRefMail = String(item.referrerEmail || "").toLowerCase().includes(q);
+          const matchRefName = String(item.referrerName || "").toLowerCase().includes(q);
+          const matchBuyerMail = String(item.buyerEmail || "").toLowerCase().includes(q);
+          const matchBuyerName = String(item.buyerName || "").toLowerCase().includes(q);
+          const matchProd = String(item.productName || "").toLowerCase().includes(q);
+          if (!matchId && !matchRefMail && !matchRefName && !matchBuyerMail && !matchBuyerName && !matchProd) {
+            return false;
+          }
+        }
+        return true;
+      });
+
+      // Phân trang chuẩn 10 dòng/trang
+      const pageSize = window.ITEMS_PER_PAGE || 10;
+      const page = (typeof paginationState !== "undefined" && paginationState.admAffiliate) ? paginationState.admAffiliate : 1;
+      const totalPages = Math.ceil(filtered.length / pageSize) || 1;
+      const safePage = Math.max(1, Math.min(page, totalPages));
+      if (typeof paginationState !== "undefined") {
+        paginationState.admAffiliate = safePage;
+      }
+      const startIndex = (safePage - 1) * pageSize;
+      const pageItems = filtered.slice(startIndex, startIndex + pageSize);
+
+      if (pageItems.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:38px 20px; color:#64748b;">' +
+          '<i class="fa-solid fa-coins" style="font-size:2.4rem; color:#334155; margin-bottom:10px; display:block;"></i>' +
+          '<div style="font-size:0.92rem; font-weight:700; color:#94a3b8;">Không có dữ liệu chi trả hoa hồng</div>' +
+          '<div style="font-size:0.78rem; color:#64748b; margin-top:4px;">Chưa phát sinh giao dịch tiếp thị liên kết nào phù hợp với bộ lọc hiện tại.</div>' +
+          '</td></tr>';
+        renderPaginationUI("admAffiliatePagination", safePage, 0, "changeAdmAffiliatePage");
+        return;
+      }
+
+      function formatItemTime(ts) {
+        if (!ts) return "";
+        try {
+          const d = new Date(ts);
+          if (isNaN(d.getTime())) return String(ts);
+          return d.toLocaleDateString("vi-VN") + " " + d.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+        } catch(e) {
+          return String(ts);
+        }
+      }
+
+      tbody.innerHTML = pageItems.map(function(item) {
+        const st = String(item.status || "").toUpperCase();
+        const amt = Number(item.commissionAmount) || 0;
+        const ordTotal = Number(item.orderTotal) || amt;
+        const commRate = item.commissionRate || 10;
+
+        let statusBadge = "";
+        let actionHtml = "";
+        let holdTimelineHtml = "";
+
+        if (st === "HOLDING") {
+          statusBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(245,158,11,0.2); color:#f59e0b; border:1px solid rgba(245,158,11,0.4); white-space:nowrap;"><i class="fa-solid fa-hourglass-half"></i> Tạm Giữ 3 Ngày</span>';
+          holdTimelineHtml = '<div style="font-size:0.75rem; color:#f59e0b;"><i class="fa-solid fa-clock"></i> Tự động duyệt: ' + formatItemTime(item.holdUntil) + '</div>';
+          actionHtml = '<div style="display:flex; gap:6px; justify-content:center; white-space:nowrap;">' +
+            '<button type="button" class="btn-action-copy" onclick="adminInstantApproveAffiliate(\'' + item.id + '\')" style="font-size:0.75rem; padding:5px 10px; background:rgba(16,185,129,0.15); border-color:rgba(16,185,129,0.4); color:#10b981; font-weight:700; cursor:pointer;" title="Quyết toán ngay vào ví người giới thiệu"><i class="fa-solid fa-bolt"></i> Duyệt ngay</button>' +
+            '<button type="button" class="btn-action-copy" onclick="adminCancelAffiliate(\'' + item.id + '\')" style="font-size:0.75rem; padding:5px 10px; background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.4); color:#ef4444; font-weight:700; cursor:pointer;" title="Hủy hoa hồng đơn này"><i class="fa-solid fa-ban"></i> Hủy</button>' +
+            '</div>';
+        } else if (st === "APPROVED") {
+          statusBadge = '<span class="badge-verified" style="font-size:0.72rem; background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4); white-space:nowrap;"><i class="fa-solid fa-circle-check"></i> Đã Quyết Toán</span>';
+          holdTimelineHtml = '<div style="font-size:0.75rem; color:#10b981;"><i class="fa-solid fa-check"></i> Đã cộng ví: ' + formatItemTime(item.settledAt || item.createdAt) + '</div>';
+          actionHtml = '<span style="font-size:0.75rem; color:#10b981; white-space:nowrap;"><i class="fa-solid fa-check-double"></i> Đã cộng vào ví</span>';
+        } else if (st === "CANCELLED") {
+          statusBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.4); white-space:nowrap;"><i class="fa-solid fa-ban"></i> Đã Hủy Hoa Hồng</span>';
+          holdTimelineHtml = '<div style="font-size:0.75rem; color:#ef4444;" title="' + escapeHtml(item.cancelReason || '') + '"><i class="fa-solid fa-circle-xmark"></i> Lý do: ' + escapeHtml(item.cancelReason || 'Đơn hủy/hoàn tiền') + '</div>';
+          actionHtml = '<span style="font-size:0.75rem; color:#64748b; white-space:nowrap;"><i class="fa-solid fa-ban"></i> Đã hủy</span>';
+        } else {
+          statusBadge = '<span class="badge-trust" style="font-size:0.72rem; background:rgba(56,189,248,0.2); color:#38bdf8; border:1px solid rgba(56,189,248,0.4); white-space:nowrap;">' + escapeHtml(st) + '</span>';
+          holdTimelineHtml = '<div style="font-size:0.75rem; color:#94a3b8;">' + formatItemTime(item.createdAt) + '</div>';
+          actionHtml = '<span style="font-size:0.75rem; color:#64748b; white-space:nowrap;">Hoàn tất</span>';
+        }
+
+        const safeOrderId = escapeHtml(String(item.orderId || item.id || '').replace('#', ''));
+        const safeRefEmail = escapeHtml(item.referrerEmail || 'Chưa rõ');
+        const safeRefName = escapeHtml(item.referrerName || safeRefEmail.split('@')[0]);
+        const safeBuyerEmail = escapeHtml(item.buyerEmail || 'Khách vãng lai');
+        const safeBuyerName = escapeHtml(item.buyerName || safeBuyerEmail.split('@')[0]);
+        const safeProdName = escapeHtml(item.productName || 'Tài khoản MMO');
+        const safeVariant = escapeHtml(item.variant || 'Mặc định');
+        const safeCreatedTime = formatItemTime(item.createdAt);
+
+        return '<tr>' +
+          '<td style="white-space:nowrap;">' +
+            '<div style="font-family:monospace; font-weight:700; color:#38bdf8; font-size:0.84rem;">#' + safeOrderId + '</div>' +
+            '<div style="font-size:0.72rem; color:#94a3b8; margin-top:2px;">' + safeCreatedTime + '</div>' +
+          '</td>' +
+          '<td style="white-space:nowrap;">' +
+            '<div style="font-weight:700; color:#fff; font-size:0.85rem;">' + safeRefName + '</div>' +
+            '<div style="font-family:monospace; font-size:0.75rem; color:#38bdf8;">' + safeRefEmail + '</div>' +
+            '<div style="margin-top:2px;"><span style="font-size:0.68rem; color:#cbd5e1; background:#1e293b; padding:1px 6px; border-radius:4px; border:1px solid #334155;">Mã Ref: ' + escapeHtml(item.referrerCode || safeRefEmail.split('@')[0]) + '</span></div>' +
+          '</td>' +
+          '<td style="white-space:nowrap;">' +
+            '<div style="font-weight:600; color:#cbd5e1; font-size:0.83rem;">' + safeBuyerName + '</div>' +
+            '<div style="font-family:monospace; font-size:0.75rem; color:#94a3b8;">' + safeBuyerEmail + '</div>' +
+          '</td>' +
+          '<td>' +
+            '<div style="font-weight:600; color:#fff; font-size:0.83rem; line-height:1.3; max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + safeProdName + '">' + safeProdName + '</div>' +
+            '<div style="font-size:0.72rem; color:#94a3b8; margin-top:2px;">Biến thể: <span style="color:#cbd5e1;">' + safeVariant + '</span></div>' +
+            '<div style="font-size:0.72rem; color:#38bdf8; margin-top:1px;">Tổng đơn: <span style="font-weight:700;">' + ((typeof formatVND === "function") ? formatVND(ordTotal) : (ordTotal.toLocaleString("vi-VN") + " đ")) + '</span></div>' +
+          '</td>' +
+          '<td style="white-space:nowrap;">' +
+            '<div style="font-family:monospace; font-weight:800; color:#f43f5e; font-size:0.95rem;">+' + ((typeof formatVND === "function") ? formatVND(amt) : (amt.toLocaleString("vi-VN") + " đ")) + '</div>' +
+            '<div style="font-size:0.72rem; color:#94a3b8; margin-top:2px;">Tỷ lệ: <span style="color:#f59e0b; font-weight:700;">' + commRate + '%</span></div>' +
+          '</td>' +
+          '<td style="white-space:nowrap;">' + holdTimelineHtml + '</td>' +
+          '<td style="white-space:nowrap;">' + statusBadge + '</td>' +
+          '<td style="text-align:center; white-space:nowrap;">' + actionHtml + '</td>' +
+        '</tr>';
+      }).join("");
+
+      renderPaginationUI("admAffiliatePagination", safePage, filtered.length, "changeAdmAffiliatePage");
+    }
+    window.renderAdminAffiliateTable = renderAdminAffiliateTable;
+
+    function adminInstantApproveAffiliate(recordId) {
+      if (!recordId) return;
+      let affOrders = (typeof getAffiliateOrders === "function") ? getAffiliateOrders() : [];
+      let item = affOrders.find(function(a) { return a.id === recordId; });
+      if (!item) {
+        if (typeof showToast === "function") showToast("Không tìm thấy bản ghi hoa hồng hoặc bản ghi đã được quyết toán từ trước.", "warning");
+        return;
+      }
+      if (item.status === "APPROVED") {
+        if (typeof showToast === "function") showToast("Khoản hoa hồng này đã được quyết toán vào ví trước đó.", "info");
+        return;
+      }
+      if (item.status === "CANCELLED") {
+        if (typeof showToast === "function") showToast("Khoản hoa hồng này đã bị hủy, không thể quyết toán.", "error");
+        return;
+      }
+
+      const amtFormatted = (typeof formatVND === "function") ? formatVND(item.commissionAmount) : (item.commissionAmount + " đ");
+      if (!confirm("Xác nhận duyệt & quyết toán ngay " + amtFormatted + " hoa hồng vào ví cho thành viên " + (item.referrerEmail || item.referrerName) + "?")) {
+        return;
+      }
+
+      const nowTs = Date.now();
+      item.status = "APPROVED";
+      item.statusText = "Đã cộng vào ví (Admin duyệt ngay)";
+      item.settledAt = nowTs;
+
+      // Cộng tiền vào ví thành viên
+      let users = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+      const refEmail = (item.referrerEmail || "").toLowerCase().trim();
+      const uIdx = users.findIndex(function(u) { return (u.email || "").toLowerCase().trim() === refEmail; });
+      let newBal = item.commissionAmount;
+      let rName = item.referrerName || refEmail.split("@")[0];
+
+      if (uIdx !== -1) {
+        users[uIdx].balance = (Number(users[uIdx].balance) || 0) + item.commissionAmount;
+        newBal = users[uIdx].balance;
+        rName = users[uIdx].name || rName;
+      } else {
+        users.push({
+          userId: "USR_" + Math.floor(100000 + Math.random() * 900000),
+          email: refEmail,
+          name: rName,
+          balance: item.commissionAmount,
+          role: "MEMBER"
+        });
+        newBal = item.commissionAmount;
+      }
+
+      if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(users);
+      if (typeof saveAffiliateOrders === "function") saveAffiliateOrders(affOrders);
+
+      // Ghi nhận biến động số dư & transaction log
+      if (typeof recordTransaction === "function") {
+        recordTransaction(
+          refEmail,
+          rName,
+          "Hoa hồng tiếp thị liên kết",
+          item.commissionAmount,
+          newBal,
+          "Admin duyệt quyết toán ngay hoa hồng " + (item.commissionRate || 10) + "% đơn #" + item.orderId
+        );
+      }
+
+      // Cập nhật currentUser nếu đang đăng nhập đúng tài khoản người giới thiệu
+      if (typeof currentUser !== "undefined" && currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === refEmail) {
+        currentUser.balance = newBal;
+        try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(eU) {}
+        if (typeof updateUserUI === "function") updateUserUI();
+      }
+
+      if (typeof showToast === "function") {
+        showToast("Đã duyệt & cộng " + amtFormatted + " hoa hồng vào ví cho " + refEmail + " thành công!", "success");
+      }
+
+      renderAdminAffiliateTable();
+      if (typeof renderSystemOverview === "function") renderSystemOverview();
+    }
+    window.adminInstantApproveAffiliate = adminInstantApproveAffiliate;
+
+    function adminCancelAffiliate(recordId) {
+      if (!recordId) return;
+      let affOrders = (typeof getAffiliateOrders === "function") ? getAffiliateOrders() : [];
+      let item = affOrders.find(function(a) { return a.id === recordId; });
+      if (!item) {
+        if (typeof showToast === "function") showToast("Không tìm thấy bản ghi hoa hồng cần hủy.", "warning");
+        return;
+      }
+      if (item.status === "CANCELLED") {
+        if (typeof showToast === "function") showToast("Khoản hoa hồng này đã bị hủy từ trước.", "info");
+        return;
+      }
+
+      const reason = prompt("Nhập lý do hủy hoa hồng đơn #" + item.orderId + ":", "Đơn hàng vi phạm / Khiếu nại");
+      if (reason === null) return;
+
+      item.status = "CANCELLED";
+      item.statusText = "Đã hủy hoa hồng (Admin hủy)";
+      item.cancelledAt = Date.now();
+      item.cancelReason = reason || "Admin hủy hoa hồng thủ công";
+
+      if (typeof saveAffiliateOrders === "function") saveAffiliateOrders(affOrders);
+
+      if (typeof showToast === "function") {
+        showToast("Đã hủy hoa hồng cho đơn #" + item.orderId + " thành công!", "info");
+      }
+
+      renderAdminAffiliateTable();
+      if (typeof renderSystemOverview === "function") renderSystemOverview();
+    }
+    window.adminCancelAffiliate = adminCancelAffiliate;
+
+    function adminSettleAllAffiliateHolding() {
+      let affOrders = (typeof getAffiliateOrders === "function") ? getAffiliateOrders() : [];
+      const holdingList = affOrders.filter(function(a) { return a.status === "HOLDING"; });
+
+      if (holdingList.length === 0) {
+        if (typeof showToast === "function") showToast("Hiện không có khoản hoa hồng nào đang ở trạng thái Tạm giữ 3 ngày.", "info");
+        return;
+      }
+
+      const totalAmt = holdingList.reduce(function(sum, a) { return sum + (Number(a.commissionAmount) || 0); }, 0);
+      const amtFormatted = (typeof formatVND === "function") ? formatVND(totalAmt) : (totalAmt + " đ");
+
+      if (!confirm("Xác nhận quyết toán NGAY TẤT CẢ " + holdingList.length + " khoản hoa hồng đang tạm giữ (Tổng tiền: " + amtFormatted + ") vào ví của các thành viên?")) {
+        return;
+      }
+
+      let users = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+      const nowTs = Date.now();
+      let settledCount = 0;
+
+      holdingList.forEach(function(item) {
+        item.status = "APPROVED";
+        item.statusText = "Đã cộng vào ví (Quyết toán hàng loạt)";
+        item.settledAt = nowTs;
+        settledCount++;
+
+        const refEmail = (item.referrerEmail || "").toLowerCase().trim();
+        const rIdx = users.findIndex(function(u) { return (u.email || "").toLowerCase().trim() === refEmail; });
+        let newBal = item.commissionAmount;
+        let rName = item.referrerName || refEmail.split("@")[0];
+
+        if (rIdx !== -1) {
+          users[rIdx].balance = (Number(users[rIdx].balance) || 0) + item.commissionAmount;
+          newBal = users[uIdx].balance;
+          rName = users[uIdx].name || rName;
+        } else {
+          users.push({
+            userId: "USR_" + Math.floor(100000 + Math.random() * 900000),
+            email: refEmail,
+            name: rName,
+            balance: item.commissionAmount,
+            role: "MEMBER"
+          });
+          newBal = item.commissionAmount;
+        }
+
+        if (typeof recordTransaction === "function") {
+          recordTransaction(
+            refEmail,
+            rName,
+            "Hoa hồng tiếp thị liên kết",
+            item.commissionAmount,
+            newBal,
+            "Admin duyệt quyết toán hàng loạt hoa hồng " + (item.commissionRate || 10) + "% đơn #" + item.orderId
+          );
+        }
+
+        if (typeof currentUser !== "undefined" && currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === refEmail) {
+          currentUser.balance = newBal;
+          try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(eU) {}
+        }
+      });
+
+      if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(users);
+      if (typeof saveAffiliateOrders === "function") saveAffiliateOrders(affOrders);
+      if (typeof updateUserUI === "function") updateUserUI();
+
+      if (typeof showToast === "function") {
+        showToast("Đã quyết toán thành công " + settledCount + " khoản hoa hồng (Tổng cộng " + amtFormatted + ") vào ví thành viên!", "success");
+      }
+
+      renderAdminAffiliateTable();
+      if (typeof renderSystemOverview === "function") renderSystemOverview();
+    }
+    window.adminSettleAllAffiliateHolding = adminSettleAllAffiliateHolding;
+
     function saveProductsToStorage() {
       // Dùng setTimeout(0) để nhả main thread, tránh đơ trang khi data lớn
       setTimeout(function() {
@@ -12539,6 +13072,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (tabId === "payment") tabId = "tabAdmPayment";
       if (tabId === "general") tabId = "tabAdmGeneral";
       if (tabId === "admins") tabId = "tabAdmAdmins";
+      if (tabId === "affiliate" || tabId === "tabAdmAffiliate") tabId = "tabAdmAffiliate";
 
       try {
         localStorage.setItem("mmo_admin_tab", tabId);
@@ -12555,7 +13089,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         targetViewId = "tabAdmApiSources";
       }
 
-      const tabs = ["tabAdmDashboard", "tabAdmProducts", "tabAdmApiSources", "tabAdmStock", "tabAdmUsers", "tabAdmWithdrawals", "tabAdmTxLogs", "tabAdmPayment", "tabAdmGeneral", "tabAdmAdmins", "tabAdmBlog", "tabAdmChat"];
+      const tabs = ["tabAdmDashboard", "tabAdmProducts", "tabAdmApiSources", "tabAdmStock", "tabAdmUsers", "tabAdmWithdrawals", "tabAdmTxLogs", "tabAdmAffiliate", "tabAdmPayment", "tabAdmGeneral", "tabAdmAdmins", "tabAdmBlog", "tabAdmChat"];
       tabs.forEach(function(t) {
         const el = document.getElementById(t);
         if (el) el.style.display = (t === targetViewId ? "block" : "none");
@@ -12570,6 +13104,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         tabAdmWithdrawals: "tabBtnAdmWithdrawals",
         tabAdmTxLogs: "tabBtnAdmTxLogs",
         tabAdmOrders: "tabBtnAdmOrders",
+        tabAdmAffiliate: "tabBtnAdmAffiliate",
         tabAdmPayment: "tabBtnAdmPayment",
         tabAdmGeneral: "tabBtnAdmGeneral",
         tabAdmAdmins: "tabBtnAdmAdmins",
@@ -12646,6 +13181,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       } else if (tabId === "tabAdmTxLogs") {
         if (typeof switchAdmTxSubTab === "function") switchAdmTxSubTab("walletTx");
         if (typeof syncAllDepositsFromCloud === "function") syncAllDepositsFromCloud();
+      }
+      if (tabId === "tabAdmAffiliate") {
+        if (typeof renderAdminAffiliateTable === "function") renderAdminAffiliateTable();
       }
       if (tabId === "tabAdmPayment") {
         loadPaymentSettingsUI();
@@ -31447,6 +31985,7 @@ function syncAllOpenViewsStock(changedProdId) {
       admUsers: 1,
       admWithdraw: 1,
       admTx: 1,
+      admAffiliate: 1,
       admProd: 1,
       admApiMappings: 1,
       admBlogs: 1,
