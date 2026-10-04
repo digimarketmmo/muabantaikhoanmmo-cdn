@@ -4322,11 +4322,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // 1. Hotline / Zalo Phone
       let rawPhone = String(s.hotline || s.phone || s.zalo || "0975902076").trim();
       let cleanPhone = rawPhone.replace(/[^0-9]/g, "");
-      if (!cleanPhone || cleanPhone.length < 9 || cleanPhone === "0968033451") cleanPhone = "0975902076";
+      if (!cleanPhone || cleanPhone.length < 9 || cleanPhone === "0968033451" || cleanPhone.includes("0968033451") || rawPhone.includes("0968.033.451")) {
+        cleanPhone = "0975902076";
+      }
       if (!cleanPhone.startsWith("0")) cleanPhone = "0" + cleanPhone;
 
-      let formattedPhone = cleanPhone;
-      if (cleanPhone.length === 10) {
+      let formattedPhone = "0975.902.076";
+      if (cleanPhone === "0975902076") {
+        formattedPhone = "0975.902.076";
+      } else if (cleanPhone.length === 10) {
         formattedPhone = cleanPhone.slice(0, 4) + "." + cleanPhone.slice(4, 7) + "." + cleanPhone.slice(7);
       } else if (cleanPhone.length === 11) {
         formattedPhone = cleanPhone.slice(0, 5) + "." + cleanPhone.slice(5, 8) + "." + cleanPhone.slice(8);
@@ -4334,7 +4338,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       // 2. Email hỗ trợ chính thức
       let email = String(s.email || s.supportEmail || s.adminEmail || s.contactEmail || "muabantaikhoanmmo@gmail.com").trim().toLowerCase();
-      if (!email || !email.includes("@") || email === "manhdongvtc@gmail.com") email = "muabantaikhoanmmo@gmail.com";
+      if (!email || !email.includes("@") || email === "manhdongvtc@gmail.com" || email.includes("manhdongvtc")) {
+        email = "muabantaikhoanmmo@gmail.com";
+      }
 
       // 3. Telegram
       let rawTele = String(s.telegram || s.tele || "https://t.me/groupmuabantaikhoanmmo").trim();
@@ -20765,10 +20771,10 @@ function syncAllOpenViewsStock(changedProdId) {
             if (!merged.hotline || !String(merged.hotline).trim() || merged.hotline.includes("0968033451") || merged.hotline.includes("0968.033.451")) {
               merged.hotline = defaultSettings.hotline;
             }
-            if (!merged.email || !String(merged.email).trim() || merged.email === "manhdongvtc@gmail.com") {
+            if (!merged.email || !String(merged.email).trim() || String(merged.email).toLowerCase().includes("manhdongvtc")) {
               merged.email = defaultSettings.email;
             }
-            if (!merged.supportEmail || !String(merged.supportEmail).trim() || merged.supportEmail === "manhdongvtc@gmail.com") {
+            if (!merged.supportEmail || !String(merged.supportEmail).trim() || String(merged.supportEmail).toLowerCase().includes("manhdongvtc")) {
               merged.supportEmail = defaultSettings.supportEmail;
             }
             if (!merged.gasUrl || !String(merged.gasUrl).trim()) {
