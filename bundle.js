@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.0.7";
+const MMO_CURRENT_CODE_VERSION = "4.0.8";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION
@@ -4209,12 +4209,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function saveRegisteredUsers(users) {
       try {
         localStorage.setItem("mmo_registered_users", JSON.stringify(users));
-        if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
-        const isEditingStock = (document.activeElement && (document.activeElement.id === "admStockBulkInput" || document.activeElement.id === "admStockCurrentView"));
-            if (!isEditingStock && typeof renderAdminDashboard === "function") {
-              renderAdminDashboard();
-            }
-            if (typeof injectAllProductsSchema === "function") injectAllProductsSchema();
+        const curTab = localStorage.getItem("mmo_admin_tab");
+        const curView = localStorage.getItem("mmo_current_view");
+        if (curView === "viewAdmin" && curTab === "tabAdmUsers") {
+          if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
+        }
       } catch(e) {}
     }
     window.saveRegisteredUsers = saveRegisteredUsers;
@@ -4260,10 +4259,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.isUserLocked = isUserLocked;
 
     // KIỂM TRA TRẠNG THÁI KHÓA TÀI KHOẢN TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO (SSOT 24/7)
+    var _lastUserLockCheckTimes = {};
     async function checkUserLockedFromCloud(email) {
+      if (!email) return false;
       const cleanEmail = String(email).trim().toLowerCase();
       const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
       if (cleanEmail === rootEmail || cleanEmail === "manhdongvtc@gmail.com" || cleanEmail === "muabantaikhoanmmo@gmail.com" || (typeof isAdminUser === "function" && isAdminUser({ email: cleanEmail }))) return false;
+
+      // Rate limit: Không kiểm tra cùng 1 tài khoản quá nhiều lần trong 30 giây để tránh nghẽn luồng
+      const now = Date.now();
+      if (_lastUserLockCheckTimes[cleanEmail] && (now - _lastUserLockCheckTimes[cleanEmail] < 30000)) {
+        return false;
+      }
+      _lastUserLockCheckTimes[cleanEmail] = now;
 
       // 1. TRUY VẤN TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO DATABASE (SSOT 24/7)
       try {
@@ -4520,7 +4528,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               currentUser.role = found.role || currentUser.role;
               currentUser.name = found.name || currentUser.name;
               currentUser.avatar = found.avatar || currentUser.avatar;
-              saveRegisteredUsers(users);
               localStorage.setItem("mmo_user", JSON.stringify(currentUser));
             } else {
               if (currentUser.balance === undefined || currentUser.balance === null) {
@@ -5330,7 +5337,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (statStock) statStock.innerText = "1,850";
         if (statPaid) statPaid.innerText = "284";
 
-        if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
+        const curTab = localStorage.getItem("mmo_admin_tab");
+        if (curTab === "tabAdmUsers" && typeof renderAdminUsersTable === "function") {
+          renderAdminUsersTable();
+        }
       } catch(e) {
         console.error("renderAdminDashboard error:", e);
       }
@@ -11422,19 +11432,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const targetBtn = document.getElementById(tabId.startsWith("tab") ? "tabBtn" + tabId.substring(3) : tabId) || document.querySelector(`[onclick*="${tabId}"]`);
       if (targetBtn) targetBtn.classList.add("active");
 
-      if (tabId === "tabProfWallet") {
-        if (typeof renderUserWalletTransactions === "function") renderUserWalletTransactions();
-        if (typeof renderUserBalanceLogs === "function") renderUserBalanceLogs();
-        if (typeof renderUserWalletStats === "function") renderUserWalletStats();
-        if (typeof loadUserWalletFromCloud === "function") loadUserWalletFromCloud();
-      } else if (tabId === "tabProfOrders") {
-        if (typeof renderProfileOrders === "function") renderProfileOrders();
-        if (typeof syncCloudOrdersToLocalUI === "function") syncCloudOrdersToLocalUI(true);
-      } else if (tabId === "tabProfInfo") {
-        if (typeof populateProfileInfoInputs === "function") populateProfileInfoInputs();
-      } else if (tabId === "tabProfAffiliate") {
-        if (typeof renderAffiliateDashboard === "function") renderAffiliateDashboard();
-      }
+      requestAnimationFrame(function() {
+        if (tabId === "tabProfWallet") {
+          if (typeof renderUserWalletTransactions === "function") renderUserWalletTransactions();
+          if (typeof renderUserBalanceLogs === "function") renderUserBalanceLogs();
+          if (typeof renderUserWalletStats === "function") renderUserWalletStats();
+          if (typeof loadUserWalletFromCloud === "function") loadUserWalletFromCloud();
+        } else if (tabId === "tabProfOrders") {
+          if (typeof renderProfileOrders === "function") renderProfileOrders();
+          if (typeof syncCloudOrdersToLocalUI === "function") syncCloudOrdersToLocalUI(true);
+        } else if (tabId === "tabProfInfo") {
+          if (typeof populateProfileInfoInputs === "function") populateProfileInfoInputs();
+        } else if (tabId === "tabProfAffiliate") {
+          if (typeof renderAffiliateDashboard === "function") renderAffiliateDashboard();
+        }
+      });
     }
 
     var _isUpdatingUserUI = false;
@@ -13191,61 +13203,64 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (chatBubbleWidget) {
         chatBubbleWidget.style.display = (tabId === "tabAdmChat") ? "none" : "block";
       }
-      if (tabId === "tabAdmDashboard") {
-        if (typeof renderSystemOverview === "function") renderSystemOverview();
-      }
-      if (tabId === "tabAdmProducts") {
-        if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-        if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
-      }
-      if (tabId === "tabAdmApiSources") {
-        if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
-        if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
-        if (typeof renderCustomApiSourcesUI === "function") renderCustomApiSourcesUI();
-        const now = Date.now();
-        if (!window._lastApiAlertsAutoScanTime || (now - window._lastApiAlertsAutoScanTime > 180000)) {
-          window._lastApiAlertsAutoScanTime = now;
-          setTimeout(function() {
-            if (typeof refreshApiSourceAlerts === "function") refreshApiSourceAlerts(false);
-          }, 100);
+      // Render nội dung tab trong micro-task / rAF kế tiếp để UI chuyển tab tức thì 0ms, không bị giật lag
+      requestAnimationFrame(function() {
+        if (tabId === "tabAdmDashboard") {
+          if (typeof renderSystemOverview === "function") renderSystemOverview();
         }
-      }
-      if (tabId === "tabAdmChat") {
-        if (typeof renderAdminChatUI === "function") renderAdminChatUI();
-        const tabEl = document.getElementById("tabAdmChat");
-        if (tabEl) tabEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }
+        if (tabId === "tabAdmProducts") {
+          if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+          if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+        }
+        if (tabId === "tabAdmApiSources") {
+          if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
+          if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+          if (typeof renderCustomApiSourcesUI === "function") renderCustomApiSourcesUI();
+          const now = Date.now();
+          if (!window._lastApiAlertsAutoScanTime || (now - window._lastApiAlertsAutoScanTime > 180000)) {
+            window._lastApiAlertsAutoScanTime = now;
+            setTimeout(function() {
+              if (typeof refreshApiSourceAlerts === "function") refreshApiSourceAlerts(false);
+            }, 100);
+          }
+        }
+        if (tabId === "tabAdmChat") {
+          if (typeof renderAdminChatUI === "function") renderAdminChatUI();
+          const tabEl = document.getElementById("tabAdmChat");
+          if (tabEl) tabEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
 
-      if (tabId === "tabAdmBlog") { renderAdminBlogsTable(); }
-      if (tabId === "tabAdmStock") {
-        initStockManagementUI();
-      }
-      if (tabId === "tabAdmUsers") {
-        renderAdminUsersTable();
-        if (typeof syncAllDepositsFromCloud === "function") syncAllDepositsFromCloud();
-      }
-      if (tabId === "tabAdmWithdrawals") {
-        if (typeof syncWithdrawRequestsFromCloud === "function") syncWithdrawRequestsFromCloud(true);
-        renderAdminWithdrawTable();
-      }
-      if (isOrdersTab) {
-        if (typeof switchAdmTxSubTab === "function") switchAdmTxSubTab("orders");
-      } else if (tabId === "tabAdmTxLogs") {
-        if (typeof switchAdmTxSubTab === "function") switchAdmTxSubTab("walletTx");
-        if (typeof syncAllDepositsFromCloud === "function") syncAllDepositsFromCloud();
-      }
-      if (tabId === "tabAdmAffiliate") {
-        if (typeof renderAdminAffiliateTable === "function") renderAdminAffiliateTable();
-      }
-      if (tabId === "tabAdmPayment") {
-        loadPaymentSettingsUI();
-      }
-      if (tabId === "tabAdmGeneral") {
-        loadGeneralSettingsUI();
-      }
-      if (tabId === "tabAdmAdmins") {
-        renderAdminEmailsList();
-      }
+        if (tabId === "tabAdmBlog") { renderAdminBlogsTable(); }
+        if (tabId === "tabAdmStock") {
+          initStockManagementUI();
+        }
+        if (tabId === "tabAdmUsers") {
+          renderAdminUsersTable();
+          if (typeof syncAllDepositsFromCloud === "function") syncAllDepositsFromCloud();
+        }
+        if (tabId === "tabAdmWithdrawals") {
+          if (typeof syncWithdrawRequestsFromCloud === "function") syncWithdrawRequestsFromCloud(true);
+          renderAdminWithdrawTable();
+        }
+        if (isOrdersTab) {
+          if (typeof switchAdmTxSubTab === "function") switchAdmTxSubTab("orders");
+        } else if (tabId === "tabAdmTxLogs") {
+          if (typeof switchAdmTxSubTab === "function") switchAdmTxSubTab("walletTx");
+          if (typeof syncAllDepositsFromCloud === "function") syncAllDepositsFromCloud();
+        }
+        if (tabId === "tabAdmAffiliate") {
+          if (typeof renderAdminAffiliateTable === "function") renderAdminAffiliateTable();
+        }
+        if (tabId === "tabAdmPayment") {
+          loadPaymentSettingsUI();
+        }
+        if (tabId === "tabAdmGeneral") {
+          loadGeneralSettingsUI();
+        }
+        if (tabId === "tabAdmAdmins") {
+          renderAdminEmailsList();
+        }
+      });
     }
 
 
@@ -31194,7 +31209,7 @@ function syncAllOpenViewsStock(changedProdId) {
         syncContactInfoToUI();
       }
 
-      // Quét tự động trạng thái khóa tài khoản người dùng mỗi 3 giây (cưỡng chế đăng xuất nếu Admin vừa khóa)
+      // Quét tự động trạng thái khóa tài khoản người dùng định kỳ mỗi 60 giây (tránh làm đơ UI hoặc spam API)
       if (!window._mmoLockedUserPollTimer) {
         window._mmoLockedUserPollTimer = setInterval(function() {
           if (typeof currentUser !== "undefined" && currentUser && currentUser.email && !document.hidden) {
@@ -31209,7 +31224,7 @@ function syncAllOpenViewsStock(changedProdId) {
               }
             }
           }
-        }, 3000);
+        }, 60000);
       }
 
       const withdrawList = getWithdrawRequests();
