@@ -13149,7 +13149,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
       if (tabId === "tabAdmProducts") {
         if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-        if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
         if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
       }
       if (tabId === "tabAdmApiSources") {
@@ -23236,12 +23235,18 @@ function syncAllOpenViewsStock(changedProdId) {
             } catch(e) {}
           }
 
-          if (typeof renderProfileOrders === "function") renderProfileOrders();
-          if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
-          if (typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
-          if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
-          if (typeof updateAdminSidebarBadges === "function") updateAdminSidebarBadges();
-          if (typeof renderSystemOverview === "function") renderSystemOverview();
+          const curActiveView = localStorage.getItem("mmo_current_view") || "viewStore";
+          const curActiveTab = localStorage.getItem("mmo_admin_tab") || "tabAdmDashboard";
+          if (curActiveView === "viewProfile" && typeof renderProfileOrders === "function") renderProfileOrders();
+          if (curActiveView === "viewAdmin") {
+            if (curActiveTab === "tabAdmTxLogs" || curActiveTab === "tabAdmOrders") {
+              if (typeof renderAdminOrdersTable === "function") renderAdminOrdersTable();
+            }
+            if (curActiveTab === "tabAdmStock" && typeof renderAdminPreOrdersTable === "function") renderAdminPreOrdersTable();
+            if (curActiveTab === "tabAdmDashboard" && typeof renderSystemOverview === "function") renderSystemOverview();
+            if (typeof updateAdminPreOrdersBadge === "function") updateAdminPreOrdersBadge();
+            if (typeof updateAdminSidebarBadges === "function") updateAdminSidebarBadges();
+          }
         }
       } catch(syncErr) {
         console.warn("syncCloudOrdersToLocalUI error:", syncErr);
@@ -32828,7 +32833,7 @@ function changeAdmUsersPage(p) {
           if (typeof syncCloudOrdersToLocalUI === "function") {
             syncCloudOrdersToLocalUI(false);
           }
-        }, 12000);
+        }, 30000);
       } catch(e) {}
 
       const gBtn = document.getElementById("btnGoogleCustom");
@@ -32896,13 +32901,13 @@ function changeAdmUsersPage(p) {
         window._mmoAdminOrdersRealtimePollTimer = setInterval(function() {
           if (typeof isAdminUser === "function" && isAdminUser() && !document.hidden) {
             if (typeof syncCloudOrdersToLocalUI === "function") {
-              syncCloudOrdersToLocalUI(true).catch(function() {});
+              syncCloudOrdersToLocalUI(false).catch(function() {});
             }
             if (typeof syncWithdrawRequestsFromCloud === "function") {
               syncWithdrawRequestsFromCloud();
             }
           }
-        }, 3000);
+        }, 15000);
       }
       if (typeof syncWithdrawRequestsFromCloud === "function") {
         syncWithdrawRequestsFromCloud();
