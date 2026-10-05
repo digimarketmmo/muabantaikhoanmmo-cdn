@@ -4712,7 +4712,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === userEmail) {
           currentUser.role = "Thành Viên";
           try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
-          if (typeof updateUserUI === "function") updateUserUI();
         }
       }
 
@@ -11422,7 +11421,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
     }
 
+    var _isUpdatingUserUI = false;
     function updateUserUI() {
+      if (_isUpdatingUserUI) return;
+      _isUpdatingUserUI = true;
+      try {
+        _doUpdateUserUI();
+      } finally {
+        _isUpdatingUserUI = false;
+      }
+    }
+    function _doUpdateUserUI() {
       try {
         const stored = localStorage.getItem("mmo_user");
         if (stored) currentUser = JSON.parse(stored);
@@ -12037,7 +12046,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     var _viewDirty = {};
 
     // VIEW SWITCHER WITH ADMIN SECURITY GUARD & ZERO-LAG CACHING
+    var _isSwitchingView = false;
     function switchView(viewId) {
+      if (_isSwitchingView) return;
+      _isSwitchingView = true;
+      try {
+        _doSwitchView(viewId);
+      } finally {
+        _isSwitchingView = false;
+      }
+    }
+    function _doSwitchView(viewId) {
       const currentActiveView = localStorage.getItem("mmo_current_view") || "viewStore";
       if (currentActiveView !== viewId && currentActiveView !== "viewPreOrderDetail") {
         _previousView = currentActiveView;
