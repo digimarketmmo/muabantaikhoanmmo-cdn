@@ -4138,9 +4138,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     // CORE SYSTEM: USER DATABASE & REGISTERED MEMBERS SYSTEM
     // =========================================================================
-    const ROOT_ADMIN_EMAIL = "manhdongvtc@gmail.com";
+    const ROOT_ADMIN_EMAIL = "muabantaikhoanmmo@gmail.com";
     const DEFAULT_REGISTERED_USERS = [
-      { name: "Mạnh Đồng Official", email: "manhdongvtc@gmail.com", role: "Quản Trị Viên", balance: 0, created: "01/03/2026", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=manhdongvtc" }
+      { name: "Mạnh Đồng Official", email: "muabantaikhoanmmo@gmail.com", role: "Quản Trị Viên", balance: 0, created: "01/03/2026", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=muabantaikhoanmmo" }
     ];
 
     // HÀM TỰ ĐỘNG XÓA SẠCH 100% DỮ LIỆU DEMO / ĐƠN ẢO / TỒN KHO ẢO KHI KHỞI ĐỘNG
@@ -4223,7 +4223,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function isUserLocked(email) {
       if (!email) return false;
       const cleanEmail = String(email).trim().toLowerCase();
-      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
+      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "muabantaikhoanmmo@gmail.com").toLowerCase().trim();
       if (cleanEmail === rootEmail || cleanEmail === "muabantaikhoanmmo@gmail.com") return false;
 
       // Ưu tiên kiểm tra danh sách thành viên thực tế
@@ -4263,7 +4263,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     async function checkUserLockedFromCloud(email) {
       if (!email) return false;
       const cleanEmail = String(email).trim().toLowerCase();
-      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
+      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "muabantaikhoanmmo@gmail.com").toLowerCase().trim();
       if (cleanEmail === rootEmail || cleanEmail === "muabantaikhoanmmo@gmail.com") return false;
 
       // 1. TRUY VẤN TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO DATABASE (SSOT 24/7)
@@ -4552,7 +4552,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     // ROOT_ADMIN_EMAIL already declared above
     const DEFAULT_ADMIN_EMAILS = [
-      ROOT_ADMIN_EMAIL,
       "muabantaikhoanmmo@gmail.com"
     ];
 
@@ -4561,10 +4560,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const stored = localStorage.getItem("mmo_admin_emails");
         if (stored !== null) {
           let list = JSON.parse(stored);
-          if (Array.isArray(list) && list.length > 0) return list;
+          if (Array.isArray(list) && list.length > 0) {
+            // Lọc bỏ triệt để email cũ manhdongvtc@gmail.com
+            list = list.filter(e => (e || "").toLowerCase().trim() !== "manhdongvtc@gmail.com");
+            const rootEm = (ROOT_ADMIN_EMAIL || "muabantaikhoanmmo@gmail.com").toLowerCase().trim();
+            if (!list.includes(rootEm)) list.unshift(rootEm);
+            try { localStorage.setItem("mmo_admin_emails", JSON.stringify(list)); } catch(eW) {}
+            return list;
+          }
         }
       } catch (e) {}
-      const initial = [ROOT_ADMIN_EMAIL, "muabantaikhoanmmo@gmail.com"];
+      const initial = ["muabantaikhoanmmo@gmail.com"];
       try { localStorage.setItem("mmo_admin_emails", JSON.stringify(initial)); } catch(e) {}
       return initial;
     }
@@ -4918,7 +4924,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
       const pageUsers = users.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
-      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
+      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "muabantaikhoanmmo@gmail.com").toLowerCase().trim();
 
       tbody.innerHTML = pageUsers.map(u => {
         const emailLower = (u.email || "").toLowerCase().trim();
@@ -10236,7 +10242,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       // Đồng bộ ngầm lên Google Apps Script backend: Dual-path sync
       const targetUser = users[idx];
-      const adminEmail = (currentUser && currentUser.email) ? currentUser.email : "manhdongvtc@gmail.com";
+      const adminEmail = (currentUser && currentUser.email) ? currentUser.email : "muabantaikhoanmmo@gmail.com";
       const apiUrl = typeof getBackendApiUrl === "function" ? getBackendApiUrl() : "";
 
       function applyNewBalance(em, nBal) {
@@ -21715,6 +21721,14 @@ function syncAllOpenViewsStock(changedProdId) {
             if (marqInp && document.activeElement !== marqInp) marqInp.value = curSettings.marqueeText;
           }
 
+          if (cs.adminEmails && typeof cs.adminEmails === "string") {
+            let cloudAdminList = cs.adminEmails.split(",").map(e => (e || "").trim().toLowerCase()).filter(Boolean);
+            cloudAdminList = cloudAdminList.filter(e => e !== "manhdongvtc@gmail.com");
+            if (!cloudAdminList.includes("muabantaikhoanmmo@gmail.com")) cloudAdminList.unshift("muabantaikhoanmmo@gmail.com");
+            try { localStorage.setItem("mmo_admin_emails", JSON.stringify(cloudAdminList)); } catch(eAdm) {}
+            if (typeof renderAdminEmailsList === "function") renderAdminEmailsList();
+          }
+
           if (settingsChanged) {
             try { localStorage.setItem("mmo_system_settings", JSON.stringify(curSettings)); } catch(e1) {}
             try { localStorage.setItem("mmo_general_settings", JSON.stringify(curSettings)); } catch(e2) {}
@@ -21963,7 +21977,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
         // Đồng bộ lưu lên Google Apps Script / Google Sheets nếu có cấu hình
         if (typeof callGasApi === "function") {
-          const callerEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : ((typeof getAdminEmails === "function" && getAdminEmails()[0]) || "manhdongvtc@gmail.com");
+          const callerEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : ((typeof getAdminEmails === "function" && getAdminEmails()[0]) || "muabantaikhoanmmo@gmail.com");
           callGasApi("adminSaveSettings", {
             adminEmail: callerEmail,
             settings: {
@@ -22384,7 +22398,7 @@ function syncAllOpenViewsStock(changedProdId) {
         }
         return;
       }
-      const adminEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "manhdongvtc@gmail.com";
+      const adminEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "muabantaikhoanmmo@gmail.com";
       try {
         if (showNotification) showToast("Đang đồng bộ dữ liệu thành viên từ Google Sheet...", "info");
         const data = await callGasApi("adminGetUsers", { adminEmail: adminEmail });
@@ -31132,7 +31146,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (!window._mmoLockedUserPollTimer) {
         window._mmoLockedUserPollTimer = setInterval(function() {
           if (typeof currentUser !== "undefined" && currentUser && currentUser.email && !document.hidden) {
-            const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
+            const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "muabantaikhoanmmo@gmail.com").toLowerCase().trim();
             if (currentUser.email.toLowerCase().trim() !== rootEmail) {
               if (typeof checkUserLockedFromCloud === "function") {
                 checkUserLockedFromCloud(currentUser.email).then(isLocked => {
@@ -31688,7 +31702,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
     // ==================== MEMBER LOCK & DELETE SYSTEM ====================
     function toggleLockUser(email) {
-      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
+      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "muabantaikhoanmmo@gmail.com").toLowerCase().trim();
       const targetEmail = (email || "").toLowerCase().trim();
       if (targetEmail === rootEmail) {
         showToast("Không thể khóa tài khoản Root Admin!", "warning");
@@ -31769,7 +31783,7 @@ function syncAllOpenViewsStock(changedProdId) {
     }
 
     function deleteUser(email) {
-      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
+      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "muabantaikhoanmmo@gmail.com").toLowerCase().trim();
       const targetEmail = (email || "").toLowerCase().trim();
 
       if (targetEmail === rootEmail) {
