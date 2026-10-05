@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.0.6";
+const MMO_CURRENT_CODE_VERSION = "4.0.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION
@@ -4138,9 +4138,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     // CORE SYSTEM: USER DATABASE & REGISTERED MEMBERS SYSTEM
     // =========================================================================
-    const ROOT_ADMIN_EMAIL = "muabantaikhoanmmo@gmail.com";
+    const ROOT_ADMIN_EMAIL = "manhdongvtc@gmail.com";
     const DEFAULT_REGISTERED_USERS = [
-      { name: "Mạnh Đồng Official", email: "muabantaikhoanmmo@gmail.com", role: "Quản Trị Viên", balance: 0, created: "01/03/2026", avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=muabantaikhoanmmo" }
+      { name: "Mạnh Đồng Official", email: "manhdongvtc@gmail.com", role: "Quản Trị Viên", balance: 205500, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }
     ];
 
     // HÀM TỰ ĐỘNG XÓA SẠCH 100% DỮ LIỆU DEMO / ĐƠN ẢO / TỒN KHO ẢO KHI KHỞI ĐỘNG
@@ -4261,10 +4261,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     // KIỂM TRA TRẠNG THÁI KHÓA TÀI KHOẢN TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO (SSOT 24/7)
     async function checkUserLockedFromCloud(email) {
-      if (!email) return false;
       const cleanEmail = String(email).trim().toLowerCase();
-      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "muabantaikhoanmmo@gmail.com").toLowerCase().trim();
-      if (cleanEmail === rootEmail || cleanEmail === "muabantaikhoanmmo@gmail.com") return false;
+      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
+      if (cleanEmail === rootEmail || cleanEmail === "manhdongvtc@gmail.com" || cleanEmail === "muabantaikhoanmmo@gmail.com" || (typeof isAdminUser === "function" && isAdminUser({ email: cleanEmail }))) return false;
 
       // 1. TRUY VẤN TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO DATABASE (SSOT 24/7)
       try {
@@ -4559,14 +4558,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (stored !== null) {
           let list = JSON.parse(stored);
           if (Array.isArray(list) && list.length > 0) {
-            const primary = "muabantaikhoanmmo@gmail.com";
+            const primary = "manhdongvtc@gmail.com";
             if (!list.includes(primary)) list.unshift(primary);
+            if (!list.includes("muabantaikhoanmmo@gmail.com")) list.push("muabantaikhoanmmo@gmail.com");
             try { localStorage.setItem("mmo_admin_emails", JSON.stringify(list)); } catch(eW) {}
             return list;
           }
         }
       } catch (e) {}
-      const initial = ["muabantaikhoanmmo@gmail.com", "manhdongvtc@gmail.com"];
+      const initial = ["manhdongvtc@gmail.com", "muabantaikhoanmmo@gmail.com"];
       try { localStorage.setItem("mmo_admin_emails", JSON.stringify(initial)); } catch(e) {}
       return initial;
     }
@@ -5258,9 +5258,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           } else {
             tbody.innerHTML = pageProds.map(function(p) {
               const vCount = (p.variants && p.variants.length) ? p.variants.length : 1;
+              const tableImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png");
               return '<tr>' +
                 '<td>' + p.id + '</td>' +
-                '<td><img src="' + p.image + '" style="width:36px; height:36px; border-radius:4px; object-fit:cover;" /></td>' +
+                '<td><img src="' + tableImg + '" alt="' + esc(p.name) + '" style="width:36px; height:36px; border-radius:4px; object-fit:cover;" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" /></td>' +
                 '<td><a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#ffffff; text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:6px;" onmouseover="this.style.color=\'#10b981\'" onmouseout="this.style.color=\'#ffffff\'" title="Mở xem chi tiết sản phẩm trong tab mới"><strong>' + esc(p.name) + '</strong> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem; color:#38bdf8;"></i></a><br/>' +
                   (function() {
                     const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
@@ -11547,6 +11548,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (profAvatarEl) profAvatarEl.src = currentUser.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(currentUser.email));
         if (profBalanceEl) profBalanceEl.innerText = balStr;
 
+        // Admin Sidebar Profile Card DOM elements
+        const admNameEl = document.getElementById("admSidebarName");
+        const admEmailEl = document.getElementById("admSidebarEmail");
+        const admAvatarEl = document.getElementById("admSidebarAvatar");
+        if (admNameEl) admNameEl.innerText = currentUser.name || "Mạnh Đồng Official";
+        if (admEmailEl) admEmailEl.innerText = currentUser.email || "manhdongvtc@gmail.com";
+        if (admAvatarEl && currentUser.avatar) admAvatarEl.src = currentUser.avatar;
+
       } else {
         if (document.body) document.body.classList.remove("is-admin");
         if (headerWalletBalance) headerWalletBalance.innerText = "0 đ";
@@ -12436,7 +12445,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (name.includes("s8")) return cdnBase + "rom_s8_android10.png";
       if (name.includes("s9")) return cdnBase + "rom_s9_android10.png";
 
-      // 5. Khớp Canva
+      // 5. Khớp Canva & Wink
+      if (name.includes("wink") || cat.includes("wink")) {
+        return cdnBase + "canva_pro.png";
+      }
       if (name.includes("canva") || cat.includes("canva")) {
         if (name.includes("edu")) return cdnBase + "canva_edu.jpg";
         return cdnBase + "canva_pro.png";
@@ -21757,8 +21769,8 @@ function syncAllOpenViewsStock(changedProdId) {
 
           if (cs.adminEmails && typeof cs.adminEmails === "string") {
             let cloudAdminList = cs.adminEmails.split(",").map(e => (e || "").trim().toLowerCase()).filter(Boolean);
-            cloudAdminList = cloudAdminList.filter(e => e !== "manhdongvtc@gmail.com");
-            if (!cloudAdminList.includes("muabantaikhoanmmo@gmail.com")) cloudAdminList.unshift("muabantaikhoanmmo@gmail.com");
+            if (!cloudAdminList.includes("manhdongvtc@gmail.com")) cloudAdminList.unshift("manhdongvtc@gmail.com");
+            if (!cloudAdminList.includes("muabantaikhoanmmo@gmail.com")) cloudAdminList.push("muabantaikhoanmmo@gmail.com");
             try { localStorage.setItem("mmo_admin_emails", JSON.stringify(cloudAdminList)); } catch(eAdm) {}
             if (typeof renderAdminEmailsList === "function") renderAdminEmailsList();
           }
