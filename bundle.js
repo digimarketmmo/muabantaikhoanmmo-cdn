@@ -4561,16 +4561,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (stored !== null) {
           let list = JSON.parse(stored);
           if (Array.isArray(list) && list.length > 0) {
-            // Lọc bỏ triệt để email cũ manhdongvtc@gmail.com
-            list = list.filter(e => (e || "").toLowerCase().trim() !== "manhdongvtc@gmail.com");
-            const rootEm = (ROOT_ADMIN_EMAIL || "muabantaikhoanmmo@gmail.com").toLowerCase().trim();
-            if (!list.includes(rootEm)) list.unshift(rootEm);
+            const primary = "muabantaikhoanmmo@gmail.com";
+            if (!list.includes(primary)) list.unshift(primary);
             try { localStorage.setItem("mmo_admin_emails", JSON.stringify(list)); } catch(eW) {}
             return list;
           }
         }
       } catch (e) {}
-      const initial = ["muabantaikhoanmmo@gmail.com"];
+      const initial = ["muabantaikhoanmmo@gmail.com", "manhdongvtc@gmail.com"];
       try { localStorage.setItem("mmo_admin_emails", JSON.stringify(initial)); } catch(e) {}
       return initial;
     }
@@ -4704,6 +4702,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!user || !user.email) return false;
       
       const userEmail = (user.email || "").toLowerCase().trim();
+      if (userEmail === "muabantaikhoanmmo@gmail.com" || userEmail === "manhdongvtc@gmail.com") return true;
       const adminList = (typeof getAdminEmails === "function") ? getAdminEmails().map(e => (e || "").toLowerCase().trim()) : [];
       if (adminList.includes(userEmail)) return true;
 
@@ -12068,18 +12067,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
 
         if (!checkUser) {
-          showToast("🔒 Vui lòng đăng nhập để truy cập trang này!", "info");
+          showToast("🔒 Vui lòng đăng nhập tài khoản Quản Trị Viên!", "info");
           switchView("viewStore");
           openAuthModal("login");
           return;
         }
 
-        // Trạng thái khóa được quản lý tự động bởi checkUserLockedFromCloud
-
-        if (viewId === "viewAdmin" && !isAdminUser(checkUser)) {
-          showToast("⚠️ Tài khoản [" + checkUser.email + "] không có quyền truy cập Quản Trị!", "warning");
-          switchView("viewStore");
-          return;
+        // Kiểm tra quyền Admin an toàn
+        if (viewId === "viewAdmin") {
+          const isAdm = (typeof isAdminUser === "function") && isAdminUser(checkUser);
+          if (!isAdm) {
+            showToast("⚠️ Tài khoản [" + (checkUser.email || "Khách") + "] không có quyền truy cập Quản Trị!", "warning");
+            switchView("viewStore");
+            return;
+          }
         }
       }
 
@@ -32997,9 +32998,17 @@ function changeAdmUsersPage(p) {
             openProductDetailById(explicitProdId);
           }
         } else if (targetView && targetView !== "viewStore") {
-          const storedUser = localStorage.getItem("mmo_user");
-          if ((targetView === "viewProfile" || targetView === "viewAdmin" || targetView === "viewDeposit") && !storedUser) {
+          let storedUserObj = null;
+          try {
+            const rawU = localStorage.getItem("mmo_user");
+            if (rawU) storedUserObj = JSON.parse(rawU);
+          } catch(eU) {}
+          if ((targetView === "viewProfile" || targetView === "viewDeposit") && !storedUserObj) {
             targetView = "viewStore";
+          }
+          if (targetView === "viewAdmin") {
+            const isAdm = storedUserObj && typeof isAdminUser === "function" && isAdminUser(storedUserObj);
+            if (!isAdm) targetView = "viewStore";
           }
           switchView(targetView);
         } else {
