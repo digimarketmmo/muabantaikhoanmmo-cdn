@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "3.8.5";
+const MMO_CURRENT_CODE_VERSION = "4.0.6";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION
@@ -4299,6 +4299,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               if (idx !== -1) {
                 users[idx].isLocked = isLocked;
                 users[idx].status = isLocked ? "LOCKED" : "ACTIVE";
+                if (data.user.balance !== undefined && !isNaN(Number(data.user.balance))) {
+                  users[idx].balance = Number(data.user.balance);
+                }
                 saveRegisteredUsers(users);
               }
             } catch(e) {}
@@ -4306,10 +4309,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             // Đồng bộ số dư chuẩn từ Turso Database (SSOT 24/7)
             if (data.user.balance !== undefined && !isNaN(Number(data.user.balance))) {
               const cloudBal = Number(data.user.balance);
-              if (idx !== -1) {
-                users[idx].balance = cloudBal;
-                saveRegisteredUsers(users);
-              }
               if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
                 currentUser.balance = cloudBal;
                 try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
