@@ -14446,7 +14446,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           console.warn("MMO_WORKER_API.fetchProducts error, fallback to GAS:", workerFetchErr);
         }
       }
-      if (!res || !Array.isArray(res.products) || res.products.length === 0) return;
+      // Khóa an toàn tuyệt đối: nếu Cloud Worker trả về rỗng, KHÔNG ghi đè làm mất sản phẩm hay hình ảnh có sẵn
+      if (!res || !Array.isArray(res.products) || res.products.length === 0) {
+        if (typeof renderProductGrid === "function") renderProductGrid();
+        if (typeof renderBestSellers === "function") renderBestSellers();
+        if (typeof renderRecommended === "function") renderRecommended();
+        return;
+      }
       try {
 
         const deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
@@ -21566,11 +21572,23 @@ function syncAllOpenViewsStock(changedProdId) {
           document.title = settings.siteName + " - Sàn Sản Phẩm Số & Dịch Vụ MMO Uy Tín";
         }
 
-        // 2. Logo Header, Footer, Drawer & Toàn Bộ Trang
-        if (settings.brandLogo && settings.brandLogo.trim()) {
+        // 2. Logo Header, Footer, Drawer & Toàn Bộ Trang (Bảo vệ tuyệt đối fallback logo gốc, chống 404/link rác)
+        if (settings.brandLogo && settings.brandLogo.trim() && !settings.brandLogo.includes("img_1790888969056_z00fh5.png") && settings.brandLogo.trim() !== "https://iili.io/nFV4Rln.png") {
           const cleanLogo = settings.brandLogo.trim();
           document.querySelectorAll(".logo img, .logo-img, img.logo-img, .header-inner .logo img, .footer-col-1 .logo img, .footer-col-1 .logo-img, .mobile-drawer-header .logo-img, #headerSiteLogo, #footerSiteLogo, #drawerSiteLogo").forEach(function(img) {
+            const originalSrc = img.getAttribute("data-original-src") || img.src;
+            if (!img.getAttribute("data-original-src")) img.setAttribute("data-original-src", originalSrc);
+            img.onerror = function() {
+              this.onerror = null;
+              if (originalSrc && originalSrc !== cleanLogo) this.src = originalSrc;
+            };
             img.src = cleanLogo;
+          });
+        } else {
+          // Khôi phục logo gốc mặc định nếu brandLogo rỗng hoặc link lỗi
+          document.querySelectorAll(".logo img, .logo-img, img.logo-img, .header-inner .logo img, .footer-col-1 .logo img, .footer-col-1 .logo-img, .mobile-drawer-header .logo-img, #headerSiteLogo, #footerSiteLogo, #drawerSiteLogo").forEach(function(img) {
+            const orig = img.getAttribute("data-original-src");
+            if (orig) img.src = orig;
           });
         }
 
@@ -21643,7 +21661,7 @@ function syncAllOpenViewsStock(changedProdId) {
           const curSettings = getGeneralSettings();
           let settingsChanged = false;
 
-          if (cs.brandLogo && cs.brandLogo.trim() && cs.brandLogo.trim() !== "https://iili.io/nFV4Rln.png") {
+          if (cs.brandLogo && cs.brandLogo.trim() && cs.brandLogo.trim() !== "https://iili.io/nFV4Rln.png" && !cs.brandLogo.includes("img_1790888969056_z00fh5.png")) {
             curSettings.brandLogo = cs.brandLogo.trim();
             settingsChanged = true;
             const logoInp = document.getElementById("setSiteLogoUrl");
