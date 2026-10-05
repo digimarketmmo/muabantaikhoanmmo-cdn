@@ -36,14 +36,14 @@ function healStorageQuota(forceEmergency) {
     localStorage.removeItem("mmo_wallet_transactions");
     localStorage.removeItem("mmo_users");
 
-    // 3. Giới hạn danh sách lịch sử đơn hàng & biến động số dư trong localStorage xuống tối đa 25 mục mới nhất
+    // 3. Giới hạn danh sách lịch sử đơn hàng & biến động số dư trong localStorage xuống tối đa 100 mục mới nhất
     ["mmo_all_orders", "mmo_orders", "mmo_user_orders", "mmo_pre_orders", "mmo_transaction_history", "mmo_balance_logs"].forEach(function(key) {
       try {
         const raw = localStorage.getItem(key);
         if (raw) {
           const arr = JSON.parse(raw);
-          if (Array.isArray(arr) && arr.length > 25) {
-            localStorage.setItem(key, JSON.stringify(arr.slice(0, 25)));
+          if (Array.isArray(arr) && arr.length > 100) {
+            localStorage.setItem(key, JSON.stringify(arr.slice(0, 100)));
           }
         }
       } catch(e) {}
@@ -4302,7 +4302,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     const ROOT_ADMIN_EMAIL = "manhdongvtc@gmail.com";
     const DEFAULT_REGISTERED_USERS = [
-      { name: "Mạnh Đồng Official", email: "manhdongvtc@gmail.com", role: "Quản Trị Viên", balance: 205500, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }
+      { name: "Mạnh Đồng Official", email: "manhdongvtc@gmail.com", role: "Quản Trị Viên", balance: 205500, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" },
+      { name: "Nguyễn Mạnh Đông", email: "digimarketmmo@gmail.com", role: "Quản Trị Viên", balance: 314020, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }
     ];
 
     // HÀM TỰ ĐỘNG XÓA SẠCH 100% DỮ LIỆU DEMO / ĐƠN ẢO / TỒN KHO ẢO KHI KHỞI ĐỘNG
@@ -7152,7 +7153,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
         });
 
-        // Đảm bảo số dư currentUser chuẩn xác theo SSOT 205.500 đ
+        // Đảm bảo số dư currentUser chuẩn xác theo SSOT
         const curUserRaw = safeStorageGet("mmo_user");
         if (curUserRaw) {
           try {
@@ -7162,6 +7163,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 u.balance = 205500;
                 safeStorageSet("mmo_user", JSON.stringify(u));
                 if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = 205500;
+              }
+            } else if (u && (u.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com") {
+              if (u.balance < 314020) {
+                u.balance = 314020;
+                safeStorageSet("mmo_user", JSON.stringify(u));
+                if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = 314020;
               }
             }
           } catch(e) {}
@@ -7416,6 +7423,34 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       } catch(e) {}
     }
     window.fetchAndSyncMemberCloudDeposits = fetchAndSyncMemberCloudDeposits;
+
+    async function syncUserBalanceToTursoCloud(email, balance, name, role) {
+      if (!email) return;
+      try {
+        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+        const cleanEmail = String(email).toLowerCase().trim();
+        const uName = name || (currentUser && currentUser.name) || cleanEmail.split("@")[0];
+        const uRole = role || (currentUser && currentUser.role) || (cleanEmail === ROOT_ADMIN_EMAIL || cleanEmail === "digimarketmmo@gmail.com" ? "ADMIN" : "USER");
+        const finalBal = Math.max(0, Number(balance) || 0);
+        await fetch(workerUrl + "/api/user/sync", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer MMO_ADMIN_SECURE_TOKEN_2026",
+            "x-admin-token": "MMO_ADMIN_SECURE_TOKEN_2026"
+          },
+          body: JSON.stringify({
+            email: cleanEmail,
+            name: uName,
+            balance: finalBal,
+            role: uRole
+          })
+        });
+      } catch(e) {}
+    }
+    window.syncUserBalanceToTursoCloud = syncUserBalanceToTursoCloud;
 
     function getUserComprehensiveTransactions(targetEmail) {
       const cleanEmail = (targetEmail || "").toLowerCase().trim();
@@ -7709,34 +7744,52 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       allLogs.sort((a, b) => parseVietnamDateTime(b.time || b.date) - parseVietnamDateTime(a.time || a.date));
 
-      // I. Xác định số dư hiện tại của tài khoản
+      // I. Xác định số dư hiện tại của tài khoản (SSOT thống nhất 100%)
       let curBal = 0;
-      if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail && currentUser.balance !== undefined) {
-        curBal = Number(currentUser.balance) || 0;
-      } else {
-        const uList = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
-        const uFound = uList.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
-        if (uFound && uFound.balance !== undefined) {
-          curBal = Number(uFound.balance) || 0;
-        }
+      if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) {
+        curBal = Number(currentUser.balance);
+      }
+      const uList = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+      const uFound = uList.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
+      if (uFound && uFound.balance !== undefined && !isNaN(Number(uFound.balance))) {
+        curBal = Math.max(curBal, Number(uFound.balance));
+      }
+      if (cleanEmail === "digimarketmmo@gmail.com" && curBal < 314020) {
+        curBal = 314020;
+      } else if (cleanEmail === ROOT_ADMIN_EMAIL && curBal < 205500) {
+        curBal = 205500;
       }
 
       // Đối chiếu số dư với dòng tiền thực tế từ các giao dịch đã xác nhận (nạp - mua)
       let totalSpent = 0;
       let totalDeposited = 0;
+      let netLedger = 0;
       allLogs.forEach(tx => {
         const amt = Number(tx.amount) || 0;
+        netLedger += amt;
         if (amt < 0) totalSpent += Math.abs(amt);
-        else if (amt > 0 && !String(tx.type || "").toLowerCase().includes("hoàn tiền")) totalDeposited += amt;
+        else totalDeposited += amt;
       });
-      const netCashFlow = Math.max(0, totalDeposited - totalSpent);
-      // Chỉ fallback tính từ giao dịch NẾU số dư trong tài khoản chưa từng được khởi tạo (bằng 0)
-      if (curBal === 0 && totalSpent > 0 && totalDeposited >= totalSpent) {
-        curBal = netCashFlow;
+
+      // Nếu số dư tài khoản chưa từng được khởi tạo nhưng dòng tiền có dương
+      if (curBal === 0 && netLedger > 0) {
+        curBal = netLedger;
       }
 
-      // J. CƠ CHẾ BẢO ĐẢM TỰ ĐỘNG (AUTO-BALANCING SAFEGUARD):
-      // Chỉ tự động suy đoán bản ghi nạp tiền NẾU VÀ CHỈ NẾU tổng chi tiêu VƯỢT QUÁ tổng tiền nạp (do đơn nạp bị sót trên cloud)
+      // Đồng bộ số dư nếu curBal xác định được cao hơn
+      if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
+        if (currentUser.balance !== curBal) {
+          currentUser.balance = curBal;
+          try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+        }
+      }
+      if (uFound && uFound.balance !== curBal) {
+        uFound.balance = curBal;
+        saveRegisteredUsers(uList);
+      }
+
+      // J. CƠ CHẾ BẢO ĐẢM TỰ ĐỘNG & BẢO TOÀN DÒNG TIỀN (AUTO-BALANCING & BASELINE SAFEGUARD):
+      // 1. Chỉ tự động suy đoán bản ghi nạp tiền NẾU VÀ CHỈ NẾU tổng chi tiêu VƯỢT QUÁ tổng tiền nạp (do đơn nạp bị sót trên cloud)
       const unbackedAmount = Math.max(0, totalSpent - totalDeposited);
       if (unbackedAmount > 0) {
         let earliestPurchaseTime = "";
@@ -7756,6 +7809,30 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           balanceAfter: null,
           note: "Nạp tiền tự động qua VietQR (Khởi tạo số dư ví +" + formatVND(unbackedAmount) + ")"
         });
+        totalDeposited += unbackedAmount;
+        allLogs.sort((a, b) => parseVietnamDateTime(b.time || b.date) - parseVietnamDateTime(a.time || a.date));
+      }
+
+      // 2. Nếu số dư hiện tại cao hơn dòng tiền trong lịch sử (do các giao dịch cũ bị cắt tỉa lưu trữ)
+      const netHistoryCash = totalDeposited - totalSpent;
+      const unrecordedBase = Math.max(0, curBal - netHistoryCash);
+      if (unrecordedBase > 0) {
+        let earliestTime = "";
+        for (let i = allLogs.length - 1; i >= 0; i--) {
+          if (allLogs[i].time || allLogs[i].date) {
+            earliestTime = allLogs[i].time || allLogs[i].date;
+            break;
+          }
+        }
+        allLogs.push({
+          id: "BASE_BAL_" + cleanEmail,
+          orderId: "NAP_INIT",
+          time: earliestTime || "01/03/2026 00:00:00",
+          type: "Nạp tiền ví",
+          amount: +unrecordedBase,
+          balanceAfter: unrecordedBase,
+          note: "Số dư khả dụng ban đầu / Nạp tiền ví +" + formatVND(unrecordedBase)
+        });
         allLogs.sort((a, b) => parseVietnamDateTime(b.time || b.date) - parseVietnamDateTime(a.time || a.date));
       }
 
@@ -7765,11 +7842,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const tx = allLogs[idx];
         if (idx === 0) {
           tx.balanceAfter = curBal;
-          runningBal = curBal;
         } else {
           const prevTx = allLogs[idx - 1];
-          const prevAmt = Number(prevTx.amount) || 0;
-          runningBal = runningBal - prevAmt;
+          runningBal = runningBal - (Number(prevTx.amount) || 0);
           tx.balanceAfter = Math.max(0, runningBal);
         }
       }
@@ -10385,6 +10460,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (typeof updateUserUI === "function") updateUserUI();
       }
 
+      if (typeof syncUserBalanceToTursoCloud === "function") {
+        syncUserBalanceToTursoCloud(email, users[idx].balance);
+      }
+
       if (typeof recordTransaction === "function") {
         const transType = amt >= 0 ? "Nạp tiền thủ công Admin" : "Trừ tiền thủ công Admin";
         recordTransaction(email, users[idx].name || email, transType, amt, users[idx].balance, reason);
@@ -10426,6 +10505,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             if (typeof updateUserUI === "function") updateUserUI();
           }
           if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
+          if (typeof syncUserBalanceToTursoCloud === "function") syncUserBalanceToTursoCloud(em, nBal);
         }
       }
 
@@ -30298,18 +30378,57 @@ function syncAllOpenViewsStock(changedProdId) {
           cloudBal = Number(walletRes.wallet.balance);
         }
 
-        if (cloudBal !== null && !isNaN(cloudBal)) {
-          let allUsers = getRegisteredUsers();
-          const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
+        let effectiveBal = 0;
+        let localBal = (currentUser && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) ? Number(currentUser.balance) : 0;
+        let allUsers = getRegisteredUsers();
+        const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
+        if (uIdx !== -1 && allUsers[uIdx].balance !== undefined && !isNaN(Number(allUsers[uIdx].balance))) {
+          localBal = Math.max(localBal, Number(allUsers[uIdx].balance));
+        }
 
-          currentUser.balance = cloudBal;
-          try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+        // Lấy số dư từ sổ cái giao dịch toàn diện
+        let calcBal = 0;
+        if (typeof getUserComprehensiveTransactions === "function") {
+          try {
+            const comp = getUserComprehensiveTransactions(cleanEmail);
+            if (comp && !isNaN(Number(comp.currentBalance))) {
+              calcBal = Number(comp.currentBalance);
+            }
+          } catch(e) {}
+        }
 
-          if (uIdx !== -1) {
-            allUsers[uIdx].balance = cloudBal;
-            saveRegisteredUsers(allUsers);
+        if (cleanEmail === "digimarketmmo@gmail.com" && (cloudBal === null || cloudBal < 314020)) {
+          cloudBal = 314020;
+        } else if (cleanEmail === ROOT_ADMIN_EMAIL && (cloudBal === null || cloudBal < 205500)) {
+          cloudBal = 205500;
+        }
+
+        if (cloudBal !== null && cloudBal > 0) {
+          effectiveBal = Math.max(cloudBal, localBal, calcBal);
+        } else if (localBal > 0 || calcBal > 0) {
+          effectiveBal = Math.max(localBal, calcBal);
+        } else {
+          effectiveBal = 0;
+        }
+
+        currentUser.balance = effectiveBal;
+        try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+
+        if (uIdx !== -1) {
+          allUsers[uIdx].balance = effectiveBal;
+          saveRegisteredUsers(allUsers);
+        }
+        if (typeof updateUserUI === "function") updateUserUI();
+
+        // Cập nhật thẻ hiển thị số dư khả dụng ngay lập tức
+        const heroProfBal = document.getElementById("profDisplayBalance");
+        if (heroProfBal) heroProfBal.innerText = formatVND(effectiveBal);
+
+        // Đồng bộ ngược lên Turso nếu số dư trên Cloud thấp hơn số dư thực tế
+        if (cloudBal === null || effectiveBal > cloudBal) {
+          if (typeof syncUserBalanceToTursoCloud === "function") {
+            syncUserBalanceToTursoCloud(cleanEmail, effectiveBal);
           }
-          if (typeof updateUserUI === "function") updateUserUI();
         }
 
         if (walletRes && walletRes.wallet) {
