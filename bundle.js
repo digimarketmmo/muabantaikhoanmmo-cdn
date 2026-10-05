@@ -4313,7 +4313,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
                 currentUser.balance = cloudBal;
                 try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
-                if (typeof updateUserUI === "function") updateUserUI();
               }
             }
 
@@ -11074,7 +11073,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.decodeGoogleJwt = decodeGoogleJwt;
 
+    var _isCompletingGoogleLogin = false;
     async function completeGoogleLogin(email, name, picture) {
+      if (_isCompletingGoogleLogin) return;
+      _isCompletingGoogleLogin = true;
+      try {
+        await _doCompleteGoogleLogin(email, name, picture);
+      } catch(err) {
+        console.error("completeGoogleLogin error:", err);
+        showToast("Lỗi đăng nhập Google: " + (err.message || "Vui lòng thử lại!"), "danger");
+      } finally {
+        _isCompletingGoogleLogin = false;
+      }
+    }
+    async function _doCompleteGoogleLogin(email, name, picture) {
       try {
         if (!email || !email.includes("@")) {
           showToast("Email không hợp lệ!", "warning");
@@ -11139,7 +11151,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         showToast("🎉 Đăng nhập thành công tài khoản Google: " + (currentUser.name || email), "success");
         if ((isAdm || role === "Quản Trị Viên") && typeof switchView === "function") {
-          switchView("viewAdmin");
+          setTimeout(function() {
+            switchView("viewAdmin");
+          }, 100);
         }
 
         // Real-time Cloud sync to Google Sheet in background (safe non-blocking)
@@ -11245,12 +11259,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       updateUserUI();
       closeModal("authModal");
       showToast("🎉 Đăng nhập thành công! Chào mừng " + (currentUser.name || currentUser.email), "success");
-      if (isAdm && typeof switchView === "function") {
-        switchView("viewAdmin");
-      } else {
-        switchView("viewProfile");
-        switchProfileTab("tabProfWallet");
-      }
+      setTimeout(function() {
+        if (isAdm && typeof switchView === "function") {
+          switchView("viewAdmin");
+        } else {
+          switchView("viewProfile");
+          if (typeof switchProfileTab === "function") switchProfileTab("tabProfWallet");
+        }
+      }, 100);
 
       // Background GAS call
       if (typeof callGasApi === "function") {
