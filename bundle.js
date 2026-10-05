@@ -2,10 +2,10 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.0.8";
+const MMO_CURRENT_CODE_VERSION = "4.0.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
-// AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION
+// AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION & RESTORE PHONE FARM STOCK
 try {
   const _badSub = "manhdongvtc.workers.dev";
   const _goodSub = "muabantaikhoanmmo.workers.dev";
@@ -17,19 +17,64 @@ try {
   if (_curTurso && _curTurso.includes(_badSub)) {
     localStorage.removeItem("mmo_turso_db_url");
   }
+
+  const MASTER_PF_STOCK = {
+    "PROD_MUBKH47T2U": { stock: 30, variants: [{ name: "Rom Androi 10 Not8 N950 cài =TW", price: 300000, stock: 30 }] },
+    "PROD_MUBJQ6JP7O": { stock: 46, variants: [{ name: "Not 9  N960 F/DS Cài bằng TW", price: 300000, stock: 46 }] },
+    "PROD_MU2OGW71GZ": { stock: 76, variants: [{ name: "rom gốc mod adb j7 plush", price: 300000, stock: 40 }, { name: "rot j7 plush", price: 100000, stock: 36 }] },
+    "PROD_MU2OAG3IO2": { stock: 33, variants: [{ name: "Rom androi 10 mod adb j7 prime", price: 300000, stock: 33 }] },
+    "PROD_MU2O4MW4DQ": { stock: 73, variants: [{ name: "Rom androi 10 s7 G930FDS", price: 300000, stock: 30 }, { name: "Rom androi  s7 edge G935", price: 300000, stock: 43 }] },
+    "PROD_MU2NX4CYEW": { stock: 199, variants: [{ name: "Rom androi 10 s8 mod adb", price: 300000, stock: 43 }, { name: "Rom androi 10 s8 plush G955", price: 300000, stock: 40 }, { name: "rom gốc s8 g95f mod adb", price: 300000, stock: 60 }, { name: "rom gốc s8 g950N  mod adb", price: 300000, stock: 56 }] },
+    "PROD_MU2NUXL1Q4": { stock: 37, variants: [{ name: "Rom androi 10 s9", price: 300000, stock: 37 }] },
+    "PROD_MU2NSFQCMT": { stock: 187, variants: [{ name: "rom s10 G973F DS", price: 500000, stock: 62 }, { name: "rom s10 G977N s10 5g", price: 500000, stock: 63 }, { name: "rom s10 G977N rom gốc mod", price: 500000, stock: 0 }, { name: "TW s10 mod adb", price: 50000, stock: 0 }, { name: "Rom S 10 5g G977N bản Hàn", price: 500000, stock: 62 }] },
+    "PROD_MU2NKET1OG": { stock: 30, variants: [{ name: "Rom Not8 androi 10", price: 300000, stock: 30 }, { name: "Rom  gốc not8 mod adb", price: 300000, stock: 0 }] },
+    "PROD_MU2N2TVDIJ": { stock: 46, variants: [{ name: "Rom androi 10  not 9", price: 500000, stock: 46 }, { name: "Rom Gốc mod adb", price: 300000, stock: 0 }] },
+    "PROD_MU2MY8WCOE": { stock: 0, variants: [{ name: "rom androi 12 mod adb", price: 500000, stock: 0 }] },
+    "PROD_MU2MOON7L6": { stock: 0, variants: [{ name: "Not 10 G975 FDS cài qua odin", price: 500000, stock: 0 }] },
+    "PROD_MU2LYZY5C7": { stock: 120, variants: [{ name: "Rom androi 12 mod adb", price: 300000, stock: 60 }, { name: "Rom Gốc  mod adb", price: 300000, stock: 60 }, { name: "Rom androi 10 mod adb", price: 300000, stock: 0 }] }
+  };
+
   ["mmo_admin_products", "mmo_products"].forEach(function(k) {
     const raw = localStorage.getItem(k);
     if (raw && raw.includes(_badSub)) {
       localStorage.setItem(k, raw.replaceAll(_badSub, _goodSub));
     }
-    if (raw && raw.includes("NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY")) {
+    if (raw) {
       try {
-        const arr = JSON.parse(raw);
+        let arr = JSON.parse(raw);
         if (Array.isArray(arr)) {
-          const filtered = arr.filter(p => p && p.id !== "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY");
-          localStorage.setItem(k, JSON.stringify(filtered));
+          let mod = false;
+          // Loại bỏ sản phẩm trùng lặp
+          const beforeLen = arr.length;
+          arr = arr.filter(p => p && p.id !== "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY");
+          if (arr.length !== beforeLen) mod = true;
+
+          // Khôi phục tự động tồn kho chuẩn cho danh mục Phone Farm nếu bị lỗi hiển thị 0
+          arr.forEach(p => {
+            if (p && p.id && MASTER_PF_STOCK[p.id]) {
+              const m = MASTER_PF_STOCK[p.id];
+              if (!p.stock || p.stock === 0) {
+                p.stock = m.stock;
+                mod = true;
+              }
+              if (Array.isArray(p.variants) && Array.isArray(m.variants)) {
+                m.variants.forEach((mv, vi) => {
+                  if (p.variants[vi]) {
+                    if ((!p.variants[vi].stock || p.variants[vi].stock === 0) && mv.stock > 0) {
+                      p.variants[vi].stock = mv.stock;
+                      p.variants[vi].available = true;
+                      mod = true;
+                    }
+                  }
+                });
+              }
+            }
+          });
+          if (mod) {
+            localStorage.setItem(k, JSON.stringify(arr));
+          }
         }
-      } catch(e) {}
+      } catch(eArr) {}
     }
   });
 } catch(eBootClean) {}
@@ -13731,23 +13776,39 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
 
-      // ROM & Tools software
+      // ROM & Tools software & Phone Farm
       const prodCat = prod.category ? String(prod.category) : "";
-      if (prodCat.includes("Rom") || prodCat.includes("Tools") || prodCat.includes("Tool")) {
-        return typeof prod.stock === "number" ? prod.stock : 0;
+      const prodName = prod.name ? String(prod.name) : "";
+      const isRomOrPhoneFarm = prodCat.includes("Rom") || prodCat.includes("Phone Farm") || prodCat.includes("Tools") || prodCat.includes("Tool") || prodName.includes("Rom");
+
+      if (isRomOrPhoneFarm) {
+        if (vIdx === null || vIdx === undefined || vIdx === "ALL" || vIdx === "") {
+          if (hasVars) {
+            return prod.variants.reduce((total, v) => total + ((v && Array.isArray(v.accounts) && v.accounts.length > 0) ? v.accounts.length : (Number(v && v.stock) || 0)), 0);
+          }
+          if (Array.isArray(prod.accounts) && prod.accounts.length > 0) return prod.accounts.length;
+          return typeof prod.stock === "number" ? Math.max(0, prod.stock) : 0;
+        }
+        const idxNum = Number(vIdx);
+        const v = (!isNaN(idxNum) && prod.variants[idxNum]) ? prod.variants[idxNum] : prod.variants[0];
+        if (v) {
+          if (Array.isArray(v.accounts) && v.accounts.length > 0) return v.accounts.length;
+          if (typeof v.stock === "number") return Math.max(0, v.stock);
+        }
+        return typeof prod.stock === "number" ? Math.max(0, prod.stock) : 0;
       }
 
       if (!hasVars) {
+        if (Array.isArray(prod.accounts) && prod.accounts.length > 0) return prod.accounts.length;
         if (typeof prod.stock === "number") return Math.max(0, prod.stock);
-        if (Array.isArray(prod.accounts)) return prod.accounts.length;
         return 0;
       }
       if (vIdx === null || vIdx === undefined || vIdx === "ALL" || vIdx === "") {
         return prod.variants.reduce((total, v) => {
           if (!v) return total;
           let s = 0;
-          if (typeof v.stock === "number") s = Math.max(0, v.stock);
-          else if (Array.isArray(v.accounts)) s = v.accounts.length;
+          if (Array.isArray(v.accounts) && v.accounts.length > 0) s = v.accounts.length;
+          else if (typeof v.stock === "number") s = Math.max(0, v.stock);
           return total + s;
         }, 0);
       }
@@ -13755,10 +13816,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const v = (!isNaN(idxNum) && prod.variants[idxNum]) ? prod.variants[idxNum] : prod.variants[0];
       if (!v) return 0;
       // [SSOT RULE]: Nếu biến thể có số tồn kho dạng số (từ Turso hoặc kho cập nhật), lấy chuẩn tuyệt đối
+      if (Array.isArray(v.accounts) && v.accounts.length > 0) return v.accounts.length;
       if (typeof v.stock === "number") {
         return Math.max(0, v.stock);
       }
-      if (Array.isArray(v.accounts)) return v.accounts.length;
       return 0;
     }
     window.getShopVariantStock = getShopVariantStock;
@@ -14570,14 +14631,30 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               
               const updatedPrice = (tp.price !== undefined) ? Number(tp.price) : cur.price;
               if (!isApiType) {
-                updatedStock = (tp.stock !== undefined) ? Number(tp.stock) : cur.stock;
-                if (Array.isArray(cur.variants) && Array.isArray(variants)) {
-                  cur.variants.forEach((cv, idx) => {
-                    if (variants[idx]) {
-                      cv.stock = (typeof variants[idx].stock === "number") ? Number(variants[idx].stock) : 0;
-                      if (cv.stock <= 0) cv.accounts = [];
-                    }
-                  });
+                const isPhoneFarmOrRom = (cur.category === 'Phone Farm' || (typeof cur.category === 'string' && (cur.category.toLowerCase().includes('phone farm') || cur.category.toLowerCase().includes('rom'))) || (typeof cur.name === 'string' && (cur.name.toLowerCase().includes('rom') || cur.name.toLowerCase().includes('phone farm'))));
+                if (isPhoneFarmOrRom && (!tp.stock || Number(tp.stock) === 0) && cur.stock > 0) {
+                  updatedStock = cur.stock;
+                  if (Array.isArray(cur.variants) && Array.isArray(variants)) {
+                    cur.variants.forEach((cv, idx) => {
+                      if (variants[idx]) {
+                        if (typeof variants[idx].stock === "number" && variants[idx].stock > 0) {
+                          cv.stock = Number(variants[idx].stock);
+                        } else if (typeof cv.stock === "number" && cv.stock > 0) {
+                          variants[idx].stock = cv.stock;
+                        }
+                      }
+                    });
+                  }
+                } else {
+                  updatedStock = (tp.stock !== undefined) ? Number(tp.stock) : cur.stock;
+                  if (Array.isArray(cur.variants) && Array.isArray(variants)) {
+                    cur.variants.forEach((cv, idx) => {
+                      if (variants[idx]) {
+                        cv.stock = (typeof variants[idx].stock === "number") ? Number(variants[idx].stock) : 0;
+                        if (cv.stock <= 0 && !isPhoneFarmOrRom) cv.accounts = [];
+                      }
+                    });
+                  }
                 }
               } else {
                 cur.deliveryType = 'api';
@@ -15050,11 +15127,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
 
-      // 2. ROM & Tools software
+      // 2. ROM & Tools software & Phone Farm
       if (prod) {
         const prodCat = prod.category ? String(prod.category) : "";
-        if (prodCat.includes("Rom") || prodCat.includes("Tools") || prodCat.includes("Tool")) {
-          return typeof prod.stock === "number" ? prod.stock : 0;
+        const prodName = prod.name ? String(prod.name) : "";
+        const isRomOrPhoneFarm = prodCat.includes("Rom") || prodCat.includes("Phone Farm") || prodCat.includes("Tools") || prodCat.includes("Tool") || prodName.includes("Rom");
+
+        if (isRomOrPhoneFarm) {
+          if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL" && variantIdx !== "") {
+            const v = hasVars ? prod.variants[Number(variantIdx)] : prod;
+            if (v) {
+              if (Array.isArray(v.accounts) && v.accounts.length > 0) return v.accounts.length;
+              if (typeof v.stock === "number") return Math.max(0, v.stock);
+            }
+            return 0;
+          }
+          if (hasVars) {
+            return prod.variants.reduce((sum, v) => sum + ((v && Array.isArray(v.accounts) && v.accounts.length > 0) ? v.accounts.length : (Number(v && v.stock) || 0)), 0);
+          }
+          if (Array.isArray(prod.accounts) && prod.accounts.length > 0) return prod.accounts.length;
+          return typeof prod.stock === "number" ? Math.max(0, prod.stock) : 0;
         }
       }
 
@@ -15062,12 +15154,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const hasVars = prod && Array.isArray(prod.variants) && prod.variants.length > 0;
       if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL" && variantIdx !== "") {
         const v = hasVars ? prod.variants[Number(variantIdx)] : prod;
-        return (v && Array.isArray(v.accounts)) ? v.accounts.length : (Number(v && v.stock) || 0);
+        if (v) {
+          if (Array.isArray(v.accounts) && v.accounts.length > 0) return v.accounts.length;
+          if (typeof v.stock === "number") return Math.max(0, v.stock);
+        }
+        return 0;
       }
       if (hasVars) {
-        return prod.variants.reduce((sum, v) => sum + ((v && Array.isArray(v.accounts)) ? v.accounts.length : (Number(v && v.stock) || 0)), 0);
+        return prod.variants.reduce((sum, v) => sum + ((v && Array.isArray(v.accounts) && v.accounts.length > 0) ? v.accounts.length : (Number(v && v.stock) || 0)), 0);
       }
-      return (prod && Array.isArray(prod.accounts)) ? prod.accounts.length : (Number(prod && prod.stock) || 0);
+      if (Array.isArray(prod.accounts) && prod.accounts.length > 0) return prod.accounts.length;
+      return (Number(prod && prod.stock) || 0);
     }
     window.getVariantStockCount = getVariantStockCount;
 
