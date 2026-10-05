@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.0.9";
+const MMO_CURRENT_CODE_VERSION = "4.1.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION & RESTORE PHONE FARM STOCK
@@ -33,6 +33,7 @@ try {
     "PROD_MU2MOON7L6": { stock: 0, variants: [{ name: "Not 10 G975 FDS cài qua odin", price: 500000, stock: 0 }] },
     "PROD_MU2LYZY5C7": { stock: 120, variants: [{ name: "Rom androi 12 mod adb", price: 300000, stock: 60 }, { name: "Rom Gốc  mod adb", price: 300000, stock: 60 }, { name: "Rom androi 10 mod adb", price: 300000, stock: 0 }] }
   };
+  window.MASTER_PF_STOCK = MASTER_PF_STOCK;
 
   ["mmo_admin_products", "mmo_products"].forEach(function(k) {
     const raw = localStorage.getItem(k);
@@ -14635,29 +14636,51 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               const updatedPrice = (tp.price !== undefined) ? Number(tp.price) : cur.price;
               if (!isApiType) {
                 const isPhoneFarmOrRom = (cur.category === 'Phone Farm' || (typeof cur.category === 'string' && (cur.category.toLowerCase().includes('phone farm') || cur.category.toLowerCase().includes('rom'))) || (typeof cur.name === 'string' && (cur.name.toLowerCase().includes('rom') || cur.name.toLowerCase().includes('phone farm'))));
-                if (isPhoneFarmOrRom && (!tp.stock || Number(tp.stock) === 0) && cur.stock > 0) {
+                const pfMaster = (typeof MASTER_PF_STOCK !== "undefined" && MASTER_PF_STOCK[cur.id]) ? MASTER_PF_STOCK[cur.id] : null;
+                const manuallyCleared = (function() {
+                  try {
+                    const cl = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "[]");
+                    return Array.isArray(cl) && cl.includes(cur.id);
+                  } catch(e) { return false; }
+                })();
+
+                if (tp.stock !== undefined && Number(tp.stock) > 0) {
+                  updatedStock = Number(tp.stock);
+                } else if (pfMaster && !manuallyCleared && pfMaster.stock > 0) {
+                  updatedStock = pfMaster.stock;
+                } else if (!manuallyCleared && cur.stock > 0) {
                   updatedStock = cur.stock;
-                  if (Array.isArray(cur.variants) && Array.isArray(variants)) {
-                    cur.variants.forEach((cv, idx) => {
-                      if (variants[idx]) {
-                        if (typeof variants[idx].stock === "number" && variants[idx].stock > 0) {
-                          cv.stock = Number(variants[idx].stock);
-                        } else if (typeof cv.stock === "number" && cv.stock > 0) {
-                          variants[idx].stock = cv.stock;
-                        }
-                      }
-                    });
-                  }
                 } else {
-                  updatedStock = (tp.stock !== undefined) ? Number(tp.stock) : cur.stock;
-                  if (Array.isArray(cur.variants) && Array.isArray(variants)) {
-                    cur.variants.forEach((cv, idx) => {
-                      if (variants[idx]) {
-                        cv.stock = (typeof variants[idx].stock === "number") ? Number(variants[idx].stock) : 0;
-                        if (cv.stock <= 0 && !isPhoneFarmOrRom) cv.accounts = [];
+                  updatedStock = (tp.stock !== undefined) ? Number(tp.stock) : (cur.stock || 0);
+                }
+
+                if (Array.isArray(variants)) {
+                  variants.forEach((v, idx) => {
+                    if (v) {
+                      const mv = (pfMaster && Array.isArray(pfMaster.variants) && pfMaster.variants[idx]) ? pfMaster.variants[idx] : null;
+                      const cv = (Array.isArray(cur.variants) && cur.variants[idx]) ? cur.variants[idx] : null;
+                      if (typeof v.stock === "number" && v.stock > 0) {
+                        v.available = true;
+                      } else if (mv && !manuallyCleared && mv.stock > 0) {
+                        v.stock = mv.stock;
+                        v.available = true;
+                      } else if (cv && !manuallyCleared && cv.stock > 0) {
+                        v.stock = cv.stock;
+                        v.available = true;
+                      } else {
+                        v.stock = (typeof v.stock === "number") ? Number(v.stock) : 0;
+                        if (v.stock <= 0 && !isPhoneFarmOrRom) v.accounts = [];
                       }
-                    });
-                  }
+                    }
+                  });
+                }
+                if (Array.isArray(cur.variants)) {
+                  cur.variants.forEach((cv, idx) => {
+                    if (variants && variants[idx]) {
+                      cv.stock = variants[idx].stock;
+                      cv.available = variants[idx].available;
+                    }
+                  });
                 }
               } else {
                 cur.deliveryType = 'api';
