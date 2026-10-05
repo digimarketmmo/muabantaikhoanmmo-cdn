@@ -2,8 +2,124 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.1.0";
+const MMO_CURRENT_CODE_VERSION = "4.1.1";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
+
+// =========================================================================
+// BULLETPROOF SAFE LOCALSTORAGE & AUTO-PRUNING ENGINE (v4.1.1)
+// Tự động bảo vệ & dọn dẹp bộ nhớ, loại bỏ triệt để lỗi QuotaExceededError
+// =========================================================================
+function healStorageQuota(forceEmergency) {
+  try {
+    if (typeof localStorage === "undefined") return;
+    let totalChars = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      const val = localStorage.getItem(k) || "";
+      totalChars += (k ? k.length : 0) + val.length;
+    }
+    const approxBytes = totalChars * 2;
+    if (!forceEmergency && approxBytes < 2000000) {
+      return;
+    }
+    console.warn("[STORAGE] Quota warning (usage ~" + (approxBytes / 1024 / 1024).toFixed(2) + " MB). Running automatic quota recovery...");
+
+    // 1. Xóa các cache sản phẩm nguồn và kho tạm thời (đã có Turso Cloud SSOT lưu trữ an toàn)
+    localStorage.removeItem("mmo_cached_source_products");
+    localStorage.removeItem("mmo_products_stock");
+    localStorage.removeItem("mmo_stock_items");
+    
+    // 2. Xóa các key sao lưu trùng lặp dư thừa
+    localStorage.removeItem("mmo_settings_permanent_backup");
+    localStorage.removeItem("mmo_backup_ai_keys_permanent");
+    localStorage.removeItem("mmo_transactions");
+    localStorage.removeItem("mmo_wallet_transactions");
+    localStorage.removeItem("mmo_users");
+
+    // 3. Giới hạn danh sách lịch sử đơn hàng & biến động số dư trong localStorage xuống tối đa 25 mục mới nhất
+    ["mmo_all_orders", "mmo_orders", "mmo_user_orders", "mmo_pre_orders", "mmo_transaction_history", "mmo_balance_logs"].forEach(function(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr) && arr.length > 25) {
+            localStorage.setItem(key, JSON.stringify(arr.slice(0, 25)));
+          }
+        }
+      } catch(e) {}
+    });
+
+    // 4. Dọn dẹp ảnh base64 khổng lồ trong mmo_admin_products / mmo_products (nếu có)
+    ["mmo_admin_products", "mmo_products"].forEach(function(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw && raw.includes("data:image/")) {
+          const prods = JSON.parse(raw);
+          if (Array.isArray(prods)) {
+            prods.forEach(function(p) {
+              if (p && p.image && p.image.startsWith("data:image/")) {
+                p.image = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/chatgpt_plus.png";
+              }
+              if (p && p.image_url && p.image_url.startsWith("data:image/")) {
+                p.image_url = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/chatgpt_plus.png";
+              }
+            });
+            localStorage.setItem(key, JSON.stringify(prods));
+          }
+        }
+      } catch(e) {}
+    });
+  } catch(healErr) {
+    console.warn("[STORAGE] healStorageQuota error:", healErr);
+  }
+}
+
+function safeStorageSet(key, value) {
+  if (typeof localStorage === "undefined") return false;
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch(e) {
+    console.warn("[STORAGE] Quota exceeded on setItem('" + key + "'). Running emergency purge...", e.message);
+    healStorageQuota(true);
+    try {
+      localStorage.setItem(key, value);
+      return true;
+    } catch(retryErr) {
+      console.warn("[STORAGE] Secondary retry failed for '" + key + "'. Storing in sessionStorage and memory.", retryErr.message);
+      try { sessionStorage.setItem(key, value); } catch(sErr) {}
+      return false;
+    }
+  }
+}
+
+function safeStorageGet(key) {
+  try {
+    if (typeof localStorage !== "undefined") {
+      const val = localStorage.getItem(key);
+      if (val !== null) return val;
+    }
+  } catch(e) {}
+  try {
+    if (typeof sessionStorage !== "undefined") {
+      return sessionStorage.getItem(key);
+    }
+  } catch(e) {}
+  return null;
+}
+
+function safeStorageRemove(key) {
+  try { if (typeof localStorage !== "undefined") localStorage.removeItem(key); } catch(e) {}
+  try { if (typeof sessionStorage !== "undefined") sessionStorage.removeItem(key); } catch(e) {}
+}
+
+window.safeStorageSet = safeStorageSet;
+window.safeStorageGet = safeStorageGet;
+window.safeStorageRemove = safeStorageRemove;
+window.healStorageQuota = healStorageQuota;
+
+try { healStorageQuota(false); } catch(eInitHeal) {}
+
 
 // AUTO-HEAL LOCALSTORAGE ON SUBDOMAIN MIGRATION & RESTORE PHONE FARM STOCK
 try {
@@ -4203,7 +4319,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         let users = stored ? JSON.parse(stored) : null;
         if (!Array.isArray(users) || users.length === 0) {
           users = JSON.parse(JSON.stringify(DEFAULT_REGISTERED_USERS));
-          localStorage.setItem("mmo_registered_users", JSON.stringify(users));
+          safeStorageSet("mmo_registered_users", JSON.stringify(users));
         }
 
         // Tự động xoá sạch hoàn toàn tất cả khách hàng mẫu demo (Nguyễn Văn Hùng, Trần Minh Đức, Lê Hoàng Nam, Khách Hàng Mẫu...)
@@ -4364,7 +4480,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               const cloudBal = Number(data.user.balance);
               if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
                 currentUser.balance = cloudBal;
-                try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+                try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
               }
             }
 
@@ -4535,7 +4651,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     
     function loadStoredUser() {
       try {
-        const stored = localStorage.getItem("mmo_user");
+        const stored = safeStorageGet("mmo_user");
         if (stored) {
           currentUser = JSON.parse(stored);
           if (currentUser) {
@@ -4574,11 +4690,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               currentUser.role = found.role || currentUser.role;
               currentUser.name = found.name || currentUser.name;
               currentUser.avatar = found.avatar || currentUser.avatar;
-              localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+              safeStorageSet("mmo_user", JSON.stringify(currentUser));
             } else {
               if (currentUser.balance === undefined || currentUser.balance === null) {
                 currentUser.balance = 0;
-                localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+                safeStorageSet("mmo_user", JSON.stringify(currentUser));
               }
             }
             // Đồng bộ lịch sử giao dịch và số dư thực tế từ máy chủ Google Sheet
@@ -4721,7 +4837,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 const myEmail = currentUser.email.toLowerCase().trim();
                 if (!cloudEmails.includes(myEmail)) {
                   currentUser.role = "Thành Viên";
-                  localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+                  safeStorageSet("mmo_user", JSON.stringify(currentUser));
                   if (typeof updateUserUI === "function") updateUserUI();
                   const curView = localStorage.getItem("mmo_current_view");
                   if (curView === "viewAdmin" && typeof switchView === "function") {
@@ -4745,7 +4861,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           user = currentUser;
         } else {
           try {
-            const stored = localStorage.getItem("mmo_user");
+            const stored = safeStorageGet("mmo_user");
             if (stored) user = JSON.parse(stored);
           } catch(e) {}
         }
@@ -4762,7 +4878,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         user.role = "Thành Viên";
         if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === userEmail) {
           currentUser.role = "Thành Viên";
-          try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+          try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
         }
       }
 
@@ -4806,7 +4922,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (currentUser && (currentUser.email || "").toLowerCase().trim() === email) {
         currentUser.role = "Quản Trị Viên";
         try {
-          localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+          safeStorageSet("mmo_user", JSON.stringify(currentUser));
         } catch(e) {}
         updateUserUI();
       }
@@ -4850,7 +4966,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (currentUser && (currentUser.email || "").toLowerCase().trim() === targetEmail) {
         currentUser.role = "Thành Viên";
         try {
-          localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+          safeStorageSet("mmo_user", JSON.stringify(currentUser));
         } catch(e) {}
         updateUserUI();
         showToast("Tài khoản của bạn đã bị gỡ quyền Quản Trị Viên!", "warning");
@@ -5515,7 +5631,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         });
         // Đảm bảo đồng bộ số dư mới nhất của currentUser (nếu đang đăng nhập) vào danh sách users
         try {
-          const curU = (typeof currentUser !== "undefined" && currentUser) ? currentUser : JSON.parse(localStorage.getItem("mmo_user") || "null");
+          const curU = (typeof currentUser !== "undefined" && currentUser) ? currentUser : JSON.parse(safeStorageGet("mmo_user") || "null");
           if (curU && curU.email) {
             const uIdx = users.findIndex(function(u) { return (u.email || "").toLowerCase().trim() === curU.email.toLowerCase().trim(); });
             if (uIdx !== -1 && curU.balance !== undefined && curU.balance !== null) {
@@ -7037,14 +7153,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         });
 
         // Đảm bảo số dư currentUser chuẩn xác theo SSOT 205.500 đ
-        const curUserRaw = localStorage.getItem("mmo_user");
+        const curUserRaw = safeStorageGet("mmo_user");
         if (curUserRaw) {
           try {
             const u = JSON.parse(curUserRaw);
             if (u && (u.email || "").toLowerCase().trim() === "manhdongvtc@gmail.com") {
               if (u.balance > 1000000 || u.balance !== 205500) {
                 u.balance = 205500;
-                localStorage.setItem("mmo_user", JSON.stringify(u));
+                safeStorageSet("mmo_user", JSON.stringify(u));
                 if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = 205500;
               }
             }
@@ -7238,7 +7354,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
           if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
             currentUser.balance = cloudBal;
-            try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+            try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
             if (typeof updateUserUI === "function") updateUserUI();
           }
           if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
@@ -7726,7 +7842,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
         currentUser.balance = accurateBalance;
-        localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        safeStorageSet("mmo_user", JSON.stringify(currentUser));
         if (typeof updateUserUI === "function") updateUserUI();
       }
 
@@ -8075,7 +8191,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           // Cập nhật currentUser nếu đang là người giới thiệu
           if (currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === refEmail) {
             currentUser.balance = newBal;
-            localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            safeStorageSet("mmo_user", JSON.stringify(currentUser));
             if (typeof updateUserUI === "function") updateUserUI();
             if (typeof showToast === "function") {
               showToast("🎉 Chúc mừng! Bạn vừa nhận được " + (typeof formatVND === "function" ? formatVND(item.commissionAmount) : item.commissionAmount + " đ") + " hoa hồng tiếp thị liên kết từ đơn #" + item.orderId + "!", "success");
@@ -8784,7 +8900,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // Cập nhật currentUser nếu đang đăng nhập đúng tài khoản người giới thiệu
       if (typeof currentUser !== "undefined" && currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === refEmail) {
         currentUser.balance = newBal;
-        try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(eU) {}
+        try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(eU) {}
         if (typeof updateUserUI === "function") updateUserUI();
       }
 
@@ -8888,7 +9004,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         if (typeof currentUser !== "undefined" && currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === refEmail) {
           currentUser.balance = newBal;
-          try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(eU) {}
+          try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(eU) {}
         }
       });
 
@@ -10265,7 +10381,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === email) {
         currentUser.balance = users[idx].balance;
-        localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        safeStorageSet("mmo_user", JSON.stringify(currentUser));
         if (typeof updateUserUI === "function") updateUserUI();
       }
 
@@ -10306,7 +10422,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           saveRegisteredUsers(uList);
           if (currentUser && (currentUser.email || "").toLowerCase().trim() === em) {
             currentUser.balance = nBal;
-            localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            safeStorageSet("mmo_user", JSON.stringify(currentUser));
             if (typeof updateUserUI === "function") updateUserUI();
           }
           if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
@@ -11137,7 +11253,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         await _doCompleteGoogleLogin(email, name, picture);
       } catch(err) {
         console.error("completeGoogleLogin error:", err);
-        showToast("Lỗi đăng nhập Google: " + (err.message || "Vui lòng thử lại!"), "danger");
+        if (currentUser && currentUser.email) {
+          try { sessionStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(sErr) {}
+          closeModal("authModal");
+          updateUserUI();
+          showToast("🎉 Đăng nhập thành công tài khoản Google: " + (currentUser.name || email), "success");
+        } else {
+          showToast("Lỗi đăng nhập Google: " + (err.message || "Vui lòng thử lại!"), "danger");
+        }
       } finally {
         _isCompletingGoogleLogin = false;
       }
@@ -11199,8 +11322,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           users.unshift(Object.assign({}, currentUser, { created: new Date().toLocaleDateString("vi-VN") }));
         }
 
-        saveRegisteredUsers(users);
-        localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        try { saveRegisteredUsers(users); } catch(uErr) {}
+        safeStorageSet("mmo_user", JSON.stringify(currentUser));
+        try { sessionStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(sErr) {}
 
         closeModal("authModal");
         updateUserUI();
@@ -11233,7 +11357,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               if (res.user.role === "ADMIN") {
                 currentUser.role = "Quản Trị Viên";
               }
-              localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+              safeStorageSet("mmo_user", JSON.stringify(currentUser));
               let latestUsers = getRegisteredUsers();
               const idx = latestUsers.findIndex(u => (u.email || "").toLowerCase().trim() === email);
               if (idx !== -1) {
@@ -11311,7 +11435,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         saveRegisteredUsers(users);
       }
 
-      localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+      safeStorageSet("mmo_user", JSON.stringify(currentUser));
       updateUserUI();
       closeModal("authModal");
       showToast("🎉 Đăng nhập thành công! Chào mừng " + (currentUser.name || currentUser.email), "success");
@@ -11335,7 +11459,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             if (res.user.role === "ADMIN") {
               currentUser.role = "Quản Trị Viên";
             }
-            localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            safeStorageSet("mmo_user", JSON.stringify(currentUser));
             let latestUsers = getRegisteredUsers();
             const idx = latestUsers.findIndex(u => (u.email || "").toLowerCase().trim() === email);
             if (idx !== -1) {
@@ -11408,7 +11532,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         saveRegisteredUsers(users);
       }
 
-      localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+      safeStorageSet("mmo_user", JSON.stringify(currentUser));
       updateUserUI();
       closeModal("authModal");
       showToast("🎉 Đăng ký tài khoản thành công! Chào mừng " + name, "success");
@@ -11431,7 +11555,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }).then(function(res) {
           if (res && res.success && res.user && res.user.userId) {
             currentUser.userId = res.user.userId;
-            localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            safeStorageSet("mmo_user", JSON.stringify(currentUser));
             let latestUsers = getRegisteredUsers();
             const idx = latestUsers.findIndex(u => (u.email || "").toLowerCase().trim() === email);
             if (idx !== -1) {
@@ -11507,7 +11631,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     function _doUpdateUserUI() {
       try {
-        const stored = localStorage.getItem("mmo_user");
+        const stored = safeStorageGet("mmo_user");
         if (stored) currentUser = JSON.parse(stored);
         if (currentUser && currentUser.email) {
           const uList = getRegisteredUsers();
@@ -11515,7 +11639,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (found && found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
             currentUser.balance = Number(found.balance);
             if (found.role) currentUser.role = found.role;
-            localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            safeStorageSet("mmo_user", JSON.stringify(currentUser));
           }
         }
       } catch(e) {}
@@ -12159,7 +12283,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         let checkUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
         if (!checkUser) {
           try {
-            const stored = localStorage.getItem("mmo_user");
+            const stored = safeStorageGet("mmo_user");
             if (stored) {
               checkUser = JSON.parse(stored);
               currentUser = checkUser;
@@ -22598,7 +22722,7 @@ function syncAllOpenViewsStock(changedProdId) {
                 found.balance = Number(cloudU.balance);
                 if (currentUser && (currentUser.email || "").toLowerCase().trim() === cEmail) {
                   currentUser.balance = found.balance;
-                  localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+                  safeStorageSet("mmo_user", JSON.stringify(currentUser));
                   updateUserUI();
                 }
               }
@@ -23209,7 +23333,7 @@ function syncAllOpenViewsStock(changedProdId) {
                 if (!isNaN(tursoBal)) {
                   if (tursoBal > curLocalBal) {
                     currentUser.balance = tursoBal;
-                    try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+                    try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
                     if (typeof updateUserUI === "function") updateUserUI();
                   } else if (curLocalBal > tursoBal && tursoBal === 0) {
                     // Local có số dư dương (ví dụ vừa nạp SePay) nhưng Turso = 0 -> Sync số dư lên Turso
@@ -23220,7 +23344,7 @@ function syncAllOpenViewsStock(changedProdId) {
                     }).catch(() => {});
                   } else if (tursoBal !== curLocalBal && tursoBal > 0) {
                     currentUser.balance = tursoBal;
-                    try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+                    try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
                     if (typeof updateUserUI === "function") updateUserUI();
                   }
                 }
@@ -25601,7 +25725,7 @@ function syncAllOpenViewsStock(changedProdId) {
       // 0. Khôi phục phiên đăng nhập nếu có
       if (!currentUser) {
         try {
-          const storedUser = localStorage.getItem("mmo_user");
+          const storedUser = safeStorageGet("mmo_user");
           if (storedUser) currentUser = JSON.parse(storedUser);
         } catch(e) {}
       }
@@ -25879,7 +26003,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const newBal = curBal - totalCost;
       currentUser.balance = newBal;
       try {
-        localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        safeStorageSet("mmo_user", JSON.stringify(currentUser));
         localStorage.setItem("mmo_last_balance_change_time", String(Date.now()));
         let allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
         const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
@@ -26058,7 +26182,7 @@ function syncAllOpenViewsStock(changedProdId) {
         }).then(res => {
           if (res && res.success && res.newBalance !== undefined) {
             currentUser.balance = Number(res.newBalance);
-            localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            safeStorageSet("mmo_user", JSON.stringify(currentUser));
             let allUsers = getRegisteredUsers();
             const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
             if (uIdx !== -1) {
@@ -30106,7 +30230,7 @@ function syncAllOpenViewsStock(changedProdId) {
             creditedTxs[currentCode] = true;
             localStorage.setItem("mmo_credited_txs_" + cleanEmail, JSON.stringify(creditedTxs));
             currentUser.balance = (Number(currentUser.balance) || 0) + detectedAmount;
-            localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+            safeStorageSet("mmo_user", JSON.stringify(currentUser));
 
             let allUsers = getRegisteredUsers();
             const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
@@ -30179,7 +30303,7 @@ function syncAllOpenViewsStock(changedProdId) {
           const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
 
           currentUser.balance = cloudBal;
-          try { localStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+          try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
 
           if (uIdx !== -1) {
             allUsers[uIdx].balance = cloudBal;
@@ -30240,7 +30364,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (!currentUser) {
         try {
-          const storedUser = localStorage.getItem("mmo_user");
+          const storedUser = safeStorageGet("mmo_user");
           if (storedUser) currentUser = JSON.parse(storedUser);
         } catch(e) {}
       }
@@ -30361,7 +30485,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (!currentUser) {
         try {
-          const storedUser = localStorage.getItem("mmo_user");
+          const storedUser = safeStorageGet("mmo_user");
           if (storedUser) currentUser = JSON.parse(storedUser);
         } catch(e) {}
       }
@@ -30713,7 +30837,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const inpPhone = document.getElementById("profInputPhone")?.value.trim();
       if (inpName) currentUser.name = inpName;
       if (inpPhone) currentUser.phone = inpPhone;
-      localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+      safeStorageSet("mmo_user", JSON.stringify(currentUser));
       updateUserUI();
       showToast("Đã lưu thông tin cá nhân thành công!", "success");
     }
@@ -31832,7 +31956,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (currentUser && currentUser.email.toLowerCase() === item.userEmail.toLowerCase()) {
         currentUser.balance = newBal;
-        localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        safeStorageSet("mmo_user", JSON.stringify(currentUser));
         updateUserUI();
       }
 
@@ -32101,7 +32225,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       // Deduct balance from currentUser
       currentUser.balance -= amount;
-      localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+      safeStorageSet("mmo_user", JSON.stringify(currentUser));
 
       // Sync to registered users
       let users = getRegisteredUsers();
@@ -32942,7 +33066,7 @@ function changeAdmUsersPage(p) {
           try {
             if (e.key === "mmo_user") {
               try {
-                const stored = localStorage.getItem("mmo_user");
+                const stored = safeStorageGet("mmo_user");
                 if (stored) currentUser = JSON.parse(stored);
               } catch(errUser) {}
               if (typeof updateUserUI === "function") updateUserUI();
@@ -33169,7 +33293,7 @@ function changeAdmUsersPage(p) {
         } else if (targetView && targetView !== "viewStore") {
           let storedUserObj = null;
           try {
-            const rawU = localStorage.getItem("mmo_user");
+            const rawU = safeStorageGet("mmo_user");
             if (rawU) storedUserObj = JSON.parse(rawU);
           } catch(eU) {}
           if ((targetView === "viewProfile" || targetView === "viewDeposit") && !storedUserObj) {
@@ -35711,7 +35835,7 @@ function getProductSchemaReviews(p, idx) {
 
                 if (typeof currentUser !== "undefined" && currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === buyerEmail) {
                   currentUser.balance = (Number(currentUser.balance) || 0) + refundAmt;
-                  localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+                  safeStorageSet("mmo_user", JSON.stringify(currentUser));
                 }
 
                 if (typeof recordTransaction === "function") {
@@ -36159,7 +36283,7 @@ function getProductSchemaReviews(p, idx) {
 
       let user = null;
       try {
-        user = JSON.parse(localStorage.getItem("mmo_user") || "null");
+        user = JSON.parse(safeStorageGet("mmo_user") || "null");
       } catch(e) {}
       if (!user && typeof currentUser !== "undefined") user = currentUser;
 
@@ -36342,7 +36466,7 @@ function getProductSchemaReviews(p, idx) {
 
       let user = null;
       try {
-        user = JSON.parse(localStorage.getItem("mmo_user") || "null");
+        user = JSON.parse(safeStorageGet("mmo_user") || "null");
       } catch(e) {}
       if (!user && typeof currentUser !== "undefined") user = currentUser;
 
@@ -36366,7 +36490,7 @@ function getProductSchemaReviews(p, idx) {
       user.balance = userBalance - finalTotal;
       currentUser = user;
       try {
-        localStorage.setItem("mmo_user", JSON.stringify(user));
+        safeStorageSet("mmo_user", JSON.stringify(user));
         const cleanUEmail = (user.email || "").toLowerCase().trim();
         const allUsers = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : JSON.parse(localStorage.getItem("mmo_registered_users") || "[]");
         const uIdx = allUsers.findIndex(function(u) { return (u.id && u.id === user.id) || ((u.email || "").toLowerCase().trim() === cleanUEmail); });
@@ -36862,7 +36986,7 @@ function getProductSchemaReviews(p, idx) {
 
       let user = null;
       try {
-        user = JSON.parse(localStorage.getItem("mmo_user") || "null");
+        user = JSON.parse(safeStorageGet("mmo_user") || "null");
       } catch(e) {}
       if (!user && typeof currentUser !== "undefined") user = currentUser;
 
@@ -36881,7 +37005,7 @@ function getProductSchemaReviews(p, idx) {
 
         if (currentUser && ((currentUser.id && currentUser.id === user.id) || (currentUser.email && currentUser.email.toLowerCase().trim() === cleanUE))) {
           currentUser.balance = finalBal;
-          localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+          safeStorageSet("mmo_user", JSON.stringify(currentUser));
         }
 
         if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allUsers);
@@ -37446,7 +37570,7 @@ function getProductSchemaReviews(p, idx) {
         if (curUser && ((curUser.id && curUser.id === order.buyerId) || ((curUser.email || "").toLowerCase().trim() === targetEmail))) {
           curUser.balance = (Number(curUser.balance) || 0) + refundAmount;
           currentUser = curUser;
-          localStorage.setItem("mmo_user", JSON.stringify(curUser));
+          safeStorageSet("mmo_user", JSON.stringify(curUser));
           if (typeof updateWalletUI === "function") updateWalletUI();
           if (typeof updateUserUI === "function") updateUserUI();
         }
@@ -37990,7 +38114,7 @@ function getProductSchemaReviews(p, idx) {
       // 2.5. Tra cứu người dùng đăng nhập hiện tại nếu là khách hàng (không phải Root Admin)
       if (isInvalidEmail(foundEmail)) {
         try {
-          const storedUser = localStorage.getItem("mmo_user");
+          const storedUser = safeStorageGet("mmo_user");
           const curU = storedUser ? JSON.parse(storedUser) : (typeof currentUser !== "undefined" ? currentUser : null);
           if (curU && !isInvalidEmail(curU.email)) {
             const curEm = curU.email.toLowerCase().trim();
@@ -38956,7 +39080,7 @@ async function confirmRefundOrder() {
       // Cập nhật ngay currentUser trước khi lưu registered users
       if (currentUser && currentUser.email && currentUser.email.toLowerCase().trim() === finalEmail) {
         currentUser.balance = users[uIdx].balance;
-        localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+        safeStorageSet("mmo_user", JSON.stringify(currentUser));
         if (typeof updateUserUI === "function") updateUserUI();
       }
 
@@ -39056,7 +39180,7 @@ async function confirmRefundOrder() {
               saveRegisteredUsers(uList);
               if (currentUser && (currentUser.email || "").toLowerCase().trim() === finalEmail) {
                 currentUser.balance = Number(webRes.newBalance);
-                localStorage.setItem("mmo_user", JSON.stringify(currentUser));
+                safeStorageSet("mmo_user", JSON.stringify(currentUser));
                 if (typeof updateUserUI === "function") updateUserUI();
               }
             }
