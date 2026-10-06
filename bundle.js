@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.2.1";
+const MMO_CURRENT_CODE_VERSION = "4.2.2";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -22,7 +22,8 @@ function healStorageQuota(forceEmergency) {
           if (Array.isArray(prods)) {
             prods.forEach(function(p) {
               if (p && p.image && p.image.startsWith("data:image/")) {
-                p.image = (typeof resolveProductImage === "function") ? resolveProductImage({ id: p.id, name: p.name, category: p.category, image: "" }) : "https://iili.io/nFV4Rln.png";
+                // [SSOT CLOUD IMAGE]: Chuyển sang URL Cloud Worker vĩnh viễn, bảo toàn 100% ảnh mới của sản phẩm
+                p.image = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image";
               }
               if (p && p.image_url && p.image_url.startsWith("data:image/")) {
                 p.image_url = p.image;
@@ -537,7 +538,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gemini_pro_veo3.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUQIMRJYG0/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Bạn đang cần một trợ lý trí tuệ nhân tạo mạnh mẽ, thông minh vượt trội để hỗ trợ viết code, phân tích dữ liệu, lên ý tưởng nội dung, dịch thuật hay xử lý công việc chuyên sâu mỗi ngày với thời hạn dài lâu mà không phải bận tâm gia hạn hàng tháng?\n\nGói Gemini Pro (Advanced) Chính Chủ Hạn 1 Năm (12 Tháng) tại shop chính là lựa chọn tối ưu, tiết kiệm và đẳng cấp nhất dành cho bạn!\n\n✨ Trọn bộ quyền năng cao cấp của Gemini Pro:\n🧠 Trợ lý AI thế hệ mới: Sử dụng các mô hình ngôn ngữ và tư duy tiên tiến nhất từ Google, xử lý mượt mà các tác vụ phức tạp từ lập trình, toán học đến sáng tạo nội dung.\n\n📊 Phân tích dữ liệu & Tải file siêu lớn: Tải lên các tệp tài liệu dày, bảng tính Excel hay file code nặng để AI tự động đọc hiểu, tổng hợp và phân tích trong tích tắc.\n\n⚡ Tốc độ phản hồi cực nhanh: Không lo giật lag hay giới hạn khung giờ cao điểm, luôn sẵn sàng phục vụ 24/7 với hiệu suất cao nhất.\n\n🌐 Tích hợp sâu vào hệ sinh thái Google: Làm việc trơn tru cùng Google Docs, Gmail, Drive và các công cụ quen thuộc khác để tối ưu hóa toàn diện quy trình làm việc.\n\n🔒 Tại sao nên chọn nâng cấp chính chủ tại shop?\n👤 Nâng cấp trực tiếp trên Email cá nhân: Giữ nguyên lịch sử trò chuyện, các dự án và dữ liệu cá nhân của riêng bạn, bảo mật tuyệt đối 100%.\n\n⏳ Thời hạn dài lâu (12 Tháng): Đầu tư một lần, yên tâm sử dụng ổn định suốt cả năm mà không lo gián đoạn công việc.\n\n💰 Siêu tiết kiệm chi phí: Trải nghiệm trọn vẹn mọi tính năng cao cấp của gói Pro với mức giá cực kỳ dễ chịu so với giá gốc.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành \n\n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin từ bạn.\n\n💬 Hỗ trợ kỹ thuật 24/7, hướng dẫn tận tình các tính năng AI mới nhất.\n\n💡 Phù hợp cho: Lập trình viên, Content Creator, Marketer, nghiên cứu sinh, nhà quản lý hoặc bất kỳ ai muốn bứt phá hiệu suất công việc bằng công nghệ AI đỉnh cao!",
     "variants": [
@@ -585,7 +586,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://iili.io/nFV4Rln.png",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_7day.png",
     "warranty": "Bảo Hành Login",
     "description": "Định Dạng : Tài khoản | Mật Khẩu | Mail khôi phục | 2FA (nếu có)* HƯỚNG DẪN ĐĂNG NHẬP :-  Hướng dẫn đăng nhập bằng 2FA :+ Truy cập: https://2fa.live+ Dán code 2FA trong đơn hàng đã mua rồi ấn Submit. Sau đó lấy code điền vào là xong.- Trường hợp đăng nhập yêu cầu xác minh email khôi phục :+ Chọn dòng 3: Chọn \"Confirm your recovery email\" hoặc \"Xác nhận email khôi phục\".+ Nhập đúng email khôi phục trong đơn hàng đã mua là xong.Không chọn gửi code về maill khôi phục sẽ bị khóa mail shop sẽ từ chối bảo hành.* Login mỗi mail trên 1 IP/Profile để tránh bị lỗi.* Không login nhiều mail trên 1 thiết bị* Sau khi login lần đầu thành công hết bảo hành.\nBạn đang tìm kiếm nguồn tài khoản Gmail cổ có tuổi đời sâu (từ những năm 200x đến nay), đi kèm kênh YouTube/Google sẵn có (Random), sở hữu độ uy tín (Trust) tuyệt đối trong mắt các hệ thống bảo mật, đặc biệt là sạch bóng, không dính số điện thoại ẩn để phục vụ cho các chiến dịch lớn, làm hệ thống, seeding hoặc phát triển kênh?\n\nSiêu phẩm Gmail Cổ kèm Kênh Random (Hàng Trust cao, Không dính SĐT ẩn) tại shop chính là \"bảo剑\" tối thượng giúp bạn chiến mọi tác vụ nặng!\n\n💎 Điểm mạnh vượt trội của dòng Gmail Cổ & Kênh Random:\n⏳ Tuổi đời siêu sâu (Từ 200x đến 2018 - 2026): Tài khoản được ngâm qua nhiều năm tháng, lịch sử hoạt động dày dặn, vượt qua mọi thuật toán quét gắt gao nhất của Google, độ Trust cao ngất ngưởng.\n\n📺 Kèm kênh Random sẵn có: Tài khoản đã tích hợp sẵn kênh YouTube hoặc các dịch vụ đi kèm, tạo hành vi tự nhiên như một tài khoản của người dùng thật (Real User) lâu năm.\n\n🛡️ Không dính SĐT ẩn (Clean 100%): Tài khoản sạch sẽ tuyệt đối, không bị gán số điện thoại lạ hay dính các bảo mật ẩn phiền toái, giúp bạn dễ dàng add thông tin riêng và toàn quyền kiểm soát.\n\n🚀 Sức đề kháng cực mạnh: Hạn chế tối đa tình trạng khóa ngầm, checkpoint hay quét thiết bị, tối ưu tuyệt đối cho việc nuôi via, chạy tool automation hoặc làm các dự án lớn.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành lỗi đăng nhập  ngay lập tức trong lần nhận tài khoản đầu tiên.\n\n⚡ Bàn giao siêu tốc đúng định dạng chuẩn xác ngay sau khi thanh toán.\n\n🔒 Bảo mật tuyệt đối, sạch sẽ, bàn giao toàn quyền sở hữu cho khách hàng.\n\n💡 Mẹo sử dụng bền lâu: Nên sử dụng trình duyệt sạch (Antidetect Browser) cùng Proxy chất lượng cao khi đăng nhập lần đầu để giữ nguyên vẹn độ \"trâu bò\" và tuổi thọ tối đa cho tài khoản cổ!",
     "variants": [
@@ -633,7 +634,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://iili.io/nFV4Rln.png",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_7day.png",
     "warranty": "Bảo Hành Login",
     "description": "Bạn đang tìm kiếm nguồn Gmail tài khoản mới đã được ngâm độ tuổi từ 1 đến 10 ngày, đặc biệt chỉ đăng nhập bằng điện thoại (Clean Login) và không bật xác thực 2 loại (No 2FA) để phục vụ cho các tác vụ đăng ký tài khoản nhanh, nhận mã OTP, chạy tool automation hoặc làm hệ thống số lượng lớn một cách thuận tiện nhất?\n\nDòng sản phẩm Gmail New ngâm 1-10 ngày (No 2FA) tại shop chính là lựa chọn tối ưu, nhanh gọn và tiết kiệm nhất dành cho bạn!\n\n💎 Điểm mạnh vượt trội của dòng Gmail New:\n🕒 Đã ngâm độ tuổi chuẩn (1 - 10 ngày): Tài khoản đã qua giai đoạn tạo mới, có độ ổn định nhất định, hạn chế tối đa tình trạng quét ngầm hoặc checkpoint khi vừa đưa vào sử dụng.\n\n📱 Chỉ log Phone (Sạch sẽ tuyệt đối): Tài khoản chỉ mới thực hiện thao tác đăng nhập trên thiết bị di động, lịch sử cực kỳ sạch, tối ưu hóa hành vi người dùng thật.\n\n🔓 Không 2FA (No 2FA): Thuận tiện tuyệt đối cho việc tích hợp vào các phần mềm tự động hóa (tool MMO), script quản lý hoặc xử lý thủ công nhanh chóng mà không bị vướng mã xác thực qua điện thoại rườm rà.\n\n⚡ Tương thích cao: Phù hợp hoàn hảo để nhận mã xác minh (OTP), đăng ký tài khoản mạng xã hội, sàn thương mại điện tử hoặc làm email phụ trợ cho các chiến dịch ngắn hạn.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần nhận tài khoản đầu tiên.\n\n🚀 Bàn giao siêu tốc đúng định dạng chuẩn xác (User/Pass/Recovery Mail) ngay sau khi thanh toán.\n\n🔒 Bảo mật tuyệt đối, không qua sử dụng cá nhân trước đó.\n\n💡 Mẹo sử dụng hiệu quả: Vì tài khoản dạng No 2FA và mới ngâm ngắn ngày, anh em nên nuôi dưỡng hợp lý, sử dụng IP sạch hoặc trình duyệt/thiết bị tương thích để đạt hiệu suất công việc tốt nhất!",
     "variants": [
@@ -681,7 +682,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://iili.io/nFV4Rln.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUORGNEQOE/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Dưới đây là mẫu bài viết bán YouTube Premium Gói 3 Tháng, thiết kế chuyên nghiệp, nổi bật các đặc quyền giải trí đỉnh cao và chi phí siêu tiết kiệm cho anh em thích xem video không quảng cáo:\n\n🎵 YOUTUBE PREMIUM 3 THÁNG – TRẢI NGHIỆM GIẢI TRÍ ĐỈNH CAO, KHÔNG QUẢNG CÁO!\nBạn đã quá mệt mỏi vì những video quảng cáo dài dằng dặc làm gián đoạn phút giây thư giãn, hay muốn nghe nhạc ẩn ứng dụng và tải video ngoại tuyến thoải mái mà không tốn quá nhiều chi phí cho gói năm?\n\nGói YouTube Premium 3 Tháng tại shop chính là giải pháp hoàn hảo giúp bạn tận hưởng trọn vẹn không gian giải trí trọn vẹn trong một quý!\n\n✨ Trọn bộ đặc quyền đỉnh cao khi lên Premium:\n🚫 Xem video hoàn toàn KHÔNG QUẢNG CÁO: Tạm biệt mọi quảng cáo chen ngang khó chịu trước, trong và sau video, tận hưởng trọn vẹn mạch cảm xúc.\n\n🎵 Tích hợp YouTube Music miễn phí: Nghe nhạc chất lượng cao, thỏa sức thưởng thức hàng triệu bài hát và playlist độc quyền không lo quảng cáo.\n\n📱 Phát trong nền (Background Play): Thoải mái tắt màn hình điện thoại hoặc chuyển sang ứng dụng khác mà nhạc và video vẫn tiếp tục phát mượt mà.\n\n📥 Tải xuống ngoại tuyến (Download): Lưu trữ video và bài hát yêu thích để xem lại ngay cả khi không có kết nối Internet (khi đi máy bay, ra ngoài...).\n\n🔒 Tại sao nên chọn mua tại shop?\n🛡️ Bảo hành Full thời gian (3 tháng) sử dụng ổn định đến phút cuối cùng.\n\n⚡ Nâng cấp/Cấp phát siêu tốc chỉ trong vài phút sau khi nhận thông tin.\n\n💬 Hỗ trợ nhiệt tình 24/7, uy tín và tận tâm đặt lên hàng đầu.\n\n💡 Phù hợp cho: Học sinh, sinh viên, nhân viên văn phòng hoặc bất kỳ ai muốn trải nghiệm trọn vẹn YouTube không quảng cáo trong 3 tháng với mức chi phí tiết kiệm nhất!",
     "variants": [
@@ -729,7 +730,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://iili.io/nFV4Rln.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUOQS3DOIU/image",
     "warranty": "Bảo Hành Login",
     "description": "Bạn đang tìm kiếm nguồn tài khoản TikTok Việt cổ có tuổi đời từ 1 đến 3 năm, đi kèm Hotmail Live gốc và đã có lịch sử hoạt động (Random đặt đơn/tương tác tự nhiên), sở hữu độ tín nhiệm (Trust) cực đỉnh để làm nền tảng vững chắc cho mọi chiến dịch lớn mà không lo bị quét hay die vặt?\n\nSiêu phẩm TikTok Việt Cổ Live Kèm Hotmail (Hàng bất tử) tại shop chính là giải pháp tối thượng dành cho bạn!\n\n💎 Điểm mạnh vượt trội của dòng tài khoản \"Bất tử\":\n⏳ Tuổi đời siêu sâu (1 - 3 năm): Tài khoản được ngâm qua nhiều năm, đã vượt qua mọi thuật toán quét gắt gao nhất của nền tảng, độ Trust cao ngất ngưởng.\n\n📦 Đã qua lịch sử đặt đơn (Random): Tài khoản đã có sẵn các hoạt động mua sắm, đặt đơn hoặc tương tác tự nhiên trước đó, mang lại hành vi như một người dùng thật sự (Real User).\n\n📧 Đi kèm Hotmail Live gốc: Quản lý an toàn tuyệt đối, dễ dàng thay đổi thông tin, bảo mật hoặc nhận mã xác thực mượt mà.\n\n🛡️ Sức đề kháng cực mạnh: Hạn chế tối đa tình trạng khóa ngầm, checkpoint hay quét thiết bị, tối ưu tuyệt đối cho các hệ thống automation, nuôi via hoặc chạy chiến dịch dài hạn.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần nhận tài khoản đầu tiên.\n\n⚡ Bàn giao siêu tốc đúng định dạng chuẩn xác (User/Pass TikTok + Hotmail Live) ngay sau khi thanh toán.\n\n🔒 Bảo mật tuyệt đối, sạch sẽ, sẵn sàng chiến mọi tác vụ nặng.\n\n💡 Mẹo sử dụng bền lâu: Nên kết hợp sử dụng trình duyệt ẩn danh (Antidetect Browser) cùng Proxy chất lượng để đăng nhập và duy trì sự ổn định tuyệt đối cho dàn tài khoản cổ!",
     "variants": [
@@ -777,7 +778,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://iili.io/nFV4Rln.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUOQDRL4F0/image",
     "warranty": "Bảo Hành Login",
     "description": "Tài khoản TikTok Việt Nam Reg tháng 1/2026 kèm Mail Live (Có OAuth2), được thiết kế chuyên nghiệp, cực kỳ sắc bén và tối ưu hóa cho anh em làm MMO, chạy chiến dịch, seeding hoặc nuôi hệ thống tài khoản số lượng lớn:\n\n🔥 TIKTOK VIỆT NAM REG THÁNG 1/2026 + MAIL LIVE (CÓ OAUTH2) – SẠCH, TRUST CAO, CHIẾN MƯỢT MỌI CHIẾN DỊCH!\nBạn đang tìm kiếm nguồn tài khoản TikTok Via/Reg nội địa Việt Nam cứng cáp, ngâm đủ độ (Reg từ tháng 1/2026) đi kèm với Mail Live gốc hỗ trợ chuẩn OAuth2 cực kỳ an toàn để phục vụ cho các chiến dịch seeding, chạy ads, làm affiliate hoặc nuôi hệ thống tài khoản số lượng lớn mà không sợ bị quét hay die vặt?\n\nSiêu phẩm TikTok VN Reg T1/2026 + Mail Live (OAuth2) tại shop chính là giải pháp \"vũ khí tối thượng\" giúp bạn bứt phá mọi chỉ số!\n\n💎 Điểm mạnh tuyệt đối của dàn tài khoản:\n📅 Tuổi đời chuẩn (Reg tháng 1/2026): Tài khoản đã có thời gian ngâm ổn định, vượt qua các mốc quét ban đầu của nền tảng, tạo độ tín nhiệm (Trust) cực cao khi đăng nhập và hoạt động.\n\n🇻🇳 IP & Quốc gia Việt Nam chuẩn chỉnh: Tối ưu hóa 100% cho các hoạt động tại thị trường nội địa, tương thích hoàn hảo với các bước xác thực và hành vi người dùng Việt.\n\n📧 Đi kèm Mail Live sạch + Hỗ trợ OAuth2: Tài khoản mail đi kèm sống trâu, hỗ trợ kết nối bảo mật hiện đại (OAuth2), giúp việc quản lý, đổi pass hay nhận mã OTP cực kỳ an toàn, không sợ bị khóa mail giữa chừng.\n\n🚀 Sẵn sàng chiến mọi tác vụ: Phù hợp hoàn hảo để làm profile cá nhân, kéo traffic, livestream, làm nội dung ngắn hoặc chạy các hệ thống automation.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần nhận tài khoản đầu tiên.\n\n⚡ Bàn giao siêu tốc đúng định dạng chuẩn xác (User/Pass TikTok + Thông tin Mail Live) ngay sau khi thanh toán.\n\n🔒 Bảo mật tuyệt đối, tài khoản sạch, chưa qua tương tác rác hay vi phạm chính sách.\n\n💡 Mẹo sử dụng bền lâu: Nên sử dụng trình duyệt sạch (Antidetect Browser) kết hợp cùng Proxy/Dcom sạch để đăng nhập và nuôi dưỡng tài khoản, giúp duy trì độ trâu bò và tuổi thọ tối đa!",
     "variants": [
@@ -825,7 +826,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/nord_vpn.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUOIH8CW59/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Bạn đang cần gấp nguồn VPN cao cấp, uy tín hàng đầu thế giới như NordVPN để bảo mật thông tin, fake IP sang các quốc gia lớn, vượt rào kiểm duyệt hay chạy các chiến dịch, test tool trong thời gian ngắn (7 ngày) mà không muốn mua gói tháng đắt đỏ?\n\nGói NordVPN 7 ngày tại shop chính là giải pháp nhanh gọn, an toàn và tối ưu chi phí nhất dành cho bạn!\n\n💎 Những ưu điểm vượt trội của NordVPN:\n🚀 Tốc độ kết nối cực nhanh: Sở hữu hàng nghìn server tối ưu hóa tốc độ cao trên toàn cầu, không lo giật lag khi lướt web, chơi game hay chạy tool MMO.\n\n🌍 Mạng lưới server rộng khắp: Dễ dàng đổi IP sang Mỹ, Anh, Nhật, Singapore và hàng chục quốc gia khác với độ ổn định tuyệt đối, không sợ bị lộ IP thực.\n\n🔒 Bảo mật chuẩn quân sự: Công nghệ mã hóa tiên tiến kết hợp tính năng chặn mã độc, quảng cáo và bảo vệ quyền riêng tư toàn diện trên không gian mạng.\n\n⏱️ Linh hoạt ngắn hạn (7 ngày): Lựa chọn hoàn hảo cho anh em cần dùng trong 1 tuần để xử lý công việc phát sinh, test hệ thống hoặc chạy dự án thời vụ.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành Full thời gian sử dụng trong suốt 7 ngày, mượt mà đến phút cuối cùng.\n\n⚡ Cấp phát siêu tốc ngay sau khi thanh toán, nhận tài khoản đăng nhập dùng ngay trong một nốt nhạc.\n\n💬 Hỗ trợ nhiệt tình 24/7, hướng dẫn cài đặt và kết nối chi tiết trên mọi thiết bị.\n\n💡 Phù hợp cho: Dân MMO cần ẩn danh IP ngắn hạn, anh em test tool automation, làm việc với đối tác quốc tế hoặc muốn trải nghiệm chất lượng của NordVPN với chi phí tiết kiệm nhất!",
     "variants": [
@@ -873,7 +874,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/chatgpt_plus.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUNUEKI3NM/image",
     "warranty": "Bảo Hành Login",
     "description": "Bạn đang cần sử dụng sức mạnh tối tân của ChatGPT Plus (GPT-4o, OpenAI o1/o3, Advanced Data Analysis, tạo hình ảnh DALL-E 3) để làm code, viết content, phân tích dữ liệu, nghiên cứu chuyên sâu hay tự động hóa công việc nhưng giá mua trực tiếp từ hãng quá đắt đỏ?\n\nDịch vụ Nâng cấp ChatGPT Plus giá rẻ tại shop chính là giải pháp hoàn hảo giúp bạn sở hữu tài khoản cao cấp với mức chi phí tiết kiệm tối đa!\n\n🚀 Trọn bộ quyền năng cao cấp khi lên ChatGPT Plus:\n🧠 Truy cập mô hình AI thông minh nhất: Sử dụng không giới hạn các model tiên tiến từ OpenAI (như GPT-4o, o1, o3-mini...) với khả năng lập luận logic, toán học và viết code cực đỉnh.\n\n📊 Phân tích dữ liệu & Tải file nâng cao: Tải lên tệp Excel, PDF, hình ảnh code lớn để AI tự động phân tích, vẽ biểu đồ, xử lý số liệu hoặc trích xuất thông tin trong tích tắc.\n\n🎨 Sáng tạo hình ảnh đỉnh cao (DALL-E 3): Biến mọi ý tưởng câu lệnh (Prompt) thành những bức ảnh minh họa, thiết kế đồ họa sắc nét chỉ với vài câu lệnh.\n\n⚡ Tốc độ phản hồi siêu tốc: Không lo tình trạng giật lag, quá tải hay phải chờ đợi ngay cả vào những khung giờ cao điểm.\n\n🔒 Tại sao nên chọn nâng cấp tại shop?\n👤 Nâng cấp trực tiếp trên Email cá nhân: Giữ nguyên lịch sử chat, các project và dữ liệu cá nhân của riêng bạn, bảo mật tuyệt đối 100%.\n\n💰 Siêu tiết kiệm chi phí: Trải nghiệm trọn vẹn mọi tính năng cao cấp của gói Plus với mức giá rẻ hơn rất nhiều so với giá gốc.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành CỦA NHÀ CUNG CẤP \n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin.\n\n💬 Hỗ trợ kỹ thuật 24/7, hướng dẫn sử dụng các tính năng mới nhất từ A-Z.\n\n💡 Phù hợp cho: Lập trình viên, Content Creator, Marketer, nhà nghiên cứu hoặc bất kỳ ai muốn tối ưu hóa hiệu suất làm việc bằng công nghệ AI mạnh mẽ nhất hiện nay!",
     "variants": [
@@ -921,7 +922,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/proxy_japan.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUM6JQTW8C/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Bạn đang cần nguồn Proxy IPv6 Nhật Bản (Japan) chất lượng cao, IP cố định, xài riêng (Dedicated Private) để phục vụ nuôi tài khoản, chạy tool MMO, làm khảo sát, cày game hoặc quản lý gian hàng quốc tế mà không lo bị trùng IP hay giới hạn tốc độ?\n\nGói PROXY IPv6 – JAPAN NHẬT (CỐ ĐỊNH) – XÀI RIÊNG tại sàn MUABANTAIKHOANMMO chính là sự lựa chọn số 1 dành cho anh em làm MMO chuyên nghiệp!\n\n💎 Ưu điểm nổi bật của Proxy IPv6 Japan (Nhật Bản):\n- 100% Xài Riêng (Dedicated Private): 1 người 1 IP riêng biệt trong suốt chu kỳ sử dụng, tuyệt đối không share chung hay dùng lại của người khác.\n- IP Cố Định 30 Ngày (Static IP): Giữ nguyên dải IP chuẩn Nhật trong suốt thời gian thuê, cực kỳ phù hợp để nuôi nick, giữ phiên đăng nhập không bị checkpoint hay đổi địa chỉ mạng.\n- Tốc Độ Cao & Băng Thông Không Giới Hạn: Hạ tầng máy chủ đặt tại Datacenter Tokyo / Osaka với đường truyền gigabit siêu nhanh, độ trễ cực thấp, ping mượt mà.\n- Đa Năng & Đa Giao Thức: Hỗ trợ cả 2 giao thức HTTP/HTTPS và SOCKS5, định dạng chuẩn IP:Port:User:Pass dễ dàng tích hợp vào mọi phần mềm.\n- Tương Thích Mọi Nền Tảng & Tool: Hoạt động hoàn hảo trên các trình duyệt ẩn danh (Gologin, AdsPower, Hidemyacc, Genlogin, MoreLogin...) và các công cụ tự động (FPlus, Ninja, MaxCare, nuôi TikTok, khảo sát Nhật, crypto/forex...).\n\n🛠️ Chính sách bảo hành & Giao nhận:\n🛡️ Bảo hành 1 Đổi 1: Đổi ngay IP mới nếu lỗi kết nối hoặc die trong quá trình sử dụng.\n⚡ Giao hàng tự động 24/7: Nhận thông tin IP ngay sau khi thanh toán thành công.\n🔒 Bảo mật tuyệt đối: Cam kết IP sạch, uy tín, không blacklist.\n\n💡 Mẹo sử dụng: Khuyến nghị gắn proxy vào trình duyệt ẩn danh (Anti-detect browser) kèm múi giờ (Asia/Tokyo) và ngôn ngữ tiếng Nhật để đạt độ trust tối đa cho tài khoản!",
     "variants": [
@@ -969,7 +970,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://iili.io/nFV4Rln.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUKAXC4Q9T/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Bạn đang lo lắng về vấn đề lộ thông tin cá nhân, bị bóp băng thông khi truy cập mạng, hay muốn truy cập các nội dung, trang web bị giới hạn khu vực địa lý? Gói Surfshark VPN siêu tốc, uy tín tại shop chính là \"khiên chắn\" hoàn hảo dành cho bạn!\n\n💎 Những ưu điểm vượt trội của Surfshark VPN:\n🌐 Vượt rào kiểm duyệt, đổi IP mượt mà: Dễ dàng kết nối tới hàng nghìn server tốc độ cao tại hơn 100 quốc gia trên toàn thế giới, thỏa sức lướt web không giới hạn không gian.\n\n🚀 Tốc độ siêu khủng (No Throttling): Xem phim 4K, chơi game quốc tế, tải file nặng hay làm việc trực tuyến cực mượt mà, không lo giật lag hay bị bóp băng thông.\n\n🔒 Bảo mật & Ẩn danh tuyệt đối: Ẩn địa chỉ IP thực, mã hóa dữ liệu theo chuẩn quân sự (AES-256), chặn quảng cáo và mã độc độc hại tự động (CleanWeb).\n\n📱 Kết nối không giới hạn thiết bị: Một tài khoản có thể sử dụng cùng lúc trên vô số thiết bị từ Điện thoại (iOS/Android), Máy tính (Windows/Mac) cho đến Smart TV và Tablet.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành Full thời gian sử dụng, an tâm tuyệt đối từ lúc đăng nhập đến khi hết hạn.\n\n⚡ Bàn giao siêu tốc ngay sau khi thanh toán, tài khoản ổn định, đăng nhập dùng ngay.\n\n💬 Hỗ trợ kỹ thuật nhiệt tình 24/7, hướng dẫn cài đặt chi tiết trên mọi nền tảng.\n\n💡 Phù hợp cho: Dân MMO cần ẩn danh IP, anh em làm việc với đối tác quốc tế, game thủ chơi server nước ngoài, hoặc bất kỳ ai đề cao tính bảo mật và sự riêng tư trên không gian mạng!\n\n🛒 BẢO VỆ QUYỀN RIÊNG TƯ CỦA BẠN NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để chốt đơn và nhận tài khoản dùng ngay trong 1 nốt nhạc!\n\n📞 Hotline / Zalo / Telegram",
     "variants": [
@@ -1017,7 +1018,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://iili.io/nFV4Rln.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUKAMO9XPD/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Model dùng được: kimi-k3, qwen3.8-max, hy3, deepseek-v4-pro, deepseek-v4-flash, glm-5.3-flash\nBase URL: https://api.miraiapi.com/v1\nHướng Dẫn : https://miraiapi.com/usage\nBạn là Developer, Automation Engineer hay dân MMO đang tìm kiếm nguồn API Claude (Anthropic) hoặc API Codex (OpenAI) chất lượng cao để tích hợp vào ứng dụng, tool code, trợ lý ảo AI hoặc các hệ thống tự động hóa với chi phí tối ưu nhất?Shop chuyên cung cấp tài khoản và key API chuẩn, hoạt động mượt mà, sẵn sàng phục vụ mọi nhu cầu từ cá nhân đến doanh nghiệp!   🚀 Ưu điểm tuyệt đối của kho API tại shop:   🔑 Key chính hãng, hoạt động ổn định: Tốc độ phản hồi (Response time) cực nhanh, hạn chế tối đa tình trạng gián đoạn hay quá tải (Rate limit).🧠 Đa dạng các mô hình thông minh:Dòng Claude: Trợ thủ đắc lực về reasoning, phân tích code phức tạp, context window lớn.Dòng Codex / OpenAI: Tốc độ xử lý siêu việt, tối ưu tuyệt đối cho các tác vụ lập trình, sinh code và gọi hàm tự động.   💰 Tiết kiệm chi phí tối đa: Phù hợp cho cả anh em cần test dự án ngắn hạn lẫn các hệ thống chạy production dài lâu.   🔌 Dễ dàng tích hợp: Tương thích hoàn hảo với các IDE (VS Code, Cursor), Claude Code, các framework agent, tool bên thứ 3 hoặc code custom riêng.🛠️ Cam kết dịch vụ từ shop:🛡️ Bảo hành uy tín: Hỗ trợ 1 đổi 1 hoặc xử lý ngay lập tức nếu key gặp lỗi kích hoạt ban đầu.🚀 Cấp phát siêu tốc: Nhận ngay API Key định dạng chuẩn xác ngay sau khi thanh toán thành công.   💬 Hỗ trợ kỹ thuật tận tình: Hướng dẫn cấu hình kết nối chi tiết từ A-Z cho người mới bắt đầu.💡 Phù hợp cho: Lập trình viên, đội ngũ phát triển phần mềm, người làm tool automation, nghiên cứu AI hoặc các hệ thống cần gọi API số lượng lớn mỗi ngày!🛒 MUA API UY TÍN – KẾT NỐI MƯỢT MÀ NGAY HÔM NAY!💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới (kèm theo loại API bạn cần: Claude hay Codex) để được tư vấn gói phù hợp và chốt đơn nhanh chóng!📞 Hotline / Zalo / Telegram",
     "variants": [
@@ -1065,7 +1066,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/youtube_premium.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK7P74YNT/image",
     "warranty": "Bảo Hành 7 Ngày",
     "description": "Bạn đã quá mệt mỏi với những đoạn quảng cáo dài lê thê làm gián đoạn cảm xúc khi đang xem phim, nghe nhạc hoặc học tập trên YouTube? Gói Nâng cấp YouTube Premium chính chủ 1 tháng tại shop chính là giải pháp hoàn hảo giúp bạn tận hưởng không gian giải trí trọn vẹn nhất!\n\n✨ Đặc quyền đỉnh cao khi lên YouTube Premium:\n🚫 Xem video hoàn toàn KHÔNG QUẢNG CÁO: Không còn bị làm phiền bởi các quảng cáo giữa chừng hay banner rườm rà.\n\n🎵 YouTube Music Premium miễn phí: Nghe nhạc chất lượng cao, thoải mái thưởng thức hàng triệu bài hát không gián đoạn.\n\n📥 Tải xuống ngoại tuyến (Offline): Tải video và nhạc về máy để xem lại mọi lúc mọi nơi ngay cả khi không có kết nối Internet.\n\n▶️ Phát trong nền (Background Play): Tiếp tục phát video hoặc nhạc ngay cả khi bạn tắt màn hình điện thoại hoặc chuyển sang ứng dụng khác.\n\n🔒 Tại sao nên chọn gói Chính Chủ tại shop?\n👤 Nâng cấp trực tiếp trên Email cá nhân: Giữ nguyên tài khoản, lịch sử xem, danh sách phát (playlist) và các kênh đã đăng ký của riêng bạn. Bảo mật tuyệt đối 100%.\n\n⏱️ Thời hạn 1 tháng linh hoạt: Phù hợp để trải nghiệm trọn vẹn các tính năng cao cấp với chi phí siêu tiết kiệm.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành Full 1 đổi 1 trong suốt thời gian 1 tháng sử dụng.\n\n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin.\n\n💬 Hỗ trợ nhiệt tình 24/7, uy tín đặt lên hàng đầu.\n\n💡 Phù hợp cho: Bất kỳ ai muốn nâng cấp chất lượng trải nghiệm giải trí hằng ngày trên điện thoại, máy tính bảng hay Smart TV một cách mượt mà và an toàn nhất!\n\n🛒 NÂNG CẤP NGAY HÔM NAY – TẬN HƯỞNG KHÔNG GIAN SẠCH QUẢNG CÁO!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để được hướng dẫn nâng cấp tài khoản chính chủ nhanh nhất!\n\n📞 Hotline / Zalo / Telegram",
     "variants": [
@@ -1113,7 +1114,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/instagram.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK7DQMKAM/image",
     "warranty": "Bảo Hành Login",
     "description": "Bạn đang cần nguồn tài khoản Threads chất lượng để bắt kịp xu hướng, kéo traffic về website, làm seeding, chạy chiến dịch marketing hay phát triển hệ thống mạng xã hội nhưng các tài khoản tự tạo trắng tinh rất dễ bị khóa hoặc hạn chế tương tác?\n\nSiêu phẩm Threads Random (Đã Verify Phone) tại shop chính là lựa chọn tối ưu giúp bạn chiến mượt mọi chiến dịch!\n\n💎 Tại sao nên chọn tài khoản Threads tại shop?\nĐã Verify Phone (Xác thực số điện thoại): Tài khoản đã qua bước xác minh danh tính cơ bản bằng SĐT, giúp tăng độ uy tín và hạn chế tối đa tình trạng quét tài khoản mới.\n\nĐộ Trust tốt, sẵn sàng sử dụng: Tài khoản dạng random có lịch sử hoặc độ phủ nhất định, thích hợp để đăng bài, tương tác, seeding hoặc phát triển ngách nội dung.\n\nTiếp cận khách hàng tiềm năng cực nhanh: Threads hiện là mảnh đất màu mỡ để kéo tương tác tự nhiên (organic reach) cực khủng từ nền tảng Meta.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần đầu nhận tài khoản.\n\n🚀 Bàn giao siêu tốc ngay sau khi thanh toán với định dạng rõ ràng, sạch sẽ.\n\n🔒 Hỗ trợ tư vấn tận tình cách đăng nhập an toàn để duy trì độ bền cho tài khoản.\n\n💡 Mẹo sử dụng bền lâu: Nên đăng nhập trên thiết bị hoặc trình duyệt sạch (Antidetect Browser) kết hợp cùng Proxy chất lượng, thao tác từ tốn trong những ngày đầu để tài khoản thích nghi hoàn toàn với môi trường mới!\n\n🛒 SỐ LƯỢNG CÓ HẠN – CHỐT ĐƠN NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá chi tiết và sở hữu dàn nick Threads chất lượng!\n\n📞 Hotline / Zalo / Telegram",
     "variants": [
@@ -1161,7 +1162,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://iili.io/nFV4Rln.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK75H3HAR/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Dưới đây là mẫu bài viết bán Tài khoản Netflix Premium (Xem phim chất lượng 4K/Full HD), được thiết kế lôi cuốn, chuyên nghiệp để thu hút các mọt phim và tín đồ điện ảnh:\n\n🍿 NETFLIX PREMIUM 4K/FULL HD CHÍNH CHỦ – THƯ VIỆN ĐIỆN ẢNH ĐỈNH CAO TRONG TẦM TAY!\nBạn là \"mọt phim\" chính hiệu, đang tìm kiếm những phút giây giải trí thư giãn bên gia đình và bạn bè với chất lượng hình ảnh sắc nét đến từng chi tiết? Đừng bỏ lỡ gói Netflix Premium 4K Ultra HD siêu nét, siêu mượt tại shop!\n\n💎 Trải nghiệm đẳng cấp cùng Netflix Premium:\n🎬 Kho phim bom tấn khổng lồ: Thỏa sức cày xuyên màn đêm các bộ phim độc quyền (Netflix Originals), phim chiếu rạp, anime, tài liệu và show thực tế hot nhất hành tinh.\n\n📺 Chất lượng hình ảnh 4K Ultra HD + HDR đỉnh cao: Mãn nhãn với khung hình siêu sắc nét, màu sắc chân thực kết hợp âm thanh vòm sống động như rạp chiếu phim ngay tại nhà.\n\n📱 Xem đa nền tảng mượt mà: Trải nghiệm hoàn hảo trên Smart TV, Laptop, Máy tính bảng, Điện thoại hoặc qua các thiết bị phát streaming.\n\n🔒 Tài khoản ổn định, mượt mà: Xem không giới hạn, không lo giật lag hay gián đoạn giữa chừng.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành Full thời gian sử dụng, an tâm tuyệt đối từ lúc bắt đầu đến khi hết hạn.\n\n🚀 Bàn giao siêu tốc ngay sau khi thanh toán, hướng dẫn đăng nhập chi tiết từng thiết bị.\n\n💰 Tiết kiệm chi phí tối đa so với giá gốc, chất lượng uy tín đặt lên hàng đầu.\n\n💡 Mẹo nhỏ: Chuẩn bị ngay một ly nước ngọt, ít bắp rang bơ và tận hưởng trọn vẹn những ngày cuối tuần thư giãn bên các siêu phẩm phim ảnh cùng gia đình!\n\n🛒 LÊN KÈO CÀY PHIM NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để chốt đơn và nhận tài khoản xem phim ngay lập tức!\n\n📞 Hotline / Zalo / Telegram",
     "variants": [
@@ -1209,7 +1210,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://iili.io/nFV4Rln.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK6Y4QUIL/image",
     "warranty": "Bảo Hành Login",
     "description": "TDATA + JSON .SESSION\nhttps://anotepad.com/notes/yi7xnj88 (hướng dẫn đăng nhập)\nBạn đang cần nguồn tài khoản Telegram quốc gia Nam Phi (+27) chất lượng cao, có sẵn bảo mật hai lớp (2FA) và đã xác thực số điện thoại (Verify Phone) để phục vụ cho công việc MMO, làm Airdrop, chạy chiến dịch marketing hay quản lý các hội nhóm mà không lo bị quét hay hạn chế?\n\nSiêu phẩm Telegram +27 South Africa tại shop chính là lựa chọn tối ưu dành cho bạn!\n\n💎 Ưu điểm nổi bật của Telegram +27 South Africa:\nĐầu số quốc tế uy tín (+27): Dải số từ Nam Phi hoạt động ổn định, ít bị các nền tảng đánh dấu hay hạn chế so với các đầu số phổ thông khác.\n\nĐã xác thực Phone (Verify Phone): Tài khoản đã qua bước verify số điện thoại kỹ càng, sẵn sàng sử dụng ngay lập tức.\n\nBảo mật an toàn với 2FA: Đã được cài sẵn mật khẩu hai lớp (2FA), giúp bảo vệ tài khoản tối đa, chống chiếm đoạt hay đổi pass trái phép từ bên thứ ba.\n\nĐa năng, chuyên dụng: Phục vụ cực tốt cho anh em làm Airdrop crypto, săn retroactive, chạy tool automation, seeding hoặc tham gia các hệ thống lớn.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần đầu nhận tài khoản.\n\n🚀 Bàn giao siêu tốc đúng định dạng chuẩn (Session / TData / Thông tin đăng nhập) ngay sau khi thanh toán.\n\n🔒 Bảo mật tuyệt đối, sạch sẽ, chưa qua sử dụng mục đích cá nhân trước đó.\n\n💡 Mẹo sử dụng bền lâu: Nên đăng nhập trên các ứng dụng Telegram chính thống hoặc tool chuyên dụng, giữ nguyên IP ổn định hoặc kết hợp Proxy sạch trong những lần đầu tiên để tài khoản hoạt động mượt mà nhất!\n\n🛒 SỐ LƯỢNG CÓ HẠN – CHỐT ĐƠN NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá chi tiết và sở hữu tài khoản ngay lập tức!\n\n📞 Hotline / Zalo / Telegram",
     "variants": [
@@ -1257,7 +1258,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://iili.io/nFV4Rln.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK6N4RBEX/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Máy chủ VPS SSD sử dụng CPU Intel Xeon E5 v4, 2 vCPU, 2GB RAM, 40GB SSD Enterprise, băng thông 200Mbps, Data Transfer không giới hạn, Backup hàng tuần, Uptime 99,9%, toàn quyền Root/Administrator, hỗ trợ Linux &amp; Windows, kích hoạt nhanh sau thanh toán.\nVPS SSD hiệu năng ổn định với CPU mạnh mẽ, ổ cứng SSD Enterprise tốc độ cao và băng thông 200Mbps. Phù hợp chạy website, ứng dụng, AI Agent, Automation, Bot, Game Server, VPN, Proxy và nhiều nhu cầu khác.",
     "variants": [
@@ -1330,7 +1331,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/twitter_x.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK5VQH55X/image",
     "warranty": "Bảo Hành Login",
     "description": "Bạn đang cần nguồn tài khoản Twitter (X) uy tín để tham gia các kèo Airdrop, săn retroactive, chạy seeding, kéo traffic hoặc phát triển hệ thống tài khoản mạng xã hội nhưng các tài khoản tự tạo rất hay bị khóa, hạn chế tương tác hoặc bắt xác minh danh tính?\n\nGiải pháp Tài khoản Twitter (X) chất lượng cao tại shop sẽ giúp bạn giải quyết triệt để vấn đề này!\n\n💎 Tại sao nên chọn tài khoản Twitter tại shop?\nĐộ Trust tốt: Tài khoản có độ tuổi hoặc lịch sử hoạt động tự nhiên, giúp hạn chế tối đa tình trạng bị treo cờ (shadowban) hay khóa tài khoản khi vừa đăng nhập.\n\nPhục vụ đa năng: Hoàn hảo cho anh em làm Airdrop, săn crypto, chạy chiến dịch marketing, seeding bài viết, tăng tương tác hoặc xây dựng hệ thống mạng xã hội lớn.\n\nĐịnh dạng chuẩn xác: Cung cấp đầy đủ thông tin rõ ràng, dễ dàng đăng nhập và quản lý trên các trình duyệt ẩn danh hoặc tool automation.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần đầu nhận tài khoản.\n\n🚀 Bàn giao siêu tốc ngay sau khi thanh toán, đúng định dạng yêu cầu.\n\n🔒 Bảo mật thông tin tuyệt đối, sạch sẽ và sẵn sàng sử dụng.\n\n💡 Mẹo sử dụng an toàn: Nên sử dụng trình duyệt sạch (Antidetect Browser) kết hợp với Proxy chất lượng, thao tác từ từ để tài khoản thích nghi với thiết bị mới, giúp duy trì độ bền tối đa khi làm việc!\n\n🛒 SỐ LƯỢNG CÓ HẠN – CHỐT ĐƠN NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá chi tiết và chốt đơn nhanh chóng!\n\n📞 Hotline / Zalo / Telegram",
     "variants": [
@@ -1378,7 +1379,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/proxy_us.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK5IKCQLN/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Dưới đây là mẫu bài viết bán Proxy US (Mỹ) - Gói 1 ngày, thiết kế ngắn gọn, tập trung vào sự tiện lợi, tốc độ cao và chi phí tối ưu cho các tác vụ ngắn hạn:\n\n⚡ PROXY US (MỸ) – GÓI 1 NGÀY | IP SẠCH, TỐC ĐỘ CAO CHO MỌI TÁC VỤ NGẮN HẠN!\nBạn đang cần gấp nguồn Proxy US (Mỹ) tốc độ cao, độ ổn định tốt để làm các tác vụ nhanh trong ngày như check site, đăng ký tài khoản, test tool, verify dịch vụ hay chạy chiến dịch ngắn hạn mà không muốn mua gói tháng tốn kém?\n\nGói Proxy US 1 ngày tại shop chính là giải pháp nhanh gọn và tiết kiệm nhất dành cho bạn!\n\n🚀 Ưu điểm nổi bật của Proxy US 1 ngày:\nIP US chất lượng cao: Đường truyền ổn định, kết nối mượt mà, giúp xử lý các công việc liên quan đến thị trường Mỹ một cách trơn tru.\n\nLinh hoạt ngân sách (Gói 1 ngày): Cần bao nhiêu dùng bấy nhiêu, tối ưu hóa chi phí tuyệt đối cho các công việc phát sinh hoặc chạy thử nghiệm hệ thống (test tool, test via).\n\nĐa định dạng, dễ tích hợp: Hỗ trợ đầy đủ chuẩn thông tin (IP:Port:User:Pass), tương thích hoàn hảo với mọi Antidetect Browser, phần mềm MMO hay tool automation.\n\n🛠️ Cam kết dịch vụ từ shop:\n⚡ Cấp phát siêu tốc: Nhận thông tin proxy ngay lập tức sau khi thanh toán, dùng được ngay không chờ đợi.\n\n🔄 Hỗ trợ đổi IP nhanh chóng nếu gặp sự cố kết nối ngay từ lần đầu sử dụng.\n\n💬 Tư vấn nhiệt tình, hỗ trợ cấu hình chi tiết từ A-Z.\n\n💡 Phù hợp cho: Anh em làm MMO cần IP Mỹ để check giá, verify dịch vụ, test tool, chạy chiến dịch marketing ngắn hạn hoặc cần ẩn danh gấp trong ngày!\n\n🛒 MUA NHANH – DÙNG NGAY TRONG 1 NỐT NHẠC!\n💬 Inbox trực tiếp ngay cho shop hoặc bình luận [ . ] bên dưới để nhận thông tin proxy và test tốc độ ngay lập tức!\n\n📞 Hotline / Zalo / Telegram:",
     "variants": [
@@ -1426,7 +1427,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/proxy_us.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK50WMCNR/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Bạn đang cần gấp nguồn Proxy IPv4 tại Mỹ (USA) với số lượng lớn, cơ chế xoay liên tục để chạy tool, cày view, check site, làm social seeding hoặc thực hiện các chiến dịch automation ngắn hạn trong ngày với chi phí tiết kiệm nhất?\n\nGói Proxy Xoay IPv4 USA 1 ngày tại shop chính là lựa chọn \"vừa túi tiền\" và hiệu quả cao dành cho bạn!\n\n🚀 Ưu điểm vượt trội của Proxy Xoay IPv4 USA:\nKho IP khổng lồ (Pool lớn): Cung cấp dải IPv6 cực rộng tại Mỹ, hỗ trợ xoay linh hoạt giúp bạn dễ dàng thay đổi địa chỉ IP liên tục, né trọn các giới hạn request từ website/nền tảng.\n\nTốc độ cao, ổn định: Đường truyền quốc tế mượt mà, tối ưu hóa tuyệt đối cho các phần mềm automation, crawler dữ liệu hoặc cày tương tác số lượng lớn.\n\nLinh hoạt thời gian (Gói 1 ngày): Phù hợp hoàn hảo cho các công việc phát sinh trong ngày, test tool, chạy chiến dịch ngắn hạn mà không cần bỏ chi phí mua gói tháng đắt đỏ.\n\nDễ dàng tích hợp: Tương thích tốt với các phần mềm, tool MMO và trình duyệt ẩn danh hỗ trợ định dạng IPv6.\n\n🛠️ Cam kết dịch vụ từ shop:\n⚡ Cấp phát siêu tốc ngay sau khi thanh toán, nhận thông tin và sử dụng được ngay.\n\n🔄 Hỗ trợ kỹ thuật nhanh chóng, đồng hành cùng anh em trong suốt quá trình chạy việc.\n\n💡 Phù hợp cho: Anh em làm MMO chuyên cào dữ liệu (scraping), chạy tool nuôi hệ thống, check site, seeding hoặc cần số lượng lớn IP USA dạng xoay trong thời gian ngắn!",
     "variants": [
@@ -1522,7 +1523,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/proxy_4g.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJVJCV286/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Bạn đang cần gấp nguồn Proxy mạng di động VinaPhone để chạy tool, nuôi via, đăng ký tài khoản, seeding hoặc xử lý các chiến dịch ngắn hạn trong ngày mà không muốn tốn kém mua gói tháng?\n\nGói Proxy 4G VinaPhone 1 ngày tại shop chính là giải pháp \"cứu cánh\" nhanh chóng, tiết kiệm và hiệu quả nhất dành cho bạn!\n\n🚀 Ưu điểm vượt trội của Proxy 4G VinaPhone 1 ngày:\nIP Mobile siêu sạch (Trust cực cao): Sử dụng dải IP thật từ nhà mạng VinaPhone, được các nền tảng lớn đánh giá độ uy tín cao, giúp hạn chế tối đa checkpoint hay khóa tài khoản.\n\nTốc độ mượt mà, ổn định: Băng thông cao, kết nối trơn tru, tối ưu hóa tuyệt đối cho các tác vụ automation hoặc công việc cần phản hồi nhanh.\n\nLinh hoạt ngân sách: Chỉ mua dùng trong 1 ngày, cực kỳ tiết kiệm chi phí cho các công việc phát sinh hoặc chạy thử nghiệm (test hệ thống, test tool).\n\nĐa định dạng, dễ tích hợp: Hỗ trợ chuẩn thông tin đầy đủ, tương thích hoàn hảo với mọi Antidetect Browser và phần mềm MMO phổ biến.\n\n🛠️ Cam kết dịch vụ từ shop:\n⚡ Cấp phát siêu tốc: Nhận thông tin proxy ngay lập tức sau khi thanh toán.\n\n🔄 Hỗ trợ đổi IP nhanh chóng nếu gặp sự cố kết nối ngay từ lần đầu sử dụng.\n\n💬 Tư vấn nhiệt tình, hỗ trợ cấu hình từ A-Z.\n\n💡 Phù hợp cho: Anh em làm MMO cần test tool, chạy chiến dịch marketing/seeding ngắn hạn trong ngày, verify tài khoản hoặc cần ẩn danh với IP di động VinaPhone gấp!\n\n🛒 MUA NHANH – DÙNG NGAY TRONG 1 NỐT NHẠC!\n💬 Inbox trực tiếp ngay cho shop hoặc bình luận [ . ] bên dưới để nhận thông tin proxy và test tốc độ ngay lập tức!\n\n📞 Hotline / Zalo / Telegram",
     "variants": [
@@ -1570,7 +1571,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/proxy_viettel.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJVFEFFNP/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Hàng share tiết kiệm chi phí\nGiao Thức HTTP\nĐịnh Dạng IP:PORT:USER:PASS\nGia Hạn Linh Hoạt\nBạn đang cần gấp nguồn Proxy mạng Viettel tốc độ cao, độ ổn định tuyệt đối để chạy tool, nuôi via, đăng ký tài khoản, cày view hoặc xử lý các công việc ngắn hạn trong ngày mà không muốn mua gói dài hạn?\n\nGói Proxy Viettel 1 ngày tại shop chính là lựa chọn nhanh chóng và tiết kiệm nhất dành cho bạn!\n\n🚀 Ưu điểm vượt trội của Proxy Viettel:\nIP Mobile siêu sạch: Sử dụng dải IP thật từ nhà mạng Viettel, giúp vượt qua các bộ lọc kiểm duyệt dễ dàng, hạn chế tối đa checkpoint hay khóa tài khoản.\n\nTốc độ mạng cực khủng: Hạ tầng mạng Viettel nổi tiếng ổn định, ping thấp, băng thông cao, đảm bảo các phần mềm automation hay tác vụ nặng chạy mượt mà, không giật lag.\n\nLinh hoạt thời gian (Gói 1 ngày): Cần bao nhiêu dùng bấy nhiêu, tối ưu chi phí tuyệt đối cho các chiến dịch ngắn hạn hoặc chạy thử nghiệm hệ thống.\n\nĐa định dạng dễ tích hợp: Hỗ trợ đầy đủ chuẩn thông tin (IP:Port:User:Pass), tương thích hoàn hảo với mọi loại Antidetect Browser, tool MMO hay phần mềm bên thứ 3.\n\n🛠️ Cam kết dịch vụ từ shop:\n⚡ Cấp phát siêu tốc ngay sau khi thanh toán, dùng được ngay lập tức.\n\n🔄 Hỗ trợ đổi IP nhanh chóng nếu gặp sự cố kết nối ngay từ lần đầu sử dụng.\n\n💬 Tư vấn nhiệt tình, hỗ trợ cấu hình chi tiết từ A-Z.\n\n💡 Phù hợp cho: Anh em làm MMO, chạy tool nuôi nick số lượng lớn, check giá, verify dịch vụ hoặc cần ẩn danh với IP Viettel gấp trong ngày!\n\n🛒 MUA NHANH – DÙNG NGAY TRONG 1 NỐT NHẠC!\n💬 Inbox trực tiếp ngay cho shop hoặc bình luận [ . ] bên dưới để nhận thông tin proxy và test tốc độ ngay lập tức!\n\n📞 Hotline / Zalo / Telegram",
     "variants": [
@@ -1666,7 +1667,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_team_1m.jpg",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJUGVQXET/image",
     "warranty": "Bảo Hành 7 Ngày",
     "description": "Bạn là TikToker, Editor, nhà sáng tạo nội dung hay Marketer đang cần kho hiệu ứng Pro, công cụ AI đỉnh cao và bộ lọc màu độc quyền của Capcut Pro để thỏa sức sáng tạo cả tháng nhưng muốn tối ưu chi phí tối đa? Gói Capcut Pro Team 1 Tháng tại shop chính là lựa chọn hoàn hảo nhất dành cho bạn!\n\n✨ Ưu điểm vượt trội của gói Capcut Pro Team:\n🔓 Mở khóa trọn vẹn toàn bộ tính năng Pro: Thỏa sức sử dụng kho hiệu ứng chuyển cảnh độc quyền, công cụ AI thông minh, tách nền mượt mà, keyframe nâng cao và bộ lọc màu điện ảnh.\n\n💰 Tiết kiệm siêu hời: Trải nghiệm đầy đủ tính năng cao cấp suốt 30 ngày với mức giá rẻ hơn rất nhiều so với mua lẻ cá nhân chính hãng.\n\n💻 Sử dụng đa nền tảng: Dùng mượt mà trên cả Điện thoại (iOS/Android) lẫn Máy tính (PC/Laptop).\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành Full 1 đổi 1 trong suốt thời gian 1 tháng sử dụng. An tâm tuyệt đối không lo mất quyền lợi giữa chừng.\n\n🚀 Bàn giao tài khoản siêu tốc ngay sau khi thanh toán, hướng dẫn sử dụng chi tiết từ A-Z.\n\n🤝 Hỗ trợ tận tình 24/7 nếu gặp bất kỳ vấn đề gì trong quá trình thao tác.\n\n💡 Phù hợp cho: Anh em làm content dài hạn trong tháng, làm video ngắn đăng TikTok, Reels, YouTube Shorts với tần suất cao mà vẫn muốn tiết kiệm ngân sách tối đa!\n\n🛒 SỞ HỮU NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc bình luận [ . ] bên dưới để chốt đơn và nhận tài khoản dùng ngay trong 1 nốt nhạc!\n\n📞 Hotline / Zalo / Telegram",
     "variants": [
@@ -1714,7 +1715,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/proxy_4g.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJU6XY3HK/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "IP Mobile 4G từ nhà mạng VinaPhone\nProxy tạo từ thiết bị Phone thực\nBăng thông không giới hạn, đa dạng dải IP\nThời gian giữ IP: tối đa 30 phút\nKhông giới hạn số lần đổi IP\nGiao thức: HTTP/HTTPS\nHỗ trợ API đổi IP\nMua gói thời hạn dài hơn sẽ có giá tốt hơn\nBạn đang cần một nguồn Proxy mạng di động (Mobile Proxy) cực kỳ ổn định, độ trust cao ngất ngưởng để chạy các chiến dịch dài hạn, nuôi hệ thống via, tài khoản mạng xã hội hay làm automation mà không lo bị quét hay chết IP giữa chừng?\n\nGói Proxy 4G VinaPhone 30 ngày tại shop chính là giải pháp toàn diện và tiết kiệm nhất cho bạn!\n\n✨ Tại sao nên đầu tư gói Proxy 4G VinaPhone 30 ngày?\nIP Mobile siêu sạch – Trust tuyệt đối: Sử dụng dải IP thật từ nhà mạng lớn VinaPhone, được các nền tảng (Facebook, TikTok, Shopee, Google, Telegram...) đánh giá độ uy tín cao nhất, hạn chế tối đa checkpoint hay khóa tài khoản.\n\nHoạt động bền bỉ 24/7 suốt cả tháng: Không lo gián đoạn kết nối, đường truyền mượt mà, tốc độ cao giúp các tool automation hoặc công việc hàng ngày chạy trơn tru không giật lag.\n\nTiết kiệm chi phí tối đa: Mua trọn gói 30 ngày với mức giá ưu đãi hơn rất nhiều so với việc thuê theo ngày, cực kỳ phù hợp cho anh em làm MMO chuyên nghiệp dài hạn.\n\nLinh hoạt cấu hình: Hỗ trợ đầy đủ các định dạng chuẩn, dễ dàng tích hợp vào mọi phần mềm nuôi nick, Antidetect Browser hoặc tool chuyên dụng.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành ổn định suốt thời gian thuê, hỗ trợ kỹ thuật và đổi IP nhanh chóng nếu gặp sự cố kết nối.\n\n🚀 Bàn giao nhanh gọn ngay sau khi thanh toán, hướng dẫn cấu hình chi tiết từ A-Z.\n\n🔒 Cam kết đúng nhà mạng VinaPhone, không tráo đổi, minh bạch chất lượng.\n\n💡 Phù hợp cho: Anh em nuôi hệ thống tài khoản số lượng lớn, chạy chiến dịch marketing dài hạn, seeding, làm Airdrop hoặc các công việc đòi hỏi IP di động sạch sẽ liên tục trong tháng!\n\n🛒 ĐẦU TƯ MỘT LẦN – AN TÂM CẢ THÁNG!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá chi tiết và chốt đơn nhanh chóng!\n\n📞 Hotline / Zalo / Telegram:",
     "variants": [
@@ -1810,7 +1811,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/proxy_us.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJQDTNIH9/image",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Proxy datacenter us\nGiao Thức HTTP\nĐịnh Dạng IP:PORT:USER:PASS\nBạn đang cần gấp nguồn Proxy US (Mỹ) tốc độ cao để chạy tool, nuôi via, đăng ký tài khoản, cày view, check site hoặc làm các chiến dịch ngắn hạn trong ngày mà không muốn tốn kém mua gói tháng?\n\nGói Proxy Datacenter US 1 ngày tại shop chính là \"cứu cánh\" hoàn hảo dành cho bạn!\n\n🚀 Ưu điểm vượt trội của Proxy Datacenter US:\nTốc độ cực khủng: Băng thông cao, đường truyền ổn định, không giật lag, tối ưu hóa tuyệt đối cho các tác vụ tự động hóa (Automation).\n\nIP US sạch sẽ: Lọc kỹ lưỡng, hạn chế tối đa tình trạng bị blacklist hay chặn ở các nền tảng phổ biến.\n\nLinh hoạt ngân sách (Gói 1 ngày): Cần bao nhiêu dùng bấy nhiêu, tiết kiệm chi phí tối đa cho các công việc diễn ra trong thời gian ngắn.\n\nĐa giao thức: Hỗ trợ đầy đủ định dạng phổ biến (HTTP/HTTPS/SOCKS5), dễ dàng tích hợp vào mọi loại tool, antidetect browser hay phần mềm bên thứ 3.\n\n🛠️ Cam kết dịch vụ từ shop:\n⚡ Cấp phát siêu tốc: Nhận thông tin proxy (IP:Port:User:Pass) ngay lập tức sau khi thanh toán.\n\n🔄 Hỗ trợ đổi IP trong trường hợp lỗi kết nối ngay từ lần đầu sử dụng.\n\n💬 Tư vấn nhiệt tình: Hỗ trợ cấu hình, test trực tiếp trước khi bàn giao.\n\n💡 Phù hợp cho: Anh em làm MMO, chạy tool nuôi tài khoản số lượng lớn, check giá, verify dịch vụ hoặc cần ẩn danh IP US gấp trong ngày!\n\n🛒 MUA NHANH – DÙNG NGAY!\n💬 Inbox trực tiếp ngay cho shop hoặc bình luận [ . ] để chốt đơn và nhận thông tin proxy trong 1 nốt nhạc!\n\n📞 Hotline / Zalo / Telegram:",
     "variants": [
@@ -1858,7 +1859,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_7day.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJGUY19DD/image",
     "warranty": "Bảo Hành Login 24h",
     "description": "Login bằng app gmail trên phone (tránh ver), nếu login bằng pc hãy tải app này để đăng nhập : https://apps.microsoft.com/detail/9nrx63209r7b?hl=vi-VN&amp;gl=US, nếu log thẳng thì bạn dùng camera điện thoại quét dòng qrcode ( có đăng nhập youtube) sẽ vào được ngay ! Nếu login vào bên thứ 3 (login bằng google) hãy vào bên thứ 3 sau đó nhập tài khoản đăng nhập trực tiếp ở bên thứ 3. \nBạn đang đau đầu vì tình trạng tài khoản Gmail mới tạo, chạy chiến dịch, đăng nhập hoặc nuôi via là dính checkpoint, khóa tài khoản? Hãy để giải pháp Gmail Trust ngâm lâu của shop giải quyết triệt để nỗi lo đó cho bạn!\n\n💎 Tại sao Gmail ngâm lâu là lựa chọn số 1?\nĐộ Trust cực cao: Tài khoản đã được nuôi và \"ngâm\" qua thời gian, tạo độ \"phủ\" và lịch sử hoạt động tự nhiên, giúp vượt qua các bộ lọc quét tự động cực tốt.\n\nTỷ lệ sống sót cao: Hạn chế tối đa tình trạng verphone, bắt đổi mật khẩu hay checkpoint ngớ ngẩn ngay khi vừa đăng nhập hoặc đổi IP.\n\nĐa năng, tối ưu công việc: Phù hợp hoàn hảo cho anh em làm MMO, chạy quảng cáo, đăng ký tài khoản mạng xã hội (Facebook, TikTok, YouTube), làm Airdrop, seeding hoặc quản lý hệ thống lớn.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành lỗi 1 đổi 1 ngay lập tức cho các tài khoản lỗi lần đăng nhập đầu tiên.\n\n🚀 Giao hàng tự động hoặc nhanh chóng ngay sau khi thanh toán, đúng định dạng yêu cầu.\n\n🔒 Bảo mật tuyệt đối, sạch sẽ, không qua sử dụng mục đích xấu trước đó.\n\n💡 Mẹo sử dụng bền lâu: Nên đăng nhập trên thiết bị hoặc trình duyệt sạch (Antidetect Browser), nuôi thêm một thời gian ngắn bằng cách tương tác nhẹ trước khi chạy các tác vụ nặng để đạt độ trâu bò tối đa!\n\n🛒 SỐ LƯỢNG CÓ HẠN – ĐẶT MUA NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá chi tiết và tư vấn loại Gmail phù hợp với nhu cầu của bạn!",
     "variants": [
@@ -2052,7 +2053,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU6R34FZ4Z/image",
     "warranty": "Bảo Hành 7 Ngày",
     "description": "Link kích hoạt Gemini Pro 18 tháng\n- Đăng nhập sẵn mail cần nâng . Bảo hành kích hoạt 24H\n- Dán link là done\n- Không cần thẻ , siêu tiện\n- Kích hoạt chủ là lên chủ Family, không phải thành viên\nBạn đang tìm kiếm một giải pháp toàn diện vừa sở hữu trí tuệ nhân tạo mạnh mẽ nhất, kho lưu trữ khổng lồ để làm việc không giới hạn, vừa tích hợp công nghệ tạo video AI tiên tiến ngay trên tài khoản của chính mình?\n\nGói Combo Gemini Pro 18 Tháng Chính Chủ + Google One 5TB + Veo 3 tại shop chính là \"vũ khí tối thượng\" giúp bạn nâng tầm hiệu suất công việc lên một đẳng cấp hoàn toàn mới!\n\n✨ Trọn bộ đặc quyền khủng trong gói:\n🧠 Gemini Advanced / Pro (Thời hạn dài 18 tháng): Trợ lý AI thông minh đỉnh cao từ Google, hỗ trợ phân tích dữ liệu, viết code, tư duy chiến lược và xử lý khối lượng công việc khổng lồ với tốc độ phản hồi siêu tốc.\n\n💾 Google One 5TB (Lưu trữ 5 Terabyte): Kho lưu trữ đám mây cực lớn, thoải mái lưu trữ dữ liệu, video 4K, hình ảnh, tài liệu dự án mà không bao giờ lo đầy bộ nhớ Google Drive, Gmail hay Google Photos.\n\n🎬 Tích hợp Veo 3 (Sáng tạo video AI): Trải nghiệm công nghệ tạo video AI chân thực và đỉnh cao từ Google, biến mọi ý tưởng câu lệnh (Prompt) thành những thước phim mãn nhãn chỉ trong vài nốt nhạc.\n\n🔒 Tại sao nên chọn nâng cấp chính chủ tại shop?\n👤 Nâng cấp trực tiếp trên Email cá nhân: An toàn tuyệt đối 100%, giữ nguyên toàn bộ tài liệu, lịch sử chat và dữ liệu cá nhân của riêng bạn, không lo bị rò rỉ hay mất tài khoản giữa chừng.\n\n⏳ Thời hạn siêu dài (18 tháng): Đầu tư một lần, yên tâm sử dụng ổn định suốt gần 2 năm không phải bận tâm gia hạn hay gián đoạn công việc.\n\n💰 Tiết kiệm chi phí tối đa: Sở hữu trọn bộ combo cao cấp với mức giá ưu đãi hơn rất nhiều so với việc mua lẻ từng dịch vụ từ hãng.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành\n\n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin tài khoản từ bạn.\n\n💬 Hỗ trợ kỹ thuật 24/7, hướng dẫn sử dụng các tính năng AI và Veo từ A-Z.\n\n💡 Phù hợp cho: Nhà sáng tạo nội dung (Content Creator), lập trình viên, Marketer, Designer hoặc bất kỳ ai cần một hệ sinh thái làm việc thông minh, dung lượng khủng và công cụ tạo video AI tối tân nhất",
     "variants": [
@@ -2100,7 +2101,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gemini_pro_veo3.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU5T3T47AE/image",
     "warranty": "Bảo Hành1 Ngày",
     "description": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )\nBạn đang tìm kiếm một giải pháp toàn diện vừa sở hữu trí tuệ nhân tạo mạnh mẽ nhất, kho lưu trữ khổng lồ để làm việc không giới hạn, vừa tích hợp công nghệ tạo video AI tiên tiến ngay trên tài khoản của chính mình?\n\nGói Combo Gemini Pro 18 Tháng Chính Chủ + Google One 5TB + Veo 3 tại shop chính là \"vũ khí tối thượng\" giúp bạn nâng tầm hiệu suất công việc lên một đẳng cấp hoàn toàn mới!\n\n✨ Trọn bộ đặc quyền khủng trong gói:\n🧠 Gemini Advanced / Pro (Thời hạn dài 18 tháng): Trợ lý AI thông minh đỉnh cao từ Google, hỗ trợ phân tích dữ liệu, viết code, tư duy chiến lược và xử lý khối lượng công việc khổng lồ với tốc độ phản hồi siêu tốc.\n\n💾 Google One 5TB (Lưu trữ 5 Terabyte): Kho lưu trữ đám mây cực lớn, thoải mái lưu trữ dữ liệu, video 4K, hình ảnh, tài liệu dự án mà không bao giờ lo đầy bộ nhớ Google Drive, Gmail hay Google Photos.\n\n🎬 Tích hợp Veo 3 (Sáng tạo video AI): Trải nghiệm công nghệ tạo video AI chân thực và đỉnh cao từ Google, biến mọi ý tưởng câu lệnh (Prompt) thành những thước phim mãn nhãn chỉ trong vài nốt nhạc.\n\n🔒 Tại sao nên chọn nâng cấp chính chủ tại shop?\n👤 Nâng cấp trực tiếp trên Email cá nhân: An toàn tuyệt đối 100%, giữ nguyên toàn bộ tài liệu, lịch sử chat và dữ liệu cá nhân của riêng bạn, không lo bị rò rỉ hay mất tài khoản giữa chừng.\n\n⏳ Thời hạn siêu dài (18 tháng): Đầu tư một lần, yên tâm sử dụng ổn định suốt gần 2 năm không phải bận tâm gia hạn hay gián đoạn công việc.\n\n💰 Tiết kiệm chi phí tối đa: Sở hữu trọn bộ combo cao cấp với mức giá ưu đãi hơn rất nhiều so với việc mua lẻ từng dịch vụ từ hãng.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành\n\n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin tài khoản từ bạn.\n\n💬 Hỗ trợ kỹ thuật 24/7, hướng dẫn sử dụng các tính năng AI và Veo từ A-Z.\n\n💡 Phù hợp cho: Nhà sáng tạo nội dung (Content Creator), lập trình viên, Marketer, Designer hoặc bất kỳ ai cần một hệ sinh thái làm việc thông minh, dung lượng khủng và công cụ tạo video AI tối tân nhất",
     "variants": [
@@ -3342,7 +3343,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/paypal_usdt.png",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MTU9F5HN/image",
     "warranty": "Bảo Hành Login",
     "description": "Bảo Hành login chú ý đổi ip khi đăng nhập dùng trình duyệt nguòi dùng khác nhau như coc coc chorm để đăng nhập  chùng ip đăng nhập nhiều đễ bị checkpoint",
     "variants": [
@@ -9188,7 +9189,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const leanProds = MOCK_DATA.products.map(function(p) {
               const cp = Object.assign({}, p);
               if (cp.image && cp.image.startsWith("data:image/")) {
-                cp.image = (typeof resolveProductImage === "function") ? resolveProductImage({ id: cp.id, name: cp.name, category: cp.category, image: "" }) : "https://iili.io/nFV4Rln.png";
+                // [SSOT CLOUD IMAGE]: Chuyển sang URL Cloud Worker của chính sản phẩm để không làm mất ảnh và không tràn localStorage
+                cp.image = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(cp.id) + "/image";
               }
               if (cp.image_url && cp.image_url.startsWith("data:image/")) {
                 cp.image_url = cp.image;
@@ -12714,8 +12716,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (trimmed.startsWith("data:image/") || (trimmed.startsWith("data:") && trimmed.length > 50)) {
           return trimmed;
         }
+        // [ZERO-STALE IMAGE ENGINE]: Chấp nhận 100% URL công khai, bao gồm cả Cloud Worker /api/products/:id/image
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
-            !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash") && !trimmed.includes("/api/products/")) {
+            !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash")) {
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
       }
@@ -12727,32 +12730,32 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const cdnBase = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/";
 
       const KNOWN_CDN_MAP = {
-        "PROD_MUJV1YHQ6N": cdnBase + "canva_edu.jpg",
-        "PROD_MU9YH8D9FK": cdnBase + "canva_edu.jpg",
-        "PROD_MU29WM90LZ": cdnBase + "canva_pro.png",
-        "PROD_MUJZGSUPDI": cdnBase + "instagram.png",
-        "PROD_MU2PA8VNDP": cdnBase + "instagram.png",
-        "PROD_MUK6EFVE8X": cdnBase + "instagram.png",
-        "PROD_MUK7DQMKAM": cdnBase + "instagram.png",
-        "PROD_MUK5VQH55X": cdnBase + "twitter_x.png",
-        "PROD_MUK7P74YNT": cdnBase + "youtube_premium.png",
-        "PROD_MTYN7UJG": cdnBase + "youtube_channel.png",
-        "PROD_MUJUGVQXET": cdnBase + "capcut_team_1m.jpg",
-        "PROD_MU2B32VLQY": cdnBase + "capcut_canhan_rieng.jpg",
-        "PROD_MU1G6LJX": cdnBase + "capcut_canhan_20k.jpg",
-        "PROD_MU5PWT7PP7": cdnBase + "kling_ai.png",
-        "PROD_MUH57035HQ": cdnBase + "kling_ai.png",
-        "PROD_MU6R34FZ4Z": cdnBase + "google_gemini_veo3.webp",
-        "PROD_MU5T3T47AE": cdnBase + "gemini_pro_veo3.png",
-        "PROD_MU5SPLMSEC": cdnBase + "chatgpt_new_trial.png",
+        "PROD_MUJV1YHQ6N": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/canva_edu.jpg",
+        "PROD_MU9YH8D9FK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/canva_edu.jpg",
+        "PROD_MU29WM90LZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/canva_pro.png",
+        "PROD_MUJZGSUPDI": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/instagram.png",
+        "PROD_MU2PA8VNDP": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/instagram.png",
+        "PROD_MUK6EFVE8X": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/instagram.png",
+        "PROD_MUK7DQMKAM": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK7DQMKAM/image",
+        "PROD_MUK5VQH55X": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK5VQH55X/image",
+        "PROD_MUK7P74YNT": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK7P74YNT/image",
+        "PROD_MTYN7UJG": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/youtube_channel.png",
+        "PROD_MUJUGVQXET": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJUGVQXET/image",
+        "PROD_MU2B32VLQY": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_canhan_rieng.jpg",
+        "PROD_MU1G6LJX": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_canhan_20k.jpg",
+        "PROD_MU5PWT7PP7": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/kling_ai.png",
+        "PROD_MUH57035HQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/kling_ai.png",
+        "PROD_MU6R34FZ4Z": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU6R34FZ4Z/image",
+        "PROD_MU5T3T47AE": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU5T3T47AE/image",
+        "PROD_MU5SPLMSEC": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/chatgpt_new_trial.png",
         "SP_CHATGPT": cdnBase + "chatgpt_plus.png",
-        "PROD_MU2OXBZC6K": cdnBase + "chatgpt_plus.png",
-        "PROD_MUNUEKI3NM": cdnBase + "chatgpt_plus.png",
-        "PROD_MTQZT2Y1": cdnBase + "hotmail_outlook.png",
-        "PROD_MTRB6000": cdnBase + "outlook_trusted.jpg",
+        "PROD_MU2OXBZC6K": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/chatgpt_plus.png",
+        "PROD_MUNUEKI3NM": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUNUEKI3NM/image",
+        "PROD_MTQZT2Y1": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/hotmail_outlook.png",
+        "PROD_MTRB6000": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/outlook_trusted.jpg",
         "SP_HOTMAIL": cdnBase + "hotmail_outlook.png",
-        "PROD_MU2YQ1J3PY": cdnBase + "hotmail_oauth2.png",
-        "PROD_MTU9F5HN": cdnBase + "paypal_usdt.png",
+        "PROD_MU2YQ1J3PY": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/hotmail_oauth2.png",
+        "PROD_MTU9F5HN": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MTU9F5HN/image",
         "PROD_MTPI7PIO": cdnBase + "zalo_group.png",
         "PROD_MU2LYZY5C7": cdnBase + "rom_j7_pro.png",
         "PROD_MU2OAG3IO2": cdnBase + "rom_j7_prime.png",
@@ -12767,34 +12770,34 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "PROD_MUBJQ6JP7O": cdnBase + "rom_not9_android10.png",
         "PROD_MU2N2TVDIJ": cdnBase + "rom_not9_android10.png",
         "PROD_MU2MOON7L6": cdnBase + "rom_not10_android12.png",
-        "PROD_MU2JIBBRH8": cdnBase + "tiktok_vietnam.png",
-        "PROD_MU2IXVFLMW": cdnBase + "tiktok_affiliate_gio.jpg",
-        "PROD_MTVI44UK": cdnBase + "tiktok_ngam_lau.jpg",
-        "PROD_MU2CZL38PH": cdnBase + "tiktok_france.png",
-        "PROD_MTPIJ9XV": cdnBase + "tiktok_brazil.png",
-        "PROD_MU1LSSJ7AZ": cdnBase + "tiktok_japan.png",
-        "PROD_MU29IZBLAK": cdnBase + "tiktok_beta.png",
-        "PROD_MU2ASBNSJT": cdnBase + "facebook_via.png",
-        "PROD_MU29RGEBH0": cdnBase + "facebook_fanpage.png",
-        "PROD_MU2BIFBBNE": cdnBase + "hma_vpn.png",
-        "PROD_MU2A2S732Y": cdnBase + "express_vpn.png",
-        "PROD_MUOIH8CW59": cdnBase + "nord_vpn.png",
-        "PROD_MUM6JQTW8C": cdnBase + "proxy_japan.png",
-        "PROD_MUK5IKCQLN": cdnBase + "proxy_us.png",
-        "PROD_MUK50WMCNR": cdnBase + "proxy_us.png",
-        "PROD_MUJVJCV286": cdnBase + "proxy_4g.png",
-        "PROD_MUJVFEFFNP": cdnBase + "proxy_viettel.png",
-        "PROD_MUJU6XY3HK": cdnBase + "proxy_4g.png",
-        "PROD_MUJTYWFTQ7": cdnBase + "proxy_4g.png",
-        "PROD_MUJQDTNIH9": cdnBase + "proxy_us.png",
-        "PROD_MUJGUY19DD": cdnBase + "gmail_7day.png",
-        "PROD_MTQQXO2E": cdnBase + "gmail_24h.png",
-        "PROD_MTQWMPL5": cdnBase + "gmail_7day.png",
-        "PROD_MTQWQFZD": cdnBase + "gmail_30day.png",
-        "PROD_MTQX1C7X": cdnBase + "gmail_1h.png",
-        "PROD_MTQX465U": cdnBase + "gmail_10m.png",
-        "PROD_MTQX7SIK": cdnBase + "gmail_14day.png",
-        "PROD_MTTPLODQ": cdnBase + "gmail_co.png"
+        "PROD_MU2JIBBRH8": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_vietnam.png",
+        "PROD_MU2IXVFLMW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_affiliate_gio.jpg",
+        "PROD_MTVI44UK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_ngam_lau.jpg",
+        "PROD_MU2CZL38PH": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_france.png",
+        "PROD_MTPIJ9XV": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_brazil.png",
+        "PROD_MU1LSSJ7AZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_japan.png",
+        "PROD_MU29IZBLAK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_beta.png",
+        "PROD_MU2ASBNSJT": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/facebook_via.png",
+        "PROD_MU29RGEBH0": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/facebook_fanpage.png",
+        "PROD_MU2BIFBBNE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/hma_vpn.png",
+        "PROD_MU2A2S732Y": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/express_vpn.png",
+        "PROD_MUOIH8CW59": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUOIH8CW59/image",
+        "PROD_MUM6JQTW8C": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUM6JQTW8C/image",
+        "PROD_MUK5IKCQLN": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK5IKCQLN/image",
+        "PROD_MUK50WMCNR": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK50WMCNR/image",
+        "PROD_MUJVJCV286": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJVJCV286/image",
+        "PROD_MUJVFEFFNP": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJVFEFFNP/image",
+        "PROD_MUJU6XY3HK": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJU6XY3HK/image",
+        "PROD_MUJTYWFTQ7": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/proxy_4g.png",
+        "PROD_MUJQDTNIH9": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJQDTNIH9/image",
+        "PROD_MUJGUY19DD": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJGUY19DD/image",
+        "PROD_MTQQXO2E": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_24h.png",
+        "PROD_MTQWMPL5": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_7day.png",
+        "PROD_MTQWQFZD": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_30day.png",
+        "PROD_MTQX1C7X": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_1h.png",
+        "PROD_MTQX465U": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_10m.png",
+        "PROD_MTQX7SIK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_14day.png",
+        "PROD_MTTPLODQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_co.png"
       };
       if (KNOWN_CDN_MAP[idUpper]) return KNOWN_CDN_MAP[idUpper];
 
@@ -12908,7 +12911,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const trimmed = existingImg.trim();
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
             !trimmed.startsWith("data:") &&
-            !trimmed.includes("/api/products/") &&
+            true &&
             !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash")) {
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
@@ -15097,9 +15100,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                   ? resolvedWorkerImg 
                   : (isImgValid(cur.image) && !cur.image.startsWith("data:") 
                     ? cur.image.trim() 
-                    : (typeof resolveProductImage === "function" 
-                      ? resolveProductImage({ id: cur.id, name: tp.name || cur.name, category: tp.category || cur.category, image: "" }) 
-                      : (cur.image || "https://iili.io/nFV4Rln.png"))));
+                    : (cur.image && !cur.image.startsWith("data:") 
+                      ? cur.image 
+                      : ((typeof resolveProductImage === "function") 
+                        ? resolveProductImage(cur) 
+                        : (cur.image || "https://iili.io/nFV4Rln.png")))));
 
               const localCustomDesc = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + cur.id) : null;
               const targetDesc = (localCustomDesc && localCustomDesc.trim()) 
@@ -15162,9 +15167,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               ? localCustomImgNew.trim() 
               : (resolvedWorkerImgNew 
                 ? resolvedWorkerImgNew 
-                : (typeof resolveProductImage === "function" 
-                  ? resolveProductImage({ id: tp.id, name: tp.name, category: tp.category, image: "" }) 
-                  : "https://iili.io/nFV4Rln.png"));
+                : ((typeof resolveProductImage === "function") 
+                  ? resolveProductImage(tp) 
+                  : (tp.image || "https://iili.io/nFV4Rln.png")));
             const localCustomDescNew = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + tp.id) : null;
             const targetDescNew = (localCustomDescNew && localCustomDescNew.trim()) ? localCustomDescNew.trim() : (tp.description || "");
 
@@ -33620,7 +33625,42 @@ function changeAdmUsersPage(p) {
     window.updateLiveRealTimeClock = updateLiveRealTimeClock;
     updateLiveRealTimeClock();
 
-    function initMMOApplication() {
+    // [INSTANT 0MS IMAGE HYDRATION]: Khôi phục ngay lập tức ảnh mới nhất từ localStorage trước khi render để chống chớp nháy / hiện ảnh cũ
+(function hydrateLatestProductImagesEarly() {
+  try {
+    if (typeof localStorage === "undefined" || !MOCK_DATA || !Array.isArray(MOCK_DATA.products)) return;
+    const rawSaved = localStorage.getItem("mmo_admin_products") || localStorage.getItem("mmo_products");
+    let savedList = [];
+    if (rawSaved) {
+      try { savedList = JSON.parse(rawSaved); } catch(e) {}
+    }
+    const savedMap = new Map();
+    if (Array.isArray(savedList)) {
+      savedList.forEach(sp => { if (sp && sp.id) savedMap.set(String(sp.id), sp); });
+    }
+    MOCK_DATA.products.forEach(p => {
+      if (!p || !p.id) return;
+      const pIdStr = String(p.id);
+      // Ưu tiên 1: mmo_custom_img_
+      const customImg = localStorage.getItem("mmo_custom_img_" + pIdStr);
+      if (customImg && customImg.trim() && !customImg.includes("placeholder")) {
+        p.image = customImg.trim();
+        p.image_url = p.image;
+        p.imageUrl = p.image;
+        return;
+      }
+      // Ưu tiên 2: Ảnh trong bản lưu localStorage
+      const sp = savedMap.get(pIdStr);
+      if (sp && sp.image && !sp.image.includes("placeholder") && !sp.image.includes("undefined")) {
+        p.image = sp.image;
+        p.image_url = sp.image;
+        p.imageUrl = sp.image;
+      }
+    });
+  } catch(eHydrate) {}
+})();
+
+function initMMOApplication() {
       if (window._mmoAppFullyInitialized) {
         if (typeof ensureUniversalComponentsExist === "function") ensureUniversalComponentsExist();
         if (typeof renderHeaderNotifications === "function") renderHeaderNotifications();
