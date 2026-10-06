@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.2.3";
+const MMO_CURRENT_CODE_VERSION = "4.2.4";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -5359,7 +5359,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     let admProductSearchQuery = "";
     function handleSearchAdminProducts(val) {
-      admProductSearchQuery = (val || "").trim();
+      if (typeof val === "string") {
+        admProductSearchQuery = val.trim();
+      } else {
+        const inp = document.getElementById("admProductSearchInput");
+        admProductSearchQuery = inp ? (inp.value || "").trim() : "";
+      }
       const clearBtn = document.getElementById("admProductSearchClearBtn");
       if (clearBtn) {
         clearBtn.style.display = admProductSearchQuery ? "block" : "none";
@@ -5371,10 +5376,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function clearAdminProductSearch() {
       const inp = document.getElementById("admProductSearchInput");
-      if (inp) inp.value = "";
+      if (inp) {
+        inp.value = "";
+        inp.focus();
+      }
       const clearBtn = document.getElementById("admProductSearchClearBtn");
       if (clearBtn) clearBtn.style.display = "none";
-      handleSearchAdminProducts("");
+      admProductSearchQuery = "";
+      if (typeof paginationState !== "undefined") paginationState.admProd = 1;
+      renderAdminDashboard();
     }
     window.clearAdminProductSearch = clearAdminProductSearch;
 
@@ -5396,20 +5406,37 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             return p && p.id && (typeof isProductDeleted !== "function" || !isProductDeleted(p));
           });
           
+          // [ZERO-FREEZE MEMOIZATION]: Cache tra cứu trong phạm vi 1 lần render bảng Admin
+          const _renderApiMapCache = new Map();
+          const _renderStockCache = new Map();
+          const getFastApiMap = function(pid) {
+            if (_renderApiMapCache.has(pid)) return _renderApiMapCache.get(pid);
+            const m = (typeof getApiProductMapping === "function") ? getApiProductMapping(pid) : null;
+            _renderApiMapCache.set(pid, m);
+            return m;
+          };
+          const getFastStock = function(prodObj) {
+            if (!prodObj || !prodObj.id) return 0;
+            if (_renderStockCache.has(prodObj.id)) return _renderStockCache.get(prodObj.id);
+            const st = (typeof getVariantStockCount === "function") ? getVariantStockCount(prodObj, null) : ((typeof getProductStockCount === "function") ? getProductStockCount(prodObj) : (prodObj.stock || 0));
+            _renderStockCache.set(prodObj.id, st);
+            return st;
+          };
+
           // Áp dụng bộ lọc tồn kho thông minh
           if (admProductStockFilter === "IN_STOCK") {
             prods = prods.filter(function(p) {
-              const s = (typeof getVariantStockCount === "function") ? getVariantStockCount(p, null) : getProductStockCount(p);
+              const s = getFastStock(p);
               return s > 0;
             });
           } else if (admProductStockFilter === "OUT_OF_STOCK") {
             prods = prods.filter(function(p) {
-              const s = (typeof getVariantStockCount === "function") ? getVariantStockCount(p, null) : getProductStockCount(p);
+              const s = getFastStock(p);
               return s === 0;
             });
           } else if (admProductStockFilter === "LOW_STOCK") {
             prods = prods.filter(function(p) {
-              const s = (typeof getVariantStockCount === "function") ? getVariantStockCount(p, null) : getProductStockCount(p);
+              const s = getFastStock(p);
               return s > 0 && s < 5;
             });
           }
@@ -5467,22 +5494,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               : 'Chưa có sản phẩm nào. Hãy bấm "Thêm Sản Phẩm" để tạo mới.';
             tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:28px; color:#64748b;"><i class="fa-solid fa-box-open" style="font-size:1.6rem; display:block; margin-bottom:8px; opacity:0.5;"></i>' + emptyMsg + '</td></tr>';
           } else {
-            // [ZERO-FREEZE MEMOIZATION]: Cache tra cứu trong phạm vi 1 lần render bảng Admin
-          const _renderApiMapCache = new Map();
-          const _renderStockCache = new Map();
-          const getFastApiMap = function(pid) {
-            if (_renderApiMapCache.has(pid)) return _renderApiMapCache.get(pid);
-            const m = (typeof getApiProductMapping === "function") ? getApiProductMapping(pid) : null;
-            _renderApiMapCache.set(pid, m);
-            return m;
-          };
-          const getFastStock = function(prodObj) {
-            if (_renderStockCache.has(prodObj.id)) return _renderStockCache.get(prodObj.id);
-            const st = (typeof getProductStockCount === "function") ? getProductStockCount(prodObj) : (prodObj.stock || 0);
-            _renderStockCache.set(prodObj.id, st);
-            return st;
-          };
-
           tbody.innerHTML = pageProds.map(function(p) {
               const vCount = (p.variants && p.variants.length) ? p.variants.length : 1;
               const tableImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png");
