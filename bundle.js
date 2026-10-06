@@ -26089,7 +26089,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (curBal < totalCost) {
         restoreBtn();
         const missing = totalCost - curBal;
-        const depositAmt = Math.max(10000, missing);
+        const depositAmt = Math.max(2000, missing);
         showToast("⚠️ Số dư ví không đủ (Hiện có: " + formatVND(curBal) + " - Đơn hàng: " + formatVND(totalCost) + ")! Đang chuyển hướng sang nạp tiền...", "warning");
 
         if (typeof closeModal === "function") {
@@ -26482,7 +26482,7 @@ function syncAllOpenViewsStock(changedProdId) {
   function openDirectPaymentModal(orderData) {
     const cost = (orderData && orderData.totalCost) ? Number(orderData.totalCost) : 20000;
     const curBal = (currentUser && Number(currentUser.balance)) || 0;
-    const missing = Math.max(10000, cost - curBal);
+    const missing = Math.max(2000, cost - curBal);
     window._targetDepositAmount = missing;
     showToast("⚠️ Số dư ví không đủ! Đang chuyển hướng sang nạp tiền...", "warning");
     if (typeof closeModal === "function") closeModal("directPaymentModal");
