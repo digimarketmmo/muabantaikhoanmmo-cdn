@@ -9333,8 +9333,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             }
             if (existingIdx !== -1) {
               const currentProd = MOCK_DATA.products[existingIdx];
-              // [LOCAL-FIRST EDIT MASTER]: Nếu sản phẩm vừa được sửa gần đây (< 15 phút), ưu tiên dữ liệu admin đã sửa
-              const isLocallyFresh = !!(currentProd._lastEditedAt && (Date.now() - currentProd._lastEditedAt < 900000));
+              // [LOCAL-FIRST EDIT MASTER]: Nếu sản phẩm vừa được sửa gần đây (< 5 giây), ưu tiên dữ liệu admin đã sửa
+              const isLocallyFresh = !!(currentProd._lastEditedAt && (Date.now() - currentProd._lastEditedAt < 5000));
 
               // Bảo vệ tồn kho nếu sản phẩm đang bật On-Demand API
               // QUAN TRỌNG: Không check balance ở đây — balance chỉ cần check khi mua hàng
@@ -10305,7 +10305,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         } catch(eDesc) {}
       }
 
-      // [KEEPALIVE CLOUD SYNC]: Đảm bảo 100% gửi thẳng lên Worker và lưu vào Turso SQLite kể cả khi reload
+      // [KEEPALIVE CLOUD SYNC & TURSO SSOT]: Đảm bảo 100% gửi thẳng lên Worker và lưu vào Turso SQLite
       try {
         const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SECURE_TOKEN_2026";
         const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
@@ -10318,9 +10318,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           body: JSON.stringify({ product: prodData }),
           keepalive: true
         }).then(r => r.json()).then(res => {
-          console.log("Keepalive saveProduct success:", res);
+          console.log("Cloud saveProduct success:", res);
+          // Kích hoạt đồng bộ nền để cập nhật cache và index sản phẩm ngay lập tức
+          if (typeof syncTursoProductsToLocalUI === "function") {
+            window._mmoSyncTursoInFlightPromise = null;
+            syncTursoProductsToLocalUI().catch(function() {});
+          }
         }).catch(err => {
-          console.warn("Keepalive saveProduct non-fatal:", err);
+          console.warn("Cloud saveProduct non-fatal:", err);
         });
       } catch(eKeep) {}
 
@@ -15157,8 +15162,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         refreshAllShopStockUI();
         const bList = document.getElementById("bestSellerList");
         const rGrid = document.getElementById("recommendedGrid");
+        const pGrid = document.getElementById("productGrid");
         const isBListEmpty = !bList || bList.children.length === 0;
-        if (hasNewOrUpdated || isBListEmpty || isRGridEmpty || !window._mmoInitialSyncRenderDone) {
+        const isRGridEmpty = !rGrid || rGrid.children.length === 0;
+        const isPGridEmpty = !pGrid || pGrid.children.length === 0;
+        if (hasNewOrUpdated || isBListEmpty || isRGridEmpty || isPGridEmpty || !window._mmoInitialSyncRenderDone) {
           window._mmoInitialSyncRenderDone = true;
           saveProductsToStorage();
           const curActiveView = (typeof localStorage !== "undefined" && localStorage.getItem("mmo_current_view")) || "viewStore";
