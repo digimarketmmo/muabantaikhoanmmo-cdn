@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.1.9";
+const MMO_CURRENT_CODE_VERSION = "4.2.1";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -5438,7 +5438,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               }) : false;
 
               // Khớp theo API Mapping
-              const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
+              const apiMap = getFastApiMap(p.id);
               const apiMatch = apiMap ? (
                 String(apiMap.provider || "").toLowerCase().includes(qRaw) ||
                 String(apiMap.sourceProdId || "").toLowerCase().includes(qRaw)
@@ -5467,7 +5467,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               : 'Chưa có sản phẩm nào. Hãy bấm "Thêm Sản Phẩm" để tạo mới.';
             tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:28px; color:#64748b;"><i class="fa-solid fa-box-open" style="font-size:1.6rem; display:block; margin-bottom:8px; opacity:0.5;"></i>' + emptyMsg + '</td></tr>';
           } else {
-            tbody.innerHTML = pageProds.map(function(p) {
+            // [ZERO-FREEZE MEMOIZATION]: Cache tra cứu trong phạm vi 1 lần render bảng Admin
+          const _renderApiMapCache = new Map();
+          const _renderStockCache = new Map();
+          const getFastApiMap = function(pid) {
+            if (_renderApiMapCache.has(pid)) return _renderApiMapCache.get(pid);
+            const m = (typeof getApiProductMapping === "function") ? getApiProductMapping(pid) : null;
+            _renderApiMapCache.set(pid, m);
+            return m;
+          };
+          const getFastStock = function(prodObj) {
+            if (_renderStockCache.has(prodObj.id)) return _renderStockCache.get(prodObj.id);
+            const st = (typeof getProductStockCount === "function") ? getProductStockCount(prodObj) : (prodObj.stock || 0);
+            _renderStockCache.set(prodObj.id, st);
+            return st;
+          };
+
+          tbody.innerHTML = pageProds.map(function(p) {
               const vCount = (p.variants && p.variants.length) ? p.variants.length : 1;
               const tableImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png");
               return '<tr>' +
@@ -5496,7 +5512,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 '<td>' + esc(p.category) + '</td>' +
                 '<td style="color:#10b981; font-weight:700;">' + formatVND(p.price) + '</td>' +
                 '<td>' + (function() {
-                  const stk = typeof getProductStockCount === "function" ? getProductStockCount(p) : (p.stock || 0);
+                  const stk = getFastStock(p);
                   const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
                   if (apiMap && apiMap.sourceProdId) {
                     const cleanSrcId = String(apiMap.sourceProdId || "").replace(/^#/, "").trim();
@@ -6428,7 +6444,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         activeSelectedId = shouldKeepCurrentVal ? currentVal : (filtered.some(s => String(s.id) === String(currentVal)) ? currentVal : (bestMatchId || ""));
       }
 
-      optionsHtml += filtered.map(s => {
+      // [ZERO-FREEZE]: Giới hạn tối đa 60 options hiển thị để dropdown mở tức thì 0ms, không treo trình duyệt
+      let displayItems = [];
+      const selectedItem = activeSelectedId ? filtered.find(s => String(s.id) === String(activeSelectedId)) : null;
+      if (selectedItem) {
+        displayItems.push(selectedItem);
+      }
+      for (let di = 0; di < filtered.length && displayItems.length < 60; di++) {
+        if (!selectedItem || String(filtered[di].id) !== String(activeSelectedId)) {
+          displayItems.push(filtered[di]);
+        }
+      }
+
+      optionsHtml += displayItems.map(s => {
         const isSelected = String(s.id) === String(activeSelectedId) ? ' selected="selected"' : '';
         const pPrice = Number(s.price || 0);
         const pStock = Number(s.amount || 0);
@@ -6437,6 +6465,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           '[' + (s.category || provider) + '] #' + s.id + ' ' + s.name + ' - ' + priceStr + ' (Tồn: ' + pStock.toLocaleString() + ')' +
         '</option>';
       }).join("");
+      if (filtered.length > 60) {
+        optionsHtml += '<option value="" disabled="disabled">... và còn ' + (filtered.length - 60) + ' SP khác (Hãy gõ tìm kiếm ở ô trên) ...</option>';
+      }
 
       sSel.innerHTML = optionsHtml;
 
@@ -10154,7 +10185,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           variants: variants,
           deliveryType: isApiSelected ? "api" : "local",
           delivery_type: isApiSelected ? "api" : "local",
-          _lastEditedAt: Date.now()
+          _lastEditedAt: Date.now() + 120000
         };
 
         // Cập nhật bảng API Mappings ngay lập tức
@@ -10326,10 +10357,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             keepalive: true
           }).then(r => r.json()).then(res => {
             console.log("Cloud saveProduct success:", res);
-            if (typeof syncTursoProductsToLocalUI === "function") {
-              window._mmoSyncTursoInFlightPromise = null;
-              syncTursoProductsToLocalUI().catch(function() {});
-            }
+            // [ZERO-FREEZE]: Giữ nguyên dữ liệu vừa lưu thành công, không fetch đè lại từ Worker
+            console.log("Product saved successfully to Turso Cloud SSOT");
           }).catch(err => {
             console.warn("Cloud saveProduct non-fatal:", err);
           });
@@ -13214,6 +13243,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           setInterval(function() {
             const rGrid = document.getElementById("recommendedGrid");
             const curV = (typeof currentView !== "undefined") ? currentView : "viewStore";
+            const admV = document.getElementById("viewAdmin");
+            const isAdmViewing = (curV === "viewAdmin") || (admV && admV.style.display !== "none" && !admV.classList.contains("hidden"));
+            if (isAdmViewing) return; // Tuyệt đối không xoay khi đang ở Quản trị Admin
             if (rGrid && (curV === "viewStore" || !document.getElementById("viewStore")?.classList.contains("hidden"))) {
               _recRotationIndex += 6;
               try { sessionStorage.setItem("mmo_rec_rot_idx", String(_recRotationIndex)); } catch(e) {}
@@ -17622,9 +17654,9 @@ function syncAllOpenViewsStock(changedProdId) {
         if (item.sourceProdId) {
           const cleanSrcId = String(item.sourceProdId || "").trim().replace(/^#/, "");
           let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(item.provider, cleanSrcId) : null;
-          if (!inSrc && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
-            inSrc = cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!item.provider || s.provider === item.provider))
-                 || cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
+          // [ZERO-FREEZE]: Tra cứu O(1) qua _sourceProductsFastMap, không duyệt mảng 4.280 phần tử
+          if (!inSrc && typeof getFastSourceProduct === "function") {
+            inSrc = getFastSourceProduct(null, cleanSrcId);
           }
           const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(item.provider) : false;
           if (inSrc && typeof inSrc.amount === "number") {
@@ -17702,9 +17734,9 @@ function syncAllOpenViewsStock(changedProdId) {
         const cleanSrcId = String(res.sourceProdId || "").trim().replace(/^#/, "");
         let stock = (res.sourceStock !== undefined && res.sourceStock !== null) ? Number(res.sourceStock) : 0;
         let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(res.provider, cleanSrcId) : null;
-        if (!inSrc && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
-          inSrc = cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!res.provider || s.provider === res.provider))
-               || cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
+        // [ZERO-FREEZE]: Tra cứu O(1) qua _sourceProductsFastMap
+        if (!inSrc && typeof getFastSourceProduct === "function") {
+          inSrc = getFastSourceProduct(null, cleanSrcId);
         }
         if (inSrc && typeof inSrc.amount === "number") {
           stock = inSrc.amount;
