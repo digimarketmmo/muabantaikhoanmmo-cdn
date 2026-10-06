@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.2.2";
+const MMO_CURRENT_CODE_VERSION = "4.2.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -175,9 +175,20 @@ try {
           arr.forEach(p => {
             if (p && p.id && MASTER_PF_STOCK[p.id]) {
               const m = MASTER_PF_STOCK[p.id];
-              if (!p.stock || p.stock === 0) {
+              if (!p.stock || p.stock === 0 || p.stock < m.stock) {
                 p.stock = m.stock;
                 mod = true;
+              }
+              if (Array.isArray(p.variants) && Array.isArray(m.variants)) {
+                p.variants.forEach((pv, pvi) => {
+                  const mv = m.variants[pvi];
+                  if (mv && (!pv.stock || pv.stock === 0)) {
+                    pv.stock = mv.stock;
+                    pv.available = mv.stock > 0;
+                    mod = true;
+                  }
+                });
+              }
               }
               if (Array.isArray(p.variants) && Array.isArray(m.variants)) {
                 m.variants.forEach((mv, vi) => {
@@ -2464,7 +2475,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "price": 300000,
         "stock": 43,
         "available": true,
-        "accounts": []
+        "accounts": ["1|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","2|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","3|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","4|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","5|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","6|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","7|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","8|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","9|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","10|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","11|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","12|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","13|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","14|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","15|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","16|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","17|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","18|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","19|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","20|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","21|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","22|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","23|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","24|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","25|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","26|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","27|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","28|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","29|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","30|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","31|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","32|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","33|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","34|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","35|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","36|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","37|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","38|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","39|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","40|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","41|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","42|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view","43|https://drive.google.com/file/d/1CVQPyvgmqEAGrl7M0w81Sb2JjshBh16Q/view"]
       },
       {
         "name": "Rom androi 10 s8 plush G955",
@@ -2478,14 +2489,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "price": 300000,
         "stock": 60,
         "available": true,
-        "accounts": []
+        "accounts": ["1|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","2|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","3|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","4|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","5|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","6|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","7|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","8|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","9|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","10|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","11|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","12|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","13|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","14|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","15|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","16|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","17|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","18|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","19|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","20|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","21|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","22|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","23|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","24|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","25|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","26|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","27|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","28|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","29|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","30|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","31|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","32|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","33|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","34|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","35|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","36|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","37|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","38|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","39|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","40|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","41|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","42|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","43|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","44|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","45|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","46|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","47|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","48|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","49|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","50|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","51|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","52|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","53|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","54|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","55|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","56|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","57|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","58|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","59|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view","60|https://drive.google.com/file/d/1E-APFzyLR7Lnd2kreGoetk9SWcRT5h5O/view"]
       },
       {
         "name": "rom gốc s8 g950N  mod adb",
         "price": 300000,
         "stock": 56,
         "available": true,
-        "accounts": []
+        "accounts": ["1|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","2|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","3|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","4|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","5|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","6|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","7|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","8|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","9|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","10|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","11|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","12|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","13|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","14|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","15|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","16|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","17|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","18|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","19|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","20|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","21|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","22|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","23|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","24|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","25|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","26|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","27|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","28|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","29|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","30|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","31|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","32|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","33|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","34|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","35|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","36|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","37|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","38|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","39|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","40|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","41|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","42|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","43|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","44|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","45|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","46|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","47|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","48|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","49|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","50|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","51|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","52|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","53|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","54|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","55|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view","56|https://drive.google.com/file/d/1mLv3H6Z3hk88GhQrhHZoqtOe5AhL6iJm/view"]
       }
     ],
     "deliveryType": "local",
@@ -2542,7 +2553,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "price": 500000,
         "stock": 63,
         "available": true,
-        "accounts": []
+        "accounts": ["1|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","2|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","3|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","4|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","5|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","6|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","7|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","8|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","9|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","10|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","11|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","12|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","13|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","14|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","15|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","16|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","17|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","18|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","19|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","20|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","21|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","22|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","23|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","24|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","25|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","26|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","27|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","28|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","29|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","30|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","31|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","32|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","33|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","34|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","35|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","36|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","37|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","38|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","39|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","40|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","41|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","42|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","43|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","44|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","45|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","46|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","47|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","48|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","49|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","50|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","51|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","52|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","53|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","54|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","55|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","56|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","57|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","58|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","59|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","60|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","61|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","62|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view","63|https://drive.google.com/file/d/1GSa64JiduTEVpbQeo-j2itMfBxVfdTaG/view"]
       },
       {
         "name": "rom s10 G977N rom gốc mod",
@@ -14623,12 +14634,27 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         try {
           if (MMO_WORKER_API._checkWorkerAvailable()) {
             const res = await MMO_WORKER_API.adminGetInventory(productId, variantIdx);
-            if (res && Array.isArray(res.available)) return res.available;
+            if (res && Array.isArray(res.available) && res.available.length > 0) return res.available;
           }
         } catch(e) {
           console.warn("TURSO_CLIENT.getAvailableAccounts offline fallback:", e.message);
         }
-        return (typeof MMO_WAREHOUSE !== "undefined") ? MMO_WAREHOUSE.getAvailable(productId, variantIdx) : [];
+        // Fallback 1: Kho nội bộ MMO_WAREHOUSE
+        const localWh = (typeof MMO_WAREHOUSE !== "undefined") ? MMO_WAREHOUSE.getAvailable(productId, variantIdx) : [];
+        if (Array.isArray(localWh) && localWh.length > 0) return localWh;
+
+        // Fallback 2: Kiểm tra đối tượng sản phẩm trong MOCK_DATA
+        const prod = (typeof findShopProduct === "function") ? findShopProduct(productId) : null;
+        if (prod) {
+          const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
+          if (hasVars) {
+            const vObj = (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL") ? prod.variants[Number(variantIdx) || 0] : null;
+            if (vObj && Array.isArray(vObj.accounts) && vObj.accounts.length > 0) return vObj.accounts;
+          } else if (Array.isArray(prod.accounts) && prod.accounts.length > 0) {
+            return prod.accounts;
+          }
+        }
+        return [];
       },
       fetchSoldAccounts: async function(productId, variantIdx) {
         try {
@@ -15135,7 +15161,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 imageUrl: targetImage,
                 description: targetDesc,
                 warranty: tp.warranty || cur.warranty,
-                variants: (variants && variants.length > 0) ? variants : cur.variants
+                variants: (function() {
+                if (!variants || variants.length === 0) return cur.variants;
+                // [SSOT SAFE WAREHOUSE]: Bảo tồn 100% tài khoản kho đang có trong biến thể hiện tại
+                return variants.map(function(v, vIdx) {
+                  const cv = (cur && Array.isArray(cur.variants) && cur.variants[vIdx]) ? cur.variants[vIdx] : null;
+                  if (cv && Array.isArray(cv.accounts) && cv.accounts.length > 0) {
+                    v.accounts = cv.accounts;
+                    v.stock = Math.max(Number(v.stock) || 0, cv.accounts.length);
+                    v.available = true;
+                  }
+                  return v;
+                });
+              })()
               });
             }
           } else {
@@ -40003,32 +40041,65 @@ async function confirmRefundOrder() {
         }
       }
 
-      // ƯU TIÊN 100%: NẾU ĐÃ CẤU HÌNH TURSO DATABASE, ĐỌC TRỰC TIẾP TỪ TURSO
+      // ƯU TIÊN 100%: NẾU ĐÃ CẤU HÌNH TURSO DATABASE, ĐỌC TRỰC TIẾP TỪ TURSO (BẢO VỆ TỒN KHO CHỐNG XÓA TRẮNG)
       if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
         if (currentView) currentView.placeholder = "⏳ Đang tải tài khoản từ Turso Database...";
         try {
           const accounts = await TURSO_CLIENT.getAvailableAccounts(prodId, vVal);
-          const count = accounts.length;
+          let effectiveAccounts = (Array.isArray(accounts) && accounts.length > 0) ? accounts : [];
+
+          // NẾU TURSO TRẢ VỀ RỖNG: Tự động khôi phục từ MMO_WAREHOUSE hoặc biến thể local
+          const curVObj = hasVars ? (prod.variants && prod.variants[vVal]) : prod;
+          if (effectiveAccounts.length === 0) {
+            const localWh = (typeof MMO_WAREHOUSE !== "undefined") ? MMO_WAREHOUSE.getAvailable(prodId, vVal) : [];
+            if (Array.isArray(localWh) && localWh.length > 0) {
+              effectiveAccounts = localWh;
+            } else if (curVObj && Array.isArray(curVObj.accounts) && curVObj.accounts.length > 0) {
+              effectiveAccounts = curVObj.accounts;
+            }
+
+            // Tự động đẩy accounts có sẵn lên Turso chạy ngầm nếu Turso chưa có
+            if (effectiveAccounts.length > 0 && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
+              MMO_WORKER_API.adminImportAccounts(prodId, vVal || 0, effectiveAccounts, prod).catch(() => {});
+            }
+          }
+
+          // Tính toán số lượng tồn kho an toàn (không bao giờ ép về 0 nếu sản phẩm có tồn kho chuẩn)
+          let effectiveCount = effectiveAccounts.length;
+          if (effectiveCount === 0 && curVObj) {
+            const pfMaster = (typeof MASTER_PF_STOCK !== "undefined" && MASTER_PF_STOCK[prodId]) ? MASTER_PF_STOCK[prodId] : null;
+            const pfVar = (pfMaster && hasVars && pfMaster.variants && pfMaster.variants[vVal]) ? pfMaster.variants[vVal] : pfMaster;
+            if (pfVar && typeof pfVar.stock === "number" && pfVar.stock > 0) {
+              effectiveCount = pfVar.stock;
+            } else if (typeof curVObj.stock === "number" && curVObj.stock > 0) {
+              effectiveCount = curVObj.stock;
+            }
+          }
 
           if (currentView) {
-            currentView.value = accounts.join("\n");
-            currentView.placeholder = "Mỗi dòng 1 tài khoản (Định dạng: user|pass|2fa|...)";
+            currentView.value = effectiveAccounts.length > 0 ? effectiveAccounts.join("\n") : "";
+            currentView.placeholder = effectiveCount > 0 ? ("Kho sẵn sàng: " + effectiveCount + " acc. Dán tài khoản vào ô trên để nạp thêm.") : "Mỗi dòng 1 tài khoản (Định dạng: user|pass|2fa|...)";
           }
           if (countDisp) {
-            countDisp.innerText = count + " acc";
-            if (count === 0) countDisp.style.color = "#ef4444";
-            else if (count < 5) countDisp.style.color = "#f59e0b";
+            countDisp.innerText = effectiveCount + " acc";
+            if (effectiveCount === 0) countDisp.style.color = "#ef4444";
+            else if (effectiveCount < 5) countDisp.style.color = "#f59e0b";
             else countDisp.style.color = "#10b981";
           }
 
-          // Đồng bộ bộ nhớ local và biến thể
+          // Đồng bộ bộ nhớ local và biến thể mà KHÔNG làm mất stock định sẵn
           if (hasVars && prod.variants && prod.variants[vVal]) {
-            prod.variants[vVal].accounts = accounts;
-            prod.variants[vVal].stock = count;
+            if (effectiveAccounts.length > 0) {
+              prod.variants[vVal].accounts = effectiveAccounts;
+            }
+            prod.variants[vVal].stock = effectiveCount;
+            prod.variants[vVal].available = effectiveCount > 0;
             prod.stock = prod.variants.reduce((s, v) => s + (Number(v.stock) || 0), 0);
           } else {
-            prod.accounts = accounts;
-            prod.stock = count;
+            if (effectiveAccounts.length > 0) {
+              prod.accounts = effectiveAccounts;
+            }
+            prod.stock = effectiveCount;
           }
 
           if (typeof updateVariantSelectForProduct === "function") {
