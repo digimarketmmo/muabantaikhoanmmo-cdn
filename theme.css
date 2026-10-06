@@ -3111,8 +3111,9 @@
       grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
-    .btn-chat-live {
-      background: #10b981;
+    .btn-chat-live,
+    .btn-zalo {
+      background: #0068ff;
       color: #ffffff;
       border: none;
       padding: 8px 12px;
@@ -3126,7 +3127,8 @@
       text-decoration: none;
       transition: var(--transition);
     }
-    .btn-chat-live:hover { background: #059669; }
+    .btn-chat-live:hover,
+    .btn-zalo:hover { background: #0052cc; }
     .btn-telegram {
       background: #0284c7;
       color: #ffffff;

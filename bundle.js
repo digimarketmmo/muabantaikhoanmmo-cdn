@@ -4555,22 +4555,34 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         email = "muabantaikhoanmmo@gmail.com";
       }
 
-      // 3. Telegram
-      let rawTele = String(s.telegram || s.tele || "https://t.me/groupmuabantaikhoanmmo").trim();
-      let teleUrl = rawTele;
-      if (!teleUrl.startsWith("http://") && !teleUrl.startsWith("https://")) {
-        teleUrl = "https://" + teleUrl.replace(/^@/, "t.me/");
+      // 3. Telegram Group / Cộng đồng & Telegram Channel / Kênh
+      let rawTeleGroup = String(s.telegramGroup || s.telegram || s.tele || "https://t.me/groupmuabantaikhoanmmo").trim();
+      let teleGroupUrl = rawTeleGroup;
+      if (!teleGroupUrl.startsWith("http://") && !teleGroupUrl.startsWith("https://")) {
+        teleGroupUrl = "https://" + teleGroupUrl.replace(/^@/, "t.me/");
       }
-      let teleHandle = rawTele.replace(/^https?:\/\/t\.me\//, "@").replace(/^https?:\/\/telegram\.me\//, "@");
-      if (!teleHandle.startsWith("@")) teleHandle = "@" + teleHandle;
+      let teleGroupHandle = rawTeleGroup.replace(/^https?:\/\/t\.me\//, "@").replace(/^https?:\/\/telegram\.me\//, "@");
+      if (!teleGroupHandle.startsWith("@")) teleGroupHandle = "@" + teleGroupHandle;
+
+      let rawTeleChannel = String(s.telegramChannel || s.telegram || "https://t.me/muabantaikhoanmmo").trim();
+      let teleChannelUrl = rawTeleChannel;
+      if (!teleChannelUrl.startsWith("http://") && !teleChannelUrl.startsWith("https://")) {
+        teleChannelUrl = "https://" + teleChannelUrl.replace(/^@/, "t.me/");
+      }
+      let teleChannelHandle = rawTeleChannel.replace(/^https?:\/\/t\.me\//, "@").replace(/^https?:\/\/telegram\.me\//, "@");
+      if (!teleChannelHandle.startsWith("@")) teleChannelHandle = "@" + teleChannelHandle;
 
       return {
         phone: cleanPhone,
         formattedPhone: formattedPhone,
         zaloUrl: "https://zalo.me/" + cleanPhone,
         email: email,
-        telegramUrl: teleUrl,
-        telegramHandle: teleHandle
+        telegramUrl: teleGroupUrl,
+        telegramHandle: teleGroupHandle,
+        telegramGroupUrl: teleGroupUrl,
+        telegramGroupHandle: teleGroupHandle,
+        telegramChannelUrl: teleChannelUrl,
+        telegramChannelHandle: teleChannelHandle
       };
     }
     window.getSystemContactInfo = getSystemContactInfo;
@@ -4810,13 +4822,29 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
           // 3. Telegram
           const cloudTelegram = res.settings.telegram || res.settings.TELEGRAM;
+          const cloudTelegramGroup = res.settings.telegramGroup || res.settings.TELEGRAM_GROUP;
+          const cloudTelegramChannel = res.settings.telegramChannel || res.settings.TELEGRAM_CHANNEL;
+          if (cloudTelegramGroup !== undefined && cloudTelegramGroup !== null && cloudTelegramGroup.trim()) {
+            if (!isRecentlySavedLocally && cloudTelegramGroup.trim() !== (curSettings.telegramGroup || "").trim()) {
+              curSettings.telegramGroup = cloudTelegramGroup.trim();
+              hasSettingsChange = true;
+            }
+          }
+          if (cloudTelegramChannel !== undefined && cloudTelegramChannel !== null && cloudTelegramChannel.trim()) {
+            if (!isRecentlySavedLocally && cloudTelegramChannel.trim() !== (curSettings.telegramChannel || "").trim()) {
+              curSettings.telegramChannel = cloudTelegramChannel.trim();
+              hasSettingsChange = true;
+            }
+          }
           if (cloudTelegram !== undefined && cloudTelegram !== null && cloudTelegram.trim()) {
             if (!isRecentlySavedLocally && cloudTelegram.trim() !== (curSettings.telegram || "").trim()) {
               curSettings.telegram = cloudTelegram.trim();
+              if (!curSettings.telegramGroup) curSettings.telegramGroup = curSettings.telegram;
               hasSettingsChange = true;
-              if (typeof syncTelegramLinks === "function") syncTelegramLinks(curSettings.telegram);
-              if (document.getElementById("setTelegram")) document.getElementById("setTelegram").value = curSettings.telegram;
             }
+          }
+          if (hasSettingsChange && typeof syncTelegramLinks === "function") {
+            syncTelegramLinks(curSettings.telegramGroup || curSettings.telegram, curSettings.telegramChannel || curSettings.telegram);
           }
 
           // 4. Site Name
@@ -21813,6 +21841,8 @@ function syncAllOpenViewsStock(changedProdId) {
         email: "muabantaikhoanmmo@gmail.com",
         supportEmail: "muabantaikhoanmmo@gmail.com",
         telegram: "https://t.me/groupmuabantaikhoanmmo",
+        telegramGroup: "https://t.me/groupmuabantaikhoanmmo",
+        telegramChannel: "https://t.me/muabantaikhoanmmo",
         marqueeText: "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!",
         gasUrl: "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec",
         brandLogo: "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888969056_z00fh5.png",
@@ -21827,6 +21857,12 @@ function syncAllOpenViewsStock(changedProdId) {
           const parsed = JSON.parse(stored);
           if (parsed && typeof parsed === "object") {
             const merged = Object.assign({}, defaultSettings, parsed);
+            if (!merged.telegramGroup || !String(merged.telegramGroup).trim()) {
+              merged.telegramGroup = merged.telegram || defaultSettings.telegramGroup;
+            }
+            if (!merged.telegramChannel || !String(merged.telegramChannel).trim()) {
+              merged.telegramChannel = defaultSettings.telegramChannel;
+            }
             if (!merged.hotline || !String(merged.hotline).trim() || merged.hotline.includes("0968033451") || merged.hotline.includes("0968.033.451")) {
               merged.hotline = defaultSettings.hotline;
             }
@@ -22195,6 +22231,18 @@ function syncAllOpenViewsStock(changedProdId) {
             const teleInp = document.getElementById("setTelegram");
             if (teleInp && document.activeElement !== teleInp) teleInp.value = curSettings.telegram;
           }
+          if (cs.telegramGroup && cs.telegramGroup.trim()) {
+            curSettings.telegramGroup = cs.telegramGroup.trim();
+            settingsChanged = true;
+            const teleGroupInp = document.getElementById("setTelegramGroup");
+            if (teleGroupInp && document.activeElement !== teleGroupInp) teleGroupInp.value = curSettings.telegramGroup;
+          }
+          if (cs.telegramChannel && cs.telegramChannel.trim()) {
+            curSettings.telegramChannel = cs.telegramChannel.trim();
+            settingsChanged = true;
+            const teleChanInp = document.getElementById("setTelegramChannel");
+            if (teleChanInp && document.activeElement !== teleChanInp) teleChanInp.value = curSettings.telegramChannel;
+          }
           if (cs.marqueeText && cs.marqueeText.trim()) {
             curSettings.marqueeText = cs.marqueeText.trim();
             settingsChanged = true;
@@ -22230,7 +22278,9 @@ function syncAllOpenViewsStock(changedProdId) {
       if (document.getElementById("setGoogleClientId")) document.getElementById("setGoogleClientId").value = s.googleClientId || "788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com";
       if (document.getElementById("setAffiliateRate")) document.getElementById("setAffiliateRate").value = s.affiliateRate || 10;
       if (document.getElementById("setHotline")) document.getElementById("setHotline").value = s.hotline || "0975902076";
-      if (document.getElementById("setTelegram")) document.getElementById("setTelegram").value = s.telegram || "https://t.me/groupmuabantaikhoanmmo";
+      if (document.getElementById("setTelegram")) document.getElementById("setTelegram").value = s.telegramGroup || s.telegram || "https://t.me/groupmuabantaikhoanmmo";
+      if (document.getElementById("setTelegramGroup")) document.getElementById("setTelegramGroup").value = s.telegramGroup || s.telegram || "https://t.me/groupmuabantaikhoanmmo";
+      if (document.getElementById("setTelegramChannel")) document.getElementById("setTelegramChannel").value = s.telegramChannel || "https://t.me/muabantaikhoanmmo";
       
       // Marquee text
       const marqueeInp = document.getElementById("setMarqueeText");
@@ -22342,7 +22392,10 @@ function syncAllOpenViewsStock(changedProdId) {
         const googleClientId = document.getElementById("setGoogleClientId") ? document.getElementById("setGoogleClientId").value.trim() : "788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com";
         const affiliateRate = parseInt(document.getElementById("setAffiliateRate") ? document.getElementById("setAffiliateRate").value : 10) || 10;
         const hotline = document.getElementById("setHotline") ? document.getElementById("setHotline").value.trim() : "0975902076";
-        const telegram = document.getElementById("setTelegram") ? document.getElementById("setTelegram").value.trim() : "https://t.me/groupmuabantaikhoanmmo";
+        const telegramInput = document.getElementById("setTelegram") ? document.getElementById("setTelegram").value.trim() : "";
+        const telegramGroup = document.getElementById("setTelegramGroup") ? document.getElementById("setTelegramGroup").value.trim() : (telegramInput || "https://t.me/groupmuabantaikhoanmmo");
+        const telegramChannel = document.getElementById("setTelegramChannel") ? document.getElementById("setTelegramChannel").value.trim() : "https://t.me/muabantaikhoanmmo";
+        const telegram = telegramGroup || telegramInput || "https://t.me/groupmuabantaikhoanmmo";
         
         // Marquee text (lấy đúng giá trị người dùng vừa gõ vào ô)
         const marqueeInput = document.getElementById("setMarqueeText");
@@ -22381,6 +22434,8 @@ function syncAllOpenViewsStock(changedProdId) {
           affiliateRate: affiliateRate,
           hotline: hotline,
           telegram: telegram,
+          telegramGroup: telegramGroup,
+          telegramChannel: telegramChannel,
           marqueeText: marqueeText,
           gasUrl: gasUrl,
           brandLogo: brandLogo,
@@ -22445,7 +22500,7 @@ function syncAllOpenViewsStock(changedProdId) {
         // Áp dụng ngay lập tức lên toàn bộ giao diện
         applyBrandCustomizations(settings);
         if (typeof syncZaloLinks === "function") syncZaloLinks(settings.hotline);
-        if (typeof syncTelegramLinks === "function") syncTelegramLinks(settings.telegram);
+        if (typeof syncTelegramLinks === "function") syncTelegramLinks(settings.telegramGroup || settings.telegram, settings.telegramChannel || settings.telegram);
         if (typeof syncMarqueeNotice === "function") syncMarqueeNotice(settings.marqueeText);
 
         // Phát sóng đa tab (BroadcastChannel) để cập nhật tức thì mọi tab đang mở
@@ -22552,7 +22607,7 @@ function syncAllOpenViewsStock(changedProdId) {
         const zaloUrl = "https://zalo.me/" + cleanPhone;
 
         // 1. Cập nhật tất cả các thẻ a Zalo (loại trừ link chia sẻ zalo.me/share)
-        const selLinks = "a[href*='zalo.me'], .btn-chat-live, .mmo-zalo-link";
+        const selLinks = "a[href*='zalo.me'], .btn-chat-live, .btn-zalo, .mmo-zalo-link";
         document.querySelectorAll(selLinks).forEach(function(el) {
           if (el.href && el.href.includes("zalo.me/share")) return;
           el.href = zaloUrl;
@@ -22613,36 +22668,79 @@ function syncAllOpenViewsStock(changedProdId) {
       try {
         const contact = getSystemContactInfo();
         syncZaloLinks(contact.phone);
-        syncTelegramLinks(contact.telegramUrl);
+        syncTelegramLinks(contact.telegramGroupUrl, contact.telegramChannelUrl);
         syncEmailLinks(contact.email);
       } catch(e) {}
     }
     window.syncContactInfoToUI = syncContactInfoToUI;
 
-    // ĐỒNG BỘ LINK TELEGRAM ĐẾN TẤT CẢ NÚT/LIÊN KẾT TRÊN TRANG
-    function syncTelegramLinks(teleUrl) {
+    // ĐỒNG BỘ LINK TELEGRAM ĐẾN TẤT CẢ NÚT/LIÊN KẾT TRÊN TRANG (HỖ TRỢ TÁCH RIÊNG CỘNG ĐỒNG & KÊNH)
+    function syncTelegramLinks(teleUrl, chanUrl) {
       try {
-        let url = teleUrl;
-        if (!url) {
-          const s = (typeof getGeneralSettings === "function") ? getGeneralSettings() : {};
-          url = (s && s.telegram) ? s.telegram.trim() : "https://t.me/groupmuabantaikhoanmmo";
-        }
-        url = (url || "").trim();
-        if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
-          url = "https://" + url;
-        }
-        if (!url) url = "https://t.me/groupmuabantaikhoanmmo";
+        const s = (typeof getGeneralSettings === "function") ? getGeneralSettings() : {};
+        const contact = (typeof getSystemContactInfo === "function") ? getSystemContactInfo() : {};
 
-        const sel = "a[href*='t.me'], a[href*='telegram'], .btn-telegram, .connect-card-box[href*='t.me'], .mmo-tele-link";
-        document.querySelectorAll(sel).forEach(function(el) {
-          el.href = url;
+        let groupLink = teleUrl || (s && (s.telegramGroup || s.telegram)) || contact.telegramGroupUrl || "https://t.me/groupmuabantaikhoanmmo";
+        groupLink = (groupLink || "").trim();
+        if (groupLink && !groupLink.startsWith("http://") && !groupLink.startsWith("https://")) {
+          groupLink = "https://" + groupLink.replace(/^@/, "t.me/");
+        }
+        if (!groupLink) groupLink = "https://t.me/groupmuabantaikhoanmmo";
+
+        let channelLink = chanUrl || (s && (s.telegramChannel || s.telegram)) || contact.telegramChannelUrl || "https://t.me/muabantaikhoanmmo";
+        channelLink = (channelLink || "").trim();
+        if (channelLink && !channelLink.startsWith("http://") && !channelLink.startsWith("https://")) {
+          channelLink = "https://" + channelLink.replace(/^@/, "t.me/");
+        }
+        if (!channelLink) channelLink = "https://t.me/muabantaikhoanmmo";
+
+        // 1. Cập nhật các liên kết Kênh Telegram (Channel)
+        const selChannel = ".btn-telegram, .mmo-tele-channel-link, a[data-tele-type='channel']";
+        document.querySelectorAll(selChannel).forEach(function(el) {
+          el.href = channelLink;
           el.setAttribute("target", "_blank");
           el.setAttribute("rel", "noopener noreferrer");
           el.onclick = function(ev) {
             ev.preventDefault();
-            window.open(url, "_blank");
+            window.open(channelLink, "_blank");
           };
         });
+
+        // 2. Cập nhật các liên kết Nhóm / Cộng đồng Telegram (Group / Community)
+        const selGroup = ".connect-card-box, .mmo-tele-group-link, .mmo-tele-community-link, a[data-tele-type='group']";
+        document.querySelectorAll(selGroup).forEach(function(el) {
+          el.href = groupLink;
+          el.setAttribute("target", "_blank");
+          el.setAttribute("rel", "noopener noreferrer");
+          el.onclick = function(ev) {
+            ev.preventDefault();
+            window.open(groupLink, "_blank");
+          };
+        });
+
+        // 3. Cập nhật các liên kết telegram chung khác nếu chưa khớp với 2 nhóm trên
+        const selGeneral = "a[href*='t.me']:not(.btn-telegram):not(.connect-card-box):not([data-tele-type]), a[href*='telegram']:not(.btn-telegram):not(.connect-card-box):not([data-tele-type]), .mmo-tele-link";
+        document.querySelectorAll(selGeneral).forEach(function(el) {
+          if (el.href && el.href.includes("t.me/share")) return;
+          // Nếu phần tử có text Kênh thì dùng channelLink, còn lại dùng groupLink
+          const txt = (el.innerText || "").toLowerCase();
+          const targetUrl = (txt.includes("kênh") || txt.includes("channel")) ? channelLink : groupLink;
+          el.href = targetUrl;
+          el.setAttribute("target", "_blank");
+          el.setAttribute("rel", "noopener noreferrer");
+          el.onclick = function(ev) {
+            ev.preventDefault();
+            window.open(targetUrl, "_blank");
+          };
+        });
+
+        // 4. Cập nhật các ô input Admin nếu có
+        const inputGroup = document.getElementById("setTelegramGroup");
+        if (inputGroup && document.activeElement !== inputGroup) inputGroup.value = groupLink;
+        const inputChannel = document.getElementById("setTelegramChannel");
+        if (inputChannel && document.activeElement !== inputChannel) inputChannel.value = channelLink;
+        const inputGeneral = document.getElementById("setTelegram");
+        if (inputGeneral && document.activeElement !== inputGeneral) inputGeneral.value = groupLink;
       } catch(e) {
         console.error("syncTelegramLinks error:", e);
       }
