@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.1.7";
+const MMO_CURRENT_CODE_VERSION = "4.1.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -10399,21 +10399,25 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       } catch(e) {}
 
-      // Defer tất cả render để nhả main thread (tránh đơ/jank sau khi lưu)
-      setTimeout(function() {
-        if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
-        if (typeof renderProductGrid === "function") renderProductGrid();
-        if (typeof renderBestSellers === "function") renderBestSellers();
-        if (typeof renderRecommended === "function") renderRecommended();
-        if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
-        if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-        if (typeof initStockManagementUI === "function") initStockManagementUI();
-        if (typeof renderAllProductsPage === "function") renderAllProductsPage();
-        if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
-        if (typeof renderDetailRelatedProducts === "function" && currentSelectedProduct) {
-          renderDetailRelatedProducts(currentSelectedProduct);
-        }
-      }, 10);
+      // Đánh dấu tất cả các view cần render lại
+      if (typeof _viewDirty !== "undefined") {
+        _viewDirty["viewStore"] = true;
+        _viewDirty["viewAllProducts"] = true;
+        _viewDirty["viewAdmin"] = true;
+      }
+      if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+      if (typeof renderProductGrid === "function") renderProductGrid();
+      if (typeof renderBestSellers === "function") renderBestSellers();
+      if (typeof renderRecommended === "function") renderRecommended();
+      if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
+      if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+      if (typeof initStockManagementUI === "function") initStockManagementUI();
+      if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+      if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+      if (typeof renderCategories === "function") renderCategories();
+      if (typeof renderDetailRelatedProducts === "function" && currentSelectedProduct) {
+        renderDetailRelatedProducts(currentSelectedProduct);
+      }
 
       // Đồng bộ trực tiếp lên Google Apps Script / Google Sheets
       if (typeof callGasApi === "function") {
@@ -14329,10 +14333,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return Date.now() >= this._workerDeadUntil;
       },
       _markWorkerDead: function(reason) {
-        this._workerDeadUntil = Date.now() + 3000;
-        console.warn("[CIRCUIT BREAKER] Worker offline/rate-limited for 10m:", reason);
+        this._workerDeadUntil = Date.now() + 5000;
+        console.warn("[CIRCUIT BREAKER] Worker offline/rate-limited temporarily (5s retry):", reason);
       },
-      _fastSignal: function(ms = 3500) {
+      _fastSignal: function(ms = 10000) {
         if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
           return AbortSignal.timeout(ms);
         }
@@ -14341,7 +14345,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return c.signal;
       },
 
-      _fetchJson: async function(url, options = {}, timeoutMs = 3500) {
+      _fetchJson: async function(url, options = {}, timeoutMs = 10000) {
         if (!this._checkWorkerAvailable()) {
           throw new Error("Worker rate-limited or offline (Circuit breaker active)");
         }
@@ -14410,7 +14414,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       fetchProducts: async function(options) {
         const bust = (options && options.nocache) ? ("?_t=" + Date.now()) : "";
-        return await this._fetchJson(this.getApiUrl() + "/api/products" + bust, options || {}, 3500);
+        return await this._fetchJson(this.getApiUrl() + "/api/products" + bust, options || {}, 12000);
       },
 
       fetchProduct: async function(productIdOrSlug, options) {
@@ -14680,7 +14684,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       saveProduct: async function(prodData) {
         try {
           if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
-            return await MMO_WORKER_API.adminSyncProducts([prodData]);
+            const secret = MMO_WORKER_API.getAdminSecret();
+            const headers = { "Content-Type": "application/json" };
+            if (secret) headers["Authorization"] = "Bearer " + secret;
+            return await MMO_WORKER_API._fetchJson(MMO_WORKER_API.getApiUrl() + "/api/admin/products/save", {
+              method: "POST",
+              headers: headers,
+              body: JSON.stringify({ product: prodData })
+            }, 10000);
           }
         } catch(e) {
           console.warn("Turso saveProduct non-fatal error:", e);
@@ -15169,6 +15180,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (hasNewOrUpdated || isBListEmpty || isRGridEmpty || isPGridEmpty || !window._mmoInitialSyncRenderDone) {
           window._mmoInitialSyncRenderDone = true;
           saveProductsToStorage();
+          if (typeof _viewDirty !== "undefined") {
+            _viewDirty["viewStore"] = true;
+            _viewDirty["viewAllProducts"] = true;
+            _viewDirty["viewAdmin"] = true;
+          }
           const curActiveView = (typeof localStorage !== "undefined" && localStorage.getItem("mmo_current_view")) || "viewStore";
           if (curActiveView === "viewStore") {
             if (typeof renderCategories === "function") renderCategories();
