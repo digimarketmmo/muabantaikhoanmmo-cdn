@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.1.5";
+const MMO_CURRENT_CODE_VERSION = "4.1.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -16569,7 +16569,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const apiKey = pCfg.apiKey || (payload && payload.apiKey) || "";
       const workerProxy = (typeof sourceProxyUrl !== "undefined" && sourceProxyUrl) ? sourceProxyUrl.replace(/\/+$/, "") : "https://mmo-api-proxy.muabantaikhoanmmo.workers.dev";
 
-      function createFastSignal(ms = 5000) {
+      function createFastSignal(ms = 3500) {
         if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
           return AbortSignal.timeout(ms);
         }
@@ -16612,11 +16612,7 @@ function syncAllOpenViewsStock(changedProdId) {
             }
             return { success: isOk, data: { money: money }, provider: provider, raw: rawText };
           } catch(e) {
-            console.warn("shop1989nd getProfile error, fallback to GAS:", e);
-            if (typeof callGasApi === "function") {
-              const gasProf = await callGasApi("apiSourceGetProfile", { ...payload });
-              if (gasProf && gasProf.success) return gasProf;
-            }
+            console.warn("shop1989nd getProfile error:", e);
             return { success: false, data: { money: 0 }, provider: provider };
           }
         }
@@ -16625,7 +16621,7 @@ function syncAllOpenViewsStock(changedProdId) {
           const target = bUrl + "/api/ListResource.php?username=" + encodeURIComponent(uname) + "&password=" + encodeURIComponent(upass);
           try {
             // proxy lockout disabled
-            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(15000) });
+            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(6000) });
             if (!resp.ok) {
               // rate limit handled without 10m lockout
               throw new Error("Proxy status " + resp.status);
@@ -16649,11 +16645,7 @@ function syncAllOpenViewsStock(changedProdId) {
             }
             return { success: json.status === "success", categories: categories, provider: provider, raw: json };
           } catch(e) {
-            console.warn("shop1989nd getProducts error, fallback to GAS:", e);
-            if (typeof callGasApi === "function") {
-              const gasProds = await callGasApi("apiSourceGetProducts", { ...payload });
-              if (gasProds && gasProds.success) return gasProds;
-            }
+            console.warn("shop1989nd getProducts notice:", e);
             return { success: false, categories: [], provider: provider };
           }
         }
@@ -16803,7 +16795,7 @@ function syncAllOpenViewsStock(changedProdId) {
         const target = baseUrl.replace(/\/+$/, "") + "/api/profile.php?api_key=" + encodeURIComponent(apiKey);
         try {
           // proxy lockout disabled
-          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(5000) });
+          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(4000) });
           if (!resp.ok) {
             // rate limit handled without 10m lockout
             throw new Error("Proxy status " + resp.status);
@@ -16816,8 +16808,8 @@ function syncAllOpenViewsStock(changedProdId) {
             raw: json
           };
         } catch(workerErr) {
-          console.warn("Worker proxy error, fallback to GAS:", workerErr);
-          return await callGasApi("apiSourceGetProfile", { ...payload });
+          console.warn("Worker proxy getProfile notice for " + provider + ":", workerErr);
+          return { success: false, data: { money: 0 }, provider: provider };
         }
       }
 
@@ -16848,7 +16840,7 @@ function syncAllOpenViewsStock(changedProdId) {
         const target = baseUrl.replace(/\/+$/, "") + "/api/products.php?api_key=" + encodeURIComponent(apiKey);
         try {
           // proxy lockout disabled
-          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(15000) });
+          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(6000) });
           if (!resp.ok) {
             // rate limit handled without 10m lockout
             throw new Error("Proxy status " + resp.status);
@@ -16861,8 +16853,8 @@ function syncAllOpenViewsStock(changedProdId) {
             raw: json
           };
         } catch(workerErr) {
-          console.warn("Worker proxy error, fallback to GAS:", workerErr);
-          return await callGasApi("apiSourceGetProducts", { ...payload });
+          console.warn("Worker proxy getProducts notice for " + provider + ":", workerErr);
+          return { success: false, categories: [], provider: provider };
         }
       }
 
@@ -17090,20 +17082,15 @@ function syncAllOpenViewsStock(changedProdId) {
     window.fetchBothSourceBalances = fetchBothSourceBalances;
     window.fetchApiSourceProfile = fetchBothSourceBalances;
 
-    // Chỉ làm mới số dư nguồn khi tải trang và khi người dùng đang ở giao diện Quản Trị
-    setTimeout(function() {
-      if (typeof isAdminUser === "function" && isAdminUser()) {
-        fetchBothSourceBalances(false);
-      }
-    }, 2000);
-    setInterval(function() {
-      if (typeof isAdminUser === "function" && isAdminUser() && !document.hidden) {
-        const curView = typeof currentView !== "undefined" ? currentView : (localStorage.getItem("mmo_current_view") || "");
-        if (curView === "viewAdmin") {
-          fetchBothSourceBalances(false);
-        }
-      }
-    }, 45000);
+    // Đồng bộ số dư nguồn an toàn theo nhu cầu (không gửi request liên tục làm quay spinner trình duyệt)
+    var _lastFetchBothBalancesTime = 0;
+    async function safeFetchBothSourceBalancesOnDemand(isManual = false) {
+      const now = Date.now();
+      if (!isManual && (now - _lastFetchBothBalancesTime < 600000)) return;
+      _lastFetchBothBalancesTime = now;
+      await fetchBothSourceBalances(isManual);
+    }
+    window.safeFetchBothSourceBalancesOnDemand = safeFetchBothSourceBalancesOnDemand;
 
     function renderSourceBalanceWarning() {
       const box = document.getElementById("apiSourceBalanceWarningBox");
@@ -17440,15 +17427,16 @@ function syncAllOpenViewsStock(changedProdId) {
                     currentSelectedProduct.variants.forEach(v => { if (v) v.stock = 0; });
                   }
                 }
+                const activeTargetStock = Number(curMap.sourceStock) || 0;
                 if (typeof syncDetailStockUI === "function") {
-                  syncDetailStockUI(targetStock);
+                  syncDetailStockUI(activeTargetStock);
                 }
                 const pillsContainer = document.getElementById("dtlVariantPills");
                 if (pillsContainer && Array.isArray(currentSelectedProduct.variants) && currentSelectedProduct.variants.length > 0) {
                   const cIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
                   pillsContainer.innerHTML = currentSelectedProduct.variants.map((v, idx) => {
-                    const stockBadge = targetStock > 0
-                      ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(targetStock).toLocaleString("vi-VN") + ' acc)</small>'
+                    const stockBadge = activeTargetStock > 0
+                      ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(activeTargetStock).toLocaleString("vi-VN") + ' acc)</small>'
                       : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                     return '<div class="variant-pill-option ' + (idx === cIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
                       '<span>' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
@@ -21354,11 +21342,10 @@ function syncAllOpenViewsStock(changedProdId) {
           currentView.value = accounts.join("\n");
         }
       }
+      const vSelectEl = document.getElementById("admStockVariantSelect");
+      const vValCur = vSelectEl ? vSelectEl.value : "0";
       if (typeof renderSoldStockAccountsView === "function") {
-        renderSoldStockAccountsView(prodId, vVal);
-      }
-      if (typeof renderSoldStockAccountsView === "function") {
-        renderSoldStockAccountsView(prodId, vVal);
+        renderSoldStockAccountsView(prodId, vValCur);
       }
 
       if (count > 0) {
@@ -33005,25 +32992,44 @@ function changeAdmUsersPage(p) {
     window.broadcastPreOrderEvent = broadcastPreOrderEvent;
 
     var _preOrdersRealtimeSSE = null;
+    var _preOrdersSSEInitStarted = false;
     function initPreOrdersRealtimeSSE() {
-      try {
-        if (typeof window === "undefined" || typeof EventSource === "undefined") return;
-        if (_preOrdersRealtimeSSE) {
-          _preOrdersRealtimeSSE.close();
-        }
-        _preOrdersRealtimeSSE = new EventSource("https://ntfy.sh/mmo_preorders_realtime_stream/sse");
-        _preOrdersRealtimeSSE.onmessage = function(ev) {
-          try {
-            const data = JSON.parse(ev.data);
-            if (data && data.event === "message" && data.message) {
-              const incoming = JSON.parse(data.message);
-              handlePreOrdersBroadcastMessage(incoming);
-            } else if (data && data.type) {
-              handlePreOrdersBroadcastMessage(data);
+      if (_preOrdersSSEInitStarted) return;
+      _preOrdersSSEInitStarted = true;
+      const startSSE = function() {
+        try {
+          if (typeof window === "undefined" || typeof EventSource === "undefined") return;
+          if (_preOrdersRealtimeSSE) {
+            _preOrdersRealtimeSSE.close();
+          }
+          _preOrdersRealtimeSSE = new EventSource("https://ntfy.sh/mmo_preorders_realtime_stream/sse");
+          _preOrdersRealtimeSSE.onmessage = function(ev) {
+            try {
+              const data = JSON.parse(ev.data);
+              if (data && data.event === "message" && data.message) {
+                const incoming = JSON.parse(data.message);
+                handlePreOrdersBroadcastMessage(incoming);
+              } else if (data && data.type) {
+                handlePreOrdersBroadcastMessage(data);
+              }
+            } catch(err) {}
+          };
+          _preOrdersRealtimeSSE.onerror = function() {
+            if (_preOrdersRealtimeSSE) {
+              _preOrdersRealtimeSSE.close();
+              _preOrdersRealtimeSSE = null;
             }
-          } catch(err) {}
-        };
-      } catch(e) {}
+          };
+        } catch(e) {}
+      };
+
+      if (document.readyState === "complete") {
+        setTimeout(startSSE, 3500);
+      } else {
+        window.addEventListener("load", function() {
+          setTimeout(startSSE, 3500);
+        });
+      }
     }
     window.initPreOrdersRealtimeSSE = initPreOrdersRealtimeSSE;
 
@@ -33511,7 +33517,7 @@ function changeAdmUsersPage(p) {
               syncWithdrawRequestsFromCloud();
             }
           }
-        }, 15000);
+        }, 45000);
       }
       if (typeof syncWithdrawRequestsFromCloud === "function") {
         syncWithdrawRequestsFromCloud();
@@ -33525,16 +33531,11 @@ function changeAdmUsersPage(p) {
           }).catch(e => console.error("Turso init sync error:", e));
         }, 150);
       }
-      // Tự động tải sản phẩm mới nhất từ máy chủ để mọi người xem được ngay
+      // Tự động tải cài đặt admin và ticker
       const _urlHasProd = window.location.search && (window.location.search.includes("prod=") || window.location.search.includes("product=") || window.location.search.includes("view=viewProductDetail"));
       setTimeout(function() {
         if (typeof syncAdminEmailsFromCloud === "function") {
           syncAdminEmailsFromCloud();
-        }
-        if (typeof isAdminUser === "function" && isAdminUser()) {
-          if (typeof fetchApiSourceProducts === "function") {
-            fetchApiSourceProducts(false).catch(function() {});
-          }
         }
       }, _urlHasProd ? 300 : 1800);
 
