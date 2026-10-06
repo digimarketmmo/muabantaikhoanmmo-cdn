@@ -2,16 +2,41 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.1.3";
+const MMO_CURRENT_CODE_VERSION = "4.1.4";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
-// BULLETPROOF SAFE LOCALSTORAGE & AUTO-PRUNING ENGINE (v4.1.1)
+// BULLETPROOF SAFE LOCALSTORAGE & AUTO-PRUNING ENGINE (v4.1.4)
 // Tự động bảo vệ & dọn dẹp bộ nhớ, loại bỏ triệt để lỗi QuotaExceededError
 // =========================================================================
 function healStorageQuota(forceEmergency) {
   try {
     if (typeof localStorage === "undefined") return;
+
+    // [BƯỚC 0 - SIÊU TỐC 0MS]: Luôn dọn dẹp ảnh base64 khổng lồ trong mmo_admin_products / mmo_products ngay lập tức
+    ["mmo_admin_products", "mmo_products"].forEach(function(key) {
+      try {
+        const raw = localStorage.getItem(key);
+        if (raw && raw.includes("data:image/")) {
+          const prods = JSON.parse(raw);
+          if (Array.isArray(prods)) {
+            prods.forEach(function(p) {
+              if (p && p.image && p.image.startsWith("data:image/")) {
+                p.image = (typeof resolveProductImage === "function") ? resolveProductImage({ id: p.id, name: p.name, category: p.category, image: "" }) : "https://iili.io/nFV4Rln.png";
+              }
+              if (p && p.image_url && p.image_url.startsWith("data:image/")) {
+                p.image_url = p.image;
+              }
+              if (p && p.imageUrl && p.imageUrl.startsWith("data:image/")) {
+                p.imageUrl = p.image;
+              }
+            });
+            localStorage.setItem(key, JSON.stringify(prods));
+          }
+        }
+      } catch(e) {}
+    });
+
     let totalChars = 0;
     for (let i = 0; i < localStorage.length; i++) {
       const k = localStorage.key(i);
@@ -44,27 +69,6 @@ function healStorageQuota(forceEmergency) {
           const arr = JSON.parse(raw);
           if (Array.isArray(arr) && arr.length > 100) {
             localStorage.setItem(key, JSON.stringify(arr.slice(0, 100)));
-          }
-        }
-      } catch(e) {}
-    });
-
-    // 4. Dọn dẹp ảnh base64 khổng lồ trong mmo_admin_products / mmo_products (nếu có)
-    ["mmo_admin_products", "mmo_products"].forEach(function(key) {
-      try {
-        const raw = localStorage.getItem(key);
-        if (raw && raw.includes("data:image/")) {
-          const prods = JSON.parse(raw);
-          if (Array.isArray(prods)) {
-            prods.forEach(function(p) {
-              if (p && p.image && p.image.startsWith("data:image/")) {
-                p.image = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/chatgpt_plus.png";
-              }
-              if (p && p.image_url && p.image_url.startsWith("data:image/")) {
-                p.image_url = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/chatgpt_plus.png";
-              }
-            });
-            localStorage.setItem(key, JSON.stringify(prods));
           }
         }
       } catch(e) {}
@@ -9117,8 +9121,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       setTimeout(function() {
         try {
           if (MOCK_DATA && MOCK_DATA.products) {
-            // [BẢO TỒN 100% ẢNH SẢN PHẨM]: Tuyệt đối không cắt lát base64 làm hỏng ảnh
-            const prodsJson = JSON.stringify(MOCK_DATA.products);
+            // [TỐI ƯU SIÊU TỐC 0MS]: Chuẩn hóa ảnh base64 sang CDN để dung lượng lưu trữ chỉ ~160KB thay vì 2.5MB làm tràn Quota gây đơ web 10s
+            const leanProds = MOCK_DATA.products.map(function(p) {
+              const cp = Object.assign({}, p);
+              if (cp.image && cp.image.startsWith("data:image/")) {
+                cp.image = (typeof resolveProductImage === "function") ? resolveProductImage({ id: cp.id, name: cp.name, category: cp.category, image: "" }) : "https://iili.io/nFV4Rln.png";
+              }
+              if (cp.image_url && cp.image_url.startsWith("data:image/")) {
+                cp.image_url = cp.image;
+              }
+              if (cp.imageUrl && cp.imageUrl.startsWith("data:image/")) {
+                cp.imageUrl = cp.image;
+              }
+              return cp;
+            });
+            const prodsJson = JSON.stringify(leanProds);
             localStorage.setItem("mmo_admin_products", prodsJson);
             localStorage.setItem("mmo_products", prodsJson);
           }
@@ -14946,10 +14963,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 }
               }
               const isImgValid = function(val) {
-                return typeof val === "string" && val.trim() !== "" && !val.includes("placeholder") && !val.includes("unsplash") && !val.includes("undefined") && !val.includes("null");
+                return typeof val === "string" && val.trim() !== "" && !val.startsWith("data:image/") && !val.includes("placeholder") && !val.includes("unsplash") && !val.includes("undefined") && !val.includes("null");
               };
               const localCustomImg = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + cur.id) : null;
-              const targetImage = (localCustomImg && localCustomImg.trim()) ? localCustomImg.trim() : (isImgValid(img) ? img.trim() : (isImgValid(cur.image) ? cur.image.trim() : (typeof resolveProductImage === "function" ? resolveProductImage(cur) : (cur.image || "https://iili.io/nFV4Rln.png"))));
+              const targetImage = (localCustomImg && localCustomImg.trim()) ? localCustomImg.trim() : (isImgValid(img) ? img.trim() : (isImgValid(cur.image) ? cur.image.trim() : (typeof resolveProductImage === "function" ? resolveProductImage({ id: cur.id, name: cur.name, category: cur.category, image: "" }) : (cur.image || "https://iili.io/nFV4Rln.png"))));
 
               const localCustomDesc = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + cur.id) : null;
               const targetDesc = (localCustomDesc && localCustomDesc.trim()) ? localCustomDesc.trim() : (tp.description || cur.description || "");
@@ -14988,10 +15005,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               } catch(eMapSync) {}
             }
             const isImgValidNew = function(val) {
-              return typeof val === "string" && val.trim() !== "" && !val.includes("placeholder") && !val.includes("unsplash") && !val.includes("undefined") && !val.includes("null");
+              return typeof val === "string" && val.trim() !== "" && !val.startsWith("data:image/") && !val.includes("placeholder") && !val.includes("unsplash") && !val.includes("undefined") && !val.includes("null");
             };
             const localCustomImgNew = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + tp.id) : null;
-            const targetImageNew = (localCustomImgNew && localCustomImgNew.trim()) ? localCustomImgNew.trim() : (isImgValidNew(img) ? img.trim() : (typeof resolveProductImage === "function" ? resolveProductImage({ id: tp.id, name: tp.name, category: tp.category }) : "https://iili.io/nFV4Rln.png"));
+            const targetImageNew = (localCustomImgNew && localCustomImgNew.trim()) ? localCustomImgNew.trim() : (isImgValidNew(img) ? img.trim() : (typeof resolveProductImage === "function" ? resolveProductImage({ id: tp.id, name: tp.name, category: tp.category, image: "" }) : "https://iili.io/nFV4Rln.png"));
             const localCustomDescNew = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + tp.id) : null;
             const targetDescNew = (localCustomDescNew && localCustomDescNew.trim()) ? localCustomDescNew.trim() : (tp.description || "");
 
