@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.1.4";
+const MMO_CURRENT_CODE_VERSION = "4.1.5";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -13277,6 +13277,47 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.filterCategory = filterCategory;
     window.switchCategory = filterCategory;
+    window._mmoFilterCategoryReal = filterCategory;
+
+    // SMART CATEGORY MATCHER (Tối ưu phản hồi tức thì 0ms, loại bỏ hoàn toàn lỗi màn hình trắng/0 sản phẩm khi bấm tab)
+    function matchProductCategory(p, catName) {
+      if (!catName || catName === "Tất cả") return true;
+      if (!p) return false;
+      const target = String(catName).toLowerCase().trim();
+      const pCat = String(p.category || "").toLowerCase().trim();
+      const pName = String(p.name || "").toLowerCase().trim();
+
+      if (target === pCat) return true;
+      if (target.includes("rom") || target.includes("phone farm")) {
+        return pCat.includes("phone farm") || pCat.includes("rom") || pName.includes("rom") || pName.includes("phone farm");
+      }
+      if (target.includes("vpn") || target.includes("proxy")) {
+        return pCat.includes("vpn") || pCat.includes("proxy") || pName.includes("proxy") || pName.includes("vpn");
+      }
+      if (target.includes("chatgpt") || target.includes("ai")) {
+        return pCat.includes("chatgpt") || pCat.includes("ai") || pName.includes("chatgpt") || pName.includes("gpt") || pName.includes("kling") || pName.includes("gemini");
+      }
+      if (target.includes("hot mail") || target.includes("hotmail") || target.includes("outlook")) {
+        return pCat.includes("hot mail") || pCat.includes("hotmail") || pName.includes("hotmail") || pName.includes("outlook");
+      }
+      if (target.includes("gmail")) {
+        return pCat.includes("gmail") || pName.includes("gmail");
+      }
+      if (target.includes("tiktok")) {
+        return pCat.includes("tiktok") || pName.includes("tiktok");
+      }
+      if (target.includes("facebook")) {
+        return pCat.includes("facebook") || pName.includes("facebook");
+      }
+      if (target.includes("capcut")) {
+        return pCat.includes("capcut") || pName.includes("capcut");
+      }
+      if (target.includes("canva")) {
+        return pCat.includes("canva") || pName.includes("canva");
+      }
+      return pCat.includes(target) || target.includes(pCat);
+    }
+    window.matchProductCategory = matchProductCategory;
 
     // SMART SEARCH & ACCENT-INSENSITIVE PRODUCT MATCHER
     function matchProductQuery(p, q) {
@@ -13338,7 +13379,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       let filtered = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? [...MOCK_DATA.products] : []);
       if (currentCategory && currentCategory !== "Tất cả") {
-        filtered = filtered.filter(function(p) { return (p.category || "").toLowerCase().includes(currentCategory.toLowerCase()); });
+        filtered = filtered.filter(function(p) { return matchProductCategory(p, currentCategory); });
       }
 
       const q = (document.getElementById("searchInput")?.value || "").trim();
@@ -15051,14 +15092,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (hasNewOrUpdated || isBListEmpty || isRGridEmpty || !window._mmoInitialSyncRenderDone) {
           window._mmoInitialSyncRenderDone = true;
           saveProductsToStorage();
-          if (typeof renderCategories === "function") renderCategories();
-          if (typeof renderProductGrid === "function") renderProductGrid();
-          if (typeof renderBestSellers === "function") renderBestSellers();
-          if (typeof renderRecommended === "function") renderRecommended();
-          if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
-          if (typeof renderAllProductsPage === "function") renderAllProductsPage();
-          if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-          if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+          const curActiveView = (typeof localStorage !== "undefined" && localStorage.getItem("mmo_current_view")) || "viewStore";
+          if (curActiveView === "viewStore") {
+            if (typeof renderCategories === "function") renderCategories();
+            if (typeof renderProductGrid === "function") renderProductGrid();
+            if (typeof renderBestSellers === "function") renderBestSellers();
+            if (typeof renderRecommended === "function") renderRecommended();
+            if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
+          } else if (curActiveView === "viewAllProducts") {
+            if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+          } else if (curActiveView === "viewAdmin") {
+            if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+            if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+          } else {
+            if (typeof renderCategories === "function") renderCategories();
+            if (typeof renderProductGrid === "function") renderProductGrid();
+          }
           if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
             const freshCur = MOCK_DATA.products.find(p => p && p.id === currentSelectedProduct.id);
             if (freshCur) {
@@ -33384,8 +33433,10 @@ function changeAdmUsersPage(p) {
         if (typeof syncAdminEmailsFromCloud === "function") {
           syncAdminEmailsFromCloud();
         }
-        if (typeof fetchApiSourceProducts === "function") {
-          fetchApiSourceProducts(false).catch(function() {});
+        if (typeof isAdminUser === "function" && isAdminUser()) {
+          if (typeof fetchApiSourceProducts === "function") {
+            fetchApiSourceProducts(false).catch(function() {});
+          }
         }
       }, _urlHasProd ? 300 : 1800);
 
@@ -33396,7 +33447,7 @@ function changeAdmUsersPage(p) {
         const savedView = localStorage.getItem("mmo_current_view");
         const urlParams = new URLSearchParams(window.location.search);
         const qSearchParam = urlParams.get("q");
-        const explicitProdId = urlParams.get("prod") || urlParams.get("product") || ((qSearchParam && (qSearchParam.includes("PROD_") || qSearchParam.includes("SP_"))) ? qSearchParam.trim() : null) || (hash.startsWith("product_") ? hash.replace("product_", "").split("?")[0] : null);
+        let explicitProdId = urlParams.get("prod") || urlParams.get("product") || ((qSearchParam && (qSearchParam.includes("PROD_") || qSearchParam.includes("SP_"))) ? qSearchParam.trim() : null) || (hash.startsWith("product_") ? hash.replace("product_", "").split("?")[0] : null);
         const hasProdParam = !!explicitProdId;
         const hasBlogParam = !!(urlParams.get("post") || urlParams.get("blog"));
         const curPath = (window.location.pathname || "").toLowerCase();
@@ -33424,8 +33475,21 @@ function changeAdmUsersPage(p) {
         } else {
           targetView = "viewStore";
         }
-        if (catParam && typeof filterCategory === "function") {
+        if (window._pendingCategory && typeof filterCategory === "function") {
+          const pendCat = window._pendingCategory;
+          window._pendingCategory = null;
+          filterCategory(pendCat);
+        } else if (catParam && typeof filterCategory === "function") {
           setTimeout(function() { filterCategory(catParam); }, 80);
+        }
+        if (window._pendingProductId && typeof openProductDetailById === "function") {
+          const pendProd = window._pendingProductId;
+          window._pendingProductId = null;
+          targetView = "viewProductDetail";
+          explicitProdId = pendProd;
+        } else if (window._pendingView && window._pendingView !== "viewStore") {
+          targetView = window._pendingView;
+          window._pendingView = null;
         }
 
         if (targetView === "viewBlogDetail") {
@@ -33538,6 +33602,7 @@ function changeAdmUsersPage(p) {
     
 
     window.openProductDetailById = openProductDetailById;
+    window._mmoOpenProductDetailReal = openProductDetailById;
 
     window.selectVariant = selectVariant;
 
@@ -33553,6 +33618,7 @@ function changeAdmUsersPage(p) {
     window.prepareDeposit = prepareDeposit;
 
     window.switchView = switchView;
+    window._mmoSwitchViewReal = switchView;
 
     function renderSitemapView() {
       const container = document.getElementById("sitemapProductList");
@@ -34054,7 +34120,7 @@ function getProductSchemaReviews(p, idx) {
         let catHtml = '';
         cats.forEach(function(cat) {
           const isAll = (cat === "Tất cả");
-          const count = isAll ? allProds.length : allProds.filter(function(p) { return (p.category || "").toLowerCase() === cat.toLowerCase(); }).length;
+          const count = isAll ? allProds.length : allProds.filter(function(p) { return matchProductCategory(p, cat); }).length;
           const isActive = (allProdCurrentCat === cat);
 
           const activeStyle = isActive 
@@ -34086,7 +34152,7 @@ function getProductSchemaReviews(p, idx) {
       }
 
       if (allProdCurrentCat && allProdCurrentCat !== "Tất cả") {
-        list = list.filter(function(p) { return (p.category || "").toLowerCase().includes(allProdCurrentCat.toLowerCase()); });
+        list = list.filter(function(p) { return matchProductCategory(p, allProdCurrentCat); });
       }
 
       const minP = parseFloat(document.getElementById("allProdPriceMin")?.value) || 0;
