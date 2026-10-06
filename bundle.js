@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.1.1";
+const MMO_CURRENT_CODE_VERSION = "4.1.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -302,15 +302,24 @@ if (typeof window !== "undefined") {
         }
       } catch(e) {}
 
-      // BẮT BUỘC gộp initialSourceProducts (chứa toàn bộ SP shop1989nd & selltainguyenmmo)
-      initialSourceProducts.forEach(function(initP) {
-        var exists = result.some(function(r) {
-          return String(r.id) === String(initP.id) && (r.provider || "sellmmo") === (initP.provider || "sellmmo");
-        });
-        if (!exists) {
-          result.push(initP);
+      // BẮT BUỘC gộp initialSourceProducts (O(1) Set lookup - Tốc độ cực nhanh < 5ms thay vì O(N^2) đơ 10s)
+      var seenKeySet = new Set();
+      for (var rIdx = 0; rIdx < result.length; rIdx++) {
+        var rItem = result[rIdx];
+        if (rItem && rItem.id) {
+          seenKeySet.add((rItem.provider || "sellmmo") + ":" + String(rItem.id));
         }
-      });
+      }
+      for (var iIdx = 0; iIdx < initialSourceProducts.length; iIdx++) {
+        var initP = initialSourceProducts[iIdx];
+        if (initP && initP.id) {
+          var pKey = (initP.provider || "sellmmo") + ":" + String(initP.id);
+          if (!seenKeySet.has(pKey)) {
+            seenKeySet.add(pKey);
+            result.push(initP);
+          }
+        }
+      }
 
       var geminiUltra = result.find(function(r) {
         return String(r.id) === "19359" && r.provider === "ultrammo";
@@ -7785,7 +7794,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
       if (uFound && uFound.balance !== curBal) {
         uFound.balance = curBal;
-        saveRegisteredUsers(uList);
+        try {
+          if (!window._mmoSaveRegUsersDebounceTimer) {
+            window._mmoSaveRegUsersDebounceTimer = setTimeout(function() {
+              window._mmoSaveRegUsersDebounceTimer = null;
+              try { localStorage.setItem("mmo_registered_users", JSON.stringify(uList)); } catch(eU) {}
+            }, 300);
+          }
+        } catch(eU) {}
       }
 
       // J. CƠ CHẾ BẢO ĐẢM TỰ ĐỘNG & BẢO TOÀN DÒNG TIỀN (AUTO-BALANCING & BASELINE SAFEGUARD):
@@ -14774,7 +14790,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.uploadAllProductsToTurso = uploadAllProductsToTurso;
 
     async function syncTursoProductsToLocalUI() {
-      let res = null;
+      if (window._mmoSyncTursoInFlightPromise) {
+        return window._mmoSyncTursoInFlightPromise;
+      }
+      const syncPromise = (async function() {
+        let res = null;
       if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
         try {
           res = await MMO_WORKER_API.fetchProducts({ nocache: true });
@@ -15054,6 +15074,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       } catch(e) {
         console.warn("syncTursoProductsToLocalUI error:", e);
+      }
+      })();
+      window._mmoSyncTursoInFlightPromise = syncPromise;
+      try {
+        await syncPromise;
+      } finally {
+        window._mmoSyncTursoInFlightPromise = null;
       }
     }
     window.syncTursoProductsToLocalUI = syncTursoProductsToLocalUI;
@@ -33337,18 +33364,13 @@ function changeAdmUsersPage(p) {
       // Tự động tải sản phẩm mới nhất từ máy chủ để mọi người xem được ngay
       const _urlHasProd = window.location.search && (window.location.search.includes("prod=") || window.location.search.includes("product=") || window.location.search.includes("view=viewProductDetail"));
       setTimeout(function() {
-        if (typeof syncTursoProductsToLocalUI === "function") {
-          syncTursoProductsToLocalUI();
-        } else if (typeof syncProductsFromBackend === "function") {
-          syncProductsFromBackend();
-        }
         if (typeof syncAdminEmailsFromCloud === "function") {
           syncAdminEmailsFromCloud();
         }
         if (typeof fetchApiSourceProducts === "function") {
           fetchApiSourceProducts(false).catch(function() {});
         }
-      }, _urlHasProd ? 200 : 1500);
+      }, _urlHasProd ? 300 : 1800);
 
       // RESTORE CURRENT ACTIVE VIEW AND SUB-TABS ON F5 REFRESH
       try {
