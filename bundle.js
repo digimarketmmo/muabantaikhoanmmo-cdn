@@ -14928,7 +14928,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           const existingIdx = MOCK_DATA.products.findIndex(p => p && p.id === tp.id);
           if (existingIdx !== -1) {
             const cur = MOCK_DATA.products[existingIdx];
-            const isLocallyFresh = !!(cur._lastEditedAt && (Date.now() - cur._lastEditedAt < 900000));
+            const isLocallyFresh = !!(cur._lastEditedAt && (Date.now() - cur._lastEditedAt < 5000));
             if (!isLocallyFresh) {
               const isApiType = (tp.delivery_type === 'api' || tp.deliveryType === 'api' || cur.deliveryType === 'api' || cur.delivery_type === 'api' || (typeof isProductApi === 'function' && (isProductApi(cur) || isProductApi(tp))));
               let updatedStock = cur.stock;
@@ -15032,15 +15032,43 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 }
               }
               const isImgValid = function(val) {
-                return typeof val === "string" && val.trim() !== "" && !val.startsWith("data:image/") && !val.includes("placeholder") && !val.includes("unsplash") && !val.includes("undefined") && !val.includes("null");
+                return typeof val === "string" && val.trim() !== "" && !val.includes("placeholder") && !val.includes("unsplash") && !val.includes("undefined") && !val.includes("null");
               };
+              let resolvedWorkerImg = "";
+              if (typeof img === "string" && img.trim() !== "") {
+                const tImg = img.trim();
+                if (tImg.startsWith("data:image/") || tImg.startsWith("data:")) {
+                  resolvedWorkerImg = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(cur.id) + "/image";
+                } else if (tImg.startsWith("http://") || tImg.startsWith("https://")) {
+                  resolvedWorkerImg = tImg;
+                }
+              }
+
               const localCustomImg = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + cur.id) : null;
-              const targetImage = (localCustomImg && localCustomImg.trim()) ? localCustomImg.trim() : (isImgValid(img) ? img.trim() : (isImgValid(cur.image) ? cur.image.trim() : (typeof resolveProductImage === "function" ? resolveProductImage({ id: cur.id, name: cur.name, category: cur.category, image: "" }) : (cur.image || "https://iili.io/nFV4Rln.png"))));
+              const targetImage = (localCustomImg && localCustomImg.trim()) 
+                ? localCustomImg.trim() 
+                : (resolvedWorkerImg 
+                  ? resolvedWorkerImg 
+                  : (isImgValid(cur.image) && !cur.image.startsWith("data:") 
+                    ? cur.image.trim() 
+                    : (typeof resolveProductImage === "function" 
+                      ? resolveProductImage({ id: cur.id, name: tp.name || cur.name, category: tp.category || cur.category, image: "" }) 
+                      : (cur.image || "https://iili.io/nFV4Rln.png"))));
 
               const localCustomDesc = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + cur.id) : null;
-              const targetDesc = (localCustomDesc && localCustomDesc.trim()) ? localCustomDesc.trim() : (tp.description || cur.description || "");
+              const targetDesc = (localCustomDesc && localCustomDesc.trim()) 
+                ? localCustomDesc.trim() 
+                : ((typeof tp.description === "string" && tp.description.trim() !== "") 
+                  ? tp.description.trim() 
+                  : (cur.description || ""));
 
-              if (cur.stock !== updatedStock || cur.price !== updatedPrice || cur.name !== tp.name || cur.image !== targetImage || cur.description !== targetDesc) {
+              let varsChanged = false;
+              try {
+                varsChanged = JSON.stringify((cur.variants || []).map(v => ({ n: v.name, p: v.price }))) !==
+                              JSON.stringify((variants || []).map(v => ({ n: v.name, p: v.price })));
+              } catch(eVar) {}
+
+              if (cur.stock !== updatedStock || cur.price !== updatedPrice || cur.name !== tp.name || cur.category !== (tp.category || cur.category) || cur.image !== targetImage || cur.description !== targetDesc || cur.warranty !== (tp.warranty || cur.warranty) || varsChanged) {
                 hasNewOrUpdated = true;
               }
               MOCK_DATA.products[existingIdx] = Object.assign({}, cur, {
@@ -15053,6 +15081,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 apiMapping: effectiveMapping,
                 image: targetImage,
                 image_url: targetImage,
+                imageUrl: targetImage,
                 description: targetDesc,
                 warranty: tp.warranty || cur.warranty,
                 variants: (variants && variants.length > 0) ? variants : cur.variants
@@ -15073,11 +15102,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 localStorage.setItem("mmo_api_map_" + tp.id, JSON.stringify(newMapping));
               } catch(eMapSync) {}
             }
-            const isImgValidNew = function(val) {
-              return typeof val === "string" && val.trim() !== "" && !val.startsWith("data:image/") && !val.includes("placeholder") && !val.includes("unsplash") && !val.includes("undefined") && !val.includes("null");
-            };
+            let resolvedWorkerImgNew = "";
+            if (typeof img === "string" && img.trim() !== "") {
+              const tImg = img.trim();
+              if (tImg.startsWith("data:image/") || tImg.startsWith("data:")) {
+                resolvedWorkerImgNew = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(tp.id) + "/image";
+              } else if (tImg.startsWith("http://") || tImg.startsWith("https://")) {
+                resolvedWorkerImgNew = tImg;
+              }
+            }
             const localCustomImgNew = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + tp.id) : null;
-            const targetImageNew = (localCustomImgNew && localCustomImgNew.trim()) ? localCustomImgNew.trim() : (isImgValidNew(img) ? img.trim() : (typeof resolveProductImage === "function" ? resolveProductImage({ id: tp.id, name: tp.name, category: tp.category, image: "" }) : "https://iili.io/nFV4Rln.png"));
+            const targetImageNew = (localCustomImgNew && localCustomImgNew.trim()) 
+              ? localCustomImgNew.trim() 
+              : (resolvedWorkerImgNew 
+                ? resolvedWorkerImgNew 
+                : (typeof resolveProductImage === "function" 
+                  ? resolveProductImage({ id: tp.id, name: tp.name, category: tp.category, image: "" }) 
+                  : "https://iili.io/nFV4Rln.png"));
             const localCustomDescNew = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + tp.id) : null;
             const targetDescNew = (localCustomDescNew && localCustomDescNew.trim()) ? localCustomDescNew.trim() : (tp.description || "");
 
@@ -15132,6 +15173,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           } else if (curActiveView === "viewAdmin") {
             if (typeof renderAdminDashboard === "function") renderAdminDashboard();
             if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+          } else if (curActiveView === "viewProductDetail") {
+            if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && typeof openProductDetailById === "function") {
+              openProductDetailById(currentSelectedProduct.id, true);
+            }
           } else {
             if (typeof renderCategories === "function") renderCategories();
             if (typeof renderProductGrid === "function") renderProductGrid();
@@ -15140,28 +15185,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const freshCur = MOCK_DATA.products.find(p => p && p.id === currentSelectedProduct.id);
             if (freshCur) {
               currentSelectedProduct = freshCur;
-              const dtlImg = document.getElementById("dtlImage");
-              if (dtlImg && freshCur.image) dtlImg.src = (typeof resolveProductImage === "function") ? resolveProductImage(freshCur) : freshCur.image;
-              if (typeof renderDetailRelatedProducts === "function") renderDetailRelatedProducts(freshCur);
-              if (typeof syncDetailStockUI === "function") {
-                const curVIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
-                const vStk = (typeof getShopVariantStock === "function") ? getShopVariantStock(freshCur, curVIdx) : (freshCur.stock || 0);
-                syncDetailStockUI(vStk);
-              }
-              const pillsContainer = document.getElementById("dtlVariantPills");
-              if (pillsContainer && Array.isArray(freshCur.variants) && freshCur.variants.length > 0) {
-                const curVIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
-                pillsContainer.innerHTML = freshCur.variants.map((v, idx) => {
-                  let vStock = (v && typeof v.stock === "number" && v.stock > 0) ? v.stock : ((typeof getShopVariantStock === "function") ? getShopVariantStock(freshCur, idx) : (freshCur.stock || 0));
-                  v.stock = vStock;
-                  const stockBadge = vStock > 0
-                    ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
-                    : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-                  return '<div class="variant-pill-option ' + (idx === curVIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                    '<span>' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
-                    '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
-                  '</div>';
-                }).join("");
+              if (typeof openProductDetailById === "function") {
+                openProductDetailById(freshCur.id, true);
               }
             }
           }
@@ -15927,7 +15952,10 @@ function syncAllOpenViewsStock(changedProdId) {
               if (dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden")) {
                 if (typeof openProductDetailById === "function") openProductDetailById(updId);
               }
-            }
+            if (typeof renderProductGrid === "function") renderProductGrid();
+            if (typeof renderBestSellers === "function") renderBestSellers();
+            if (typeof renderRecommended === "function") renderRecommended();
+            if (typeof renderAllProductsPage === "function") renderAllProductsPage();
             if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(updId, ev.data.stock, null, true);
           }
           if (ev.data && (ev.data.type === "STOCK_UPDATE" || ev.data.type === "STOCK_UPDATED")) {
@@ -25492,27 +25520,123 @@ function syncAllOpenViewsStock(changedProdId) {
         if (typeof renderRelatedProductsSeo === "function") renderRelatedProductsSeo(p);
         if (typeof injectAllProductsSchema === "function") injectAllProductsSchema();
 
-        // Nạp tồn kho live & ảnh mới ngầm từ Turso Cloud Worker
+        // Nạp đầy đủ thông tin sản phẩm mới nhất & ảnh mới ngầm từ Turso Cloud Worker
         if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
-          MMO_WORKER_API.fetchProduct(p.id).then(res => {
+          MMO_WORKER_API.fetchProduct(p.id, { nocache: true }).then(res => {
             if (res && res.success && res.product) {
               const wp = res.product;
-              if (typeof wp.stock === "number") p.stock = Number(wp.stock);
-              if (Array.isArray(wp.variants) && wp.variants.length > 0 && Array.isArray(p.variants)) {
-                wp.variants.forEach((av, idx) => {
-                  if (p.variants[idx] && typeof av.stock === "number") {
-                    p.variants[idx].stock = Number(av.stock);
+              let isUpdated = false;
+
+              // 1. Cập nhật tên sản phẩm
+              if (wp.name && wp.name !== p.name) {
+                p.name = wp.name;
+                isUpdated = true;
+                const dtlTitle = document.getElementById("dtlTitle");
+                if (dtlTitle) dtlTitle.innerText = wp.name;
+              }
+
+              // 2. Cập nhật danh mục
+              if (wp.category && wp.category !== p.category) {
+                p.category = wp.category;
+                isUpdated = true;
+                const dtlCat = document.getElementById("dtlCategory");
+                if (dtlCat) dtlCat.innerText = (wp.category || "").replace(/&amp;/g, '&');
+              }
+
+              // 3. Cập nhật bảo hành
+              if (wp.warranty && wp.warranty !== p.warranty) {
+                p.warranty = wp.warranty;
+                isUpdated = true;
+                const dtlWar = document.getElementById("dtlWarranty");
+                if (dtlWar) dtlWar.innerText = "🛡 " + wp.warranty;
+                const dtlNot = document.getElementById("dtlWarrantyNotice");
+                if (dtlNot) dtlNot.innerText = "Chính sách bảo hành: " + wp.warranty + ". Vui lòng kiểm tra kỹ thông tin trước khi mua.";
+              }
+
+              // 4. Cập nhật mô tả
+              const wpDesc = (typeof wp.description === "string") ? wp.description.trim() : "";
+              const curDesc = (typeof p.description === "string") ? p.description.trim() : "";
+              if (wpDesc && wpDesc !== curDesc) {
+                p.description = wpDesc;
+                isUpdated = true;
+                const dtlFullDesc = document.getElementById("dtlFullDesc");
+                if (dtlFullDesc) dtlFullDesc.innerText = wpDesc;
+              }
+
+              // 5. Cập nhật biến thể & giá
+              let wpVars = [];
+              if (Array.isArray(wp.variants)) wpVars = wp.variants;
+              else if (typeof wp.variants === "string") {
+                try { wpVars = JSON.parse(wp.variants); } catch(e) {}
+              }
+              if (wpVars && wpVars.length > 0) {
+                wpVars.forEach((wv, wIdx) => {
+                  const oldV = (Array.isArray(p.variants) && p.variants[wIdx]);
+                  if (oldV && Array.isArray(oldV.accounts) && oldV.accounts.length > 0) {
+                    wv.accounts = oldV.accounts;
+                    if (!wv.stock || wv.stock === 0) wv.stock = oldV.accounts.length;
                   }
                 });
+                p.variants = wpVars;
+                isUpdated = true;
               }
+
+              // 6. Cập nhật giá sản phẩm
+              const newPrice = (p.variants && p.variants[currentSelectedVariantIndex] && p.variants[currentSelectedVariantIndex].price !== undefined)
+                ? Number(p.variants[currentSelectedVariantIndex].price)
+                : (Number(wp.price) || Number(p.price) || 0);
+              p.price = Number(wp.price) || p.price;
+              currentSelectedPrice = newPrice;
+              const dtlPriceEl = document.getElementById("dtlPrice");
+              if (dtlPriceEl) dtlPriceEl.innerText = (typeof formatVND === "function") ? formatVND(newPrice) : newPrice.toLocaleString("vi-VN") + " đ";
+
+              // 7. Cập nhật tồn kho
+              if (typeof wp.stock === "number") p.stock = Number(wp.stock);
               const curLiveStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(p, currentSelectedVariantIndex) : (p.stock || 0);
               if (typeof syncDetailStockUI === "function") syncDetailStockUI(curLiveStock);
 
-              // Cập nhật ảnh nếu Turso có ảnh mới và chưa có ảnh custom cục bộ
-              if (wp.image && !localStorage.getItem("mmo_custom_img_" + p.id)) {
-                const freshImg = (typeof resolveProductImage === "function") ? resolveProductImage(wp) : wp.image;
-                const dtlImgEl = document.getElementById("dtlImage");
-                if (dtlImgEl && dtlImgEl.src !== freshImg) dtlImgEl.src = freshImg;
+              // 8. Cập nhật pills biến thể
+              const pillsContainer = document.getElementById("dtlVariantPills");
+              if (pillsContainer && Array.isArray(p.variants) && p.variants.length > 0) {
+                pillsContainer.innerHTML = p.variants.map((v, idx) => {
+                  let vStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(p, idx) : (v.stock || 0);
+                  v.stock = vStock;
+                  const stockBadge = vStock > 0
+                    ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
+                    : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+                  return '<div class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                    '<span>' + escapeHtml(v.name || ("Gói " + (idx + 1))) + stockBadge + '</span>' +
+                    '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
+                  '</div>';
+                }).join("");
+              }
+
+              // 9. Cập nhật ảnh nếu Turso có ảnh mới
+              let resolvedImg = "";
+              const wpImg = String(wp.image || wp.image_url || wp.imageUrl || "").trim();
+              if (wpImg.startsWith("data:image/") || wpImg.startsWith("data:")) {
+                resolvedImg = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image";
+              } else if (wpImg.startsWith("http://") || wpImg.startsWith("https://")) {
+                resolvedImg = wpImg;
+              }
+              const localCustomImg = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + p.id) : null;
+              const finalImg = (localCustomImg && localCustomImg.trim()) ? localCustomImg.trim() : (resolvedImg || (typeof resolveProductImage === "function" ? resolveProductImage(p) : p.image));
+              if (finalImg && finalImg !== p.image) {
+                p.image = finalImg;
+                p.image_url = finalImg;
+                p.imageUrl = finalImg;
+                isUpdated = true;
+              }
+              const dtlImgEl = document.getElementById("dtlImage");
+              if (dtlImgEl && dtlImgEl.src !== finalImg) dtlImgEl.src = finalImg;
+
+              // 10. Đồng bộ vào MOCK_DATA.products và localStorage
+              if (isUpdated && MOCK_DATA && Array.isArray(MOCK_DATA.products)) {
+                const exIdx = MOCK_DATA.products.findIndex(x => x && x.id === p.id);
+                if (exIdx !== -1) {
+                  MOCK_DATA.products[exIdx] = Object.assign({}, MOCK_DATA.products[exIdx], p);
+                }
+                if (typeof saveProductsToStorage === "function") saveProductsToStorage();
               }
             }
           }).catch(function() {});
