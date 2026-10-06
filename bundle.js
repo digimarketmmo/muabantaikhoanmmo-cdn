@@ -189,18 +189,6 @@ try {
                   }
                 });
               }
-              }
-              if (Array.isArray(p.variants) && Array.isArray(m.variants)) {
-                m.variants.forEach((mv, vi) => {
-                  if (p.variants[vi]) {
-                    if ((!p.variants[vi].stock || p.variants[vi].stock === 0) && mv.stock > 0) {
-                      p.variants[vi].stock = mv.stock;
-                      p.variants[vi].available = true;
-                      mod = true;
-                    }
-                  }
-                });
-              }
             }
           });
           if (mod) {
