@@ -15952,6 +15952,7 @@ function syncAllOpenViewsStock(changedProdId) {
               if (dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden")) {
                 if (typeof openProductDetailById === "function") openProductDetailById(updId);
               }
+            }
             if (typeof renderProductGrid === "function") renderProductGrid();
             if (typeof renderBestSellers === "function") renderBestSellers();
             if (typeof renderRecommended === "function") renderRecommended();
