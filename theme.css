@@ -3129,6 +3129,14 @@
     }
     .btn-chat-live:hover,
     .btn-zalo:hover { background: #0052cc; }
+    .zalo-icon-svg {
+      width: 15px;
+      height: 15px;
+      fill: currentColor;
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
     .btn-telegram {
       background: #0284c7;
       color: #ffffff;
