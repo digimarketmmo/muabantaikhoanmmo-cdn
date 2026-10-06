@@ -6770,12 +6770,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         renderModalProviderSuggestions(autoKw, prov);
       }
 
+      // [ZERO-HANG]: Chỉ quét nguồn ngầm khi thực sự chưa từng có sản phẩm nào của nhà cung cấp này trong bộ nhớ
       if (typeof fetchSingleSourceProducts === "function") {
-        if (!window._provFetchedAt) window._provFetchedAt = {};
-        const lastFetch = window._provFetchedAt[prov] || 0;
-        if (Date.now() - lastFetch > 60000) {
-          window._provFetchedAt[prov] = Date.now();
-          fetchSingleSourceProducts(prov, false);
+        const hasProdsInCache = (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts))
+          ? cachedSourceProducts.some(s => s && s.provider === prov)
+          : false;
+        if (!hasProdsInCache) {
+          if (!window._provFetchedAt) window._provFetchedAt = {};
+          const lastFetch = window._provFetchedAt[prov] || 0;
+          if (Date.now() - lastFetch > 300000) {
+            window._provFetchedAt[prov] = Date.now();
+            fetchSingleSourceProducts(prov, false);
+          }
         }
       }
     }
@@ -6859,9 +6865,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (typeof handleAdmModalSourceChange === "function") {
           handleAdmModalSourceChange();
         }
-        if (typeof fetchSingleSourceProducts === "function") {
-          fetchSingleSourceProducts(prov, false);
-        }
+        // [ZERO-HANG]: Không tự động quét nguồn mạng bên ngoài khi mở form sửa. Chỉ quét khi Admin bấm nút Quét lại SP!
       }
       populateCategorySelects(p.category);
       if (document.getElementById("admProdPrice")) {
@@ -9973,467 +9977,468 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.updateCommissionEstimate = updateCommissionEstimate;
 
     function handleSaveProduct(event) {
-      if (event) event.preventDefault();
-      const id = document.getElementById("admProdId")?.value.trim();
-      const isEditing = !!id;
-      const prodId = id || ("PROD_" + Date.now().toString(36).toUpperCase() + Math.floor(100 + Math.random() * 900).toString(36).toUpperCase());
-      const name = document.getElementById("admProdName")?.value.trim();
-      let category = (document.getElementById("admProdCategory")?.value || "Tài Khoản Khác").replace(/&amp;/g, '&');
-      if (name.toUpperCase().includes("TIKTOK") && !category.toUpperCase().includes("TIKTOK")) {
-        category = "TikTok";
+      if (event) {
+        try { event.preventDefault(); } catch(e) {}
       }
-      const commissionVal = parseInt(document.getElementById("admProdCommission")?.value) || 10;
-      const buffSold = parseInt(document.getElementById("admProdBuffSold")?.value) || 0;
-      const rating = parseFloat(document.getElementById("admProdBuffRating")?.value) || 4.9;
-      const reviewsCount = parseInt(document.getElementById("admProdBuffReviews")?.value) || 15;
-      if (!name) {
-        showToast("Vui lòng nhập tên sản phẩm!", "warning");
-        return;
-      }
-
-      if (!MOCK_DATA.products) MOCK_DATA.products = [];
-      const oldProd = isEditing ? (
-        MOCK_DATA.products.find(p => p && String(p.id).trim().toLowerCase() === String(prodId).trim().toLowerCase()) ||
-        (typeof findShopProduct === "function" ? findShopProduct(prodId) : null)
-      ) : null;
-      const actualTargetId = (oldProd && oldProd.id) ? oldProd.id : prodId;
-      const inputImg = document.getElementById("admProdImage")?.value.trim();
-      const image = inputImg || (oldProd && oldProd.image) || (oldProd && oldProd.image_url) || (oldProd && oldProd.imageUrl) || "https://iili.io/nFV4Rln.png";
-      const warranty = document.getElementById("admProdWarranty")?.value.trim() || "Bảo Hành 1 Đổi 1";
-      const description = document.getElementById("admProdDesc")?.value.trim() || "";
-
-      const container = document.getElementById("admVariantsContainer") || document.getElementById("admVariantRowsContainer");
-      const varRows = container ? container.querySelectorAll(".adm-variant-row") : [];
-      let variants = [];
-      varRows.forEach((row, idx) => {
-        const vName = row.querySelector(".adm-variant-name, input[type='text']")?.value.trim();
-        const vPrice = parseInt(row.querySelector(".adm-variant-price, input[type='number']")?.value) || 0;
-        if (vName) {
-          let oldAccounts = [];
-          let oldSold = [];
-          if (oldProd && Array.isArray(oldProd.variants)) {
-            const matchedOld = oldProd.variants.find(ov => ov && ov.name && ov.name.trim().toLowerCase() === vName.toLowerCase()) || oldProd.variants[idx];
-            if (matchedOld) {
-              oldAccounts = Array.isArray(matchedOld.accounts) ? matchedOld.accounts.slice() : [];
-              oldSold = Array.isArray(matchedOld.soldAccounts) ? matchedOld.soldAccounts.slice() : [];
-            }
-          }
-          let vStock = oldAccounts.length > 0 ? oldAccounts.length : ((typeof getVariantStockCount === "function") ? getVariantStockCount(actualTargetId, idx) : 0);
-          variants.push({
-            name: vName,
-            price: vPrice,
-            stock: vStock,
-            accounts: oldAccounts,
-            soldAccounts: oldSold
-          });
-        }
-      });
-
-      if (variants.length === 0) {
-        if (oldProd && Array.isArray(oldProd.variants) && oldProd.variants.length > 0) {
-          variants = oldProd.variants.slice();
-        } else {
-          const fallbackPrice = parseInt(document.getElementById("admProdPrice")?.value) || (oldProd ? oldProd.price : 0) || 50000;
-          variants.push({
-            name: "Mặc định",
-            price: fallbackPrice,
-            stock: oldProd ? (oldProd.stock || 0) : 0,
-            accounts: (oldProd && oldProd.variants && oldProd.variants[0] && Array.isArray(oldProd.variants[0].accounts)) ? oldProd.variants[0].accounts : [],
-            soldAccounts: []
-          });
-        }
-      }
-
-      const effectivePrice = variants[0] ? (Number(variants[0].price) || 0) : 0;
-      const priceHiddenInput = document.getElementById("admProdPrice");
-      if (priceHiddenInput) priceHiddenInput.value = effectivePrice;
-
-      const isApiSelected = document.getElementById("admProdTypeApi")?.checked;
-      const apiProviderVal = document.getElementById("admProdApiProvider")?.value || "selltainguyenmmo";
-      const sSel = document.getElementById("admProdApiSourceSelect");
-      let apiSourceProdIdVal = sSel ? (sSel.value || sSel.getAttribute("data-pending-id") || "") : "";
-      if (sSel && !apiSourceProdIdVal && sSel.selectedIndex >= 0 && sSel.options[sSel.selectedIndex]) {
-        apiSourceProdIdVal = sSel.options[sSel.selectedIndex].value || "";
-      }
-      if (!apiSourceProdIdVal && oldProd) {
-        const oldMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(actualTargetId) : (oldProd.apiMapping || null);
-        if (oldMap && oldMap.sourceProdId) {
-          apiSourceProdIdVal = String(oldMap.sourceProdId);
-        }
-      }
-      if (!apiSourceProdIdVal) {
-        try {
-          const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
-          if (maps[actualTargetId] && maps[actualTargetId].sourceProdId) {
-            apiSourceProdIdVal = String(maps[actualTargetId].sourceProdId);
-          }
-        } catch(e) {}
-      }
-      if (!apiSourceProdIdVal && oldProd && Array.isArray(oldProd.variants) && oldProd.variants[0] && oldProd.variants[0].apiMapping) {
-        apiSourceProdIdVal = String(oldProd.variants[0].apiMapping.sourceProdId || "");
-      }
-      if (!apiSourceProdIdVal && isEditing) {
-        if (typeof window.admApiSourceAlertsCache !== "undefined" && Array.isArray(window.admApiSourceAlertsCache)) {
-          const itemInCache = window.admApiSourceAlertsCache.find(a => a.prodId === actualTargetId);
-          if (itemInCache && itemInCache.sourceProdId) {
-            apiSourceProdIdVal = String(itemInCache.sourceProdId);
-          }
-        }
-      }
-
-      if (isApiSelected && !apiSourceProdIdVal) {
-        if (!isEditing) {
-          showToast("⚠️ Vui lòng chọn sản phẩm nguồn API tương ứng trước khi lưu!", "warning");
-          return;
-        } else {
-          apiSourceProdIdVal = "0";
-        }
-      }
-
-      let totalCalculatedStock = 0;
-      variants.forEach(v => totalCalculatedStock += (Number(v.stock) || 0));
-      if (oldProd && totalCalculatedStock === 0 && typeof getProductStockCount === "function") {
-        const s = getProductStockCount(actualTargetId);
-        if (s > 0) totalCalculatedStock = s;
-      }
-
-      let liveSourceStock = 0;
-      let liveSourcePrice = 0;
-      let liveSourceName = "";
-      let foundSrc = null;
-      if (isApiSelected && apiSourceProdIdVal) {
-        const prodsSrc = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
-          ? window.cachedSourceProducts
-          : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
-        foundSrc = prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal) && (!apiProviderVal || s.provider === apiProviderVal))
-          || prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal));
-        
-        const srcSelect = document.getElementById("admProdApiSourceSelect");
-        const selOpt = srcSelect ? srcSelect.options[srcSelect.selectedIndex] : null;
-        const optStock = selOpt ? parseInt(selOpt.getAttribute("data-stock") || "0", 10) : 0;
-        const optPrice = selOpt ? parseInt(selOpt.getAttribute("data-price") || "0", 10) : 0;
-        const optName = selOpt ? (selOpt.getAttribute("data-name") || selOpt.text || "") : "";
-
-        if (foundSrc) {
-          liveSourceStock = (typeof foundSrc.amount === "number") ? foundSrc.amount : (parseInt(foundSrc.amount) || 0);
-          liveSourcePrice = (typeof foundSrc.price === "number") ? foundSrc.price : (parseInt(foundSrc.price) || 0);
-          liveSourceName = foundSrc.name || "";
-        } else if (optStock > 0 || optPrice > 0) {
-          liveSourceStock = optStock;
-          liveSourcePrice = optPrice;
-          liveSourceName = optName;
-        } else {
-          liveSourceStock = (oldProd && typeof oldProd.stock === "number" && oldProd.stock > 0) ? oldProd.stock : 0;
-        }
-        variants.forEach(v => { v.stock = liveSourceStock; });
-      }
-
-      const prodData = {
-        id: actualTargetId,
-        name: name,
-        category: category,
-        price: effectivePrice,
-        commission: commissionVal + "% (~" + formatVND(Math.round(effectivePrice * commissionVal / 100)) + ")",
-        buffSold: buffSold,
-        sold: (oldProd && oldProd.sold !== undefined) ? oldProd.sold : buffSold,
-        stock: isApiSelected ? liveSourceStock : totalCalculatedStock,
-        rating: rating,
-        reviewCount: reviewsCount,
-        image: image,
-        image_url: image,
-        imageUrl: image,
-        warranty: warranty,
-        description: description,
-        variants: variants,
-        deliveryType: isApiSelected ? "api" : "local",
-        delivery_type: isApiSelected ? "api" : "local",
-        _lastEditedAt: Date.now()
-      };
-
-      // Cập nhật bảng API Mappings ngay lập tức
       try {
-        const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
-        if (isApiSelected && apiSourceProdIdVal) {
-          const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[apiProviderVal]) ? API_SOURCES[apiProviderVal] : { baseUrl: "https://sellmmo.vn", apiKey: "" };
-          const oldMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(actualTargetId) : (oldProd?.apiMapping || null);
-          const cleanSrcId = String(apiSourceProdIdVal).trim().replace(/^#/, "");
-          const mapItem = {
-            enabled: true,
-            provider: apiProviderVal,
-            baseUrl: pCfg.baseUrl,
-            apiKey: pCfg.apiKey,
-            sourceProdId: cleanSrcId,
-            sourceProdName: liveSourceName || (oldMap && oldMap.sourceProdName) || ("Sản phẩm #" + cleanSrcId),
-            sourcePrice: liveSourcePrice || (oldMap && oldMap.sourcePrice) || 0,
-            sourceStock: liveSourceStock,
-            isSourceDeleted: (cleanSrcId === "0" || !cleanSrcId),
-            targetProdId: actualTargetId,
-            targetProdName: name
-          };
-          maps[actualTargetId] = mapItem;
-          if (name) maps[name] = mapItem;
-          if (oldProd && oldProd.name && oldProd.name !== name) delete maps[oldProd.name];
-          // Map toàn bộ biến thể theo đúng ID sản phẩm
-          variants.forEach((v, vIdx) => {
-            maps[actualTargetId + '__VAR__' + vIdx] = mapItem;
-            maps[actualTargetId + '_' + vIdx] = mapItem;
-          });
-          prodData.apiMapping = mapItem;
-          prodData.deliveryType = "api";
-          prodData.delivery_type = "api";
-          prodData.stock = liveSourceStock;
-          if (Array.isArray(prodData.variants)) {
-            prodData.variants.forEach(v => {
-              if (v) {
-                v.stock = liveSourceStock;
-                v.apiMapping = mapItem;
+        const id = document.getElementById("admProdId")?.value.trim();
+        const isEditing = !!id;
+        const prodId = id || ("PROD_" + Date.now().toString(36).toUpperCase() + Math.floor(100 + Math.random() * 900).toString(36).toUpperCase());
+        const name = document.getElementById("admProdName")?.value.trim();
+        let category = (document.getElementById("admProdCategory")?.value || "Tài Khoản Khác").replace(/&amp;/g, '&');
+        if (name && name.toUpperCase().includes("TIKTOK") && !category.toUpperCase().includes("TIKTOK")) {
+          category = "TikTok";
+        }
+        const commissionVal = parseInt(document.getElementById("admProdCommission")?.value) || 10;
+        const buffSold = parseInt(document.getElementById("admProdBuffSold")?.value) || 0;
+        const rating = parseFloat(document.getElementById("admProdBuffRating")?.value) || 4.9;
+        const reviewsCount = parseInt(document.getElementById("admProdBuffReviews")?.value) || 15;
+        if (!name) {
+          showToast("Vui lòng nhập tên sản phẩm!", "warning");
+          return;
+        }
+
+        if (!MOCK_DATA.products) MOCK_DATA.products = [];
+        const oldProd = isEditing ? (
+          MOCK_DATA.products.find(p => p && String(p.id).trim().toLowerCase() === String(prodId).trim().toLowerCase()) ||
+          (typeof findShopProduct === "function" ? findShopProduct(prodId) : null)
+        ) : null;
+        const actualTargetId = (oldProd && oldProd.id) ? oldProd.id : prodId;
+        const inputImg = document.getElementById("admProdImage")?.value.trim();
+        const image = inputImg || (oldProd && oldProd.image) || (oldProd && oldProd.image_url) || (oldProd && oldProd.imageUrl) || "https://iili.io/nFV4Rln.png";
+        const warranty = document.getElementById("admProdWarranty")?.value.trim() || "Bảo Hành 1 Đổi 1";
+        const description = document.getElementById("admProdDesc")?.value.trim() || "";
+
+        const container = document.getElementById("admVariantsContainer") || document.getElementById("admVariantRowsContainer");
+        const varRows = container ? container.querySelectorAll(".adm-variant-row") : [];
+        let variants = [];
+        varRows.forEach((row, idx) => {
+          const vName = row.querySelector(".adm-variant-name, input[type='text']")?.value.trim();
+          const vPrice = parseInt(row.querySelector(".adm-variant-price, input[type='number']")?.value) || 0;
+          if (vName) {
+            let oldAccounts = [];
+            let oldSold = [];
+            if (oldProd && Array.isArray(oldProd.variants)) {
+              const matchedOld = oldProd.variants.find(ov => ov && ov.name && ov.name.trim().toLowerCase() === vName.toLowerCase()) || oldProd.variants[idx];
+              if (matchedOld) {
+                oldAccounts = Array.isArray(matchedOld.accounts) ? matchedOld.accounts.slice() : [];
+                oldSold = Array.isArray(matchedOld.soldAccounts) ? matchedOld.soldAccounts.slice() : [];
               }
+            }
+            let vStock = oldAccounts.length > 0 ? oldAccounts.length : ((typeof getVariantStockCount === "function") ? getVariantStockCount(actualTargetId, idx) : 0);
+            variants.push({
+              name: vName,
+              price: vPrice,
+              stock: vStock,
+              accounts: oldAccounts,
+              soldAccounts: oldSold
             });
           }
-          try {
-            localStorage.setItem("mmo_api_map_" + actualTargetId, JSON.stringify(mapItem));
-          } catch(eMap) {}
-        } else {
-          delete maps[actualTargetId];
-          variants.forEach((v, vIdx) => {
-            delete maps[actualTargetId + '__VAR__' + vIdx];
-            delete maps[actualTargetId + '_' + vIdx];
-            if (v && v.name) delete maps[v.name];
-          });
-          delete prodData.apiMapping;
-          prodData.deliveryType = "local";
-          prodData.delivery_type = "local";
-          try {
-            localStorage.removeItem("mmo_api_map_" + actualTargetId);
-          } catch(eMap) {}
-        }
-        if (typeof saveApiProductMappings === "function") {
-          saveApiProductMappings(maps);
-        } else {
-          localStorage.setItem("mmo_api_product_mappings", JSON.stringify(maps));
-        }
-      } catch(e) {}
-
-      // Nếu sản phẩm này từng nằm trong danh sách đã xóa, gỡ bỏ khỏi blacklist
-      try {
-        let deletedIds = JSON.parse(localStorage.getItem("mmo_deleted_product_ids") || "[]");
-        if (Array.isArray(deletedIds)) {
-          deletedIds = deletedIds.filter(d => d !== prodId && d !== actualTargetId);
-          localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(deletedIds));
-        }
-      } catch(e) {}
-
-      const existingIdx = isEditing ? MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === String(actualTargetId).trim().toLowerCase()) : -1;
-      if (existingIdx !== -1) {
-        MOCK_DATA.products[existingIdx] = Object.assign({}, MOCK_DATA.products[existingIdx], prodData);
-      } else {
-        MOCK_DATA.products.unshift(prodData);
-      }
-      if (typeof window !== "undefined" && window.MOCK_DATA) {
-        window.MOCK_DATA.products = MOCK_DATA.products;
-      }
-      showToast("🎉 Đã lưu sản phẩm [" + (name || actualTargetId) + "] thành công!", "success");
-
-      // Đồng bộ an toàn vào LocalStorage (chống QuotaExceededError khi ảnh Base64 lớn)
-      try {
-        const sanitizedProds = MOCK_DATA.products.map(p => {
-          if (p && p.image && String(p.image).startsWith("data:") && p.image.length > 2000) {
-            const clone = Object.assign({}, p);
-            clone.image = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image";
-            clone.image_url = clone.image;
-            return clone;
-          }
-          return p;
         });
-        const prodsJson = JSON.stringify(sanitizedProds);
-        localStorage.setItem("mmo_admin_products", prodsJson);
-        localStorage.setItem("mmo_products", prodsJson);
-      } catch(eStorage) {
-        console.warn("Storage quota handling in handleSaveProduct:", eStorage);
-        try {
-          // Dọn dẹp cache phụ nếu đầy
-          localStorage.removeItem("mmo_transaction_history");
-          localStorage.removeItem("cached_source_products");
-          const prodsJson2 = JSON.stringify(MOCK_DATA.products.map(p => ({ id: p.id, name: p.name, price: p.price, stock: p.stock, category: p.category, delivery_type: p.delivery_type })));
-          localStorage.setItem("mmo_admin_products", prodsJson2);
-          localStorage.setItem("mmo_products", prodsJson2);
-        } catch(e2) {}
-      }
 
-      if (typeof recordProductVariants === "function") recordProductVariants(actualTargetId, variants, name);
-      
-      // Dọn dẹp kho của các biến thể đã bị admin xóa
-      if (oldProd && Array.isArray(oldProd.variants) && oldProd.variants.length > variants.length) {
-        const stockMap = (typeof getProductStocksMap === "function") ? getProductStocksMap() : {};
-        for (let delIdx = variants.length; delIdx < oldProd.variants.length; delIdx++) {
-          const delKey = getVariantStockKey(actualTargetId, delIdx);
-          delete stockMap[delKey];
-          if (typeof callGasApi === "function") {
-            callGasApi("adminImportStock", {
-              prodId: actualTargetId,
-              variantIdx: delIdx,
-              targetKey: delKey,
-              accounts: "",
-              overwrite: true
-            }).catch(function() {});
-          }
-        }
-        if (typeof saveProductStocksMap === "function") saveProductStocksMap(stockMap);
-      }
-
-      try {
-        if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof TURSO_CLIENT.saveProduct === "function") {
-          TURSO_CLIENT.saveProduct(prodData).then(function(res) {
-            console.log("Turso saveProduct success:", res);
-          }).catch(e => console.warn("Turso save product error:", e));
-        } else if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured() && typeof MMO_WORKER_API.adminSyncProducts === "function") {
-          MMO_WORKER_API.adminSyncProducts([prodData]).then(function(res) {
-            console.log("Worker adminSyncProducts success:", res);
-          }).catch(e => console.warn("Worker save product error:", e));
-        }
-      } catch(e) {}
-      // [LƯU ẢNH AN TOÀN TUYỆT ĐỐI CHỐNG LỖI QUOTA]: Lưu riêng lẻ vào mmo_custom_img_
-      if (image && image.trim() !== "") {
-        try {
-          localStorage.setItem("mmo_custom_img_" + actualTargetId, image.trim());
-        } catch(eImg) {}
-      }
-      // [LƯU MÔ TẢ AN TOÀN TUYỆT ĐỐI]: Lưu riêng lẻ vào mmo_custom_desc_
-      if (description !== undefined && description !== null) {
-        try {
-          localStorage.setItem("mmo_custom_desc_" + actualTargetId, description.trim());
-        } catch(eDesc) {}
-      }
-
-      // [KEEPALIVE CLOUD SYNC & TURSO SSOT]: Đảm bảo 100% gửi thẳng lên Worker và lưu vào Turso SQLite
-      try {
-        const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SECURE_TOKEN_2026";
-        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
-        fetch(workerUrl + "/api/admin/products/save", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + workerSecret
-          },
-          body: JSON.stringify({ product: prodData }),
-          keepalive: true
-        }).then(r => r.json()).then(res => {
-          console.log("Cloud saveProduct success:", res);
-          // Kích hoạt đồng bộ nền để cập nhật cache và index sản phẩm ngay lập tức
-          if (typeof syncTursoProductsToLocalUI === "function") {
-            window._mmoSyncTursoInFlightPromise = null;
-            syncTursoProductsToLocalUI().catch(function() {});
-          }
-        }).catch(err => {
-          console.warn("Cloud saveProduct non-fatal:", err);
-        });
-      } catch(eKeep) {}
-
-      saveProductsToStorage();
-      closeModal("adminProductModal");
-      if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-      if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
-      if (typeof renderProductGrid === "function") renderProductGrid();
-
-      // Làm mới tức thì bảng Cảnh báo Nguồn Hàng API nếu đang mở
-      try {
-        _cachedApiSourceAlerts = null;
-        if (typeof invalidateApiProductMappingsCache === "function") invalidateApiProductMappingsCache();
-        if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
-        if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
-        if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
-      } catch(eAlert) {}
-
-      // Đồng bộ tên mới vào bảng API mappings nếu sản phẩm này có liên kết API
-      try {
-        const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
-        if (maps[actualTargetId]) {
-          maps[actualTargetId].targetProdName = name;
-          if (typeof saveApiProductMappings === "function") saveApiProductMappings(maps);
-        }
-      } catch(e) {}
-
-      // Cập nhật ngay modal / trang chi tiết nếu đang xem sản phẩm này
-      if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
-        const isSame = (String(currentSelectedProduct.id) === String(actualTargetId)) || 
-                       (currentSelectedProduct.name && currentSelectedProduct.name.trim().toLowerCase() === name.toLowerCase()) ||
-                       (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId));
-        if (isSame) {
-          currentSelectedProduct = Object.assign({}, currentSelectedProduct, prodData);
-          currentSelectedProduct.variants = variants;
-          currentSelectedProduct.price = effectivePrice;
-          if (currentSelectedVariantIndex >= variants.length) currentSelectedVariantIndex = 0;
-        }
-      }
-
-      // TỰ ĐỘNG LÀM MỚI TOÀN BỘ GIAO DIỆN TRANG XEM CHI TIẾT SẢN PHẨM (viewProductDetail) NẾU ĐANG XEM THỰC SỰ
-      const dtlView = document.getElementById("viewProductDetail");
-      const isDtlActive = dtlView && (dtlView.style.display !== "none" && !dtlView.classList.contains("hidden"));
-      if (isDtlActive && (currentSelectedProduct && (String(currentSelectedProduct.id) === String(actualTargetId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId))))) {
-        const dtlImg = document.getElementById("dtlImage");
-        if (dtlImg && prodData.image) dtlImg.src = prodData.image;
-        const dtlTitle = document.getElementById("dtlTitle");
-        if (dtlTitle) dtlTitle.innerText = prodData.name;
-        if (typeof openProductDetailById === "function") {
-          openProductDetailById(actualTargetId);
-        }
-      }
-
-      // Phát tín hiệu BroadcastChannel tức thì sang tất cả các tab / cửa sổ trình duyệt khác (<10ms)
-      try {
-        if (typeof BroadcastChannel !== "undefined") {
-          const payload = {
-            type: "PRODUCT_UPDATED",
-            prodId: actualTargetId,
-            prodData: prodData,
-            variants: variants,
-            stock: prodData.stock
-          };
-          const bc = new BroadcastChannel("mmo_channel");
-          bc.postMessage(payload);
-          setTimeout(() => bc.close(), 1000);
-
-          const bc2 = new BroadcastChannel("mmo_realtime_sync");
-          bc2.postMessage(payload);
-          setTimeout(() => bc2.close(), 1000);
-        }
-      } catch(e) {}
-
-      // Đánh dấu tất cả các view cần render lại
-      if (typeof _viewDirty !== "undefined") {
-        _viewDirty["viewStore"] = true;
-        _viewDirty["viewAllProducts"] = true;
-        _viewDirty["viewAdmin"] = true;
-      }
-      if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
-      if (typeof renderProductGrid === "function") renderProductGrid();
-      if (typeof renderBestSellers === "function") renderBestSellers();
-      if (typeof renderRecommended === "function") renderRecommended();
-      if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
-      if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-      if (typeof initStockManagementUI === "function") initStockManagementUI();
-      if (typeof renderAllProductsPage === "function") renderAllProductsPage();
-      if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
-      if (typeof renderCategories === "function") renderCategories();
-      if (typeof renderDetailRelatedProducts === "function" && currentSelectedProduct) {
-        renderDetailRelatedProducts(currentSelectedProduct);
-      }
-
-      // Đồng bộ trực tiếp lên Google Apps Script / Google Sheets
-      if (typeof callGasApi === "function") {
-        showToast("Đang đồng bộ sản phẩm lên hệ thống...", "info");
-        callGasApi("adminSaveProduct", {
-          ...prodData,
-          product: prodData
-        }).then(function(res) {
-          if (res && res.success) {
-            showToast("🎉 Đã lưu và đồng bộ sản phẩm thành công!", "success");
+        if (variants.length === 0) {
+          if (oldProd && Array.isArray(oldProd.variants) && oldProd.variants.length > 0) {
+            variants = oldProd.variants.slice();
           } else {
-            console.warn("adminSaveProduct response:", res);
+            const fallbackPrice = parseInt(document.getElementById("admProdPrice")?.value) || (oldProd ? oldProd.price : 0) || 50000;
+            variants.push({
+              name: "Mặc định",
+              price: fallbackPrice,
+              stock: oldProd ? (oldProd.stock || 0) : 0,
+              accounts: (oldProd && oldProd.variants && oldProd.variants[0] && Array.isArray(oldProd.variants[0].accounts)) ? oldProd.variants[0].accounts : [],
+              soldAccounts: []
+            });
           }
-        }).catch(function(err) {
-          console.warn("Lỗi đồng bộ sản phẩm:", err);
-        });
+        }
+
+        const effectivePrice = variants[0] ? (Number(variants[0].price) || 0) : 0;
+        const priceHiddenInput = document.getElementById("admProdPrice");
+        if (priceHiddenInput) priceHiddenInput.value = effectivePrice;
+
+        const isApiSelected = document.getElementById("admProdTypeApi")?.checked;
+        const apiProviderVal = document.getElementById("admProdApiProvider")?.value || "selltainguyenmmo";
+        const sSel = document.getElementById("admProdApiSourceSelect");
+        let apiSourceProdIdVal = sSel ? (sSel.value || sSel.getAttribute("data-pending-id") || "") : "";
+        if (sSel && !apiSourceProdIdVal && sSel.selectedIndex >= 0 && sSel.options[sSel.selectedIndex]) {
+          apiSourceProdIdVal = sSel.options[sSel.selectedIndex].value || "";
+        }
+        if (!apiSourceProdIdVal && oldProd) {
+          const oldMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(actualTargetId) : (oldProd.apiMapping || null);
+          if (oldMap && oldMap.sourceProdId) {
+            apiSourceProdIdVal = String(oldMap.sourceProdId);
+          }
+        }
+        if (!apiSourceProdIdVal) {
+          try {
+            const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+            if (maps[actualTargetId] && maps[actualTargetId].sourceProdId) {
+              apiSourceProdIdVal = String(maps[actualTargetId].sourceProdId);
+            }
+          } catch(e) {}
+        }
+        if (!apiSourceProdIdVal && oldProd && Array.isArray(oldProd.variants) && oldProd.variants[0] && oldProd.variants[0].apiMapping) {
+          apiSourceProdIdVal = String(oldProd.variants[0].apiMapping.sourceProdId || "");
+        }
+        if (!apiSourceProdIdVal && isEditing) {
+          if (typeof window.admApiSourceAlertsCache !== "undefined" && Array.isArray(window.admApiSourceAlertsCache)) {
+            const itemInCache = window.admApiSourceAlertsCache.find(a => a.prodId === actualTargetId);
+            if (itemInCache && itemInCache.sourceProdId) {
+              apiSourceProdIdVal = String(itemInCache.sourceProdId);
+            }
+          }
+        }
+
+        if (isApiSelected && !apiSourceProdIdVal) {
+          if (!isEditing) {
+            showToast("⚠️ Vui lòng chọn sản phẩm nguồn API tương ứng trước khi lưu!", "warning");
+            return;
+          } else {
+            apiSourceProdIdVal = "0";
+          }
+        }
+
+        let totalCalculatedStock = 0;
+        variants.forEach(v => totalCalculatedStock += (Number(v.stock) || 0));
+        if (oldProd && totalCalculatedStock === 0 && typeof getProductStockCount === "function") {
+          const s = getProductStockCount(actualTargetId);
+          if (s > 0) totalCalculatedStock = s;
+        }
+
+        let liveSourceStock = 0;
+        let liveSourcePrice = 0;
+        let liveSourceName = "";
+        let foundSrc = null;
+        if (isApiSelected && apiSourceProdIdVal) {
+          const prodsSrc = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+            ? window.cachedSourceProducts
+            : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+          foundSrc = prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal) && (!apiProviderVal || s.provider === apiProviderVal))
+            || prodsSrc.find(s => String(s.id) === String(apiSourceProdIdVal));
+          
+          const srcSelect = document.getElementById("admProdApiSourceSelect");
+          const selOpt = srcSelect ? srcSelect.options[srcSelect.selectedIndex] : null;
+          const optStock = selOpt ? parseInt(selOpt.getAttribute("data-stock") || "0", 10) : 0;
+          const optPrice = selOpt ? parseInt(selOpt.getAttribute("data-price") || "0", 10) : 0;
+          const optName = selOpt ? (selOpt.getAttribute("data-name") || selOpt.text || "") : "";
+
+          if (foundSrc) {
+            liveSourceStock = (typeof foundSrc.amount === "number") ? foundSrc.amount : (parseInt(foundSrc.amount) || 0);
+            liveSourcePrice = (typeof foundSrc.price === "number") ? foundSrc.price : (parseInt(foundSrc.price) || 0);
+            liveSourceName = foundSrc.name || "";
+          } else if (optStock > 0 || optPrice > 0) {
+            liveSourceStock = optStock;
+            liveSourcePrice = optPrice;
+            liveSourceName = optName;
+          } else {
+            liveSourceStock = (oldProd && typeof oldProd.stock === "number" && oldProd.stock > 0) ? oldProd.stock : 0;
+          }
+          variants.forEach(v => { v.stock = liveSourceStock; });
+        }
+
+        const prodData = {
+          id: actualTargetId,
+          name: name,
+          category: category,
+          price: effectivePrice,
+          commission: commissionVal + "% (~" + formatVND(Math.round(effectivePrice * commissionVal / 100)) + ")",
+          buffSold: buffSold,
+          sold: (oldProd && oldProd.sold !== undefined) ? oldProd.sold : buffSold,
+          stock: isApiSelected ? liveSourceStock : totalCalculatedStock,
+          rating: rating,
+          reviewCount: reviewsCount,
+          image: image,
+          image_url: image,
+          imageUrl: image,
+          warranty: warranty,
+          description: description,
+          variants: variants,
+          deliveryType: isApiSelected ? "api" : "local",
+          delivery_type: isApiSelected ? "api" : "local",
+          _lastEditedAt: Date.now()
+        };
+
+        // Cập nhật bảng API Mappings ngay lập tức
+        try {
+          const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+          if (isApiSelected && apiSourceProdIdVal) {
+            const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[apiProviderVal]) ? API_SOURCES[apiProviderVal] : { baseUrl: "https://sellmmo.vn", apiKey: "" };
+            const oldMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(actualTargetId) : (oldProd?.apiMapping || null);
+            const cleanSrcId = String(apiSourceProdIdVal).trim().replace(/^#/, "");
+            const mapItem = {
+              enabled: true,
+              provider: apiProviderVal,
+              baseUrl: pCfg.baseUrl,
+              apiKey: pCfg.apiKey,
+              sourceProdId: cleanSrcId,
+              sourceProdName: liveSourceName || (oldMap && oldMap.sourceProdName) || ("Sản phẩm #" + cleanSrcId),
+              sourcePrice: liveSourcePrice || (oldMap && oldMap.sourcePrice) || 0,
+              sourceStock: liveSourceStock,
+              isSourceDeleted: (cleanSrcId === "0" || !cleanSrcId),
+              targetProdId: actualTargetId,
+              targetProdName: name
+            };
+            maps[actualTargetId] = mapItem;
+            if (name) maps[name] = mapItem;
+            if (oldProd && oldProd.name && oldProd.name !== name) delete maps[oldProd.name];
+            // Map toàn bộ biến thể theo đúng ID sản phẩm
+            variants.forEach((v, vIdx) => {
+              maps[actualTargetId + '__VAR__' + vIdx] = mapItem;
+              maps[actualTargetId + '_' + vIdx] = mapItem;
+            });
+            prodData.apiMapping = mapItem;
+            prodData.deliveryType = "api";
+            prodData.delivery_type = "api";
+            prodData.stock = liveSourceStock;
+            if (Array.isArray(prodData.variants)) {
+              prodData.variants.forEach(v => {
+                if (v) {
+                  v.stock = liveSourceStock;
+                  v.apiMapping = mapItem;
+                }
+              });
+            }
+            try {
+              localStorage.setItem("mmo_api_map_" + actualTargetId, JSON.stringify(mapItem));
+            } catch(eMap) {}
+          } else {
+            delete maps[actualTargetId];
+            variants.forEach((v, vIdx) => {
+              delete maps[actualTargetId + '__VAR__' + vIdx];
+              delete maps[actualTargetId + '_' + vIdx];
+              if (v && v.name) delete maps[v.name];
+            });
+            delete prodData.apiMapping;
+            prodData.deliveryType = "local";
+            prodData.delivery_type = "local";
+            try {
+              localStorage.removeItem("mmo_api_map_" + actualTargetId);
+            } catch(eMap) {}
+          }
+          if (typeof saveApiProductMappings === "function") {
+            saveApiProductMappings(maps);
+          } else {
+            localStorage.setItem("mmo_api_product_mappings", JSON.stringify(maps));
+          }
+        } catch(e) {}
+
+        // Nếu sản phẩm này từng nằm trong danh sách đã xóa, gỡ bỏ khỏi blacklist
+        try {
+          let deletedIds = JSON.parse(localStorage.getItem("mmo_deleted_product_ids") || "[]");
+          if (Array.isArray(deletedIds)) {
+            deletedIds = deletedIds.filter(d => d !== prodId && d !== actualTargetId);
+            localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(deletedIds));
+          }
+        } catch(e) {}
+
+        const existingIdx = isEditing ? MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === String(actualTargetId).trim().toLowerCase()) : -1;
+        if (existingIdx !== -1) {
+          MOCK_DATA.products[existingIdx] = Object.assign({}, MOCK_DATA.products[existingIdx], prodData);
+        } else {
+          MOCK_DATA.products.unshift(prodData);
+        }
+        if (typeof window !== "undefined" && window.MOCK_DATA) {
+          window.MOCK_DATA.products = MOCK_DATA.products;
+        }
+        showToast("🎉 Đã lưu sản phẩm [" + (name || actualTargetId) + "] thành công!", "success");
+
+        // Đồng bộ an toàn vào LocalStorage (chống QuotaExceededError khi ảnh Base64 lớn)
+        try {
+          const sanitizedProds = MOCK_DATA.products.map(p => {
+            if (p && p.image && String(p.image).startsWith("data:") && p.image.length > 2000) {
+              const clone = Object.assign({}, p);
+              clone.image = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image";
+              clone.image_url = clone.image;
+              return clone;
+            }
+            return p;
+          });
+          const prodsJson = JSON.stringify(sanitizedProds);
+          localStorage.setItem("mmo_admin_products", prodsJson);
+          localStorage.setItem("mmo_products", prodsJson);
+        } catch(eStorage) {
+          console.warn("Storage quota handling in handleSaveProduct:", eStorage);
+          try {
+            localStorage.removeItem("mmo_transaction_history");
+            localStorage.removeItem("cached_source_products");
+            const prodsJson2 = JSON.stringify(MOCK_DATA.products.map(p => ({ id: p.id, name: p.name, price: p.price, stock: p.stock, category: p.category, delivery_type: p.delivery_type })));
+            localStorage.setItem("mmo_admin_products", prodsJson2);
+            localStorage.setItem("mmo_products", prodsJson2);
+          } catch(e2) {}
+        }
+
+        if (typeof recordProductVariants === "function") recordProductVariants(actualTargetId, variants, name);
+        
+        // Dọn dẹp kho của các biến thể đã bị admin xóa
+        if (oldProd && Array.isArray(oldProd.variants) && oldProd.variants.length > variants.length) {
+          const stockMap = (typeof getProductStocksMap === "function") ? getProductStocksMap() : {};
+          for (let delIdx = variants.length; delIdx < oldProd.variants.length; delIdx++) {
+            const delKey = getVariantStockKey(actualTargetId, delIdx);
+            delete stockMap[delKey];
+            if (typeof callGasApi === "function") {
+              callGasApi("adminImportStock", {
+                prodId: actualTargetId,
+                variantIdx: delIdx,
+                targetKey: delKey,
+                accounts: "",
+                overwrite: true
+              }).catch(function() {});
+            }
+          }
+          if (typeof saveProductStocksMap === "function") saveProductStocksMap(stockMap);
+        }
+
+        try {
+          if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof TURSO_CLIENT.saveProduct === "function") {
+            TURSO_CLIENT.saveProduct(prodData).then(function(res) {
+              console.log("Turso saveProduct success:", res);
+            }).catch(e => console.warn("Turso save product error:", e));
+          } else if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured() && typeof MMO_WORKER_API.adminSyncProducts === "function") {
+            MMO_WORKER_API.adminSyncProducts([prodData]).then(function(res) {
+              console.log("Worker adminSyncProducts success:", res);
+            }).catch(e => console.warn("Worker save product error:", e));
+          }
+        } catch(e) {}
+
+        // [LƯU ẢNH AN TOÀN TUYỆT ĐỐI CHỐNG LỖI QUOTA]: Lưu riêng lẻ vào mmo_custom_img_
+        if (image && image.trim() !== "") {
+          try {
+            localStorage.setItem("mmo_custom_img_" + actualTargetId, image.trim());
+          } catch(eImg) {}
+        }
+        // [LƯU MÔ TẢ AN TOÀN TUYỆT ĐỐI]: Lưu riêng lẻ vào mmo_custom_desc_
+        if (description !== undefined && description !== null) {
+          try {
+            localStorage.setItem("mmo_custom_desc_" + actualTargetId, description.trim());
+          } catch(eDesc) {}
+        }
+
+        // [KEEPALIVE CLOUD SYNC & TURSO SSOT]: Đảm bảo 100% gửi thẳng lên Worker và lưu vào Turso SQLite
+        try {
+          const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SECURE_TOKEN_2026";
+          const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          fetch(workerUrl + "/api/admin/products/save", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + workerSecret
+            },
+            body: JSON.stringify({ product: prodData }),
+            keepalive: true
+          }).then(r => r.json()).then(res => {
+            console.log("Cloud saveProduct success:", res);
+            if (typeof syncTursoProductsToLocalUI === "function") {
+              window._mmoSyncTursoInFlightPromise = null;
+              syncTursoProductsToLocalUI().catch(function() {});
+            }
+          }).catch(err => {
+            console.warn("Cloud saveProduct non-fatal:", err);
+          });
+        } catch(eKeep) {}
+
+        // [ZERO-HANG & INSTANT SAVE]: Đóng modal ngay lập tức và lưu nhanh dữ liệu
+        closeModal("adminProductModal");
+        saveProductsToStorage();
+
+        // Chỉ render view đang hiển thị thực tế để tránh nghẽn CPU/DOM
+        try {
+          const adminView = document.getElementById("viewAdmin");
+          const isAdmActive = adminView && adminView.style.display !== "none" && !adminView.classList.contains("hidden");
+          if (isAdmActive) {
+            if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+            if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+          } else {
+            if (typeof renderProductGrid === "function") renderProductGrid();
+          }
+        } catch(eR) {}
+
+        // Làm mới tức thì bảng Cảnh báo Nguồn Hàng API nếu đang mở
+        try {
+          _cachedApiSourceAlerts = null;
+          if (typeof invalidateApiProductMappingsCache === "function") invalidateApiProductMappingsCache();
+          if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+          if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
+          if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+        } catch(eAlert) {}
+
+        // Đồng bộ tên mới vào bảng API mappings nếu sản phẩm này có liên kết API
+        try {
+          const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+          if (maps[actualTargetId]) {
+            maps[actualTargetId].targetProdName = name;
+            if (typeof saveApiProductMappings === "function") saveApiProductMappings(maps);
+          }
+        } catch(e) {}
+
+        // Cập nhật ngay modal / trang chi tiết nếu đang xem sản phẩm này
+        if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
+          const isSame = (String(currentSelectedProduct.id) === String(actualTargetId)) || 
+                         (currentSelectedProduct.name && currentSelectedProduct.name.trim().toLowerCase() === name.toLowerCase()) ||
+                         (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId));
+          if (isSame) {
+            currentSelectedProduct = Object.assign({}, currentSelectedProduct, prodData);
+            currentSelectedProduct.variants = variants;
+            currentSelectedProduct.price = effectivePrice;
+            if (currentSelectedVariantIndex >= variants.length) currentSelectedVariantIndex = 0;
+          }
+        }
+
+        // TỰ ĐỘNG LÀM MỚI TOÀN BỘ GIAO DIỆN TRANG XEM CHI TIẾT SẢN PHẨM (viewProductDetail) NẾU ĐANG XEM THỰC SỰ
+        const dtlView = document.getElementById("viewProductDetail");
+        const isDtlActive = dtlView && (dtlView.style.display !== "none" && !dtlView.classList.contains("hidden"));
+        if (isDtlActive && (currentSelectedProduct && (String(currentSelectedProduct.id) === String(actualTargetId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId))))) {
+          const dtlImg = document.getElementById("dtlImage");
+          if (dtlImg && prodData.image) dtlImg.src = prodData.image;
+          const dtlTitle = document.getElementById("dtlTitle");
+          if (dtlTitle) dtlTitle.innerText = prodData.name;
+          if (typeof openProductDetailById === "function") {
+            openProductDetailById(actualTargetId);
+          }
+        }
+
+        // Phát tín hiệu BroadcastChannel tức thì sang tất cả các tab / cửa sổ trình duyệt khác (<10ms)
+        try {
+          if (typeof BroadcastChannel !== "undefined") {
+            const payload = {
+              type: "PRODUCT_UPDATED",
+              prodId: actualTargetId,
+              prodData: prodData,
+              variants: variants,
+              stock: prodData.stock
+            };
+            const bc = new BroadcastChannel("mmo_channel");
+            bc.postMessage(payload);
+            setTimeout(() => bc.close(), 1000);
+
+            const bc2 = new BroadcastChannel("mmo_realtime_sync");
+            bc2.postMessage(payload);
+            setTimeout(() => bc2.close(), 1000);
+          }
+        } catch(e) {}
+
+        // Đánh dấu tất cả các view khác cần render lại khi mở tới
+        if (typeof _viewDirty !== "undefined") {
+          _viewDirty["viewStore"] = true;
+          _viewDirty["viewAllProducts"] = true;
+          _viewDirty["viewAdmin"] = true;
+        }
+
+        // Đồng bộ ngầm lên Google Apps Script / Google Sheets (hoàn toàn không block UI, không hiện toast gây hiểu lầm)
+        if (typeof callGasApi === "function") {
+          callGasApi("adminSaveProduct", {
+            ...prodData,
+            product: prodData
+          }).then(function(res) {
+            if (res && res.success) {
+              console.log("GAS adminSaveProduct synced:", res);
+            }
+          }).catch(function(err) {
+            console.warn("Lỗi đồng bộ ngầm Google Sheets:", err);
+          });
+        }
+      } catch(errFatal) {
+        console.error("handleSaveProduct fatal error:", errFatal);
+        showToast("⚠️ Có lỗi khi lưu sản phẩm: " + (errFatal.message || "Vui lòng thử lại"), "error");
+        closeModal("adminProductModal");
       }
     }
     window.handleSaveProduct = handleSaveProduct;
@@ -13580,13 +13585,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
           if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
           if (typeof renderCustomApiSourcesUI === "function") renderCustomApiSourcesUI();
-          const now = Date.now();
-          if (!window._lastApiAlertsAutoScanTime || (now - window._lastApiAlertsAutoScanTime > 180000)) {
-            window._lastApiAlertsAutoScanTime = now;
-            setTimeout(function() {
-              if (typeof refreshApiSourceAlerts === "function") refreshApiSourceAlerts(false);
-            }, 100);
-          }
         }
         if (tabId === "tabAdmChat") {
           if (typeof renderAdminChatUI === "function") renderAdminChatUI();
@@ -16570,8 +16568,7 @@ function syncAllOpenViewsStock(changedProdId) {
     window.switchStockImportSubTab = switchStockImportSubTab;
 
     function initApiSourceStockUI() {
-      if (typeof fetchBothSourceBalances === "function") fetchBothSourceBalances(false);
-      if (typeof fetchApiSourceProducts === "function") fetchApiSourceProducts(false);
+      // [ZERO-HANG]: Không tự động bắn request đồng thời 6 nguồn khi mở UI Kho hàng
       if (typeof renderCustomApiSourcesUI === "function") renderCustomApiSourcesUI();
       if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
       if (typeof populateQuickTestSelect === "function") populateQuickTestSelect();
