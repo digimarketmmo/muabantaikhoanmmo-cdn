@@ -12665,9 +12665,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return;
       }
 
-      showToast("⏳ Đang xác thực đăng nhập...", "info");
+      showToast("⏳ Đang xác thực thông tin đăng nhập...", "info");
 
-      // KIỂM TRA TÀI KHOẢN CÓ ĐANG BỊ KHÓA DO GIAN LẬN KHÔNG TỪ CLOUD TURSO DATABASE
+      // 1. KIỂM TRA TÀI KHOẢN CÓ ĐANG BỊ KHÓA TỪ CLOUD TURSO DATABASE
       const isLockedCloud = await checkUserLockedFromCloud(email);
       if (isLockedCloud) {
         closeModal("authModal");
@@ -12678,12 +12678,93 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
       const role = isAdm ? "Quản Trị Viên" : "MEMBER";
 
-      // Instant local check
+      // 2. TÌM TÀI KHOẢN TRONG BỘ NHỚ CỤC BỘ (LOCAL REGISTERED USERS)
       let users = getRegisteredUsers();
       const found = users.find(u => (u.email || "").toLowerCase().trim() === email);
-      if (found) {
-        found.isLocked = false;
-        found.status = "ACTIVE";
+
+      // Nếu tài khoản đã tồn tại trên thiết bị này và ĐÃ CÓ MẬT KHẨU ĐƯỢC LƯU
+      if (found && found.password) {
+        if (found.password !== pass) {
+          showToast("❌ Mật khẩu không chính xác! Vui lòng thử lại hoặc bấm 'Quên mật khẩu'.", "danger");
+          const passEl = document.getElementById("loginPassInput");
+          if (passEl) {
+            passEl.value = "";
+            passEl.focus();
+          }
+          return;
+        }
+      } else {
+        // Tài khoản chưa lưu mật khẩu cục bộ hoặc chưa từng đăng nhập trên trình duyệt này:
+        // Bắt buộc xác thực trực tuyến qua Google Apps Script / Cloud Backend
+        let gasValidated = false;
+        let gasUser = null;
+        if (typeof callGasApi === "function") {
+          try {
+            const res = await callGasApi("login", { mode: "login", action: "login", email: email, password: pass });
+            if (res && res.success) {
+              gasValidated = true;
+              gasUser = res.user || null;
+            } else if (res && res.message) {
+              showToast("❌ " + res.message, "danger");
+              const passEl = document.getElementById("loginPassInput");
+              if (passEl) {
+                passEl.value = "";
+                passEl.focus();
+              }
+              return;
+            }
+          } catch(apiErr) {
+            console.warn("GAS Login verification error:", apiErr);
+          }
+        }
+
+        // Nếu máy chủ backend từ chối hoặc người dùng nhập bừa email/mật khẩu
+        if (!gasValidated) {
+          // Bất kể tài khoản có trong bộ nhớ cục bộ hay không, nếu chưa có mật khẩu khớp và backend từ chối, KHÔNG CHO ĐĂNG NHẬP
+          showToast("❌ Tài khoản hoặc mật khẩu không chính xác! Vui lòng kiểm tra lại hoặc sử dụng 'Quên mật khẩu'.", "danger");
+          const passEl = document.getElementById("loginPassInput");
+          if (passEl) {
+            passEl.value = "";
+            passEl.focus();
+          }
+          return;
+        }
+
+        // Cập nhật lại mật khẩu cho tài khoản để các lần đăng nhập sau được xác thực tức thì
+        if (found) {
+          found.password = pass;
+          if (gasUser) {
+            found.userId = gasUser.userId || found.userId;
+            if (gasUser.balance !== undefined) found.balance = Number(gasUser.balance);
+            if (gasUser.role === "ADMIN") found.role = "Quản Trị Viên";
+          }
+          saveRegisteredUsers(users);
+        } else if (gasUser) {
+          // Lưu tài khoản từ cloud về local
+          const newCloudUser = {
+            userId: gasUser.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
+            name: gasUser.name || email.split("@")[0],
+            email: email,
+            password: pass,
+            role: gasUser.role === "ADMIN" || isAdm ? "Quản Trị Viên" : "MEMBER",
+            balance: gasUser.balance !== undefined ? Number(gasUser.balance) : 0,
+            avatar: gasUser.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)),
+            created: new Date().toLocaleDateString("vi-VN")
+          };
+          users.unshift(newCloudUser);
+          saveRegisteredUsers(users);
+        }
+      }
+
+      // XÁC THỰC THÀNH CÔNG -> TIẾN HÀNH ĐĂNG NHẬP
+      let currentLocalUsers = getRegisteredUsers();
+      const confirmedUser = currentLocalUsers.find(u => (u.email || "").toLowerCase().trim() === email);
+
+      if (confirmedUser) {
+        confirmedUser.isLocked = false;
+        confirmedUser.status = "ACTIVE";
+        confirmedUser.password = pass;
+        saveRegisteredUsers(currentLocalUsers);
       }
 
       const savedRefCode = (localStorage.getItem("mmo_ref_code") || sessionStorage.getItem("mmo_ref_code") || "").trim().toLowerCase();
@@ -12693,19 +12774,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
 
       currentUser = {
-        userId: found?.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
-        name: found?.name || (isAdm ? "Quản Trị Viên (Admin)" : email.split("@")[0]),
+        userId: confirmedUser?.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
+        name: confirmedUser?.name || (isAdm ? "Quản Trị Viên (Admin)" : email.split("@")[0]),
         email: email,
-        role: isAdm ? "Quản Trị Viên" : (found?.role || role),
-        balance: found?.balance !== undefined ? found.balance : 0,
-        avatar: found?.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)),
-        referredBy: found?.referredBy || refToAssign
+        password: pass,
+        role: isAdm ? "Quản Trị Viên" : (confirmedUser?.role || role),
+        balance: confirmedUser?.balance !== undefined ? confirmedUser.balance : 0,
+        avatar: confirmedUser?.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)),
+        referredBy: confirmedUser?.referredBy || refToAssign
       };
-
-      if (!found) {
-        users.unshift(currentUser);
-        saveRegisteredUsers(users);
-      }
 
       safeStorageSet("mmo_user", JSON.stringify(currentUser));
       updateUserUI();
@@ -12720,7 +12797,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }, 100);
 
-      // Background GAS call
+      // Background GAS balance sync
       if (typeof callGasApi === "function") {
         callGasApi("login", { mode: "login", action: "login", email: email, password: pass }).then(function(res) {
           if (res && res.success && res.user) {
@@ -12786,11 +12863,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
       const role = isAdm ? "Quản Trị Viên" : "MEMBER";
 
-      // 1. TẠO TÀI KHOẢN TỨC THÌ (0ms) - TUYỆT ĐỐI KHÔNG LÀM ĐƠ/TREO TRÌNH DUYỆT CỦA KHÁCH
+      // 1. TẠO TÀI KHOẢN TỨC THÌ (0ms) - BẢO LƯU MẬT KHẨU CHUẨN XÁC
       currentUser = {
         userId: "USR_" + Math.floor(100000 + Math.random() * 900000),
         name: name,
         email: email,
+        password: pass,
         role: role,
         balance: 0,
         avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email),
@@ -12832,6 +12910,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const idx = latestUsers.findIndex(u => (u.email || "").toLowerCase().trim() === email);
             if (idx !== -1) {
               latestUsers[idx].userId = currentUser.userId;
+              latestUsers[idx].password = pass;
               saveRegisteredUsers(latestUsers);
             }
           }
