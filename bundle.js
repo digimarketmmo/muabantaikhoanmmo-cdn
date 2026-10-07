@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.2.6";
+const MMO_CURRENT_CODE_VERSION = "4.2.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -40341,7 +40341,7 @@ async function confirmRefundOrder() {
       if (!prod) return;
 
       const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
-      const vVal = hasVars ? ((varSelect && varSelect.value !== undefined && varSelect.value !== "") ? varSelect.value : "0") : null;
+      let vVal = hasVars ? ((varSelect && varSelect.value !== undefined && varSelect.value !== "") ? varSelect.value : "0") : null;
 
       const countLabel = document.getElementById("admStockCountLabel");
       const targetBadge = document.getElementById("admStockVariantBadge");
@@ -40353,7 +40353,19 @@ async function confirmRefundOrder() {
       const targetVarName = document.getElementById("admStockTargetVarName");
       if (targetProdName) targetProdName.innerText = prod.name || prod.id;
 
-      if (hasVars && prod.variants[vVal]) {
+      if (hasVars && vVal === "ALL") {
+        if (countLabel) countLabel.innerText = "Toàn bộ tồn kho sản phẩm:";
+        if (targetBadge) {
+          targetBadge.innerText = "Tất cả biến thể";
+          targetBadge.style.background = "rgba(16,185,129,0.2)";
+          targetBadge.style.color = "#34d399";
+        }
+        if (targetVarName) {
+          targetVarName.innerText = "Tất cả biến thể";
+          targetVarName.style.background = "rgba(56,189,248,0.2)";
+          targetVarName.style.color = "#38bdf8";
+        }
+      } else if (hasVars && prod.variants[vVal]) {
         const vObj = prod.variants[vVal];
         if (countLabel) countLabel.innerText = "Tồn kho biến thể " + (Number(vVal) + 1) + ":";
         if (targetBadge) {
@@ -40388,7 +40400,7 @@ async function confirmRefundOrder() {
           let effectiveAccounts = (Array.isArray(accounts) && accounts.length > 0) ? accounts : [];
 
           // NẾU TURSO TRẢ VỀ RỖNG: Tự động khôi phục từ MMO_WAREHOUSE hoặc biến thể local
-          const curVObj = hasVars ? (prod.variants && prod.variants[vVal]) : prod;
+          const curVObj = (hasVars && vVal !== "ALL") ? (prod.variants && prod.variants[vVal]) : prod;
           if (effectiveAccounts.length === 0) {
             const localWh = (typeof MMO_WAREHOUSE !== "undefined") ? MMO_WAREHOUSE.getAvailable(prodId, vVal) : [];
             if (Array.isArray(localWh) && localWh.length > 0) {
@@ -40399,7 +40411,7 @@ async function confirmRefundOrder() {
 
             // Tự động đẩy accounts có sẵn lên Turso chạy ngầm nếu Turso chưa có
             if (effectiveAccounts.length > 0 && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
-              MMO_WORKER_API.adminImportAccounts(prodId, vVal || 0, effectiveAccounts, prod).catch(() => {});
+              MMO_WORKER_API.adminImportAccounts(prodId, vVal === "ALL" ? 0 : (vVal || 0), effectiveAccounts, prod).catch(() => {});
             }
           }
 
@@ -40407,7 +40419,7 @@ async function confirmRefundOrder() {
           let effectiveCount = effectiveAccounts.length;
           if (effectiveCount === 0 && curVObj) {
             const pfMaster = (typeof MASTER_PF_STOCK !== "undefined" && MASTER_PF_STOCK[prodId]) ? MASTER_PF_STOCK[prodId] : null;
-            const pfVar = (pfMaster && hasVars && pfMaster.variants && pfMaster.variants[vVal]) ? pfMaster.variants[vVal] : pfMaster;
+            const pfVar = (pfMaster && hasVars && vVal !== "ALL" && pfMaster.variants && pfMaster.variants[vVal]) ? pfMaster.variants[vVal] : pfMaster;
             if (pfVar && typeof pfVar.stock === "number" && pfVar.stock > 0) {
               effectiveCount = pfVar.stock;
             } else if (typeof curVObj.stock === "number" && curVObj.stock > 0) {
@@ -40427,13 +40439,17 @@ async function confirmRefundOrder() {
           }
 
           // Đồng bộ bộ nhớ local và biến thể mà KHÔNG làm mất stock định sẵn
-          if (hasVars && prod.variants && prod.variants[vVal]) {
+          if (hasVars && vVal !== "ALL" && prod.variants && prod.variants[vVal]) {
             if (effectiveAccounts.length > 0) {
               prod.variants[vVal].accounts = effectiveAccounts;
             }
             prod.variants[vVal].stock = effectiveCount;
             prod.variants[vVal].available = effectiveCount > 0;
             prod.stock = prod.variants.reduce((s, v) => s + (Number(v.stock) || 0), 0);
+          } else if (hasVars && vVal === "ALL") {
+            if (effectiveAccounts.length > 0) {
+              prod.stock = effectiveAccounts.length;
+            }
           } else {
             if (effectiveAccounts.length > 0) {
               prod.accounts = effectiveAccounts;
@@ -40452,24 +40468,26 @@ async function confirmRefundOrder() {
           refreshAllShopStockUI(prodId);
 
           if (warningBox) {
-            if (count === 0) {
+            if (effectiveCount === 0) {
               warningBox.style.display = "flex";
               warningBox.style.borderColor = "rgba(239,68,68,0.4)";
               warningBox.style.background = "rgba(239,68,68,0.12)";
               warningBox.style.color = "#ef4444";
-              warningBox.innerHTML = hasVars 
+              warningBox.innerHTML = (hasVars && vVal !== "ALL")
                 ? "<i class='fa-solid fa-triangle-exclamation'></i> <span>Kho biến thể này đang <strong>HẾT HÀNG (0 acc trên Turso)!</strong> Vui lòng nạp thêm tài khoản vào ô bên trên.</span>"
                 : "<i class='fa-solid fa-triangle-exclamation'></i> <span>Kho sản phẩm đang <strong>HẾT HÀNG (0 acc trên Turso)!</strong> Vui lòng nạp thêm tài khoản vào ô bên trên.</span>";
-            } else if (count < 5) {
+            } else if (effectiveCount < 5) {
               warningBox.style.display = "flex";
               warningBox.style.borderColor = "rgba(245,158,11,0.4)";
               warningBox.style.background = "rgba(245,158,11,0.12)";
               warningBox.style.color = "#f59e0b";
-              warningBox.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i> <span>Cảnh báo: Kho chỉ còn <strong>" + count + " acc</strong> trên Turso Database!</span>";
+              warningBox.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i> <span>Cảnh báo: Kho chỉ còn <strong>" + effectiveCount + " acc</strong> trên Turso Database!</span>";
             } else {
               warningBox.style.display = "none";
             }
           }
+          renderSoldStockAccountsView(prodId, vVal);
+          return;
         } catch(tursoLoadErr) {
           console.warn("Turso load failed, falling back to local warehouse:", tursoLoadErr);
           if (currentView) currentView.placeholder = "Đang dùng kho nội bộ (Turso API tạm thời ngoại tuyến)";
@@ -40479,7 +40497,7 @@ async function confirmRefundOrder() {
         const localAccounts = (typeof MMO_WAREHOUSE !== "undefined") ? MMO_WAREHOUSE.getAvailable(prodId, vVal) : [];
         let effectiveCount = localAccounts.length;
         if (effectiveCount === 0 && prod) {
-          const vObj = (hasVars && prod.variants && prod.variants[vVal]) ? prod.variants[vVal] : prod;
+          const vObj = (hasVars && vVal !== "ALL" && prod.variants && prod.variants[vVal]) ? prod.variants[vVal] : prod;
           if (typeof vObj.stock === "number" && vObj.stock > 0) effectiveCount = vObj.stock;
         }
 
@@ -40497,7 +40515,7 @@ async function confirmRefundOrder() {
           currentView.placeholder = "Mỗi dòng 1 tài khoản (Định dạng: user|pass|2fa|...)";
         }
 
-        if (hasVars && prod.variants && prod.variants[vVal]) {
+        if (hasVars && vVal !== "ALL" && prod.variants && prod.variants[vVal]) {
           if (localAccounts.length > 0) prod.variants[vVal].accounts = localAccounts;
           prod.variants[vVal].stock = effectiveCount;
         }
@@ -40526,7 +40544,7 @@ async function confirmRefundOrder() {
           warningBox.style.borderColor = "rgba(239,68,68,0.4)";
           warningBox.style.background = "rgba(239,68,68,0.12)";
           warningBox.style.color = "#ef4444";
-          warningBox.innerHTML = hasVars 
+          warningBox.innerHTML = (hasVars && vVal !== "ALL")
             ? "<i class='fa-solid fa-triangle-exclamation'></i> <span>Kho biến thể này đang <strong>HẾT HÀNG!</strong> Vui lòng nạp thêm tài khoản vào ô bên trên.</span>"
             : "<i class='fa-solid fa-triangle-exclamation'></i> <span>Kho sản phẩm đang <strong>HẾT HÀNG!</strong> Vui lòng nạp thêm tài khoản vào ô bên trên.</span>";
         } else if (count < 5) {
@@ -40679,7 +40697,11 @@ async function confirmRefundOrder() {
       }
 
       const prevVal = varSelect.value;
-      let optionsHtml = "<option value='ALL'>📦 Tất cả biến thể (Toàn bộ kho sản phẩm)</option>";
+      const totalProdStock = (typeof getShopProductStock === "function") ? getShopProductStock(prod) : ((typeof getProductStockCount === "function") ? getProductStockCount(prod) : (prod.stock || 0));
+      let allTag = "(" + totalProdStock + " acc)";
+      if (totalProdStock === 0) allTag = "❌ [HẾT HÀNG]";
+      else if (totalProdStock < 5) allTag = "⚠️ [" + totalProdStock + " acc]";
+      let optionsHtml = "<option value='ALL'>📦 Tất cả biến thể (Toàn bộ kho: " + allTag + ")</option>";
       prod.variants.forEach(function(v, idx) {
         const vKey = getVariantStockKey(prodId, idx);
         const vStock = (typeof getVariantStockCount === "function") ? getVariantStockCount(prod, idx) : ((map[vKey] && Array.isArray(map[vKey])) ? map[vKey].length : 0);
