@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.2.4";
+const MMO_CURRENT_CODE_VERSION = "4.2.5";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -7240,23 +7240,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
         });
 
-        // Đảm bảo số dư currentUser chuẩn xác theo SSOT
+        // Đảm bảo số dư currentUser chuẩn xác theo SSOT (không ép sàn cứng làm sai lệch khi mua hàng)
         const curUserRaw = safeStorageGet("mmo_user");
         if (curUserRaw) {
           try {
             const u = JSON.parse(curUserRaw);
-            if (u && (u.email || "").toLowerCase().trim() === "manhdongvtc@gmail.com") {
-              if (u.balance > 1000000 || u.balance !== 205500) {
-                u.balance = 205500;
-                safeStorageSet("mmo_user", JSON.stringify(u));
-                if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = 205500;
-              }
-            } else if (u && (u.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com") {
-              if (u.balance < 314020) {
-                u.balance = 314020;
-                safeStorageSet("mmo_user", JSON.stringify(u));
-                if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = 314020;
-              }
+            if (u && typeof u.balance === "number" && !isNaN(u.balance)) {
+              if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = u.balance;
             }
           } catch(e) {}
         }
@@ -7840,11 +7830,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const uFound = uList.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
       if (uFound && uFound.balance !== undefined && !isNaN(Number(uFound.balance))) {
         curBal = Math.max(curBal, Number(uFound.balance));
-      }
-      if (cleanEmail === "digimarketmmo@gmail.com" && curBal < 314020) {
-        curBal = 314020;
-      } else if (cleanEmail === ROOT_ADMIN_EMAIL && curBal < 205500) {
-        curBal = 205500;
       }
 
       // Đối chiếu số dư với dòng tiền thực tế từ các giao dịch đã xác nhận (nạp - mua)
@@ -26489,6 +26474,9 @@ function syncAllOpenViewsStock(changedProdId) {
           allUsers[uIdx].balance = newBal;
           if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allUsers);
         }
+        if (typeof syncUserBalanceToTursoCloud === "function") {
+          syncUserBalanceToTursoCloud(cleanEmail, newBal, currentUser.name, currentUser.role);
+        }
       } catch(e) {}
       if (typeof updateUserUI === "function") updateUserUI();
 
@@ -30795,14 +30783,9 @@ function syncAllOpenViewsStock(changedProdId) {
           } catch(e) {}
         }
 
-        if (cleanEmail === "digimarketmmo@gmail.com" && (cloudBal === null || cloudBal < 314020)) {
-          cloudBal = 314020;
-        } else if (cleanEmail === ROOT_ADMIN_EMAIL && (cloudBal === null || cloudBal < 205500)) {
-          cloudBal = 205500;
-        }
-
-        if (cloudBal !== null && cloudBal > 0) {
-          effectiveBal = Math.max(cloudBal, localBal, calcBal);
+        // Nếu lấy được số dư từ Cloud (Turso/Worker), ưu tiên số dư Cloud (SSOT)
+        if (cloudBal !== null && !isNaN(cloudBal)) {
+          effectiveBal = cloudBal;
         } else if (localBal > 0 || calcBal > 0) {
           effectiveBal = Math.max(localBal, calcBal);
         } else {
@@ -36813,13 +36796,6 @@ function getProductSchemaReviews(p, idx) {
             bal = Math.max(bal, Number(found.balance));
           }
         } catch(e2) {}
-
-        // 3. Sàn tối thiểu bảo vệ cho tài khoản quản trị
-        if (cleanEmail === "digimarketmmo@gmail.com" && bal < 314020) {
-          bal = 314020;
-        } else if (cleanEmail === "manhdongvtc@gmail.com" && bal < 205500) {
-          bal = 205500;
-        }
       }
 
       // 4. Fallback đọc từ Header hoặc Profile hiển thị nếu có
