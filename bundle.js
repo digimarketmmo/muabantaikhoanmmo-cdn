@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.2.7";
+const MMO_CURRENT_CODE_VERSION = "4.2.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -265,8 +265,9 @@ function checkAndApplyNetworkUpdate() {
         nextScript.onload = function() {
           console.log("[MMO Universal Update] Đã nạp thành công code mới v" + data.version + " trên blog này!");
           if (typeof convertOutOfStockToPreOrder === "function") convertOutOfStockToPreOrder();
+          var _curView = (typeof localStorage !== "undefined" && localStorage.getItem("mmo_current_view")) || "viewStore";
           var _curP = new URLSearchParams(window.location.search).get("prod");
-          if (_curP && typeof openProductDetailById === "function") {
+          if (_curView === "viewProductDetail" && _curP && typeof openProductDetailById === "function") {
             openProductDetailById(_curP);
           } else if (typeof initMMOApplication === "function") {
             initMMOApplication();
@@ -6545,8 +6546,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               const nameNorm = removeAccents(name);
               const cat = String(p.category || "");
               const catNorm = removeAccents(cat);
-              const desc = String(p.description || "");
-              const descNorm = removeAccents(desc);
 
               // Khớp theo biến thể
               const vMatch = (p.variants && Array.isArray(p.variants)) ? p.variants.some(function(v) {
@@ -6561,10 +6560,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 String(apiMap.sourceProdId || "").toLowerCase().includes(qRaw)
               ) : false;
 
+              // Khớp mã ID, Tên sản phẩm, Danh mục (>= 3 ký tự), Biến thể hoặc API Mapping
+              const catMatch = (qRaw.length >= 3) && (cat.toLowerCase().includes(qRaw) || catNorm.includes(qNorm));
+
               return pid.includes(qRaw) ||
                      name.toLowerCase().includes(qRaw) || nameNorm.includes(qNorm) ||
-                     cat.toLowerCase().includes(qRaw) || catNorm.includes(qNorm) ||
-                     desc.toLowerCase().includes(qRaw) || descNorm.includes(qNorm) ||
+                     catMatch ||
                      vMatch || apiMatch;
             });
           }
@@ -14443,47 +14444,58 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.switchCategory = filterCategory;
     window._mmoFilterCategoryReal = filterCategory;
 
-    // SMART CATEGORY MATCHER (Tối ưu phản hồi tức thì 0ms, loại bỏ hoàn toàn lỗi màn hình trắng/0 sản phẩm khi bấm tab)
+    // SMART CATEGORY MATCHER (Phân loại chính xác 100%, bảo vệ danh mục Gmail và các mục riêng biệt)
     function matchProductCategory(p, catName) {
       if (!catName || catName === "Tất cả") return true;
       if (!p) return false;
       const target = String(catName).toLowerCase().trim();
       const pCat = String(p.category || "").toLowerCase().trim();
-      const pName = String(p.name || "").toLowerCase().trim();
 
+      // 1. Khớp tuyệt đối theo danh mục sản phẩm
       if (target === pCat) return true;
+
+      // 2. Phân loại theo nhóm danh mục chuẩn xác (CHỈ so khớp trên category của sản phẩm, KHÔNG dùng pName để tránh nhầm lẫn)
+      if (target === "gmail") {
+        return pCat === "gmail" || pCat.startsWith("gmail ") || pCat.endsWith(" gmail");
+      }
       if (target.includes("rom") || target.includes("phone farm")) {
-        return pCat.includes("phone farm") || pCat.includes("rom") || pName.includes("rom") || pName.includes("phone farm");
+        return pCat === "phone farm" || pCat === "rom & tools" || pCat.includes("phone farm") || pCat.includes("rom");
       }
       if (target.includes("vpn") || target.includes("proxy")) {
-        return pCat.includes("vpn") || pCat.includes("proxy") || pName.includes("proxy") || pName.includes("vpn");
+        return pCat === "vpn proxy" || pCat === "vpn" || pCat === "proxy" || pCat.includes("proxy") || pCat.includes("vpn");
       }
-      if (target.includes("chatgpt") || target.includes("ai")) {
-        return pCat.includes("chatgpt") || pCat.includes("ai") || pName.includes("chatgpt") || pName.includes("gpt") || pName.includes("kling") || pName.includes("gemini");
+      if (target === "ai & video" || target === "ai") {
+        return pCat === "ai & video" || pCat === "ai" || pCat.includes("ai & video");
+      }
+      if (target === "chatgpt") {
+        return pCat === "chatgpt";
       }
       if (target.includes("hot mail") || target.includes("hotmail") || target.includes("outlook")) {
-        return pCat.includes("hot mail") || pCat.includes("hotmail") || pName.includes("hotmail") || pName.includes("outlook");
+        return pCat === "hot mail" || pCat === "hotmail" || pCat === "outlook" || pCat.includes("hot mail") || pCat.includes("hotmail") || pCat.includes("outlook");
       }
-      if (target.includes("gmail")) {
-        return pCat.includes("gmail") || pName.includes("gmail");
+      if (target === "tiktok") {
+        return pCat === "tiktok" || pCat.includes("tiktok");
       }
-      if (target.includes("tiktok")) {
-        return pCat.includes("tiktok") || pName.includes("tiktok");
+      if (target === "facebook") {
+        return pCat === "facebook" || pCat.includes("facebook");
       }
-      if (target.includes("facebook")) {
-        return pCat.includes("facebook") || pName.includes("facebook");
+      if (target === "capcut") {
+        return pCat === "capcut" || pCat.includes("capcut");
       }
-      if (target.includes("capcut")) {
-        return pCat.includes("capcut") || pName.includes("capcut");
+      if (target === "canva") {
+        return pCat === "canva" || pCat.includes("canva");
       }
-      if (target.includes("canva")) {
-        return pCat.includes("canva") || pName.includes("canva");
+      if (target === "youtube") {
+        return pCat === "youtube" || pCat.includes("youtube");
       }
-      return pCat.includes(target) || target.includes(pCat);
+      if (target.includes("intagram") || target.includes("instagram")) {
+        return pCat.includes("intagram") || pCat.includes("instagram");
+      }
+      return pCat === target;
     }
     window.matchProductCategory = matchProductCategory;
 
-    // SMART SEARCH & ACCENT-INSENSITIVE PRODUCT MATCHER
+    // SMART SEARCH & ACCENT-INSENSITIVE PRODUCT MATCHER (Tìm kiếm chuẩn xác, không quét tràn lan qua mô tả)
     function matchProductQuery(p, q) {
       if (!p || !q) return false;
       const qRaw = String(q).toLowerCase().trim();
@@ -14494,6 +14506,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const qNorm = removeAcc(qRaw);
       const qCompressed = qNorm.replace(/\s+/g, "");
 
+      const pid = String(p.id || "").toLowerCase();
       const nameRaw = (p.name || "").toLowerCase();
       const nameNorm = removeAcc(nameRaw);
       const nameCompressed = nameNorm.replace(/\s+/g, "");
@@ -14502,18 +14515,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const catNorm = removeAcc(catRaw);
       const catCompressed = catNorm.replace(/\s+/g, "");
 
-      const descRaw = (p.description || "").toLowerCase();
-      const descNorm = removeAcc(descRaw);
+      // 1. Khớp mã ID sản phẩm
+      if (pid.includes(qRaw)) return true;
 
-      // 1. Direct or normalized substring match
-      if (nameRaw.includes(qRaw) || nameNorm.includes(qNorm)) return true;
-      if (catRaw.includes(qRaw) || catNorm.includes(qNorm)) return true;
-      if (descRaw.includes(qRaw) || descNorm.includes(qNorm)) return true;
+      // 2. Khớp Tên sản phẩm (nguyên văn, không dấu, hoặc viết liền không dấu)
+      if (nameRaw.includes(qRaw) || nameNorm.includes(qNorm) || nameCompressed.includes(qCompressed)) return true;
 
-      // 2. Compressed match (e.g. 'cap cut' matches 'capcut', 'chat gpt' matches 'chatgpt')
-      if (nameCompressed.includes(qCompressed) || catCompressed.includes(qCompressed)) return true;
-
-      // 3. Variant names match
+      // 3. Khớp Tên biến thể (variants)
       if (Array.isArray(p.variants)) {
         const vMatch = p.variants.some(function(v) {
           if (!v || !v.name) return false;
@@ -14525,11 +14533,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (vMatch) return true;
       }
 
-      // 4. Multi-word match: all words in query match in name/cat/desc
+      // 4. Khớp Danh mục sản phẩm (khi từ khóa dài >= 3 ký tự)
+      if (qRaw.length >= 3 && (catRaw.includes(qRaw) || catNorm.includes(qNorm) || catCompressed.includes(qCompressed))) {
+        return true;
+      }
+
+      // 5. Nếu từ khóa có nhiều từ: tất cả các từ khóa con phải cùng nằm trong Tên sản phẩm hoặc Danh mục
       const words = qNorm.split(/\s+/).filter(Boolean);
       if (words.length > 1) {
-        const fullCombined = nameNorm + " " + catNorm + " " + descNorm;
-        if (words.every(function(w) { return fullCombined.includes(w); })) return true;
+        const nameCatCombined = nameNorm + " " + catNorm;
+        if (words.every(function(w) { return nameCatCombined.includes(w); })) return true;
       }
 
       return false;
@@ -34171,18 +34184,7 @@ function changeAdmUsersPage(p) {
           console.log("MMO Affiliate Ref Code captured:", cleanRef);
         }
 
-        // Auto-open product if ?prod= or ?id= or #product_ in URL
-        let prodParam = urlParams.get("prod") || urlParams.get("product") || urlParams.get("id");
-        if (!prodParam && window.location.hash.startsWith("#product_")) {
-          prodParam = window.location.hash.replace("#product_", "").split("?")[0];
-        }
-        if (prodParam) {
-          setTimeout(function() {
-            if (typeof openProductDetailById === "function") {
-              openProductDetailById(prodParam);
-            }
-          }, 400);
-        }
+        // URL ref code captured, product opening is managed authoritatively by targetView restored logic
       }
     } catch(e) {}
 
