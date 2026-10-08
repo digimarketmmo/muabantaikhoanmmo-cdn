@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.2.9";
+const MMO_CURRENT_CODE_VERSION = "4.3.2";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -11098,11 +11098,32 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.updateCommissionEstimate = updateCommissionEstimate;
 
-    function handleSaveProduct(event) {
+    async function handleSaveProduct(event) {
       if (event) {
         try { event.preventDefault(); } catch(e) {}
       }
+      const saveBtn = document.getElementById("btnAdmSaveProductModal") || (event && event.target && event.target.querySelector ? event.target.querySelector("button[type='submit']") : null);
+      const oldBtnHtml = saveBtn ? saveBtn.innerHTML : "";
+      if (saveBtn) {
+        saveBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> ĐANG LƯU...';
+        saveBtn.disabled = true;
+      }
+      const resetBtnState = function() {
+        if (saveBtn) {
+          saveBtn.innerHTML = oldBtnHtml;
+          saveBtn.disabled = false;
+        }
+      };
+
       try {
+        // Nếu người dùng vừa chọn ảnh xong bấm Lưu ngay, đợi tối đa 1.5s để CDN upload hoàn tất
+        if (window._isUploadingProductImage) {
+          const waitEnd = Date.now() + 1500;
+          while (window._isUploadingProductImage && Date.now() < waitEnd) {
+            await new Promise(r => setTimeout(r, 100));
+          }
+        }
+
         const id = document.getElementById("admProdId")?.value.trim();
         const isEditing = !!id;
         const prodId = id || ("PROD_" + Date.now().toString(36).toUpperCase() + Math.floor(100 + Math.random() * 900).toString(36).toUpperCase());
@@ -11117,6 +11138,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const reviewsCount = parseInt(document.getElementById("admProdBuffReviews")?.value) || 15;
         if (!name) {
           showToast("Vui lòng nhập tên sản phẩm!", "warning");
+          resetBtnState();
           return;
         }
 
@@ -11434,41 +11456,46 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           } catch(eDesc) {}
         }
 
-        // [KEEPALIVE CLOUD SYNC & TURSO SSOT]: Đảm bảo 100% gửi thẳng lên Worker và lưu vào Turso SQLite
+        // [CLOUD SYNC & TURSO SSOT]: Đảm bảo 100% gửi thẳng lên Worker và lưu vào Turso SQLite (Loại bỏ keepalive:true để tránh lỗi body limit)
         try {
           const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SECURE_TOKEN_2026";
           const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          const leanVariants = (variants || []).map(v => ({
+            name: v.name,
+            price: v.price,
+            stock: v.stock,
+            apiMapping: v.apiMapping
+          }));
+          const syncProductPayload = {
+            ...prodData,
+            variants: leanVariants
+          };
           fetch(workerUrl + "/api/admin/products/save", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               "Authorization": "Bearer " + workerSecret
             },
-            body: JSON.stringify({ product: prodData }),
-            keepalive: true
+            body: JSON.stringify({ product: syncProductPayload })
           }).then(r => r.json()).then(res => {
             console.log("Cloud saveProduct success:", res);
-            // [ZERO-FREEZE]: Giữ nguyên dữ liệu vừa lưu thành công, không fetch đè lại từ Worker
             console.log("Product saved successfully to Turso Cloud SSOT");
           }).catch(err => {
             console.warn("Cloud saveProduct non-fatal:", err);
           });
         } catch(eKeep) {}
 
-        // [ZERO-HANG & INSTANT SAVE]: Đóng modal ngay lập tức và lưu nhanh dữ liệu
+        // [ZERO-HANG & INSTANT SAVE]: Đóng modal ngay lập tức và khôi phục nút bấm
         closeModal("adminProductModal");
+        resetBtnState();
         saveProductsToStorage();
 
-        // Chỉ render view đang hiển thị thực tế để tránh nghẽn CPU/DOM
+        // Làm mới ngay lập tức tất cả các giao diện đang mở để sản phẩm mới hiện ngay 0ms
         try {
-          const adminView = document.getElementById("viewAdmin");
-          const isAdmActive = adminView && adminView.style.display !== "none" && !adminView.classList.contains("hidden");
-          if (isAdmActive) {
-            if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
-            if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-          } else {
-            if (typeof renderProductGrid === "function") renderProductGrid();
-          }
+          if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+          if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+          if (typeof renderProductGrid === "function") renderProductGrid();
+          if (typeof renderAllProductsGrid === "function") renderAllProductsGrid();
         } catch(eR) {}
 
         // Làm mới tức thì bảng Cảnh báo Nguồn Hàng API nếu đang mở
@@ -11559,6 +11586,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         console.error("handleSaveProduct fatal error:", errFatal);
         showToast("⚠️ Có lỗi khi lưu sản phẩm: " + (errFatal.message || "Vui lòng thử lại"), "error");
         closeModal("adminProductModal");
+        resetBtnState();
       }
     }
     window.handleSaveProduct = handleSaveProduct;
@@ -24150,62 +24178,105 @@ function syncAllOpenViewsStock(changedProdId) {
         showToast("Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WebP)!", "warning");
         return;
       }
-      showToast("Đang xử lý & tối ưu hóa ảnh...", "info");
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const rawData = evt.target.result;
-        const img = new Image();
-        img.onload = function() {
-          try {
-            const canvas = document.createElement("canvas");
-            const MAX_DIM = 400;
-            let w = img.width || 400;
-            let h = img.height || 400;
-            if (w > h) {
-              if (w > MAX_DIM) {
-                h = Math.round((h * MAX_DIM) / w);
-                w = MAX_DIM;
-              }
-            } else {
-              if (h > MAX_DIM) {
-                w = Math.round((w * MAX_DIM) / h);
-                h = MAX_DIM;
-              }
-            }
-            canvas.width = w;
-            canvas.height = h;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0, w, h);
-            
-            let quality = 0.7;
-            let compressed = canvas.toDataURL("image/jpeg", quality);
-            while (compressed.length > 28000 && quality > 0.25) {
-              quality -= 0.1;
-              compressed = canvas.toDataURL("image/jpeg", quality);
-            }
 
-            const imgInput = document.getElementById("admProdImage");
-            if (imgInput) imgInput.value = compressed;
-            const preview = document.getElementById("admProdImgPreview");
-            if (preview) preview.src = compressed;
-            showToast("Tải và tối ưu ảnh sản phẩm thành công!", "success");
-          } catch(err) {
-            const imgInput = document.getElementById("admProdImage");
-            if (imgInput) imgInput.value = rawData;
-            const preview = document.getElementById("admProdImgPreview");
-            if (preview) preview.src = rawData;
-            showToast("Tải ảnh sản phẩm thành công!", "success");
+      const preview = document.getElementById("admProdImgPreview");
+      const imgInput = document.getElementById("admProdImage");
+      const statusEl = document.getElementById("admProdImgUploadStatus");
+      if (statusEl) {
+        statusEl.style.display = "inline-flex";
+        statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải lên CDN...';
+      }
+
+      showToast("⚡ Đang tối ưu hóa ảnh...", "info");
+
+      // Dùng URL.createObjectURL để nạp ảnh siêu tốc 0ms, không đơ/lag RAM trình duyệt
+      const blobUrl = URL.createObjectURL(file);
+      const img = new Image();
+
+      img.onload = function() {
+        URL.revokeObjectURL(blobUrl);
+        try {
+          // Chuẩn hóa kích thước ảnh tối đa 600px cho card & trang chi tiết
+          const MAX_DIM = 600;
+          let w = img.naturalWidth || img.width || 500;
+          let h = img.naturalHeight || img.height || 500;
+          if (w > h) {
+            if (w > MAX_DIM) {
+              h = Math.round((h * MAX_DIM) / w);
+              w = MAX_DIM;
+            }
+          } else {
+            if (h > MAX_DIM) {
+              w = Math.round((w * MAX_DIM) / h);
+              h = MAX_DIM;
+            }
           }
-        };
-        img.onerror = function() {
-          showToast("Không thể đọc định dạng ảnh!", "error");
-        };
-        img.src = rawData;
+
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+
+          // Xuất ảnh chất lượng cao 1 bước duy nhất (0.85) - tuyệt đối không lặp while gây đơ giao diện
+          const mimeType = (file.type && file.type.includes("png")) ? "image/png" : "image/jpeg";
+          const optimizedDataUrl = canvas.toDataURL(mimeType, 0.85);
+
+          // Hiển thị ngay ảnh preview tức thì trong 10ms
+          if (preview) preview.src = optimizedDataUrl;
+          if (imgInput) imgInput.value = optimizedDataUrl;
+
+          // Đồng bộ tải lên Cloudflare Worker CDN ngầm
+          window._isUploadingProductImage = true;
+          fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/upload-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              image: optimizedDataUrl,
+              mimeType: mimeType,
+              name: file.name
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            window._isUploadingProductImage = false;
+            if (statusEl) statusEl.style.display = "none";
+            if (data && data.success && data.url) {
+              if (imgInput) imgInput.value = data.url;
+              if (preview) preview.src = data.url;
+              showToast("🎉 Tải ảnh lên Cloud CDN thành công!", "success");
+            } else {
+              showToast("Đã tối ưu hóa ảnh thành công!", "success");
+            }
+          })
+          .catch(err => {
+            window._isUploadingProductImage = false;
+            if (statusEl) statusEl.style.display = "none";
+            console.warn("Upload image to CDN non-fatal, fallback to local:", err);
+            showToast("Đã tối ưu hóa ảnh thành công!", "success");
+          });
+        } catch(errCanvas) {
+          window._isUploadingProductImage = false;
+          if (statusEl) statusEl.style.display = "none";
+          console.warn("Canvas compress error, fallback to FileReader:", errCanvas);
+          const reader = new FileReader();
+          reader.onload = function(evt) {
+            const rawData = evt.target.result;
+            if (preview) preview.src = rawData;
+            if (imgInput) imgInput.value = rawData;
+            showToast("Tải ảnh sản phẩm thành công!", "success");
+          };
+          reader.readAsDataURL(file);
+        }
       };
-      reader.onerror = function() {
-        showToast("Lỗi khi đọc file ảnh!", "error");
+
+      img.onerror = function() {
+        URL.revokeObjectURL(blobUrl);
+        if (statusEl) statusEl.style.display = "none";
+        showToast("Không thể giải mã tệp hình ảnh này!", "error");
       };
-      reader.readAsDataURL(file);
+
+      img.src = blobUrl;
     }
     window.handleUploadProductImage = handleUploadProductImage;
 
