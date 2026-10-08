@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.3.4";
+const MMO_CURRENT_CODE_VERSION = "4.3.5";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -11456,7 +11456,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           } catch(eDesc) {}
         }
 
-        // [CLOUD SYNC & TURSO SSOT]: Đảm bảo 100% gửi thẳng lên Worker và lưu vào Turso SQLite (Loại bỏ keepalive:true để tránh lỗi body limit)
+        // [CLOUD SYNC & TURSO SSOT]: Gửi trực tiếp lên Cloudflare Worker & Turso SQLite, chờ xác nhận lưu thành công
         try {
           const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SECURE_TOKEN_2026";
           const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
@@ -11470,20 +11470,54 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             ...prodData,
             variants: leanVariants
           };
-          fetch(workerUrl + "/api/admin/products/save", {
+          const saveFetchRes = await fetch(workerUrl + "/api/admin/products/save", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               "Authorization": "Bearer " + workerSecret
             },
             body: JSON.stringify({ product: syncProductPayload })
-          }).then(r => r.json()).then(res => {
-            console.log("Cloud saveProduct success:", res);
-            console.log("Product saved successfully to Turso Cloud SSOT");
-          }).catch(err => {
-            console.warn("Cloud saveProduct non-fatal:", err);
           });
-        } catch(eKeep) {}
+          const saveJson = await saveFetchRes.json().catch(() => null);
+          console.log("Cloud saveProduct result:", saveJson);
+        } catch(eSaveWorker) {
+          console.warn("Cloud saveProduct warning:", eSaveWorker);
+        }
+
+        // [LIVE SOURCE CACHE SYNC]: Cập nhật ngay lập tức tồn kho mới nhất vào bộ nhớ nguồn để không bị cache cũ đè lên
+        if (isApiSelected && apiSourceProdIdVal) {
+          const cleanSrcId = String(apiSourceProdIdVal).trim().replace(/^#/, "");
+          if (typeof window !== "undefined") {
+            if (!(window._liveLoadedProviders instanceof Set)) window._liveLoadedProviders = new Set();
+            window._liveLoadedProviders.add(apiProviderVal);
+          }
+          let srcItem = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiProviderVal, cleanSrcId) : null;
+          if (!srcItem && typeof window !== "undefined" && Array.isArray(window.cachedSourceProducts)) {
+            srcItem = window.cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!apiProviderVal || s.provider === apiProviderVal));
+          }
+          if (srcItem) {
+            srcItem.amount = liveSourceStock;
+            if (liveSourcePrice > 0) srcItem.price = liveSourcePrice;
+            if (liveSourceName) srcItem.name = liveSourceName;
+          } else if (typeof window !== "undefined" && Array.isArray(window.cachedSourceProducts)) {
+            window.cachedSourceProducts.push({
+              id: cleanSrcId,
+              name: liveSourceName || name,
+              price: liveSourcePrice || effectivePrice,
+              amount: liveSourceStock,
+              category: category,
+              provider: apiProviderVal
+            });
+          }
+          if (typeof rebuildSourceProductsFastIndex === "function" && typeof window !== "undefined" && window.cachedSourceProducts) {
+            rebuildSourceProductsFastIndex(window.cachedSourceProducts);
+          }
+          try {
+            if (typeof window !== "undefined" && window.cachedSourceProducts) {
+              localStorage.setItem("mmo_cached_source_products", JSON.stringify(window.cachedSourceProducts));
+            }
+          } catch(eCache) {}
+        }
 
         // [ZERO-HANG & INSTANT SAVE]: Đóng modal ngay lập tức và khôi phục nút bấm
         closeModal("adminProductModal");
@@ -11525,20 +11559,28 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             currentSelectedProduct = Object.assign({}, currentSelectedProduct, prodData);
             currentSelectedProduct.variants = variants;
             currentSelectedProduct.price = effectivePrice;
+            currentSelectedProduct.stock = prodData.stock;
             if (currentSelectedVariantIndex >= variants.length) currentSelectedVariantIndex = 0;
+            if (typeof syncDetailStockUI === "function") {
+              syncDetailStockUI(prodData.stock);
+            }
           }
         }
 
-        // TỰ ĐỘNG LÀM MỚI TOÀN BỘ GIAO DIỆN TRANG XEM CHI TIẾT SẢN PHẨM (viewProductDetail) NẾU ĐANG XEM THỰC SỰ
+        // TỰ ĐỘNG LÀM MỚI TOÀN BỘ GIAO DIỆN TRANG XEM CHI TIẾT SẢN PHẨM (viewProductDetail)
         const dtlView = document.getElementById("viewProductDetail");
-        const isDtlActive = dtlView && (dtlView.style.display !== "none" && !dtlView.classList.contains("hidden"));
-        if (isDtlActive && (currentSelectedProduct && (String(currentSelectedProduct.id) === String(actualTargetId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId))))) {
+        if (currentSelectedProduct && (String(currentSelectedProduct.id) === String(actualTargetId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId)))) {
           const dtlImg = document.getElementById("dtlImage");
           if (dtlImg && prodData.image) dtlImg.src = prodData.image;
           const dtlTitle = document.getElementById("dtlTitle");
           if (dtlTitle) dtlTitle.innerText = prodData.name;
-          if (typeof openProductDetailById === "function") {
-            openProductDetailById(actualTargetId);
+          if (typeof syncDetailStockUI === "function") {
+            syncDetailStockUI(prodData.stock);
+          }
+          if (dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden")) {
+            if (typeof openProductDetailById === "function") {
+              openProductDetailById(actualTargetId);
+            }
           }
         }
 
@@ -15288,13 +15330,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                    || cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
             }
             const provHasProds = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
-            if (inSrc && typeof inSrc.amount === "number") {
-              if (inSrc.amount > 0 || provHasProds) {
-                st = inSrc.amount;
-                apiMap.sourceStock = st;
-                apiMap.isSourceDeleted = false;
-                hasLiveSource = true;
-              }
+            if (provHasProds && inSrc && typeof inSrc.amount === "number") {
+              st = inSrc.amount;
+              apiMap.sourceStock = st;
+              apiMap.isSourceDeleted = false;
+              hasLiveSource = true;
             } else if (provHasProds && !inSrc) {
               // Sản phẩm không còn trên web nguồn hoặc nguồn đã xoá/gỡ SP (CHỈ KHI PROVIDER ĐÃ NẠP LIVE)
               st = 0;
@@ -16296,7 +16336,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               } else {
                 cur.deliveryType = 'api';
                 cur.delivery_type = 'api';
-                if (effectiveMapping && effectiveMapping.sourceProdId) {
+                const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(effectiveMapping.provider) : false;
+                if (effectiveMapping && effectiveMapping.sourceProdId && provLoaded) {
                   const cleanEffSrcId = String(effectiveMapping.sourceProdId || "").replace(/^#/, "").trim();
                   const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(effectiveMapping.provider, cleanEffSrcId) : null;
                   if (inSrc) {
@@ -16317,7 +16358,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 }
                 if (Array.isArray(variants) && variants.length > 0) {
                   variants.forEach((v, vI) => {
-                    if (typeof v.stock !== "number" || isNaN(v.stock)) {
+                    if (typeof v.stock !== "number" || isNaN(v.stock) || v.stock === 0) {
                       v.stock = updatedStock;
                     }
                   });
@@ -16326,7 +16367,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                   cur.variants.forEach((cv, cvI) => {
                     if (variants && variants[cvI] && typeof variants[cvI].stock === "number") {
                       cv.stock = variants[cvI].stock;
-                    } else if (typeof cv.stock !== "number" || isNaN(cv.stock)) {
+                    } else if (typeof cv.stock !== "number" || isNaN(cv.stock) || cv.stock === 0) {
                       cv.stock = updatedStock;
                     }
                   });
@@ -16389,8 +16430,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 warranty: tp.warranty || cur.warranty,
                 variants: (function() {
                 if (!variants || variants.length === 0) return cur.variants;
-                // [SSOT SAFE WAREHOUSE]: Bảo tồn 100% tài khoản kho đang có trong biến thể hiện tại
+                // [SSOT SAFE WAREHOUSE]: Bảo tồn 100% tài khoản kho đang có trong biến thể hiện tại (CHỈ KHO NỘI BỘ)
                 return variants.map(function(v, vIdx) {
+                  if (isApiType) {
+                    v.stock = (typeof v.stock === "number" && v.stock > 0) ? v.stock : updatedStock;
+                    v.available = v.stock > 0;
+                    return v;
+                  }
                   const cv = (cur && Array.isArray(cur.variants) && cur.variants[vIdx]) ? cur.variants[vIdx] : null;
                   if (cv && Array.isArray(cv.accounts) && cv.accounts.length > 0) {
                     v.accounts = cv.accounts;
@@ -18225,8 +18271,8 @@ function syncAllOpenViewsStock(changedProdId) {
       if (action === "getProducts") {
         const target = baseUrl.replace(/\/+$/, "") + "/api/products.php?api_key=" + encodeURIComponent(apiKey);
         try {
-          // proxy lockout disabled
-          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(6000) });
+          // proxy lockout disabled (timeout 12s cho các kho lớn hàng nghìn sản phẩm như nguyenlieummo)
+          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(12000) });
           if (!resp.ok) {
             // rate limit handled without 10m lockout
             throw new Error("Proxy status " + resp.status);
@@ -18734,12 +18780,18 @@ function syncAllOpenViewsStock(changedProdId) {
         }
 
         if (freshProducts.length > 0) {
-          window.cachedSourceProducts = freshProducts;
-          cachedSourceProducts = freshProducts;
+          const loadedProviders = (typeof window !== "undefined" && window._liveLoadedProviders) ? window._liveLoadedProviders : new Set();
+          const existingCached = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts)) ? window.cachedSourceProducts : [];
+          // Bảo tồn sản phẩm của các nguồn chưa kịp tải xong đợt này (chống mất cache khi mạng lag/timeout 1 nguồn)
+          const preservedProducts = existingCached.filter(p => p && p.provider && !loadedProviders.has(p.provider));
+          const mergedProducts = freshProducts.concat(preservedProducts);
+
+          window.cachedSourceProducts = mergedProducts;
+          cachedSourceProducts = mergedProducts;
           if (typeof rebuildSourceProductsFastIndex === "function") {
-            rebuildSourceProductsFastIndex(freshProducts);
+            rebuildSourceProductsFastIndex(mergedProducts);
           }
-          try { localStorage.setItem("mmo_cached_source_products", JSON.stringify(freshProducts)); } catch(e) {}
+          try { localStorage.setItem("mmo_cached_source_products", JSON.stringify(mergedProducts)); } catch(e) {}
 
           // Tự động đồng bộ tồn kho API cho toàn bộ sản phẩm đang hiển thị
           const updatedMappings = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
@@ -26329,55 +26381,56 @@ function syncAllOpenViewsStock(changedProdId) {
         if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
           let freshAmount = null;
           let isDeleted = !!apiMap.isSourceDeleted;
-          if (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+          const provLoaded = (typeof isFastSourceProviderLoaded === "function")
+            ? isFastSourceProviderLoaded(apiMap.provider)
+            : false;
+
+          // Nếu provider đã nạp live thành công và KHÔNG PHẢI người dùng bấm nút làm mới thủ công
+          if (!btn && provLoaded && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
             const inCache = (typeof getFastSourceProduct === "function")
               ? getFastSourceProduct(apiMap.provider, apiMap.sourceProdId)
               : (cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
                 || cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId)));
-            const provLoaded = (typeof isFastSourceProviderLoaded === "function")
-              ? isFastSourceProviderLoaded(apiMap.provider)
-              : false;
             if (inCache && typeof inCache.amount === "number") {
-              if (inCache.amount > 0 || provLoaded) {
-                freshAmount = inCache.amount;
-              }
-            } else if (provLoaded && !inCache) {
+              freshAmount = inCache.amount;
+            } else if (!inCache) {
               isDeleted = true;
               freshAmount = 0;
             }
           }
 
-          if (isDeleted) {
-            freshAmount = 0;
-            apiMap.isSourceDeleted = true;
-            apiMap.sourceStock = 0;
-          } else if (freshAmount === null && typeof executeSourceApiCall === "function") {
-            const res = await executeSourceApiCall("getProductStock", {
-              provider: apiMap.provider || "sellmmo",
-              sourceProdId: String(apiMap.sourceProdId)
-            });
-            if (res && res.success && typeof res.amount === "number") {
-              freshAmount = res.amount;
-              if (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts)) {
-                const cIdx = window.cachedSourceProducts.findIndex(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider));
-                if (cIdx !== -1) {
-                  window.cachedSourceProducts[cIdx].amount = freshAmount;
-                } else {
-                  window.cachedSourceProducts.push({
-                    id: String(apiMap.sourceProdId),
-                    name: res.name || apiMap.sourceProdName || curP.name,
-                    price: res.price || apiMap.sourcePrice || 0,
-                    amount: freshAmount,
-                    provider: apiMap.provider
-                  });
+          // Khi người dùng bấm nút làm mới, hoặc chưa có freshAmount, hoặc provider chưa tải live xong:
+          // GỌI TRỰC TIẾP executeSourceApiCall("getProductStock") để lấy số lượng tức thì thời gian thực từ API nhà cung cấp
+          if (btn || freshAmount === null || !provLoaded) {
+            if (typeof executeSourceApiCall === "function") {
+              const res = await executeSourceApiCall("getProductStock", {
+                provider: apiMap.provider || "sellmmo",
+                sourceProdId: String(apiMap.sourceProdId)
+              });
+              if (res && res.success && typeof res.amount === "number") {
+                freshAmount = res.amount;
+                isDeleted = false;
+                if (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts)) {
+                  const cIdx = window.cachedSourceProducts.findIndex(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider));
+                  if (cIdx !== -1) {
+                    window.cachedSourceProducts[cIdx].amount = freshAmount;
+                  } else {
+                    window.cachedSourceProducts.push({
+                      id: String(apiMap.sourceProdId),
+                      name: res.name || apiMap.sourceProdName || curP.name,
+                      price: res.price || apiMap.sourcePrice || 0,
+                      amount: freshAmount,
+                      provider: apiMap.provider
+                    });
+                  }
+                  if (typeof rebuildSourceProductsFastIndex === "function") rebuildSourceProductsFastIndex(window.cachedSourceProducts);
                 }
-                if (typeof rebuildSourceProductsFastIndex === "function") rebuildSourceProductsFastIndex(window.cachedSourceProducts);
+              } else if (res && !res.success && (String(res.error || "").toLowerCase().includes("not found") || String(res.msg || "").toLowerCase().includes("không tồn tại") || String(res.error || "").toLowerCase().includes("deleted"))) {
+                freshAmount = 0;
+                isDeleted = true;
+                apiMap.isSourceDeleted = true;
+                apiMap.sourceStock = 0;
               }
-            } else if (res && !res.success && (String(res.error || "").toLowerCase().includes("not found") || String(res.msg || "").toLowerCase().includes("không tồn tại") || String(res.error || "").toLowerCase().includes("deleted"))) {
-              freshAmount = 0;
-              isDeleted = true;
-              apiMap.isSourceDeleted = true;
-              apiMap.sourceStock = 0;
             }
           }
 
@@ -26766,21 +26819,24 @@ function syncAllOpenViewsStock(changedProdId) {
             ? getFastSourceProduct(apiMapInfo.provider, apiMapInfo.sourceProdId)
             : (prods.find(s => String(s.id) === String(apiMapInfo.sourceProdId) && (!apiMapInfo.provider || s.provider === apiMapInfo.provider))
               || prods.find(s => String(s.id) === String(apiMapInfo.sourceProdId)));
-          if (provLoaded && !inSrc) {
-            liveMapStock = 0;
-            apiMapInfo.sourceStock = 0;
-            apiMapInfo.isSourceDeleted = true;
-          } else if (inSrc && typeof inSrc.amount === "number" && (inSrc.amount > 0 || provLoaded)) {
-            liveMapStock = inSrc.amount;
-            apiMapInfo.sourceStock = inSrc.amount;
-          } else if (typeof apiMapInfo.sourceStock === "number" && apiMapInfo.sourceStock > 0) {
-            liveMapStock = apiMapInfo.sourceStock;
+          if (provLoaded) {
+            if (inSrc && typeof inSrc.amount === "number") {
+              liveMapStock = inSrc.amount;
+              apiMapInfo.sourceStock = inSrc.amount;
+            } else {
+              liveMapStock = 0;
+              apiMapInfo.sourceStock = 0;
+              apiMapInfo.isSourceDeleted = true;
+            }
           } else {
-            const ssotStock = (p.variants && p.variants[currentSelectedVariantIndex] && typeof p.variants[currentSelectedVariantIndex].stock === "number")
-              ? p.variants[currentSelectedVariantIndex].stock
-              : (typeof p.stock === "number" ? p.stock : null);
-            if (ssotStock !== null && ssotStock > 0) {
-              liveMapStock = ssotStock;
+            // Khi chưa tải xong live từ nhà cung cấp: Ưu tiên dữ liệu SSOT từ Turso/Admin vừa lưu (sourceStock hoặc p.stock)
+            if (typeof apiMapInfo.sourceStock === "number" && apiMapInfo.sourceStock >= 0) {
+              liveMapStock = apiMapInfo.sourceStock;
+            } else if (typeof p.stock === "number" && p.stock >= 0) {
+              liveMapStock = p.stock;
+            } else if (inSrc && typeof inSrc.amount === "number") {
+              liveMapStock = inSrc.amount;
+              apiMapInfo.sourceStock = inSrc.amount;
             }
           }
         }
