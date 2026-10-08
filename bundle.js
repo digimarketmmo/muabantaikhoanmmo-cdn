@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.3.2";
+const MMO_CURRENT_CODE_VERSION = "4.3.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -28462,20 +28462,51 @@ function syncAllOpenViewsStock(changedProdId) {
     // ==================== BLOG LOGIC ====================
     function renderSidebarBlogs() {
       const list = document.getElementById("homeSidebarBlogList");
-      if (!list) return;
-      const uniqueBlogs = (typeof getUniqueBlogs === "function") ? getUniqueBlogs(MOCK_DATA.blogs || []) : (MOCK_DATA.blogs || []);
-      list.innerHTML = uniqueBlogs.slice(0, 8).map(b => `
-        <div class="blog-item" onclick="openBlogDetail('${b.id}')">
-          <div class="blog-thumb">
-            <img src="${upgradeBloggerImageToFullHd(b.image)}" alt="${b.title}"/>
+      if (list) {
+        const uniqueBlogs = (typeof getUniqueBlogs === "function") ? getUniqueBlogs(MOCK_DATA.blogs || []) : (MOCK_DATA.blogs || []);
+        list.innerHTML = uniqueBlogs.slice(0, 8).map(b => `
+          <div class="blog-item" onclick="openBlogDetail('${b.id}')">
+            <div class="blog-thumb">
+              <img src="${upgradeBloggerImageToFullHd(b.image)}" alt="${b.title}"/>
+            </div>
+            <div class="blog-content">
+              <div class="blog-title">${b.title}</div>
+              <div class="blog-time">${b.date}</div>
+            </div>
           </div>
-          <div class="blog-content">
-            <div class="blog-title">${b.title}</div>
-            <div class="blog-time">${b.date}</div>
-          </div>
-        </div>
-      `).join("");
+        `).join("");
+      }
+      if (typeof renderHomeSidebarRecommended === "function") renderHomeSidebarRecommended();
     }
+
+    function renderHomeSidebarRecommended() {
+      try {
+        const list = document.getElementById("homeSidebarRecList");
+        if (!list) return;
+        const prods = (MOCK_DATA.products || []).slice(0, 5);
+        if (!prods.length) return;
+        list.innerHTML = prods.map(p => {
+          const price = (p.variants && p.variants[0]) ? p.variants[0].price : (p.price || 0);
+          const priceStr = (typeof formatMoney === "function") ? formatMoney(price) : (Number(price).toLocaleString("vi-VN") + " đ");
+          const sold = p.soldCount || 120;
+          return `
+            <div class="compact-product-item" onclick="openProductDetailById('${p.id}')">
+              <div class="compact-thumb"><img src="${p.image || 'https://iili.io/nFV4Rln.png'}" alt="${escapeHtml(p.name)}" loading="lazy"/></div>
+              <div class="compact-info">
+                <a class="compact-title" href="?prod=${p.id}&view=viewProductDetail" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('${p.id}'); }" style="text-decoration:none; color:inherit; display:block;" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</a>
+                <div class="compact-meta">
+                  <span class="compact-price">${priceStr}</span>
+                  <span class="compact-sold">Đã bán: ${sold}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join("");
+      } catch(e) {
+        console.error("renderHomeSidebarRecommended error:", e);
+      }
+    }
+    window.renderHomeSidebarRecommended = renderHomeSidebarRecommended;
 
     
     // ============================================================

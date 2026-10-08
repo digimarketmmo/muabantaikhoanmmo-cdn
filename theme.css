@@ -225,7 +225,15 @@
       align-items: stretch;
       width: 100%;
     }
-    @media (max-width: 1200px) {
+    @media (min-width: 1201px) and (max-width: 1400px) {
+      .hero-container { grid-template-columns: 240px minmax(0, 1fr) 240px; gap: 12px; }
+      .hero-sponsor-card { display: flex; }
+    }
+    @media (min-width: 850px) and (max-width: 1200px) {
+      .hero-container { grid-template-columns: 220px minmax(0, 1fr) 220px; gap: 10px; }
+      .hero-sponsor-card { display: flex; }
+    }
+    @media (max-width: 849px) {
       .hero-container { grid-template-columns: 1fr; }
       .hero-sponsor-card { display: none; }
     }
@@ -619,15 +627,27 @@
       margin-bottom: 40px;
       width: 100%;
     }
-    @media (max-width: 1200px) {
-      .home-main-layout { grid-template-columns: 270px 1fr; }
-      .home-sidebar-right { display: none; }
+    @media (min-width: 1201px) and (max-width: 1400px) {
+      .home-main-layout { grid-template-columns: 250px minmax(0, 1fr) 250px; gap: 14px; }
+      .home-sidebar-left, .home-sidebar-right { display: block; }
     }
-    @media (max-width: 900px) {
+    /* Màn hình dọc máy tính (850px - 1200px) & Desktop vừa: Hiển thị đầy đủ 2 thanh bên cân bằng */
+    @media (min-width: 850px) and (max-width: 1200px) {
+      .home-main-layout { grid-template-columns: 220px minmax(0, 1fr) 220px; gap: 12px; }
+      .home-sidebar-left, .home-sidebar-right { display: block; }
+    }
+    /* Tablet nhỏ (650px - 849px): Ẩn thanh bên phải, giữ thanh bên trái */
+    @media (min-width: 650px) and (max-width: 849px) {
+      .home-main-layout { grid-template-columns: 240px minmax(0, 1fr); gap: 12px; }
+      .home-sidebar-right { display: none; }
+      .home-sidebar-left { display: block; }
+    }
+    /* Mobile (< 650px): 1 cột duy nhất */
+    @media (max-width: 649px) {
       body { padding-top: 60px !important; }
       .header { height: 60px !important; }
       .home-main-layout { grid-template-columns: 1fr; }
-      .home-sidebar-left { display: none; }
+      .home-sidebar-left, .home-sidebar-right { display: none; }
     }
 
     /* CỐ ĐỊNH VÀ KÉO DÀI CÂN BẰNG 2 THANH BÊN (BALANCED FULL-HEIGHT SIDEBARS) - TRƯỢT MƯỢT KHÔNG KHOẢNG TRỐNG */
@@ -6377,3 +6397,72 @@ body.is-admin #profAdminShortcutBtn {
   font-size: 0.74rem !important;
   vertical-align: middle !important;
 }
+
+/* =========================================================================
+   HỆ THỐNG MÀN HÌNH DỌC MÁY TÍNH & TABLET LỚN (PC PORTRAIT DUAL SIDEBARS ENGINE)
+   Đảm bảo 100% hiển thị đầy đủ cả 2 thanh bên cân bằng, trượt mượt trên màn hình dọc máy tính
+   ========================================================================= */
+@media (min-width: 850px) and (max-width: 1280px) {
+  .hero-container {
+    display: grid !important;
+    grid-template-columns: 220px minmax(0, 1fr) 220px !important;
+    gap: 12px !important;
+  }
+  .hero-sponsor-card {
+    display: flex !important;
+  }
+  .home-main-layout {
+    display: grid !important;
+    grid-template-columns: 220px minmax(0, 1fr) 220px !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+  .home-sidebar-left,
+  .home-sidebar-right {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  .recommended-grid,
+  #recommendedGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)) !important;
+    gap: 10px !important;
+  }
+}
+
+@media (orientation: portrait) and (min-width: 800px) {
+  .hero-container {
+    display: grid !important;
+    grid-template-columns: 220px minmax(0, 1fr) 220px !important;
+    gap: 10px !important;
+  }
+  .hero-sponsor-card {
+    display: flex !important;
+  }
+  .home-main-layout {
+    display: grid !important;
+    grid-template-columns: 220px minmax(0, 1fr) 220px !important;
+    gap: 12px !important;
+    width: 100% !important;
+  }
+  .home-sidebar-left,
+  .home-sidebar-right {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  .recommended-grid,
+  #recommendedGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)) !important;
+    gap: 10px !important;
+  }
+}
+
