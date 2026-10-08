@@ -5406,7 +5406,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     const ROOT_ADMIN_EMAIL = "manhdongvtc@gmail.com";
     const DEFAULT_REGISTERED_USERS = [
-      { name: "Mạnh Đồng Official", email: "manhdongvtc@gmail.com", role: "Quản Trị Viên", balance: 205500, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" },
+      { name: "Mạnh Đồng Official", email: "manhdongvtc@gmail.com", role: "Quản Trị Viên", balance: 225500, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" },
       { name: "Nguyễn Mạnh Đông", email: "digimarketmmo@gmail.com", role: "Quản Trị Viên", balance: 314020, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }
     ];
 
@@ -8791,23 +8791,26 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         });
       } catch(e) {}
 
-      // F. Gộp từ Cloud SePay / VietQR (cachedCloudWalletHistory)
+      // F. Gộp từ Cloud SePay / VietQR & Cloud Wallet (cachedCloudWalletHistory)
       if (typeof cachedCloudWalletHistory !== "undefined" && Array.isArray(cachedCloudWalletHistory)) {
         cachedCloudWalletHistory.forEach(ch => {
           if (!ch) return;
           const chEmail = (ch.userEmail || ch.email || ch.buyerEmail || "").toLowerCase().trim();
-          const chNoteLow = String(ch.note || ch.content || ch.reason || ch.type || "").toLowerCase();
-          if (chEmail && chEmail === cleanEmail && !chNoteLow.includes("đồng bộ") && !chNoteLow.includes("dong bo") && !chNoteLow.includes("hiệu chỉnh") && !chNoteLow.includes("chuẩn hóa")) {
+          if (!chEmail || chEmail === cleanEmail) {
             const chAmt = Number(ch.amount) || 0;
-            if (chAmt > 0) {
+            const chNote = ch.note || ch.content || ch.reason || "";
+            const chId = ch.id || ch.orderId || "";
+            if (chAmt !== 0) {
+              const isPurchase = chAmt < 0 || String(ch.type || "").toLowerCase().includes("mua") || String(ch.type || "").toLowerCase().includes("trừ");
+              const isDep = chAmt > 0;
               rawLogs.push({
-                id: "DEP_" + (ch.id || ch.orderId || ch.content),
-                orderId: ch.orderId || ch.id || ch.content || "",
+                id: (isDep ? "DEP_" : "ORD_") + (chId || Math.random()),
+                orderId: chId,
                 time: ch.time || ch.date,
-                type: ch.type || "Nạp tiền VietQR / SePay",
-                amount: +chAmt,
-                balanceAfter: null,
-                note: ch.note || ch.content || "Nạp tiền tự động qua QR"
+                type: ch.type || (isDep ? "Nạp tiền ví" : "Thanh toán mua hàng"),
+                amount: chAmt,
+                balanceAfter: ch.balanceAfter !== undefined ? Number(ch.balanceAfter) : null,
+                note: chNote || (isDep ? "Nạp tiền tự động qua QR" : "Thanh toán đơn hàng")
               });
             }
           }
@@ -13787,13 +13790,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       if (viewId === "viewAdmin") {
         document.getElementById("navAdmin")?.classList.add("active");
-        if (!_viewRendered["viewAdmin"] || _viewDirty["viewAdmin"]) {
-          _viewRendered["viewAdmin"] = true;
-          _viewDirty["viewAdmin"] = false;
-          if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-          if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
-          if (typeof renderSystemOverview === "function") renderSystemOverview();
-        }
+        _viewRendered["viewAdmin"] = true;
+        _viewDirty["viewAdmin"] = false;
+        if (typeof renderSystemOverview === "function") renderSystemOverview();
+        if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+        if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
         const activeAdmTab = localStorage.getItem("mmo_admin_tab") || "tabAdmDashboard";
         if (typeof switchAdminTab === "function") switchAdminTab(activeAdmTab);
       }
@@ -14594,8 +14595,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const catNorm = removeAcc(catRaw);
       const catCompressed = catNorm.replace(/\s+/g, "");
 
-      // 1. Khớp mã ID sản phẩm
+      // 1. Khớp mã ID sản phẩm (kèm alias PROD_MU2AB1XEGI -> PROD_MU6R34FZ4Z)
       if (pid.includes(qRaw)) return true;
+      if ((qRaw === "prod_mu2ab1xegi" || qRaw.includes("mu2ab1xegi") || qRaw === "sp_gemini_veo3") && (pid === "prod_mu6r34fz4z" || pid === "prod_mu5t3t47ae")) return true;
 
       // 2. Khớp Tên sản phẩm (nguyên văn, không dấu, hoặc viết liền không dấu)
       if (nameRaw.includes(qRaw) || nameNorm.includes(qNorm) || nameCompressed.includes(qCompressed)) return true;
@@ -15175,6 +15177,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (bz) return bz;
         }
 
+        // Google Gemini AI Pro Veo3 legacy alias
+        if (sId === "PROD_MU2AB1XEGI" || sId === "SP_GEMINI_VEO3") {
+          const gem = MOCK_DATA.products.find(p => p && (p.id === "PROD_MU6R34FZ4Z" || p.id === "PROD_MU5T3T47AE"));
+          if (gem) return gem;
+        }
+
         // Chỉ khi sId KHÔNG PHẢI là mã ID (ví dụ truyền chuỗi tên sản phẩm), mới tìm theo tên chính xác
         if (!isId) {
           const normFn = (typeof normApiText === "function") ? normApiText : (t => String(t || '').toLowerCase().trim());
@@ -15193,6 +15201,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             let f = list.find(p => p && (String(p.id) === sId || String(p.id).toLowerCase() === sId.toLowerCase()));
             if (!f && (sId === "PROD_MTPIJ9XV" || sId === "PROD_MTPG0PUD" || sId === "SP_TIKTOK_BRAZIL")) {
               f = list.find(p => p && (p.id === "PROD_MTPIJ9XV" || p.id === "PROD_MTPG0PUD" || p.id === "SP_TIKTOK_BRAZIL"));
+            }
+            if (!f && (sId === "PROD_MU2AB1XEGI" || sId === "SP_GEMINI_VEO3")) {
+              f = list.find(p => p && (p.id === "PROD_MU6R34FZ4Z" || p.id === "PROD_MU5T3T47AE"));
             }
             if (!f && !isId) {
               const normFn = (typeof normApiText === "function") ? normApiText : (t => String(t || '').toLowerCase().trim());
@@ -26470,7 +26481,10 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function openProductDetailById(id) {
       if (!id) return;
-      const cleanId = String(id).trim();
+      let cleanId = String(id).trim();
+      if (cleanId === "PROD_MU2AB1XEGI" || cleanId === "SP_GEMINI_VEO3") {
+        cleanId = "PROD_MU6R34FZ4Z";
+      }
 
       // [TỐI ƯU CỐT LÕI - 1 LẦN BẤM TỚI NGAY TRANG ĐÍCH 0MS]: Đánh dấu mở sản phẩm & cập nhật URL tức thì
       window._isOpeningProductDetail = true;
@@ -31995,14 +32009,11 @@ function syncAllOpenViewsStock(changedProdId) {
             : Promise.resolve(null)
         ]);
 
-        let cloudBal = null;
-        if (tursoRes && tursoRes.success && tursoRes.user && tursoRes.user.balance !== undefined && !isNaN(Number(tursoRes.user.balance))) {
-          cloudBal = Number(tursoRes.user.balance);
-        } else if (walletRes && walletRes.wallet && !isNaN(Number(walletRes.wallet.balance))) {
-          cloudBal = Number(walletRes.wallet.balance);
-        }
+        let tursoBal = (tursoRes && tursoRes.success && tursoRes.user && tursoRes.user.balance !== undefined && !isNaN(Number(tursoRes.user.balance)))
+          ? Number(tursoRes.user.balance) : null;
+        let gasBal = (walletRes && walletRes.wallet && !isNaN(Number(walletRes.wallet.balance)))
+          ? Number(walletRes.wallet.balance) : null;
 
-        let effectiveBal = 0;
         let localBal = (currentUser && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) ? Number(currentUser.balance) : 0;
         let allUsers = getRegisteredUsers();
         const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
@@ -32021,14 +32032,8 @@ function syncAllOpenViewsStock(changedProdId) {
           } catch(e) {}
         }
 
-        // Nếu lấy được số dư từ Cloud (Turso/Worker), ưu tiên số dư Cloud (SSOT)
-        if (cloudBal !== null && !isNaN(cloudBal)) {
-          effectiveBal = cloudBal;
-        } else if (localBal > 0 || calcBal > 0) {
-          effectiveBal = Math.max(localBal, calcBal);
-        } else {
-          effectiveBal = 0;
-        }
+        // Quyết định số dư chuẩn xác: Lấy số dư hợp lệ cao nhất giữa Cloud Turso, GAS Cloud và Local
+        let effectiveBal = Math.max(tursoBal || 0, gasBal || 0, localBal || 0, calcBal || 0);
 
         currentUser.balance = effectiveBal;
         try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
@@ -32044,21 +32049,19 @@ function syncAllOpenViewsStock(changedProdId) {
         if (heroProfBal) heroProfBal.innerText = formatVND(effectiveBal);
 
         // Đồng bộ ngược lên Turso nếu số dư trên Cloud thấp hơn số dư thực tế
-        if (cloudBal === null || effectiveBal > cloudBal) {
+        if (tursoBal === null || effectiveBal > (tursoBal || 0)) {
           if (typeof syncUserBalanceToTursoCloud === "function") {
-            syncUserBalanceToTursoCloud(cleanEmail, effectiveBal);
+            syncUserBalanceToTursoCloud(cleanEmail, effectiveBal, currentUser.name, currentUser.role);
           }
         }
 
-        if (walletRes && walletRes.wallet) {
-          if (Array.isArray(walletRes.wallet.history)) {
-            cachedCloudWalletHistory = walletRes.wallet.history
-              .filter(item => {
-                const noteLow = String(item.note || item.content || item.reason || "").toLowerCase();
-                return !noteLow.includes("đồng bộ") && !noteLow.includes("dong bo") && !noteLow.includes("hiệu chỉnh") && !noteLow.includes("chuẩn hóa");
-              })
-              .map(item => Object.assign({}, item, { userEmail: cleanEmail }));
-          }
+        if (walletRes && walletRes.wallet && Array.isArray(walletRes.wallet.history)) {
+          const mappedHistory = walletRes.wallet.history.map(item => Object.assign({}, item, { userEmail: cleanEmail }));
+          const filtered = mappedHistory.filter(item => {
+            const noteLow = String(item.note || item.content || item.reason || "").toLowerCase();
+            return !noteLow.includes("hiệu chỉnh chuẩn hóa");
+          });
+          cachedCloudWalletHistory = filtered.length > 0 ? filtered : mappedHistory;
         }
 
         // 2. Quét từ Cloud getUserOrders để bổ sung các lần nạp tiền NAP_VI vào lịch sử
