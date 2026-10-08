@@ -1,8 +1,8 @@
 // =========================================================================
-// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.3.8)
+// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.3.9)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.3.8";
+const MMO_CURRENT_CODE_VERSION = "4.3.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -161,9 +161,15 @@ function healStorageQuota(forceEmergency) {
     ["mmo_admin_products", "mmo_products"].forEach(function(key) {
       try {
         const raw = localStorage.getItem(key);
-        if (raw && (raw.includes("data:image/") || /khotaikhoanso/i.test(raw))) {
+        if (raw) {
           const prods = JSON.parse(raw);
           if (Array.isArray(prods)) {
+            // [BẢO VỆ CHỐNG GIÁ 0Đ]: Nếu phát hiện sản phẩm trong cache bị lỗi giá 0đ, xóa ngay cache để nạp lại chuẩn từ Cloudflare Worker Turso SSOT
+            const hasZeroPrice = prods.some(p => p && (Number(p.price) <= 0 || (Array.isArray(p.variants) && p.variants.some(v => Number(v.price) <= 0))));
+            if (hasZeroPrice) {
+              localStorage.removeItem(key);
+              return;
+            }
             const cleanProds = prods.filter(p => !JSON.stringify(p).toLowerCase().includes("khotaikhoanso"));
             cleanProds.forEach(function(p) {
               if (p && p.image && (p.image.startsWith("data:image/") || p.image.includes("khotaikhoanso"))) {
@@ -16294,7 +16300,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 } catch(eMapSync) {}
               }
               
-              const updatedPrice = (tp.price !== undefined) ? Number(tp.price) : cur.price;
+              const updatedPrice = (Number(tp.price) > 0) ? Number(tp.price) : (Number(cur.price) > 0 ? Number(cur.price) : (Number(tp.price) || 0));
               if (!isApiType) {
                 const isPhoneFarmOrRom = (cur.category === 'Phone Farm' || (typeof cur.category === 'string' && (cur.category.toLowerCase().includes('phone farm') || cur.category.toLowerCase().includes('rom'))) || (typeof cur.name === 'string' && (cur.name.toLowerCase().includes('rom') || cur.name.toLowerCase().includes('phone farm'))));
                 const pfMaster = (typeof MASTER_PF_STOCK !== "undefined" && MASTER_PF_STOCK[cur.id]) ? MASTER_PF_STOCK[cur.id] : null;
