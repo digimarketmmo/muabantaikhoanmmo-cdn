@@ -16358,6 +16358,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               apiMapping: newMapping
             });
             hasNewOrUpdated = true;
+          }
         });
 
         // [SSOT CLOUD RECONCILIATION ENGINE v4.3.6]: XÓA TẬN GỐC CÁC SẢN PHẨM ĐÃ BỊ XÓA TRÊN CLOUD TURSO
