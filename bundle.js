@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.3.6";
+const MMO_CURRENT_CODE_VERSION = "4.3.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -13,22 +13,34 @@ function healStorageQuota(forceEmergency) {
   try {
     if (typeof localStorage === "undefined") return;
 
-    // [BƯỚC 0 - SIÊU TỐC 0MS]: Luôn dọn dẹp ảnh base64 khổng lồ trong mmo_admin_products / mmo_products ngay lập tức
+    // [BƯỚC 0 - SIÊU TỐC 0MS]: Luôn dọn dẹp ảnh base64 khổng lồ và xóa sổ rác khotaikhoanso
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const k = localStorage.key(i);
+        if (!k) continue;
+        const val = localStorage.getItem(k) || "";
+        if (k.includes("khotaikhoanso") || val.includes("khotaikhoanso")) {
+          if (k.startsWith("mmo_custom_img_")) {
+            localStorage.removeItem(k);
+          }
+        }
+      }
+    } catch(eCleanOld) {}
+
     ["mmo_admin_products", "mmo_products"].forEach(function(key) {
       try {
         const raw = localStorage.getItem(key);
-        if (raw && raw.includes("data:image/")) {
+        if (raw && (raw.includes("data:image/") || raw.includes("khotaikhoanso"))) {
           const prods = JSON.parse(raw);
           if (Array.isArray(prods)) {
             prods.forEach(function(p) {
-              if (p && p.image && p.image.startsWith("data:image/")) {
-                // [SSOT CLOUD IMAGE]: Chuyển sang URL Cloud Worker vĩnh viễn, bảo toàn 100% ảnh mới của sản phẩm
-                p.image = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image";
+              if (p && p.image && (p.image.startsWith("data:image/") || p.image.includes("khotaikhoanso"))) {
+                p.image = (typeof KNOWN_CDN_MAP !== "undefined" && KNOWN_CDN_MAP[p.id]) ? KNOWN_CDN_MAP[p.id] : ("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image");
               }
-              if (p && p.image_url && p.image_url.startsWith("data:image/")) {
+              if (p && p.image_url && (p.image_url.startsWith("data:image/") || p.image_url.includes("khotaikhoanso"))) {
                 p.image_url = p.image;
               }
-              if (p && p.imageUrl && p.imageUrl.startsWith("data:image/")) {
+              if (p && p.imageUrl && (p.imageUrl.startsWith("data:image/") || p.imageUrl.includes("khotaikhoanso"))) {
                 p.imageUrl = p.image;
               }
             });
@@ -13786,7 +13798,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (pId) {
         try {
           const customSaved = localStorage.getItem("mmo_custom_img_" + pId);
-          if (customSaved && customSaved.trim() !== "" && !customSaved.includes("placeholder")) {
+          if (customSaved && (customSaved.includes("khotaikhoanso") || customSaved.includes("placeholder"))) {
+            localStorage.removeItem("mmo_custom_img_" + pId);
+          } else if (customSaved && customSaved.trim() !== "") {
             return customSaved.trim();
           }
         } catch(e) {}
@@ -13799,12 +13813,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (trimmed.includes("manhdongvtc.workers.dev")) {
           trimmed = trimmed.replace(/manhdongvtc\.workers\.dev/g, "muabantaikhoanmmo.workers.dev");
         }
+        if (trimmed.includes("khotaikhoanso")) {
+          trimmed = "";
+        }
         if (trimmed.startsWith("data:image/") || (trimmed.startsWith("data:") && trimmed.length > 50)) {
           return trimmed;
         }
         // [ZERO-STALE IMAGE ENGINE]: Chấp nhận 100% URL công khai, bao gồm cả Cloud Worker /api/products/:id/image
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
-            !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash")) {
+            !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash") && !trimmed.includes("khotaikhoanso")) {
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
       }
@@ -16103,7 +16120,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (deletedIds.includes(tp.id)) return;
           if (typeof isProductDeleted === "function" && isProductDeleted(tp)) return;
 
-          const img = tp.image || tp.imageUrl || tp.image_url || "";
+          let img = tp.image || tp.imageUrl || tp.image_url || "";
+          if (typeof img === "string" && img.includes("khotaikhoanso")) {
+            img = "";
+          }
           
           let variants = [];
           if (Array.isArray(tp.variants)) {
@@ -16236,19 +16256,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 const tImg = img.trim();
                 if (tImg.startsWith("data:image/") || tImg.startsWith("data:")) {
                   resolvedWorkerImg = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(cur.id) + "/image";
-                } else if (tImg.startsWith("http://") || tImg.startsWith("https://")) {
+                } else if ((tImg.startsWith("http://") || tImg.startsWith("https://")) && !tImg.includes("khotaikhoanso")) {
                   resolvedWorkerImg = tImg;
                 }
               }
 
-              const localCustomImg = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + cur.id) : null;
+              let localCustomImg = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + cur.id) : null;
+              if (localCustomImg && (localCustomImg.includes("khotaikhoanso") || localCustomImg.includes("placeholder"))) {
+                try { localStorage.removeItem("mmo_custom_img_" + cur.id); } catch(e) {}
+                localCustomImg = null;
+              }
               const targetImage = (localCustomImg && localCustomImg.trim()) 
                 ? localCustomImg.trim() 
                 : (resolvedWorkerImg 
                   ? resolvedWorkerImg 
-                  : (isImgValid(cur.image) && !cur.image.startsWith("data:") 
+                  : (isImgValid(cur.image) && !cur.image.startsWith("data:") && !cur.image.includes("khotaikhoanso")
                     ? cur.image.trim() 
-                    : (cur.image && !cur.image.startsWith("data:") 
+                    : (cur.image && !cur.image.startsWith("data:") && !cur.image.includes("khotaikhoanso")
                       ? cur.image 
                       : ((typeof resolveProductImage === "function") 
                         ? resolveProductImage(cur) 
@@ -16323,18 +16347,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               const tImg = img.trim();
               if (tImg.startsWith("data:image/") || tImg.startsWith("data:")) {
                 resolvedWorkerImgNew = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(tp.id) + "/image";
-              } else if (tImg.startsWith("http://") || tImg.startsWith("https://")) {
+              } else if ((tImg.startsWith("http://") || tImg.startsWith("https://")) && !tImg.includes("khotaikhoanso")) {
                 resolvedWorkerImgNew = tImg;
               }
             }
-            const localCustomImgNew = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + tp.id) : null;
+            let localCustomImgNew = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + tp.id) : null;
+            if (localCustomImgNew && (localCustomImgNew.includes("khotaikhoanso") || localCustomImgNew.includes("placeholder"))) {
+              try { localStorage.removeItem("mmo_custom_img_" + tp.id); } catch(e) {}
+              localCustomImgNew = null;
+            }
             const targetImageNew = (localCustomImgNew && localCustomImgNew.trim()) 
               ? localCustomImgNew.trim() 
               : (resolvedWorkerImgNew 
                 ? resolvedWorkerImgNew 
                 : ((typeof resolveProductImage === "function") 
                   ? resolveProductImage(tp) 
-                  : (tp.image || "https://iili.io/nFV4Rln.png")));
+                  : (tp.image && !tp.image.includes("khotaikhoanso") ? tp.image : "https://iili.io/nFV4Rln.png")));
             const localCustomDescNew = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + tp.id) : null;
             const targetDescNew = (localCustomDescNew && localCustomDescNew.trim()) ? localCustomDescNew.trim() : (tp.description || "");
 
