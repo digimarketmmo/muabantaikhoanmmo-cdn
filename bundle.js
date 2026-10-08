@@ -1,9 +1,111 @@
 // =========================================================================
-// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v3.4.4)
+// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.3.8)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.3.7";
+const MMO_CURRENT_CODE_VERSION = "4.3.8";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
+
+// =========================================================================
+// [FIREWALL ĐỘC LẬP]: CHẶN TOÀN BỘ KẾT NỐI & ĐỒNG BỘ TỪ WEB KHOTAIKHOANSO-NET
+// Đảm bảo tuyệt đối không nhận hay phát bất kỳ request/data nào từ khotaikhoanso
+// =========================================================================
+(function installIndependentDomainFirewall() {
+  if (typeof window === "undefined") return;
+
+  // 1. Chặn window.fetch outgoing
+  if (typeof window.fetch === "function") {
+    const _origFetch = window.fetch;
+    window.fetch = function(input, init) {
+      try {
+        let u = "";
+        if (typeof input === "string") u = input;
+        else if (input && typeof input.url === "string") u = input.url;
+        else if (input && typeof input.href === "string") u = input.href;
+        if (u && /khotaikhoanso/i.test(u)) {
+          console.warn("[FIREWALL CHẶN KẾT NỐI]: Đã chặn yêu cầu fetch đến web độc lập khotaikhoanso:", u);
+          return Promise.reject(new Error("BLOCKED_CONNECTION_TO_INDEPENDENT_DOMAIN_KHOTAIKHOANSO"));
+        }
+      } catch(eF) {}
+      return _origFetch.apply(this, arguments);
+    };
+  }
+
+  // 2. Chặn XMLHttpRequest
+  if (typeof XMLHttpRequest !== "undefined" && XMLHttpRequest.prototype && XMLHttpRequest.prototype.open) {
+    const _origOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function(method, url) {
+      try {
+        if (typeof url === "string" && /khotaikhoanso/i.test(url)) {
+          console.warn("[FIREWALL CHẶN KẾT NỐI]: Đã chặn yêu cầu XHR đến web độc lập khotaikhoanso:", url);
+          throw new Error("BLOCKED_XHR_TO_INDEPENDENT_DOMAIN_KHOTAIKHOANSO");
+        }
+      } catch(eXhr) {
+        if (eXhr.message && eXhr.message.includes("BLOCKED_XHR")) throw eXhr;
+      }
+      return _origOpen.apply(this, arguments);
+    };
+  }
+
+  // 3. Chặn WebSocket
+  if (typeof WebSocket !== "undefined") {
+    const _origWs = window.WebSocket;
+    window.WebSocket = function(url, protocols) {
+      if (typeof url === "string" && /khotaikhoanso/i.test(url)) {
+        console.warn("[FIREWALL CHẶN KẾT NỐI]: Đã chặn WebSocket đến khotaikhoanso:", url);
+        throw new Error("BLOCKED_WEBSOCKET_TO_INDEPENDENT_DOMAIN_KHOTAIKHOANSO");
+      }
+      return new _origWs(url, protocols);
+    };
+  }
+
+  // 4. Chặn PostMessage từ origin khotaikhoanso
+  window.addEventListener("message", function(e) {
+    if (e && e.origin && /khotaikhoanso/i.test(e.origin)) {
+      e.stopImmediatePropagation && e.stopImmediatePropagation();
+    }
+  }, true);
+
+  // 5. Chặn nạp ảnh từ khotaikhoanso
+  try {
+    const desc = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, "src");
+    if (desc && desc.set) {
+      Object.defineProperty(HTMLImageElement.prototype, "src", {
+        set: function(val) {
+          if (typeof val === "string" && /khotaikhoanso/i.test(val)) {
+            val = "https://iili.io/nFV4Rln.png";
+          }
+          return desc.set.call(this, val);
+        },
+        get: function() { return desc.get.call(this); },
+        configurable: true,
+        enumerable: true
+      });
+    }
+  } catch(eImgDesc) {}
+
+  // 6. Chặn ghi dữ liệu khotaikhoanso vào Storage
+  try {
+    if (typeof localStorage !== "undefined") {
+      const _origSet = localStorage.setItem.bind(localStorage);
+      localStorage.setItem = function(k, v) {
+        if (k && /khotaikhoanso/i.test(k)) return;
+        if (typeof v === "string" && /khotaikhoanso/i.test(v)) {
+          if (k === "mmo_products" || k === "mmo_admin_products") {
+            try {
+              const arr = JSON.parse(v);
+              if (Array.isArray(arr)) {
+                const cleanArr = arr.filter(p => !JSON.stringify(p).toLowerCase().includes("khotaikhoanso"));
+                return _origSet(k, JSON.stringify(cleanArr));
+              }
+            } catch(eArr) {}
+          }
+          return;
+        }
+        return _origSet(k, v);
+      };
+    }
+  } catch(eStorDesc) {}
+})();
 
 // =========================================================================
 // BULLETPROOF SAFE LOCALSTORAGE & AUTO-PRUNING ENGINE (v4.1.4)
@@ -13,27 +115,57 @@ function healStorageQuota(forceEmergency) {
   try {
     if (typeof localStorage === "undefined") return;
 
-    // [BƯỚC 0 - SIÊU TỐC 0MS]: Luôn dọn dẹp ảnh base64 khổng lồ và xóa sổ rác khotaikhoanso
+    // [BƯỚC 0 - SIÊU TỐC 0MS]: Luôn dọn dẹp và xóa sổ triệt để bất kỳ dữ liệu nào dính khotaikhoanso
     try {
       for (let i = localStorage.length - 1; i >= 0; i--) {
         const k = localStorage.key(i);
         if (!k) continue;
         const val = localStorage.getItem(k) || "";
-        if (k.includes("khotaikhoanso") || val.includes("khotaikhoanso")) {
-          if (k.startsWith("mmo_custom_img_")) {
+        if (/khotaikhoanso/i.test(k) || /khotaikhoanso/i.test(val) || /^kts_/i.test(k)) {
+          if (k === "mmo_system_settings" || k === "mmo_general_settings" || k === "mmo_settings_permanent_backup") {
+            try {
+              const sObj = JSON.parse(val);
+              Object.keys(sObj).forEach(sk => {
+                if (/khotaikhoanso/i.test(sk) || /^kts_/i.test(sk) || (typeof sObj[sk] === "string" && /khotaikhoanso/i.test(sObj[sk]))) {
+                  delete sObj[sk];
+                }
+              });
+              if (sObj.marqueeText && /kho tài khoản số/i.test(sObj.marqueeText)) {
+                sObj.marqueeText = "🎉 CHÀO MỪNG BẠN ĐẾN VỚI MUABANTAIKHOANMMO.COM - CHÚ Ý NẠP TIỀN TỪ 6H - 22H ĐỂ KHÔNG BỊ GIÁN ĐOẠN SAU 22H NGÂN HÀNG BẢO TRÌ SÁNG HÔM SAU MỚI + TIỀN";
+              }
+              localStorage.setItem(k, JSON.stringify(sObj));
+            } catch(eFixS) {
+              localStorage.removeItem(k);
+            }
+          } else {
             localStorage.removeItem(k);
           }
         }
       }
     } catch(eCleanOld) {}
 
+    // Xử lý sessionStorage tương tự
+    try {
+      if (typeof sessionStorage !== "undefined") {
+        for (let i = sessionStorage.length - 1; i >= 0; i--) {
+          const sk = sessionStorage.key(i);
+          if (!sk) continue;
+          const sval = sessionStorage.getItem(sk) || "";
+          if (/khotaikhoanso/i.test(sk) || /khotaikhoanso/i.test(sval)) {
+            sessionStorage.removeItem(sk);
+          }
+        }
+      }
+    } catch(eCleanSes) {}
+
     ["mmo_admin_products", "mmo_products"].forEach(function(key) {
       try {
         const raw = localStorage.getItem(key);
-        if (raw && (raw.includes("data:image/") || raw.includes("khotaikhoanso"))) {
+        if (raw && (raw.includes("data:image/") || /khotaikhoanso/i.test(raw))) {
           const prods = JSON.parse(raw);
           if (Array.isArray(prods)) {
-            prods.forEach(function(p) {
+            const cleanProds = prods.filter(p => !JSON.stringify(p).toLowerCase().includes("khotaikhoanso"));
+            cleanProds.forEach(function(p) {
               if (p && p.image && (p.image.startsWith("data:image/") || p.image.includes("khotaikhoanso"))) {
                 p.image = (typeof KNOWN_CDN_MAP !== "undefined" && KNOWN_CDN_MAP[p.id]) ? KNOWN_CDN_MAP[p.id] : ("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image");
               }
@@ -44,7 +176,7 @@ function healStorageQuota(forceEmergency) {
                 p.imageUrl = p.image;
               }
             });
-            localStorage.setItem(key, JSON.stringify(prods));
+            localStorage.setItem(key, JSON.stringify(cleanProds));
           }
         }
       } catch(e) {}
@@ -16120,6 +16252,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (deletedIds.includes(tp.id)) return;
           if (typeof isProductDeleted === "function" && isProductDeleted(tp)) return;
 
+          // LÁ CHẮN TÁCH BIỆT: LOẠI BỎ 100% SẢN PHẨM HOẶC DỮ LIỆU TỪ WEB ĐỘC LẬP KHOTAIKHOANSO
+          if (JSON.stringify(tp).toLowerCase().includes("khotaikhoanso")) return;
+
           let img = tp.image || tp.imageUrl || tp.image_url || "";
           if (typeof img === "string" && img.includes("khotaikhoanso")) {
             img = "";
@@ -17907,6 +18042,12 @@ function syncAllOpenViewsStock(changedProdId) {
         if (payload.sourceProdId) payload.sourceProdId = "121063";
         if (payload.productId) payload.productId = "121063";
         if (payload.id) payload.id = "121063";
+      }
+
+      // CHẶN TOÀN BỘ KẾT NỐI TỚI HỆ THỐNG ĐỘC LẬP KHOTAIKHOANSO
+      if (bUrlIn.includes("khotaikhoanso") || provider.includes("khotaikhoanso") || sIdIn.includes("khotaikhoanso")) {
+        console.warn("[FIREWALL]: Blocked executeSourceApiCall to independent domain khotaikhoanso");
+        return { success: false, msg: "Kết nối đến web độc lập khotaikhoanso đã bị chặn hoàn toàn." };
       }
 
       // AUTO-DETECT PROVIDER NẾU CHƯA CÓ HOẶC SAI
@@ -23525,7 +23666,20 @@ function syncAllOpenViewsStock(changedProdId) {
         if (!res.ok) return;
         const data = await res.json();
         if (data && data.success && data.settings && typeof data.settings === "object") {
-          const cs = data.settings;
+          // LỌC BỎ 100% CÁC THIẾT LẬP HOẶC DỮ LIỆU TỪ WEB ĐỘC LẬP KHOTAIKHOANSO
+          const cs = {};
+          Object.keys(data.settings || {}).forEach(function(k) {
+            if (/khotaikhoanso/i.test(k) || /^kts_/i.test(k)) return;
+            const val = data.settings[k];
+            if (typeof val === "string" && /khotaikhoanso/i.test(val)) return;
+            cs[k] = val;
+          });
+          if (cs.marqueeText && /kho tài khoản số/i.test(cs.marqueeText)) {
+            cs.marqueeText = "🎉 CHÀO MỪNG BẠN ĐẾN VỚI MUABANTAIKHOANMMO.COM - CHÚ Ý NẠP TIỀN TỪ 6H - 22H ĐỂ KHÔNG BỊ GIÁN ĐOẠN SAU 22H NGÂN HÀNG BẢO TRÌ SÁNG HÔM SAU MỚI + TIỀN";
+          }
+          if (cs.siteName && /kho tài khoản số/i.test(cs.siteName)) {
+            cs.siteName = "MUABANTAIKHOANMMO";
+          }
           const _aiProviders = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
           _aiProviders.forEach(function(p) {
             const cloudKey = cs['ai_key_' + p] || cs['mmo_ai_key_' + p];
