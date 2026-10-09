@@ -2,8 +2,11 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.4.7";
+const MMO_CURRENT_CODE_VERSION = "4.4.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
+
+const REAL_TIKTOK_BRAZIL_ACCOUNTS = ["hiepiwt1312|BR@15235QTTEW|ooz8uxrqsl@sv366.mytempmail.org|","t_lai_86_1991|BR@15235QTTEW|29zlqqor7r@sv327.mytempmail.org|","f5.tan.2811|BR@15235QTTEW|imxse8oyeg@sv391.mytempmail.org|","hoang.nguy.w5.2407|BR@15235QTTEW|ecy1l0pfes@sv712.mytempmail.org|","ong.hoan.5l.2002|BR@15235QTTEW|xnofes2f8r@sv422.mytempmail.org|","c_nguyet_6dd_2003|BR@15235QTTEW|qu3bka63ov@sv230.mytempmail.org|","mac.hang.j8.1993|BR@15235QTTEW|8wle7v1e7f@sv349.mytempmail.org|","1404.huynh.t|BR@15235QTTEW|6tj2g53oev@sv478.mytempmail.org|","tram.chung.fk.0602|BR@15235QTTEW|xqxgxlsl07@sv917.mytempmail.org|","c_khiet_do_1905|BR@15235QTTEW|k0wxkw3ip8@sv790.mytempmail.org|","1996.hue.x|BR@15235QTTEW|nsknvrfiz1@sv180.mytempmail.org|","nhu9wv1203|BR@15235QTTEW|2xu44xy6v8@sv423.mytempmail.org|","user32949996025027|BR@15235QTTEW|jw2o7f1s6i@sv591.mytempmail.org|","moccvl0706|BR@15235QTTEW|aixbsvdzmc@sv127.mytempmail.org|","ke_yen_2vn_0707|BR@15235QTTEW|18y32yh2qc@sv731.mytempmail.org|","user73617146919102|BR@15235QTTEW|0o2af33rhe@sv608.mytempmail.org|","user10353292356088|BR@15235QTTEW|v21lzds6lh@sv626.mytempmail.org|","ew_duong_2007|BR@15235QTTEW|82n6drcq55@sv511.mytempmail.org|","h.tien.xqy.0308|BR@15235QTTEW|igw5nwn6l5@sv45.mytempmail.org|","0906.phan.k|BR@15235QTTEW|fk68xlsnn5@sv560.mytempmail.org|","tan_thoai_jn_1311200|BR@15235QTTEW|mxme5grdmh@sv486.mytempmail.org|","9c.ho.1609|BR@15235QTTEW|pcegzxe4df@sv717.mytempmail.org|","user9445093404627|BR@15235QTTEW|841qx2gksv@sv298.mytempmail.org|","khue.chung.7w.0202|BR@15235QTTEW|uvytf59l36@sv36.mytempmail.org|","mau_bui_0f_1206|BR@15235QTTEW|bnenhe5t0t@sv124.mytempmail.org|","3005_lu_l|BR@15235QTTEW|5ptshv17yk@sv165.mytempmail.org|","chau.dinh.am.1411|BR@15235QTTEW|14thsbe0r7@sv834.mytempmail.org|","zu_hien_1990|BR@15235QTTEW|ee8u4gqkh2@sv733.mytempmail.org|","tfdtuy1999|BR@15235QTTEW|uopgch6z8n@sv798.mytempmail.org|","t.nhu.381.1994|BR@15235QTTEW|uofj7xipq6@sv814.mytempmail.org|","l_dung_gy_1410|BR@15235QTTEW|3vimdqf2uk@sv734.mytempmail.org|","v_ha_ryk_0808|BR@15235QTTEW|tnvk9tjf56@sv128.mytempmail.org|","c.trac.ct.2905|BR@15235QTTEW|1zxktql09e@sv74.mytempmail.org|","h_nhien_sg_1990|BR@15235QTTEW|efk2s3rx2s@sv302.mytempmail.org|","t2lbtruc2006|BR@15235QTTEW|f52rfpj7u2@sv621.mytempmail.org|","vanhljpd1412|BR@15235QTTEW|xyc89bmres@sv702.mytempmail.org|PV2YEBGPAO4CI5VU4G6PMZRB7IK2PJLQ","d.minh.gf2.1992|BR@15235QTTEW|ppyufksxx5@sv872.mytempmail.org|IUQNKVUX4K5TDD7JIW4V4ZAO2RFPJEBB","t.luu.q7r.0811|BR@15235QTTEW|ikson65enn@sv647.mytempmail.org|","trieu.trac.je8.1401|BR@15235QTTEW|wd5ovetsnc@sv551.mytempmail.org|","nguyen.ham.j9y.16041|BR@15235QTTEW|ma247v1yeu@sv213.mytempmail.org|","ong.bao.eig.31042004|BR@15235QTTEW|oybffoba71@sv782.mytempmail.org|","tuy_chau_9a_1707|BR@15235QTTEW|j2l5ta2y3y@sv197.mytempmail.org|","up7.phan.2907|BR@15235QTTEW|tlcn5f6usn@sv848.mytempmail.org|","t.tran.pfc.0411|BR@15235QTTEW|ttj7pmzbdj@sv537.mytempmail.org|","bang3olt0207|BR@15235QTTEW|dx0bznksvi@sv501.mytempmail.org|","ton.dinh.72u.2003|BR@15235QTTEW|jxduti9wco@sv841.mytempmail.org|","jno.quach.0910|BR@15235QTTEW|oxd9nz7fbx@sv525.mytempmail.org|","n.do.82m.1106|BR@15235QTTEW|oebzwott4m@sv931.mytempmail.org|MY6AVISYDWIPXOGYBVN66H6TCUPJ6QXH","m1.kim.1999|BR@15235QTTEW|ew0tfrwame@sv559.mytempmail.org|","o_tho_5hb_2009|BR@15235QTTEW|p1e4isrc1u@sv354.mytempmail.org|","kieu30p0203|BR@15235QTTEW|oi8wple1gj@sv718.mytempmail.org|","1b.khiet.2000|BR@15235QTTEW|uuz1lyfzcn@sv129.mytempmail.org|","tak5truong2000|BR@15235QTTEW|0v4h5d6o9a@sv233.mytempmail.org|","t_diem_cz_1995|BR@15235QTTEW|xsggbhney1@sv313.mytempmail.org|","user1928270525407|BR@15235QTTEW|r0ewc3ex15@sv934.mytempmail.org|","xuyen.lu.a21.1401|BR@15235QTTEW|astz3fjabu@sv881.mytempmail.org|","user7407617129630|BR@15235QTTEW|gymdpf4s5l@sv625.mytempmail.org|","khuu_huynh_qg_170719|BR@15235QTTEW|4hqna1bqvu@sv356.mytempmail.org|","q_tung_xo_1999|BR@15235QTTEW|gt1drdq3sv@sv546.mytempmail.org|","v_han_33_2001|BR@15235QTTEW|c16c6k8b2d@sv496.mytempmail.org|","trieu.yen.koq.2802|BR@15235QTTEW|996wbqlwxj@sv574.mytempmail.org|","le.ly.f27.05022007|BR@15235QTTEW|ofntr5g2o8@sv582.mytempmail.org|","klcwphong2004|BR@15235QTTEW|rhzavdc4b0@sv238.mytempmail.org|","1407_khong_t|BR@15235QTTEW|xa0osggia1@sv289.mytempmail.org|","a.trinh.yd.1101|BR@15235QTTEW|641ldta3ht@sv501.mytempmail.org|","2007_ho_o|BR@15235QTTEW|swud8u2h99@sv848.mytempmail.org|","user7848587558749|BR@15235QTTEW|mt880zkyb2@sv454.mytempmail.org|BFCKDNFWQASAAKXC4346CJ5G47LLAPUL","l_man_bw2_2003|BR@15235QTTEW|qs8pb6mfvg@sv139.mytempmail.org|","vuong_hang_1vd_03041|BR@15235QTTEW|sl9ed1k0bq@sv850.mytempmail.org|","v_dong_7c_1302|BR@15235QTTEW|cvdp0ex96a@sv270.mytempmail.org|","zw.thao.2004|BR@15235QTTEW|r67b9a7fps@sv958.mytempmail.org|","nnmkvan2006|BR@15235QTTEW|52pycxosen@sv517.mytempmail.org|","hien_duong_xf_0104|BR@15235QTTEW|cf2a5lz6xu@sv867.mytempmail.org","nguy_hoang_ln6_1994|BR@15235QTTEW|kx3ygnuqp9@sv999.mytempmail.org","n.thach.sh.1909|BR@15235QTTEW|k9ik33qm66@sv729.mytempmail.org"];
+window.REAL_TIKTOK_BRAZIL_ACCOUNTS = REAL_TIKTOK_BRAZIL_ACCOUNTS;
 
 // =========================================================================
 // [FIREWALL ĐỘC LẬP]: CHẶN TOÀN BỘ KẾT NỐI & ĐỒNG BỘ TỪ WEB KHOTAIKHOANSO-NET
@@ -258,6 +261,31 @@ function healStorageQuota(forceEmergency) {
               return pId !== '1775731336499' && !pNm.includes('sản phẩm test') && !pNm.includes('san pham test') && pNm !== 'test' && pNm !== 'tét';
             });
             cleanProds.forEach(function(p) {
+              if (!p) return;
+              // [TRIỆT TIÊU 100% TÀI KHOẢN ẢO DUMMY TRONG KHO]: Quét sạch toàn bộ tài khoản USR_ ảo trong cache
+              if (Array.isArray(p.accounts)) {
+                p.accounts = p.accounts.filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
+              }
+              if (Array.isArray(p.variants)) {
+                p.variants.forEach(function(v) {
+                  if (v && Array.isArray(v.accounts)) {
+                    v.accounts = v.accounts.filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
+                  }
+                });
+              }
+              // Đối với PROD_MTPIJ9XV: Nếu chưa có tài khoản thật hoặc dính tài khoản ảo cũ, đồng bộ 75 tài khoản thật
+              if (p.id === "PROD_MTPIJ9XV" && Array.isArray(p.variants) && p.variants[0]) {
+                const hasFake = p.variants[0].accounts && p.variants[0].accounts.some(a => typeof a === 'string' && a.startsWith("USR_"));
+                if (hasFake || !p.variants[0].accounts || p.variants[0].accounts.length === 0) {
+                  const realTikTok = (typeof REAL_TIKTOK_BRAZIL_ACCOUNTS !== "undefined") ? REAL_TIKTOK_BRAZIL_ACCOUNTS : [];
+                  if (realTikTok.length > 0) {
+                    p.variants[0].accounts = [...realTikTok];
+                    p.variants[0].stock = realTikTok.length;
+                    p.variants[0].available = true;
+                    p.stock = realTikTok.length;
+                  }
+                }
+              }
               if (p && p.image && (p.image.startsWith("data:image/") || p.image.includes("khotaikhoanso"))) {
                 p.image = (typeof KNOWN_CDN_MAP !== "undefined" && KNOWN_CDN_MAP[p.id]) ? KNOWN_CDN_MAP[p.id] : ("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image");
               }
@@ -273,6 +301,34 @@ function healStorageQuota(forceEmergency) {
         }
       } catch(e) {}
     });
+
+    // DỌN SẠCH TẬN GỐC TÀI KHOẢN ẢO TRONG CÁC KHÓA KHO LOCALSTORAGE
+    try {
+      ["mmo_warehouse", "mmo_warehouse_stock", "mmo_warehouse_accounts", "mmo_sold_accounts"].forEach(function(wk) {
+        const rawW = localStorage.getItem(wk);
+        if (rawW) {
+          try {
+            const wObj = JSON.parse(rawW);
+            let changed = false;
+            if (Array.isArray(wObj)) {
+              const cleanArr = wObj.filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
+              if (cleanArr.length !== wObj.length) {
+                localStorage.setItem(wk, JSON.stringify(cleanArr));
+              }
+            } else if (typeof wObj === "object" && wObj !== null) {
+              Object.keys(wObj).forEach(k => {
+                if (Array.isArray(wObj[k])) {
+                  const origLen = wObj[k].length;
+                  wObj[k] = wObj[k].filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
+                  if (wObj[k].length !== origLen) changed = true;
+                }
+              });
+              if (changed) localStorage.setItem(wk, JSON.stringify(wObj));
+            }
+          } catch(eParseW) {}
+        }
+      });
+    } catch(eWClean) {}
 
     // DỌN SẠCH TẬN GỐC TẤT CẢ KHÓA LIÊN QUAN ĐẾN SẢN PHẨM TEST 1775731336499
     try {
@@ -3693,12 +3749,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         {
                 "name": "tiktok việt reg trên 4 tháng",
                 "price": 5000,
-                "stock": 2,
-                "available": true,
-                "accounts": [
-                        "6666666666666666666",
-                        "ttttttttttttttttttt"
-                ]
+                "stock": 0,
+                "available": false,
+                "accounts": []
         },
         {
                 "name": "Tik Tok việt trên 1 năm",
@@ -4051,7 +4104,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "name": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
     "category": "Facebook",
     "price": 99000,
-    "stock": 22,
+    "stock": 0,
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
@@ -4062,32 +4115,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         {
                 "name": "Page 2019 0 Folow",
                 "price": 99000,
-                "stock": 22,
+                "stock": 0,
                 "available": true,
-                "accounts": [
-                        "USR_MU29RGEBH0_001|Pass@MU29#001|2FA_MU2001|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_002|Pass@MU29#002|2FA_MU2002|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_003|Pass@MU29#003|2FA_MU2003|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_004|Pass@MU29#004|2FA_MU2004|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_005|Pass@MU29#005|2FA_MU2005|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_006|Pass@MU29#006|2FA_MU2006|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_007|Pass@MU29#007|2FA_MU2007|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_008|Pass@MU29#008|2FA_MU2008|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_009|Pass@MU29#009|2FA_MU2009|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_010|Pass@MU29#010|2FA_MU2010|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_011|Pass@MU29#011|2FA_MU2011|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_012|Pass@MU29#012|2FA_MU2012|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_013|Pass@MU29#013|2FA_MU2013|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_014|Pass@MU29#014|2FA_MU2014|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_015|Pass@MU29#015|2FA_MU2015|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_016|Pass@MU29#016|2FA_MU2016|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_017|Pass@MU29#017|2FA_MU2017|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_018|Pass@MU29#018|2FA_MU2018|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_019|Pass@MU29#019|2FA_MU2019|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_020|Pass@MU29#020|2FA_MU2020|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_021|Pass@MU29#021|2FA_MU2021|Page Facebook Cổ 2019",
-                        "USR_MU29RGEBH0_022|Pass@MU29#022|2FA_MU2022|Page Facebook Cổ 2019"
-                ]
+                "accounts": []
         }
 ],
     "deliveryType": "local",
@@ -4101,7 +4131,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "name": "TikTok US Chuẩn Bật Kiếm Tiền Beta",
     "category": "TikTok",
     "price": 5000,
-    "stock": 20,
+    "stock": 0,
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
@@ -4112,30 +4142,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         {
                 "name": "tiktok us",
                 "price": 5000,
-                "stock": 20,
+                "stock": 0,
                 "available": true,
-                "accounts": [
-                        "USR_MU29IZBLAK_001|Pass@MU29#001|2FA_MU2001|TikTok US Beta",
-                        "USR_MU29IZBLAK_002|Pass@MU29#002|2FA_MU2002|TikTok US Beta",
-                        "USR_MU29IZBLAK_003|Pass@MU29#003|2FA_MU2003|TikTok US Beta",
-                        "USR_MU29IZBLAK_004|Pass@MU29#004|2FA_MU2004|TikTok US Beta",
-                        "USR_MU29IZBLAK_005|Pass@MU29#005|2FA_MU2005|TikTok US Beta",
-                        "USR_MU29IZBLAK_006|Pass@MU29#006|2FA_MU2006|TikTok US Beta",
-                        "USR_MU29IZBLAK_007|Pass@MU29#007|2FA_MU2007|TikTok US Beta",
-                        "USR_MU29IZBLAK_008|Pass@MU29#008|2FA_MU2008|TikTok US Beta",
-                        "USR_MU29IZBLAK_009|Pass@MU29#009|2FA_MU2009|TikTok US Beta",
-                        "USR_MU29IZBLAK_010|Pass@MU29#010|2FA_MU2010|TikTok US Beta",
-                        "USR_MU29IZBLAK_011|Pass@MU29#011|2FA_MU2011|TikTok US Beta",
-                        "USR_MU29IZBLAK_012|Pass@MU29#012|2FA_MU2012|TikTok US Beta",
-                        "USR_MU29IZBLAK_013|Pass@MU29#013|2FA_MU2013|TikTok US Beta",
-                        "USR_MU29IZBLAK_014|Pass@MU29#014|2FA_MU2014|TikTok US Beta",
-                        "USR_MU29IZBLAK_015|Pass@MU29#015|2FA_MU2015|TikTok US Beta",
-                        "USR_MU29IZBLAK_016|Pass@MU29#016|2FA_MU2016|TikTok US Beta",
-                        "USR_MU29IZBLAK_017|Pass@MU29#017|2FA_MU2017|TikTok US Beta",
-                        "USR_MU29IZBLAK_018|Pass@MU29#018|2FA_MU2018|TikTok US Beta",
-                        "USR_MU29IZBLAK_019|Pass@MU29#019|2FA_MU2019|TikTok US Beta",
-                        "USR_MU29IZBLAK_020|Pass@MU29#020|2FA_MU2020|TikTok US Beta"
-                ]
+                "accounts": []
         },
         {
                 "name": "tiktok us 2024-2025",
@@ -4156,7 +4165,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "name": "Tiktok nhật 2024-2026  tiktok like  - tiktok thường",
     "category": "TikTok",
     "price": 5000,
-    "stock": 76,
+    "stock": 0,
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
@@ -4167,86 +4176,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         {
                 "name": "tiktok nhật acc new",
                 "price": 5000,
-                "stock": 76,
+                "stock": 0,
                 "available": true,
-                "accounts": [
-                        "USR_MU1LSSJ7AZ_001|Pass@MU1L#001|2FA_MU1001|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_002|Pass@MU1L#002|2FA_MU1002|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_003|Pass@MU1L#003|2FA_MU1003|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_004|Pass@MU1L#004|2FA_MU1004|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_005|Pass@MU1L#005|2FA_MU1005|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_006|Pass@MU1L#006|2FA_MU1006|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_007|Pass@MU1L#007|2FA_MU1007|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_008|Pass@MU1L#008|2FA_MU1008|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_009|Pass@MU1L#009|2FA_MU1009|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_010|Pass@MU1L#010|2FA_MU1010|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_011|Pass@MU1L#011|2FA_MU1011|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_012|Pass@MU1L#012|2FA_MU1012|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_013|Pass@MU1L#013|2FA_MU1013|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_014|Pass@MU1L#014|2FA_MU1014|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_015|Pass@MU1L#015|2FA_MU1015|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_016|Pass@MU1L#016|2FA_MU1016|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_017|Pass@MU1L#017|2FA_MU1017|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_018|Pass@MU1L#018|2FA_MU1018|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_019|Pass@MU1L#019|2FA_MU1019|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_020|Pass@MU1L#020|2FA_MU1020|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_021|Pass@MU1L#021|2FA_MU1021|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_022|Pass@MU1L#022|2FA_MU1022|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_023|Pass@MU1L#023|2FA_MU1023|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_024|Pass@MU1L#024|2FA_MU1024|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_025|Pass@MU1L#025|2FA_MU1025|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_026|Pass@MU1L#026|2FA_MU1026|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_027|Pass@MU1L#027|2FA_MU1027|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_028|Pass@MU1L#028|2FA_MU1028|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_029|Pass@MU1L#029|2FA_MU1029|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_030|Pass@MU1L#030|2FA_MU1030|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_031|Pass@MU1L#031|2FA_MU1031|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_032|Pass@MU1L#032|2FA_MU1032|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_033|Pass@MU1L#033|2FA_MU1033|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_034|Pass@MU1L#034|2FA_MU1034|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_035|Pass@MU1L#035|2FA_MU1035|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_036|Pass@MU1L#036|2FA_MU1036|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_037|Pass@MU1L#037|2FA_MU1037|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_038|Pass@MU1L#038|2FA_MU1038|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_039|Pass@MU1L#039|2FA_MU1039|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_040|Pass@MU1L#040|2FA_MU1040|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_041|Pass@MU1L#041|2FA_MU1041|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_042|Pass@MU1L#042|2FA_MU1042|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_043|Pass@MU1L#043|2FA_MU1043|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_044|Pass@MU1L#044|2FA_MU1044|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_045|Pass@MU1L#045|2FA_MU1045|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_046|Pass@MU1L#046|2FA_MU1046|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_047|Pass@MU1L#047|2FA_MU1047|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_048|Pass@MU1L#048|2FA_MU1048|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_049|Pass@MU1L#049|2FA_MU1049|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_050|Pass@MU1L#050|2FA_MU1050|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_051|Pass@MU1L#051|2FA_MU1051|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_052|Pass@MU1L#052|2FA_MU1052|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_053|Pass@MU1L#053|2FA_MU1053|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_054|Pass@MU1L#054|2FA_MU1054|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_055|Pass@MU1L#055|2FA_MU1055|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_056|Pass@MU1L#056|2FA_MU1056|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_057|Pass@MU1L#057|2FA_MU1057|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_058|Pass@MU1L#058|2FA_MU1058|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_059|Pass@MU1L#059|2FA_MU1059|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_060|Pass@MU1L#060|2FA_MU1060|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_061|Pass@MU1L#061|2FA_MU1061|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_062|Pass@MU1L#062|2FA_MU1062|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_063|Pass@MU1L#063|2FA_MU1063|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_064|Pass@MU1L#064|2FA_MU1064|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_065|Pass@MU1L#065|2FA_MU1065|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_066|Pass@MU1L#066|2FA_MU1066|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_067|Pass@MU1L#067|2FA_MU1067|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_068|Pass@MU1L#068|2FA_MU1068|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_069|Pass@MU1L#069|2FA_MU1069|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_070|Pass@MU1L#070|2FA_MU1070|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_071|Pass@MU1L#071|2FA_MU1071|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_072|Pass@MU1L#072|2FA_MU1072|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_073|Pass@MU1L#073|2FA_MU1073|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_074|Pass@MU1L#074|2FA_MU1074|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_075|Pass@MU1L#075|2FA_MU1075|TikTok Nhật 2024-2026",
-                        "USR_MU1LSSJ7AZ_076|Pass@MU1L#076|2FA_MU1076|TikTok Nhật 2024-2026"
-                ]
+                "accounts": []
         },
         {
                 "name": "tiktok nhật 2024-2025 ramdom",
@@ -4447,7 +4379,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "name": "Paypal 2025 - 2016 Đã ngâm lâu cực kỳ Trâu",
     "category": "Khác",
     "price": 50000,
-    "stock": 124,
+    "stock": 0,
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
@@ -4458,132 +4390,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         {
                 "name": "paypal đã ngâm lâu",
                 "price": 50000,
-                "stock": 122,
+                "stock": 0,
                 "available": true,
-                "accounts": [
-                        "USR_MTU9F5HN_003|Pass@MTU9#003|2FA_MTU003|Paypal Trâu",
-                        "USR_MTU9F5HN_004|Pass@MTU9#004|2FA_MTU004|Paypal Trâu",
-                        "USR_MTU9F5HN_005|Pass@MTU9#005|2FA_MTU005|Paypal Trâu",
-                        "USR_MTU9F5HN_006|Pass@MTU9#006|2FA_MTU006|Paypal Trâu",
-                        "USR_MTU9F5HN_007|Pass@MTU9#007|2FA_MTU007|Paypal Trâu",
-                        "USR_MTU9F5HN_008|Pass@MTU9#008|2FA_MTU008|Paypal Trâu",
-                        "USR_MTU9F5HN_009|Pass@MTU9#009|2FA_MTU009|Paypal Trâu",
-                        "USR_MTU9F5HN_010|Pass@MTU9#010|2FA_MTU010|Paypal Trâu",
-                        "USR_MTU9F5HN_011|Pass@MTU9#011|2FA_MTU011|Paypal Trâu",
-                        "USR_MTU9F5HN_012|Pass@MTU9#012|2FA_MTU012|Paypal Trâu",
-                        "USR_MTU9F5HN_013|Pass@MTU9#013|2FA_MTU013|Paypal Trâu",
-                        "USR_MTU9F5HN_014|Pass@MTU9#014|2FA_MTU014|Paypal Trâu",
-                        "USR_MTU9F5HN_015|Pass@MTU9#015|2FA_MTU015|Paypal Trâu",
-                        "USR_MTU9F5HN_016|Pass@MTU9#016|2FA_MTU016|Paypal Trâu",
-                        "USR_MTU9F5HN_017|Pass@MTU9#017|2FA_MTU017|Paypal Trâu",
-                        "USR_MTU9F5HN_018|Pass@MTU9#018|2FA_MTU018|Paypal Trâu",
-                        "USR_MTU9F5HN_019|Pass@MTU9#019|2FA_MTU019|Paypal Trâu",
-                        "USR_MTU9F5HN_020|Pass@MTU9#020|2FA_MTU020|Paypal Trâu",
-                        "USR_MTU9F5HN_021|Pass@MTU9#021|2FA_MTU021|Paypal Trâu",
-                        "USR_MTU9F5HN_022|Pass@MTU9#022|2FA_MTU022|Paypal Trâu",
-                        "USR_MTU9F5HN_023|Pass@MTU9#023|2FA_MTU023|Paypal Trâu",
-                        "USR_MTU9F5HN_024|Pass@MTU9#024|2FA_MTU024|Paypal Trâu",
-                        "USR_MTU9F5HN_025|Pass@MTU9#025|2FA_MTU025|Paypal Trâu",
-                        "USR_MTU9F5HN_026|Pass@MTU9#026|2FA_MTU026|Paypal Trâu",
-                        "USR_MTU9F5HN_027|Pass@MTU9#027|2FA_MTU027|Paypal Trâu",
-                        "USR_MTU9F5HN_028|Pass@MTU9#028|2FA_MTU028|Paypal Trâu",
-                        "USR_MTU9F5HN_029|Pass@MTU9#029|2FA_MTU029|Paypal Trâu",
-                        "USR_MTU9F5HN_030|Pass@MTU9#030|2FA_MTU030|Paypal Trâu",
-                        "USR_MTU9F5HN_031|Pass@MTU9#031|2FA_MTU031|Paypal Trâu",
-                        "USR_MTU9F5HN_032|Pass@MTU9#032|2FA_MTU032|Paypal Trâu",
-                        "USR_MTU9F5HN_033|Pass@MTU9#033|2FA_MTU033|Paypal Trâu",
-                        "USR_MTU9F5HN_034|Pass@MTU9#034|2FA_MTU034|Paypal Trâu",
-                        "USR_MTU9F5HN_035|Pass@MTU9#035|2FA_MTU035|Paypal Trâu",
-                        "USR_MTU9F5HN_036|Pass@MTU9#036|2FA_MTU036|Paypal Trâu",
-                        "USR_MTU9F5HN_037|Pass@MTU9#037|2FA_MTU037|Paypal Trâu",
-                        "USR_MTU9F5HN_038|Pass@MTU9#038|2FA_MTU038|Paypal Trâu",
-                        "USR_MTU9F5HN_039|Pass@MTU9#039|2FA_MTU039|Paypal Trâu",
-                        "USR_MTU9F5HN_040|Pass@MTU9#040|2FA_MTU040|Paypal Trâu",
-                        "USR_MTU9F5HN_041|Pass@MTU9#041|2FA_MTU041|Paypal Trâu",
-                        "USR_MTU9F5HN_042|Pass@MTU9#042|2FA_MTU042|Paypal Trâu",
-                        "USR_MTU9F5HN_043|Pass@MTU9#043|2FA_MTU043|Paypal Trâu",
-                        "USR_MTU9F5HN_044|Pass@MTU9#044|2FA_MTU044|Paypal Trâu",
-                        "USR_MTU9F5HN_045|Pass@MTU9#045|2FA_MTU045|Paypal Trâu",
-                        "USR_MTU9F5HN_046|Pass@MTU9#046|2FA_MTU046|Paypal Trâu",
-                        "USR_MTU9F5HN_047|Pass@MTU9#047|2FA_MTU047|Paypal Trâu",
-                        "USR_MTU9F5HN_048|Pass@MTU9#048|2FA_MTU048|Paypal Trâu",
-                        "USR_MTU9F5HN_049|Pass@MTU9#049|2FA_MTU049|Paypal Trâu",
-                        "USR_MTU9F5HN_050|Pass@MTU9#050|2FA_MTU050|Paypal Trâu",
-                        "USR_MTU9F5HN_051|Pass@MTU9#051|2FA_MTU051|Paypal Trâu",
-                        "USR_MTU9F5HN_052|Pass@MTU9#052|2FA_MTU052|Paypal Trâu",
-                        "USR_MTU9F5HN_053|Pass@MTU9#053|2FA_MTU053|Paypal Trâu",
-                        "USR_MTU9F5HN_054|Pass@MTU9#054|2FA_MTU054|Paypal Trâu",
-                        "USR_MTU9F5HN_055|Pass@MTU9#055|2FA_MTU055|Paypal Trâu",
-                        "USR_MTU9F5HN_056|Pass@MTU9#056|2FA_MTU056|Paypal Trâu",
-                        "USR_MTU9F5HN_057|Pass@MTU9#057|2FA_MTU057|Paypal Trâu",
-                        "USR_MTU9F5HN_058|Pass@MTU9#058|2FA_MTU058|Paypal Trâu",
-                        "USR_MTU9F5HN_059|Pass@MTU9#059|2FA_MTU059|Paypal Trâu",
-                        "USR_MTU9F5HN_060|Pass@MTU9#060|2FA_MTU060|Paypal Trâu",
-                        "USR_MTU9F5HN_061|Pass@MTU9#061|2FA_MTU061|Paypal Trâu",
-                        "USR_MTU9F5HN_062|Pass@MTU9#062|2FA_MTU062|Paypal Trâu",
-                        "USR_MTU9F5HN_063|Pass@MTU9#063|2FA_MTU063|Paypal Trâu",
-                        "USR_MTU9F5HN_064|Pass@MTU9#064|2FA_MTU064|Paypal Trâu",
-                        "USR_MTU9F5HN_065|Pass@MTU9#065|2FA_MTU065|Paypal Trâu",
-                        "USR_MTU9F5HN_066|Pass@MTU9#066|2FA_MTU066|Paypal Trâu",
-                        "USR_MTU9F5HN_067|Pass@MTU9#067|2FA_MTU067|Paypal Trâu",
-                        "USR_MTU9F5HN_068|Pass@MTU9#068|2FA_MTU068|Paypal Trâu",
-                        "USR_MTU9F5HN_069|Pass@MTU9#069|2FA_MTU069|Paypal Trâu",
-                        "USR_MTU9F5HN_070|Pass@MTU9#070|2FA_MTU070|Paypal Trâu",
-                        "USR_MTU9F5HN_071|Pass@MTU9#071|2FA_MTU071|Paypal Trâu",
-                        "USR_MTU9F5HN_072|Pass@MTU9#072|2FA_MTU072|Paypal Trâu",
-                        "USR_MTU9F5HN_073|Pass@MTU9#073|2FA_MTU073|Paypal Trâu",
-                        "USR_MTU9F5HN_074|Pass@MTU9#074|2FA_MTU074|Paypal Trâu",
-                        "USR_MTU9F5HN_075|Pass@MTU9#075|2FA_MTU075|Paypal Trâu",
-                        "USR_MTU9F5HN_076|Pass@MTU9#076|2FA_MTU076|Paypal Trâu",
-                        "USR_MTU9F5HN_077|Pass@MTU9#077|2FA_MTU077|Paypal Trâu",
-                        "USR_MTU9F5HN_078|Pass@MTU9#078|2FA_MTU078|Paypal Trâu",
-                        "USR_MTU9F5HN_079|Pass@MTU9#079|2FA_MTU079|Paypal Trâu",
-                        "USR_MTU9F5HN_080|Pass@MTU9#080|2FA_MTU080|Paypal Trâu",
-                        "USR_MTU9F5HN_081|Pass@MTU9#081|2FA_MTU081|Paypal Trâu",
-                        "USR_MTU9F5HN_082|Pass@MTU9#082|2FA_MTU082|Paypal Trâu",
-                        "USR_MTU9F5HN_083|Pass@MTU9#083|2FA_MTU083|Paypal Trâu",
-                        "USR_MTU9F5HN_084|Pass@MTU9#084|2FA_MTU084|Paypal Trâu",
-                        "USR_MTU9F5HN_085|Pass@MTU9#085|2FA_MTU085|Paypal Trâu",
-                        "USR_MTU9F5HN_086|Pass@MTU9#086|2FA_MTU086|Paypal Trâu",
-                        "USR_MTU9F5HN_087|Pass@MTU9#087|2FA_MTU087|Paypal Trâu",
-                        "USR_MTU9F5HN_088|Pass@MTU9#088|2FA_MTU088|Paypal Trâu",
-                        "USR_MTU9F5HN_089|Pass@MTU9#089|2FA_MTU089|Paypal Trâu",
-                        "USR_MTU9F5HN_090|Pass@MTU9#090|2FA_MTU090|Paypal Trâu",
-                        "USR_MTU9F5HN_091|Pass@MTU9#091|2FA_MTU091|Paypal Trâu",
-                        "USR_MTU9F5HN_092|Pass@MTU9#092|2FA_MTU092|Paypal Trâu",
-                        "USR_MTU9F5HN_093|Pass@MTU9#093|2FA_MTU093|Paypal Trâu",
-                        "USR_MTU9F5HN_094|Pass@MTU9#094|2FA_MTU094|Paypal Trâu",
-                        "USR_MTU9F5HN_095|Pass@MTU9#095|2FA_MTU095|Paypal Trâu",
-                        "USR_MTU9F5HN_096|Pass@MTU9#096|2FA_MTU096|Paypal Trâu",
-                        "USR_MTU9F5HN_097|Pass@MTU9#097|2FA_MTU097|Paypal Trâu",
-                        "USR_MTU9F5HN_098|Pass@MTU9#098|2FA_MTU098|Paypal Trâu",
-                        "USR_MTU9F5HN_099|Pass@MTU9#099|2FA_MTU099|Paypal Trâu",
-                        "USR_MTU9F5HN_100|Pass@MTU9#100|2FA_MTU100|Paypal Trâu",
-                        "USR_MTU9F5HN_101|Pass@MTU9#101|2FA_MTU101|Paypal Trâu",
-                        "USR_MTU9F5HN_102|Pass@MTU9#102|2FA_MTU102|Paypal Trâu",
-                        "USR_MTU9F5HN_103|Pass@MTU9#103|2FA_MTU103|Paypal Trâu",
-                        "USR_MTU9F5HN_104|Pass@MTU9#104|2FA_MTU104|Paypal Trâu",
-                        "USR_MTU9F5HN_105|Pass@MTU9#105|2FA_MTU105|Paypal Trâu",
-                        "USR_MTU9F5HN_106|Pass@MTU9#106|2FA_MTU106|Paypal Trâu",
-                        "USR_MTU9F5HN_107|Pass@MTU9#107|2FA_MTU107|Paypal Trâu",
-                        "USR_MTU9F5HN_108|Pass@MTU9#108|2FA_MTU108|Paypal Trâu",
-                        "USR_MTU9F5HN_109|Pass@MTU9#109|2FA_MTU109|Paypal Trâu",
-                        "USR_MTU9F5HN_110|Pass@MTU9#110|2FA_MTU110|Paypal Trâu",
-                        "USR_MTU9F5HN_111|Pass@MTU9#111|2FA_MTU111|Paypal Trâu",
-                        "USR_MTU9F5HN_112|Pass@MTU9#112|2FA_MTU112|Paypal Trâu",
-                        "USR_MTU9F5HN_113|Pass@MTU9#113|2FA_MTU113|Paypal Trâu",
-                        "USR_MTU9F5HN_114|Pass@MTU9#114|2FA_MTU114|Paypal Trâu",
-                        "USR_MTU9F5HN_115|Pass@MTU9#115|2FA_MTU115|Paypal Trâu",
-                        "USR_MTU9F5HN_116|Pass@MTU9#116|2FA_MTU116|Paypal Trâu",
-                        "USR_MTU9F5HN_117|Pass@MTU9#117|2FA_MTU117|Paypal Trâu",
-                        "USR_MTU9F5HN_118|Pass@MTU9#118|2FA_MTU118|Paypal Trâu",
-                        "USR_MTU9F5HN_119|Pass@MTU9#119|2FA_MTU119|Paypal Trâu",
-                        "USR_MTU9F5HN_120|Pass@MTU9#120|2FA_MTU120|Paypal Trâu",
-                        "USR_MTU9F5HN_121|Pass@MTU9#121|2FA_MTU121|Paypal Trâu",
-                        "USR_MTU9F5HN_122|Pass@MTU9#122|2FA_MTU122|Paypal Trâu",
-                        "USR_MTU9F5HN_123|Pass@MTU9#123|2FA_MTU123|Paypal Trâu",
-                        "USR_MTU9F5HN_124|Pass@MTU9#124|2FA_MTU124|Paypal Trâu"
-                ]
+                "accounts": []
         },
         {
                 "name": "paypal Đã Nhận Tiền",
@@ -4604,7 +4413,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "name": "Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu",
     "category": "TikTok",
     "price": 2000,
-    "stock": 15,
+    "stock": 0,
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
@@ -4615,25 +4424,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         {
                 "name": "Tiktok 2026",
                 "price": 2000,
-                "stock": 15,
+                "stock": 0,
                 "available": true,
-                "accounts": [
-                        "USR_MTVI44UK_001|Pass@MTVI#001|2FA_MTV001|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_002|Pass@MTVI#002|2FA_MTV002|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_003|Pass@MTVI#003|2FA_MTV003|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_004|Pass@MTVI#004|2FA_MTV004|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_005|Pass@MTVI#005|2FA_MTV005|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_006|Pass@MTVI#006|2FA_MTV006|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_007|Pass@MTVI#007|2FA_MTV007|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_008|Pass@MTVI#008|2FA_MTV008|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_009|Pass@MTVI#009|2FA_MTV009|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_010|Pass@MTVI#010|2FA_MTV010|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_011|Pass@MTVI#011|2FA_MTV011|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_012|Pass@MTVI#012|2FA_MTV012|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_013|Pass@MTVI#013|2FA_MTV013|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_014|Pass@MTVI#014|2FA_MTV014|TikTok Việt Ngâm Lâu",
-                        "USR_MTVI44UK_015|Pass@MTVI#015|2FA_MTV015|TikTok Việt Ngâm Lâu"
-                ]
+                "accounts": []
         },
         {
                 "name": "Tiktok 2024-2025",
@@ -4661,7 +4454,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "name": "TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU",
     "category": "TikTok",
     "price": 6000,
-    "stock": 77,
+    "stock": 75,
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
@@ -4672,87 +4465,85 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         {
                 "name": "TIKTOK BRAZIL",
                 "price": 6000,
-                "stock": 77,
+                "stock": 75,
                 "available": true,
                 "accounts": [
-                        "USR_MTPIJ9XV_001|Pass@MTPI#001|2FA_MTP001|TikTok Brazil",
-                        "USR_MTPIJ9XV_002|Pass@MTPI#002|2FA_MTP002|TikTok Brazil",
-                        "USR_MTPIJ9XV_003|Pass@MTPI#003|2FA_MTP003|TikTok Brazil",
-                        "USR_MTPIJ9XV_004|Pass@MTPI#004|2FA_MTP004|TikTok Brazil",
-                        "USR_MTPIJ9XV_005|Pass@MTPI#005|2FA_MTP005|TikTok Brazil",
-                        "USR_MTPIJ9XV_006|Pass@MTPI#006|2FA_MTP006|TikTok Brazil",
-                        "USR_MTPIJ9XV_007|Pass@MTPI#007|2FA_MTP007|TikTok Brazil",
-                        "USR_MTPIJ9XV_008|Pass@MTPI#008|2FA_MTP008|TikTok Brazil",
-                        "USR_MTPIJ9XV_009|Pass@MTPI#009|2FA_MTP009|TikTok Brazil",
-                        "USR_MTPIJ9XV_010|Pass@MTPI#010|2FA_MTP010|TikTok Brazil",
-                        "USR_MTPIJ9XV_011|Pass@MTPI#011|2FA_MTP011|TikTok Brazil",
-                        "USR_MTPIJ9XV_012|Pass@MTPI#012|2FA_MTP012|TikTok Brazil",
-                        "USR_MTPIJ9XV_013|Pass@MTPI#013|2FA_MTP013|TikTok Brazil",
-                        "USR_MTPIJ9XV_014|Pass@MTPI#014|2FA_MTP014|TikTok Brazil",
-                        "USR_MTPIJ9XV_015|Pass@MTPI#015|2FA_MTP015|TikTok Brazil",
-                        "USR_MTPIJ9XV_016|Pass@MTPI#016|2FA_MTP016|TikTok Brazil",
-                        "USR_MTPIJ9XV_017|Pass@MTPI#017|2FA_MTP017|TikTok Brazil",
-                        "USR_MTPIJ9XV_018|Pass@MTPI#018|2FA_MTP018|TikTok Brazil",
-                        "USR_MTPIJ9XV_019|Pass@MTPI#019|2FA_MTP019|TikTok Brazil",
-                        "USR_MTPIJ9XV_020|Pass@MTPI#020|2FA_MTP020|TikTok Brazil",
-                        "USR_MTPIJ9XV_021|Pass@MTPI#021|2FA_MTP021|TikTok Brazil",
-                        "USR_MTPIJ9XV_022|Pass@MTPI#022|2FA_MTP022|TikTok Brazil",
-                        "USR_MTPIJ9XV_023|Pass@MTPI#023|2FA_MTP023|TikTok Brazil",
-                        "USR_MTPIJ9XV_024|Pass@MTPI#024|2FA_MTP024|TikTok Brazil",
-                        "USR_MTPIJ9XV_025|Pass@MTPI#025|2FA_MTP025|TikTok Brazil",
-                        "USR_MTPIJ9XV_026|Pass@MTPI#026|2FA_MTP026|TikTok Brazil",
-                        "USR_MTPIJ9XV_027|Pass@MTPI#027|2FA_MTP027|TikTok Brazil",
-                        "USR_MTPIJ9XV_028|Pass@MTPI#028|2FA_MTP028|TikTok Brazil",
-                        "USR_MTPIJ9XV_029|Pass@MTPI#029|2FA_MTP029|TikTok Brazil",
-                        "USR_MTPIJ9XV_030|Pass@MTPI#030|2FA_MTP030|TikTok Brazil",
-                        "USR_MTPIJ9XV_031|Pass@MTPI#031|2FA_MTP031|TikTok Brazil",
-                        "USR_MTPIJ9XV_032|Pass@MTPI#032|2FA_MTP032|TikTok Brazil",
-                        "USR_MTPIJ9XV_033|Pass@MTPI#033|2FA_MTP033|TikTok Brazil",
-                        "USR_MTPIJ9XV_034|Pass@MTPI#034|2FA_MTP034|TikTok Brazil",
-                        "USR_MTPIJ9XV_035|Pass@MTPI#035|2FA_MTP035|TikTok Brazil",
-                        "USR_MTPIJ9XV_036|Pass@MTPI#036|2FA_MTP036|TikTok Brazil",
-                        "USR_MTPIJ9XV_037|Pass@MTPI#037|2FA_MTP037|TikTok Brazil",
-                        "USR_MTPIJ9XV_038|Pass@MTPI#038|2FA_MTP038|TikTok Brazil",
-                        "USR_MTPIJ9XV_039|Pass@MTPI#039|2FA_MTP039|TikTok Brazil",
-                        "USR_MTPIJ9XV_040|Pass@MTPI#040|2FA_MTP040|TikTok Brazil",
-                        "USR_MTPIJ9XV_041|Pass@MTPI#041|2FA_MTP041|TikTok Brazil",
-                        "USR_MTPIJ9XV_042|Pass@MTPI#042|2FA_MTP042|TikTok Brazil",
-                        "USR_MTPIJ9XV_043|Pass@MTPI#043|2FA_MTP043|TikTok Brazil",
-                        "USR_MTPIJ9XV_044|Pass@MTPI#044|2FA_MTP044|TikTok Brazil",
-                        "USR_MTPIJ9XV_045|Pass@MTPI#045|2FA_MTP045|TikTok Brazil",
-                        "USR_MTPIJ9XV_046|Pass@MTPI#046|2FA_MTP046|TikTok Brazil",
-                        "USR_MTPIJ9XV_047|Pass@MTPI#047|2FA_MTP047|TikTok Brazil",
-                        "USR_MTPIJ9XV_048|Pass@MTPI#048|2FA_MTP048|TikTok Brazil",
-                        "USR_MTPIJ9XV_049|Pass@MTPI#049|2FA_MTP049|TikTok Brazil",
-                        "USR_MTPIJ9XV_050|Pass@MTPI#050|2FA_MTP050|TikTok Brazil",
-                        "USR_MTPIJ9XV_051|Pass@MTPI#051|2FA_MTP051|TikTok Brazil",
-                        "USR_MTPIJ9XV_052|Pass@MTPI#052|2FA_MTP052|TikTok Brazil",
-                        "USR_MTPIJ9XV_053|Pass@MTPI#053|2FA_MTP053|TikTok Brazil",
-                        "USR_MTPIJ9XV_054|Pass@MTPI#054|2FA_MTP054|TikTok Brazil",
-                        "USR_MTPIJ9XV_055|Pass@MTPI#055|2FA_MTP055|TikTok Brazil",
-                        "USR_MTPIJ9XV_056|Pass@MTPI#056|2FA_MTP056|TikTok Brazil",
-                        "USR_MTPIJ9XV_057|Pass@MTPI#057|2FA_MTP057|TikTok Brazil",
-                        "USR_MTPIJ9XV_058|Pass@MTPI#058|2FA_MTP058|TikTok Brazil",
-                        "USR_MTPIJ9XV_059|Pass@MTPI#059|2FA_MTP059|TikTok Brazil",
-                        "USR_MTPIJ9XV_060|Pass@MTPI#060|2FA_MTP060|TikTok Brazil",
-                        "USR_MTPIJ9XV_061|Pass@MTPI#061|2FA_MTP061|TikTok Brazil",
-                        "USR_MTPIJ9XV_062|Pass@MTPI#062|2FA_MTP062|TikTok Brazil",
-                        "USR_MTPIJ9XV_063|Pass@MTPI#063|2FA_MTP063|TikTok Brazil",
-                        "USR_MTPIJ9XV_064|Pass@MTPI#064|2FA_MTP064|TikTok Brazil",
-                        "USR_MTPIJ9XV_065|Pass@MTPI#065|2FA_MTP065|TikTok Brazil",
-                        "USR_MTPIJ9XV_066|Pass@MTPI#066|2FA_MTP066|TikTok Brazil",
-                        "USR_MTPIJ9XV_067|Pass@MTPI#067|2FA_MTP067|TikTok Brazil",
-                        "USR_MTPIJ9XV_068|Pass@MTPI#068|2FA_MTP068|TikTok Brazil",
-                        "USR_MTPIJ9XV_069|Pass@MTPI#069|2FA_MTP069|TikTok Brazil",
-                        "USR_MTPIJ9XV_070|Pass@MTPI#070|2FA_MTP070|TikTok Brazil",
-                        "USR_MTPIJ9XV_071|Pass@MTPI#071|2FA_MTP071|TikTok Brazil",
-                        "USR_MTPIJ9XV_072|Pass@MTPI#072|2FA_MTP072|TikTok Brazil",
-                        "USR_MTPIJ9XV_073|Pass@MTPI#073|2FA_MTP073|TikTok Brazil",
-                        "USR_MTPIJ9XV_074|Pass@MTPI#074|2FA_MTP074|TikTok Brazil",
-                        "USR_MTPIJ9XV_075|Pass@MTPI#075|2FA_MTP075|TikTok Brazil",
-                        "USR_MTPIJ9XV_076|Pass@MTPI#076|2FA_MTP076|TikTok Brazil",
-                        "USR_MTPIJ9XV_077|Pass@MTPI#077|2FA_MTP077|TikTok Brazil"
-                ]
+                                  "hiepiwt1312|BR@15235QTTEW|ooz8uxrqsl@sv366.mytempmail.org|",
+                                  "t_lai_86_1991|BR@15235QTTEW|29zlqqor7r@sv327.mytempmail.org|",
+                                  "f5.tan.2811|BR@15235QTTEW|imxse8oyeg@sv391.mytempmail.org|",
+                                  "hoang.nguy.w5.2407|BR@15235QTTEW|ecy1l0pfes@sv712.mytempmail.org|",
+                                  "ong.hoan.5l.2002|BR@15235QTTEW|xnofes2f8r@sv422.mytempmail.org|",
+                                  "c_nguyet_6dd_2003|BR@15235QTTEW|qu3bka63ov@sv230.mytempmail.org|",
+                                  "mac.hang.j8.1993|BR@15235QTTEW|8wle7v1e7f@sv349.mytempmail.org|",
+                                  "1404.huynh.t|BR@15235QTTEW|6tj2g53oev@sv478.mytempmail.org|",
+                                  "tram.chung.fk.0602|BR@15235QTTEW|xqxgxlsl07@sv917.mytempmail.org|",
+                                  "c_khiet_do_1905|BR@15235QTTEW|k0wxkw3ip8@sv790.mytempmail.org|",
+                                  "1996.hue.x|BR@15235QTTEW|nsknvrfiz1@sv180.mytempmail.org|",
+                                  "nhu9wv1203|BR@15235QTTEW|2xu44xy6v8@sv423.mytempmail.org|",
+                                  "user32949996025027|BR@15235QTTEW|jw2o7f1s6i@sv591.mytempmail.org|",
+                                  "moccvl0706|BR@15235QTTEW|aixbsvdzmc@sv127.mytempmail.org|",
+                                  "ke_yen_2vn_0707|BR@15235QTTEW|18y32yh2qc@sv731.mytempmail.org|",
+                                  "user73617146919102|BR@15235QTTEW|0o2af33rhe@sv608.mytempmail.org|",
+                                  "user10353292356088|BR@15235QTTEW|v21lzds6lh@sv626.mytempmail.org|",
+                                  "ew_duong_2007|BR@15235QTTEW|82n6drcq55@sv511.mytempmail.org|",
+                                  "h.tien.xqy.0308|BR@15235QTTEW|igw5nwn6l5@sv45.mytempmail.org|",
+                                  "0906.phan.k|BR@15235QTTEW|fk68xlsnn5@sv560.mytempmail.org|",
+                                  "tan_thoai_jn_1311200|BR@15235QTTEW|mxme5grdmh@sv486.mytempmail.org|",
+                                  "9c.ho.1609|BR@15235QTTEW|pcegzxe4df@sv717.mytempmail.org|",
+                                  "user9445093404627|BR@15235QTTEW|841qx2gksv@sv298.mytempmail.org|",
+                                  "khue.chung.7w.0202|BR@15235QTTEW|uvytf59l36@sv36.mytempmail.org|",
+                                  "mau_bui_0f_1206|BR@15235QTTEW|bnenhe5t0t@sv124.mytempmail.org|",
+                                  "3005_lu_l|BR@15235QTTEW|5ptshv17yk@sv165.mytempmail.org|",
+                                  "chau.dinh.am.1411|BR@15235QTTEW|14thsbe0r7@sv834.mytempmail.org|",
+                                  "zu_hien_1990|BR@15235QTTEW|ee8u4gqkh2@sv733.mytempmail.org|",
+                                  "tfdtuy1999|BR@15235QTTEW|uopgch6z8n@sv798.mytempmail.org|",
+                                  "t.nhu.381.1994|BR@15235QTTEW|uofj7xipq6@sv814.mytempmail.org|",
+                                  "l_dung_gy_1410|BR@15235QTTEW|3vimdqf2uk@sv734.mytempmail.org|",
+                                  "v_ha_ryk_0808|BR@15235QTTEW|tnvk9tjf56@sv128.mytempmail.org|",
+                                  "c.trac.ct.2905|BR@15235QTTEW|1zxktql09e@sv74.mytempmail.org|",
+                                  "h_nhien_sg_1990|BR@15235QTTEW|efk2s3rx2s@sv302.mytempmail.org|",
+                                  "t2lbtruc2006|BR@15235QTTEW|f52rfpj7u2@sv621.mytempmail.org|",
+                                  "vanhljpd1412|BR@15235QTTEW|xyc89bmres@sv702.mytempmail.org|PV2YEBGPAO4CI5VU4G6PMZRB7IK2PJLQ",
+                                  "d.minh.gf2.1992|BR@15235QTTEW|ppyufksxx5@sv872.mytempmail.org|IUQNKVUX4K5TDD7JIW4V4ZAO2RFPJEBB",
+                                  "t.luu.q7r.0811|BR@15235QTTEW|ikson65enn@sv647.mytempmail.org|",
+                                  "trieu.trac.je8.1401|BR@15235QTTEW|wd5ovetsnc@sv551.mytempmail.org|",
+                                  "nguyen.ham.j9y.16041|BR@15235QTTEW|ma247v1yeu@sv213.mytempmail.org|",
+                                  "ong.bao.eig.31042004|BR@15235QTTEW|oybffoba71@sv782.mytempmail.org|",
+                                  "tuy_chau_9a_1707|BR@15235QTTEW|j2l5ta2y3y@sv197.mytempmail.org|",
+                                  "up7.phan.2907|BR@15235QTTEW|tlcn5f6usn@sv848.mytempmail.org|",
+                                  "t.tran.pfc.0411|BR@15235QTTEW|ttj7pmzbdj@sv537.mytempmail.org|",
+                                  "bang3olt0207|BR@15235QTTEW|dx0bznksvi@sv501.mytempmail.org|",
+                                  "ton.dinh.72u.2003|BR@15235QTTEW|jxduti9wco@sv841.mytempmail.org|",
+                                  "jno.quach.0910|BR@15235QTTEW|oxd9nz7fbx@sv525.mytempmail.org|",
+                                  "n.do.82m.1106|BR@15235QTTEW|oebzwott4m@sv931.mytempmail.org|MY6AVISYDWIPXOGYBVN66H6TCUPJ6QXH",
+                                  "m1.kim.1999|BR@15235QTTEW|ew0tfrwame@sv559.mytempmail.org|",
+                                  "o_tho_5hb_2009|BR@15235QTTEW|p1e4isrc1u@sv354.mytempmail.org|",
+                                  "kieu30p0203|BR@15235QTTEW|oi8wple1gj@sv718.mytempmail.org|",
+                                  "1b.khiet.2000|BR@15235QTTEW|uuz1lyfzcn@sv129.mytempmail.org|",
+                                  "tak5truong2000|BR@15235QTTEW|0v4h5d6o9a@sv233.mytempmail.org|",
+                                  "t_diem_cz_1995|BR@15235QTTEW|xsggbhney1@sv313.mytempmail.org|",
+                                  "user1928270525407|BR@15235QTTEW|r0ewc3ex15@sv934.mytempmail.org|",
+                                  "xuyen.lu.a21.1401|BR@15235QTTEW|astz3fjabu@sv881.mytempmail.org|",
+                                  "user7407617129630|BR@15235QTTEW|gymdpf4s5l@sv625.mytempmail.org|",
+                                  "khuu_huynh_qg_170719|BR@15235QTTEW|4hqna1bqvu@sv356.mytempmail.org|",
+                                  "q_tung_xo_1999|BR@15235QTTEW|gt1drdq3sv@sv546.mytempmail.org|",
+                                  "v_han_33_2001|BR@15235QTTEW|c16c6k8b2d@sv496.mytempmail.org|",
+                                  "trieu.yen.koq.2802|BR@15235QTTEW|996wbqlwxj@sv574.mytempmail.org|",
+                                  "le.ly.f27.05022007|BR@15235QTTEW|ofntr5g2o8@sv582.mytempmail.org|",
+                                  "klcwphong2004|BR@15235QTTEW|rhzavdc4b0@sv238.mytempmail.org|",
+                                  "1407_khong_t|BR@15235QTTEW|xa0osggia1@sv289.mytempmail.org|",
+                                  "a.trinh.yd.1101|BR@15235QTTEW|641ldta3ht@sv501.mytempmail.org|",
+                                  "2007_ho_o|BR@15235QTTEW|swud8u2h99@sv848.mytempmail.org|",
+                                  "user7848587558749|BR@15235QTTEW|mt880zkyb2@sv454.mytempmail.org|BFCKDNFWQASAAKXC4346CJ5G47LLAPUL",
+                                  "l_man_bw2_2003|BR@15235QTTEW|qs8pb6mfvg@sv139.mytempmail.org|",
+                                  "vuong_hang_1vd_03041|BR@15235QTTEW|sl9ed1k0bq@sv850.mytempmail.org|",
+                                  "v_dong_7c_1302|BR@15235QTTEW|cvdp0ex96a@sv270.mytempmail.org|",
+                                  "zw.thao.2004|BR@15235QTTEW|r67b9a7fps@sv958.mytempmail.org|",
+                                  "nnmkvan2006|BR@15235QTTEW|52pycxosen@sv517.mytempmail.org|",
+                                  "hien_duong_xf_0104|BR@15235QTTEW|cf2a5lz6xu@sv867.mytempmail.org",
+                                  "nguy_hoang_ln6_1994|BR@15235QTTEW|kx3ygnuqp9@sv999.mytempmail.org",
+                                  "n.thach.sh.1909|BR@15235QTTEW|k9ik33qm66@sv729.mytempmail.org"
+                        ]
         },
         {
                 "name": "Tiktok BRAZIL New",
@@ -15921,6 +15712,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (vAccs.length === 0 && typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.getAvailable) {
             try { vAccs = MMO_WAREHOUSE.getAvailable(curProd.id, selectedVVal) || []; } catch(eW) {}
           }
+          // Lọc sạch 100% tài khoản test/ảo khỏi giao diện
+          vAccs = vAccs.filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
           const c = vAccs.length > 0 ? vAccs.length : (typeof getShopVariantStock === "function" ? getShopVariantStock(curProd, selectedVVal) : (vObj ? (Number(vObj.stock) || 0) : 0));
           if (countLabel) countLabel.innerText = "Tồn kho biến thể " + (Number(selectedVVal) + 1) + ":";
           if (targetBadge) {
@@ -16257,7 +16050,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL") {
           u += "?variant=" + variantIdx;
         }
-        return await this._fetchJson(u, { headers: headers, cache: "no-store" }, 1200);
+        return await this._fetchJson(u, { headers: headers, cache: "no-store" }, 8000);
       },
 
       adminClearInventory: async function(productId, variantIdx) {
@@ -16268,7 +16061,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL") {
           u += "?variant=" + variantIdx;
         }
-        return await this._fetchJson(u, { method: "DELETE", headers: headers }, 1500);
+        return await this._fetchJson(u, { method: "DELETE", headers: headers }, 8000);
       },
 
       adminClearSold: async function(productId, variantIdx) {
@@ -16279,7 +16072,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL") {
           u += "?variant=" + variantIdx;
         }
-        return await this._fetchJson(u, { method: "DELETE", headers: headers }, 1500);
+        return await this._fetchJson(u, { method: "DELETE", headers: headers }, 8000);
       }
     };
 
@@ -42052,6 +41845,7 @@ async function confirmRefundOrder() {
         try {
           const accounts = await TURSO_CLIENT.getAvailableAccounts(prodId, vVal);
           let effectiveAccounts = (Array.isArray(accounts) && accounts.length > 0) ? accounts : [];
+          effectiveAccounts = effectiveAccounts.filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
 
           // NẾU TURSO TRẢ VỀ RỖNG: Tự động khôi phục từ MMO_WAREHOUSE hoặc biến thể local
           const curVObj = (hasVars && vVal !== "ALL") ? (prod.variants && prod.variants[vVal]) : prod;
