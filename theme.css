@@ -4464,6 +4464,20 @@ table.adm-table td,
   word-break: break-word !important;
 }
 
+/* Fix bảng Quản Lý Sản Phẩm: Thu gọn cột sản phẩm, chống tràn chữ ra ngoài màn hình */
+#admProductsTable th:nth-child(3),
+#admProductsTable td:nth-child(3) {
+  white-space: normal !important;
+  max-width: 380px !important;
+  min-width: 200px !important;
+  word-break: break-word !important;
+}
+.adm-source-info-box {
+  white-space: normal !important;
+  max-width: 350px !important;
+  box-sizing: border-box !important;
+}
+
 /* ============================================================
    BẢNG LIÊN KẾT SẢN PHẨM ON-DEMAND API (SIÊU MƯỢT, 6 CỘT HIỂN THỊ RÕ RÀNG)
    ============================================================ */
