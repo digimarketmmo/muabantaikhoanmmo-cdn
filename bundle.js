@@ -1,8 +1,8 @@
 // =========================================================================
-// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.1)
+// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.2)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.4.1";
+const MMO_CURRENT_CODE_VERSION = "4.4.2";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -5582,9 +5582,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // CORE SYSTEM: USER DATABASE & REGISTERED MEMBERS SYSTEM
     // =========================================================================
     const ROOT_ADMIN_EMAIL = "manhdongvtc@gmail.com";
+    const ROOT_ADMIN_EMAILS = ["manhdongvtc@gmail.com", "muabantaikhoanmmo@gmail.com", "digimarketmmo@gmail.com"];
+    window.ROOT_ADMIN_EMAILS = ROOT_ADMIN_EMAILS;
     const DEFAULT_REGISTERED_USERS = [
       { name: "Mạnh Đồng Official", email: "manhdongvtc@gmail.com", role: "Quản Trị Viên", balance: 225500, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" },
-      { name: "Nguyễn Mạnh Đông", email: "digimarketmmo@gmail.com", role: "Quản Trị Viên", balance: 314020, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }
+      { name: "Nguyễn Mạnh Đông", email: "digimarketmmo@gmail.com", role: "Quản Trị Viên", balance: 213620, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }
     ];
 
     // HÀM TỰ ĐỘNG XÓA SẠCH 100% DỮ LIỆU DEMO / ĐƠN ẢO / TỒN KHO ẢO KHI KHỞI ĐỘNG
@@ -5708,7 +5710,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!email) return false;
       const cleanEmail = String(email).trim().toLowerCase();
       const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
-      if (cleanEmail === rootEmail || cleanEmail === "manhdongvtc@gmail.com" || cleanEmail === "muabantaikhoanmmo@gmail.com" || (typeof isAdminUser === "function" && isAdminUser({ email: cleanEmail }))) return false;
+      if (cleanEmail === rootEmail || cleanEmail === "manhdongvtc@gmail.com" || cleanEmail === "muabantaikhoanmmo@gmail.com" || cleanEmail === "digimarketmmo@gmail.com" || (typeof isAdminUser === "function" && isAdminUser({ email: cleanEmail }))) return false;
 
       // Rate limit: Không kiểm tra cùng 1 tài khoản quá nhiều lần trong 30 giây để tránh nghẽn luồng
       const now = Date.now();
@@ -6024,12 +6026,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const primary = "manhdongvtc@gmail.com";
             if (!list.includes(primary)) list.unshift(primary);
             if (!list.includes("muabantaikhoanmmo@gmail.com")) list.push("muabantaikhoanmmo@gmail.com");
+            if (!list.includes("digimarketmmo@gmail.com")) list.push("digimarketmmo@gmail.com");
             try { localStorage.setItem("mmo_admin_emails", JSON.stringify(list)); } catch(eW) {}
             return list;
           }
         }
       } catch (e) {}
-      const initial = ["manhdongvtc@gmail.com", "muabantaikhoanmmo@gmail.com"];
+      const initial = ["manhdongvtc@gmail.com", "muabantaikhoanmmo@gmail.com", "digimarketmmo@gmail.com"];
       try { localStorage.setItem("mmo_admin_emails", JSON.stringify(initial)); } catch(e) {}
       return initial;
     }
@@ -6179,7 +6182,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!user || !user.email) return false;
       
       const userEmail = (user.email || "").toLowerCase().trim();
-      if (userEmail === "muabantaikhoanmmo@gmail.com" || userEmail === "manhdongvtc@gmail.com") return true;
+      if (userEmail === "muabantaikhoanmmo@gmail.com" || userEmail === "manhdongvtc@gmail.com" || userEmail === "digimarketmmo@gmail.com") return true;
       const adminList = (typeof getAdminEmails === "function") ? getAdminEmails().map(e => (e || "").toLowerCase().trim()) : [];
       if (adminList.includes(userEmail)) return true;
 
@@ -12665,7 +12668,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             client_id: clientId,
             callback: handleGoogleCredentialResponse,
             auto_select: false,
-            cancel_on_tap_outside: true
+            cancel_on_tap_outside: true,
+            use_fedcm_for_prompt: false
           });
 
           const gDiv = document.getElementById("googleOfficialBtn");
@@ -12700,6 +12704,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           const client = google.accounts.oauth2.initTokenClient({
             client_id: clientId,
             scope: "email profile openid",
+            prompt: "select_account",
+            error_callback: (err) => {
+              console.warn("Google OAuth2 error:", err);
+              if (err && err.type === "popup_closed") {
+                showToast("Cửa sổ Google đã đóng. Bạn có thể đăng nhập bằng Email/Mật khẩu bên dưới!", "info");
+              } else {
+                showToast("Không thể kết nối Google: " + ((err && err.message) || "Vui lòng nhập Email & Mật khẩu bên dưới để vào hệ thống!"), "warning");
+              }
+            },
             callback: async (tokenResponse) => {
               if (tokenResponse && tokenResponse.access_token) {
                 showToast("⏳ Đang đồng bộ tài khoản Google...", "info");
@@ -12718,7 +12731,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               }
             }
           });
-          client.requestAccessToken();
+          client.requestAccessToken({ prompt: "select_account" });
           return;
         } catch(oauthErr) {
           console.warn("Google OAuth2 popup error:", oauthErr);
@@ -12731,7 +12744,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           google.accounts.id.initialize({
             client_id: clientId,
             callback: handleGoogleCredentialResponse,
-            auto_select: false
+            auto_select: false,
+            use_fedcm_for_prompt: false
           });
           google.accounts.id.prompt();
           return;
@@ -12925,15 +12939,36 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return;
       }
 
-      const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
+      const isRootAdmin = (email === "digimarketmmo@gmail.com" || email === "manhdongvtc@gmail.com" || email === "muabantaikhoanmmo@gmail.com" || (typeof ROOT_ADMIN_EMAILS !== "undefined" && ROOT_ADMIN_EMAILS.includes(email)));
+      const isAdm = isRootAdmin || ((typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false);
       const role = isAdm ? "Quản Trị Viên" : "MEMBER";
 
       // 2. TÌM TÀI KHOẢN TRONG BỘ NHỚ CỤC BỘ (LOCAL REGISTERED USERS)
       let users = getRegisteredUsers();
       const found = users.find(u => (u.email || "").toLowerCase().trim() === email);
 
-      // Nếu tài khoản đã tồn tại trên thiết bị này và ĐÃ CÓ MẬT KHẨU ĐƯỢC LƯU
-      if (found && found.password) {
+      if (isRootAdmin) {
+        // [ROOT ADMIN / CHỦ SỞ HỮU]: Tự động đồng bộ và mở khóa đăng nhập 100%, tự động nhận mật khẩu
+        if (found) {
+          found.password = pass;
+          found.role = "Quản Trị Viên";
+          found.isLocked = false;
+          found.status = "ACTIVE";
+        } else {
+          users.unshift({
+            userId: "USR_1791242528175",
+            name: "Nguyễn Mạnh Đông",
+            email: email,
+            password: pass,
+            role: "Quản Trị Viên",
+            balance: 213620,
+            avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            created: new Date().toLocaleDateString("vi-VN")
+          });
+        }
+        try { saveRegisteredUsers(users); } catch(uErr) {}
+      } else if (found && found.password) {
+        // Tài khoản thành viên đã lưu mật khẩu
         if (found.password !== pass) {
           showToast("❌ Mật khẩu không chính xác! Vui lòng thử lại hoặc bấm 'Quên mật khẩu'.", "danger");
           const passEl = document.getElementById("loginPassInput");
@@ -12970,7 +13005,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         // Nếu máy chủ backend từ chối hoặc người dùng nhập bừa email/mật khẩu
         if (!gasValidated) {
-          // Bất kể tài khoản có trong bộ nhớ cục bộ hay không, nếu chưa có mật khẩu khớp và backend từ chối, KHÔNG CHO ĐĂNG NHẬP
           showToast("❌ Tài khoản hoặc mật khẩu không chính xác! Vui lòng kiểm tra lại hoặc sử dụng 'Quên mật khẩu'.", "danger");
           const passEl = document.getElementById("loginPassInput");
           if (passEl) {
@@ -12990,7 +13024,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
           saveRegisteredUsers(users);
         } else if (gasUser) {
-          // Lưu tài khoản từ cloud về local
           const newCloudUser = {
             userId: gasUser.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
             name: gasUser.name || email.split("@")[0],
