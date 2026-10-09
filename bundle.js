@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.5.3";
+const MMO_CURRENT_CODE_VERSION = "4.5.4";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const REAL_TIKTOK_BRAZIL_ACCOUNTS = ["hiepiwt1312|BR@15235QTTEW|ooz8uxrqsl@sv366.mytempmail.org|","t_lai_86_1991|BR@15235QTTEW|29zlqqor7r@sv327.mytempmail.org|","f5.tan.2811|BR@15235QTTEW|imxse8oyeg@sv391.mytempmail.org|","hoang.nguy.w5.2407|BR@15235QTTEW|ecy1l0pfes@sv712.mytempmail.org|","ong.hoan.5l.2002|BR@15235QTTEW|xnofes2f8r@sv422.mytempmail.org|","c_nguyet_6dd_2003|BR@15235QTTEW|qu3bka63ov@sv230.mytempmail.org|","mac.hang.j8.1993|BR@15235QTTEW|8wle7v1e7f@sv349.mytempmail.org|","1404.huynh.t|BR@15235QTTEW|6tj2g53oev@sv478.mytempmail.org|","tram.chung.fk.0602|BR@15235QTTEW|xqxgxlsl07@sv917.mytempmail.org|","c_khiet_do_1905|BR@15235QTTEW|k0wxkw3ip8@sv790.mytempmail.org|","1996.hue.x|BR@15235QTTEW|nsknvrfiz1@sv180.mytempmail.org|","nhu9wv1203|BR@15235QTTEW|2xu44xy6v8@sv423.mytempmail.org|","user32949996025027|BR@15235QTTEW|jw2o7f1s6i@sv591.mytempmail.org|","moccvl0706|BR@15235QTTEW|aixbsvdzmc@sv127.mytempmail.org|","ke_yen_2vn_0707|BR@15235QTTEW|18y32yh2qc@sv731.mytempmail.org|","user73617146919102|BR@15235QTTEW|0o2af33rhe@sv608.mytempmail.org|","user10353292356088|BR@15235QTTEW|v21lzds6lh@sv626.mytempmail.org|","ew_duong_2007|BR@15235QTTEW|82n6drcq55@sv511.mytempmail.org|","h.tien.xqy.0308|BR@15235QTTEW|igw5nwn6l5@sv45.mytempmail.org|","0906.phan.k|BR@15235QTTEW|fk68xlsnn5@sv560.mytempmail.org|","tan_thoai_jn_1311200|BR@15235QTTEW|mxme5grdmh@sv486.mytempmail.org|","9c.ho.1609|BR@15235QTTEW|pcegzxe4df@sv717.mytempmail.org|","user9445093404627|BR@15235QTTEW|841qx2gksv@sv298.mytempmail.org|","khue.chung.7w.0202|BR@15235QTTEW|uvytf59l36@sv36.mytempmail.org|","mau_bui_0f_1206|BR@15235QTTEW|bnenhe5t0t@sv124.mytempmail.org|","3005_lu_l|BR@15235QTTEW|5ptshv17yk@sv165.mytempmail.org|","chau.dinh.am.1411|BR@15235QTTEW|14thsbe0r7@sv834.mytempmail.org|","zu_hien_1990|BR@15235QTTEW|ee8u4gqkh2@sv733.mytempmail.org|","tfdtuy1999|BR@15235QTTEW|uopgch6z8n@sv798.mytempmail.org|","t.nhu.381.1994|BR@15235QTTEW|uofj7xipq6@sv814.mytempmail.org|","l_dung_gy_1410|BR@15235QTTEW|3vimdqf2uk@sv734.mytempmail.org|","v_ha_ryk_0808|BR@15235QTTEW|tnvk9tjf56@sv128.mytempmail.org|","c.trac.ct.2905|BR@15235QTTEW|1zxktql09e@sv74.mytempmail.org|","h_nhien_sg_1990|BR@15235QTTEW|efk2s3rx2s@sv302.mytempmail.org|","t2lbtruc2006|BR@15235QTTEW|f52rfpj7u2@sv621.mytempmail.org|","vanhljpd1412|BR@15235QTTEW|xyc89bmres@sv702.mytempmail.org|PV2YEBGPAO4CI5VU4G6PMZRB7IK2PJLQ","d.minh.gf2.1992|BR@15235QTTEW|ppyufksxx5@sv872.mytempmail.org|IUQNKVUX4K5TDD7JIW4V4ZAO2RFPJEBB","t.luu.q7r.0811|BR@15235QTTEW|ikson65enn@sv647.mytempmail.org|","trieu.trac.je8.1401|BR@15235QTTEW|wd5ovetsnc@sv551.mytempmail.org|","nguyen.ham.j9y.16041|BR@15235QTTEW|ma247v1yeu@sv213.mytempmail.org|","ong.bao.eig.31042004|BR@15235QTTEW|oybffoba71@sv782.mytempmail.org|","tuy_chau_9a_1707|BR@15235QTTEW|j2l5ta2y3y@sv197.mytempmail.org|","up7.phan.2907|BR@15235QTTEW|tlcn5f6usn@sv848.mytempmail.org|","t.tran.pfc.0411|BR@15235QTTEW|ttj7pmzbdj@sv537.mytempmail.org|","bang3olt0207|BR@15235QTTEW|dx0bznksvi@sv501.mytempmail.org|","ton.dinh.72u.2003|BR@15235QTTEW|jxduti9wco@sv841.mytempmail.org|","jno.quach.0910|BR@15235QTTEW|oxd9nz7fbx@sv525.mytempmail.org|","n.do.82m.1106|BR@15235QTTEW|oebzwott4m@sv931.mytempmail.org|MY6AVISYDWIPXOGYBVN66H6TCUPJ6QXH","m1.kim.1999|BR@15235QTTEW|ew0tfrwame@sv559.mytempmail.org|","o_tho_5hb_2009|BR@15235QTTEW|p1e4isrc1u@sv354.mytempmail.org|","kieu30p0203|BR@15235QTTEW|oi8wple1gj@sv718.mytempmail.org|","1b.khiet.2000|BR@15235QTTEW|uuz1lyfzcn@sv129.mytempmail.org|","tak5truong2000|BR@15235QTTEW|0v4h5d6o9a@sv233.mytempmail.org|","t_diem_cz_1995|BR@15235QTTEW|xsggbhney1@sv313.mytempmail.org|","user1928270525407|BR@15235QTTEW|r0ewc3ex15@sv934.mytempmail.org|","xuyen.lu.a21.1401|BR@15235QTTEW|astz3fjabu@sv881.mytempmail.org|","user7407617129630|BR@15235QTTEW|gymdpf4s5l@sv625.mytempmail.org|","khuu_huynh_qg_170719|BR@15235QTTEW|4hqna1bqvu@sv356.mytempmail.org|","q_tung_xo_1999|BR@15235QTTEW|gt1drdq3sv@sv546.mytempmail.org|","v_han_33_2001|BR@15235QTTEW|c16c6k8b2d@sv496.mytempmail.org|","trieu.yen.koq.2802|BR@15235QTTEW|996wbqlwxj@sv574.mytempmail.org|","le.ly.f27.05022007|BR@15235QTTEW|ofntr5g2o8@sv582.mytempmail.org|","klcwphong2004|BR@15235QTTEW|rhzavdc4b0@sv238.mytempmail.org|","1407_khong_t|BR@15235QTTEW|xa0osggia1@sv289.mytempmail.org|","a.trinh.yd.1101|BR@15235QTTEW|641ldta3ht@sv501.mytempmail.org|","2007_ho_o|BR@15235QTTEW|swud8u2h99@sv848.mytempmail.org|","user7848587558749|BR@15235QTTEW|mt880zkyb2@sv454.mytempmail.org|BFCKDNFWQASAAKXC4346CJ5G47LLAPUL","l_man_bw2_2003|BR@15235QTTEW|qs8pb6mfvg@sv139.mytempmail.org|","vuong_hang_1vd_03041|BR@15235QTTEW|sl9ed1k0bq@sv850.mytempmail.org|","v_dong_7c_1302|BR@15235QTTEW|cvdp0ex96a@sv270.mytempmail.org|","zw.thao.2004|BR@15235QTTEW|r67b9a7fps@sv958.mytempmail.org|","nnmkvan2006|BR@15235QTTEW|52pycxosen@sv517.mytempmail.org|","hien_duong_xf_0104|BR@15235QTTEW|cf2a5lz6xu@sv867.mytempmail.org","nguy_hoang_ln6_1994|BR@15235QTTEW|kx3ygnuqp9@sv999.mytempmail.org","n.thach.sh.1909|BR@15235QTTEW|k9ik33qm66@sv729.mytempmail.org"];
@@ -754,12 +754,21 @@ if (typeof window !== "undefined") {
           if (!p) continue;
           _ensureProductSearchIndex(p);
           var prov = p.provider || "";
-          if (prov) provSet.add(prov);
+          if (prov) {
+            provSet.add(prov);
+            var normProv = (typeof normalizeProviderId === "function") ? normalizeProviderId(prov) : prov;
+            if (normProv) provSet.add(normProv);
+          }
           var idStr = String(p.id || "").trim();
           var cleanId = idStr.replace(/^#/, "");
           if (prov) {
             map.set(prov + ":" + idStr, p);
             map.set(prov + ":" + cleanId, p);
+            var normP = (typeof normalizeProviderId === "function") ? normalizeProviderId(prov) : prov;
+            if (normP && normP !== prov) {
+              map.set(normP + ":" + idStr, p);
+              map.set(normP + ":" + cleanId, p);
+            }
           }
           if (!map.has("any:" + idStr)) {
             map.set("any:" + idStr, p);
@@ -789,7 +798,12 @@ if (typeof window !== "undefined") {
       var idStr = String(id || "").trim();
       var cleanId = idStr.replace(/^#/, "");
       if (provider) {
-        var item = _sourceProductsFastMap.get(provider + ":" + idStr) || _sourceProductsFastMap.get(provider + ":" + cleanId);
+        var pKey = String(provider).toLowerCase().trim();
+        var normKey = (typeof normalizeProviderId === "function") ? normalizeProviderId(pKey) : pKey;
+        var item = _sourceProductsFastMap.get(pKey + ":" + idStr) 
+                || _sourceProductsFastMap.get(pKey + ":" + cleanId)
+                || _sourceProductsFastMap.get(normKey + ":" + idStr) 
+                || _sourceProductsFastMap.get(normKey + ":" + cleanId);
         if (item) return item;
       }
       return _sourceProductsFastMap.get("any:" + idStr) || _sourceProductsFastMap.get("any:" + cleanId) || null;
@@ -803,7 +817,12 @@ if (typeof window !== "undefined") {
     function isFastSourceProviderLoaded(provider) {
       if (typeof window !== "undefined" && window._liveLoadedProviders && (window._liveLoadedProviders instanceof Set)) {
         if (!provider) return window._liveLoadedProviders.size > 0;
-        return window._liveLoadedProviders.has(provider);
+        if (window._liveLoadedProviders.has(provider)) return true;
+        var norm = (typeof normalizeProviderId === "function") ? normalizeProviderId(provider) : "";
+        if (norm && window._liveLoadedProviders.has(norm)) return true;
+        for (var pItem of window._liveLoadedProviders) {
+          if (typeof isSameProvider === "function" && isSameProvider(pItem, provider)) return true;
+        }
       }
       return false;
     }
@@ -7922,6 +7941,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             try { sessionStorage.setItem("mmo_cached_source_products", JSON.stringify(merged)); } catch(e) {}
           }
 
+          if (typeof window !== "undefined" && window._liveLoadedProviders) {
+            window._liveLoadedProviders.add(provider);
+            var normP = (typeof normalizeProviderId === "function") ? normalizeProviderId(provider) : provider;
+            if (normP) window._liveLoadedProviders.add(normP);
+          }
           if (isManual && typeof showToast === "function") {
             showToast("Đã quét thành công " + freshProds.length + " sản phẩm từ " + pCfg.name + "!", "success");
           }
@@ -8113,10 +8137,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         radioLocal.checked = !isApi;
         radioApi.checked = isApi;
       }
-      if (typeof syncModalProviderOptions === "function") syncModalProviderOptions(prov);
+      const initialProv = (existingMap && existingMap.provider) ? existingMap.provider : (p.apiMapping && p.apiMapping.provider) || "nguyenlieummo";
+      if (typeof syncModalProviderOptions === "function") syncModalProviderOptions(initialProv);
       if (typeof toggleAdmProductSourceFields === "function") toggleAdmProductSourceFields();
       if (isApi) {
-        const prov = (existingMap && existingMap.provider) ? existingMap.provider : (p.apiMapping && p.apiMapping.provider) || "selltainguyenmmo";
+        const prov = initialProv;
         const srcId = (existingMap && existingMap.sourceProdId) ? String(existingMap.sourceProdId) : (p.apiMapping && p.apiMapping.sourceProdId) ? String(p.apiMapping.sourceProdId) : "";
         const pSel = document.getElementById("admProdApiProvider");
         if (pSel) {
@@ -8187,7 +8212,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       updateCommissionEstimate();
 
       if (document.getElementById("admModalTitle")) document.getElementById("admModalTitle").innerHTML = '<i class="fa-solid fa-pen-to-square green"></i> Sửa Sản Phẩm';
-      if (typeof syncModalProviderOptions === "function") syncModalProviderOptions("nguyenlieummo");
       const modal = document.getElementById("adminProductModal");
       if (modal) modal.style.display = "flex";
     }
@@ -15614,10 +15638,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                    || cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
             }
             const provHasProds = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
-            if (provHasProds && inSrc && typeof inSrc.amount === "number") {
+            if (inSrc && typeof inSrc.amount === "number") {
               st = inSrc.amount;
               apiMap.sourceStock = st;
               apiMap.isSourceDeleted = false;
+              hasLiveSource = true;
+              if (prod) prod.stock = st;
+            } else if (typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0 && !apiMap.isSourceDeleted) {
+              st = apiMap.sourceStock;
               hasLiveSource = true;
             } else if (provHasProds && !inSrc) {
               // Sản phẩm không còn trên web nguồn hoặc nguồn đã xoá/gỡ SP (CHỈ KHI PROVIDER ĐÃ NẠP LIVE)
@@ -17378,20 +17406,24 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               ? isFastSourceProviderLoaded(m.provider)
               : false;
             const cleanMId = String(m.sourceProdId || "").replace(/^#/, "").trim();
-            const inSrc = (typeof getFastSourceProduct === "function")
+            let inSrc = (typeof getFastSourceProduct === "function")
               ? getFastSourceProduct(m.provider, cleanMId)
-              : (prods.find(s => (String(s.id).replace(/^#/, "").trim() === cleanMId || String(s.id) === String(m.sourceProdId)) && (!m.provider || s.provider === m.provider))
-                || prods.find(s => (String(s.id).replace(/^#/, "").trim() === cleanMId || String(s.id) === String(m.sourceProdId))));
+              : null;
+            if (!inSrc && Array.isArray(prods)) {
+              inSrc = prods.find(s => (String(s.id).replace(/^#/, "").trim() === cleanMId || String(s.id) === String(m.sourceProdId)) && (!m.provider || s.provider === m.provider || (typeof isSameProvider === "function" && isSameProvider(s.provider, m.provider))))
+                   || prods.find(s => (String(s.id).replace(/^#/, "").trim() === cleanMId || String(s.id) === String(m.sourceProdId)));
+            }
             if (inSrc && typeof inSrc.amount === "number") {
               effectiveStock = inSrc.amount;
               m.sourceStock = inSrc.amount;
               m.isSourceDeleted = false;
+              if (curP) curP.stock = inSrc.amount;
+            } else if (typeof m.sourceStock === "number" && m.sourceStock > 0 && !m.isSourceDeleted) {
+              effectiveStock = m.sourceStock;
             } else if (m.isSourceDeleted || (provLoaded && !inSrc)) {
               effectiveStock = 0;
               m.sourceStock = 0;
               m.isSourceDeleted = true;
-            } else if (typeof m.sourceStock === "number" && m.sourceStock > 0) {
-              effectiveStock = m.sourceStock;
             } else if (curV && typeof curV.stock === "number" && curV.stock > 0) {
               effectiveStock = curV.stock;
             } else if (curP && typeof curP.stock === "number" && curP.stock > 0) {
