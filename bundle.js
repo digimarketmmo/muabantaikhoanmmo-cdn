@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.4.3";
+const MMO_CURRENT_CODE_VERSION = "4.4.4";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -177,6 +177,36 @@ function healStorageQuota(forceEmergency) {
         }
       }
     } catch(eDelClean) {}
+
+    // [BẢO VỆ DANH SÁCH QUẢN TRỊ]: Dọn dẹp digimarketmmo@gmail.com khỏi mmo_admin_emails nếu từng bị thêm nhầm
+    try {
+      const rawAdm = localStorage.getItem("mmo_admin_emails");
+      if (rawAdm) {
+        let admList = JSON.parse(rawAdm);
+        if (Array.isArray(admList)) {
+          const filtered = admList.filter(e => String(e||"").toLowerCase().trim() !== "digimarketmmo@gmail.com");
+          if (filtered.length !== admList.length) {
+            localStorage.setItem("mmo_admin_emails", JSON.stringify(filtered));
+          }
+        }
+      }
+      const rawReg = localStorage.getItem("mmo_registered_users");
+      if (rawReg) {
+        let regList = JSON.parse(rawReg);
+        if (Array.isArray(regList)) {
+          let hasChange = false;
+          regList.forEach(u => {
+            if (u && String(u.email||"").toLowerCase().trim() === "digimarketmmo@gmail.com" && u.role === "Quản Trị Viên") {
+              u.role = "Thành Viên";
+              hasChange = true;
+            }
+          });
+          if (hasChange) {
+            localStorage.setItem("mmo_registered_users", JSON.stringify(regList));
+          }
+        }
+      }
+    } catch(eAdmClean) {}
 
     ["mmo_admin_products", "mmo_products"].forEach(function(key) {
       try {
@@ -5591,11 +5621,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // CORE SYSTEM: USER DATABASE & REGISTERED MEMBERS SYSTEM
     // =========================================================================
     const ROOT_ADMIN_EMAIL = "manhdongvtc@gmail.com";
-    const ROOT_ADMIN_EMAILS = ["manhdongvtc@gmail.com", "muabantaikhoanmmo@gmail.com", "digimarketmmo@gmail.com"];
+    const ROOT_ADMIN_EMAILS = ["manhdongvtc@gmail.com"];
     window.ROOT_ADMIN_EMAILS = ROOT_ADMIN_EMAILS;
     const DEFAULT_REGISTERED_USERS = [
       { name: "Mạnh Đồng Official", email: "manhdongvtc@gmail.com", role: "Quản Trị Viên", balance: 225500, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" },
-      { name: "Nguyễn Mạnh Đông", email: "digimarketmmo@gmail.com", role: "Quản Trị Viên", balance: 213620, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }
+      { name: "Nguyễn Mạnh Đông", email: "digimarketmmo@gmail.com", role: "Thành Viên", balance: 213620, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }
     ];
 
     // HÀM TỰ ĐỘNG XÓA SẠCH 100% DỮ LIỆU DEMO / ĐƠN ẢO / TỒN KHO ẢO KHI KHỞI ĐỘNG
@@ -5719,7 +5749,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!email) return false;
       const cleanEmail = String(email).trim().toLowerCase();
       const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
-      if (cleanEmail === rootEmail || cleanEmail === "manhdongvtc@gmail.com" || cleanEmail === "muabantaikhoanmmo@gmail.com" || cleanEmail === "digimarketmmo@gmail.com" || (typeof isAdminUser === "function" && isAdminUser({ email: cleanEmail }))) return false;
+      if (cleanEmail === rootEmail || cleanEmail === "manhdongvtc@gmail.com" || (typeof isAdminUser === "function" && isAdminUser({ email: cleanEmail }))) return false;
 
       // Rate limit: Không kiểm tra cùng 1 tài khoản quá nhiều lần trong 30 giây để tránh nghẽn luồng
       const now = Date.now();
@@ -6023,7 +6053,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     // ROOT_ADMIN_EMAIL already declared above
     const DEFAULT_ADMIN_EMAILS = [
-      "muabantaikhoanmmo@gmail.com"
+      "manhdongvtc@gmail.com"
     ];
 
     function getAdminEmails() {
@@ -6034,14 +6064,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (Array.isArray(list) && list.length > 0) {
             const primary = "manhdongvtc@gmail.com";
             if (!list.includes(primary)) list.unshift(primary);
-            if (!list.includes("muabantaikhoanmmo@gmail.com")) list.push("muabantaikhoanmmo@gmail.com");
-            if (!list.includes("digimarketmmo@gmail.com")) list.push("digimarketmmo@gmail.com");
-            try { localStorage.setItem("mmo_admin_emails", JSON.stringify(list)); } catch(eW) {}
+            // Lọc bỏ triệt để digimarketmmo@gmail.com khỏi danh sách admin
+            list = list.filter(e => (e || "").toLowerCase().trim() !== "digimarketmmo@gmail.com");
             return list;
           }
         }
       } catch (e) {}
-      const initial = ["manhdongvtc@gmail.com", "muabantaikhoanmmo@gmail.com", "digimarketmmo@gmail.com"];
+      const initial = ["manhdongvtc@gmail.com"];
       try { localStorage.setItem("mmo_admin_emails", JSON.stringify(initial)); } catch(e) {}
       return initial;
     }
@@ -6191,7 +6220,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!user || !user.email) return false;
       
       const userEmail = (user.email || "").toLowerCase().trim();
-      if (userEmail === "muabantaikhoanmmo@gmail.com" || userEmail === "manhdongvtc@gmail.com" || userEmail === "digimarketmmo@gmail.com") return true;
+      if (userEmail === "manhdongvtc@gmail.com" || userEmail === (ROOT_ADMIN_EMAIL || "").toLowerCase().trim()) return true;
       const adminList = (typeof getAdminEmails === "function") ? getAdminEmails().map(e => (e || "").toLowerCase().trim()) : [];
       if (adminList.includes(userEmail)) return true;
 
@@ -6260,21 +6289,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function handleRemoveAdminEmail(email) {
       const targetEmail = (email || "").toLowerCase().trim();
+      const rootEmail = (ROOT_ADMIN_EMAIL || "manhdongvtc@gmail.com").toLowerCase().trim();
       
-      // ROOT ADMIN không thể bị xóa
-      if (targetEmail === (ROOT_ADMIN_EMAIL || "").toLowerCase().trim()) {
-        showToast("⛔ Không thể xóa tài khoản Quản Trị Viên gốc!", "error");
+      // ROOT ADMIN (manhdongvtc@gmail.com) không thể bị xóa
+      if (targetEmail === rootEmail || targetEmail === "manhdongvtc@gmail.com") {
+        showToast("⛔ Không thể xóa tài khoản Quản Trị Viên gốc (Root Admin)!", "error");
         return;
       }
       
-      let list = getAdminEmails();
-      if (list.length <= 1) {
-        showToast("⚠️ Hệ thống phải duy trì ít nhất 1 Quản Trị Viên!", "warning");
-        return;
-      }
       if (!confirm("⚠️ Bạn có chắc muốn XÓA quyền Quản Trị Viên của [" + email + "]?")) return;
       
+      let list = getAdminEmails();
       list = list.filter(e => (e || "").toLowerCase().trim() !== targetEmail);
+      if (!list.includes(rootEmail)) {
+        list.unshift(rootEmail);
+      }
       saveAdminEmails(list);
 
       // Downgrade role in registered users
@@ -6307,18 +6336,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const container = document.getElementById("adminEmailsListContainer") || document.getElementById("adminEmailsListBody");
       if (!container) return;
       const list = getAdminEmails();
-      const canDelete = list.length > 1;
+      const rootEmail = (ROOT_ADMIN_EMAIL || "manhdongvtc@gmail.com").toLowerCase().trim();
       container.innerHTML = list.map(email => {
+        const cleanE = (email || "").toLowerCase().trim();
+        const isRoot = (cleanE === rootEmail || cleanE === "manhdongvtc@gmail.com");
         return `
           <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:#070a12; border:1px solid #1e293b; border-radius:8px; margin-bottom:8px;">
             <div style="display:flex; align-items:center; gap:10px;">
-              <i class="fa-solid fa-user-shield" style="color:#10b981; font-size:1.1rem;"></i>
+              <i class="fa-solid fa-user-shield" style="${isRoot ? 'color:#f59e0b;' : 'color:#10b981;'} font-size:1.1rem;"></i>
               <div>
                 <strong style="color:#fff; font-size:0.88rem;">${escapeHtml(email)}</strong>
-                <span style="font-size:0.75rem; color:#94a3b8; display:block;">Quản Trị Viên</span>
+                <span style="font-size:0.75rem; color:#94a3b8; display:block;">${isRoot ? 'Chủ Sở Hữu / Root Admin' : 'Quản Trị Viên'}</span>
               </div>
             </div>
-            ${canDelete ? `<button class="btn-copy-small" onclick="handleRemoveAdminEmail('${escapeHtml(email)}')" style="color:#ef4444; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.08); padding:4px 10px; cursor:pointer; font-weight:600; border-radius:6px; display:inline-flex; align-items:center; gap:4px;" title="Xóa quyền Quản Trị"><i class="fa-solid fa-trash"></i> Xóa Admin</button>` : `<span class="badge-verified" style="font-size:0.75rem; background:rgba(16,185,129,0.15); color:#10b981; border:1px solid #10b981;"><i class="fa-solid fa-shield"></i> Admin Duy Nhất</span>`}
+            ${!isRoot ? `<button class="btn-copy-small" onclick="handleRemoveAdminEmail('${escapeHtml(email)}')" style="color:#ef4444; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.08); padding:5px 12px; cursor:pointer; font-weight:600; border-radius:6px; display:inline-flex; align-items:center; gap:4px;" title="Xóa quyền Quản Trị"><i class="fa-solid fa-trash"></i> Xóa Admin</button>` : `<span class="badge-verified" style="font-size:0.75rem; background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid #f59e0b; padding:4px 10px; border-radius:6px; font-weight:700;"><i class="fa-solid fa-crown"></i> Root Admin</span>`}
           </div>
         `;
       }).join("");
@@ -8789,7 +8820,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
         const cleanEmail = String(email).toLowerCase().trim();
         const uName = name || (currentUser && currentUser.name) || cleanEmail.split("@")[0];
-        const uRole = role || (currentUser && currentUser.role) || (cleanEmail === ROOT_ADMIN_EMAIL || cleanEmail === "digimarketmmo@gmail.com" ? "ADMIN" : "USER");
+        const uRole = role || (currentUser && currentUser.role) || (cleanEmail === ROOT_ADMIN_EMAIL || cleanEmail === "manhdongvtc@gmail.com" ? "ADMIN" : "USER");
         const finalBal = Math.max(0, Number(balance) || 0);
         await fetch(workerUrl + "/api/user/sync", {
           method: "POST",
@@ -12677,8 +12708,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             client_id: clientId,
             callback: handleGoogleCredentialResponse,
             auto_select: false,
-            cancel_on_tap_outside: true,
-            use_fedcm_for_prompt: false
+            cancel_on_tap_outside: true
           });
 
           const gDiv = document.getElementById("googleOfficialBtn");
@@ -12753,8 +12783,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           google.accounts.id.initialize({
             client_id: clientId,
             callback: handleGoogleCredentialResponse,
-            auto_select: false,
-            use_fedcm_for_prompt: false
+            auto_select: false
           });
           google.accounts.id.prompt();
           return;
@@ -12948,7 +12977,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return;
       }
 
-      const isRootAdmin = (email === "digimarketmmo@gmail.com" || email === "manhdongvtc@gmail.com" || email === "muabantaikhoanmmo@gmail.com" || (typeof ROOT_ADMIN_EMAILS !== "undefined" && ROOT_ADMIN_EMAILS.includes(email)));
+      const isRootAdmin = (email === "manhdongvtc@gmail.com" || email === (ROOT_ADMIN_EMAIL || "").toLowerCase().trim() || (typeof ROOT_ADMIN_EMAILS !== "undefined" && ROOT_ADMIN_EMAILS.includes(email)));
       const isAdm = isRootAdmin || ((typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false);
       const role = isAdm ? "Quản Trị Viên" : "MEMBER";
 
