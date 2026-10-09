@@ -1,8 +1,8 @@
 // =========================================================================
-// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.0)
+// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.1)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.4.0";
+const MMO_CURRENT_CODE_VERSION = "4.4.1";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -158,6 +158,26 @@ function healStorageQuota(forceEmergency) {
       }
     } catch(eCleanSes) {}
 
+    // [BẢO VỆ TOÀN DIỆN DANH MỤC PHONE FARM]: Thanh lọc mmo_deleted_product_ids, đảm bảo các ID ROM Phone Farm không bao giờ bị coi là đã xóa
+    try {
+      const rawDel = localStorage.getItem("mmo_deleted_product_ids");
+      if (rawDel) {
+        const pfWhitelist = new Set([
+          "PROD_MU2OGW71GZ", "PROD_MU2OAG3IO2", "PROD_MU2LYZY5C7", "PROD_MU2O4MW4DQ",
+          "PROD_MU2NX4CYEW", "PROD_MU2NUXL1Q4", "PROD_MU2NSFQCMT", "PROD_MU2NKET1OG",
+          "PROD_MU2N2TVDIJ", "PROD_MU2MY8WCOE", "PROD_MU2MOON7L6", "PROD_MUBKH47T2U", "PROD_MUBJQ6JP7O"
+        ]);
+        let arrDel = JSON.parse(rawDel);
+        if (Array.isArray(arrDel)) {
+          const beforeLen = arrDel.length;
+          arrDel = arrDel.filter(id => !pfWhitelist.has(id));
+          if (arrDel.length !== beforeLen) {
+            localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(arrDel));
+          }
+        }
+      }
+    } catch(eDelClean) {}
+
     ["mmo_admin_products", "mmo_products"].forEach(function(key) {
       try {
         const raw = localStorage.getItem(key);
@@ -170,6 +190,16 @@ function healStorageQuota(forceEmergency) {
               localStorage.removeItem(key);
               return;
             }
+
+            // [BẢO VỆ TOÀN DIỆN PHONE FARM]: Nếu cache đang thiếu sản phẩm Phone Farm (< 11) hoặc ảnh J7 Pro bị dính ảnh demo, dọn cache để nạp mới đầy đủ từ Turso SSOT
+            const pfCount = prods.filter(p => p && p.category === 'Phone Farm').length;
+            const j7ProProd = prods.find(p => p && p.id === 'PROD_MU2LYZY5C7');
+            const hasDemoJ7 = j7ProProd && j7ProProd.image && (j7ProProd.image.startsWith("data:") || j7ProProd.image.includes("sample"));
+            if (pfCount < 11 || hasDemoJ7) {
+              localStorage.removeItem(key);
+              return;
+            }
+
             const cleanProds = prods.filter(p => !JSON.stringify(p).toLowerCase().includes("khotaikhoanso"));
             cleanProds.forEach(function(p) {
               if (p && p.image && (p.image.startsWith("data:image/") || p.image.includes("khotaikhoanso"))) {
@@ -294,10 +324,15 @@ try {
     "PROD_MUBJQ6JP7O": { stock: 46, variants: [{ name: "Not 9  N960 F/DS Cài bằng TW", price: 300000, stock: 46 }] },
     "PROD_MU2OGW71GZ": { stock: 76, variants: [{ name: "rom gốc mod adb j7 plush", price: 300000, stock: 40 }, { name: "rot j7 plush", price: 100000, stock: 36 }] },
     "PROD_MU2OAG3IO2": { stock: 33, variants: [{ name: "Rom androi 10 mod adb j7 prime", price: 300000, stock: 33 }] },
+    "PROD_MU2LYZY5C7": { stock: 120, variants: [{ name: "Rom androi 12 mod adb", price: 300000, stock: 60 }, { name: "Rom Gốc  mod adb", price: 300000, stock: 60 }] },
     "PROD_MU2O4MW4DQ": { stock: 73, variants: [{ name: "Rom androi 10 s7 G930FDS", price: 300000, stock: 30 }, { name: "Rom androi  s7 edge G935", price: 300000, stock: 43 }] },
     "PROD_MU2NX4CYEW": { stock: 199, variants: [{ name: "Rom androi 10 s8 mod adb", price: 300000, stock: 43 }, { name: "Rom androi 10 s8 plush G955", price: 300000, stock: 40 }, { name: "rom gốc s8 g95f mod adb", price: 300000, stock: 60 }, { name: "rom gốc s8 g950N  mod adb", price: 300000, stock: 56 }] },
-    "PROD_MU2NSFQCMT": { stock: 187, variants: [{ name: "rom s10 G973F DS", price: 500000, stock: 62 }, { name: "rom s10 G977N s10 5g", price: 500000, stock: 63 }, { name: "rom s10 G977N rom gốc mod", price: 500000, stock: 0 }, { name: "TW s10 mod adb", price: 50000, stock: 0 }, { name: "Rom S 10 5g G977N bản Hàn", price: 500000, stock: 62 }] },
-    "PROD_MU2LYZY5C7": { stock: 120, variants: [{ name: "Rom androi 12 mod adb", price: 300000, stock: 60 }, { name: "Rom Gốc  mod adb", price: 300000, stock: 60 }, { name: "Rom androi 10 mod adb", price: 300000, stock: 0 }] }
+    "PROD_MU2NUXL1Q4": { stock: 37, variants: [{ name: "Rom androi 10 s9", price: 300000, stock: 37 }] },
+    "PROD_MU2NSFQCMT": { stock: 187, variants: [{ name: "rom s10 G973F DS", price: 500000, stock: 62 }, { name: "rom s10 G977N s10 5g", price: 500000, stock: 63 }, { name: "Rom S 10 5g G977N bản Hàn", price: 500000, stock: 62 }] },
+    "PROD_MU2NKET1OG": { stock: 60, variants: [{ name: "Rom Not8 androi 10", price: 300000, stock: 30 }, { name: "Rom  gốc not8 mod adb", price: 300000, stock: 30 }] },
+    "PROD_MU2N2TVDIJ": { stock: 76, variants: [{ name: "Rom androi 10  not 9", price: 500000, stock: 46 }, { name: "Rom Gốc mod adb", price: 300000, stock: 30 }] },
+    "PROD_MU2MY8WCOE": { stock: 35, variants: [{ name: "rom androi 12 mod adb", price: 500000, stock: 35 }] },
+    "PROD_MU2MOON7L6": { stock: 40, variants: [{ name: "Not 10 G975 FDS cài qua odin", price: 500000, stock: 40 }] }
   };
   window.MASTER_PF_STOCK = MASTER_PF_STOCK;
 
@@ -3274,7 +3309,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
-    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2LYZY5C7/image",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Rom androi 12 - j7 pro mod adb cài bằng tools hoặc odin",
     "variants": [
@@ -3425,8 +3460,152 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "deliveryType": "local",
     "delivery_type": "local",
     "apiMapping": null,
-    "image_url": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2LYZY5C7/image",
-    "imageUrl": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2LYZY5C7/image"
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png"
+  },
+  {
+    "id": "PROD_MU2NUXL1Q4",
+    "name": "Rom androi 10 s9 mod adb",
+    "category": "Phone Farm",
+    "price": 300000,
+    "stock": 37,
+    "sold": 154,
+    "buffSold": 50,
+    "rating": 4.9,
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s9_android10.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s9_android10.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s9_android10.png",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "description": "Rom androi 10 s9 mod adb cài bằng odin",
+    "deliveryType": "local",
+    "delivery_type": "local",
+    "variants": [
+      {
+        "name": "Rom androi 10 s9",
+        "price": 300000,
+        "stock": 37,
+        "available": true,
+        "accounts": []
+      }
+    ]
+  },
+  {
+    "id": "PROD_MU2NKET1OG",
+    "name": "Rom Not8 androi 10 mod adb",
+    "category": "Phone Farm",
+    "price": 300000,
+    "stock": 60,
+    "sold": 172,
+    "buffSold": 50,
+    "rating": 4.9,
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "description": "Rom Not8 androi 10 mod adb",
+    "deliveryType": "local",
+    "delivery_type": "local",
+    "variants": [
+      {
+        "name": "Rom Not8 androi 10",
+        "price": 300000,
+        "stock": 30,
+        "available": true,
+        "accounts": []
+      },
+      {
+        "name": "Rom  gốc not8 mod adb",
+        "price": 300000,
+        "stock": 30,
+        "available": true,
+        "accounts": []
+      }
+    ]
+  },
+  {
+    "id": "PROD_MU2N2TVDIJ",
+    "name": "Rom androi 10 mod adb galaxy not 9",
+    "category": "Phone Farm",
+    "price": 500000,
+    "stock": 76,
+    "sold": 148,
+    "buffSold": 50,
+    "rating": 4.9,
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "description": "Rom androi 10 mod adb galaxy not 9",
+    "deliveryType": "local",
+    "delivery_type": "local",
+    "variants": [
+      {
+        "name": "Rom androi 10  not 9",
+        "price": 500000,
+        "stock": 46,
+        "available": true,
+        "accounts": []
+      },
+      {
+        "name": "Rom Gốc mod adb",
+        "price": 300000,
+        "stock": 30,
+        "available": true,
+        "accounts": []
+      }
+    ]
+  },
+  {
+    "id": "PROD_MU2MY8WCOE",
+    "name": "Rom Androi 12 galaxy s22 mod adb",
+    "category": "Phone Farm",
+    "price": 500000,
+    "stock": 35,
+    "sold": 110,
+    "buffSold": 50,
+    "rating": 4.9,
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "description": "Rom Androi 12 galaxy s22 mod adb",
+    "deliveryType": "local",
+    "delivery_type": "local",
+    "variants": [
+      {
+        "name": "rom androi 12 mod adb",
+        "price": 500000,
+        "stock": 35,
+        "available": true,
+        "accounts": []
+      }
+    ]
+  },
+  {
+    "id": "PROD_MU2MOON7L6",
+    "name": "Rom androi 12 mod adb galaxy not 10 G975FDS",
+    "category": "Phone Farm",
+    "price": 500000,
+    "stock": 40,
+    "sold": 135,
+    "buffSold": 50,
+    "rating": 4.9,
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "description": "Rom androi 12 mod adb galaxy not 10 G975FDS",
+    "deliveryType": "local",
+    "delivery_type": "local",
+    "variants": [
+      {
+        "name": "Not 10 G975 FDS cài qua odin",
+        "price": 500000,
+        "stock": 40,
+        "available": true,
+        "accounts": []
+      }
+    ]
   },
   {
     "id": "PROD_MU2JIBBRH8",
@@ -4885,6 +5064,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "PROD_MU5T3T47AE", "PROD_MU5SPLMSEC", "PROD_MU5PWT7PP7",
       "PROD_MU2YQ1J3PY", "PROD_MU2PA8VNDP", "PROD_MU2OXBZC6K", "PROD_MU2OGW71GZ", "PROD_MU2OAG3IO2",
       "PROD_MU2O4MW4DQ", "PROD_MU2NX4CYEW", "PROD_MU2NSFQCMT", "PROD_MU2LYZY5C7", "PROD_MU2JIBBRH8",
+      "PROD_MU2NUXL1Q4", "PROD_MU2NKET1OG", "PROD_MU2N2TVDIJ", "PROD_MU2MY8WCOE", "PROD_MU2MOON7L6",
       "PROD_MU2IXVFLMW", "PROD_MU2CZL38PH", "PROD_MU2BIFBBNE", "PROD_MU2B32VLQY", "PROD_MU2ASBNSJT",
       "PROD_MU2A2S732Y", "PROD_MU29WM90LZ", "PROD_MU29RGEBH0", "PROD_MU29IZBLAK", "PROD_MU1LSSJ7AZ",
       "PROD_MU1G6LJX", "PROD_MTQZT2Y1", "PROD_MTRB6000", "PROD_MTTPLODQ", "PROD_MTU9F5HN",
@@ -4924,22 +5104,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "SP_TIKTOK_VN",
       "SP_CANVA",
       "PROD_MTPI7PIO",
-      "PROD_MU2NUXL1Q4",
-      "PROD_MU2NKET1OG",
-      "PROD_MU2N2TVDIJ",
-      "PROD_MU2MY8WCOE",
-      "PROD_MU2MOON7L6",
       "PROD_MU2AB0S8FB",
       "PROD_MU345TKTK2"
     ];
 
     const PERMANENT_DELETED_IDS = [
       "PROD_MTPI7PIO",
-      "PROD_MU2NUXL1Q4",
-      "PROD_MU2NKET1OG",
-      "PROD_MU2N2TVDIJ",
-      "PROD_MU2MY8WCOE",
-      "PROD_MU2MOON7L6",
       "PROD_MU2AB0S8FB",
       "PROD_MU345TKTK2"
     ];
@@ -4951,9 +5121,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         ids = JSON.parse(localStorage.getItem("mmo_deleted_product_ids") || "[]");
       } catch(e) { ids = []; }
       if (!Array.isArray(ids)) ids = [];
+      // Khóa bảo vệ: Tuyệt đối không cho phép ID Phone Farm bị đánh dấu xóa trong localStorage
+      const pfWhitelist = new Set([
+        "PROD_MU2OGW71GZ", "PROD_MU2OAG3IO2", "PROD_MU2LYZY5C7", "PROD_MU2O4MW4DQ",
+        "PROD_MU2NX4CYEW", "PROD_MU2NUXL1Q4", "PROD_MU2NSFQCMT", "PROD_MU2NKET1OG",
+        "PROD_MU2N2TVDIJ", "PROD_MU2MY8WCOE", "PROD_MU2MOON7L6", "PROD_MUBKH47T2U", "PROD_MUBJQ6JP7O"
+      ]);
+      ids = ids.filter(function(id) { return !pfWhitelist.has(id); });
       const set = new Set([...PERMANENT_DELETED_IDS, ...ids]);
       return Array.from(set).filter(function(id) {
-        return typeof id === "string" && id.trim().length > 0;
+        return typeof id === "string" && id.trim().length > 0 && !pfWhitelist.has(id.trim());
       });
     }
     window.getDeletedProductIds = getDeletedProductIds;
@@ -13981,11 +14158,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const cdnBase = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/";
 
       const KNOWN_CDN_MAP = {
-        "PROD_MU2OGW71GZ": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2OGW71GZ/image",
-        "PROD_MU2OAG3IO2": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2OAG3IO2/image",
-        "PROD_MU2LYZY5C7": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2LYZY5C7/image",
-        "PROD_MU2NSFQCMT": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2NSFQCMT/image",
-        "PROD_MU2NX4CYEW": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2NX4CYEW/image",
+        "PROD_MU2OGW71GZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_plus.png",
+        "PROD_MU2OAG3IO2": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_prime.png",
+        "PROD_MU2LYZY5C7": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png",
+        "PROD_MU2O4MW4DQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s7_android10.png",
+        "PROD_MU2NX4CYEW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s8_android10.png",
+        "PROD_MU2NUXL1Q4": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s9_android10.png",
+        "PROD_MU2NSFQCMT": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s10_android12.png",
+        "PROD_MU2NKET1OG": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png",
+        "PROD_MU2N2TVDIJ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+        "PROD_MU2MY8WCOE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png",
+        "PROD_MU2MOON7L6": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png",
+        "PROD_MUBKH47T2U": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png",
+        "PROD_MUBJQ6JP7O": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
         "PROD_MUR4SPH1IU": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUR4SPH1IU/image",
         "PROD_MUR52EZ6H1": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUR52EZ6H1/image",
         "PROD_MTPIJ9XV": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_brazil.png",
