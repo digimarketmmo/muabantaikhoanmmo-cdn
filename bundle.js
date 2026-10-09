@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.4.9";
+const MMO_CURRENT_CODE_VERSION = "4.5.1";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const REAL_TIKTOK_BRAZIL_ACCOUNTS = ["hiepiwt1312|BR@15235QTTEW|ooz8uxrqsl@sv366.mytempmail.org|","t_lai_86_1991|BR@15235QTTEW|29zlqqor7r@sv327.mytempmail.org|","f5.tan.2811|BR@15235QTTEW|imxse8oyeg@sv391.mytempmail.org|","hoang.nguy.w5.2407|BR@15235QTTEW|ecy1l0pfes@sv712.mytempmail.org|","ong.hoan.5l.2002|BR@15235QTTEW|xnofes2f8r@sv422.mytempmail.org|","c_nguyet_6dd_2003|BR@15235QTTEW|qu3bka63ov@sv230.mytempmail.org|","mac.hang.j8.1993|BR@15235QTTEW|8wle7v1e7f@sv349.mytempmail.org|","1404.huynh.t|BR@15235QTTEW|6tj2g53oev@sv478.mytempmail.org|","tram.chung.fk.0602|BR@15235QTTEW|xqxgxlsl07@sv917.mytempmail.org|","c_khiet_do_1905|BR@15235QTTEW|k0wxkw3ip8@sv790.mytempmail.org|","1996.hue.x|BR@15235QTTEW|nsknvrfiz1@sv180.mytempmail.org|","nhu9wv1203|BR@15235QTTEW|2xu44xy6v8@sv423.mytempmail.org|","user32949996025027|BR@15235QTTEW|jw2o7f1s6i@sv591.mytempmail.org|","moccvl0706|BR@15235QTTEW|aixbsvdzmc@sv127.mytempmail.org|","ke_yen_2vn_0707|BR@15235QTTEW|18y32yh2qc@sv731.mytempmail.org|","user73617146919102|BR@15235QTTEW|0o2af33rhe@sv608.mytempmail.org|","user10353292356088|BR@15235QTTEW|v21lzds6lh@sv626.mytempmail.org|","ew_duong_2007|BR@15235QTTEW|82n6drcq55@sv511.mytempmail.org|","h.tien.xqy.0308|BR@15235QTTEW|igw5nwn6l5@sv45.mytempmail.org|","0906.phan.k|BR@15235QTTEW|fk68xlsnn5@sv560.mytempmail.org|","tan_thoai_jn_1311200|BR@15235QTTEW|mxme5grdmh@sv486.mytempmail.org|","9c.ho.1609|BR@15235QTTEW|pcegzxe4df@sv717.mytempmail.org|","user9445093404627|BR@15235QTTEW|841qx2gksv@sv298.mytempmail.org|","khue.chung.7w.0202|BR@15235QTTEW|uvytf59l36@sv36.mytempmail.org|","mau_bui_0f_1206|BR@15235QTTEW|bnenhe5t0t@sv124.mytempmail.org|","3005_lu_l|BR@15235QTTEW|5ptshv17yk@sv165.mytempmail.org|","chau.dinh.am.1411|BR@15235QTTEW|14thsbe0r7@sv834.mytempmail.org|","zu_hien_1990|BR@15235QTTEW|ee8u4gqkh2@sv733.mytempmail.org|","tfdtuy1999|BR@15235QTTEW|uopgch6z8n@sv798.mytempmail.org|","t.nhu.381.1994|BR@15235QTTEW|uofj7xipq6@sv814.mytempmail.org|","l_dung_gy_1410|BR@15235QTTEW|3vimdqf2uk@sv734.mytempmail.org|","v_ha_ryk_0808|BR@15235QTTEW|tnvk9tjf56@sv128.mytempmail.org|","c.trac.ct.2905|BR@15235QTTEW|1zxktql09e@sv74.mytempmail.org|","h_nhien_sg_1990|BR@15235QTTEW|efk2s3rx2s@sv302.mytempmail.org|","t2lbtruc2006|BR@15235QTTEW|f52rfpj7u2@sv621.mytempmail.org|","vanhljpd1412|BR@15235QTTEW|xyc89bmres@sv702.mytempmail.org|PV2YEBGPAO4CI5VU4G6PMZRB7IK2PJLQ","d.minh.gf2.1992|BR@15235QTTEW|ppyufksxx5@sv872.mytempmail.org|IUQNKVUX4K5TDD7JIW4V4ZAO2RFPJEBB","t.luu.q7r.0811|BR@15235QTTEW|ikson65enn@sv647.mytempmail.org|","trieu.trac.je8.1401|BR@15235QTTEW|wd5ovetsnc@sv551.mytempmail.org|","nguyen.ham.j9y.16041|BR@15235QTTEW|ma247v1yeu@sv213.mytempmail.org|","ong.bao.eig.31042004|BR@15235QTTEW|oybffoba71@sv782.mytempmail.org|","tuy_chau_9a_1707|BR@15235QTTEW|j2l5ta2y3y@sv197.mytempmail.org|","up7.phan.2907|BR@15235QTTEW|tlcn5f6usn@sv848.mytempmail.org|","t.tran.pfc.0411|BR@15235QTTEW|ttj7pmzbdj@sv537.mytempmail.org|","bang3olt0207|BR@15235QTTEW|dx0bznksvi@sv501.mytempmail.org|","ton.dinh.72u.2003|BR@15235QTTEW|jxduti9wco@sv841.mytempmail.org|","jno.quach.0910|BR@15235QTTEW|oxd9nz7fbx@sv525.mytempmail.org|","n.do.82m.1106|BR@15235QTTEW|oebzwott4m@sv931.mytempmail.org|MY6AVISYDWIPXOGYBVN66H6TCUPJ6QXH","m1.kim.1999|BR@15235QTTEW|ew0tfrwame@sv559.mytempmail.org|","o_tho_5hb_2009|BR@15235QTTEW|p1e4isrc1u@sv354.mytempmail.org|","kieu30p0203|BR@15235QTTEW|oi8wple1gj@sv718.mytempmail.org|","1b.khiet.2000|BR@15235QTTEW|uuz1lyfzcn@sv129.mytempmail.org|","tak5truong2000|BR@15235QTTEW|0v4h5d6o9a@sv233.mytempmail.org|","t_diem_cz_1995|BR@15235QTTEW|xsggbhney1@sv313.mytempmail.org|","user1928270525407|BR@15235QTTEW|r0ewc3ex15@sv934.mytempmail.org|","xuyen.lu.a21.1401|BR@15235QTTEW|astz3fjabu@sv881.mytempmail.org|","user7407617129630|BR@15235QTTEW|gymdpf4s5l@sv625.mytempmail.org|","khuu_huynh_qg_170719|BR@15235QTTEW|4hqna1bqvu@sv356.mytempmail.org|","q_tung_xo_1999|BR@15235QTTEW|gt1drdq3sv@sv546.mytempmail.org|","v_han_33_2001|BR@15235QTTEW|c16c6k8b2d@sv496.mytempmail.org|","trieu.yen.koq.2802|BR@15235QTTEW|996wbqlwxj@sv574.mytempmail.org|","le.ly.f27.05022007|BR@15235QTTEW|ofntr5g2o8@sv582.mytempmail.org|","klcwphong2004|BR@15235QTTEW|rhzavdc4b0@sv238.mytempmail.org|","1407_khong_t|BR@15235QTTEW|xa0osggia1@sv289.mytempmail.org|","a.trinh.yd.1101|BR@15235QTTEW|641ldta3ht@sv501.mytempmail.org|","2007_ho_o|BR@15235QTTEW|swud8u2h99@sv848.mytempmail.org|","user7848587558749|BR@15235QTTEW|mt880zkyb2@sv454.mytempmail.org|BFCKDNFWQASAAKXC4346CJ5G47LLAPUL","l_man_bw2_2003|BR@15235QTTEW|qs8pb6mfvg@sv139.mytempmail.org|","vuong_hang_1vd_03041|BR@15235QTTEW|sl9ed1k0bq@sv850.mytempmail.org|","v_dong_7c_1302|BR@15235QTTEW|cvdp0ex96a@sv270.mytempmail.org|","zw.thao.2004|BR@15235QTTEW|r67b9a7fps@sv958.mytempmail.org|","nnmkvan2006|BR@15235QTTEW|52pycxosen@sv517.mytempmail.org|","hien_duong_xf_0104|BR@15235QTTEW|cf2a5lz6xu@sv867.mytempmail.org","nguy_hoang_ln6_1994|BR@15235QTTEW|kx3ygnuqp9@sv999.mytempmail.org","n.thach.sh.1909|BR@15235QTTEW|k9ik33qm66@sv729.mytempmail.org"];
@@ -15059,6 +15059,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
           if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
           if (typeof renderCustomApiSourcesUI === "function") renderCustomApiSourcesUI();
+          if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
         }
         if (tabId === "tabAdmChat") {
           if (typeof renderAdminChatUI === "function") renderAdminChatUI();
@@ -18517,10 +18518,11 @@ function syncAllOpenViewsStock(changedProdId) {
         if (isVuavia) {
           targetUrls.push("https://api.vuavia.io/api/v2/wallet/balance");
           targetUrls.push("https://api.vuavia.io/api/v2/profile");
+        } else {
+          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/profile.php?api_key=" + encodeURIComponent(apiKey));
+          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/profile?api_key=" + encodeURIComponent(apiKey));
+          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/v2/wallet/balance");
         }
-        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/profile.php?api_key=" + encodeURIComponent(apiKey));
-        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/profile?api_key=" + encodeURIComponent(apiKey));
-        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/v2/wallet/balance");
 
         let lastErr = null;
         for (const target of targetUrls) {
@@ -18532,7 +18534,7 @@ function syncAllOpenViewsStock(changedProdId) {
             }
             const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), {
               headers: reqHeaders,
-              signal: createFastSignal(5000)
+              signal: createFastSignal(3500)
             });
             if (resp.ok) {
               const rawText = await resp.text();
@@ -18593,11 +18595,13 @@ function syncAllOpenViewsStock(changedProdId) {
         let targetUrls = [];
         if (isVuavia) {
           targetUrls.push("https://api.vuavia.io/api/v2/products");
+          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/v2/products");
+        } else {
+          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/products.php?api_key=" + encodeURIComponent(apiKey));
+          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/products?api_key=" + encodeURIComponent(apiKey));
+          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/v2/products?api_key=" + encodeURIComponent(apiKey));
+          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/ListResource.php?api_key=" + encodeURIComponent(apiKey));
         }
-        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/products.php?api_key=" + encodeURIComponent(apiKey));
-        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/products?api_key=" + encodeURIComponent(apiKey));
-        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/v2/products?api_key=" + encodeURIComponent(apiKey));
-        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/ListResource.php?api_key=" + encodeURIComponent(apiKey));
 
         let lastErr = null;
         for (const target of targetUrls) {
@@ -18609,7 +18613,7 @@ function syncAllOpenViewsStock(changedProdId) {
             }
             const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), {
               headers: reqHeaders,
-              signal: createFastSignal(12000)
+              signal: createFastSignal(3500)
             });
             if (resp.ok) {
               const rawText = await resp.text();
@@ -19686,13 +19690,14 @@ function syncAllOpenViewsStock(changedProdId) {
       const pageProds = filteredProds.slice(startIndex, startIndex + PAGE_SIZE);
 
       tbody.innerHTML = pageProds.map(function(p) {
-        const map = mappings[p.id] || { enabled: false, provider: "ultrammo", sourceProdId: "" };
+        const allProvKeys = (typeof API_SOURCES !== "undefined") ? Object.keys(API_SOURCES) : ["mail72h", "sellmmo", "nguyenlieummo", "selltainguyenmmo", "shop1989nd", "ultrammo"];
+        const defaultProv = allProvKeys.includes("sellmmo") ? "sellmmo" : allProvKeys[0] || "sellmmo";
+        const map = mappings[p.id] || { enabled: false, provider: defaultProv, sourceProdId: "" };
         const isEnabled = !!map.enabled;
-        const curProvider = map.provider || "ultrammo";
+        const curProvider = map.provider || defaultProv;
 
         // Dropdown Nguồn Hàng (Cột 2) - TẤT CẢ NGUỒN (CHÍNH THỨC + TỰ THÊM)
-        let providerSelectHtml = '<select id="mapProvider_' + p.id + '" onchange="handleProviderChange(\'' + p.id + '\')" style="width:100%; background:#0d121f; border:1px solid #1e293b; padding:6px 8px; border-radius:6px; color:#fff; font-size:0.78rem;">';
-        const allProvKeys = (typeof API_SOURCES !== "undefined") ? Object.keys(API_SOURCES) : ["mail72h", "sellmmo", "nguyenlieummo", "selltainguyenmmo", "shop1989nd", "ultrammo"];
+        let providerSelectHtml = '<select id="mapProvider_' + p.id + '" onchange="handleProviderChange(\'' + p.id + '\')" style="width:100%; max-width:100%; box-sizing:border-box; background:#0d121f; border:1px solid #1e293b; padding:6px 8px; border-radius:6px; color:#fff; font-size:0.78rem;">';
         allProvKeys.forEach(function(k) {
           const cfg = API_SOURCES[k] || {};
           const isSel = (curProvider === k) ? ' selected="selected"' : '';
@@ -19709,18 +19714,18 @@ function syncAllOpenViewsStock(changedProdId) {
           const livePrice = src ? (Number(src.price) || 0) : (map.sourcePrice || 0);
 
           if (liveStock > 0) {
-            sourceStockDisplay = '<span style="color:#10b981; font-weight:800; font-size:0.85rem;"><i class="fa-solid fa-signal"></i> ' + liveStock.toLocaleString() + ' acc</span>';
+            sourceStockDisplay = '<span style="color:#10b981; font-weight:800; font-size:0.82rem;"><i class="fa-solid fa-signal"></i> ' + liveStock.toLocaleString() + ' acc</span>';
           } else {
-            sourceStockDisplay = '<span style="color:#ef4444; font-weight:700; font-size:0.8rem;"><i class="fa-solid fa-circle-xmark"></i> 0 acc (Hết hàng)</span>';
+            sourceStockDisplay = '<span style="color:#ef4444; font-weight:700; font-size:0.78rem;"><i class="fa-solid fa-circle-xmark"></i> 0 acc (Hết)</span>';
           }
           if (livePrice > 0) {
-            sourceStockDisplay += '<br/><span style="font-size:0.72rem; color:#f59e0b;">(Giá nhập: ' + (typeof formatVND === "function" ? formatVND(livePrice) : livePrice + ' đ') + ')</span>';
+            sourceStockDisplay += '<br/><span style="font-size:0.7rem; color:#f59e0b;">(Giá: ' + (typeof formatVND === "function" ? formatVND(livePrice) : livePrice + ' đ') + ')</span>';
           }
         } else {
           // Sản phẩm bán từ kho nội bộ thủ công
           const localStock = (typeof getShopProductStock === "function") ? getShopProductStock(p) : (p.stock || 0);
           if (localStock > 0) {
-            sourceStockDisplay = '<span style="color:#38bdf8; font-weight:700; font-size:0.85rem;"><i class="fa-solid fa-box-archive"></i> ' + localStock.toLocaleString() + ' acc</span><br/><span style="font-size:0.7rem; color:#94a3b8;">(Kho shop)</span>';
+            sourceStockDisplay = '<span style="color:#38bdf8; font-weight:700; font-size:0.82rem;"><i class="fa-solid fa-box-archive"></i> ' + localStock.toLocaleString() + ' acc</span><br/><span style="font-size:0.68rem; color:#94a3b8;">(Kho shop)</span>';
           } else {
             sourceStockDisplay = '<span style="color:#64748b; font-size:0.75rem;"><i class="fa-solid fa-boxes-stacked"></i> Kho: 0 acc</span>';
           }
@@ -19742,7 +19747,7 @@ function syncAllOpenViewsStock(changedProdId) {
           });
         }
 
-        let selectHtml = '<select id="mapSelect_' + p.id + '" onchange="handleMappingChange(\'' + p.id + '\')" style="width:100%; background:#0d121f; border:1px solid #1e293b; padding:6px 10px; border-radius:6px; color:#fff; font-size:0.78rem;">';
+        let selectHtml = '<select id="mapSelect_' + p.id + '" onchange="handleMappingChange(\'' + p.id + '\')" style="width:100%; max-width:100%; box-sizing:border-box; background:#0d121f; border:1px solid #1e293b; padding:6px 8px; border-radius:6px; color:#fff; font-size:0.78rem; text-overflow:ellipsis; overflow:hidden;">';
         
         if (rowKw) {
           selectHtml += '<option value="">-- ' + (filteredSourceList.length > 0 ? ('Tìm thấy ' + filteredSourceList.length + ' SP (Bấm để chọn)') : ('Không tìm thấy SP khớp "' + escapeHtml(rowKw) + '"')) + ' --</option>';
@@ -19771,8 +19776,8 @@ function syncAllOpenViewsStock(changedProdId) {
           }
         }
 
-        // Render tối đa 150 sản phẩm khớp để mượt mà
-        const maxOptions = 150;
+        // Render tối đa 80 sản phẩm khớp để mượt mà (siêu tốc, không giật lag)
+        const maxOptions = 80;
         const displayOptions = filteredSourceList.slice(0, maxOptions);
         displayOptions.forEach(function(src) {
           if (hasActiveSelected && String(src.id) === String(map.sourceProdId)) return;
@@ -19792,40 +19797,40 @@ function syncAllOpenViewsStock(changedProdId) {
         selectHtml += '</select>';
 
         // TỔ HỢP Ô TÌM KIẾM + DROPDOWN (HÌNH 2 STYLE)
-        const searchInputBoxHtml = '<div style="display:flex; flex-direction:column; gap:5px; width:100%;">' +
-          '<div style="position:relative; width:100%;">' +
-            '<input type="text" id="mapSearch_' + p.id + '" class="map-search-row-inp" placeholder="🔍 Gõ từ khóa tìm SP nguồn (VD: Kling, Mail, TikTok...)" value="' + escapeHtml(rowKw) + '" oninput="handleMapRowSearch(\'' + p.id + '\', this.value)" style="width:100%; background:#070a12; border:1px solid #1e293b; padding:5px 8px 5px 24px; border-radius:5px; color:#38bdf8; font-size:0.75rem; box-sizing:border-box;" />' +
+        const searchInputBoxHtml = '<div style="display:flex; flex-direction:column; gap:5px; width:100%; box-sizing:border-box;">' +
+          '<div style="position:relative; width:100%; box-sizing:border-box;">' +
+            '<input type="text" id="mapSearch_' + p.id + '" class="map-search-row-inp" placeholder="🔍 Gõ từ khóa tìm SP nguồn (Kling, Mail, TikTok...)" value="' + escapeHtml(rowKw) + '" oninput="handleMapRowSearch(\'' + p.id + '\', this.value)" style="width:100%; max-width:100%; background:#070a12; border:1px solid #1e293b; padding:5px 8px 5px 24px; border-radius:5px; color:#38bdf8; font-size:0.75rem; box-sizing:border-box;" />' +
             '<i class="fa-solid fa-magnifying-glass" style="position:absolute; left:7px; top:50%; transform:translateY(-50%); font-size:0.68rem; color:#64748b; pointer-events:none;"></i>' +
           '</div>' +
           selectHtml +
         '</div>';
 
         return '<tr style="border-bottom:1px solid #162035;">' +
-          '<td style="padding:10px 12px;">' +
+          '<td style="padding:8px 10px; width:24%; min-width:180px; box-sizing:border-box;">' +
             '<div style="display:flex; align-items:center; gap:8px;">' +
-              '<img src="' + (p.image || '') + '" style="width:32px; height:32px; border-radius:4px; object-fit:cover;" onerror="this.style.display=\'none\'" />' +
-              '<div>' +
-                '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#fff; font-weight:700; text-decoration:none; font-size:0.82rem;">' + (typeof escapeHtml === "function" ? escapeHtml(p.name) : p.name) + '</a>' +
-                '<div style="font-size:0.72rem; color:#64748b;">Mã SP: ' + p.id + ' | Giá bán: ' + (typeof formatVND === "function" ? formatVND(p.price) : p.price) + '</div>' +
+              '<img src="' + (p.image || '') + '" style="width:30px; height:30px; border-radius:4px; object-fit:cover; flex-shrink:0;" onerror="this.style.display=\'none\'" />' +
+              '<div style="min-width:0; flex:1;">' +
+                '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#fff; font-weight:700; text-decoration:none; font-size:0.8rem; display:block; line-height:1.3; word-break:break-word;">' + (typeof escapeHtml === "function" ? escapeHtml(p.name) : p.name) + '</a>' +
+                '<div style="font-size:0.7rem; color:#64748b; margin-top:2px;">Mã: ' + p.id + ' | Giá: ' + (typeof formatVND === "function" ? formatVND(p.price) : p.price) + '</div>' +
               '</div>' +
             '</div>' +
           '</td>' +
-          '<td style="padding:10px 12px; width:160px;">' + providerSelectHtml + '</td>' +
-          '<td style="padding:10px 12px; min-width:300px;">' + searchInputBoxHtml + '</td>' +
-          '<td style="padding:10px 12px; text-align:center; width:110px;">' +
+          '<td style="padding:8px 10px; width:15%; min-width:125px; box-sizing:border-box;">' + providerSelectHtml + '</td>' +
+          '<td style="padding:8px 10px; width:33%; min-width:250px; box-sizing:border-box;">' + searchInputBoxHtml + '</td>' +
+          '<td style="padding:8px 10px; text-align:center; width:9%; min-width:75px; box-sizing:border-box;">' +
             '<label class="switch" style="margin:0 auto;">' +
               '<input type="checkbox" id="mapToggle_' + p.id + '" onchange="handleMappingToggle(\'' + p.id + '\')"' + (isEnabled ? ' checked="checked"' : '') + '>' +
               '<span class="slider round"></span>' +
             '</label>' +
-            '<div id="mapStatusText_' + p.id + '" style="font-size:0.7rem; margin-top:4px; font-weight:700; color:' + (isEnabled ? '#10b981' : '#64748b') + ';">' +
+            '<div id="mapStatusText_' + p.id + '" style="font-size:0.68rem; margin-top:3px; font-weight:700; color:' + (isEnabled ? '#10b981' : '#64748b') + ';">' +
               (isEnabled ? 'BẬT (API)' : 'TẮT') +
             '</div>' +
           '</td>' +
-          '<td style="padding:10px 12px; text-align:center; width:120px;" id="mapStockDisplay_' + p.id + '">' +
+          '<td style="padding:8px 10px; text-align:center; width:11%; min-width:90px; box-sizing:border-box;" id="mapStockDisplay_' + p.id + '">' +
             sourceStockDisplay +
           '</td>' +
-          '<td style="padding:10px 12px; text-align:center; width:90px;">' +
-            '<button type="button" class="btn-auth" onclick="saveSingleApiMapping(\'' + p.id + '\')" style="font-size:0.72rem; padding:5px 10px; background:#3b82f6; border:none; border-radius:4px; color:#fff;" title="Lưu liên kết sản phẩm này"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>' +
+          '<td style="padding:8px 10px; text-align:center; width:8%; min-width:70px; box-sizing:border-box;">' +
+            '<button type="button" class="btn-auth" onclick="saveSingleApiMapping(\'' + p.id + '\')" style="font-size:0.72rem; padding:5px 8px; background:#3b82f6; border:none; border-radius:4px; color:#fff; cursor:pointer;" title="Lưu liên kết sản phẩm này"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>' +
           '</td>' +
         '</tr>';
       }).join("");
@@ -19858,8 +19863,19 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.renderApiProductMappingsTable = renderApiProductMappingsTable;
 
-    // HÀM TÌM KIẾM SẢN PHẨM NGUỒN TỨC THÌ CHO TỪNG DÒNG (HÌNH 2 STYLE)
+    // HÀM TÌM KIẾM SẢN PHẨM NGUỒN TỨC THÌ (DEBOUNCED & ZERO-LAG)
+    var _mapRowSearchDebounceTimers = {};
     function handleMapRowSearch(prodId, keyword) {
+      if (_mapRowSearchDebounceTimers[prodId]) {
+        clearTimeout(_mapRowSearchDebounceTimers[prodId]);
+      }
+      _mapRowSearchDebounceTimers[prodId] = setTimeout(function() {
+        _doMapRowSearch(prodId, keyword);
+      }, 120);
+    }
+    window.handleMapRowSearch = handleMapRowSearch;
+
+    function _doMapRowSearch(prodId, keyword) {
       window._mapRowSearchKeywords = window._mapRowSearchKeywords || {};
       window._mapRowSearchKeywords[prodId] = keyword || "";
 
@@ -19891,7 +19907,7 @@ function syncAllOpenViewsStock(changedProdId) {
         });
       }
 
-      const maxDisplay = 150;
+      const maxDisplay = 80;
       const displayList = filtered.slice(0, maxDisplay);
 
       let selectHtml = '';
@@ -19939,7 +19955,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       sel.innerHTML = selectHtml;
     }
-    window.handleMapRowSearch = handleMapRowSearch;
+    window._doMapRowSearch = _doMapRowSearch;
 
     function handleProviderChange(prodId) {
       const pSel = document.getElementById("mapProvider_" + prodId);
@@ -19959,18 +19975,18 @@ function syncAllOpenViewsStock(changedProdId) {
         sel.innerHTML = '<option value="" disabled selected>⏳ Đang tải SP từ ' + escapeHtml(provider) + '... (Vui lòng chờ)</option>';
         if (typeof fetchSingleSourceProducts === "function") {
           fetchSingleSourceProducts(provider, false).then(() => {
-            if (typeof handleMapRowSearch === "function") handleMapRowSearch(prodId, "");
+            if (typeof _doMapRowSearch === "function") _doMapRowSearch(prodId, "");
             handleMappingChange(prodId);
           }).catch(() => {
-            if (typeof handleMapRowSearch === "function") handleMapRowSearch(prodId, "");
+            if (typeof _doMapRowSearch === "function") _doMapRowSearch(prodId, "");
             handleMappingChange(prodId);
           });
           return;
         }
       }
 
-      if (typeof handleMapRowSearch === "function") {
-        handleMapRowSearch(prodId, "");
+      if (typeof _doMapRowSearch === "function") {
+        _doMapRowSearch(prodId, "");
       }
       handleMappingChange(prodId);
     }

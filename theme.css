@@ -4464,6 +4464,57 @@ table.adm-table td,
   word-break: break-word !important;
 }
 
+/* ============================================================
+   BẢNG LIÊN KẾT SẢN PHẨM ON-DEMAND API (SIÊU MƯỢT, 6 CỘT HIỂN THỊ RÕ RÀNG)
+   ============================================================ */
+#apiProductMappingsTable {
+  table-layout: auto !important;
+  width: 100% !important;
+  min-width: 860px !important;
+  border-collapse: collapse !important;
+}
+#apiProductMappingsTable th,
+#apiProductMappingsTable td {
+  white-space: normal !important;
+  vertical-align: middle !important;
+  box-sizing: border-box !important;
+  word-break: break-word !important;
+  padding: 8px 10px !important;
+}
+#apiProductMappingsTable th:nth-child(1),
+#apiProductMappingsTable td:nth-child(1) {
+  width: 24% !important;
+  min-width: 180px !important;
+}
+#apiProductMappingsTable th:nth-child(2),
+#apiProductMappingsTable td:nth-child(2) {
+  width: 15% !important;
+  min-width: 125px !important;
+}
+#apiProductMappingsTable th:nth-child(3),
+#apiProductMappingsTable td:nth-child(3) {
+  width: 33% !important;
+  min-width: 250px !important;
+}
+#apiProductMappingsTable th:nth-child(4),
+#apiProductMappingsTable td:nth-child(4) {
+  width: 9% !important;
+  min-width: 75px !important;
+  text-align: center !important;
+}
+#apiProductMappingsTable th:nth-child(5),
+#apiProductMappingsTable td:nth-child(5) {
+  width: 11% !important;
+  min-width: 90px !important;
+  text-align: center !important;
+}
+#apiProductMappingsTable th:nth-child(6),
+#apiProductMappingsTable td:nth-child(6) {
+  width: 8% !important;
+  min-width: 70px !important;
+  text-align: center !important;
+}
+
 .badge-trust,
 .badge-verified,
 .badge,
