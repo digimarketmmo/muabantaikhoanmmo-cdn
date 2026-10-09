@@ -1,8 +1,8 @@
 // =========================================================================
-// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.2)
+// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.4.2";
+const MMO_CURRENT_CODE_VERSION = "4.4.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -198,6 +198,15 @@ function healStorageQuota(forceEmergency) {
             if (pfCount < 11 || hasDemoJ7) {
               localStorage.removeItem(key);
               return;
+            }
+
+            // [BẢO VỆ CHỐNG BÁN LỖ TỰ ĐỘNG]: Tự động nâng giá PROD_MU5SPLMSEC nếu cache đang lưu giá cũ < 16.000đ
+            const chatGptTrial = prods.find(p => p && p.id === 'PROD_MU5SPLMSEC');
+            if (chatGptTrial && Number(chatGptTrial.price) < 16000) {
+              chatGptTrial.price = 24000;
+              if (Array.isArray(chatGptTrial.variants)) {
+                chatGptTrial.variants.forEach(v => { if (v && Number(v.price) < 16000) v.price = 24000; });
+              }
             }
 
             const cleanProds = prods.filter(p => !JSON.stringify(p).toLowerCase().includes("khotaikhoanso"));
@@ -2468,7 +2477,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "id": "PROD_MU5SPLMSEC",
     "name": "ChatGPT New Gmail Trial",
     "category": "AI & Video",
-    "price": 6000,
+    "price": 24000,
     "stock": 0,
     "sold": 0,
     "buffSold": 0,
@@ -2479,7 +2488,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "variants": [
       {
         "name": "Chat GPT New - Gmail Trial",
-        "price": 6000,
+        "price": 24000,
         "stock": 0,
         "available": false,
         "accounts": []
@@ -17772,6 +17781,18 @@ function syncAllOpenViewsStock(changedProdId) {
       }, 60000);
     }
 
+    // Tự động kiểm tra và quét giá bảo vệ chống bán lỗ API nguồn định kỳ mỗi 5 phút (nếu tab mở)
+    if (typeof window !== "undefined" && !window._mmoApiSourceAutoProtectInterval) {
+      window._mmoApiSourceAutoProtectInterval = setInterval(function() {
+        if (typeof document !== "undefined" && document.hidden) return;
+        if (typeof isAutoPriceProtectEnabled === "function" && isAutoPriceProtectEnabled()) {
+          if (typeof refreshApiSourceAlerts === "function") {
+            refreshApiSourceAlerts(false);
+          }
+        }
+      }, 300000);
+    }
+
     // Tự động kiểm tra và đồng bộ tồn kho khi chuyển tab/cửa sổ (debounce 30 giây chống nghẽn mạng khi xem 2 cửa sổ song song)
     if (typeof window !== "undefined") {
       var _lastFocusSyncTime = 0;
@@ -21861,6 +21882,8 @@ function syncAllOpenViewsStock(changedProdId) {
           sourceProdName: liveName,
           baselinePrice: baseCost,
           currentSourcePrice: livePrice,
+          livePrice: livePrice,
+          liveCost: livePrice,
           priceDiff: priceDiff,
           priceDiffPercent: priceDiffPercent,
           currentSourceStock: liveStock,
@@ -22695,7 +22718,14 @@ function syncAllOpenViewsStock(changedProdId) {
     window.closeAutoPriceAdjustModal = closeAutoPriceAdjustModal;
 
     function handleLossBannerAction() {
-      openAutoPriceAdjustModal();
+      const count = applyAutoPriceBoostToAllLoss(true);
+      if (count > 0) {
+        setTimeout(function() {
+          openAutoPriceAdjustModal();
+        }, 500);
+      } else {
+        openAutoPriceAdjustModal();
+      }
     }
     window.handleLossBannerAction = handleLossBannerAction;
 
@@ -22737,7 +22767,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       lossAlerts.forEach(function(alert) {
         const prod = alert.product;
-        const liveCost = alert.livePrice || 0;
+        const liveCost = Number(alert.livePrice) || Number(alert.currentSourcePrice) || Number(alert.liveCost) || 0;
         const shopPrice = alert.shopPrice || 0;
         const lossAmount = liveCost - shopPrice;
         const safePrice = calculateSafePriceForLoss(liveCost, configuredPct);
@@ -22828,6 +22858,23 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
         prod = MOCK_DATA.products.find(p => p && String(p.id) === String(prodId));
       }
+      if (!prod && typeof window !== "undefined" && Array.isArray(window.allProducts)) {
+        prod = window.allProducts.find(p => p && String(p.id) === String(prodId));
+      }
+      if (!prod) {
+        try {
+          const raw = localStorage.getItem("mmo_products") || localStorage.getItem("mmo_admin_products");
+          if (raw) {
+            const list = JSON.parse(raw);
+            if (Array.isArray(list)) {
+              prod = list.find(p => p && String(p.id) === String(prodId));
+              if (prod && typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+                MOCK_DATA.products.push(prod);
+              }
+            }
+          }
+        } catch(e) {}
+      }
       if (!prod) {
         if (!isSilent && typeof showToast === "function") showToast("Không tìm thấy sản phẩm [" + prodId + "]", "warning");
         return null;
@@ -22839,21 +22886,56 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (newSafePrice <= 0) return null;
 
-      // Cập nhật giá sản phẩm
+      // 1. Cập nhật giá sản phẩm
       prod.price = newSafePrice;
-      if (Array.isArray(prod.variants) && prod.variants.length > 0 && prod.variants[0]) {
-        prod.variants[0].price = newSafePrice;
+      if (Array.isArray(prod.variants) && prod.variants.length > 0) {
+        prod.variants.forEach(function(v) {
+          if (v) {
+            if (!v.price || Number(v.price) <= liveCost || Number(v.price) <= oldPrice) {
+              v.price = newSafePrice;
+            }
+          }
+        });
       }
 
-      // Cập nhật baseline chuẩn
+      // 2. Cập nhật trong MOCK_DATA nếu có bản sao
+      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+        const mIdx = MOCK_DATA.products.findIndex(p => p && String(p.id) === String(prodId));
+        if (mIdx !== -1) {
+          MOCK_DATA.products[mIdx].price = newSafePrice;
+          if (Array.isArray(MOCK_DATA.products[mIdx].variants)) {
+            MOCK_DATA.products[mIdx].variants.forEach(function(v) {
+              if (v && (!v.price || Number(v.price) <= liveCost || Number(v.price) <= oldPrice)) {
+                v.price = newSafePrice;
+              }
+            });
+          }
+        }
+      }
+
+      // 3. Cập nhật baseline chuẩn
       const baselineMap = getApiSourceBaselinePrices();
       baselineMap[prod.id] = liveCost;
       saveApiSourceBaselinePrices(baselineMap);
 
-      // Lưu LocalStorage
+      // Cập nhật cả API Mapping
+      try {
+        const mappings = (typeof getApiProductMappings === "function") ? getApiProductMappings() : null;
+        if (mappings && mappings[prod.id]) {
+          mappings[prod.id].sourcePrice = liveCost;
+          if (typeof saveApiProductMappings === "function") saveApiProductMappings(mappings);
+        }
+      } catch(eMap) {}
+
+      // 4. Lưu trực tiếp vào LocalStorage
+      try {
+        const pJson = JSON.stringify(MOCK_DATA.products);
+        localStorage.setItem("mmo_products", pJson);
+        localStorage.setItem("mmo_admin_products", pJson);
+      } catch(eLs) {}
       if (typeof saveProductsToStorage === "function") saveProductsToStorage();
 
-      // Đồng bộ Turso SQLite Cloud SSOT
+      // 5. Đồng bộ Turso SQLite Cloud SSOT
       try {
         if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof TURSO_CLIENT.saveProduct === "function") {
           TURSO_CLIENT.saveProduct(prod).catch(e => console.warn("Turso auto protect save error:", e));
@@ -22862,7 +22944,7 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       } catch(eTurso) {}
 
-      // Ghi log
+      // 6. Ghi log lịch sử
       addAutoPriceAdjustLog({
         prodId: prod.id,
         prodName: prod.name || prod.id,
@@ -22873,7 +22955,7 @@ function syncAllOpenViewsStock(changedProdId) {
         isAuto: isSilent
       });
 
-      // Thông báo chuông & popup
+      // 7. Thông báo chuông & Toast
       const msg = "Đã tự động tăng giá [" + (prod.name || prod.id) + "] từ " + formatVND(oldPrice) + " lên " + formatVND(newSafePrice) + " (+" + targetPct + "% so với vốn " + formatVND(liveCost) + ") chống bán lỗ!";
       if (typeof addUserNotification === "function") {
         addUserNotification({
@@ -22910,12 +22992,16 @@ function syncAllOpenViewsStock(changedProdId) {
 
       lossAlerts.forEach(function(alert) {
         const prod = alert.product;
-        const liveCost = alert.livePrice || 0;
+        const liveCost = Number(alert.livePrice) || Number(alert.currentSourcePrice) || Number(alert.liveCost) || 0;
         if (prod && liveCost > 0) {
           applyAutoPriceBoostToProduct(prod.id, liveCost, configuredPct, !isManual);
           adjustedCount++;
         }
       });
+
+      // Xóa cache alerts cũ để tính toán lại ngay tức thì với giá mới
+      _cachedApiSourceAlerts = null;
+      _lastApiAlertsComputeTime = 0;
 
       // Cập nhật lại UI toàn hệ thống
       updateApiSourceAlertsBadge();
@@ -22938,8 +23024,8 @@ function syncAllOpenViewsStock(changedProdId) {
     function checkAndAutoProtectLossProductsOnScan() {
       if (!isAutoPriceProtectEnabled()) return;
       const now = Date.now();
-      // Chống spam: tối đa 1 lần mỗi 5 giây
-      if (now - _lastAutoProtectCheckTime < 5000) return;
+      // Chống spam: tối đa 1 lần mỗi 3 giây
+      if (now - _lastAutoProtectCheckTime < 3000) return;
       _lastAutoProtectCheckTime = now;
 
       try {
@@ -22947,7 +23033,11 @@ function syncAllOpenViewsStock(changedProdId) {
         const lossAlerts = alerts.filter(a => a.isLoss && a.product);
         if (lossAlerts.length > 0) {
           console.log("[AutoPriceProtect] Phát hiện " + lossAlerts.length + " sản phẩm có nguy cơ bán lỗ -> Tự động tăng giá bảo vệ!");
-          applyAutoPriceBoostToAllLoss(false);
+          const count = applyAutoPriceBoostToAllLoss(false);
+          if (count > 0 && typeof showToast === "function") {
+            const configuredPct = getAutoPriceMarginPercent();
+            showToast("🛡️ ĐÃ TỰ ĐỘNG TĂNG GIÁ " + count + " SẢN PHẨM CHỐNG BÁN LỖ (+" + configuredPct + "% THEO CÀI ĐẶT)!", "success");
+          }
         }
       } catch(e) {
         console.warn("checkAndAutoProtectLossProductsOnScan error:", e);
@@ -28094,6 +28184,22 @@ function syncAllOpenViewsStock(changedProdId) {
             }, 600);
             return;
           }
+          if (wData.code === "ANTI_LOSS_SHIELD_ACTIVATED") {
+            restoreBtn();
+            const safePrice = Number(wData.safe_price) || 0;
+            const srcCost = Number(wData.source_cost) || 0;
+            if (typeof applyAutoPriceBoostToProduct === "function" && srcCost > 0) {
+              applyAutoPriceBoostToProduct(p.id, srcCost, true);
+            } else if (safePrice > 0) {
+              p.price = safePrice;
+              if (Array.isArray(p.variants)) {
+                p.variants.forEach(v => { if (Number(v.price) < safePrice) v.price = safePrice; });
+              }
+              if (typeof saveProducts === "function") saveProducts();
+            }
+            showToast("🛡️ " + errMsg, "warning");
+            return;
+          }
           const isOutOfStock = /hết hàng|không đủ|out of stock|tồn kho|số lượng/i.test(errMsg);
           if (isOutOfStock && !isApiOnDemand && typeof openPreOrderModal === "function") {
             restoreBtn();
@@ -28116,6 +28222,17 @@ function syncAllOpenViewsStock(changedProdId) {
       // Fallback cục bộ chỉ khi Worker hoàn toàn không phản hồi hoặc ngoại tuyến
       if (!workerHandled) {
         if (isApiOnDemand) {
+          // [CHỐNG BÁN LỖ CLIENT] Kiểm tra giá vốn trước khi thực hiện mua fallback từ nguồn
+          const knownSrcCost = Number(apiMap.sourcePrice || (typeof getApiSourceBaselineCost === "function" ? getApiSourceBaselineCost(p.id) : 0)) || 0;
+          if (knownSrcCost > 0 && unitPrice <= knownSrcCost) {
+            restoreBtn();
+            console.warn("[ANTI_LOSS_SHIELD] Client fallback chặn giao dịch do nguy cơ lỗ:", { prodId: p.id, unitPrice, knownSrcCost });
+            if (typeof applyAutoPriceBoostToProduct === "function") {
+              applyAutoPriceBoostToProduct(p.id, knownSrcCost, true);
+            }
+            showToast("🛡️ Lá chắn chống bán lỗ: Giá bán (" + formatVND(unitPrice) + ") thấp hơn hoặc bằng giá vốn nhà cung cấp (" + formatVND(knownSrcCost) + ")! Hệ thống đã tự động nâng giá an toàn, vui lòng thử lại.", "warning");
+            return;
+          }
           const providerKey = apiMap.provider || "sellmmo";
           try {
             const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[providerKey]) ? API_SOURCES[providerKey] : { baseUrl: "https://sellmmo.vn", apiKey: "" };
