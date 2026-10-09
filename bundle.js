@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.4.5";
+const MMO_CURRENT_CODE_VERSION = "4.4.6";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -203,6 +203,11 @@ function healStorageQuota(forceEmergency) {
             const clean = String(u && u.email || "").toLowerCase().trim();
             if ((clean === "digimarketmmo@gmail.com" || clean === "muabantaikhoanmmo@gmail.com") && u.role === "Quản Trị Viên") {
               u.role = "Thành Viên";
+              hasChange = true;
+            }
+            if (clean === "manhdongvtc@gmail.com" && u.password) {
+              // Xóa mật khẩu cache cục bộ để bắt buộc xác thực chuẩn xác 100% qua máy chủ SSOT
+              delete u.password;
               hasChange = true;
             }
           });
@@ -13052,48 +13057,50 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       let users = getRegisteredUsers();
       const found = users.find(u => (u.email || "").toLowerCase().trim() === email);
 
-      if (isRootAdmin) {
-        // [ROOT ADMIN / CHỦ SỞ HỮU]: Tự động đồng bộ và mở khóa đăng nhập 100%, tự động nhận mật khẩu
-        if (found) {
-          found.password = pass;
-          found.role = "Quản Trị Viên";
-          found.isLocked = false;
-          found.status = "ACTIVE";
+      // 3. XÁC THỰC MẬT KHẨU NGHIÊM NGẶT 100% CHO MỌI TÀI KHOẢN (BAO GỒM CẢ ROOT ADMIN & ADMIN PHỤ)
+      let isAuthenticated = false;
+      let authenticatedGasUser = null;
+
+      // Bước 3.1: Nếu tài khoản đã có mật khẩu lưu cục bộ
+      if (found && found.password) {
+        if (found.password === pass) {
+          isAuthenticated = true;
         } else {
-          users.unshift({
-            userId: "USR_1791242528175",
-            name: "Nguyễn Mạnh Đông",
-            email: email,
-            password: pass,
-            role: "Quản Trị Viên",
-            balance: 213620,
-            avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            created: new Date().toLocaleDateString("vi-VN")
-          });
-        }
-        try { saveRegisteredUsers(users); } catch(uErr) {}
-      } else if (found && found.password) {
-        // Tài khoản thành viên đã lưu mật khẩu
-        if (found.password !== pass) {
-          showToast("❌ Mật khẩu không chính xác! Vui lòng thử lại hoặc bấm 'Quên mật khẩu'.", "danger");
-          const passEl = document.getElementById("loginPassInput");
-          if (passEl) {
-            passEl.value = "";
-            passEl.focus();
+          // Mật khẩu cục bộ không khớp: Thử xác thực trực tuyến qua Google Apps Script (phòng khi đổi mật khẩu trên máy khác)
+          if (typeof callGasApi === "function") {
+            try {
+              const res = await callGasApi("login", { mode: "login", action: "login", email: email, password: pass });
+              if (res && res.success) {
+                isAuthenticated = true;
+                authenticatedGasUser = res.user || null;
+                found.password = pass;
+                saveRegisteredUsers(users);
+              } else if (res && res.message) {
+                showToast("❌ " + res.message, "danger");
+                const passEl = document.getElementById("loginPassInput");
+                if (passEl) { passEl.value = ""; passEl.focus(); }
+                return;
+              }
+            } catch(eGas) {}
           }
-          return;
+          if (!isAuthenticated) {
+            showToast("❌ Mật khẩu không chính xác! Vui lòng thử lại hoặc bấm 'Quên mật khẩu'.", "danger");
+            const passEl = document.getElementById("loginPassInput");
+            if (passEl) {
+              passEl.value = "";
+              passEl.focus();
+            }
+            return;
+          }
         }
       } else {
-        // Tài khoản chưa lưu mật khẩu cục bộ hoặc chưa từng đăng nhập trên trình duyệt này:
-        // Bắt buộc xác thực trực tuyến qua Google Apps Script / Cloud Backend
-        let gasValidated = false;
-        let gasUser = null;
+        // Bước 3.2: Tài khoản chưa có mật khẩu lưu cục bộ -> BẮT BUỘC xác thực trực tuyến qua máy chủ Google Apps Script
         if (typeof callGasApi === "function") {
           try {
             const res = await callGasApi("login", { mode: "login", action: "login", email: email, password: pass });
             if (res && res.success) {
-              gasValidated = true;
-              gasUser = res.user || null;
+              isAuthenticated = true;
+              authenticatedGasUser = res.user || null;
             } else if (res && res.message) {
               showToast("❌ " + res.message, "danger");
               const passEl = document.getElementById("loginPassInput");
@@ -13108,8 +13115,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
         }
 
-        // Nếu máy chủ backend từ chối hoặc người dùng nhập bừa email/mật khẩu
-        if (!gasValidated) {
+        // Nếu máy chủ từ chối hoặc sai mật khẩu: CHẶN ĐỨNG TUYỆT ĐỐI
+        if (!isAuthenticated) {
           showToast("❌ Tài khoản hoặc mật khẩu không chính xác! Vui lòng kiểm tra lại hoặc sử dụng 'Quên mật khẩu'.", "danger");
           const passEl = document.getElementById("loginPassInput");
           if (passEl) {
@@ -13119,29 +13126,35 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           return;
         }
 
-        // Cập nhật lại mật khẩu cho tài khoản để các lần đăng nhập sau được xác thực tức thì
+        // Xác thực máy chủ thành công -> Cập nhật mật khẩu chuẩn xác vào danh sách thành viên
         if (found) {
           found.password = pass;
-          if (gasUser) {
-            found.userId = gasUser.userId || found.userId;
-            if (gasUser.balance !== undefined) found.balance = Number(gasUser.balance);
-            if (gasUser.role === "ADMIN") found.role = "Quản Trị Viên";
+          if (authenticatedGasUser) {
+            found.userId = authenticatedGasUser.userId || found.userId;
+            if (authenticatedGasUser.balance !== undefined) found.balance = Number(authenticatedGasUser.balance);
+            if (authenticatedGasUser.role === "ADMIN" || isAdm) found.role = "Quản Trị Viên";
           }
           saveRegisteredUsers(users);
-        } else if (gasUser) {
+        } else if (authenticatedGasUser) {
           const newCloudUser = {
-            userId: gasUser.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
-            name: gasUser.name || email.split("@")[0],
+            userId: authenticatedGasUser.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
+            name: authenticatedGasUser.name || (isAdm ? "Quản Trị Viên" : email.split("@")[0]),
             email: email,
             password: pass,
-            role: gasUser.role === "ADMIN" || isAdm ? "Quản Trị Viên" : "MEMBER",
-            balance: gasUser.balance !== undefined ? Number(gasUser.balance) : 0,
-            avatar: gasUser.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)),
+            role: authenticatedGasUser.role === "ADMIN" || isAdm ? "Quản Trị Viên" : "MEMBER",
+            balance: authenticatedGasUser.balance !== undefined ? Number(authenticatedGasUser.balance) : 0,
+            avatar: authenticatedGasUser.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)),
             created: new Date().toLocaleDateString("vi-VN")
           };
           users.unshift(newCloudUser);
           saveRegisteredUsers(users);
         }
+      }
+
+      // LÁ CHẮN BẢO VỆ CUỐI CÙNG: Nếu chưa được xác thực thành công thì TUYỆT ĐỐI không cho đăng nhập
+      if (!isAuthenticated) {
+        showToast("❌ Mật khẩu không chính xác!", "danger");
+        return;
       }
 
       // XÁC THỰC THÀNH CÔNG -> TIẾN HÀNH ĐĂNG NHẬP
@@ -24894,8 +24907,8 @@ function syncAllOpenViewsStock(changedProdId) {
         "adminUpdateBalance", "adminUpdateOrderStatus"
       ].includes(action);
 
-      // Timeout an toàn: Đột biến 6s, đọc dữ liệu 4s để loại bỏ hoàn toàn đơ/lag web
-      const timeoutMs = isMutation ? 6000 : 4000;
+      // Timeout an toàn: Xác thực đăng nhập 8s, đột biến 6s, đọc dữ liệu 4s để loại bỏ hoàn toàn đơ/lag web
+      const timeoutMs = (action === "login" || action === "register") ? 8000 : (isMutation ? 6000 : 4000);
       function createTimeoutSignal(ms) {
         if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
           return AbortSignal.timeout(ms);
