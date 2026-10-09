@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.5.6";
+const MMO_CURRENT_CODE_VERSION = "4.5.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const REAL_TIKTOK_BRAZIL_ACCOUNTS = ["hiepiwt1312|BR@15235QTTEW|ooz8uxrqsl@sv366.mytempmail.org|","t_lai_86_1991|BR@15235QTTEW|29zlqqor7r@sv327.mytempmail.org|","f5.tan.2811|BR@15235QTTEW|imxse8oyeg@sv391.mytempmail.org|","hoang.nguy.w5.2407|BR@15235QTTEW|ecy1l0pfes@sv712.mytempmail.org|","ong.hoan.5l.2002|BR@15235QTTEW|xnofes2f8r@sv422.mytempmail.org|","c_nguyet_6dd_2003|BR@15235QTTEW|qu3bka63ov@sv230.mytempmail.org|","mac.hang.j8.1993|BR@15235QTTEW|8wle7v1e7f@sv349.mytempmail.org|","1404.huynh.t|BR@15235QTTEW|6tj2g53oev@sv478.mytempmail.org|","tram.chung.fk.0602|BR@15235QTTEW|xqxgxlsl07@sv917.mytempmail.org|","c_khiet_do_1905|BR@15235QTTEW|k0wxkw3ip8@sv790.mytempmail.org|","1996.hue.x|BR@15235QTTEW|nsknvrfiz1@sv180.mytempmail.org|","nhu9wv1203|BR@15235QTTEW|2xu44xy6v8@sv423.mytempmail.org|","user32949996025027|BR@15235QTTEW|jw2o7f1s6i@sv591.mytempmail.org|","moccvl0706|BR@15235QTTEW|aixbsvdzmc@sv127.mytempmail.org|","ke_yen_2vn_0707|BR@15235QTTEW|18y32yh2qc@sv731.mytempmail.org|","user73617146919102|BR@15235QTTEW|0o2af33rhe@sv608.mytempmail.org|","user10353292356088|BR@15235QTTEW|v21lzds6lh@sv626.mytempmail.org|","ew_duong_2007|BR@15235QTTEW|82n6drcq55@sv511.mytempmail.org|","h.tien.xqy.0308|BR@15235QTTEW|igw5nwn6l5@sv45.mytempmail.org|","0906.phan.k|BR@15235QTTEW|fk68xlsnn5@sv560.mytempmail.org|","tan_thoai_jn_1311200|BR@15235QTTEW|mxme5grdmh@sv486.mytempmail.org|","9c.ho.1609|BR@15235QTTEW|pcegzxe4df@sv717.mytempmail.org|","user9445093404627|BR@15235QTTEW|841qx2gksv@sv298.mytempmail.org|","khue.chung.7w.0202|BR@15235QTTEW|uvytf59l36@sv36.mytempmail.org|","mau_bui_0f_1206|BR@15235QTTEW|bnenhe5t0t@sv124.mytempmail.org|","3005_lu_l|BR@15235QTTEW|5ptshv17yk@sv165.mytempmail.org|","chau.dinh.am.1411|BR@15235QTTEW|14thsbe0r7@sv834.mytempmail.org|","zu_hien_1990|BR@15235QTTEW|ee8u4gqkh2@sv733.mytempmail.org|","tfdtuy1999|BR@15235QTTEW|uopgch6z8n@sv798.mytempmail.org|","t.nhu.381.1994|BR@15235QTTEW|uofj7xipq6@sv814.mytempmail.org|","l_dung_gy_1410|BR@15235QTTEW|3vimdqf2uk@sv734.mytempmail.org|","v_ha_ryk_0808|BR@15235QTTEW|tnvk9tjf56@sv128.mytempmail.org|","c.trac.ct.2905|BR@15235QTTEW|1zxktql09e@sv74.mytempmail.org|","h_nhien_sg_1990|BR@15235QTTEW|efk2s3rx2s@sv302.mytempmail.org|","t2lbtruc2006|BR@15235QTTEW|f52rfpj7u2@sv621.mytempmail.org|","vanhljpd1412|BR@15235QTTEW|xyc89bmres@sv702.mytempmail.org|PV2YEBGPAO4CI5VU4G6PMZRB7IK2PJLQ","d.minh.gf2.1992|BR@15235QTTEW|ppyufksxx5@sv872.mytempmail.org|IUQNKVUX4K5TDD7JIW4V4ZAO2RFPJEBB","t.luu.q7r.0811|BR@15235QTTEW|ikson65enn@sv647.mytempmail.org|","trieu.trac.je8.1401|BR@15235QTTEW|wd5ovetsnc@sv551.mytempmail.org|","nguyen.ham.j9y.16041|BR@15235QTTEW|ma247v1yeu@sv213.mytempmail.org|","ong.bao.eig.31042004|BR@15235QTTEW|oybffoba71@sv782.mytempmail.org|","tuy_chau_9a_1707|BR@15235QTTEW|j2l5ta2y3y@sv197.mytempmail.org|","up7.phan.2907|BR@15235QTTEW|tlcn5f6usn@sv848.mytempmail.org|","t.tran.pfc.0411|BR@15235QTTEW|ttj7pmzbdj@sv537.mytempmail.org|","bang3olt0207|BR@15235QTTEW|dx0bznksvi@sv501.mytempmail.org|","ton.dinh.72u.2003|BR@15235QTTEW|jxduti9wco@sv841.mytempmail.org|","jno.quach.0910|BR@15235QTTEW|oxd9nz7fbx@sv525.mytempmail.org|","n.do.82m.1106|BR@15235QTTEW|oebzwott4m@sv931.mytempmail.org|MY6AVISYDWIPXOGYBVN66H6TCUPJ6QXH","m1.kim.1999|BR@15235QTTEW|ew0tfrwame@sv559.mytempmail.org|","o_tho_5hb_2009|BR@15235QTTEW|p1e4isrc1u@sv354.mytempmail.org|","kieu30p0203|BR@15235QTTEW|oi8wple1gj@sv718.mytempmail.org|","1b.khiet.2000|BR@15235QTTEW|uuz1lyfzcn@sv129.mytempmail.org|","tak5truong2000|BR@15235QTTEW|0v4h5d6o9a@sv233.mytempmail.org|","t_diem_cz_1995|BR@15235QTTEW|xsggbhney1@sv313.mytempmail.org|","user1928270525407|BR@15235QTTEW|r0ewc3ex15@sv934.mytempmail.org|","xuyen.lu.a21.1401|BR@15235QTTEW|astz3fjabu@sv881.mytempmail.org|","user7407617129630|BR@15235QTTEW|gymdpf4s5l@sv625.mytempmail.org|","khuu_huynh_qg_170719|BR@15235QTTEW|4hqna1bqvu@sv356.mytempmail.org|","q_tung_xo_1999|BR@15235QTTEW|gt1drdq3sv@sv546.mytempmail.org|","v_han_33_2001|BR@15235QTTEW|c16c6k8b2d@sv496.mytempmail.org|","trieu.yen.koq.2802|BR@15235QTTEW|996wbqlwxj@sv574.mytempmail.org|","le.ly.f27.05022007|BR@15235QTTEW|ofntr5g2o8@sv582.mytempmail.org|","klcwphong2004|BR@15235QTTEW|rhzavdc4b0@sv238.mytempmail.org|","1407_khong_t|BR@15235QTTEW|xa0osggia1@sv289.mytempmail.org|","a.trinh.yd.1101|BR@15235QTTEW|641ldta3ht@sv501.mytempmail.org|","2007_ho_o|BR@15235QTTEW|swud8u2h99@sv848.mytempmail.org|","user7848587558749|BR@15235QTTEW|mt880zkyb2@sv454.mytempmail.org|BFCKDNFWQASAAKXC4346CJ5G47LLAPUL","l_man_bw2_2003|BR@15235QTTEW|qs8pb6mfvg@sv139.mytempmail.org|","vuong_hang_1vd_03041|BR@15235QTTEW|sl9ed1k0bq@sv850.mytempmail.org|","v_dong_7c_1302|BR@15235QTTEW|cvdp0ex96a@sv270.mytempmail.org|","zw.thao.2004|BR@15235QTTEW|r67b9a7fps@sv958.mytempmail.org|","nnmkvan2006|BR@15235QTTEW|52pycxosen@sv517.mytempmail.org|","hien_duong_xf_0104|BR@15235QTTEW|cf2a5lz6xu@sv867.mytempmail.org","nguy_hoang_ln6_1994|BR@15235QTTEW|kx3ygnuqp9@sv999.mytempmail.org","n.thach.sh.1909|BR@15235QTTEW|k9ik33qm66@sv729.mytempmail.org"];
@@ -815,8 +815,8 @@ if (typeof window !== "undefined") {
     }
 
     function isFastSourceProviderLoaded(provider) {
+      if (!provider) return true;
       if (typeof window !== "undefined" && window._liveLoadedProviders && (window._liveLoadedProviders instanceof Set)) {
-        if (!provider) return window._liveLoadedProviders.size > 0;
         if (window._liveLoadedProviders.has(provider)) return true;
         var norm = (typeof normalizeProviderId === "function") ? normalizeProviderId(provider) : "";
         if (norm && window._liveLoadedProviders.has(norm)) return true;
@@ -824,9 +824,37 @@ if (typeof window !== "undefined") {
           if (typeof isSameProvider === "function" && isSameProvider(pItem, provider)) return true;
         }
       }
+      // Tự động nhận diện nếu cache sản phẩm đã có mặt hàng của nhà cung cấp này
+      var prods = (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts))
+        ? cachedSourceProducts
+        : ((typeof window !== "undefined" && Array.isArray(window.cachedSourceProducts)) ? window.cachedSourceProducts : []);
+      if (prods && prods.length > 0) {
+        var hasItem = prods.some(function(s) {
+          return s && (s.provider === provider || (typeof isSameProvider === "function" && isSameProvider(s.provider, provider)));
+        });
+        if (hasItem) {
+          if (typeof window !== "undefined" && window._liveLoadedProviders) {
+            window._liveLoadedProviders.add(provider);
+            var np = (typeof normalizeProviderId === "function") ? normalizeProviderId(provider) : "";
+            if (np) window._liveLoadedProviders.add(np);
+          }
+          return true;
+        }
+      }
       return false;
     }
     window.isFastSourceProviderLoaded = isFastSourceProviderLoaded;
+
+    // Nạp sẵn tất cả providers từ cache vào _liveLoadedProviders ngay khi khởi động
+    if (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+      cachedSourceProducts.forEach(function(s) {
+        if (s && s.provider && typeof window !== "undefined" && window._liveLoadedProviders) {
+          window._liveLoadedProviders.add(s.provider);
+          var np = (typeof normalizeProviderId === "function") ? normalizeProviderId(s.provider) : "";
+          if (np) window._liveLoadedProviders.add(np);
+        }
+      });
+    }
 
     rebuildSourceProductsFastIndex(cachedSourceProducts);
 
@@ -6678,7 +6706,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           const getFastStock = function(prodObj) {
             if (!prodObj || !prodObj.id) return 0;
             if (_renderStockCache.has(prodObj.id)) return _renderStockCache.get(prodObj.id);
-            const st = (typeof getVariantStockCount === "function") ? getVariantStockCount(prodObj, null) : ((typeof getProductStockCount === "function") ? getProductStockCount(prodObj) : (prodObj.stock || 0));
+            let st = (typeof getVariantStockCount === "function") ? getVariantStockCount(prodObj, null) : ((typeof getProductStockCount === "function") ? getProductStockCount(prodObj) : (prodObj.stock || 0));
+            const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(prodObj) : null;
+            if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
+              const cleanSrcId = String(apiMap.sourceProdId || "").replace(/^#/, "").trim();
+              const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, cleanSrcId) : null;
+              if (inSrc && typeof inSrc.amount === "number") {
+                st = inSrc.amount;
+                apiMap.sourceStock = inSrc.amount;
+                apiMap.isSourceDeleted = false;
+                prodObj.stock = inSrc.amount;
+              } else if (typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0) {
+                st = apiMap.sourceStock;
+              }
+            }
             _renderStockCache.set(prodObj.id, st);
             return st;
           };
@@ -6836,14 +6877,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 '<td>' + esc(p.category) + '</td>' +
                 '<td style="color:#10b981; font-weight:700;">' + formatVND(p.price) + '</td>' +
                 '<td>' + (function() {
-                  const stk = getFastStock(p);
+                  let stk = getFastStock(p);
                   const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
                   if (apiMap && apiMap.sourceProdId) {
                     const cleanSrcId = String(apiMap.sourceProdId || "").replace(/^#/, "").trim();
                     const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, cleanSrcId) : null;
                     if (inSrc) {
                       apiMap.isSourceDeleted = false;
-                      if (typeof inSrc.amount === "number") apiMap.sourceStock = inSrc.amount;
+                      if (typeof inSrc.amount === "number") {
+                        apiMap.sourceStock = inSrc.amount;
+                        stk = inSrc.amount;
+                        p.stock = inSrc.amount;
+                      }
+                    } else if (typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0) {
+                      stk = apiMap.sourceStock;
                     }
                   }
                   if (apiMap && apiMap.isSourceDeleted) {
@@ -7957,21 +8004,60 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const res = await executeSourceApiCall("getProducts", payload);
         let freshProds = [];
 
-        if (res && res.success && Array.isArray(res.categories)) {
-          res.categories.forEach(function(cat) {
-            (cat.products || cat.accounts || []).forEach(function(p) {
-              const pid = String(p.id !== undefined ? p.id : (p.productId || p.product_id || ""));
-              if (!pid) return;
-              freshProds.push({
-                id: pid,
-                name: p.name || p.title || p.product_name || ("Sản phẩm #" + pid),
-                price: Number(p.price) || 0,
-                amount: Number(p.stockCount !== undefined ? p.stockCount : (p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.accounts || 0)))),
-                category: p.category || p.categoryName || cat.name || (pCfg.name || provider),
-                provider: provider
+        if (res && res.success) {
+          const _extractProd = function(p, catName) {
+            if (!p || typeof p !== "object") return null;
+            const pid = String(p.id !== undefined ? p.id : (p.productId || p.product_id || p.code || ""));
+            if (!pid) return null;
+            return {
+              id: pid,
+              name: p.name || p.title || p.product_name || p.resource_name || ("Sản phẩm #" + pid),
+              price: Number(p.price || p.unit_price || p.cost || p.retail_price || 0),
+              amount: Number(p.stockCount !== undefined ? p.stockCount : (p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.accounts || p.quantity || p.inventory || 0)))),
+              category: p.category || p.categoryName || p.category_name || catName || (pCfg.name || provider),
+              provider: provider
+            };
+          };
+
+          if (Array.isArray(res.categories)) {
+            res.categories.forEach(function(cat) {
+              (cat.products || cat.accounts || []).forEach(function(p) {
+                const ep = _extractProd(p, cat.name);
+                if (ep) freshProds.push(ep);
               });
             });
-          });
+          } else if (res.data && typeof res.data === "object" && (Array.isArray(res.data.content) || Array.isArray(res.data.items) || Array.isArray(res.data.products) || Array.isArray(res.data.list))) {
+            const rawList = res.data.content || res.data.items || res.data.products || res.data.list;
+            rawList.forEach(function(p) {
+              const ep = _extractProd(p, p.categoryName || (pCfg.name || provider));
+              if (ep) freshProds.push(ep);
+            });
+          } else if (Array.isArray(res.data)) {
+            const first = res.data[0];
+            if (first && (first.products || first.accounts)) {
+              res.data.forEach(function(cat) {
+                (cat.products || cat.accounts || []).forEach(function(p) {
+                  const ep = _extractProd(p, cat.name);
+                  if (ep) freshProds.push(ep);
+                });
+              });
+            } else {
+              res.data.forEach(function(p) {
+                const ep = _extractProd(p, pCfg.name || provider);
+                if (ep) freshProds.push(ep);
+              });
+            }
+          } else if (Array.isArray(res.products)) {
+            res.products.forEach(function(p) {
+              const ep = _extractProd(p, pCfg.name || provider);
+              if (ep) freshProds.push(ep);
+            });
+          } else if (Array.isArray(res)) {
+            res.forEach(function(p) {
+              const ep = _extractProd(p, pCfg.name || provider);
+              if (ep) freshProds.push(ep);
+            });
+          }
         }
 
         if (freshProds.length > 0) {
@@ -15684,96 +15770,73 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const prod = (typeof prodOrId === "object") ? prodOrId : findShopProduct(prodOrId);
       if (!prod) return 0;
 
-      const isLocalDelivery = prod.deliveryType === "local" || prod.delivery_type === "local" || prod.deliveryType === "manual" || prod.delivery_type === "manual";
       const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
       const varIdxNum = (vIdx !== null && vIdx !== undefined && vIdx !== "ALL" && vIdx !== "") ? Number(vIdx) : 0;
 
-      // 1. Kiểm tra nếu sản phẩm là API On-demand (CHỈ khi không phải kho nội bộ)
-      if (!isLocalDelivery) {
-        const isApiDelivery = (prod.deliveryType === "api" || prod.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(prod));
-        let apiMap = null;
-        if (typeof getApiProductMapping === "function") {
-          // [ƯU TIÊN 1] Tra cứu theo chính đối tượng sản phẩm hoặc ID sản phẩm
-          apiMap = getApiProductMapping(prod) || (prod && prod.apiMapping);
-          // [ƯU TIÊN 2] Nếu sản phẩm có mapping riêng theo từng biến thể (cấu trúc prodId_vIdx)
-          if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
-            if (prod && prod.id) {
-              apiMap = getApiProductMapping(prod.id + "_" + varIdxNum);
-            }
+      // 1. Kiểm tra nếu sản phẩm là API On-demand (Ưu tiên số 1, độc lập với deliveryType cũ)
+      let apiMap = null;
+      if (typeof getApiProductMapping === "function") {
+        apiMap = getApiProductMapping(prod) || (prod && prod.apiMapping);
+        if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
+          if (prod && prod.id) {
+            apiMap = getApiProductMapping(prod.id + "_" + varIdxNum);
           }
-        } else if (prod && prod.apiMapping) {
-          apiMap = prod.apiMapping;
         }
+      } else if (prod && prod.apiMapping) {
+        apiMap = prod.apiMapping;
+      }
 
-        if ((apiMap && apiMap.enabled && apiMap.sourceProdId) || isApiDelivery) {
-          let st = 0;
-          let hasLiveSource = false;
-          if (apiMap && apiMap.sourceProdId) {
-            const cleanSrcId = String(apiMap.sourceProdId).trim().replace(/^#/, "");
-            let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, cleanSrcId) : null;
-            if (!inSrc && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
-              inSrc = cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!apiMap.provider || s.provider === apiMap.provider))
-                   || cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
-            }
-            const provHasProds = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
-            if (inSrc && typeof inSrc.amount === "number") {
-              st = inSrc.amount;
-              apiMap.sourceStock = st;
-              apiMap.isSourceDeleted = false;
-              hasLiveSource = true;
-              if (prod) prod.stock = st;
-            } else if (typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0 && !apiMap.isSourceDeleted) {
-              st = apiMap.sourceStock;
-              hasLiveSource = true;
-            } else if (provHasProds && !inSrc) {
-              // Sản phẩm không còn trên web nguồn hoặc nguồn đã xoá/gỡ SP (CHỈ KHI PROVIDER ĐÃ NẠP LIVE)
-              st = 0;
-              apiMap.sourceStock = 0;
-              apiMap.isSourceDeleted = true;
-              hasLiveSource = true;
-              if (prod) {
-                prod.stock = 0;
-                if (Array.isArray(prod.variants)) prod.variants.forEach(v => { if (v) v.stock = 0; });
-              }
-              return 0;
-            }
-          }
+      const isApi = !!(apiMap && apiMap.enabled && apiMap.sourceProdId) || (prod.deliveryType === "api" || prod.delivery_type === "api");
 
-          // Nếu mapping đã được xác nhận nguồn đã xóa/gỡ SP -> Ép trả về 0 acc ngay lập tức!
-          if (apiMap && apiMap.isSourceDeleted) {
-            apiMap.sourceStock = 0;
-            if (prod) {
-              prod.stock = 0;
-              if (Array.isArray(prod.variants)) prod.variants.forEach(v => { if (v) v.stock = 0; });
-            }
-            return 0;
+      if (isApi) {
+        prod.deliveryType = "api";
+        prod.delivery_type = "api";
+        if (apiMap && apiMap.sourceProdId) {
+          const cleanSrcId = String(apiMap.sourceProdId).trim().replace(/^#/, "");
+          let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, cleanSrcId) : null;
+          if (!inSrc && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+            inSrc = cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!apiMap.provider || s.provider === apiMap.provider || (typeof isSameProvider === "function" && isSameProvider(s.provider, apiMap.provider))))
+                 || cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
           }
-          if (!hasLiveSource && apiMap && apiMap.sourceStock !== undefined && apiMap.sourceStock !== null) {
-            st = Number(apiMap.sourceStock);
-            if (apiMap.isSourceDeleted) {
-              st = 0;
-              apiMap.sourceStock = 0;
-            }
-            if (st > 0) {
-              hasLiveSource = true;
-            }
-          }
-          if (hasLiveSource) {
-            // Nguồn API đã xác định số lượng tồn kho (kể cả khi st === 0 -> Hết hàng)
+          if (inSrc && typeof inSrc.amount === "number") {
+            const st = inSrc.amount;
+            apiMap.sourceStock = st;
+            apiMap.isSourceDeleted = false;
+            prod.stock = st;
+            if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v) v.stock = st; });
             return Math.max(0, st);
           }
 
-          // Khi API nguồn chưa có dữ liệu live: Ưu tiên lấy tồn kho thực tế từ Turso SQLite SSOT
-          const vIdxNumFallback = (varIdxNum !== undefined && varIdxNum !== null) ? varIdxNum : ((vIdx === null || vIdx === undefined || vIdx === "ALL" || vIdx === "") ? 0 : Number(vIdx));
-          if (prod && Array.isArray(prod.variants) && prod.variants[vIdxNumFallback]) {
-            const vS = Number(prod.variants[vIdxNumFallback].stock);
-            if (!isNaN(vS) && vS > 0) return vS;
+          const provHasProds = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
+          if (provHasProds && !inSrc) {
+            apiMap.sourceStock = 0;
+            apiMap.isSourceDeleted = true;
+            if (prod) {
+              prod.stock = 0;
+              if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v) v.stock = 0; });
+            }
+            return 0;
           }
-          if (prod && typeof prod.stock === "number" && prod.stock > 0) {
-            return prod.stock;
+        }
+
+        if (apiMap && apiMap.isSourceDeleted) {
+          apiMap.sourceStock = 0;
+          if (prod) {
+            prod.stock = 0;
+            if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v) v.stock = 0; });
           }
           return 0;
         }
+
+        if (apiMap && typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0) {
+          if (prod) prod.stock = apiMap.sourceStock;
+          return apiMap.sourceStock;
+        }
+
+        if (prod && typeof prod.stock === "number" && prod.stock > 0) {
+          return prod.stock;
+        }
+        return 0;
       }
 
       // ROM & Tools software & Phone Farm
@@ -17338,22 +17401,25 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             ? window.cachedSourceProducts
             : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
           const provHasProds = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
-          if (prods && prods.length > 0 && provHasProds) {
-            const inSrc = (typeof getFastSourceProduct === "function")
-              ? getFastSourceProduct(apiMap.provider, cleanSrcId)
-              : (prods.find(s => String(s.id) === cleanSrcId && (!apiMap.provider || s.provider === apiMap.provider))
-                || prods.find(s => String(s.id) === cleanSrcId));
-            if (inSrc && typeof inSrc.amount === "number") {
-              stock = inSrc.amount;
-              apiMap.isSourceDeleted = false;
-              apiMap.sourceStock = inSrc.amount;
-            } else if (provHasProds && !inSrc) {
-              stock = 0;
-              apiMap.isSourceDeleted = true;
-              apiMap.sourceStock = 0;
-            }
+
+          const inSrc = (typeof getFastSourceProduct === "function")
+            ? getFastSourceProduct(apiMap.provider, cleanSrcId)
+            : (prods.find(s => String(s.id) === cleanSrcId && (!apiMap.provider || (typeof isSameProvider === "function" ? isSameProvider(s.provider, apiMap.provider) : s.provider === apiMap.provider)))
+              || prods.find(s => String(s.id) === cleanSrcId));
+
+          if (inSrc && typeof inSrc.amount === "number") {
+            stock = inSrc.amount;
+            apiMap.isSourceDeleted = false;
+            apiMap.sourceStock = inSrc.amount;
+            if (prod) prod.stock = inSrc.amount;
+          } else if (provHasProds && !inSrc) {
+            stock = 0;
+            apiMap.isSourceDeleted = true;
+            apiMap.sourceStock = 0;
           } else if (apiMap.isSourceDeleted) {
             stock = 0;
+          } else if (typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0) {
+            stock = apiMap.sourceStock;
           } else {
             // Khi provider chưa nạp live: ưu tiên lấy stock thực từ Turso SSOT của sản phẩm/biến thể
             if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL" && variantIdx !== "" && prod && Array.isArray(prod.variants) && prod.variants[Number(variantIdx)]) {
@@ -19708,14 +19774,25 @@ function syncAllOpenViewsStock(changedProdId) {
     function isProductApi(productOrId) {
       if (!productOrId) return false;
       const prod = (typeof productOrId === "object") ? productOrId : (typeof findShopProduct === "function" ? findShopProduct(productOrId) : null);
-      if (prod && (prod.deliveryType === "local" || prod.delivery_type === "local" || prod.deliveryType === "manual" || prod.delivery_type === "manual")) return false;
-      if (prod && (prod.deliveryType === "api" || prod.delivery_type === "api")) return true;
-      if (prod && prod.apiMapping && prod.apiMapping.enabled && prod.apiMapping.sourceProdId) return true;
+      // [ƯU TIÊN TUYỆT ĐỐI 1]: Nếu sản phẩm có API mapping đang BẬT -> 100% là sản phẩm API
+      if (prod && prod.apiMapping && prod.apiMapping.enabled && prod.apiMapping.sourceProdId) {
+        prod.deliveryType = "api";
+        prod.delivery_type = "api";
+        return true;
+      }
       const pId = typeof productOrId === "string" ? productOrId : (prod ? prod.id : "");
       if (typeof getApiProductMapping === "function") {
         const map = getApiProductMapping(pId || prod);
-        if (map && map.enabled && map.sourceProdId) return true;
+        if (map && map.enabled && map.sourceProdId) {
+          if (prod) {
+            prod.deliveryType = "api";
+            prod.delivery_type = "api";
+          }
+          return true;
+        }
       }
+      if (prod && (prod.deliveryType === "api" || prod.delivery_type === "api")) return true;
+      if (prod && (prod.deliveryType === "local" || prod.delivery_type === "local" || prod.deliveryType === "manual" || prod.delivery_type === "manual")) return false;
       return false;
     }
     window.isProductApi = isProductApi;
@@ -27772,9 +27849,12 @@ function syncAllOpenViewsStock(changedProdId) {
       const dtlCategory = document.getElementById("dtlCategory");
       if (dtlCategory) dtlCategory.innerText = (p.category || "").replace(/&amp;/g, '&');
 
-      const isLocalDelivery = (p.deliveryType === "local" || p.delivery_type === "local" || p.deliveryType === "manual" || p.delivery_type === "manual");
-      const isProdApi = !isLocalDelivery && ((p.deliveryType === "api" || p.delivery_type === "api") || ((typeof isProductApi === "function") ? isProductApi(p) : false));
-      const apiMapInfo = isProdApi ? ((p && p.apiMapping) || ((typeof getApiProductMapping === "function") ? getApiProductMapping(p) : null)) : null;
+      const apiMapInfo = (p && p.apiMapping && p.apiMapping.enabled && p.apiMapping.sourceProdId)
+        ? p.apiMapping
+        : ((typeof getApiProductMapping === "function") ? getApiProductMapping(p) : null);
+      const hasActiveApiMap = !!(apiMapInfo && apiMapInfo.enabled && apiMapInfo.sourceProdId);
+      const isLocalDelivery = !hasActiveApiMap && (p.deliveryType === "local" || p.delivery_type === "local" || p.deliveryType === "manual" || p.delivery_type === "manual");
+      const isProdApi = hasActiveApiMap || ((p.deliveryType === "api" || p.delivery_type === "api") || ((typeof isProductApi === "function") ? isProductApi(p) : false));
 
       const dtlDeliveryType = document.getElementById("dtlDeliveryType") || document.querySelector(".dtl-delivery-type");
       if (dtlDeliveryType) {
@@ -27795,6 +27875,7 @@ function syncAllOpenViewsStock(changedProdId) {
           liveMapStock = 0;
           apiMapInfo.sourceStock = 0;
         } else if (apiMapInfo && apiMapInfo.sourceProdId) {
+          const cleanSrcId = String(apiMapInfo.sourceProdId).trim().replace(/^#/, "");
           const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
             ? window.cachedSourceProducts
             : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
@@ -27802,28 +27883,24 @@ function syncAllOpenViewsStock(changedProdId) {
             ? isFastSourceProviderLoaded(apiMapInfo.provider)
             : false;
           const inSrc = (typeof getFastSourceProduct === "function")
-            ? getFastSourceProduct(apiMapInfo.provider, apiMapInfo.sourceProdId)
-            : (prods.find(s => String(s.id) === String(apiMapInfo.sourceProdId) && (!apiMapInfo.provider || s.provider === apiMapInfo.provider))
-              || prods.find(s => String(s.id) === String(apiMapInfo.sourceProdId)));
-          if (provLoaded) {
-            if (inSrc && typeof inSrc.amount === "number") {
-              liveMapStock = inSrc.amount;
-              apiMapInfo.sourceStock = inSrc.amount;
-            } else {
-              liveMapStock = 0;
-              apiMapInfo.sourceStock = 0;
-              apiMapInfo.isSourceDeleted = true;
-            }
+            ? getFastSourceProduct(apiMapInfo.provider, cleanSrcId)
+            : (prods.find(s => String(s.id) === cleanSrcId && (!apiMapInfo.provider || (typeof isSameProvider === "function" ? isSameProvider(s.provider, apiMapInfo.provider) : s.provider === apiMapInfo.provider)))
+              || prods.find(s => String(s.id) === cleanSrcId));
+
+          if (inSrc && typeof inSrc.amount === "number") {
+            liveMapStock = inSrc.amount;
+            apiMapInfo.sourceStock = inSrc.amount;
+            apiMapInfo.isSourceDeleted = false;
+          } else if (provLoaded && !inSrc) {
+            liveMapStock = 0;
+            apiMapInfo.sourceStock = 0;
+            apiMapInfo.isSourceDeleted = true;
+          } else if (typeof apiMapInfo.sourceStock === "number" && apiMapInfo.sourceStock > 0) {
+            liveMapStock = apiMapInfo.sourceStock;
+          } else if (typeof p.stock === "number" && p.stock > 0) {
+            liveMapStock = p.stock;
           } else {
-            // Khi chưa tải xong live từ nhà cung cấp: Ưu tiên dữ liệu SSOT từ Turso/Admin vừa lưu (sourceStock hoặc p.stock)
-            if (typeof apiMapInfo.sourceStock === "number" && apiMapInfo.sourceStock >= 0) {
-              liveMapStock = apiMapInfo.sourceStock;
-            } else if (typeof p.stock === "number" && p.stock >= 0) {
-              liveMapStock = p.stock;
-            } else if (inSrc && typeof inSrc.amount === "number") {
-              liveMapStock = inSrc.amount;
-              apiMapInfo.sourceStock = inSrc.amount;
-            }
+            liveMapStock = 0;
           }
         }
         if (liveMapStock !== null) {
