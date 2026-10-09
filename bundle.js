@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.5.4";
+const MMO_CURRENT_CODE_VERSION = "4.5.5";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const REAL_TIKTOK_BRAZIL_ACCOUNTS = ["hiepiwt1312|BR@15235QTTEW|ooz8uxrqsl@sv366.mytempmail.org|","t_lai_86_1991|BR@15235QTTEW|29zlqqor7r@sv327.mytempmail.org|","f5.tan.2811|BR@15235QTTEW|imxse8oyeg@sv391.mytempmail.org|","hoang.nguy.w5.2407|BR@15235QTTEW|ecy1l0pfes@sv712.mytempmail.org|","ong.hoan.5l.2002|BR@15235QTTEW|xnofes2f8r@sv422.mytempmail.org|","c_nguyet_6dd_2003|BR@15235QTTEW|qu3bka63ov@sv230.mytempmail.org|","mac.hang.j8.1993|BR@15235QTTEW|8wle7v1e7f@sv349.mytempmail.org|","1404.huynh.t|BR@15235QTTEW|6tj2g53oev@sv478.mytempmail.org|","tram.chung.fk.0602|BR@15235QTTEW|xqxgxlsl07@sv917.mytempmail.org|","c_khiet_do_1905|BR@15235QTTEW|k0wxkw3ip8@sv790.mytempmail.org|","1996.hue.x|BR@15235QTTEW|nsknvrfiz1@sv180.mytempmail.org|","nhu9wv1203|BR@15235QTTEW|2xu44xy6v8@sv423.mytempmail.org|","user32949996025027|BR@15235QTTEW|jw2o7f1s6i@sv591.mytempmail.org|","moccvl0706|BR@15235QTTEW|aixbsvdzmc@sv127.mytempmail.org|","ke_yen_2vn_0707|BR@15235QTTEW|18y32yh2qc@sv731.mytempmail.org|","user73617146919102|BR@15235QTTEW|0o2af33rhe@sv608.mytempmail.org|","user10353292356088|BR@15235QTTEW|v21lzds6lh@sv626.mytempmail.org|","ew_duong_2007|BR@15235QTTEW|82n6drcq55@sv511.mytempmail.org|","h.tien.xqy.0308|BR@15235QTTEW|igw5nwn6l5@sv45.mytempmail.org|","0906.phan.k|BR@15235QTTEW|fk68xlsnn5@sv560.mytempmail.org|","tan_thoai_jn_1311200|BR@15235QTTEW|mxme5grdmh@sv486.mytempmail.org|","9c.ho.1609|BR@15235QTTEW|pcegzxe4df@sv717.mytempmail.org|","user9445093404627|BR@15235QTTEW|841qx2gksv@sv298.mytempmail.org|","khue.chung.7w.0202|BR@15235QTTEW|uvytf59l36@sv36.mytempmail.org|","mau_bui_0f_1206|BR@15235QTTEW|bnenhe5t0t@sv124.mytempmail.org|","3005_lu_l|BR@15235QTTEW|5ptshv17yk@sv165.mytempmail.org|","chau.dinh.am.1411|BR@15235QTTEW|14thsbe0r7@sv834.mytempmail.org|","zu_hien_1990|BR@15235QTTEW|ee8u4gqkh2@sv733.mytempmail.org|","tfdtuy1999|BR@15235QTTEW|uopgch6z8n@sv798.mytempmail.org|","t.nhu.381.1994|BR@15235QTTEW|uofj7xipq6@sv814.mytempmail.org|","l_dung_gy_1410|BR@15235QTTEW|3vimdqf2uk@sv734.mytempmail.org|","v_ha_ryk_0808|BR@15235QTTEW|tnvk9tjf56@sv128.mytempmail.org|","c.trac.ct.2905|BR@15235QTTEW|1zxktql09e@sv74.mytempmail.org|","h_nhien_sg_1990|BR@15235QTTEW|efk2s3rx2s@sv302.mytempmail.org|","t2lbtruc2006|BR@15235QTTEW|f52rfpj7u2@sv621.mytempmail.org|","vanhljpd1412|BR@15235QTTEW|xyc89bmres@sv702.mytempmail.org|PV2YEBGPAO4CI5VU4G6PMZRB7IK2PJLQ","d.minh.gf2.1992|BR@15235QTTEW|ppyufksxx5@sv872.mytempmail.org|IUQNKVUX4K5TDD7JIW4V4ZAO2RFPJEBB","t.luu.q7r.0811|BR@15235QTTEW|ikson65enn@sv647.mytempmail.org|","trieu.trac.je8.1401|BR@15235QTTEW|wd5ovetsnc@sv551.mytempmail.org|","nguyen.ham.j9y.16041|BR@15235QTTEW|ma247v1yeu@sv213.mytempmail.org|","ong.bao.eig.31042004|BR@15235QTTEW|oybffoba71@sv782.mytempmail.org|","tuy_chau_9a_1707|BR@15235QTTEW|j2l5ta2y3y@sv197.mytempmail.org|","up7.phan.2907|BR@15235QTTEW|tlcn5f6usn@sv848.mytempmail.org|","t.tran.pfc.0411|BR@15235QTTEW|ttj7pmzbdj@sv537.mytempmail.org|","bang3olt0207|BR@15235QTTEW|dx0bznksvi@sv501.mytempmail.org|","ton.dinh.72u.2003|BR@15235QTTEW|jxduti9wco@sv841.mytempmail.org|","jno.quach.0910|BR@15235QTTEW|oxd9nz7fbx@sv525.mytempmail.org|","n.do.82m.1106|BR@15235QTTEW|oebzwott4m@sv931.mytempmail.org|MY6AVISYDWIPXOGYBVN66H6TCUPJ6QXH","m1.kim.1999|BR@15235QTTEW|ew0tfrwame@sv559.mytempmail.org|","o_tho_5hb_2009|BR@15235QTTEW|p1e4isrc1u@sv354.mytempmail.org|","kieu30p0203|BR@15235QTTEW|oi8wple1gj@sv718.mytempmail.org|","1b.khiet.2000|BR@15235QTTEW|uuz1lyfzcn@sv129.mytempmail.org|","tak5truong2000|BR@15235QTTEW|0v4h5d6o9a@sv233.mytempmail.org|","t_diem_cz_1995|BR@15235QTTEW|xsggbhney1@sv313.mytempmail.org|","user1928270525407|BR@15235QTTEW|r0ewc3ex15@sv934.mytempmail.org|","xuyen.lu.a21.1401|BR@15235QTTEW|astz3fjabu@sv881.mytempmail.org|","user7407617129630|BR@15235QTTEW|gymdpf4s5l@sv625.mytempmail.org|","khuu_huynh_qg_170719|BR@15235QTTEW|4hqna1bqvu@sv356.mytempmail.org|","q_tung_xo_1999|BR@15235QTTEW|gt1drdq3sv@sv546.mytempmail.org|","v_han_33_2001|BR@15235QTTEW|c16c6k8b2d@sv496.mytempmail.org|","trieu.yen.koq.2802|BR@15235QTTEW|996wbqlwxj@sv574.mytempmail.org|","le.ly.f27.05022007|BR@15235QTTEW|ofntr5g2o8@sv582.mytempmail.org|","klcwphong2004|BR@15235QTTEW|rhzavdc4b0@sv238.mytempmail.org|","1407_khong_t|BR@15235QTTEW|xa0osggia1@sv289.mytempmail.org|","a.trinh.yd.1101|BR@15235QTTEW|641ldta3ht@sv501.mytempmail.org|","2007_ho_o|BR@15235QTTEW|swud8u2h99@sv848.mytempmail.org|","user7848587558749|BR@15235QTTEW|mt880zkyb2@sv454.mytempmail.org|BFCKDNFWQASAAKXC4346CJ5G47LLAPUL","l_man_bw2_2003|BR@15235QTTEW|qs8pb6mfvg@sv139.mytempmail.org|","vuong_hang_1vd_03041|BR@15235QTTEW|sl9ed1k0bq@sv850.mytempmail.org|","v_dong_7c_1302|BR@15235QTTEW|cvdp0ex96a@sv270.mytempmail.org|","zw.thao.2004|BR@15235QTTEW|r67b9a7fps@sv958.mytempmail.org|","nnmkvan2006|BR@15235QTTEW|52pycxosen@sv517.mytempmail.org|","hien_duong_xf_0104|BR@15235QTTEW|cf2a5lz6xu@sv867.mytempmail.org","nguy_hoang_ln6_1994|BR@15235QTTEW|kx3ygnuqp9@sv999.mytempmail.org","n.thach.sh.1909|BR@15235QTTEW|k9ik33qm66@sv729.mytempmail.org"];
@@ -6771,15 +6771,67 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                         apiMap.isSourceDeleted = false;
                         if (typeof inSrc.amount === "number") apiMap.sourceStock = inSrc.amount;
                       }
+                      const provCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[apiMap.provider]) ? API_SOURCES[apiMap.provider] : null;
+                      const provName = (provCfg && provCfg.name) ? provCfg.name : (apiMap.provider || 'Nguồn');
                       if (apiMap.isSourceDeleted) {
-                        return '<span style="font-size:0.68rem; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.35); padding:1px 6px; border-radius:4px; font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-right:6px;" title="Web nguồn đã xoá hoặc gỡ sản phẩm này"><i class="fa-solid fa-ban"></i> API: ' + (apiMap.provider || 'Nguồn') + ' [#' + (apiMap.sourceProdId) + ' - ĐÃ XOÁ SP]</span>';
+                        return '<span style="font-size:0.68rem; background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.35); padding:1px 6px; border-radius:4px; font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-right:6px;" title="Web nguồn đã xoá hoặc gỡ sản phẩm này"><i class="fa-solid fa-ban"></i> API: ' + esc(provName) + ' [#' + esc(cleanSrcId) + ' - ĐÃ XOÁ SP]</span>';
                       }
-                      return '<span style="font-size:0.68rem; background:rgba(6,182,212,0.15); color:#06b6d4; border:1px solid rgba(6,182,212,0.3); padding:1px 6px; border-radius:4px; font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-right:6px;"><i class="fa-solid fa-bolt"></i> API: ' + (apiMap.provider || 'Nguồn') + ' [#' + (apiMap.sourceProdId) + ']</span>';
+                      return '<span style="font-size:0.68rem; background:rgba(6,182,212,0.15); color:#06b6d4; border:1px solid rgba(6,182,212,0.3); padding:1px 6px; border-radius:4px; font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-right:6px;"><i class="fa-solid fa-bolt"></i> API: ' + esc(provName) + ' [#' + esc(cleanSrcId) + ']</span>';
                     }
                     return '<span style="font-size:0.68rem; background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:1px 6px; border-radius:4px; font-weight:700; display:inline-flex; align-items:center; gap:3px; margin-right:6px;"><i class="fa-solid fa-box"></i> Kho Nội Bộ</span>';
                   })() +
                   '<button type="button" onclick="openSourceCompareModal(\'' + p.id + '\')" style="background:rgba(245,158,11,0.15); color:#fbbf24; border:1px solid rgba(245,158,11,0.35); font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:3px; margin-right:6px; vertical-align:middle; transition:all 0.2s;" onmouseover="this.style.background=\'rgba(245,158,11,0.3)\'" onmouseout="this.style.background=\'rgba(245,158,11,0.15)\'" title="So sánh giá sản phẩm này ở các nguồn hàng API & Gợi ý giá tốt nhất"><i class="fa-solid fa-scale-balanced"></i> So sánh nguồn</button>' +
-                  '<span style="font-size:0.75rem; color:#38bdf8;">' + vCount + ' Biến thể</span></td>' +
+                  '<span style="font-size:0.75rem; color:#38bdf8;">' + vCount + ' Biến thể</span>' +
+                  (function() {
+                    const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
+                    const isApi = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
+                    if (!isApi) return '';
+
+                    const cleanSrcId = String(apiMap.sourceProdId || "").replace(/^#/, "").trim();
+                    const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, cleanSrcId) : null;
+                    if (inSrc) {
+                      apiMap.isSourceDeleted = false;
+                      if (typeof inSrc.amount === "number") apiMap.sourceStock = inSrc.amount;
+                    }
+
+                    const srcName = (inSrc && inSrc.name) ? inSrc.name : (apiMap.sourceProdName || ("Sản phẩm nguồn #" + cleanSrcId));
+                    const srcPrice = (inSrc && typeof inSrc.price === "number") ? inSrc.price : (Number(apiMap.sourcePrice) || 0);
+                    const srcStock = (inSrc && typeof inSrc.amount === "number") ? inSrc.amount : ((typeof apiMap.sourceStock === "number") ? apiMap.sourceStock : (p.stock || 0));
+                    const shopPrice = Number(p.price) || 0;
+                    const profit = shopPrice - srcPrice;
+                    const isLoss = srcPrice > 0 && profit < 0;
+
+                    const provCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[apiMap.provider]) ? API_SOURCES[apiMap.provider] : null;
+                    const provName = (provCfg && provCfg.name) ? provCfg.name : (apiMap.provider || "Nguồn API");
+
+                    let profitHtml = '';
+                    if (srcPrice > 0) {
+                      if (profit > 0) {
+                        const marginPct = shopPrice > 0 ? Math.round((profit / shopPrice) * 100) : 0;
+                        profitHtml = '<span><i class="fa-solid fa-arrow-trend-up" style="color:#10b981;"></i> Lãi: <strong style="color:#10b981;">+' + formatVND(profit) + ' (' + marginPct + '%)</strong></span>';
+                      } else if (profit === 0) {
+                        profitHtml = '<span><i class="fa-solid fa-scale-balanced" style="color:#94a3b8;"></i> Lãi: <strong style="color:#94a3b8;">0 đ (Hòa vốn)</strong></span>';
+                      } else {
+                        profitHtml = '<span><strong style="color:#ef4444; background:rgba(239,68,68,0.2); padding:1px 6px; border-radius:3px; border:1px solid rgba(239,68,68,0.4);"><i class="fa-solid fa-triangle-exclamation"></i> BÁN LỖ: -' + formatVND(Math.abs(profit)) + '!</strong></span>';
+                      }
+                    } else {
+                      profitHtml = '<span><i class="fa-solid fa-tag" style="color:#64748b;"></i> Giá nguồn: <span style="color:#64748b;">--</span></span>';
+                    }
+
+                    return '<div style="margin-top:6px; padding:6px 9px; background:rgba(15,23,42,0.85); border:1px solid ' + (isLoss ? 'rgba(239,68,68,0.45)' : 'rgba(6,182,212,0.3)') + '; border-left:3px solid ' + (isLoss ? '#ef4444' : '#06b6d4') + '; border-radius:6px; font-size:0.71rem; line-height:1.45; box-shadow:0 2px 6px rgba(0,0,0,0.2); text-align:left;">' +
+                      '<div style="color:#e2e8f0; font-weight:600; display:flex; align-items:flex-start; gap:5px; word-break:break-word;">' +
+                        '<i class="fa-solid fa-link" style="color:' + (isLoss ? '#ef4444' : '#06b6d4') + '; font-size:0.7rem; margin-top:3px; flex-shrink:0;"></i>' +
+                        '<div><span style="color:#94a3b8; font-weight:500;">Nguồn [' + esc(provName) + ']:</span> <strong style="color:#38bdf8;">' + esc(srcName) + '</strong></div>' +
+                      '</div>' +
+                      '<div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; margin-top:4px; font-size:0.69rem; color:#cbd5e1; border-top:1px dashed rgba(255,255,255,0.08); padding-top:4px;">' +
+                        '<span><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Giá web nguồn: <strong style="color:#f59e0b;">' + (srcPrice > 0 ? formatVND(srcPrice) : '--') + '</strong></span>' +
+                        '<span><i class="fa-solid fa-store" style="color:#a855f7;"></i> Giá bán shop: <strong style="color:#c084fc;">' + formatVND(shopPrice) + '</strong></span>' +
+                        profitHtml +
+                        '<span><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Tồn nguồn: <strong style="color:#38bdf8;">' + (typeof srcStock === "number" ? srcStock.toLocaleString() + ' acc' : '--') + '</strong></span>' +
+                        (apiMap.isSourceDeleted ? '<span style="color:#ef4444; font-weight:800; background:rgba(239,68,68,0.2); padding:1px 5px; border-radius:3px;"><i class="fa-solid fa-ban"></i> Nguồn đã gỡ SP</span>' : '') +
+                      '</div>' +
+                    '</div>';
+                  })() + '</td>' +
                 '<td>' + esc(p.category) + '</td>' +
                 '<td style="color:#10b981; font-weight:700;">' + formatVND(p.price) + '</td>' +
                 '<td>' + (function() {
@@ -8108,11 +8160,35 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
       const opt = (sSel.selectedOptions && sSel.selectedOptions[0]) ? sSel.selectedOptions[0] : (sSel.options ? sSel.options[sSel.selectedIndex] : null);
       if (opt && opt.value) {
-        const price = opt.getAttribute("data-price") || 0;
-        const stock = opt.getAttribute("data-stock") || 0;
-        info.innerHTML = '<i class="fa-solid fa-circle-info"></i> Giá nhập gốc: <strong>' + formatVND(price) + '</strong> | Tồn kho live nguồn: <strong style="color:#10b981;">' + Number(stock).toLocaleString() + ' acc</strong>';
+        const price = Number(opt.getAttribute("data-price") || 0);
+        const stock = Number(opt.getAttribute("data-stock") || 0);
+        const optName = opt.getAttribute("data-name") || opt.text || "";
+        const prodPriceInp = document.getElementById("admProdPrice");
+        const sellPrice = prodPriceInp ? (Number(prodPriceInp.value) || 0) : 0;
+        const profit = sellPrice - price;
+        let profitStr = "";
+        if (price > 0 && sellPrice > 0) {
+          if (profit > 0) {
+            const pct = Math.round((profit / sellPrice) * 100);
+            profitStr = '<span><i class="fa-solid fa-arrow-trend-up" style="color:#10b981;"></i> Lãi dự kiến: <strong style="color:#10b981;">+' + formatVND(profit) + ' (' + pct + '%)</strong></span>';
+          } else if (profit === 0) {
+            profitStr = '<span><i class="fa-solid fa-scale-balanced" style="color:#94a3b8;"></i> Lãi: <strong style="color:#94a3b8;">0 đ (Hòa vốn)</strong></span>';
+          } else {
+            profitStr = '<span style="color:#ef4444; font-weight:800; background:rgba(239,68,68,0.2); padding:1px 6px; border-radius:3px; border:1px solid rgba(239,68,68,0.4);"><i class="fa-solid fa-triangle-exclamation"></i> BÁN LỖ: -' + formatVND(Math.abs(profit)) + '!</span>';
+          }
+        }
+        const isLoss = (price > 0 && sellPrice > 0 && profit < 0);
+        info.innerHTML = '<div style="background:rgba(15,23,42,0.85); border:1px solid ' + (isLoss ? 'rgba(239,68,68,0.45)' : 'rgba(6,182,212,0.3)') + '; border-left:3px solid ' + (isLoss ? '#ef4444' : '#06b6d4') + '; padding:7px 10px; border-radius:6px; margin-top:6px; line-height:1.45; text-align:left;">' +
+          '<div style="color:#e2e8f0; font-size:0.75rem;"><i class="fa-solid fa-link" style="color:' + (isLoss ? '#ef4444' : '#06b6d4') + ';"></i> <strong>SP Nguồn:</strong> <span style="color:#38bdf8; font-weight:600;">' + (typeof esc === "function" ? esc(optName) : optName) + '</span></div>' +
+          '<div style="font-size:0.71rem; color:#cbd5e1; margin-top:4px; display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center; border-top:1px dashed rgba(255,255,255,0.08); padding-top:4px;">' +
+            '<span><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Giá web nguồn: <strong style="color:#f59e0b;">' + (price > 0 ? formatVND(price) : '--') + '</strong></span>' +
+            (sellPrice > 0 ? '<span><i class="fa-solid fa-store" style="color:#a855f7;"></i> Giá bán shop: <strong style="color:#c084fc;">' + formatVND(sellPrice) + '</strong></span>' : '') +
+            profitStr +
+            '<span><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Tồn live nguồn: <strong style="color:#10b981;">' + stock.toLocaleString() + ' acc</strong></span>' +
+          '</div>' +
+        '</div>';
       } else {
-        info.innerHTML = '<span style="color:#94a3b8;">Vui lòng chọn sản phẩm tương ứng từ nguồn API để khách mua sẽ được tự động cấp tài khoản.</span>';
+        info.innerHTML = '<span style="color:#94a3b8; font-size:0.75rem;">Vui lòng chọn sản phẩm tương ứng từ nguồn API để khách mua sẽ được tự động cấp tài khoản.</span>';
       }
     }
     window.handleAdmModalSourceChange = handleAdmModalSourceChange;
@@ -8188,6 +8264,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             if (vP) vP.value = this.value;
           }
           if (typeof updateCommissionEstimate === "function") updateCommissionEstimate();
+          if (typeof handleAdmModalSourceChange === "function") handleAdmModalSourceChange();
         };
       }
       if (document.getElementById("admProdCommission")) {
@@ -19887,7 +19964,14 @@ function syncAllOpenViewsStock(changedProdId) {
             sourceStockDisplay = '<span style="color:#ef4444; font-weight:700; font-size:0.78rem;"><i class="fa-solid fa-circle-xmark"></i> 0 acc (Hết)</span>';
           }
           if (livePrice > 0) {
-            sourceStockDisplay += '<br/><span style="font-size:0.7rem; color:#f59e0b;">(Giá: ' + (typeof formatVND === "function" ? formatVND(livePrice) : livePrice + ' đ') + ')</span>';
+            sourceStockDisplay += '<br/><span style="font-size:0.7rem; color:#f59e0b;">(Giá nhập: ' + (typeof formatVND === "function" ? formatVND(livePrice) : livePrice + ' đ') + ')</span>';
+            const diff = Number(p.price) - livePrice;
+            const diffPct = p.price > 0 ? Math.round((diff / p.price) * 100) : 0;
+            if (diff > 0) {
+              sourceStockDisplay += '<br/><span style="font-size:0.68rem; color:#10b981; font-weight:700;">+Lãi ' + (typeof formatVND === "function" ? formatVND(diff) : diff + ' đ') + ' (' + diffPct + '%)</span>';
+            } else if (diff < 0) {
+              sourceStockDisplay += '<br/><span style="font-size:0.68rem; color:#ef4444; font-weight:800; background:rgba(239,68,68,0.2); padding:1px 4px; border-radius:3px;">⚠️ LỖ ' + (typeof formatVND === "function" ? formatVND(Math.abs(diff)) : Math.abs(diff) + ' đ') + '!</span>';
+            }
           }
         } else {
           // Sản phẩm bán từ kho nội bộ thủ công
@@ -19907,6 +19991,15 @@ function syncAllOpenViewsStock(changedProdId) {
           selectOptionsHtml +
         '</select>';
 
+        let activeSrcItemText = "";
+        if (isEnabled && map.sourceProdId) {
+          const actSrc = sourceProds.find(s => String(s.id) === String(map.sourceProdId));
+          const actName = actSrc ? actSrc.name : (map.sourceProdName || "");
+          if (actName) {
+            activeSrcItemText = '<div style="font-size:0.69rem; color:#94a3b8; margin-top:3px; line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (typeof escapeHtml === "function" ? escapeHtml(actName) : actName) + '"><i class="fa-solid fa-link" style="color:#06b6d4;"></i> <span style="color:#cbd5e1;">SP Nguồn:</span> <strong style="color:#38bdf8;">' + (typeof escapeHtml === "function" ? escapeHtml(actName) : actName) + '</strong></div>';
+          }
+        }
+
         // TỔ HỢP Ô TÌM KIẾM + DROPDOWN (HÌNH 2 STYLE)
         const searchInputBoxHtml = '<div style="display:flex; flex-direction:column; gap:5px; width:100%; box-sizing:border-box;">' +
           '<div style="position:relative; width:100%; box-sizing:border-box;">' +
@@ -19914,6 +20007,7 @@ function syncAllOpenViewsStock(changedProdId) {
             '<i class="fa-solid fa-magnifying-glass" style="position:absolute; left:7px; top:50%; transform:translateY(-50%); font-size:0.68rem; color:#64748b; pointer-events:none;"></i>' +
           '</div>' +
           selectHtml +
+          activeSrcItemText +
         '</div>';
 
         return '<tr style="border-bottom:1px solid #162035;">' +
@@ -27824,6 +27918,15 @@ function syncAllOpenViewsStock(changedProdId) {
           const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p)) || !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
           const btn = quickStockWrap.querySelector("button");
           if (btn) {
+            btn.onclick = function() {
+              if (isApi) {
+                if (typeof openEditProductModal === "function") openEditProductModal(p.id);
+              } else {
+                if (typeof switchView === "function") switchView("viewAdmin");
+                if (typeof switchAdminTab === "function") switchAdminTab("warehouse");
+                if (typeof quickOpenStockForProduct === "function") quickOpenStockForProduct(p.id);
+              }
+            };
             if (isApi) {
               btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> <span>[Quản trị viên] Đổi Kho API / Sửa Nguồn Hàng</span>';
               btn.style.background = 'rgba(6,182,212,0.15)';
@@ -27837,6 +27940,49 @@ function syncAllOpenViewsStock(changedProdId) {
               btn.style.borderColor = 'rgba(56,189,248,0.4)';
               btn.title = 'Sản phẩm kho thủ công: Nhấn để chuyển đến mục Quản Lý Kho Hàng để nạp tài khoản';
             }
+          }
+
+          let dtlAdminSourceBox = document.getElementById("dtlAdminSourceInfoBox");
+          if (!dtlAdminSourceBox) {
+            dtlAdminSourceBox = document.createElement("div");
+            dtlAdminSourceBox.id = "dtlAdminSourceInfoBox";
+            quickStockWrap.appendChild(dtlAdminSourceBox);
+          }
+          if (isApi && existingMap && existingMap.sourceProdId) {
+            const cleanSrcId = String(existingMap.sourceProdId || "").replace(/^#/, "").trim();
+            const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(existingMap.provider, cleanSrcId) : null;
+            const srcName = (inSrc && inSrc.name) ? inSrc.name : (existingMap.sourceProdName || ("Sản phẩm nguồn #" + cleanSrcId));
+            const srcPrice = (inSrc && typeof inSrc.price === "number") ? inSrc.price : (Number(existingMap.sourcePrice) || 0);
+            const srcStock = (inSrc && typeof inSrc.amount === "number") ? inSrc.amount : ((typeof existingMap.sourceStock === "number") ? existingMap.sourceStock : (p.stock || 0));
+            const shopPrice = Number(p.price) || 0;
+            const profit = shopPrice - srcPrice;
+            const isLoss = srcPrice > 0 && profit < 0;
+            const provCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[existingMap.provider]) ? API_SOURCES[existingMap.provider] : null;
+            const provName = (provCfg && provCfg.name) ? provCfg.name : (existingMap.provider || "Nguồn API");
+
+            let profitStr = "";
+            if (srcPrice > 0) {
+              if (profit > 0) {
+                profitStr = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-arrow-trend-up"></i> Lãi: +' + formatVND(profit) + ' (' + Math.round((profit / shopPrice) * 100) + '%)</span>';
+              } else if (profit === 0) {
+                profitStr = '<span style="color:#94a3b8; font-weight:700;">Hòa vốn (0 đ)</span>';
+              } else {
+                profitStr = '<span style="color:#ef4444; font-weight:800; background:rgba(239,68,68,0.2); padding:1px 6px; border-radius:3px;"><i class="fa-solid fa-triangle-exclamation"></i> BÁN LỖ: -' + formatVND(Math.abs(profit)) + '!</span>';
+              }
+            }
+
+            dtlAdminSourceBox.style.display = "block";
+            dtlAdminSourceBox.innerHTML = '<div style="margin-top:8px; padding:8px 12px; background:rgba(15,23,42,0.9); border:1px solid ' + (isLoss ? 'rgba(239,68,68,0.45)' : 'rgba(6,182,212,0.35)') + '; border-left:3px solid ' + (isLoss ? '#ef4444' : '#06b6d4') + '; border-radius:6px; font-size:0.75rem; line-height:1.45; text-align:left;">' +
+              '<div style="color:#e2e8f0; font-weight:600;"><i class="fa-solid fa-link" style="color:' + (isLoss ? '#ef4444' : '#06b6d4') + ';"></i> <span style="color:#94a3b8;">Nguồn [' + (typeof escapeHtml === "function" ? escapeHtml(provName) : provName) + ' #' + cleanSrcId + ']:</span> <strong style="color:#38bdf8;">' + (typeof escapeHtml === "function" ? escapeHtml(srcName) : srcName) + '</strong></div>' +
+              '<div style="display:flex; flex-wrap:wrap; gap:8px 14px; margin-top:5px; font-size:0.72rem; color:#cbd5e1; border-top:1px dashed rgba(255,255,255,0.08); padding-top:5px; align-items:center;">' +
+                '<span><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Giá web nguồn: <strong style="color:#f59e0b;">' + (srcPrice > 0 ? formatVND(srcPrice) : '--') + '</strong></span>' +
+                '<span><i class="fa-solid fa-store" style="color:#a855f7;"></i> Giá bán shop: <strong style="color:#c084fc;">' + formatVND(shopPrice) + '</strong></span>' +
+                profitStr +
+                '<span><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Tồn kho nguồn: <strong style="color:#38bdf8;">' + (typeof srcStock === "number" ? srcStock.toLocaleString() + ' acc' : '--') + '</strong></span>' +
+              '</div>' +
+            '</div>';
+          } else {
+            dtlAdminSourceBox.style.display = "none";
           }
         }
       }
