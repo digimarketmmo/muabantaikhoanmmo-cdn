@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.5.2";
+const MMO_CURRENT_CODE_VERSION = "4.5.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const REAL_TIKTOK_BRAZIL_ACCOUNTS = ["hiepiwt1312|BR@15235QTTEW|ooz8uxrqsl@sv366.mytempmail.org|","t_lai_86_1991|BR@15235QTTEW|29zlqqor7r@sv327.mytempmail.org|","f5.tan.2811|BR@15235QTTEW|imxse8oyeg@sv391.mytempmail.org|","hoang.nguy.w5.2407|BR@15235QTTEW|ecy1l0pfes@sv712.mytempmail.org|","ong.hoan.5l.2002|BR@15235QTTEW|xnofes2f8r@sv422.mytempmail.org|","c_nguyet_6dd_2003|BR@15235QTTEW|qu3bka63ov@sv230.mytempmail.org|","mac.hang.j8.1993|BR@15235QTTEW|8wle7v1e7f@sv349.mytempmail.org|","1404.huynh.t|BR@15235QTTEW|6tj2g53oev@sv478.mytempmail.org|","tram.chung.fk.0602|BR@15235QTTEW|xqxgxlsl07@sv917.mytempmail.org|","c_khiet_do_1905|BR@15235QTTEW|k0wxkw3ip8@sv790.mytempmail.org|","1996.hue.x|BR@15235QTTEW|nsknvrfiz1@sv180.mytempmail.org|","nhu9wv1203|BR@15235QTTEW|2xu44xy6v8@sv423.mytempmail.org|","user32949996025027|BR@15235QTTEW|jw2o7f1s6i@sv591.mytempmail.org|","moccvl0706|BR@15235QTTEW|aixbsvdzmc@sv127.mytempmail.org|","ke_yen_2vn_0707|BR@15235QTTEW|18y32yh2qc@sv731.mytempmail.org|","user73617146919102|BR@15235QTTEW|0o2af33rhe@sv608.mytempmail.org|","user10353292356088|BR@15235QTTEW|v21lzds6lh@sv626.mytempmail.org|","ew_duong_2007|BR@15235QTTEW|82n6drcq55@sv511.mytempmail.org|","h.tien.xqy.0308|BR@15235QTTEW|igw5nwn6l5@sv45.mytempmail.org|","0906.phan.k|BR@15235QTTEW|fk68xlsnn5@sv560.mytempmail.org|","tan_thoai_jn_1311200|BR@15235QTTEW|mxme5grdmh@sv486.mytempmail.org|","9c.ho.1609|BR@15235QTTEW|pcegzxe4df@sv717.mytempmail.org|","user9445093404627|BR@15235QTTEW|841qx2gksv@sv298.mytempmail.org|","khue.chung.7w.0202|BR@15235QTTEW|uvytf59l36@sv36.mytempmail.org|","mau_bui_0f_1206|BR@15235QTTEW|bnenhe5t0t@sv124.mytempmail.org|","3005_lu_l|BR@15235QTTEW|5ptshv17yk@sv165.mytempmail.org|","chau.dinh.am.1411|BR@15235QTTEW|14thsbe0r7@sv834.mytempmail.org|","zu_hien_1990|BR@15235QTTEW|ee8u4gqkh2@sv733.mytempmail.org|","tfdtuy1999|BR@15235QTTEW|uopgch6z8n@sv798.mytempmail.org|","t.nhu.381.1994|BR@15235QTTEW|uofj7xipq6@sv814.mytempmail.org|","l_dung_gy_1410|BR@15235QTTEW|3vimdqf2uk@sv734.mytempmail.org|","v_ha_ryk_0808|BR@15235QTTEW|tnvk9tjf56@sv128.mytempmail.org|","c.trac.ct.2905|BR@15235QTTEW|1zxktql09e@sv74.mytempmail.org|","h_nhien_sg_1990|BR@15235QTTEW|efk2s3rx2s@sv302.mytempmail.org|","t2lbtruc2006|BR@15235QTTEW|f52rfpj7u2@sv621.mytempmail.org|","vanhljpd1412|BR@15235QTTEW|xyc89bmres@sv702.mytempmail.org|PV2YEBGPAO4CI5VU4G6PMZRB7IK2PJLQ","d.minh.gf2.1992|BR@15235QTTEW|ppyufksxx5@sv872.mytempmail.org|IUQNKVUX4K5TDD7JIW4V4ZAO2RFPJEBB","t.luu.q7r.0811|BR@15235QTTEW|ikson65enn@sv647.mytempmail.org|","trieu.trac.je8.1401|BR@15235QTTEW|wd5ovetsnc@sv551.mytempmail.org|","nguyen.ham.j9y.16041|BR@15235QTTEW|ma247v1yeu@sv213.mytempmail.org|","ong.bao.eig.31042004|BR@15235QTTEW|oybffoba71@sv782.mytempmail.org|","tuy_chau_9a_1707|BR@15235QTTEW|j2l5ta2y3y@sv197.mytempmail.org|","up7.phan.2907|BR@15235QTTEW|tlcn5f6usn@sv848.mytempmail.org|","t.tran.pfc.0411|BR@15235QTTEW|ttj7pmzbdj@sv537.mytempmail.org|","bang3olt0207|BR@15235QTTEW|dx0bznksvi@sv501.mytempmail.org|","ton.dinh.72u.2003|BR@15235QTTEW|jxduti9wco@sv841.mytempmail.org|","jno.quach.0910|BR@15235QTTEW|oxd9nz7fbx@sv525.mytempmail.org|","n.do.82m.1106|BR@15235QTTEW|oebzwott4m@sv931.mytempmail.org|MY6AVISYDWIPXOGYBVN66H6TCUPJ6QXH","m1.kim.1999|BR@15235QTTEW|ew0tfrwame@sv559.mytempmail.org|","o_tho_5hb_2009|BR@15235QTTEW|p1e4isrc1u@sv354.mytempmail.org|","kieu30p0203|BR@15235QTTEW|oi8wple1gj@sv718.mytempmail.org|","1b.khiet.2000|BR@15235QTTEW|uuz1lyfzcn@sv129.mytempmail.org|","tak5truong2000|BR@15235QTTEW|0v4h5d6o9a@sv233.mytempmail.org|","t_diem_cz_1995|BR@15235QTTEW|xsggbhney1@sv313.mytempmail.org|","user1928270525407|BR@15235QTTEW|r0ewc3ex15@sv934.mytempmail.org|","xuyen.lu.a21.1401|BR@15235QTTEW|astz3fjabu@sv881.mytempmail.org|","user7407617129630|BR@15235QTTEW|gymdpf4s5l@sv625.mytempmail.org|","khuu_huynh_qg_170719|BR@15235QTTEW|4hqna1bqvu@sv356.mytempmail.org|","q_tung_xo_1999|BR@15235QTTEW|gt1drdq3sv@sv546.mytempmail.org|","v_han_33_2001|BR@15235QTTEW|c16c6k8b2d@sv496.mytempmail.org|","trieu.yen.koq.2802|BR@15235QTTEW|996wbqlwxj@sv574.mytempmail.org|","le.ly.f27.05022007|BR@15235QTTEW|ofntr5g2o8@sv582.mytempmail.org|","klcwphong2004|BR@15235QTTEW|rhzavdc4b0@sv238.mytempmail.org|","1407_khong_t|BR@15235QTTEW|xa0osggia1@sv289.mytempmail.org|","a.trinh.yd.1101|BR@15235QTTEW|641ldta3ht@sv501.mytempmail.org|","2007_ho_o|BR@15235QTTEW|swud8u2h99@sv848.mytempmail.org|","user7848587558749|BR@15235QTTEW|mt880zkyb2@sv454.mytempmail.org|BFCKDNFWQASAAKXC4346CJ5G47LLAPUL","l_man_bw2_2003|BR@15235QTTEW|qs8pb6mfvg@sv139.mytempmail.org|","vuong_hang_1vd_03041|BR@15235QTTEW|sl9ed1k0bq@sv850.mytempmail.org|","v_dong_7c_1302|BR@15235QTTEW|cvdp0ex96a@sv270.mytempmail.org|","zw.thao.2004|BR@15235QTTEW|r67b9a7fps@sv958.mytempmail.org|","nnmkvan2006|BR@15235QTTEW|52pycxosen@sv517.mytempmail.org|","hien_duong_xf_0104|BR@15235QTTEW|cf2a5lz6xu@sv867.mytempmail.org","nguy_hoang_ln6_1994|BR@15235QTTEW|kx3ygnuqp9@sv999.mytempmail.org","n.thach.sh.1909|BR@15235QTTEW|k9ik33qm66@sv729.mytempmail.org"];
@@ -631,6 +631,45 @@ if (typeof window !== "undefined") {
           }
         }
       }
+
+      
+    // CHUẨN HÓA VÀ ĐỐI CHIẾU NHÀ CUNG CẤP ĐA NGUỒN (BAO GỒM NGUỒN TỰ THÊM VUAVIA & REST API)
+    function normalizeProviderId(prov) {
+      if (!prov) return "";
+      var p = String(prov).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+      if (p.includes("vuavia")) return "vuavia";
+      if (p.includes("ultrammo")) return "ultrammo";
+      if (p.includes("shop1989")) return "shop1989nd";
+      if (p.includes("mail72h")) return "mail72h";
+      if (p.includes("selltainguyen")) return "selltainguyenmmo";
+      if (p.includes("sellmmo")) return "sellmmo";
+      if (p.includes("nguyenlieu")) return "nguyenlieummo";
+      return p;
+    }
+    window.normalizeProviderId = normalizeProviderId;
+
+    function isSameProvider(p1, p2) {
+      if (!p1 || !p2) return false;
+      if (p1 === p2) return true;
+      var n1 = normalizeProviderId(p1);
+      var n2 = normalizeProviderId(p2);
+      return (n1 && n2 && n1 === n2);
+    }
+    window.isSameProvider = isSameProvider;
+
+
+      var builtInVuaviaProds = [{"id":"2006","name":"Acc Facebook Mỹ Thuê Tick Xanh - Có Avatar - Xác Thực Hotmail Live","price":150000,"amount":372,"category":"Via","provider":"vuavia"},{"id":"2005","name":"Acc Facebook Thái Lan 0-500 Bạn Bè | 1 Năm Tuổi | Có Avatar | Xác Thực Email | Kèm 2FA & Cookie & Token","price":100000,"amount":69,"category":"Via","provider":"vuavia"},{"id":"2004","name":"Acc Facebook Việt Bạn Bè 0-100 | Xác Thực Hotmail | Có 2FA & Cookie & Token","price":30000,"amount":1458,"category":"Clone","provider":"vuavia"},{"id":"2003","name":"Acc Facebook Tây Ban Nha | 10-100 Bạn Bè | Dưới 12 Tháng | 5-20 Bài Đăng | Có 2FA | Chạy Ads","price":100000,"amount":4946,"category":"Via","provider":"vuavia"},{"id":"2002","name":"Via 902 Live Ads Đầu 6157 Có 2FA - Share Nhận Page - Kèm Phôi","price":400000,"amount":16,"category":"Via","provider":"vuavia"},{"id":"2001","name":"Clone VN Registered 7 Day - ON 2FA - Hotmail - QA 282 - Chuyên Spam","price":25000,"amount":1000,"category":"Clone","provider":"vuavia"},{"id":"2000","name":"ACC Ấn Độ 100-1000 Bạn Bè Có 2FA","price":150000,"amount":1859,"category":"Via","provider":"vuavia"},{"id":"1999","name":"ACC VIỆT 2025 LIVE ADS TỪ 100-1000 BẠN BÈ CÓ 2FA ĐA SỐ~ 50 BÀI ĐĂNG BAO ĐỔI TÊN ĐỔI PASS NHẬN ĐƯỢC PAGE","price":400000,"amount":124,"category":"Via","provider":"vuavia"},{"id":"1998","name":"Acc Việt Tạo 2025 - Có 2FA - Có Vài Bài Đăng","price":60000,"amount":7009,"category":"Via","provider":"vuavia"},{"id":"1997","name":"Clone Facebook Name US - Reg Phone Change - Very Similar - No 2FA - Có File Backup","price":30000,"amount":2403,"category":"Via","provider":"vuavia"},{"id":"1996","name":"Clone Ngoại IP Random - Email Xác Thực","price":10000,"amount":1641,"category":"Clone","provider":"vuavia"},{"id":"1995","name":"Clone Live 30 Phút - Ngoại IP Random - Email Verified","price":5000,"amount":511,"category":"Clone","provider":"vuavia"},{"id":"1994","name":"Clone Facebook Reg Phone Live Trâu Ngâm Bền - IP Ngoại - Gmail Verified","price":15000,"amount":14976,"category":"Clone","provider":"vuavia"},{"id":"1993","name":"Clone Ngoại Reg New Name Random - 2FA - Mail Domain - Dùng Luôn","price":6000,"amount":437,"category":"Clone","provider":"vuavia"},{"id":"1992","name":"Clone Facebook Việt 2FA - Cookie - Hotmail - 100-200 Bạn Bè Gợi Ý","price":40000,"amount":22,"category":"Clone","provider":"vuavia"},{"id":"1991","name":"Clone Sale - Tài Khoản Facebook Clone Giá Rẻ","price":5000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1990","name":"Clone Facebook USA Có 2FA Xác Minh Gmail","price":30000,"amount":403,"category":"Clone","provider":"vuavia"},{"id":"1989","name":"Clone Random VR No2FA Ngâm Ngọt Nét","price":5000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1988","name":"Clone Facebook Thái Lan Có 2FA Xác Minh Gmail","price":30000,"amount":341,"category":"Clone","provider":"vuavia"},{"id":"1987","name":"Clone Change Name Việt Nam 2025 ID 6157 Mail Fviainboxes.com - 2FA - 6-12 Tháng","price":50000,"amount":7629,"category":"Clone","provider":"vuavia"},{"id":"1982","name":"Clone Ngoại Reg Trâu New - TUT 2$ / 250$ / Reg BM","price":6000,"amount":1305,"category":"Clone","provider":"vuavia"},{"id":"1979","name":"Clone Facebook Việt Nam Reg Phone Change Very No2FA","price":15000,"amount":2403,"category":"Clone","provider":"vuavia"},{"id":"1978","name":"Clone Ngoại Reg New Zin ADS Live - TUT 2$ / 250$ / BM / Spam","price":6000,"amount":2970,"category":"Clone","provider":"vuavia"},{"id":"1977","name":"Clone Facebook Đăng Ký Ngẫu Nhiên - Đổi Số Điện Thoại - Gmail Không 2FA","price":15000,"amount":18627,"category":"Clone","provider":"vuavia"},{"id":"1976","name":"Clone IP Random - Reg New 1-30 Ngày Ver Mail","price":7000,"amount":12015,"category":"Clone","provider":"vuavia"},{"id":"1975","name":"Clone 2FA Ngoại Very Phone Live Tài Khoản Zin Ads","price":10000,"amount":454,"category":"Clone","provider":"vuavia"},{"id":"1974","name":"Clone Ngoại Live Trâu Zin Ads - Tài Khoản Quảng Cáo","price":7000,"amount":2317,"category":"Clone","provider":"vuavia"},{"id":"1973","name":"Clone Live Trâu New Zin ADS - Tài Khoản Facebook","price":7000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1972","name":"Clone Facebook Ngoại Có 2FA - Đăng Ký Trên 15 Ngày, Mail Verified","price":15000,"amount":5180,"category":"Clone","provider":"vuavia"},{"id":"1971","name":"Clone VN Reg 5 Ngày On2FA Hotmail RD 282","price":15000,"amount":1458,"category":"Clone","provider":"vuavia"},{"id":"1970","name":"Clone Việt 2FA VR Phone - Hotmail Trusted - Ads Ready","price":80000,"amount":614,"category":"Via","provider":"vuavia"},{"id":"1969","name":"ACC Ngoại 6155-59 | ON 2FA - VER Hotmail Trust - Friend 30+ | Không Yêu Cầu WhatsApp","price":80000,"amount":1873,"category":"Via","provider":"vuavia"},{"id":"1968","name":"Clone Ngoại 2FA - Tempmail.plus - Đăng Ký Số Điện Thoại | Tuổi 15-90 Ngày","price":15000,"amount":32749,"category":"Clone","provider":"vuavia"},{"id":"1967","name":"Clone Ngoại REG Android - Ver TempMail (Đọc Code) - Tạo 1~30 Ngày","price":10000,"amount":1395,"category":"Clone","provider":"vuavia"},{"id":"1966","name":"Clone Ngoại - Reg Phone - No 2FA - Ver Hotmail - Ngâm Được - Live Ads","price":10000,"amount":12015,"category":"Clone","provider":"vuavia"},{"id":"1965","name":"ACC ASIA - Hotmail 2FA | Avatar + Bìa | Bạn bè 100~5000 | ID + Pass + Cookie + Token","price":100000,"amount":113,"category":"Via","provider":"vuavia"},{"id":"1964","name":"Facebook Ngoại - ON 2FA - VER Gmail - Ngâm Trâu","price":15000,"amount":964,"category":"Clone","provider":"vuavia"},{"id":"1963","name":"Clone Thái Lan - ON 2FA - Reg Phone - Ver Gmail - Ngâm Được","price":50000,"amount":341,"category":"Via","provider":"vuavia"},{"id":"1962","name":"ACC Việt 6157 | ON 2FA - Verified Hotmail - Đổi Được All | Dùng Cầm Tài Nguyên Page & BM","price":150000,"amount":4151,"category":"Via","provider":"vuavia"},{"id":"1961","name":"ACC Ngoại Đầu 1000X 2FA - Very Hotmail - Passkey - Ngâm Trust - Nhận Page & BM","price":250000,"amount":370,"category":"Via","provider":"vuavia"},{"id":"1960","name":"ACC Ngoại Đầu 1000X - 2FA Hotmail - Nhận Page & BM","price":250000,"amount":2144,"category":"Via","provider":"vuavia"},{"id":"1959","name":"Acc Name US - No 2FA - Avatar - 0 - 100 Bạn Bè - Nhận Page và BM | Via","price":80000,"amount":1592,"category":"Via","provider":"vuavia"},{"id":"1958","name":"Facebook Ngoại 2FA - Xác Thực Gmail - Tài Khoản Ngâm Nuôi Trâu Có Sẵn Page","price":50000,"amount":6885,"category":"Via","provider":"vuavia"},{"id":"1957","name":"FB Ngoại - No2FA - Veri Hotmail - Ngâm Trust | Hàng Có Sẵn Page","price":50000,"amount":1726,"category":"Via","provider":"vuavia"},{"id":"1956","name":"FB NAME Ngoại 2FA - Số Điện Thoại - Email Xác Thực - Ngâm Nuôi 15-60 Ngày","price":15000,"amount":32749,"category":"Clone","provider":"vuavia"},{"id":"1955","name":"Facebook Ngoại - 2FA - Avatar Cover - 282 Ngày - Verified Hotmail - Spam","price":15000,"amount":3735,"category":"Clone","provider":"vuavia"},{"id":"1952","name":"ACC Việt Nam No2FA - Bạn bè 0-5000 - Reg Phone - Veri Hotmail | Đầu 1000x","price":120000,"amount":2627,"category":"Via","provider":"vuavia"},{"id":"1951","name":"Nigeria New 10-100 Friend+ 2FA + Hotmail Trust + 5-20 Post Live Ads","price":120000,"amount":315,"category":"Via","provider":"vuavia"},{"id":"1950","name":"Mexico Via Facebook 10-100 Bạn + 2FA + Hotmail Trust + 5-20 Bài Viết + Live Ads","price":120000,"amount":8,"category":"Via","provider":"vuavia"},{"id":"1949","name":"Thailand Facebook 500+ Bạn, 2FA, Hotmail Trust, 5-20 Bài Đăng Live Ads","price":250000,"amount":108,"category":"Via","provider":"vuavia"},{"id":"1948","name":"Facebook Canada New 10-100 Friend+ 2FA + Hotmail Trust + 5-20 Post Live Ads","price":120000,"amount":44,"category":"Via","provider":"vuavia"},{"id":"1947","name":"Facebook Korea 10-100 Bạn + 2FA + Hotmail Trust + 5-20 Bài Đăng Live Ads","price":120000,"amount":411,"category":"Via","provider":"vuavia"},{"id":"1946","name":"ACC United Kingdom - ID 6155-58 | Avatar + Bìa + Info | 2FA - Ver Hotmail | Chuẩn Local | Bạn Bè 10~500","price":100000,"amount":168,"category":"Via","provider":"vuavia"},{"id":"1945","name":"ACC HONGKONG - ID 6155-58 | Avatar + Bìa + Info | 2FA - Ver Hotmail | Chuẩn Local | Bạn bè 0~500","price":100000,"amount":42,"category":"Via","provider":"vuavia"},{"id":"1942","name":"ACC Facebook France - ID 6155-58 | Avatar + Bìa + Info | 2FA Hotmail | Chuẩn Local | 0-500 Bạn Bè","price":100000,"amount":56,"category":"Via","provider":"vuavia"},{"id":"1941","name":"Acc Clone Ngoại Đã Chạy ADS - UID|Pass|Cookie|Token","price":5000,"amount":147,"category":"Clone","provider":"vuavia"},{"id":"1938","name":"Clone Ngoại Reg New ZIN ADS Live (UID|Pass|Cookie)","price":6000,"amount":2929,"category":"Clone","provider":"vuavia"},{"id":"1937","name":"Clone Nhật REG 4-6 Tháng - Nuôi iOS 0-100 Bạn Bè - Hotmail Live Ads Zin","price":80000,"amount":371,"category":"Via","provider":"vuavia"},{"id":"1936","name":"Clone Ngoại Zin New Ads (UID|Pass|Cookie)","price":5000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1933","name":"Tài Khoản Clone Hotmail Việt Có 2FA Live Ads - Trust Cao","price":50000,"amount":84,"category":"Via","provider":"vuavia"},{"id":"1932","name":"Tài Khoản Ngoại Phone Nhat Hotmail 2FA Zin 100% Tuổi 6 Tháng","price":60000,"amount":263,"category":"Via","provider":"vuavia"},{"id":"1931","name":"Clone Facebook Việt 2FA VR Phone - Hotmail Trust - Ads Ready - 6 Tháng Trở Lên","price":80000,"amount":614,"category":"Via","provider":"vuavia"},{"id":"1930","name":"Clone Ngoại - No2FA - Reg Phone - Chơi Tut Ads","price":6000,"amount":14240,"category":"Clone","provider":"vuavia"},{"id":"1929","name":"Acc Facebook Việt - On2Fa - Ver Mail Ảo - Nuôi Trust - 0~5000 Bạn Bè (2020-2026)","price":60000,"amount":389,"category":"Via","provider":"vuavia"},{"id":"1928","name":"Acc Facebook Việt - On2Fa - Gmail Ver - Nuôi Trust - 5-30 Bài Viết - 20-5000 Bạn Bè | 2020-2025","price":80000,"amount":383,"category":"Via","provider":"vuavia"},{"id":"1927","name":"Việt Cổ 2009~2025 Avatar 2FA Hotmail - 282 Unlock - 500+ Bạn Bè ( 1% dưới 500 bạn bè )","price":150000,"amount":317,"category":"Via","provider":"vuavia"},{"id":"1926","name":"Acc Facebook Australia | 0-500 Bạn Bè | Tuổi 6-24 Tháng | Có Avatar | Xác Thực Hotmail | 2FA & Cookie & Token","price":100000,"amount":127,"category":"Via","provider":"vuavia"},{"id":"1925","name":"Clone Việt 6157 - 2FA ON - Mail Verified - Nuôi Trust - Unlock 282 - Bạn Bè 0-5000","price":60000,"amount":603,"category":"Clone","provider":"vuavia"},{"id":"1924","name":"Clone Việt 2025 - On 2FA - Very Hotmail - Nuôi Trust - Bạn 0~5000","price":60000,"amount":207,"category":"Clone","provider":"vuavia"},{"id":"1923","name":"ACC Facebook Việt - Reg Phone - 2FA - Ver Hotmail - Live Ads | 3-60 Ngày","price":15000,"amount":72,"category":"Clone","provider":"vuavia"},{"id":"1922","name":"BM Cổ Chưa Tạo TKQC - Hàng Cực Khỏe - Bảo Hành 24H","price":300000,"amount":8,"category":"BM","provider":"vuavia"},{"id":"1921","name":"BM Facebook Chưa Tạo TKQC - BM350 Bảo Hành 24H - Cổ Hàng Cực Khỏe","price":500000,"amount":9,"category":"BM","provider":"vuavia"},{"id":"1920","name":"BM Chưa Tạo TKQC - Bảo Hành 24H - Nhận Live Report","price":300000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1919","name":"BM Đã Tạo TKQC - Bảo Hành 24H - Bao Ngâm 12H","price":500000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1918","name":"BM Đã Tạo TKQC - Full 3 TKQC Hàng Cực Khỏe Bảo Hành 24H","price":400000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1917","name":"BM Đã Tạo TKQC - BM3 Random TKQC Live Hoặc Trống (Ngâm 2-5 Tháng)","price":350000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1916","name":"BM Việt Tạo TKQC 2024 - Bảo Hành 24H - BM350 Cổ","price":500000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1915","name":"BM Chưa Tạo TKQC - Tạo Trên 8 Tháng - Bảo Hành 24H","price":250000,"amount":19,"category":"BM","provider":"vuavia"},{"id":"1914","name":"BM Chưa Tạo TKQC - BM0 REG NEW - Nhận Live (Bảo Hành 24H)","price":40000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1913","name":"BM Chưa Tạo TKQC - Limit 50$ - Ngâm 4-6 Tháng - Giao Full Gốc","price":300000,"amount":270,"category":"BM","provider":"vuavia"},{"id":"1912","name":"BM Facebook Chưa Tạo TKQC - Random Hàng Đã Tạo - BM50 Tạo 2025 - Nhận Live Báo Out","price":300000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1911","name":"Page Facebook Đã Reg Trên 5 Tháng (Tên Zin, Hỗ Trợ Share Via & BM)","price":50000,"amount":0,"category":"Page","provider":"vuavia"},{"id":"1909","name":"BM350 Chưa Tạo Tài Khoản - BM Scan Cổ","price":350000,"amount":9,"category":"BM","provider":"vuavia"},{"id":"1908","name":"BM Chưa Tạo Tài Khoản - Scan Cổ","price":250000,"amount":8,"category":"BM","provider":"vuavia"},{"id":"1907","name":"BM3 - 3 Tài Khoản Quảng Cáo Tạo 2025","price":400000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1906","name":"BM Chưa Tạo Tài Khoản - Batch Tạo Trên 8 Tháng","price":250000,"amount":19,"category":"BM","provider":"vuavia"},{"id":"1905","name":"BM3 - Tài Khoản BM Trống 2 Đã Tạo, 8+ Tháng Tuổi","price":350000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1904","name":"Tài khoản TikTok Việt Nam ngâm 1 năm - 100-500 follower - Hàng Mail.TM xây kênh","price":80000,"amount":93,"category":"TikTok","provider":"vuavia"},{"id":"1903","name":"TikTok Việt Cổ 1-3 Năm Hotmail Live - Random Đặt Đơn Hàng Bất Tử","price":10000,"amount":2801,"category":"TikTok","provider":"vuavia"},{"id":"1902","name":"Tài Khoản TikTok Việt Nam - Phone + Hotmail + 2FA (2-3 Tuần Tuổi)","price":10000,"amount":466,"category":"TikTok","provider":"vuavia"},{"id":"1901","name":"TikTok Việt Tạo 8 Tháng - 2 Năm Cực Trâu OAuth2 Có Cookie Live","price":10000,"amount":4574,"category":"TikTok","provider":"vuavia"},{"id":"1900","name":"TikTok Việt Tạo 6-12 Tháng - Mail Megacloudx.com - Bảo Hành 3 Ngày","price":8000,"amount":3425,"category":"TikTok","provider":"vuavia"},{"id":"1899","name":"Tài Khoản TikTok Hàn Quốc (KR) Tháng 7/2025 - Mail Live OAuth2 Cookie","price":8000,"amount":6573,"category":"TikTok","provider":"vuavia"},{"id":"1898","name":"TikTok Japan Lite - Đăng ký bằng Google, 2FA bật, Login Username/Pass","price":10000,"amount":4327,"category":"TikTok","provider":"vuavia"},{"id":"1897","name":"TikTok Hàn Quốc Tạo Trên 1 Tháng - MAIL LIVE Kèm Oauth2","price":15000,"amount":0,"category":"TikTok","provider":"vuavia"},{"id":"1895","name":"UID 1000x Die Ads Facebook (Rate Ngon Spam Cao) + Nhận Code + Đổi Pass","price":100000,"amount":106,"category":"Via","provider":"vuavia"},{"id":"1894","name":"UID 1000x Live Ads - Tài Khoản Quảng Cáo Facebook  (Chuẩn đét cho ae vít ads, cầm tkqc, cầm BM) + Change Pass  + Nhận Code ","price":150000,"amount":104,"category":"Via","provider":"vuavia"},{"id":"1893","name":"Tài Khoản Facebook Ngâm >12 Tháng UID 615x Live Ads - Vừa Chất Vừa Rẻ - Change Pass + Nhận Code ","price":90000,"amount":104,"category":"Via","provider":"vuavia"},{"id":"1891","name":"Clone Ngoại Reg Phone Ver Mail Ngâm Trâu Tạo 2025","price":15000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1890","name":"Clone Ngoại Đầu 6157 - VIP18 Reg 1 Năm 2FA Hotmail Trust Cao","price":80000,"amount":1232,"category":"Via","provider":"vuavia"},{"id":"1889","name":"Clone Ngoại Reg Trâu New Zin ADS Live - UID|Pass|Cookie|Token","price":6000,"amount":1305,"category":"Clone","provider":"vuavia"},{"id":"1888","name":"Clone Facebook Thái Lan Có 2FA Xác Thực Hotmail Trust Name","price":50000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1887","name":"Clone USA 2FA Very Mail Domain Lấy Code 100BB Zin Ads","price":200000,"amount":628,"category":"Via","provider":"vuavia"},{"id":"1886","name":"Clone Ngoại 1000X Có 2FA Hotmail Trust Có Dating Random Bạn Bè","price":300000,"amount":122,"category":"Via","provider":"vuavia"},{"id":"1885","name":"FB NAME US - Không 2FA - Avatar - Hotmail Verified Trust - Dùng Spam","price":80000,"amount":4063,"category":"Via","provider":"vuavia"},{"id":"1884","name":"Facebook USA 2FA - Hotmail Checkpoint - Local USA - Có Sẵn Page","price":100000,"amount":785,"category":"Via","provider":"vuavia"},{"id":"1883","name":"Acc Twitter Thổ Nhĩ Kỳ Cổ - Có 2FA - Mail Hotmail Local - Tạo 2020","price":100000,"amount":91,"category":"Acc Twitter","provider":"vuavia"},{"id":"1882","name":"Acc Twitter Saudi Arabia Cổ - Kèm 2FA - Hotmail Chuẩn Local - Tạo 2020","price":100000,"amount":34,"category":"Acc Twitter","provider":"vuavia"},{"id":"1881","name":"Twitter Philippines Cổ - 2FA - Hotmail - Local - Tạo 2020","price":100000,"amount":67,"category":"Twitter","provider":"vuavia"},{"id":"1880","name":"Twitter Mexico Cổ - 2FA - Hotmail - Local - Tạo 2020","price":100000,"amount":7,"category":"Acc Twitter","provider":"vuavia"},{"id":"1879","name":"Facebook Clone Có 2FA - Change Pass & Share Page OK - Vừa Giải 282","price":90000,"amount":1574,"category":"Clone","provider":"vuavia"},{"id":"1878","name":"Clone Reg Phone 2FA On - Tài Khoản Gốc Có Xác Thực","price":20000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1877","name":"Tài Khoản Ngoại Cổ Đầu 1000xx Bạn Bè 100-500 Có 2FA","price":150000,"amount":587,"category":"Via","provider":"vuavia"},{"id":"1876","name":"Tài Khoản Quảng Cáo Full Access Có TKQC Chi Tiêu 200$ USD","price":800000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1875","name":"Combo 1 Acc Cầm 9 Tài Khoản Quảng Cáo VND (1M1 Ngâm)","price":1000000,"amount":17,"category":"BM","provider":"vuavia"},{"id":"1874","name":"Combo 1 Acc Cầm 9 TKQC VND Tạo 2025","price":1800000,"amount":91,"category":"BM","provider":"vuavia"},{"id":"1873","name":"Acc Việt Live Ads 50-500 Bạn Bè Có 2FA Tạo 5 Tháng-2 Năm","price":70000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1872","name":"Tài Khoản Quảng Cáo Facebook 8 Tháng, Limit Cao $250","price":250000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1871","name":"Acc Tên Việt 100-500 Bạn Bè Có 2FA Live Ads Nhận Page Đổi Pass","price":100000,"amount":671,"category":"Via","provider":"vuavia"},{"id":"1870","name":"BM1 - Tài Khoản Quảng Cáo Đã Tạo Sẵn","price":200000,"amount":0,"category":"BM","provider":"vuavia"},{"id":"1869","name":"Acc Facebook Tên Random 2025 Random Bạn Bè Nhi��u Bài Đăng Có 2FA Mail Trên 30 Ngày","price":150000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1868","name":"Clone New Hàng Qua Buff View - Chưa BM/Ads","price":5000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1866","name":"Clone Facebook Việt Nam Ngâm 6 Tháng - Spam Account","price":10000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1865","name":"Clone Facebook IP Việt Nam Có 2FA Xác Minh Hotmail","price":15000,"amount":125,"category":"Clone","provider":"vuavia"},{"id":"1862","name":"TikTok Tây Ban Nha Đăng Ký 10 Tháng - Hotmail Live OAUTH2","price":15000,"amount":0,"category":"TikTok","provider":"vuavia"},{"id":"1861","name":"TikTok Thổ Nhĩ Kì ZIN - Mail Live OAuth2 - Bảo Hành Login 1-1","price":8000,"amount":0,"category":"TikTok","provider":"vuavia"},{"id":"1860","name":"Telegram Armenia 2FA - Định dạng TDATA/JSON/SESSION - 3~30 ngày","price":150000,"amount":6547,"category":"Telegram","provider":"vuavia"},{"id":"1859","name":"Telegram Belgium 2FA - Tài khoản (+32) Tuổi 3~30 Ngày","price":250000,"amount":185,"category":"Telegram","provider":"vuavia"},{"id":"1858","name":"Telegram Sudan Có 2FA - Số Điện Thoại (+249) - Tuổi 3~30 Ngày","price":80000,"amount":634,"category":"Telegram","provider":"vuavia"},{"id":"1857","name":"Telegram DR Congo On 2FA - Very Phone (+243) | Tạo 3-30 Ngày","price":50000,"amount":1110,"category":"Telegram","provider":"vuavia"},{"id":"1856","name":"Telegram Central African 2FA - Tạo 3~30 Ngày - TDATA/JSON/SESSION","price":80000,"amount":0,"category":"Telegram","provider":"vuavia"},{"id":"1855","name":"Telegram Chad ON 2FA - Very Phone (+235) - Tạo 3~30 Ngày","price":100000,"amount":31,"category":"Telegram","provider":"vuavia"},{"id":"1854","name":"Ngoại Cổ 1000XX | Reg Phone - No2FA - Ver Hotmail Trust | Đã Unlock 282","price":100000,"amount":3669,"category":"Via","provider":"vuavia"},{"id":"1850","name":"Clone Ngoại - Reg Phone - On2FA - Ngâm Trâu - Unlock 282 - Spam Tốt","price":10000,"amount":2,"category":"Clone","provider":"vuavia"},{"id":"1847","name":"Clone REG NEW - VER MAIL - NEW ZIN ADS","price":6000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1846","name":"Clone Ngoại ON 2FA - Ver Tempmail.Plus - Reg Phone | Tuổi 30-180 Ngày","price":25000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1845","name":"ACC Ngoại - 6157 | Hotmail 2FA - Change All - 500~5000 Bạn | 10~30 Bài Viết","price":250000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1844","name":"ACC Ngoại 6157 | 2FA ON - Ver Hotmail - Đổi All - Friend 100~5000 | 10~30 Bài Viết","price":200000,"amount":3073,"category":"Via","provider":"vuavia"},{"id":"1843","name":"Facebook UK - ID 6155-58 | 2FA - Email Hotmail - IP Anh | Nút  Lên Tích Xanh Chính Thức","price":100000,"amount":4,"category":"Via","provider":"vuavia"},{"id":"1842","name":"Clone Facebook Ngoại - Reg Phone - IP Việt - Đã Qua 282 - Spam Trâu - Tuổi 6-12 Tháng","price":8000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1841","name":"Clone Reg Phone - Name Ngoại Thái Lan - Bạn Bè 0-100 - Very Hotmail Hàng Chơi Tut BM Ads","price":25000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1840","name":"Clone US Có 2FA - Xác Minh Hotmail Trust - Name US","price":25000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1839","name":"Acc Facebook Ngoại Xác Thực Email - Có Cookie & Token","price":5000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1838","name":"Acc Facebook Mỹ | Tuổi < 12 Tháng | Xác Thực Hotmail | Có 2FA","price":100000,"amount":109,"category":"Via","provider":"vuavia"},{"id":"1837","name":"Acc Facebook Mỹ | Xác Thực Hotmail Thường | Có 2FA","price":80000,"amount":508,"category":"Via","provider":"vuavia"},{"id":"1836","name":"Clone Ngoại - On 2FA - Ver Hotmail - Live Ads - Ngâm Được","price":10000,"amount":58,"category":"Clone","provider":"vuavia"},{"id":"1835","name":"ACC US - IP US - 2FA - Hotmail Verified Trust - Live Ads - Kháng 282","price":80000,"amount":51,"category":"Via","provider":"vuavia"},{"id":"1834","name":"ACC Ngoại - Avatar - ON 2FA - Ver Hotmail Trust - Reg 2-6 Tháng","price":12000,"amount":3735,"category":"Clone","provider":"vuavia"},{"id":"1833","name":"FB Name Thái Lan | On 2FA - Ver Hotmail Trust - Reg Phone","price":35000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1832","name":"Clone Change Name Việt Nam 2025 - ID 6157 - Mail Fviainboxes 2FA","price":50000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1831","name":"Clone 2025 Mail Fviainboxes.com On2FA - Tuổi 6-12 Tháng","price":50000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1830","name":"Clone qua 282 No2fa Spam","price":10000,"amount":568,"category":"Clone","provider":"vuavia"},{"id":"1829","name":"Clone Ngoại Very Phone + Very Mail Có 2FA - Định Dạng UID|Pass|2FA|Mail","price":8000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1828","name":"Clone Change Name Việt Nam 2025 - Hotmail Trust On2FA - 1-2 Year","price":60000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1827","name":"Clone 2025 ID 6157 Hotmail Đáng Tin Cậy - Bảo mật 2FA - Tuổi 1-2 Năm","price":60000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1824","name":"Clone Facebook 2FA - Gmail Kèm Cookie Login","price":10000,"amount":6293,"category":"Clone","provider":"vuavia"},{"id":"1823","name":"ACC Ngoại 2025 - ON 2FA - Very Hotmail - Change All | Nhận Page + BM","price":80000,"amount":397,"category":"Via","provider":"vuavia"},{"id":"1822","name":"FB Ngoại NO2FA Đã Kháng 282 - Kèm Verif Hotmail & Cookie","price":30000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1821","name":"FB Ngoại 2FA - Đã Kháng 282 - Veri Hotmail - Dùng Spam","price":50000,"amount":6670,"category":"Via","provider":"vuavia"},{"id":"1820","name":"FB Ngoại 2FA - Verify Hotmail - Page Ngâm Nuôi Tốt","price":60000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1819","name":"Facebook Ngoại - No2FA - Verified Gmail - Có Sẵn Page - Dùng Spam","price":50000,"amount":6466,"category":"Via","provider":"vuavia"},{"id":"1818","name":"Facebook US 2FA - Verify Hotmail Trust - Bạn Bè 0-10 - Ngâm Trâu","price":50000,"amount":1635,"category":"Clone","provider":"vuavia"},{"id":"1817","name":"FB NAME US - No 2FA - Verified Hotmail - IP US - Ngâm Trust | Batch 615XX","price":50000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1816","name":"Facebook US No 2FA - Verified Hotmail - 0-10 Bạn Bè - Dùng Spam","price":25000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1815","name":"FB Ngoại ON 2FA - Đã Qua 282 - Veri Hotmail - Ngâm Nuôi - Live Ads | Tạo 7-14 Ngày","price":12000,"amount":4885,"category":"Clone","provider":"vuavia"},{"id":"1814","name":"Telegram Nhật Bản - Bật 2FA - SĐT (+81) - Tuổi 3~30 Ngày","price":150000,"amount":3802,"category":"Telegram","provider":"vuavia"},{"id":"1812","name":"Telegram Croatia ON 2FA - Định dạng TDATA/JSON/SESSION - Tuổi 3-30 Ngày","price":150000,"amount":1327,"category":"Telegram","provider":"vuavia"},{"id":"1811","name":"Telegram Nigeria 2FA - Tạo 3~30 Ngày | TDATA/JSON/SESSION","price":100000,"amount":23891,"category":"Telegram","provider":"vuavia"},{"id":"1809","name":"Telegram Algeria 2FA - Định dạng TDATA/JSON/SESSION (3-30 ngày)","price":100000,"amount":117,"category":"Telegram","provider":"vuavia"},{"id":"1808","name":"ACC USA 615XX - IP US | REG PHONE - INFO | 2FA - VER HOTMAIL TRUST - 1 MAIL - ĐÃ KHÁNG 282 | CHUẨN LOCAL US","price":150000,"amount":293,"category":"Via","provider":"vuavia"},{"id":"1807","name":"Clone US Reg 10-30 Ngày IP Chuẩn +1 Random Ads Không 2FA","price":40000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1806","name":"Tài Khoản Hotmail US - 2FA - Cookie - Token - Ngâm IP US","price":50000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1802","name":"Clone Ngoại Loại Rẻ - Test Ads, BM, Game - Có 2FA Zin - Dùng Luôn Không Cần Ngâm","price":10000,"amount":437,"category":"Clone","provider":"vuavia"},{"id":"1801","name":"Acc Facebook Việt Live Ads 20-100 Bạn Bè Có 2FA Tuổi 5-12 Tháng (95% Có Bài)","price":60000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1800","name":"FB Ngoài 2FA Đã Kháng 282 - Veri Hotmail - Change Full Đầu 615XX","price":35000,"amount":1574,"category":"Clone","provider":"vuavia"},{"id":"1799","name":"FB Name Ngoại - 2FA - Avatar - Veri Phone - Hàng Backup Profile","price":15000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1798","name":"Clone Facebook US Có 2FA - Verified Hotmail Trust - Name US","price":10000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1797","name":"Clone Facebook Ngoài 2FA - Xác Minh Hotmail Trust - Tên Ngẫu Nhiên","price":7000,"amount":7021,"category":"Clone","provider":"vuavia"},{"id":"1796","name":"ACC Ngoài 6155-59 | Bật 2FA - Very Hotmail - Rename Được - Đổi Toàn Bộ | Kèm Page + BM","price":90000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1795","name":"ACC Ngoài 2024 - On 2FA - Hotmail - Code Về Mail | Tài Nguyên BM + Page","price":200000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1794","name":"ACC Ngoại 6155-58 | ON 2FA - Verified Hotmail - Change All | Dùng Nhận Page + BM","price":150000,"amount":9617,"category":"Via","provider":"vuavia"},{"id":"1793","name":"ACC Ngoại Đầu 1000X | 2FA - Very Hotmail - Full Change - 1000+ Bạn | Dùng Cầm Page & BM","price":600000,"amount":1576,"category":"Via","provider":"vuavia"},{"id":"1792","name":"Tài Khoản Australia 2FA - Avatar + Info - Kháng 282 - Veri Hotmail - Live Ads","price":90000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1791","name":"Profile Canada - Avatar + Info | 2FA - Verified HotMail | 1-3 Tháng Tuổi","price":90000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1790","name":"ACC Ngoài - Đầu 1000X - No 2FA - Very Hotmail - Friend 100+- Dùng Nhận Page + BM","price":200000,"amount":5873,"category":"Via","provider":"vuavia"},{"id":"1789","name":"ACC Ngoài 2FA Verify Hotmail - Sẵn 1 Page","price":100000,"amount":9085,"category":"Via","provider":"vuavia"},{"id":"1788","name":"ACC Ngoại 615XX | Bật 2FA - Verify Hotmail - Bạn Bè 0~5000 | Page + BM","price":90000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1787","name":"ACC Ngoại - 1000XX | ON 2FA - Verified Hotmail - Change All | Không Về Whatapps","price":200000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1786","name":"Acc Ngoại 1000XX - 6155 | 2FA On - Hotmail Verified - 100+ Bạn Bè","price":600000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1785","name":"Acc Ngoại Cổ 1000XX - No 2FA - Có Sẵn 1 Page - Veri HotMail Trust | 100 - 5000 Bạn Bè","price":200000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1784","name":"Acc Facebook Tên Ngoại | 2 Tháng Tuổi | Xác Thực Email + 2FA","price":6000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1783","name":"Acc Facebook Mỹ Xác Thực Hotmail Live - Kèm Cookie & Token","price":50000,"amount":0,"category":"Via","provider":"vuavia"},{"id":"1782","name":"Acc Facebook Nhật | 6-24 Tháng | Avatar | Xác Thực Hotmail | 2FA & Cookie & Token","price":100000,"amount":397,"category":"Via","provider":"vuavia"},{"id":"1781","name":"Acc Facebook Clone | Đã Tạo > 1H | Xác Thực Email | Có 2FA & Cookie & Token","price":6000,"amount":437,"category":"Clone","provider":"vuavia"},{"id":"1780","name":"Acc Facebook Đã Tạo 0-2 Năm | Xác Thực Hotmail | Hỗ Trợ 2FA & Chạy Ads","price":60000,"amount":162,"category":"Via","provider":"vuavia"},{"id":"1779","name":"Acc Facebook Mỹ - Đã Qua Checkpoint 282","price":80000,"amount":12896,"category":"Via","provider":"vuavia"},{"id":"1778","name":"Acc Facebook Mỹ | Xác Thực Email + 2FA","price":80000,"amount":11837,"category":"Via","provider":"vuavia"},{"id":"1777","name":"Clone Random IP VR Mail New","price":5000,"amount":511,"category":"Clone","provider":"vuavia"},{"id":"1776","name":"Clone Facebook Random VR Mail Không 2FA","price":5000,"amount":0,"category":"Clone","provider":"vuavia"},{"id":"1775","name":"Clone qua 282 Có 2FA Spam","price":9000,"amount":2,"category":"Clone","provider":"vuavia"}];
+      builtInVuaviaProds.forEach(function(vItem) {
+        var existing = result.find(function(r) {
+          return String(r.id) === String(vItem.id) && (r.provider === "vuavia" || r.provider === "vuavia_io" || (typeof isSameProvider === "function" && isSameProvider(r.provider, "vuavia")));
+        });
+        if (!existing) {
+          result.push(vItem);
+        } else {
+          if (typeof existing.amount !== "number" || existing.amount <= 0) existing.amount = vItem.amount;
+          if (!existing.price) existing.price = vItem.price;
+        }
+      });
 
       var builtInUltraProds = [
         { id: "3469", name: "TikTok South Korea (Hàn Quốc) - KR Reg 2025 Mail Lock | 15.11.25", price: 2000, amount: 1623, category: "Tiktok", provider: "ultrammo" },
@@ -7478,7 +7517,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         ? window.cachedSourceProducts
         : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
 
-      let filtered = prods.filter(s => !s.provider || s.provider === provider);
+      let filtered = prods.filter(s => !s.provider || s.provider === provider || (typeof isSameProvider === "function" && isSameProvider(s.provider, provider)));
       // Sắp xếp ưu tiên: Sản phẩm còn hàng (amount > 0) hiển thị lên trên đầu
       filtered.sort(function(a, b) {
         const stockA = Number(a.amount || 0) > 0 ? 1 : 0;
@@ -7547,7 +7586,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         // 3. Nếu không tìm thấy ở provider hiện tại, quét các provider khác để gợi ý 1 chạm
         if (filtered.length === 0) {
           crossProviderMatches = prods.filter(s => {
-            if (s.provider === provider) return false;
+            if (s.provider === provider || (typeof isSameProvider === "function" && isSameProvider(s.provider, provider))) return false;
             const rawId = String(s.id || "").trim();
             if (rawId === normKw || rawId.includes(normKw)) return true;
             const rawText = normalizeSearchText((s.category || "") + " " + (s.name || "") + " " + rawId);
@@ -7849,12 +7888,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (res && res.success && Array.isArray(res.categories)) {
           res.categories.forEach(function(cat) {
             (cat.products || cat.accounts || []).forEach(function(p) {
+              const pid = String(p.id !== undefined ? p.id : (p.productId || p.product_id || ""));
+              if (!pid) return;
               freshProds.push({
-                id: String(p.id),
-                name: p.name,
+                id: pid,
+                name: p.name || p.title || p.product_name || ("Sản phẩm #" + pid),
                 price: Number(p.price) || 0,
-                amount: Number(p.amount || p.accounts) || 0,
-                category: cat.name,
+                amount: Number(p.stockCount !== undefined ? p.stockCount : (p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.accounts || 0)))),
+                category: p.category || p.categoryName || cat.name || (pCfg.name || provider),
                 provider: provider
               });
             });
@@ -7866,7 +7907,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             ? window.cachedSourceProducts
             : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
 
-          const otherProds = curCached.filter(p => p.provider !== provider);
+          const otherProds = curCached.filter(p => p && p.provider !== provider && !(typeof isSameProvider === "function" && isSameProvider(p.provider, provider)));
           const merged = otherProds.concat(freshProds);
 
           window.cachedSourceProducts = merged;
@@ -8017,7 +8058,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // [ZERO-HANG]: Chỉ quét nguồn ngầm khi thực sự chưa từng có sản phẩm nào của nhà cung cấp này trong bộ nhớ
       if (typeof fetchSingleSourceProducts === "function") {
         const hasProdsInCache = (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts))
-          ? cachedSourceProducts.some(s => s && s.provider === prov)
+          ? cachedSourceProducts.some(s => s && (s.provider === prov || (typeof isSameProvider === "function" && isSameProvider(s.provider, prov))))
           : false;
         if (!hasProdsInCache) {
           if (!window._provFetchedAt) window._provFetchedAt = {};
@@ -8072,6 +8113,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         radioLocal.checked = !isApi;
         radioApi.checked = isApi;
       }
+      if (typeof syncModalProviderOptions === "function") syncModalProviderOptions(prov);
       if (typeof toggleAdmProductSourceFields === "function") toggleAdmProductSourceFields();
       if (isApi) {
         const prov = (existingMap && existingMap.provider) ? existingMap.provider : (p.apiMapping && p.apiMapping.provider) || "selltainguyenmmo";
@@ -8145,6 +8187,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       updateCommissionEstimate();
 
       if (document.getElementById("admModalTitle")) document.getElementById("admModalTitle").innerHTML = '<i class="fa-solid fa-pen-to-square green"></i> Sửa Sản Phẩm';
+      if (typeof syncModalProviderOptions === "function") syncModalProviderOptions("nguyenlieummo");
       const modal = document.getElementById("adminProductModal");
       if (modal) modal.style.display = "flex";
     }
@@ -15103,6 +15146,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
           if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
           if (typeof renderCustomApiSourcesUI === "function") renderCustomApiSourcesUI();
+      if (typeof syncModalProviderOptions === "function") syncModalProviderOptions();
           if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
         }
         if (tabId === "tabAdmChat") {
@@ -18286,6 +18330,43 @@ function syncAllOpenViewsStock(changedProdId) {
 
     var _mmoProxyDeadUntil = 0;
 
+    
+    // ĐỒNG BỘ TOÀN BỘ NGUỒN HÀNG (CHÍNH THỨC & TỰ THÊM) VÀO MODAL THÊM/SỬA SẢN PHẨM
+    function syncModalProviderOptions(selectedProv) {
+      const pSel = document.getElementById("admProdApiProvider");
+      if (!pSel) return;
+      const allSources = (typeof API_SOURCES !== "undefined") ? API_SOURCES : {};
+      const allKeys = Object.keys(allSources);
+      if (allKeys.length === 0) return;
+
+      const curVal = selectedProv || pSel.value || "nguyenlieummo";
+      let optionsHtml = "";
+      allKeys.forEach((k, idx) => {
+        const cfg = allSources[k] || {};
+        const isSel = (curVal === k || (typeof isSameProvider === "function" && isSameProvider(curVal, k))) ? " selected=\"selected\"" : "";
+        const label = cfg.name || k;
+        optionsHtml += '<option value="' + k + '"' + isSel + '>' + (idx + 1) + '. ' + escapeHtml(label) + (cfg.isCustom ? ' (Tự thêm)' : '') + '</option>';
+      });
+      pSel.innerHTML = optionsHtml;
+
+      // Đồng bộ cả danh sách Pills nếu có container
+      const pillsContainer = document.getElementById("admModalProviderPills");
+      if (pillsContainer) {
+        let pillsHtml = "";
+        allKeys.forEach((k, idx) => {
+          const cfg = allSources[k] || {};
+          const isAct = (curVal === k || (typeof isSameProvider === "function" && isSameProvider(curVal, k)));
+          const actStyle = isAct ? "background:rgba(6,182,212,0.2); border:1px solid #06b6d4; color:#38bdf8; box-shadow:0 0 10px rgba(6,182,212,0.35);" : "background:#0d121f; border:1px solid rgba(255,255,255,0.1); color:#cbd5e1;";
+          const icon = isAct ? "fa-solid fa-check" : (cfg.isCustom ? "fa-solid fa-plug" : "fa-solid fa-server");
+          pillsHtml += '<button type="button" class="adm-prov-pill' + (isAct ? ' active' : '') + '" data-prov="' + k + '" onclick="selectModalApiProvider(\'' + k + '\')" style="padding:5px 9px; border-radius:6px; font-size:0.75rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px; transition:all 0.15s; ' + actStyle + '">' +
+            '<i class="' + icon + '"></i> ' + (idx + 1) + '. ' + escapeHtml(cfg.name || k) +
+          '</button>';
+        });
+        pillsContainer.innerHTML = pillsHtml;
+      }
+    }
+    window.syncModalProviderOptions = syncModalProviderOptions;
+
     async function executeSourceApiCall(action, payload) {
       payload = payload || {};
       let provider = (payload && payload.provider) ? String(payload.provider).toLowerCase() : "";
@@ -18635,16 +18716,20 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (action === "getProducts") {
-        let isVuavia = bUrlIn.includes("vuavia.io") || provider.includes("vuavia");
+        let isVuavia = bUrlIn.includes("vuavia.io") || provider.includes("vuavia") || (typeof isSameProvider === "function" && isSameProvider(provider, "vuavia"));
         let targetUrls = [];
+        const cleanBase = baseUrl.replace(/\/+$/, "");
         if (isVuavia) {
-          targetUrls.push("https://api.vuavia.io/api/v2/products");
-          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/v2/products");
+          targetUrls.push("https://api.vuavia.io/api/v1/products?size=200");
+          targetUrls.push(cleanBase + "/api/v1/products?size=200");
+          targetUrls.push("https://api.vuavia.io/api/v2/products?size=200");
+          targetUrls.push(cleanBase + "/api/v2/products?size=200");
         } else {
-          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/products.php?api_key=" + encodeURIComponent(apiKey));
-          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/products?api_key=" + encodeURIComponent(apiKey));
-          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/v2/products?api_key=" + encodeURIComponent(apiKey));
-          targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/ListResource.php?api_key=" + encodeURIComponent(apiKey));
+          targetUrls.push(cleanBase + "/api/products.php?api_key=" + encodeURIComponent(apiKey));
+          targetUrls.push(cleanBase + "/api/products?api_key=" + encodeURIComponent(apiKey));
+          targetUrls.push(cleanBase + "/api/v1/products?size=200&api_key=" + encodeURIComponent(apiKey));
+          targetUrls.push(cleanBase + "/api/v2/products?size=200&api_key=" + encodeURIComponent(apiKey));
+          targetUrls.push(cleanBase + "/api/ListResource.php?api_key=" + encodeURIComponent(apiKey));
         }
 
         let lastErr = null;
@@ -18665,54 +18750,61 @@ function syncAllOpenViewsStock(changedProdId) {
               try { json = JSON.parse(rawText); } catch(je) {}
               if (json) {
                 let categories = [];
+
+                function _normalizeProductItem(p, defaultCat) {
+                  if (!p || typeof p !== "object") return null;
+                  const pid = String(p.id !== undefined ? p.id : (p.productId || p.product_id || p.code || ""));
+                  if (!pid) return null;
+                  const pName = p.name || p.title || p.product_name || p.resource_name || ("Sản phẩm #" + pid);
+                  const pPrice = Math.round(Number(p.price || p.unit_price || p.cost || p.retail_price || 0));
+                  const pAmount = Number(p.stockCount !== undefined ? p.stockCount : (p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.quantity !== undefined ? p.quantity : (p.inventory !== undefined ? p.inventory : (p.accounts || 0))))));
+                  const pCat = p.categoryName || p.category_name || (p.category && (typeof p.category === "object" ? p.category.name : p.category)) || defaultCat || (pCfg.name || provider);
+                  return {
+                    id: pid,
+                    name: pName,
+                    price: pPrice,
+                    amount: pAmount,
+                    category: pCat,
+                    provider: provider
+                  };
+                }
+
+                // 1. Dạng { categories: [...] }
                 if (Array.isArray(json.categories)) {
                   categories = json.categories.map(cat => ({
                     id: cat.id || 0,
                     name: cat.name || "Danh mục",
-                    products: (cat.products || cat.accounts || []).map(p => ({
-                      id: String(p.id !== undefined ? p.id : (p.productId || p.product_id || "")),
-                      name: p.name || p.title || p.product_name || "Sản phẩm",
-                      price: Math.round(Number(p.price || p.unit_price || p.cost || 0)),
-                      amount: Number(p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.quantity !== undefined ? p.quantity : (p.accounts || 0))))
-                    }))
+                    products: (cat.products || cat.accounts || []).map(p => _normalizeProductItem(p, cat.name)).filter(Boolean)
                   }));
-                } else if (Array.isArray(json.data)) {
+                }
+                // 2. Dạng Vuavia / Spring: { data: { content: [...] } } hoặc { data: { items: [...] } }
+                else if (json.data && typeof json.data === "object" && (Array.isArray(json.data.content) || Array.isArray(json.data.items) || Array.isArray(json.data.products) || Array.isArray(json.data.list))) {
+                  const rawList = json.data.content || json.data.items || json.data.products || json.data.list;
+                  const prods = rawList.map(p => _normalizeProductItem(p, p.categoryName || (pCfg.name || provider))).filter(Boolean);
+                  categories = [{ id: 1, name: (pCfg.name || provider), products: prods }];
+                }
+                // 3. Dạng { data: [...] } (có thể là danh mục hoặc danh sách sản phẩm)
+                else if (Array.isArray(json.data)) {
                   const firstItem = json.data[0];
                   if (firstItem && (Array.isArray(firstItem.products) || Array.isArray(firstItem.accounts))) {
                     categories = json.data.map(cat => ({
                       id: cat.id || 0,
                       name: cat.name || "Danh mục",
-                      products: (cat.products || cat.accounts || []).map(p => ({
-                        id: String(p.id !== undefined ? p.id : (p.productId || p.product_id || "")),
-                        name: p.name || p.title || p.product_name || "Sản phẩm",
-                        price: Math.round(Number(p.price || p.unit_price || p.cost || 0)),
-                        amount: Number(p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.quantity !== undefined ? p.quantity : (p.accounts || 0))))
-                      }))
+                      products: (cat.products || cat.accounts || []).map(p => _normalizeProductItem(p, cat.name)).filter(Boolean)
                     }));
                   } else {
-                    const prods = json.data.map((p, idx) => ({
-                      id: String(p.id !== undefined ? p.id : (p.productId || p.product_id || idx + 1)),
-                      name: p.name || p.title || p.product_name || "Sản phẩm",
-                      price: Math.round(Number(p.price || p.unit_price || p.cost || 0)),
-                      amount: Number(p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.quantity !== undefined ? p.quantity : (p.accounts || 0))))
-                    }));
+                    const prods = json.data.map(p => _normalizeProductItem(p, (pCfg.name || provider))).filter(Boolean);
                     categories = [{ id: 1, name: (pCfg.name || provider), products: prods }];
                   }
-                } else if (Array.isArray(json.products)) {
-                  const prods = json.products.map((p, idx) => ({
-                    id: String(p.id !== undefined ? p.id : (p.productId || p.product_id || idx + 1)),
-                    name: p.name || p.title || p.product_name || "Sản phẩm",
-                    price: Math.round(Number(p.price || p.unit_price || p.cost || 0)),
-                    amount: Number(p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.quantity !== undefined ? p.quantity : (p.accounts || 0))))
-                  }));
+                }
+                // 4. Dạng { products: [...] }
+                else if (Array.isArray(json.products)) {
+                  const prods = json.products.map(p => _normalizeProductItem(p, (pCfg.name || provider))).filter(Boolean);
                   categories = [{ id: 1, name: (pCfg.name || provider), products: prods }];
-                } else if (Array.isArray(json)) {
-                  const prods = json.map((p, idx) => ({
-                    id: String(p.id !== undefined ? p.id : (p.productId || p.product_id || idx + 1)),
-                    name: p.name || p.title || p.product_name || "Sản phẩm",
-                    price: Math.round(Number(p.price || p.unit_price || p.cost || 0)),
-                    amount: Number(p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.quantity !== undefined ? p.quantity : (p.accounts || 0))))
-                  }));
+                }
+                // 5. Dạng mảng trực tiếp [ ... ]
+                else if (Array.isArray(json)) {
+                  const prods = json.map(p => _normalizeProductItem(p, (pCfg.name || provider))).filter(Boolean);
                   categories = [{ id: 1, name: (pCfg.name || provider), products: prods }];
                 }
 
@@ -19744,7 +19836,7 @@ function syncAllOpenViewsStock(changedProdId) {
         let providerSelectHtml = '<select id="mapProvider_' + p.id + '" onchange="handleProviderChange(\'' + p.id + '\')" style="width:100%; max-width:100%; box-sizing:border-box; background:#0d121f; border:1px solid #1e293b; padding:6px 8px; border-radius:6px; color:#fff; font-size:0.78rem;">';
         allProvKeys.forEach(function(k) {
           const cfg = API_SOURCES[k] || {};
-          const isSel = (curProvider === k) ? ' selected="selected"' : '';
+          const isSel = (curProvider === k || (typeof isSameProvider === "function" && isSameProvider(curProvider, k))) ? ' selected="selected"' : '';
           const dispName = cfg.name || k;
           providerSelectHtml += '<option value="' + k + '"' + isSel + '>' + (typeof escapeHtml === "function" ? escapeHtml(dispName) : dispName) + '</option>';
         });
@@ -19865,7 +19957,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const normKw = (typeof _normalizeForFastSearch === "function") ? _normalizeForFastSearch(rawKw) : rawKw.toLowerCase();
       const kwWords = normKw.split(/\s+/).filter(Boolean);
 
-      const providerProds = prods.filter(s => !s.provider || s.provider === curProvider);
+      const providerProds = prods.filter(s => !s.provider || s.provider === curProvider || (typeof isSameProvider === "function" && isSameProvider(s.provider, curProvider)));
 
       let curMatches = [];
       let otherMatches = [];
@@ -19884,7 +19976,7 @@ function syncAllOpenViewsStock(changedProdId) {
             }
           }
           if (isMatch) {
-            if (!s.provider || s.provider === curProvider) {
+            if (!s.provider || s.provider === curProvider || (typeof isSameProvider === "function" && isSameProvider(s.provider, curProvider))) {
               curMatches.push(s);
             } else {
               otherMatches.push(s);
@@ -19911,7 +20003,7 @@ function syncAllOpenViewsStock(changedProdId) {
       // ĐẢM BẢO SẢN PHẨM ĐANG LIÊN KẾT LUÔN ĐƯỢC CHỌN VÀ HIỂN THỊ Ở ĐẦU
       let hasActiveSelected = false;
       if (activeMappedId) {
-        const activeItem = prods.find(s => String(s.id) === String(activeMappedId) && (!s.provider || s.provider === curProvider))
+        const activeItem = prods.find(s => String(s.id) === String(activeMappedId) && (!s.provider || s.provider === curProvider || (typeof isSameProvider === "function" && isSameProvider(s.provider, curProvider))))
           || prods.find(s => String(s.id) === String(activeMappedId));
         if (activeItem) {
           const aName = (typeof escapeHtml === "function") ? escapeHtml(activeItem.name) : activeItem.name;
@@ -20024,7 +20116,7 @@ function syncAllOpenViewsStock(changedProdId) {
         ? window.cachedSourceProducts
         : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
       
-      const hasProds = prods.some(s => s && s.provider === provider);
+      const hasProds = prods.some(s => s && (s.provider === provider || (typeof isSameProvider === "function" && isSameProvider(s.provider, provider))));
       if (!hasProds) {
         sel.innerHTML = '<option value="" disabled selected>⏳ Đang tải SP từ ' + escapeHtml(provider) + '... (Vui lòng chờ)</option>';
         if (typeof fetchSingleSourceProducts === "function") {
@@ -20077,7 +20169,7 @@ function syncAllOpenViewsStock(changedProdId) {
         if (srcId) {
           const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts)) ? window.cachedSourceProducts : [];
           const curProv = pSel ? pSel.value : null;
-          const src = prods.find(s => String(s.id) === String(srcId) && (!curProv || s.provider === curProv))
+          const src = prods.find(s => String(s.id) === String(srcId) && (!curProv || s.provider === curProv || (typeof isSameProvider === "function" && isSameProvider(s.provider, curProv))))
             || prods.find(s => String(s.id) === String(srcId));
           if (src) {
             const stockNum = Number(src.amount !== undefined ? src.amount : src.stock) || 0;
