@@ -17916,6 +17916,11 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof invalidateApiProductMappingsCache === "function") invalidateApiProductMappingsCache();
       renderCustomApiSourcesUI();
       if (typeof fetchSingleSourceProfile === "function") fetchSingleSourceProfile(id, true);
+      if (typeof fetchSingleSourceProducts === "function") {
+        fetchSingleSourceProducts(id, true).then(() => {
+          if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+        }).catch(() => {});
+      }
       return true;
     }
     window.saveCustomApiSource = saveCustomApiSource;
@@ -18507,25 +18512,57 @@ function syncAllOpenViewsStock(changedProdId) {
       // ---- END shop1989nd ----
 
       if (action === "getProfile") {
-        const target = baseUrl.replace(/\/+$/, "") + "/api/profile.php?api_key=" + encodeURIComponent(apiKey);
-        try {
-          // proxy lockout disabled
-          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(4000) });
-          if (!resp.ok) {
-            // rate limit handled without 10m lockout
-            throw new Error("Proxy status " + resp.status);
-          }
-          const json = await resp.json();
-          return {
-            success: json.status === "success",
-            data: json.data || {},
-            provider: provider,
-            raw: json
-          };
-        } catch(workerErr) {
-          console.warn("Worker proxy getProfile notice for " + provider + ":", workerErr);
-          return { success: false, data: { money: 0 }, provider: provider };
+        let isVuavia = bUrlIn.includes("vuavia.io") || provider.includes("vuavia");
+        let targetUrls = [];
+        if (isVuavia) {
+          targetUrls.push("https://api.vuavia.io/api/v2/wallet/balance");
+          targetUrls.push("https://api.vuavia.io/api/v2/profile");
         }
+        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/profile.php?api_key=" + encodeURIComponent(apiKey));
+        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/profile?api_key=" + encodeURIComponent(apiKey));
+        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/v2/wallet/balance");
+
+        let lastErr = null;
+        for (const target of targetUrls) {
+          try {
+            const reqHeaders = {};
+            if (apiKey) {
+              reqHeaders["X-Api-Key"] = apiKey;
+              reqHeaders["Authorization"] = "Bearer " + apiKey;
+            }
+            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), {
+              headers: reqHeaders,
+              signal: createFastSignal(5000)
+            });
+            if (resp.ok) {
+              const rawText = await resp.text();
+              let json = null;
+              try { json = JSON.parse(rawText); } catch(je) {}
+              if (json) {
+                let money = 0;
+                let userDisp = (payload && payload.username) ? payload.username : "admin";
+                if (json.data && typeof json.data === "object") {
+                  money = Number(json.data.balance !== undefined ? json.data.balance : (json.data.money !== undefined ? json.data.money : (json.data.Balance || 0)));
+                  userDisp = json.data.username || json.data.email || userDisp;
+                } else if (typeof json.balance !== "undefined") {
+                  money = Number(json.balance);
+                } else if (typeof json.money !== "undefined") {
+                  money = Number(json.money);
+                }
+                const isSuccess = (json.status === "success" || json.success === true || typeof json.data !== "undefined" || !isNaN(money));
+                return {
+                  success: isSuccess,
+                  data: { money: money, username: userDisp },
+                  provider: provider,
+                  raw: json
+                };
+              }
+            }
+          } catch(e) {
+            lastErr = e;
+          }
+        }
+        return { success: false, data: { money: 0 }, provider: provider, message: lastErr ? lastErr.message : "Không thể lấy số dư ví nguồn" };
       }
 
       if (action === "getProductStock") {
@@ -18552,25 +18589,100 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (action === "getProducts") {
-        const target = baseUrl.replace(/\/+$/, "") + "/api/products.php?api_key=" + encodeURIComponent(apiKey);
-        try {
-          // proxy lockout disabled (timeout 12s cho các kho lớn hàng nghìn sản phẩm như nguyenlieummo)
-          const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), { signal: createFastSignal(12000) });
-          if (!resp.ok) {
-            // rate limit handled without 10m lockout
-            throw new Error("Proxy status " + resp.status);
-          }
-          const json = await resp.json();
-          return {
-            success: json.status === "success",
-            categories: json.categories || [],
-            provider: provider,
-            raw: json
-          };
-        } catch(workerErr) {
-          console.warn("Worker proxy getProducts notice for " + provider + ":", workerErr);
-          return { success: false, categories: [], provider: provider };
+        let isVuavia = bUrlIn.includes("vuavia.io") || provider.includes("vuavia");
+        let targetUrls = [];
+        if (isVuavia) {
+          targetUrls.push("https://api.vuavia.io/api/v2/products");
         }
+        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/products.php?api_key=" + encodeURIComponent(apiKey));
+        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/products?api_key=" + encodeURIComponent(apiKey));
+        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/v2/products?api_key=" + encodeURIComponent(apiKey));
+        targetUrls.push(baseUrl.replace(/\/+$/, "") + "/api/ListResource.php?api_key=" + encodeURIComponent(apiKey));
+
+        let lastErr = null;
+        for (const target of targetUrls) {
+          try {
+            const reqHeaders = {};
+            if (apiKey) {
+              reqHeaders["X-Api-Key"] = apiKey;
+              reqHeaders["Authorization"] = "Bearer " + apiKey;
+            }
+            const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), {
+              headers: reqHeaders,
+              signal: createFastSignal(12000)
+            });
+            if (resp.ok) {
+              const rawText = await resp.text();
+              let json = null;
+              try { json = JSON.parse(rawText); } catch(je) {}
+              if (json) {
+                let categories = [];
+                if (Array.isArray(json.categories)) {
+                  categories = json.categories.map(cat => ({
+                    id: cat.id || 0,
+                    name: cat.name || "Danh mục",
+                    products: (cat.products || cat.accounts || []).map(p => ({
+                      id: String(p.id !== undefined ? p.id : (p.productId || p.product_id || "")),
+                      name: p.name || p.title || p.product_name || "Sản phẩm",
+                      price: Math.round(Number(p.price || p.unit_price || p.cost || 0)),
+                      amount: Number(p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.quantity !== undefined ? p.quantity : (p.accounts || 0))))
+                    }))
+                  }));
+                } else if (Array.isArray(json.data)) {
+                  const firstItem = json.data[0];
+                  if (firstItem && (Array.isArray(firstItem.products) || Array.isArray(firstItem.accounts))) {
+                    categories = json.data.map(cat => ({
+                      id: cat.id || 0,
+                      name: cat.name || "Danh mục",
+                      products: (cat.products || cat.accounts || []).map(p => ({
+                        id: String(p.id !== undefined ? p.id : (p.productId || p.product_id || "")),
+                        name: p.name || p.title || p.product_name || "Sản phẩm",
+                        price: Math.round(Number(p.price || p.unit_price || p.cost || 0)),
+                        amount: Number(p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.quantity !== undefined ? p.quantity : (p.accounts || 0))))
+                      }))
+                    }));
+                  } else {
+                    const prods = json.data.map((p, idx) => ({
+                      id: String(p.id !== undefined ? p.id : (p.productId || p.product_id || idx + 1)),
+                      name: p.name || p.title || p.product_name || "Sản phẩm",
+                      price: Math.round(Number(p.price || p.unit_price || p.cost || 0)),
+                      amount: Number(p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.quantity !== undefined ? p.quantity : (p.accounts || 0))))
+                    }));
+                    categories = [{ id: 1, name: (pCfg.name || provider), products: prods }];
+                  }
+                } else if (Array.isArray(json.products)) {
+                  const prods = json.products.map((p, idx) => ({
+                    id: String(p.id !== undefined ? p.id : (p.productId || p.product_id || idx + 1)),
+                    name: p.name || p.title || p.product_name || "Sản phẩm",
+                    price: Math.round(Number(p.price || p.unit_price || p.cost || 0)),
+                    amount: Number(p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.quantity !== undefined ? p.quantity : (p.accounts || 0))))
+                  }));
+                  categories = [{ id: 1, name: (pCfg.name || provider), products: prods }];
+                } else if (Array.isArray(json)) {
+                  const prods = json.map((p, idx) => ({
+                    id: String(p.id !== undefined ? p.id : (p.productId || p.product_id || idx + 1)),
+                    name: p.name || p.title || p.product_name || "Sản phẩm",
+                    price: Math.round(Number(p.price || p.unit_price || p.cost || 0)),
+                    amount: Number(p.amount !== undefined ? p.amount : (p.stock !== undefined ? p.stock : (p.quantity !== undefined ? p.quantity : (p.accounts || 0))))
+                  }));
+                  categories = [{ id: 1, name: (pCfg.name || provider), products: prods }];
+                }
+
+                if (categories.length > 0 && categories.some(c => c.products && c.products.length > 0)) {
+                  return {
+                    success: true,
+                    categories: categories,
+                    provider: provider,
+                    raw: json
+                  };
+                }
+              }
+            }
+          } catch(e) {
+            lastErr = e;
+          }
+        }
+        return { success: false, categories: [], provider: provider, message: lastErr ? lastErr.message : "Không thể lấy danh sách sản phẩm" };
       }
 
       if (action === "buyProduct") {
@@ -19212,49 +19324,49 @@ function syncAllOpenViewsStock(changedProdId) {
     // LIÊN KẾT SẢN PHẨM ON-DEMAND API (MAPPING ENGINE v1.9.3)
     // ============================================================================
     const DEFAULT_API_PRODUCT_MAPPINGS = {
-      "PROD_MTQQXO2E": {"enabled":true,"provider":"mail72h","sourceProdId":"712","sourcePrice":259,"sourceProdName":"24h [ ID 712 ]"},
-      "PROD_MTQWMPL5": {"enabled":true,"provider":"mail72h","sourceProdId":"818","sourcePrice":979,"sourceProdName":"7 ngày [ ID 818 ]"},
-      "PROD_MTQWQFZD": {"enabled":true,"provider":"mail72h","sourceProdId":"817","sourcePrice":3879,"sourceProdName":"30 ngày [ ID 817 ]"},
-      "PROD_MTQX1C7X": {"enabled":true,"provider":"shop1989nd","sourceProdId":"19745","sourcePrice":138.6,"sourceProdName":"Gmail Domain Cho Thuê live 12h+"},
-      "PROD_MTQX465U": {"enabled":true,"provider":"shop1989nd","sourceProdId":"19768","sourcePrice":53.2,"sourceProdName":"Gmail Domain Cho Thuê .live 10 phút"},
-      "PROD_MU5PWT7PP7": {"enabled":true,"provider":"ultrammo","sourceProdId":"13629","sourcePrice":1200,"sourceProdName":"TÀI KHOẢN KLING AI 65 CREDIT","baseUrl":"https://ultrammo.com"},
-      "PROD_MTQZT2Y1": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"121063","sourcePrice":656,"sourceProdName":"Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months"},
-      "PROD_MU5SPLMSEC": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"31699","sourcePrice":16000,"sourceProdName":"🔥ChatGPT Free đã verify phone codex"},
-      "PROD_MU5T3T47AE": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"23607","sourcePrice":27000,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3"},
-      "PROD_MU6R34FZ4Z": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"23586","sourcePrice":1560000,"sourceProdName":"Google Gemini AI Veo3 - 18 Tháng"},
-      "PROD_MTPJ88O9": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"25289","sourcePrice":60000,"sourceProdName":"NÂNG CẤP CANVA PRO 1 NĂM"},
-      "PROD_MUAULFFCDT": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"31694","sourcePrice":300000,"sourceProdName":"CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG )"},
-      "PROD_MU4YOZEU2M": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"25646","sourcePrice":198,"sourceProdName":"Outlook Hotmail Trusted - OAuth2 Live 6 - 12 tháng"},
-      "PROD_MUJVFEFFNP": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"122260","sourcePrice":2818,"sourceProdName":"Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH"},
-      "PROD_MUJQDTNIH9": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"122260","sourcePrice":2817.5,"sourceProdName":"Proxy Datacenter us - 1 ngày"},
-      "PROD_MUP5LB7VAB": {"enabled":true,"provider":"ultrammo","sourceProdId":"32822","sourcePrice":34000,"sourceProdName":"MAIL VIỆT CỔ KÈM KÊNH RANDOM 200x-2026 - GMAIL CỔ KÈM KÊNH CỔ RANDOM 200x-2018 – TRUST CAO, CHƯA QUA DỊCH VỤ | KHÔNG DÍNH SĐT ẨN","baseUrl":"https://ultrammo.com"},
-      "PROD_MUOSDN0FCU": {"enabled":true,"provider":"ultrammo","sourceProdId":"26784","sourcePrice":13000,"sourceProdName":"gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa","baseUrl":"https://ultrammo.com"},
-      "PROD_MUORGNEQOE": {"enabled":true,"provider":"ultrammo","sourceProdId":"26774","sourcePrice":80000,"sourceProdName":"Youtube Premium: 3 Tháng","baseUrl":"https://ultrammo.com"},
-      "PROD_MUOQS3DOIU": {"enabled":true,"provider":"ultrammo","sourceProdId":"33131","sourcePrice":2400,"sourceProdName":"TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ","baseUrl":"https://ultrammo.com"},
-      "PROD_MUOQDRL4F0": {"enabled":true,"provider":"ultrammo","sourceProdId":"5759","sourcePrice":2200,"sourceProdName":"TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )","baseUrl":"https://ultrammo.com"},
-      "PROD_MUOIH8CW59": {"enabled":true,"provider":"ultrammo","sourceProdId":"25412","sourcePrice":6500,"sourceProdName":"NordVPN (7 Days)","baseUrl":"https://ultrammo.com"},
-      "MUNUEKI3NM": {"enabled":true,"provider":"ultrammo","sourceProdId":"32088","sourcePrice":167000,"sourceProdName":"🔥Chat GPT Plus GGPay | 1 tháng - Bảo hành 24h - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full","baseUrl":"https://ultrammo.com"},
-      "PROD_MUNUEKI3NM": {"enabled":true,"provider":"ultrammo","sourceProdId":"32088","sourcePrice":167000,"sourceProdName":"🔥Chat GPT Plus GGPay | 1 tháng - Bảo hành 24h - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full","baseUrl":"https://ultrammo.com"},
-      "PROD_MUKAXC4Q9T": {"enabled":true,"provider":"ultrammo","sourceProdId":"25460","sourcePrice":6500,"sourceProdName":"Surfshark VPN (7 Days)","baseUrl":"https://ultrammo.com"},
-      "PROD_MUK7P74YNT": {"enabled":true,"provider":"ultrammo","sourceProdId":"26777","sourcePrice":30000,"sourceProdName":"Youtube Premium: 1 Tháng","baseUrl":"https://ultrammo.com"},
-      "PROD_MUK75H3HAR": {"enabled":true,"provider":"ultrammo","sourceProdId":"32021","sourcePrice":75000,"sourceProdName":"[Slot] Netflix Full HD 4K HDR: 1 Tháng - BHF","baseUrl":"https://ultrammo.com"},
-      "PROD_MUK5VQH55X": {"enabled":true,"provider":"ultrammo","sourceProdId":"32748","sourcePrice":2900,"sourceProdName":"X > 2 month - X - NO GMAIL  - TWITTER SIÊU TRÂU BÒ - REG BẰNG PHONE","baseUrl":"https://ultrammo.com"},
-      "PROD_MUJZGSUPDI": {"enabled":true,"provider":"ultrammo","sourceProdId":"17406","sourcePrice":7500,"sourceProdName":"IG khỏe ngâm trên 6 tháng - IG strong over 6 months","baseUrl":"https://ultrammo.com"},
-      "PROD_MUJVJCV286": {"enabled":true,"provider":"ultrammo","sourceProdId":"34234","sourcePrice":13500,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","baseUrl":"https://ultrammo.com"},
-      "PROD_MUJV1YHQ6N": {"enabled":true,"provider":"ultrammo","sourceProdId":"26818","sourcePrice":13000,"sourceProdName":"Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ","baseUrl":"https://ultrammo.com"},
-      "PROD_MUJUGVQXET": {"enabled":true,"provider":"ultrammo","sourceProdId":"19388","sourcePrice":67000,"sourceProdName":"🔥Capcut Pro Team 1 THÁNG ( BẢO HÀNH FULL )","baseUrl":"https://ultrammo.com"},
-      "PROD_MUJU6XY3HK": {"enabled":true,"provider":"ultrammo","sourceProdId":"34238","sourcePrice":220000,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (30 Ngày)","baseUrl":"https://ultrammo.com"},
-      "PROD_MUJTYWFTQ7": {"enabled":true,"provider":"ultrammo","sourceProdId":"34234","sourcePrice":13500,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","baseUrl":"https://ultrammo.com"},
-      "PROD_MUJGUY19DD": {"enabled":true,"provider":"ultrammo","sourceProdId":"26784","sourcePrice":13000,"sourceProdName":"gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa","baseUrl":"https://ultrammo.com"},
-      "PROD_MUH57035HQ": {"enabled":true,"provider":"ultrammo","sourceProdId":"13629","sourcePrice":1200,"sourceProdName":"TÀI KHOẢN KLING AI 65 CREDIT","baseUrl":"https://ultrammo.com"},
-      "PROD_MU9YH8D9FK": {"enabled":true,"provider":"ultrammo","sourceProdId":"26818","sourcePrice":13000,"sourceProdName":"Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ","baseUrl":"https://ultrammo.com"},
-      "PROD_MU2YQ1J3PY": {"enabled":true,"provider":"ultrammo","sourceProdId":"32561","sourcePrice":325,"sourceProdName":"Hotmail Trusted Còn skip 7 days (Đã bật Oauth2)","baseUrl":"https://ultrammo.com"},
-      "PROD_MU2BIFBBNE": {"enabled":true,"provider":"ultrammo","sourceProdId":"16159","sourcePrice":8500,"sourceProdName":"Key HMA Android/PC 20-30 Ngày ( Bảo Hành Full )","baseUrl":"https://ultrammo.com"},
-      "PROD_MU2B32VLQY": {"enabled":true,"provider":"ultrammo","sourceProdId":"32035","sourcePrice":14000,"sourceProdName":"Capcut Pro 6-7 ngày dùng riêng 2 tb, bảo hành full","baseUrl":"https://ultrammo.com"},
-      "PROD_MU2A2S732Y": {"enabled":true,"provider":"ultrammo","sourceProdId":"25265","sourcePrice":5500,"sourceProdName":"ExpressVPN (3 Days)","baseUrl":"https://ultrammo.com"},
-      "PROD_MU29WM90LZ": {"enabled":true,"provider":"ultrammo","sourceProdId":"26819","sourcePrice":6000,"sourceProdName":"Canva Edu - 1 Tháng - Standard - Canva Education - Nâng cấp chính chủ","baseUrl":"https://ultrammo.com"},
-      "PROD_MU1G6LJX": {"enabled":true,"provider":"ultrammo","sourceProdId":"32035","sourcePrice":14000,"sourceProdName":"Capcut Pro 6-7 ngày dùng riêng 2 tb, bảo hành full","baseUrl":"https://ultrammo.com"},
-      "PROD_MTQX7SIK": {"enabled":true,"provider":"ultrammo","sourceProdId":"34752","sourcePrice":225,"sourceProdName":"12h Tiếng Anh","baseUrl":"https://ultrammo.com"}
+      "PROD_MTQQXO2E": {"enabled":true,"provider":"mail72h","sourceProdId":"712","sourcePrice":259,"sourceStock":72357,"sourceProdName":"24h [ ID 712 ]"},
+      "PROD_MTQWMPL5": {"enabled":true,"provider":"mail72h","sourceProdId":"818","sourcePrice":979,"sourceStock":5410,"sourceProdName":"7 ngày [ ID 818 ]"},
+      "PROD_MTQWQFZD": {"enabled":true,"provider":"mail72h","sourceProdId":"817","sourcePrice":3879,"sourceStock":4890,"sourceProdName":"30 ngày [ ID 817 ]"},
+      "PROD_MTQX1C7X": {"enabled":true,"provider":"shop1989nd","sourceProdId":"19745","sourcePrice":138.6,"sourceStock":9999,"sourceProdName":"Gmail Domain Cho Thuê live 12h+"},
+      "PROD_MTQX465U": {"enabled":true,"provider":"shop1989nd","sourceProdId":"19768","sourcePrice":53.2,"sourceStock":9999,"sourceProdName":"Gmail Domain Cho Thuê .live 10 phút"},
+      "PROD_MU5PWT7PP7": {"enabled":true,"provider":"ultrammo","sourceProdId":"13629","sourcePrice":1200,"sourceStock":532,"sourceProdName":"TÀI KHOẢN KLING AI 65 CREDIT","baseUrl":"https://ultrammo.com"},
+      "PROD_MTQZT2Y1": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"121063","sourcePrice":656,"sourceStock":88181,"sourceProdName":"Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months"},
+      "PROD_MU5SPLMSEC": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"31699","sourcePrice":16000,"sourceStock":16037,"sourceProdName":"🔥ChatGPT Free đã verify phone codex"},
+      "PROD_MU5T3T47AE": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"23607","sourcePrice":27000,"sourceStock":15,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , VEO3"},
+      "PROD_MU6R34FZ4Z": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"23586","sourcePrice":1560000,"sourceStock":10,"sourceProdName":"Google Gemini AI Veo3 - 18 Tháng"},
+      "PROD_MTPJ88O9": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"25289","sourcePrice":60000,"sourceStock":250,"sourceProdName":"NÂNG CẤP CANVA PRO 1 NĂM"},
+      "PROD_MUAULFFCDT": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"31694","sourcePrice":300000,"sourceStock":20,"sourceProdName":"CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG )"},
+      "PROD_MU4YOZEU2M": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"25646","sourcePrice":198,"sourceStock":1200,"sourceProdName":"Outlook Hotmail Trusted - OAuth2 Live 6 - 12 tháng"},
+      "PROD_MUJVFEFFNP": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"122260","sourcePrice":2818,"sourceStock":42,"sourceProdName":"Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH"},
+      "PROD_MUJQDTNIH9": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"122260","sourcePrice":2817.5,"sourceStock":42,"sourceProdName":"Proxy Datacenter us - 1 ngày"},
+      "PROD_MUP5LB7VAB": {"enabled":true,"provider":"ultrammo","sourceProdId":"32822","sourcePrice":34000,"sourceStock":109,"sourceProdName":"MAIL VIỆT CỔ KÈM KÊNH RANDOM 200x-2026 - GMAIL CỔ KÈM KÊNH CỔ RANDOM 200x-2018 – TRUST CAO, CHƯA QUA DỊCH VỤ | KHÔNG DÍNH SĐT ẨN","baseUrl":"https://ultrammo.com"},
+      "PROD_MUOSDN0FCU": {"enabled":true,"provider":"ultrammo","sourceProdId":"26784","sourcePrice":13000,"sourceStock":16,"sourceProdName":"gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa","baseUrl":"https://ultrammo.com"},
+      "PROD_MUORGNEQOE": {"enabled":true,"provider":"ultrammo","sourceProdId":"26774","sourcePrice":80000,"sourceStock":99999,"sourceProdName":"Youtube Premium: 3 Tháng","baseUrl":"https://ultrammo.com"},
+      "PROD_MUOQS3DOIU": {"enabled":true,"provider":"ultrammo","sourceProdId":"33131","sourcePrice":2400,"sourceStock":2801,"sourceProdName":"TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ","baseUrl":"https://ultrammo.com"},
+      "PROD_MUOQDRL4F0": {"enabled":true,"provider":"ultrammo","sourceProdId":"5759","sourcePrice":2200,"sourceStock":175,"sourceProdName":"TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )","baseUrl":"https://ultrammo.com"},
+      "PROD_MUOIH8CW59": {"enabled":true,"provider":"ultrammo","sourceProdId":"25412","sourcePrice":6500,"sourceStock":959,"sourceProdName":"NordVPN (7 Days)","baseUrl":"https://ultrammo.com"},
+      "MUNUEKI3NM": {"enabled":true,"provider":"ultrammo","sourceProdId":"32088","sourcePrice":167000,"sourceStock":15,"sourceProdName":"🔥Chat GPT Plus GGPay | 1 tháng - Bảo hành 24h - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full","baseUrl":"https://ultrammo.com"},
+      "PROD_MUNUEKI3NM": {"enabled":true,"provider":"ultrammo","sourceProdId":"32088","sourcePrice":167000,"sourceStock":15,"sourceProdName":"🔥Chat GPT Plus GGPay | 1 tháng - Bảo hành 24h - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full","baseUrl":"https://ultrammo.com"},
+      "PROD_MUKAXC4Q9T": {"enabled":true,"provider":"ultrammo","sourceProdId":"25460","sourcePrice":6500,"sourceStock":120,"sourceProdName":"Surfshark VPN (7 Days)","baseUrl":"https://ultrammo.com"},
+      "PROD_MUK7P74YNT": {"enabled":true,"provider":"ultrammo","sourceProdId":"26777","sourcePrice":30000,"sourceStock":99999,"sourceProdName":"Youtube Premium: 1 Tháng","baseUrl":"https://ultrammo.com"},
+      "PROD_MUK75H3HAR": {"enabled":true,"provider":"ultrammo","sourceProdId":"32021","sourcePrice":75000,"sourceStock":50,"sourceProdName":"[Slot] Netflix Full HD 4K HDR: 1 Tháng - BHF","baseUrl":"https://ultrammo.com"},
+      "PROD_MUK5VQH55X": {"enabled":true,"provider":"ultrammo","sourceProdId":"32748","sourcePrice":2900,"sourceStock":450,"sourceProdName":"X > 2 month - X - NO GMAIL  - TWITTER SIÊU TRÂU BÒ - REG BẰNG PHONE","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJZGSUPDI": {"enabled":true,"provider":"ultrammo","sourceProdId":"17406","sourcePrice":7500,"sourceStock":80,"sourceProdName":"IG khỏe ngâm trên 6 tháng - IG strong over 6 months","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJVJCV286": {"enabled":true,"provider":"ultrammo","sourceProdId":"34234","sourcePrice":13500,"sourceStock":100,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJV1YHQ6N": {"enabled":true,"provider":"ultrammo","sourceProdId":"26818","sourcePrice":13000,"sourceStock":1000,"sourceProdName":"Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJUGVQXET": {"enabled":true,"provider":"ultrammo","sourceProdId":"19388","sourcePrice":67000,"sourceStock":35,"sourceProdName":"🔥Capcut Pro Team 1 THÁNG ( BẢO HÀNH FULL )","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJU6XY3HK": {"enabled":true,"provider":"ultrammo","sourceProdId":"34238","sourcePrice":220000,"sourceStock":50,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (30 Ngày)","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJTYWFTQ7": {"enabled":true,"provider":"ultrammo","sourceProdId":"34234","sourcePrice":13500,"sourceStock":100,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","baseUrl":"https://ultrammo.com"},
+      "PROD_MUJGUY19DD": {"enabled":true,"provider":"ultrammo","sourceProdId":"26784","sourcePrice":13000,"sourceStock":16,"sourceProdName":"gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa","baseUrl":"https://ultrammo.com"},
+      "PROD_MUH57035HQ": {"enabled":true,"provider":"ultrammo","sourceProdId":"13629","sourcePrice":1200,"sourceStock":532,"sourceProdName":"TÀI KHOẢN KLING AI 65 CREDIT","baseUrl":"https://ultrammo.com"},
+      "PROD_MU9YH8D9FK": {"enabled":true,"provider":"ultrammo","sourceProdId":"26818","sourcePrice":13000,"sourceStock":1000,"sourceProdName":"Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ","baseUrl":"https://ultrammo.com"},
+      "PROD_MU2YQ1J3PY": {"enabled":true,"provider":"ultrammo","sourceProdId":"32561","sourcePrice":325,"sourceStock":5000,"sourceProdName":"Hotmail Trusted Còn skip 7 days (Đã bật Oauth2)","baseUrl":"https://ultrammo.com"},
+      "PROD_MU2BIFBBNE": {"enabled":true,"provider":"ultrammo","sourceProdId":"16159","sourcePrice":8500,"sourceStock":20,"sourceProdName":"Key HMA Android/PC 20-30 Ngày ( Bảo Hành Full )","baseUrl":"https://ultrammo.com"},
+      "PROD_MU2B32VLQY": {"enabled":true,"provider":"ultrammo","sourceProdId":"32035","sourcePrice":14000,"sourceStock":30,"sourceProdName":"Capcut Pro 6-7 ngày dùng riêng 2 tb, bảo hành full","baseUrl":"https://ultrammo.com"},
+      "PROD_MU2A2S732Y": {"enabled":true,"provider":"ultrammo","sourceProdId":"25265","sourcePrice":5500,"sourceStock":40,"sourceProdName":"ExpressVPN (3 Days)","baseUrl":"https://ultrammo.com"},
+      "PROD_MU29WM90LZ": {"enabled":true,"provider":"ultrammo","sourceProdId":"26819","sourcePrice":6000,"sourceStock":500,"sourceProdName":"Canva Edu - 1 Tháng - Standard - Canva Education - Nâng cấp chính chủ","baseUrl":"https://ultrammo.com"},
+      "PROD_MU1G6LJX": {"enabled":true,"provider":"ultrammo","sourceProdId":"32035","sourcePrice":14000,"sourceStock":30,"sourceProdName":"Capcut Pro 6-7 ngày dùng riêng 2 tb, bảo hành full","baseUrl":"https://ultrammo.com"},
+      "PROD_MTQX7SIK": {"enabled":true,"provider":"ultrammo","sourceProdId":"34752","sourcePrice":225,"sourceStock":225,"sourceProdName":"12h Tiếng Anh","baseUrl":"https://ultrammo.com"}
     };
 
     var _cachedApiProductMappings = null;
@@ -19514,6 +19626,9 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.getApiProductMapping = getApiProductMapping;
 
+    // BỘ NHỚ LƯU TỪ KHÓA TÌM KIẾM CHO TỪNG DÒNG SẢN PHẨM NGUỒN
+    window._mapRowSearchKeywords = window._mapRowSearchKeywords || {};
+
     function renderApiProductMappingsTable() {
       const tbody = document.getElementById("apiProductMappingsTableBody");
       if (!tbody) return;
@@ -19571,9 +19686,9 @@ function syncAllOpenViewsStock(changedProdId) {
       const pageProds = filteredProds.slice(startIndex, startIndex + PAGE_SIZE);
 
       tbody.innerHTML = pageProds.map(function(p) {
-        const map = mappings[p.id] || { enabled: false, provider: "shop1989nd", sourceProdId: "" };
+        const map = mappings[p.id] || { enabled: false, provider: "ultrammo", sourceProdId: "" };
         const isEnabled = !!map.enabled;
-        const curProvider = map.provider || "shop1989nd";
+        const curProvider = map.provider || "ultrammo";
 
         // Dropdown Nguồn Hàng (Cột 2) - TẤT CẢ NGUỒN (CHÍNH THỨC + TỰ THÊM)
         let providerSelectHtml = '<select id="mapProvider_' + p.id + '" onchange="handleProviderChange(\'' + p.id + '\')" style="width:100%; background:#0d121f; border:1px solid #1e293b; padding:6px 8px; border-radius:6px; color:#fff; font-size:0.78rem;">';
@@ -19586,23 +19701,82 @@ function syncAllOpenViewsStock(changedProdId) {
         });
         providerSelectHtml += '</select>';
 
-        // Dropdown Sản Phẩm Nguồn (Cột 3)
-        let sourceStockDisplay = "--";
-        let sourcePriceDisplay = "";
-        if (map.sourceProdId) {
+        // HIỂN THỊ TỒN KHO & GIÁ NHẬP RÕ RÀNG (CỘT 5)
+        let sourceStockDisplay = "";
+        if (isEnabled && map.sourceProdId) {
           const src = sourceProds.find(s => String(s.id) === String(map.sourceProdId));
-          if (src) {
-            sourceStockDisplay = '<span style="color:#10b981; font-weight:800;">' + (Number(src.amount) || 0).toLocaleString() + ' acc</span>';
-            sourcePriceDisplay = '<span style="font-size:0.75rem; color:#f59e0b;">(Giá nhập: ' + (typeof formatVND === "function" ? formatVND(src.price) : src.price) + ')</span>';
+          const liveStock = src ? (Number(src.amount !== undefined ? src.amount : src.stock) || 0) : ((typeof map.sourceStock === "number") ? map.sourceStock : (p.stock || 0));
+          const livePrice = src ? (Number(src.price) || 0) : (map.sourcePrice || 0);
+
+          if (liveStock > 0) {
+            sourceStockDisplay = '<span style="color:#10b981; font-weight:800; font-size:0.85rem;"><i class="fa-solid fa-signal"></i> ' + liveStock.toLocaleString() + ' acc</span>';
+          } else {
+            sourceStockDisplay = '<span style="color:#ef4444; font-weight:700; font-size:0.8rem;"><i class="fa-solid fa-circle-xmark"></i> 0 acc (Hết hàng)</span>';
+          }
+          if (livePrice > 0) {
+            sourceStockDisplay += '<br/><span style="font-size:0.72rem; color:#f59e0b;">(Giá nhập: ' + (typeof formatVND === "function" ? formatVND(livePrice) : livePrice + ' đ') + ')</span>';
+          }
+        } else {
+          // Sản phẩm bán từ kho nội bộ thủ công
+          const localStock = (typeof getShopProductStock === "function") ? getShopProductStock(p) : (p.stock || 0);
+          if (localStock > 0) {
+            sourceStockDisplay = '<span style="color:#38bdf8; font-weight:700; font-size:0.85rem;"><i class="fa-solid fa-box-archive"></i> ' + localStock.toLocaleString() + ' acc</span><br/><span style="font-size:0.7rem; color:#94a3b8;">(Kho shop)</span>';
+          } else {
+            sourceStockDisplay = '<span style="color:#64748b; font-size:0.75rem;"><i class="fa-solid fa-boxes-stacked"></i> Kho: 0 acc</span>';
           }
         }
 
+        // TẠO DROPDOWN VÀ Ô TÌM KIẾM SẢN PHẨM NGUỒN TƯƠNG ỨNG (HÌNH 2 STYLE)
+        const rowKw = window._mapRowSearchKeywords[p.id] || "";
+        const normKw = (typeof normApiText === "function") ? normApiText(rowKw) : rowKw.toLowerCase();
+        const kwWords = normKw.split(/\s+/).filter(Boolean);
+
+        const providerProds = sourceProds.filter(s => !s.provider || s.provider === curProvider);
+        let filteredSourceList = providerProds;
+        if (rowKw) {
+          filteredSourceList = providerProds.filter(s => {
+            const sId = String(s.id || "").toLowerCase();
+            if (sId === normKw || sId.includes(normKw)) return true;
+            const sText = (typeof normApiText === "function") ? normApiText((s.category || "") + " " + (s.name || "") + " " + sId) : ((s.category || "") + " " + (s.name || "") + " " + sId).toLowerCase();
+            return kwWords.length > 0 && kwWords.every(w => sText.includes(w));
+          });
+        }
+
         let selectHtml = '<select id="mapSelect_' + p.id + '" onchange="handleMappingChange(\'' + p.id + '\')" style="width:100%; background:#0d121f; border:1px solid #1e293b; padding:6px 10px; border-radius:6px; color:#fff; font-size:0.78rem;">';
-        selectHtml += '<option value="">-- Không liên kết (Bán từ kho thủ công) --</option>';
         
-        const filtered = sourceProds.filter(s => !s.provider || s.provider === curProvider);
-        filtered.forEach(function(src) {
-          const isSelected = String(src.id) === String(map.sourceProdId) ? ' selected="selected"' : '';
+        if (rowKw) {
+          selectHtml += '<option value="">-- ' + (filteredSourceList.length > 0 ? ('Tìm thấy ' + filteredSourceList.length + ' SP (Bấm để chọn)') : ('Không tìm thấy SP khớp "' + escapeHtml(rowKw) + '"')) + ' --</option>';
+        } else {
+          selectHtml += '<option value="">-- ' + (providerProds.length > 0 ? ('Chọn sản phẩm nguồn (' + providerProds.length + ' SP)') : 'Không liên kết (Bán từ kho thủ công)') + ' --</option>';
+        }
+
+        // ĐẢM BẢO SẢN PHẨM ĐANG LIÊN KẾT LUÔN ĐƯỢC CHỌN VÀ HIỂN THỊ Ở ĐẦU
+        let hasActiveSelected = false;
+        if (map.sourceProdId) {
+          const activeItem = providerProds.find(s => String(s.id) === String(map.sourceProdId));
+          if (activeItem) {
+            const aName = (typeof escapeHtml === "function") ? escapeHtml(activeItem.name) : activeItem.name;
+            const aCat = (typeof escapeHtml === "function") ? escapeHtml(activeItem.category || curProvider) : (activeItem.category || curProvider);
+            const aPrice = (typeof formatVND === "function") ? formatVND(activeItem.price) : activeItem.price;
+            const aStock = (Number(activeItem.amount) || 0).toLocaleString();
+            selectHtml += '<option value="' + activeItem.id + '" data-price="' + activeItem.price + '" data-stock="' + activeItem.amount + '" data-provider="' + curProvider + '" selected="selected">' +
+              '⭐ [ĐANG CHỌN] [' + aCat + '] ' + aName + ' - ' + aPrice + ' (Tồn: ' + aStock + ')' +
+            '</option>';
+            hasActiveSelected = true;
+          } else {
+            selectHtml += '<option value="' + map.sourceProdId + '" selected="selected" data-stock="' + (map.sourceStock || 0) + '">' +
+              '⭐ [ĐANG CHỌN] #' + map.sourceProdId + ' - ' + (escapeHtml(map.sourceProdName) || "Sản phẩm nguồn") + ' (Giữ liên kết)' +
+            '</option>';
+            hasActiveSelected = true;
+          }
+        }
+
+        // Render tối đa 150 sản phẩm khớp để mượt mà
+        const maxOptions = 150;
+        const displayOptions = filteredSourceList.slice(0, maxOptions);
+        displayOptions.forEach(function(src) {
+          if (hasActiveSelected && String(src.id) === String(map.sourceProdId)) return;
+          const isSelected = (!hasActiveSelected && String(src.id) === String(map.sourceProdId)) ? ' selected="selected"' : '';
           const pName = (typeof escapeHtml === "function") ? escapeHtml(src.name) : src.name;
           const pCat = (typeof escapeHtml === "function") ? escapeHtml(src.category || curProvider) : (src.category || curProvider);
           const pPrice = (typeof formatVND === "function") ? formatVND(src.price) : src.price;
@@ -19611,7 +19785,20 @@ function syncAllOpenViewsStock(changedProdId) {
             '[' + pCat + '] ' + pName + ' - ' + pPrice + ' (Tồn: ' + pStock + ')' +
           '</option>';
         });
+
+        if (filteredSourceList.length > maxOptions) {
+          selectHtml += '<option value="" disabled style="color:#f59e0b;">... Còn ' + (filteredSourceList.length - maxOptions) + ' SP khác (Gõ từ khóa ở ô trên để lọc nhanh) ...</option>';
+        }
         selectHtml += '</select>';
+
+        // TỔ HỢP Ô TÌM KIẾM + DROPDOWN (HÌNH 2 STYLE)
+        const searchInputBoxHtml = '<div style="display:flex; flex-direction:column; gap:5px; width:100%;">' +
+          '<div style="position:relative; width:100%;">' +
+            '<input type="text" id="mapSearch_' + p.id + '" class="map-search-row-inp" placeholder="🔍 Gõ từ khóa tìm SP nguồn (VD: Kling, Mail, TikTok...)" value="' + escapeHtml(rowKw) + '" oninput="handleMapRowSearch(\'' + p.id + '\', this.value)" style="width:100%; background:#070a12; border:1px solid #1e293b; padding:5px 8px 5px 24px; border-radius:5px; color:#38bdf8; font-size:0.75rem; box-sizing:border-box;" />' +
+            '<i class="fa-solid fa-magnifying-glass" style="position:absolute; left:7px; top:50%; transform:translateY(-50%); font-size:0.68rem; color:#64748b; pointer-events:none;"></i>' +
+          '</div>' +
+          selectHtml +
+        '</div>';
 
         return '<tr style="border-bottom:1px solid #162035;">' +
           '<td style="padding:10px 12px;">' +
@@ -19624,7 +19811,7 @@ function syncAllOpenViewsStock(changedProdId) {
             '</div>' +
           '</td>' +
           '<td style="padding:10px 12px; width:160px;">' + providerSelectHtml + '</td>' +
-          '<td style="padding:10px 12px; min-width:280px;">' + selectHtml + '</td>' +
+          '<td style="padding:10px 12px; min-width:300px;">' + searchInputBoxHtml + '</td>' +
           '<td style="padding:10px 12px; text-align:center; width:110px;">' +
             '<label class="switch" style="margin:0 auto;">' +
               '<input type="checkbox" id="mapToggle_' + p.id + '" onchange="handleMappingToggle(\'' + p.id + '\')"' + (isEnabled ? ' checked="checked"' : '') + '>' +
@@ -19634,9 +19821,8 @@ function syncAllOpenViewsStock(changedProdId) {
               (isEnabled ? 'BẬT (API)' : 'TẮT') +
             '</div>' +
           '</td>' +
-          '<td style="padding:10px 12px; text-align:center; width:110px;" id="mapStockDisplay_' + p.id + '">' +
+          '<td style="padding:10px 12px; text-align:center; width:120px;" id="mapStockDisplay_' + p.id + '">' +
             sourceStockDisplay +
-            (sourcePriceDisplay ? '<br/>' + sourcePriceDisplay : '') +
           '</td>' +
           '<td style="padding:10px 12px; text-align:center; width:90px;">' +
             '<button type="button" class="btn-auth" onclick="saveSingleApiMapping(\'' + p.id + '\')" style="font-size:0.72rem; padding:5px 10px; background:#3b82f6; border:none; border-radius:4px; color:#fff;" title="Lưu liên kết sản phẩm này"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>' +
@@ -19672,25 +19858,120 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.renderApiProductMappingsTable = renderApiProductMappingsTable;
 
-    // ĐỒNG BỘ VÀ LƯU LIÊN KẾT SẢN PHẨM API ON-DEMAND
-    function handleProviderChange(prodId) {
+    // HÀM TÌM KIẾM SẢN PHẨM NGUỒN TỨC THÌ CHO TỪNG DÒNG (HÌNH 2 STYLE)
+    function handleMapRowSearch(prodId, keyword) {
+      window._mapRowSearchKeywords = window._mapRowSearchKeywords || {};
+      window._mapRowSearchKeywords[prodId] = keyword || "";
+
       const pSel = document.getElementById("mapProvider_" + prodId);
       const sel = document.getElementById("mapSelect_" + prodId);
       if (!pSel || !sel) return;
       const provider = pSel.value;
+
+      const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+        ? window.cachedSourceProducts
+        : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+
+      const mappings = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+      const currentMap = mappings[prodId] || null;
+      const currentMappedId = sel.value || (currentMap ? currentMap.sourceProdId : "");
+
+      const providerProds = prods.filter(s => !s.provider || s.provider === provider);
+      const rawKw = String(keyword || "").trim();
+      const normKw = (typeof normApiText === "function") ? normApiText(rawKw) : rawKw.toLowerCase();
+      const kwWords = normKw.split(/\s+/).filter(Boolean);
+
+      let filtered = providerProds;
+      if (rawKw) {
+        filtered = providerProds.filter(s => {
+          const sId = String(s.id || "").toLowerCase();
+          if (sId === normKw || sId.includes(normKw)) return true;
+          const sText = (typeof normApiText === "function") ? normApiText((s.category || "") + " " + (s.name || "") + " " + sId) : ((s.category || "") + " " + (s.name || "") + " " + sId).toLowerCase();
+          return kwWords.length > 0 && kwWords.every(w => sText.includes(w));
+        });
+      }
+
+      const maxDisplay = 150;
+      const displayList = filtered.slice(0, maxDisplay);
+
+      let selectHtml = '';
+      if (rawKw) {
+        selectHtml += '<option value="">-- ' + (filtered.length > 0 ? ('Tìm thấy ' + filtered.length + ' SP (Bấm để chọn)') : ('Không tìm thấy SP khớp "' + escapeHtml(rawKw) + '"')) + ' --</option>';
+      } else {
+        selectHtml += '<option value="">-- ' + (providerProds.length > 0 ? ('Chọn sản phẩm nguồn (' + providerProds.length + ' SP)') : 'Không liên kết (Bán từ kho thủ công)') + ' --</option>';
+      }
+
+      let hasSelected = false;
+      if (currentMappedId) {
+        const activeItem = providerProds.find(s => String(s.id) === String(currentMappedId));
+        if (activeItem) {
+          const pName = (typeof escapeHtml === "function") ? escapeHtml(activeItem.name) : activeItem.name;
+          const pCat = (typeof escapeHtml === "function") ? escapeHtml(activeItem.category || provider) : (activeItem.category || provider);
+          const pPrice = (typeof formatVND === "function") ? formatVND(activeItem.price) : activeItem.price;
+          const pStock = (Number(activeItem.amount) || 0).toLocaleString();
+          selectHtml += '<option value="' + activeItem.id + '" data-price="' + activeItem.price + '" data-stock="' + activeItem.amount + '" data-provider="' + provider + '" selected="selected">' +
+            '⭐ [ĐANG CHỌN] [' + pCat + '] ' + pName + ' - ' + pPrice + ' (Tồn: ' + pStock + ')' +
+          '</option>';
+          hasSelected = true;
+        } else if (currentMap && String(currentMap.sourceProdId) === String(currentMappedId)) {
+          selectHtml += '<option value="' + currentMappedId + '" selected="selected" data-stock="' + (currentMap.sourceStock || 0) + '">' +
+            '⭐ [ĐANG CHỌN] #' + currentMappedId + ' - ' + (escapeHtml(currentMap.sourceProdName) || "Sản phẩm nguồn") + ' (Giữ liên kết)' +
+          '</option>';
+          hasSelected = true;
+        }
+      }
+
+      displayList.forEach(function(src) {
+        if (hasSelected && String(src.id) === String(currentMappedId)) return;
+        const isSelected = (!hasSelected && String(src.id) === String(currentMappedId)) ? ' selected="selected"' : '';
+        const pName = (typeof escapeHtml === "function") ? escapeHtml(src.name) : src.name;
+        const pCat = (typeof escapeHtml === "function") ? escapeHtml(src.category || provider) : (src.category || provider);
+        const pPrice = (typeof formatVND === "function") ? formatVND(src.price) : src.price;
+        const pStock = (Number(src.amount) || 0).toLocaleString();
+        selectHtml += '<option value="' + src.id + '" data-price="' + src.price + '" data-stock="' + src.amount + '" data-provider="' + (src.provider || provider) + '"' + isSelected + '>' +
+          '[' + pCat + '] ' + pName + ' - ' + pPrice + ' (Tồn: ' + pStock + ')' +
+        '</option>';
+      });
+
+      if (filtered.length > maxDisplay) {
+        selectHtml += '<option value="" disabled style="color:#f59e0b;">... Còn ' + (filtered.length - maxDisplay) + ' SP khác (Hãy gõ từ khóa cụ thể hơn để lọc) ...</option>';
+      }
+
+      sel.innerHTML = selectHtml;
+    }
+    window.handleMapRowSearch = handleMapRowSearch;
+
+    function handleProviderChange(prodId) {
+      const pSel = document.getElementById("mapProvider_" + prodId);
+      const sInp = document.getElementById("mapSearch_" + prodId);
+      const sel = document.getElementById("mapSelect_" + prodId);
+      if (!pSel || !sel) return;
+      if (sInp) sInp.value = "";
+      if (window._mapRowSearchKeywords) window._mapRowSearchKeywords[prodId] = "";
+      const provider = pSel.value;
+
       const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
         ? window.cachedSourceProducts
         : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
       
-      const filtered = prods.filter(s => !s.provider || s.provider === provider);
+      const hasProds = prods.some(s => s && s.provider === provider);
+      if (!hasProds) {
+        sel.innerHTML = '<option value="" disabled selected>⏳ Đang tải SP từ ' + escapeHtml(provider) + '... (Vui lòng chờ)</option>';
+        if (typeof fetchSingleSourceProducts === "function") {
+          fetchSingleSourceProducts(provider, false).then(() => {
+            if (typeof handleMapRowSearch === "function") handleMapRowSearch(prodId, "");
+            handleMappingChange(prodId);
+          }).catch(() => {
+            if (typeof handleMapRowSearch === "function") handleMapRowSearch(prodId, "");
+            handleMappingChange(prodId);
+          });
+          return;
+        }
+      }
 
-      let selectHtml = '<option value="">-- Không liên kết (Bán từ kho thủ công) --</option>';
-      filtered.forEach(function(src) {
-        selectHtml += '<option value="' + src.id + '" data-price="' + src.price + '" data-stock="' + src.amount + '" data-provider="' + provider + '">' +
-          '[' + (src.category || provider) + '] ' + src.name + ' - ' + (typeof formatVND === "function" ? formatVND(src.price) : src.price) + ' (Tồn: ' + (Number(src.amount) || 0).toLocaleString() + ')' +
-        '</option>';
-      });
-      sel.innerHTML = selectHtml;
+      if (typeof handleMapRowSearch === "function") {
+        handleMapRowSearch(prodId, "");
+      }
       handleMappingChange(prodId);
     }
     window.handleProviderChange = handleProviderChange;
