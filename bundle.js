@@ -1,8 +1,8 @@
 // =========================================================================
-// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.3.9)
+// UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.0)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.3.9";
+const MMO_CURRENT_CODE_VERSION = "4.4.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -13741,6 +13741,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
 
+      if (viewId !== "viewProductDetail") {
+        currentSelectedProduct = null;
+        window.currentSelectedProduct = null;
+        window._currentActiveDetailProduct = null;
+        window._isOpeningProductDetail = false;
+        window._openingProductId = null;
+        window._pendingProductId = null;
+        try { localStorage.removeItem("mmo_last_viewed_prod"); } catch(e) {}
+      }
+
       localStorage.setItem("mmo_current_view", viewId);
       if (viewId === "viewDeposit" && typeof prepareDeposit === "function") {
         const initAmt = window._targetDepositAmount || 20000;
@@ -16622,21 +16632,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             if (typeof renderAdminDashboard === "function") renderAdminDashboard();
             if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
           } else if (curActiveView === "viewProductDetail") {
-            if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && typeof openProductDetailById === "function") {
-              openProductDetailById(currentSelectedProduct.id, true);
+            const dtlView = document.getElementById("viewProductDetail");
+            const isDtlVisible = dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden");
+            if (isDtlVisible && typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
+              const freshCur = MOCK_DATA.products.find(p => p && p.id === currentSelectedProduct.id);
+              if (freshCur) {
+                currentSelectedProduct = freshCur;
+                if (typeof openProductDetailById === "function") {
+                  openProductDetailById(freshCur.id, true);
+                }
+              }
             }
           } else {
             if (typeof renderCategories === "function") renderCategories();
             if (typeof renderProductGrid === "function") renderProductGrid();
-          }
-          if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
-            const freshCur = MOCK_DATA.products.find(p => p && p.id === currentSelectedProduct.id);
-            if (freshCur) {
-              currentSelectedProduct = freshCur;
-              if (typeof openProductDetailById === "function") {
-                openProductDetailById(freshCur.id, true);
-              }
-            }
           }
         }
       } catch(e) {
@@ -26701,8 +26710,20 @@ function syncAllOpenViewsStock(changedProdId) {
     window.renderDetailRelatedProducts = renderDetailRelatedProducts;
     window.renderRelatedProductsSeo = renderDetailRelatedProducts;
 
-    function openProductDetailById(id) {
+    function openProductDetailById(id, isSilentRefresh) {
       if (!id) return;
+
+      // [CHẶN ĐỨNG TỰ ĐỘNG CHUYỂN HƯỚNG / NHẢY VIEW]:
+      // Nếu là cuộc gọi làm mới ngầm (silent refresh): BẮT BUỘC chỉ chạy khi người dùng ĐANG THỰC SỰ ở trang chi tiết sản phẩm!
+      if (isSilentRefresh) {
+        const curActiveView = (typeof localStorage !== "undefined" && localStorage.getItem("mmo_current_view")) || "viewStore";
+        const dtlView = document.getElementById("viewProductDetail");
+        const isDtlVisible = dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden");
+        if (curActiveView !== "viewProductDetail" || !isDtlVisible) {
+          return; // TUYỆT ĐỐI KHÔNG CHUYỂN HƯỚNG hay tự động nhảy trang khi người dùng đang ở trang khác!
+        }
+      }
+
       let cleanId = String(id).trim();
       if (cleanId === "PROD_MU2AB1XEGI" || cleanId === "SP_GEMINI_VEO3") {
         cleanId = "PROD_MU6R34FZ4Z";
@@ -26723,13 +26744,15 @@ function syncAllOpenViewsStock(changedProdId) {
         return;
       }
 
-      // [TỐI ƯU CỐT LÕI - 1 LẦN BẤM TỚI NGAY TRANG ĐÍCH 0MS]: Đánh dấu mở sản phẩm & cập nhật URL tức thì
-      window._isOpeningProductDetail = true;
-      window._openingProductId = cleanId;
-      try {
-        const newUrl = (window.location.origin || "https://www.muabantaikhoanmmo.com") + "/?prod=" + encodeURIComponent(cleanId) + "&view=viewProductDetail";
-        window.history.replaceState({ prod: cleanId, view: "viewProductDetail" }, "", newUrl);
-      } catch(e) {}
+      if (!isSilentRefresh) {
+        // [TỐI ƯU CỐT LÕI - 1 LẦN BẤM TỚI NGAY TRANG ĐÍCH 0MS]: Đánh dấu mở sản phẩm & cập nhật URL tức thì
+        window._isOpeningProductDetail = true;
+        window._openingProductId = cleanId;
+        try {
+          const newUrl = (window.location.origin || "https://www.muabantaikhoanmmo.com") + "/?prod=" + encodeURIComponent(cleanId) + "&view=viewProductDetail";
+          window.history.replaceState({ prod: cleanId, view: "viewProductDetail" }, "", newUrl);
+        } catch(e) {}
+      }
 
       // TÌM SẢN PHẨM ĐA TẦNG SIÊU TỐC TRONG BỘ NHỚ (0ms)
       const allProds = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products : []);
@@ -26788,10 +26811,12 @@ function syncAllOpenViewsStock(changedProdId) {
       if (activeNow !== "viewProductDetail" && activeNow !== "viewPreOrderDetail") {
         _previousView = activeNow;
       }
-      if (typeof switchView === "function") {
-        switchView("viewProductDetail");
+      if (!isSilentRefresh) {
+        if (typeof switchView === "function") {
+          switchView("viewProductDetail");
+        }
+        try { window.scrollTo(0, 0); } catch(e) {}
       }
-      try { window.scrollTo(0, 0); } catch(e) {}
 
       // Nếu chưa có trong bộ nhớ cục bộ: Nạp siêu tốc từ Cloudflare Worker Turso API (100ms), KHÔNG gọi Google Sheets 10s
       if (!p) {
@@ -35300,14 +35325,14 @@ function initMMOApplication() {
           targetView = "viewPrivacy";
         } else if (hash === "viewTerms" || hash === "terms" || viewParam === "viewTerms") {
           targetView = "viewTerms";
-        } else if (hasProdParam && explicitProdId) {
-          targetView = "viewProductDetail";
-        } else if (hasBlogParam || isArticlePath) {
-          targetView = "viewBlogDetail";
         } else if (viewParam && validViews.includes(viewParam) && viewParam !== "viewProductDetail") {
           targetView = viewParam;
         } else if (hash && validViews.includes(hash) && hash !== "viewProductDetail") {
           targetView = hash;
+        } else if (hasProdParam && explicitProdId) {
+          targetView = "viewProductDetail";
+        } else if (hasBlogParam || isArticlePath) {
+          targetView = "viewBlogDetail";
         } else if (savedView && validViews.includes(savedView) && savedView !== "viewProductDetail") {
           targetView = savedView;
         } else {
