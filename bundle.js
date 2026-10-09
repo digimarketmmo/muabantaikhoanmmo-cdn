@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.4.6";
+const MMO_CURRENT_CODE_VERSION = "4.4.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -88,18 +88,18 @@ window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
     if (typeof localStorage !== "undefined") {
       const _origSet = localStorage.setItem.bind(localStorage);
       localStorage.setItem = function(k, v) {
-        if (k && /khotaikhoanso/i.test(k)) return;
-        if (typeof v === "string" && /khotaikhoanso/i.test(v)) {
+        if (k && (/khotaikhoanso/i.test(k) || k.includes("1775731336499"))) return;
+        if (typeof v === "string" && (/khotaikhoanso/i.test(v) || v.includes("1775731336499") || /sản phẩm test/i.test(v))) {
           if (k === "mmo_products" || k === "mmo_admin_products") {
             try {
               const arr = JSON.parse(v);
               if (Array.isArray(arr)) {
-                const cleanArr = arr.filter(p => !JSON.stringify(p).toLowerCase().includes("khotaikhoanso"));
+                const cleanArr = arr.filter(p => p && !JSON.stringify(p).toLowerCase().includes("khotaikhoanso") && String(p.id) !== "1775731336499" && !String(p.name || "").toLowerCase().includes("sản phẩm test") && !String(p.name || "").toLowerCase().includes("san pham test") && String(p.name || "").toLowerCase() !== "test" && String(p.name || "").toLowerCase() !== "tét");
                 return _origSet(k, JSON.stringify(cleanArr));
               }
             } catch(eArr) {}
           }
-          return;
+          if (/khotaikhoanso/i.test(v)) return;
         }
         return _origSet(k, v);
       };
@@ -249,7 +249,14 @@ function healStorageQuota(forceEmergency) {
               }
             }
 
-            const cleanProds = prods.filter(p => !JSON.stringify(p).toLowerCase().includes("khotaikhoanso"));
+            let cleanProds = prods.filter(p => !JSON.stringify(p).toLowerCase().includes("khotaikhoanso"));
+            // [BẢO VỆ TRIỆT ĐỂ: XÓA SỔ HOÀN TOÀN SẢN PHẨM TEST 1775731336499]
+            cleanProds = cleanProds.filter(p => {
+              if (!p) return false;
+              const pId = String(p.id || '').trim();
+              const pNm = String(p.name || '').trim().toLowerCase();
+              return pId !== '1775731336499' && !pNm.includes('sản phẩm test') && !pNm.includes('san pham test') && pNm !== 'test' && pNm !== 'tét';
+            });
             cleanProds.forEach(function(p) {
               if (p && p.image && (p.image.startsWith("data:image/") || p.image.includes("khotaikhoanso"))) {
                 p.image = (typeof KNOWN_CDN_MAP !== "undefined" && KNOWN_CDN_MAP[p.id]) ? KNOWN_CDN_MAP[p.id] : ("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image");
@@ -266,6 +273,20 @@ function healStorageQuota(forceEmergency) {
         }
       } catch(e) {}
     });
+
+    // DỌN SẠCH TẬN GỐC TẤT CẢ KHÓA LIÊN QUAN ĐẾN SẢN PHẨM TEST 1775731336499
+    try {
+      localStorage.removeItem("mmo_custom_img_1775731336499");
+      localStorage.removeItem("mmo_custom_desc_1775731336499");
+      localStorage.removeItem("mmo_product_reviews_1775731336499");
+      const rawDel = localStorage.getItem("mmo_deleted_product_ids") || "[]";
+      let arrDel = JSON.parse(rawDel);
+      if (!Array.isArray(arrDel)) arrDel = [];
+      if (!arrDel.includes("1775731336499")) {
+        arrDel.push("1775731336499");
+        localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(arrDel));
+      }
+    } catch(eCleanTestKeys) {}
 
     let totalChars = 0;
     for (let i = 0; i < localStorage.length; i++) {
@@ -5154,13 +5175,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "SP_CANVA",
       "PROD_MTPI7PIO",
       "PROD_MU2AB0S8FB",
-      "PROD_MU345TKTK2"
+      "PROD_MU345TKTK2",
+      "1775731336499"
     ];
 
     const PERMANENT_DELETED_IDS = [
       "PROD_MTPI7PIO",
       "PROD_MU2AB0S8FB",
-      "PROD_MU345TKTK2"
+      "PROD_MU345TKTK2",
+      "1775731336499"
     ];
     window.PERMANENT_DELETED_IDS = PERMANENT_DELETED_IDS;
 
@@ -5190,10 +5213,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!pid) return true;
 
       // TUYỆT ĐỐI KHÔNG HIỂN THỊ BẤT KỲ SẢN PHẨM DEMO HOẶC TEST NÀO
-      if (pid === "PROD_TEST" || pid.startsWith("SP_") || DUMMY_SEED_IDS.includes(pid)) return true;
+      if (pid === "PROD_TEST" || pid === "1775731336499" || pid.startsWith("SP_") || DUMMY_SEED_IDS.includes(pid)) return true;
       if (typeof productOrId === "object") {
         const pName = String(productOrId.name || "").trim().toLowerCase();
-        if (pName === "test" || pName.startsWith("test ") || pName.startsWith("demo ") || pid.toLowerCase().includes("test")) return true;
+        if (pName === "test" || pName === "tét" || pName.includes("sản phẩm test") || pName.includes("san pham test") || pName.startsWith("test ") || pName.startsWith("demo ") || pid.toLowerCase().includes("test")) return true;
         if (productOrId.price <= 0 && (!productOrId.variants || productOrId.variants.length === 0)) return true;
       }
 
@@ -5370,8 +5393,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const savedProds = localStorage.getItem("mmo_admin_products") || localStorage.getItem("mmo_products");
         if (savedProds !== null) {
           try {
-            const parsed = JSON.parse(savedProds);
+            let parsed = JSON.parse(savedProds);
             if (Array.isArray(parsed) && parsed.length > 0) {
+              // BẢO VỆ CHẶT CHẼ: LỌC BỎ HOÀN TOÀN SẢN PHẨM TEST
+              parsed = parsed.filter(function(p) {
+                if (!p) return false;
+                const pId = String(p.id || '').trim();
+                const pNm = String(p.name || '').trim().toLowerCase();
+                return pId !== '1775731336499' && !pNm.includes('sản phẩm test') && !pNm.includes('san pham test') && pNm !== 'test' && pNm !== 'tét';
+              });
               // [SSOT]: Khi load từ localStorage, bảo toàn accounts array của từng variant
               // accounts là nguồn dữ liệu tuyệt đối - KHÔNG được overwrite bằng dữ liệu cũ
               if (MOCK_DATA.products && MOCK_DATA.products.length > 0) {
