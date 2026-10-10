@@ -234,11 +234,11 @@ function healStorageQuota(forceEmergency) {
               return;
             }
 
-            // [BẢO VỆ TOÀN DIỆN PHONE FARM]: Nếu cache đang thiếu sản phẩm Phone Farm (< 11) hoặc ảnh J7 Pro bị dính ảnh demo, dọn cache để nạp mới đầy đủ từ Turso SSOT
+            // [BẢO VỆ TOÀN DIỆN PHONE FARM]: Nếu cache đang thiếu sản phẩm Phone Farm (< 13) hoặc ảnh J7 Pro bị dính ảnh demo, dọn cache để nạp mới đầy đủ từ Turso SSOT
             const pfCount = prods.filter(p => p && p.category === 'Phone Farm').length;
             const j7ProProd = prods.find(p => p && p.id === 'PROD_MU2LYZY5C7');
             const hasDemoJ7 = j7ProProd && j7ProProd.image && (j7ProProd.image.startsWith("data:") || j7ProProd.image.includes("sample"));
-            if (pfCount < 11 || hasDemoJ7) {
+            if (pfCount < 13 || hasDemoJ7) {
               localStorage.removeItem(key);
               return;
             }
