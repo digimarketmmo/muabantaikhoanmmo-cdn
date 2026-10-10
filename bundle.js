@@ -2,10 +2,10 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.6.2";
+const MMO_CURRENT_CODE_VERSION = "4.6.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
-const REAL_TIKTOK_BRAZIL_ACCOUNTS = ["hiepiwt1312|BR@15235QTTEW|ooz8uxrqsl@sv366.mytempmail.org|","t_lai_86_1991|BR@15235QTTEW|29zlqqor7r@sv327.mytempmail.org|","f5.tan.2811|BR@15235QTTEW|imxse8oyeg@sv391.mytempmail.org|","hoang.nguy.w5.2407|BR@15235QTTEW|ecy1l0pfes@sv712.mytempmail.org|","ong.hoan.5l.2002|BR@15235QTTEW|xnofes2f8r@sv422.mytempmail.org|","c_nguyet_6dd_2003|BR@15235QTTEW|qu3bka63ov@sv230.mytempmail.org|","mac.hang.j8.1993|BR@15235QTTEW|8wle7v1e7f@sv349.mytempmail.org|","1404.huynh.t|BR@15235QTTEW|6tj2g53oev@sv478.mytempmail.org|","tram.chung.fk.0602|BR@15235QTTEW|xqxgxlsl07@sv917.mytempmail.org|","c_khiet_do_1905|BR@15235QTTEW|k0wxkw3ip8@sv790.mytempmail.org|","1996.hue.x|BR@15235QTTEW|nsknvrfiz1@sv180.mytempmail.org|","nhu9wv1203|BR@15235QTTEW|2xu44xy6v8@sv423.mytempmail.org|","user32949996025027|BR@15235QTTEW|jw2o7f1s6i@sv591.mytempmail.org|","moccvl0706|BR@15235QTTEW|aixbsvdzmc@sv127.mytempmail.org|","ke_yen_2vn_0707|BR@15235QTTEW|18y32yh2qc@sv731.mytempmail.org|","user73617146919102|BR@15235QTTEW|0o2af33rhe@sv608.mytempmail.org|","user10353292356088|BR@15235QTTEW|v21lzds6lh@sv626.mytempmail.org|","ew_duong_2007|BR@15235QTTEW|82n6drcq55@sv511.mytempmail.org|","h.tien.xqy.0308|BR@15235QTTEW|igw5nwn6l5@sv45.mytempmail.org|","0906.phan.k|BR@15235QTTEW|fk68xlsnn5@sv560.mytempmail.org|","tan_thoai_jn_1311200|BR@15235QTTEW|mxme5grdmh@sv486.mytempmail.org|","9c.ho.1609|BR@15235QTTEW|pcegzxe4df@sv717.mytempmail.org|","user9445093404627|BR@15235QTTEW|841qx2gksv@sv298.mytempmail.org|","khue.chung.7w.0202|BR@15235QTTEW|uvytf59l36@sv36.mytempmail.org|","mau_bui_0f_1206|BR@15235QTTEW|bnenhe5t0t@sv124.mytempmail.org|","3005_lu_l|BR@15235QTTEW|5ptshv17yk@sv165.mytempmail.org|","chau.dinh.am.1411|BR@15235QTTEW|14thsbe0r7@sv834.mytempmail.org|","zu_hien_1990|BR@15235QTTEW|ee8u4gqkh2@sv733.mytempmail.org|","tfdtuy1999|BR@15235QTTEW|uopgch6z8n@sv798.mytempmail.org|","t.nhu.381.1994|BR@15235QTTEW|uofj7xipq6@sv814.mytempmail.org|","l_dung_gy_1410|BR@15235QTTEW|3vimdqf2uk@sv734.mytempmail.org|","v_ha_ryk_0808|BR@15235QTTEW|tnvk9tjf56@sv128.mytempmail.org|","c.trac.ct.2905|BR@15235QTTEW|1zxktql09e@sv74.mytempmail.org|","h_nhien_sg_1990|BR@15235QTTEW|efk2s3rx2s@sv302.mytempmail.org|","t2lbtruc2006|BR@15235QTTEW|f52rfpj7u2@sv621.mytempmail.org|","vanhljpd1412|BR@15235QTTEW|xyc89bmres@sv702.mytempmail.org|PV2YEBGPAO4CI5VU4G6PMZRB7IK2PJLQ","d.minh.gf2.1992|BR@15235QTTEW|ppyufksxx5@sv872.mytempmail.org|IUQNKVUX4K5TDD7JIW4V4ZAO2RFPJEBB","t.luu.q7r.0811|BR@15235QTTEW|ikson65enn@sv647.mytempmail.org|","trieu.trac.je8.1401|BR@15235QTTEW|wd5ovetsnc@sv551.mytempmail.org|","nguyen.ham.j9y.16041|BR@15235QTTEW|ma247v1yeu@sv213.mytempmail.org|","ong.bao.eig.31042004|BR@15235QTTEW|oybffoba71@sv782.mytempmail.org|","tuy_chau_9a_1707|BR@15235QTTEW|j2l5ta2y3y@sv197.mytempmail.org|","up7.phan.2907|BR@15235QTTEW|tlcn5f6usn@sv848.mytempmail.org|","t.tran.pfc.0411|BR@15235QTTEW|ttj7pmzbdj@sv537.mytempmail.org|","bang3olt0207|BR@15235QTTEW|dx0bznksvi@sv501.mytempmail.org|","ton.dinh.72u.2003|BR@15235QTTEW|jxduti9wco@sv841.mytempmail.org|","jno.quach.0910|BR@15235QTTEW|oxd9nz7fbx@sv525.mytempmail.org|","n.do.82m.1106|BR@15235QTTEW|oebzwott4m@sv931.mytempmail.org|MY6AVISYDWIPXOGYBVN66H6TCUPJ6QXH","m1.kim.1999|BR@15235QTTEW|ew0tfrwame@sv559.mytempmail.org|","o_tho_5hb_2009|BR@15235QTTEW|p1e4isrc1u@sv354.mytempmail.org|","kieu30p0203|BR@15235QTTEW|oi8wple1gj@sv718.mytempmail.org|","1b.khiet.2000|BR@15235QTTEW|uuz1lyfzcn@sv129.mytempmail.org|","tak5truong2000|BR@15235QTTEW|0v4h5d6o9a@sv233.mytempmail.org|","t_diem_cz_1995|BR@15235QTTEW|xsggbhney1@sv313.mytempmail.org|","user1928270525407|BR@15235QTTEW|r0ewc3ex15@sv934.mytempmail.org|","xuyen.lu.a21.1401|BR@15235QTTEW|astz3fjabu@sv881.mytempmail.org|","user7407617129630|BR@15235QTTEW|gymdpf4s5l@sv625.mytempmail.org|","khuu_huynh_qg_170719|BR@15235QTTEW|4hqna1bqvu@sv356.mytempmail.org|","q_tung_xo_1999|BR@15235QTTEW|gt1drdq3sv@sv546.mytempmail.org|","v_han_33_2001|BR@15235QTTEW|c16c6k8b2d@sv496.mytempmail.org|","trieu.yen.koq.2802|BR@15235QTTEW|996wbqlwxj@sv574.mytempmail.org|","le.ly.f27.05022007|BR@15235QTTEW|ofntr5g2o8@sv582.mytempmail.org|","klcwphong2004|BR@15235QTTEW|rhzavdc4b0@sv238.mytempmail.org|","1407_khong_t|BR@15235QTTEW|xa0osggia1@sv289.mytempmail.org|","a.trinh.yd.1101|BR@15235QTTEW|641ldta3ht@sv501.mytempmail.org|","2007_ho_o|BR@15235QTTEW|swud8u2h99@sv848.mytempmail.org|","user7848587558749|BR@15235QTTEW|mt880zkyb2@sv454.mytempmail.org|BFCKDNFWQASAAKXC4346CJ5G47LLAPUL","l_man_bw2_2003|BR@15235QTTEW|qs8pb6mfvg@sv139.mytempmail.org|","vuong_hang_1vd_03041|BR@15235QTTEW|sl9ed1k0bq@sv850.mytempmail.org|","v_dong_7c_1302|BR@15235QTTEW|cvdp0ex96a@sv270.mytempmail.org|","zw.thao.2004|BR@15235QTTEW|r67b9a7fps@sv958.mytempmail.org|","nnmkvan2006|BR@15235QTTEW|52pycxosen@sv517.mytempmail.org|","hien_duong_xf_0104|BR@15235QTTEW|cf2a5lz6xu@sv867.mytempmail.org","nguy_hoang_ln6_1994|BR@15235QTTEW|kx3ygnuqp9@sv999.mytempmail.org","n.thach.sh.1909|BR@15235QTTEW|k9ik33qm66@sv729.mytempmail.org"];
+const REAL_TIKTOK_BRAZIL_ACCOUNTS = [];
 window.REAL_TIKTOK_BRAZIL_ACCOUNTS = REAL_TIKTOK_BRAZIL_ACCOUNTS;
 
 // =========================================================================
@@ -273,17 +273,10 @@ function healStorageQuota(forceEmergency) {
                   }
                 });
               }
-              // Đối với PROD_MTPIJ9XV: Nếu chưa có tài khoản thật hoặc dính tài khoản ảo cũ, đồng bộ 75 tài khoản thật
+              // Đối với PROD_MTPIJ9XV: Quản lý tồn kho trực tiếp qua hệ thống database backend an toàn
               if (p.id === "PROD_MTPIJ9XV" && Array.isArray(p.variants) && p.variants[0]) {
-                const hasFake = p.variants[0].accounts && p.variants[0].accounts.some(a => typeof a === 'string' && a.startsWith("USR_"));
-                if (hasFake || !p.variants[0].accounts || p.variants[0].accounts.length === 0) {
-                  const realTikTok = (typeof REAL_TIKTOK_BRAZIL_ACCOUNTS !== "undefined") ? REAL_TIKTOK_BRAZIL_ACCOUNTS : [];
-                  if (realTikTok.length > 0) {
-                    p.variants[0].accounts = [...realTikTok];
-                    p.variants[0].stock = realTikTok.length;
-                    p.variants[0].available = true;
-                    p.stock = realTikTok.length;
-                  }
+                if (!p.variants[0].stock && p.stock) {
+                  p.variants[0].stock = p.stock;
                 }
               }
               if (p && p.image && (p.image.startsWith("data:image/") || p.image.includes("khotaikhoanso") || p.image.includes("nFV4Rln"))) {
@@ -999,7 +992,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "selltainguyenmmo",
           "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+          "apiKey": "",
           "sourceProdId": "32428",
           "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
           "sourcePrice": 48000,
@@ -1017,7 +1010,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "selltainguyenmmo",
       "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+      "apiKey": "",
       "sourceProdId": "32428",
       "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
       "sourcePrice": 48000,
@@ -1049,7 +1042,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "32822",
           "sourceProdName": "MAIL VIỆT CỔ KÈM KÊNH RANDOM 200x-2026 - GMAIL CỔ KÈM KÊNH CỔ RANDOM 200x-2018 – TRUST CAO, CHƯA QUA DỊCH VỤ | KHÔNG DÍNH SĐT ẨN",
           "sourcePrice": 34000,
@@ -1067,7 +1060,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "32822",
       "sourceProdName": "MAIL VIỆT CỔ KÈM KÊNH RANDOM 200x-2026 - GMAIL CỔ KÈM KÊNH CỔ RANDOM 200x-2018 – TRUST CAO, CHƯA QUA DỊCH VỤ | KHÔNG DÍNH SĐT ẨN",
       "sourcePrice": 34000,
@@ -1099,7 +1092,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "26784",
           "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
           "sourcePrice": 13000,
@@ -1117,7 +1110,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "26784",
       "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
       "sourcePrice": 13000,
@@ -1149,7 +1142,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "26774",
           "sourceProdName": "Youtube Premium: 3 Tháng",
           "sourcePrice": 80000,
@@ -1167,7 +1160,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "26774",
       "sourceProdName": "Youtube Premium: 3 Tháng",
       "sourcePrice": 80000,
@@ -1199,7 +1192,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "33131",
           "sourceProdName": "TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ",
           "sourcePrice": 2400,
@@ -1217,7 +1210,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "33131",
       "sourceProdName": "TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ",
       "sourcePrice": 2400,
@@ -1249,7 +1242,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "5759",
           "sourceProdName": "TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )",
           "sourcePrice": 2200,
@@ -1267,7 +1260,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "5759",
       "sourceProdName": "TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )",
       "sourcePrice": 2200,
@@ -1299,7 +1292,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "25412",
           "sourceProdName": "NordVPN (7 Days)",
           "sourcePrice": 7500,
@@ -1317,7 +1310,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "25412",
       "sourceProdName": "NordVPN (7 Days)",
       "sourcePrice": 7500,
@@ -1349,7 +1342,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "32088",
           "sourceProdName": "🔥Chat GPT Plus GGPay | 1 tháng - Bảo hành 24h - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full",
           "sourcePrice": 172000,
@@ -1367,7 +1360,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "32088",
       "sourceProdName": "🔥Chat GPT Plus GGPay | 1 tháng - Bảo hành 24h - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full",
       "sourcePrice": 172000,
@@ -1399,7 +1392,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "34324",
           "sourceProdName": "Proxy IPv6 Proxy Nhật (1 tháng)",
           "sourcePrice": 550,
@@ -1417,7 +1410,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "34324",
       "sourceProdName": "Proxy IPv6 Proxy Nhật (1 tháng)",
       "sourcePrice": 550,
@@ -1449,7 +1442,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "25460",
           "sourceProdName": "Surfshark VPN (7 Days)",
           "sourcePrice": 7500,
@@ -1467,7 +1460,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "25460",
       "sourceProdName": "Surfshark VPN (7 Days)",
       "sourcePrice": 7500,
@@ -1499,7 +1492,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "nguyenlieummo",
           "baseUrl": "https://nguyenlieummo.com.vn",
-          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+          "apiKey": "",
           "sourceProdId": "125564",
           "sourceProdName": "API CODEX 10M Tokens - 1 DAYS",
           "sourcePrice": 54337.5,
@@ -1517,7 +1510,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "nguyenlieummo",
       "baseUrl": "https://nguyenlieummo.com.vn",
-      "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+      "apiKey": "",
       "sourceProdId": "125564",
       "sourceProdName": "API CODEX 10M Tokens - 1 DAYS",
       "sourcePrice": 54337.5,
@@ -1549,7 +1542,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "26777",
           "sourceProdName": "Youtube Premium: 1 Tháng",
           "sourcePrice": 30000,
@@ -1567,7 +1560,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "26777",
       "sourceProdName": "Youtube Premium: 1 Tháng",
       "sourcePrice": 30000,
@@ -1599,7 +1592,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "nguyenlieummo",
           "baseUrl": "https://nguyenlieummo.com.vn",
-          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+          "apiKey": "",
           "sourceProdId": "128006",
           "sourceProdName": "Threads Random Veri Phone",
           "sourcePrice": 47840,
@@ -1617,7 +1610,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "nguyenlieummo",
       "baseUrl": "https://nguyenlieummo.com.vn",
-      "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+      "apiKey": "",
       "sourceProdId": "128006",
       "sourceProdName": "Threads Random Veri Phone",
       "sourcePrice": 47840,
@@ -1649,7 +1642,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "32021",
           "sourceProdName": "[Slot] Netflix Full HD 4K HDR: 1 Tháng - BHF",
           "sourcePrice": 75000,
@@ -1667,7 +1660,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "32021",
       "sourceProdName": "[Slot] Netflix Full HD 4K HDR: 1 Tháng - BHF",
       "sourcePrice": 75000,
@@ -1699,7 +1692,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "nguyenlieummo",
           "baseUrl": "https://nguyenlieummo.com.vn",
-          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+          "apiKey": "",
           "sourceProdId": "129177",
           "sourceProdName": "Telegram +27 South Africa 2FA Veri Phone Tạo 3+ Ngày",
           "sourcePrice": 44160,
@@ -1717,7 +1710,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "nguyenlieummo",
       "baseUrl": "https://nguyenlieummo.com.vn",
-      "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+      "apiKey": "",
       "sourceProdId": "129177",
       "sourceProdName": "Telegram +27 South Africa 2FA Veri Phone Tạo 3+ Ngày",
       "sourcePrice": 44160,
@@ -1776,7 +1769,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "nguyenlieummo",
           "baseUrl": "https://nguyenlieummo.com.vn",
-          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+          "apiKey": "",
           "sourceProdId": "119457",
           "sourceProdName": "0. INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP - NAME RANDOM",
           "sourcePrice": 3036,
@@ -1794,7 +1787,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "nguyenlieummo",
       "baseUrl": "https://nguyenlieummo.com.vn",
-      "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+      "apiKey": "",
       "sourceProdId": "119457",
       "sourceProdName": "0. INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP - NAME RANDOM",
       "sourcePrice": 3036,
@@ -1826,7 +1819,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "32748",
           "sourceProdName": "X &gt; 1 month - X - NO GMAIL  - TWITTER SIÊU TRÂU BÒ - REG BẰNG PHONE",
           "sourcePrice": 2900,
@@ -1844,7 +1837,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "32748",
       "sourceProdName": "X &gt; 1 month - X - NO GMAIL  - TWITTER SIÊU TRÂU BÒ - REG BẰNG PHONE",
       "sourcePrice": 2900,
@@ -1876,7 +1869,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "34136",
           "sourceProdName": "Proxy US - 1 ngày",
           "sourcePrice": 792,
@@ -1894,7 +1887,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "34136",
       "sourceProdName": "Proxy US - 1 ngày",
       "sourcePrice": 792,
@@ -1926,7 +1919,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "34136",
           "sourceProdName": "Proxy US - 1 ngày",
           "sourcePrice": 792,
@@ -1944,7 +1937,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "34136",
       "sourceProdName": "Proxy US - 1 ngày",
       "sourcePrice": 792,
@@ -1976,7 +1969,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "17406",
           "sourceProdName": "IG khỏe ngâm trên 6 tháng - IG strong over 6 months",
           "sourcePrice": 7500,
@@ -1994,7 +1987,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "17406",
       "sourceProdName": "IG khỏe ngâm trên 6 tháng - IG strong over 6 months",
       "sourcePrice": 7500,
@@ -2026,7 +2019,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "34234",
           "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
           "sourcePrice": 13500,
@@ -2044,7 +2037,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "34234",
       "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
       "sourcePrice": 13500,
@@ -2076,7 +2069,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "nguyenlieummo",
           "baseUrl": "https://nguyenlieummo.com.vn",
-          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+          "apiKey": "",
           "sourceProdId": "122260",
           "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
           "sourcePrice": 2818,
@@ -2094,7 +2087,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "nguyenlieummo",
       "baseUrl": "https://nguyenlieummo.com.vn",
-      "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+      "apiKey": "",
       "sourceProdId": "122260",
       "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
       "sourcePrice": 2818,
@@ -2126,7 +2119,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "26818",
           "sourceProdName": "Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ",
           "sourcePrice": 13000,
@@ -2144,7 +2137,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "26818",
       "sourceProdName": "Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ",
       "sourcePrice": 13000,
@@ -2176,7 +2169,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "19388",
           "sourceProdName": "🔥Capcut Pro Team 1 THÁNG ( BẢO HÀNH FULL )",
           "sourcePrice": 67000,
@@ -2194,7 +2187,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "19388",
       "sourceProdName": "🔥Capcut Pro Team 1 THÁNG ( BẢO HÀNH FULL )",
       "sourcePrice": 67000,
@@ -2226,7 +2219,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "34238",
           "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (30 Ngày)",
           "sourcePrice": 220000,
@@ -2244,7 +2237,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "34238",
       "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (30 Ngày)",
       "sourcePrice": 220000,
@@ -2276,7 +2269,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "34234",
           "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
           "sourcePrice": 13500,
@@ -2294,7 +2287,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "34234",
       "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
       "sourcePrice": 13500,
@@ -2326,7 +2319,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "nguyenlieummo",
           "baseUrl": "https://nguyenlieummo.com.vn",
-          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+          "apiKey": "",
           "sourceProdId": "122260",
           "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
           "sourcePrice": 2817.5,
@@ -2344,7 +2337,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "nguyenlieummo",
       "baseUrl": "https://nguyenlieummo.com.vn",
-      "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+      "apiKey": "",
       "sourceProdId": "122260",
       "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
       "sourcePrice": 2817.5,
@@ -2376,7 +2369,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "26784",
           "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
           "sourcePrice": 13000,
@@ -2394,7 +2387,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "26784",
       "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
       "sourcePrice": 13000,
@@ -2426,7 +2419,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "13629",
           "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
           "sourcePrice": 960,
@@ -2444,7 +2437,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "13629",
       "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
       "sourcePrice": 960,
@@ -2604,7 +2597,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "26818",
           "sourceProdName": "Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ",
           "sourcePrice": 13000,
@@ -2622,7 +2615,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "26818",
       "sourceProdName": "Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ",
       "sourcePrice": 13000,
@@ -2654,7 +2647,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "selltainguyenmmo",
           "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+          "apiKey": "",
           "sourceProdId": "32428",
           "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
           "sourcePrice": 48000,
@@ -2672,7 +2665,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "selltainguyenmmo",
       "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+      "apiKey": "",
       "sourceProdId": "32428",
       "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
       "sourcePrice": 48000,
@@ -2704,7 +2697,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "selltainguyenmmo",
           "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+          "apiKey": "",
           "sourceProdId": "32428",
           "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
           "sourcePrice": 48000,
@@ -2722,7 +2715,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "selltainguyenmmo",
       "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+      "apiKey": "",
       "sourceProdId": "32428",
       "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
       "sourcePrice": 48000,
@@ -2781,7 +2774,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "13629",
           "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
           "sourcePrice": 1200,
@@ -2799,7 +2792,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "13629",
       "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
       "sourcePrice": 1200,
@@ -2831,7 +2824,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "32561",
           "sourceProdName": "Hotmail Trusted Còn skip 7 days (Đã bật Oauth2)",
           "sourcePrice": 325,
@@ -2849,7 +2842,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "32561",
       "sourceProdName": "Hotmail Trusted Còn skip 7 days (Đã bật Oauth2)",
       "sourcePrice": 325,
@@ -2881,7 +2874,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "nguyenlieummo",
           "baseUrl": "https://nguyenlieummo.com.vn",
-          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+          "apiKey": "",
           "sourceProdId": "128981",
           "sourceProdName": "ig qua sử dụng nofa",
           "sourcePrice": 2846,
@@ -2899,7 +2892,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "nguyenlieummo",
       "baseUrl": "https://nguyenlieummo.com.vn",
-      "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+      "apiKey": "",
       "sourceProdId": "128981",
       "sourceProdName": "ig qua sử dụng nofa",
       "sourcePrice": 2846,
@@ -2931,7 +2924,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "selltainguyenmmo",
           "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+          "apiKey": "",
           "sourceProdId": "25560",
           "sourceProdName": "ChatGPT Free đã ver phone Codex · Kho",
           "sourcePrice": 20000,
@@ -2949,7 +2942,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "selltainguyenmmo",
       "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+      "apiKey": "",
       "sourceProdId": "25560",
       "sourceProdName": "ChatGPT Free đã ver phone Codex · Kho",
       "sourcePrice": 20000,
@@ -3980,7 +3973,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "sellmmo",
           "baseUrl": "https://sellmmo.vn",
-          "apiKey": "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
+          "apiKey": "",
           "sourceProdId": "20947",
           "sourceProdName": "TikTok Pháp - FR, Tạo Từ Tháng 09/2024 - Hotmail Lock - Acc Cổ Ngon",
           "sourcePrice": 2000,
@@ -3997,7 +3990,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "sellmmo",
       "baseUrl": "https://sellmmo.vn",
-      "apiKey": "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
+      "apiKey": "",
       "sourceProdId": "20947",
       "sourceProdName": "TikTok Pháp - FR, Tạo Từ Tháng 09/2024 - Hotmail Lock - Acc Cổ Ngon",
       "sourcePrice": 2000,
@@ -4029,7 +4022,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "16159",
           "sourceProdName": "Key HMA Android/PC 20-30 Ngày ( Bảo Hành Full )",
           "sourcePrice": 8500,
@@ -4047,7 +4040,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "16159",
       "sourceProdName": "Key HMA Android/PC 20-30 Ngày ( Bảo Hành Full )",
       "sourcePrice": 8500,
@@ -4079,7 +4072,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "32035",
           "sourceProdName": "Capcut Pro 6-7 ngày dùng riêng 2 tb, bảo hành full",
           "sourcePrice": 14000,
@@ -4097,7 +4090,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "32035",
       "sourceProdName": "Capcut Pro 6-7 ngày dùng riêng 2 tb, bảo hành full",
       "sourcePrice": 14000,
@@ -4163,7 +4156,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "25265",
           "sourceProdName": "ExpressVPN (3 Days)",
           "sourcePrice": 6000,
@@ -4181,7 +4174,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "25265",
       "sourceProdName": "ExpressVPN (3 Days)",
       "sourcePrice": 6000,
@@ -4213,7 +4206,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "26819",
           "sourceProdName": "Canva Edu - 1 Tháng - Standard - Canva Education - Nâng cấp chính chủ",
           "sourcePrice": 6000,
@@ -4231,7 +4224,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "26819",
       "sourceProdName": "Canva Edu - 1 Tháng - Standard - Canva Education - Nâng cấp chính chủ",
       "sourcePrice": 6000,
@@ -4365,7 +4358,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "32035",
           "sourceProdName": "Capcut Pro 6-7 ngày dùng riêng 2 tb, bảo hành full",
           "sourcePrice": 14000,
@@ -4383,7 +4376,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "32035",
       "sourceProdName": "Capcut Pro 6-7 ngày dùng riêng 2 tb, bảo hành full",
       "sourcePrice": 14000,
@@ -4772,7 +4765,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "mail72h",
           "baseUrl": "https://mail72h.com",
-          "apiKey": "83636705f8a17c6c48fcd8b7c8a32f10",
+          "apiKey": "",
           "sourceProdId": "818",
           "sourceProdName": "7  [ ID 9 ]",
           "sourcePrice": 979,
@@ -4789,7 +4782,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "mail72h",
       "baseUrl": "https://mail72h.com",
-      "apiKey": "83636705f8a17c6c48fcd8b7c8a32f10",
+      "apiKey": "",
       "sourceProdId": "818",
       "sourceProdName": "7  [ ID 9 ]",
       "sourcePrice": 979,
@@ -4821,7 +4814,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "mail72h",
           "baseUrl": "https://mail72h.com",
-          "apiKey": "83636705f8a17c6c48fcd8b7c8a32f10",
+          "apiKey": "",
           "sourceProdId": "817",
           "sourceProdName": "30 ngày [ ID 817 ] No",
           "sourcePrice": 7879,
@@ -4839,7 +4832,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "mail72h",
       "baseUrl": "https://mail72h.com",
-      "apiKey": "83636705f8a17c6c48fcd8b7c8a32f10",
+      "apiKey": "",
       "sourceProdId": "817",
       "sourceProdName": "30 ngày [ ID 817 ] No",
       "sourcePrice": 7879,
@@ -4872,7 +4865,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "26001",
           "sourceProdName": "Gmail Domain Cho Thuê live 2h-4h -No Gmail - đọc thư tại 2h.api999api.com/VIEWemail - số lượng tồn kho ảo",
           "sourcePrice": 132,
@@ -4889,7 +4882,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "26001",
       "sourceProdName": "Gmail Domain Cho Thuê live 2h-4h -No Gmail - đọc thư tại 2h.api999api.com/VIEWemail - số lượng tồn kho ảo",
       "sourcePrice": 132,
@@ -4921,7 +4914,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "sellmmo",
           "baseUrl": "https://sellmmo.vn",
-          "apiKey": "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
+          "apiKey": "",
           "sourceProdId": "21451",
           "sourceProdName": "Gmail Domain Cho Thuê .live 10 phút - đọc thư tại 2h.api999api.com/VIEWemail ( mail die vẫn đọc thư được) - số lượng tồn kho ảo",
           "sourcePrice": 118,
@@ -4939,7 +4932,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "sellmmo",
       "baseUrl": "https://sellmmo.vn",
-      "apiKey": "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
+      "apiKey": "",
       "sourceProdId": "21451",
       "sourceProdName": "Gmail Domain Cho Thuê .live 10 phút - đọc thư tại 2h.api999api.com/VIEWemail ( mail die vẫn đọc thư được) - số lượng tồn kho ảo",
       "sourcePrice": 118,
@@ -4971,7 +4964,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "enabled": true,
           "provider": "ultrammo",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "apiKey": "",
           "sourceProdId": "34752",
           "sourceProdName": "12h Tiếng Anh",
           "sourcePrice": 225,
@@ -4989,7 +4982,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "enabled": true,
       "provider": "ultrammo",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "apiKey": "",
       "sourceProdId": "34752",
       "sourceProdName": "12h Tiếng Anh",
       "sourcePrice": 225,
@@ -8961,8 +8954,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": "Bearer MMO_ADMIN_SECURE_TOKEN_2026",
-            "x-admin-token": "MMO_ADMIN_SECURE_TOKEN_2026"
+            "Authorization": "Bearer " + ((typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a"),
+            "x-admin-token": ((typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a")
           },
           body: JSON.stringify({
             email: cleanEmail,
@@ -11899,7 +11892,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         // [CLOUD SYNC & TURSO SSOT]: Gửi trực tiếp lên Cloudflare Worker & Turso SQLite, chờ xác nhận lưu thành công
         try {
-          const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SECURE_TOKEN_2026";
+          const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a";
           const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
           const leanVariants = (variants || []).map(v => ({
             name: v.name,
@@ -16220,7 +16213,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       },
 
       getAdminSecret: function() {
-        return (localStorage.getItem("mmo_admin_secret") || "MMO_ADMIN_SECURE_TOKEN_2026").trim();
+        const stored = (localStorage.getItem("mmo_admin_secret") || "").trim();
+        if (stored && stored !== "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a") {
+          return stored;
+        }
+        const rotatedSec = "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a";
+        try { localStorage.setItem("mmo_admin_secret", rotatedSec); } catch(e) {}
+        return rotatedSec;
       },
 
       setAdminSecret: function(token) {
@@ -18122,7 +18121,7 @@ function syncAllOpenViewsStock(changedProdId) {
         name: "mail72h.com",
         badgeColor: "#10b981",
         baseUrl: "https://mail72h.com",
-        apiKey: "83636705f8a17c6c48fcd8b7c8a32f10",
+        apiKey: "",
         username: "manhdong",
         rechargeUrl: "https://mail72h.com/client/recharge"
       },
@@ -18131,7 +18130,7 @@ function syncAllOpenViewsStock(changedProdId) {
         name: "sellmmo.vn",
         badgeColor: "#38bdf8",
         baseUrl: "https://sellmmo.vn",
-        apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
+        apiKey: "",
         username: "manhdong",
         rechargeUrl: "https://sellmmo.vn/recharge"
       },
@@ -18140,7 +18139,7 @@ function syncAllOpenViewsStock(changedProdId) {
         name: "nguyenlieummo.com.vn",
         badgeColor: "#f59e0b",
         baseUrl: "https://nguyenlieummo.com.vn",
-        apiKey: "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+        apiKey: "",
         username: "manhdong",
         rechargeUrl: "https://nguyenlieummo.com.vn/client/wallet"
       },
@@ -18149,7 +18148,7 @@ function syncAllOpenViewsStock(changedProdId) {
         name: "selltainguyenmmo.com",
         badgeColor: "#8b5cf6",
         baseUrl: "https://selltainguyenmmo.com",
-        apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+        apiKey: "",
         username: "manhdong",
         rechargeUrl: "https://selltainguyenmmo.com/client/wallet"
       },
@@ -18159,7 +18158,7 @@ function syncAllOpenViewsStock(changedProdId) {
         badgeColor: "#f97316",
         baseUrl: "https://www.shop1989nd.com",
         username: "manhdong",
-        password: "Manhdong123@",
+        password: "",
         rechargeUrl: "https://www.shop1989nd.com/user/recharge",
         authType: "userpass"
       },
@@ -18168,9 +18167,9 @@ function syncAllOpenViewsStock(changedProdId) {
         name: "ultrammo.com",
         badgeColor: "#6366f1",
         baseUrl: "https://ultrammo.com",
-        apiKey: "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+        apiKey: "",
         username: "manhdong",
-        password: "Trieudo40@",
+        password: "",
         rechargeUrl: "https://ultrammo.com/client/wallet"
       }
     };
@@ -20627,7 +20626,7 @@ function syncAllOpenViewsStock(changedProdId) {
           TURSO_CLIENT.saveProduct(prod).catch(function(e) { console.warn("Lưu Turso error:", e); });
         }
         try {
-          const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SECURE_TOKEN_2026";
+          const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a";
           const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
           fetch(workerUrl + "/api/admin/products/save", {
             method: "POST",
@@ -24882,7 +24881,7 @@ function syncAllOpenViewsStock(changedProdId) {
             const cloudKey = cs['ai_key_' + p] || cs['mmo_ai_key_' + p];
             if (cloudKey && typeof MMO_AI_KEYS !== 'undefined') {
               const current = MMO_AI_KEYS.get(p);
-              if (!current || (p === 'gemini' && current === 'AIzaSyC9sF4GpjjE3maBpVDi35wVIrsaPbZ3EZg' && cloudKey !== current)) {
+              if (!current || (cloudKey && cloudKey !== current)) {
                 MMO_AI_KEYS.set(p, cloudKey);
                 const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
                 if (el && !el.value) el.value = cloudKey;
@@ -25012,12 +25011,7 @@ function syncAllOpenViewsStock(changedProdId) {
       _aiProviders.forEach(function(p) {
         const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
         let val = (typeof MMO_AI_KEYS !== 'undefined' && MMO_AI_KEYS && typeof MMO_AI_KEYS.get === 'function') ? MMO_AI_KEYS.get(p) : '';
-        if (!val && p === 'gemini') {
-          val = 'AIzaSyC9sF4GpjjE3maBpVDi35wVIrsaPbZ3EZg';
-          if (typeof MMO_AI_KEYS !== 'undefined' && MMO_AI_KEYS && typeof MMO_AI_KEYS.set === 'function') {
-            MMO_AI_KEYS.set('gemini', val);
-          }
-        }
+        // Do not force leaked Gemini key
         if (el) el.value = val || '';
       });
 
@@ -25055,10 +25049,7 @@ function syncAllOpenViewsStock(changedProdId) {
           savedCount++;
         } else {
           let exist = MMO_AI_KEYS.get(p);
-          if (!exist && p === 'gemini') {
-            exist = 'AIzaSyC9sF4GpjjE3maBpVDi35wVIrsaPbZ3EZg';
-            MMO_AI_KEYS.set('gemini', exist);
-          }
+          // Do not force leaked Gemini key
           if (exist) {
             keyObj['ai_key_' + p] = exist;
             if (el) el.value = exist;
@@ -25166,9 +25157,7 @@ function syncAllOpenViewsStock(changedProdId) {
           if (!v) {
             v = MMO_AI_KEYS.get(p);
           }
-          if (!v && p === 'gemini') {
-            v = 'AIzaSyC9sF4GpjjE3maBpVDi35wVIrsaPbZ3EZg';
-          }
+          // Do not force leaked Gemini key
           if (v) {
             MMO_AI_KEYS.set(p, v);
             settings['ai_key_' + p] = v;
@@ -26367,7 +26356,7 @@ function syncAllOpenViewsStock(changedProdId) {
                     // Local có số dư dương (ví dụ vừa nạp SePay) nhưng Turso = 0 -> Sync số dư lên Turso
                     fetch(apiUrl + "/api/user/sync", {
                       method: "POST",
-                      headers: { "Content-Type": "application/json", "x-admin-token": "MMO_ADMIN_SECURE_TOKEN_2026" },
+                      headers: { "Content-Type": "application/json", "x-admin-token": ((typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a") },
                       body: JSON.stringify({ email: cleanUserMail, balance: curLocalBal })
                     }).catch(() => {});
                   } else if (tursoBal !== curLocalBal && tursoBal > 0) {
@@ -26381,9 +26370,13 @@ function syncAllOpenViewsStock(changedProdId) {
         }
 
         let cloudOrders = [];
+        const admSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a";
         if (cleanUserMail && !isAdm) {
           try {
-            const uRes = await fetch(apiUrl + "/api/orders?email=" + encodeURIComponent(cleanUserMail) + "&limit=200", { cache: "no-store" });
+            const uRes = await fetch(apiUrl + "/api/orders?email=" + encodeURIComponent(cleanUserMail) + "&limit=200", {
+              cache: "no-store",
+              headers: { "Authorization": "Bearer " + admSec, "x-admin-token": admSec }
+            });
             if (uRes.ok) {
               const uData = await uRes.json();
               const uList = Array.isArray(uData) ? uData : (uData.orders || []);
@@ -26392,11 +26385,18 @@ function syncAllOpenViewsStock(changedProdId) {
           } catch(e) {}
         }
 
-        const res = await fetch(apiUrl + "/api/orders?limit=300", { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          const generalList = Array.isArray(data) ? data : (data.orders || []);
-          if (Array.isArray(generalList)) cloudOrders = cloudOrders.concat(generalList);
+        if (isAdm) {
+          try {
+            const res = await fetch(apiUrl + "/api/orders?limit=300", {
+              cache: "no-store",
+              headers: { "Authorization": "Bearer " + admSec, "x-admin-token": admSec }
+            });
+            if (res.ok) {
+              const data = await res.json();
+              const generalList = Array.isArray(data) ? data : (data.orders || []);
+              if (Array.isArray(generalList)) cloudOrders = cloudOrders.concat(generalList);
+            }
+          } catch(e) {}
         }
 
         if (!Array.isArray(cloudOrders) || cloudOrders.length === 0) return;
