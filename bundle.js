@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.6.3";
+const MMO_CURRENT_CODE_VERSION = "4.6.4";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const REAL_TIKTOK_BRAZIL_ACCOUNTS = [];
@@ -8950,20 +8950,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const uName = name || (currentUser && currentUser.name) || cleanEmail.split("@")[0];
         const uRole = role || (currentUser && currentUser.role) || (cleanEmail === ROOT_ADMIN_EMAIL || cleanEmail === "manhdongvtc@gmail.com" ? "ADMIN" : "USER");
         const finalBal = Math.max(0, Number(balance) || 0);
+        const admSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "";
+        const syncHeaders = { "Content-Type": "application/json" };
+        if (admSec) {
+          syncHeaders["Authorization"] = "Bearer " + admSec;
+          syncHeaders["x-admin-token"] = admSec;
+        }
         await fetch(workerUrl + "/api/user/sync", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + ((typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a"),
-            "x-admin-token": ((typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a")
-          },
+          headers: syncHeaders,
           body: JSON.stringify({
             email: cleanEmail,
             name: uName,
             balance: finalBal,
             role: uRole
           })
-        });
+        }).catch(function() {});
       } catch(e) {}
     }
     window.syncUserBalanceToTursoCloud = syncUserBalanceToTursoCloud;
@@ -11892,7 +11894,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         // [CLOUD SYNC & TURSO SSOT]: Gửi trực tiếp lên Cloudflare Worker & Turso SQLite, chờ xác nhận lưu thành công
         try {
-          const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a";
+          const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "";
           const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
           const leanVariants = (variants || []).map(v => ({
             name: v.name,
@@ -16213,13 +16215,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       },
 
       getAdminSecret: function() {
-        const stored = (localStorage.getItem("mmo_admin_secret") || "").trim();
-        if (stored && stored !== "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a") {
-          return stored;
-        }
-        const rotatedSec = "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a";
-        try { localStorage.setItem("mmo_admin_secret", rotatedSec); } catch(e) {}
-        return rotatedSec;
+        // BẢO MẬT TUYỆT ĐỐI (Zero-Secret Client): Client không bao giờ hardcode token.
+        // Chỉ lấy secret do chính Admin nhập trong trang quản trị và lưu trong localStorage riêng.
+        return (localStorage.getItem("mmo_admin_secret") || "").trim();
       },
 
       setAdminSecret: function(token) {
@@ -20626,14 +20624,16 @@ function syncAllOpenViewsStock(changedProdId) {
           TURSO_CLIENT.saveProduct(prod).catch(function(e) { console.warn("Lưu Turso error:", e); });
         }
         try {
-          const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a";
+          const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "";
           const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          const pSaveHeaders = { "Content-Type": "application/json" };
+          if (workerSecret) {
+            pSaveHeaders["Authorization"] = "Bearer " + workerSecret;
+            pSaveHeaders["x-admin-token"] = workerSecret;
+          }
           fetch(workerUrl + "/api/admin/products/save", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer " + workerSecret
-            },
+            headers: pSaveHeaders,
             body: JSON.stringify({ product: prod })
           }).catch(function() {});
         } catch(eWk) {}
@@ -25005,6 +25005,9 @@ function syncAllOpenViewsStock(changedProdId) {
       const defaultGas = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
       const gasVal = (s.gasUrl && s.gasUrl.trim()) ? s.gasUrl.trim() : defaultGas;
       if (document.getElementById("setGasUrl")) document.getElementById("setGasUrl").value = gasVal;
+      if (document.getElementById("setAdminSecretToken")) {
+        document.getElementById("setAdminSecretToken").value = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "";
+      }
 
       // AI API Keys - Tự động nạp và bảo vệ chống mất dữ liệu đa tầng (Anti-Key-Loss Shield)
       const _aiProviders = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
@@ -25105,6 +25108,10 @@ function syncAllOpenViewsStock(changedProdId) {
         // Marquee text (lấy đúng giá trị người dùng vừa gõ vào ô)
         const marqueeInput = document.getElementById("setMarqueeText");
         const marqueeText = marqueeInput ? marqueeInput.value.trim() : "";
+        const adminSecInp = document.getElementById("setAdminSecretToken");
+        if (adminSecInp && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.setAdminSecret) {
+          MMO_WORKER_API.setAdminSecret(adminSecInp.value.trim());
+        }
 
         // Google Apps Script Web App URL - Chống rỗng, fallback URL thật
         const defaultGas = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
@@ -26356,7 +26363,12 @@ function syncAllOpenViewsStock(changedProdId) {
                     // Local có số dư dương (ví dụ vừa nạp SePay) nhưng Turso = 0 -> Sync số dư lên Turso
                     fetch(apiUrl + "/api/user/sync", {
                       method: "POST",
-                      headers: { "Content-Type": "application/json", "x-admin-token": ((typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a") },
+                      headers: (function() {
+                        const h = { "Content-Type": "application/json" };
+                        const s = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "";
+                        if (s) { h["x-admin-token"] = s; h["Authorization"] = "Bearer " + s; }
+                        return h;
+                      })(),
                       body: JSON.stringify({ email: cleanUserMail, balance: curLocalBal })
                     }).catch(() => {});
                   } else if (tursoBal !== curLocalBal && tursoBal > 0) {
@@ -26370,22 +26382,8 @@ function syncAllOpenViewsStock(changedProdId) {
         }
 
         let cloudOrders = [];
-        const admSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "MMO_ADMIN_SEC_2026_x8f3d7a9b1c2e405a";
-        if (cleanUserMail && !isAdm) {
-          try {
-            const uRes = await fetch(apiUrl + "/api/orders?email=" + encodeURIComponent(cleanUserMail) + "&limit=200", {
-              cache: "no-store",
-              headers: { "Authorization": "Bearer " + admSec, "x-admin-token": admSec }
-            });
-            if (uRes.ok) {
-              const uData = await uRes.json();
-              const uList = Array.isArray(uData) ? uData : (uData.orders || []);
-              if (Array.isArray(uList)) cloudOrders = cloudOrders.concat(uList);
-            }
-          } catch(e) {}
-        }
-
-        if (isAdm) {
+        const admSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "";
+        if (isAdm && admSec) {
           try {
             const res = await fetch(apiUrl + "/api/orders?limit=300", {
               cache: "no-store",
