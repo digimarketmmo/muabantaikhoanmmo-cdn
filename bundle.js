@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.5.9";
+const MMO_CURRENT_CODE_VERSION = "4.6.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const REAL_TIKTOK_BRAZIL_ACCOUNTS = ["hiepiwt1312|BR@15235QTTEW|ooz8uxrqsl@sv366.mytempmail.org|","t_lai_86_1991|BR@15235QTTEW|29zlqqor7r@sv327.mytempmail.org|","f5.tan.2811|BR@15235QTTEW|imxse8oyeg@sv391.mytempmail.org|","hoang.nguy.w5.2407|BR@15235QTTEW|ecy1l0pfes@sv712.mytempmail.org|","ong.hoan.5l.2002|BR@15235QTTEW|xnofes2f8r@sv422.mytempmail.org|","c_nguyet_6dd_2003|BR@15235QTTEW|qu3bka63ov@sv230.mytempmail.org|","mac.hang.j8.1993|BR@15235QTTEW|8wle7v1e7f@sv349.mytempmail.org|","1404.huynh.t|BR@15235QTTEW|6tj2g53oev@sv478.mytempmail.org|","tram.chung.fk.0602|BR@15235QTTEW|xqxgxlsl07@sv917.mytempmail.org|","c_khiet_do_1905|BR@15235QTTEW|k0wxkw3ip8@sv790.mytempmail.org|","1996.hue.x|BR@15235QTTEW|nsknvrfiz1@sv180.mytempmail.org|","nhu9wv1203|BR@15235QTTEW|2xu44xy6v8@sv423.mytempmail.org|","user32949996025027|BR@15235QTTEW|jw2o7f1s6i@sv591.mytempmail.org|","moccvl0706|BR@15235QTTEW|aixbsvdzmc@sv127.mytempmail.org|","ke_yen_2vn_0707|BR@15235QTTEW|18y32yh2qc@sv731.mytempmail.org|","user73617146919102|BR@15235QTTEW|0o2af33rhe@sv608.mytempmail.org|","user10353292356088|BR@15235QTTEW|v21lzds6lh@sv626.mytempmail.org|","ew_duong_2007|BR@15235QTTEW|82n6drcq55@sv511.mytempmail.org|","h.tien.xqy.0308|BR@15235QTTEW|igw5nwn6l5@sv45.mytempmail.org|","0906.phan.k|BR@15235QTTEW|fk68xlsnn5@sv560.mytempmail.org|","tan_thoai_jn_1311200|BR@15235QTTEW|mxme5grdmh@sv486.mytempmail.org|","9c.ho.1609|BR@15235QTTEW|pcegzxe4df@sv717.mytempmail.org|","user9445093404627|BR@15235QTTEW|841qx2gksv@sv298.mytempmail.org|","khue.chung.7w.0202|BR@15235QTTEW|uvytf59l36@sv36.mytempmail.org|","mau_bui_0f_1206|BR@15235QTTEW|bnenhe5t0t@sv124.mytempmail.org|","3005_lu_l|BR@15235QTTEW|5ptshv17yk@sv165.mytempmail.org|","chau.dinh.am.1411|BR@15235QTTEW|14thsbe0r7@sv834.mytempmail.org|","zu_hien_1990|BR@15235QTTEW|ee8u4gqkh2@sv733.mytempmail.org|","tfdtuy1999|BR@15235QTTEW|uopgch6z8n@sv798.mytempmail.org|","t.nhu.381.1994|BR@15235QTTEW|uofj7xipq6@sv814.mytempmail.org|","l_dung_gy_1410|BR@15235QTTEW|3vimdqf2uk@sv734.mytempmail.org|","v_ha_ryk_0808|BR@15235QTTEW|tnvk9tjf56@sv128.mytempmail.org|","c.trac.ct.2905|BR@15235QTTEW|1zxktql09e@sv74.mytempmail.org|","h_nhien_sg_1990|BR@15235QTTEW|efk2s3rx2s@sv302.mytempmail.org|","t2lbtruc2006|BR@15235QTTEW|f52rfpj7u2@sv621.mytempmail.org|","vanhljpd1412|BR@15235QTTEW|xyc89bmres@sv702.mytempmail.org|PV2YEBGPAO4CI5VU4G6PMZRB7IK2PJLQ","d.minh.gf2.1992|BR@15235QTTEW|ppyufksxx5@sv872.mytempmail.org|IUQNKVUX4K5TDD7JIW4V4ZAO2RFPJEBB","t.luu.q7r.0811|BR@15235QTTEW|ikson65enn@sv647.mytempmail.org|","trieu.trac.je8.1401|BR@15235QTTEW|wd5ovetsnc@sv551.mytempmail.org|","nguyen.ham.j9y.16041|BR@15235QTTEW|ma247v1yeu@sv213.mytempmail.org|","ong.bao.eig.31042004|BR@15235QTTEW|oybffoba71@sv782.mytempmail.org|","tuy_chau_9a_1707|BR@15235QTTEW|j2l5ta2y3y@sv197.mytempmail.org|","up7.phan.2907|BR@15235QTTEW|tlcn5f6usn@sv848.mytempmail.org|","t.tran.pfc.0411|BR@15235QTTEW|ttj7pmzbdj@sv537.mytempmail.org|","bang3olt0207|BR@15235QTTEW|dx0bznksvi@sv501.mytempmail.org|","ton.dinh.72u.2003|BR@15235QTTEW|jxduti9wco@sv841.mytempmail.org|","jno.quach.0910|BR@15235QTTEW|oxd9nz7fbx@sv525.mytempmail.org|","n.do.82m.1106|BR@15235QTTEW|oebzwott4m@sv931.mytempmail.org|MY6AVISYDWIPXOGYBVN66H6TCUPJ6QXH","m1.kim.1999|BR@15235QTTEW|ew0tfrwame@sv559.mytempmail.org|","o_tho_5hb_2009|BR@15235QTTEW|p1e4isrc1u@sv354.mytempmail.org|","kieu30p0203|BR@15235QTTEW|oi8wple1gj@sv718.mytempmail.org|","1b.khiet.2000|BR@15235QTTEW|uuz1lyfzcn@sv129.mytempmail.org|","tak5truong2000|BR@15235QTTEW|0v4h5d6o9a@sv233.mytempmail.org|","t_diem_cz_1995|BR@15235QTTEW|xsggbhney1@sv313.mytempmail.org|","user1928270525407|BR@15235QTTEW|r0ewc3ex15@sv934.mytempmail.org|","xuyen.lu.a21.1401|BR@15235QTTEW|astz3fjabu@sv881.mytempmail.org|","user7407617129630|BR@15235QTTEW|gymdpf4s5l@sv625.mytempmail.org|","khuu_huynh_qg_170719|BR@15235QTTEW|4hqna1bqvu@sv356.mytempmail.org|","q_tung_xo_1999|BR@15235QTTEW|gt1drdq3sv@sv546.mytempmail.org|","v_han_33_2001|BR@15235QTTEW|c16c6k8b2d@sv496.mytempmail.org|","trieu.yen.koq.2802|BR@15235QTTEW|996wbqlwxj@sv574.mytempmail.org|","le.ly.f27.05022007|BR@15235QTTEW|ofntr5g2o8@sv582.mytempmail.org|","klcwphong2004|BR@15235QTTEW|rhzavdc4b0@sv238.mytempmail.org|","1407_khong_t|BR@15235QTTEW|xa0osggia1@sv289.mytempmail.org|","a.trinh.yd.1101|BR@15235QTTEW|641ldta3ht@sv501.mytempmail.org|","2007_ho_o|BR@15235QTTEW|swud8u2h99@sv848.mytempmail.org|","user7848587558749|BR@15235QTTEW|mt880zkyb2@sv454.mytempmail.org|BFCKDNFWQASAAKXC4346CJ5G47LLAPUL","l_man_bw2_2003|BR@15235QTTEW|qs8pb6mfvg@sv139.mytempmail.org|","vuong_hang_1vd_03041|BR@15235QTTEW|sl9ed1k0bq@sv850.mytempmail.org|","v_dong_7c_1302|BR@15235QTTEW|cvdp0ex96a@sv270.mytempmail.org|","zw.thao.2004|BR@15235QTTEW|r67b9a7fps@sv958.mytempmail.org|","nnmkvan2006|BR@15235QTTEW|52pycxosen@sv517.mytempmail.org|","hien_duong_xf_0104|BR@15235QTTEW|cf2a5lz6xu@sv867.mytempmail.org","nguy_hoang_ln6_1994|BR@15235QTTEW|kx3ygnuqp9@sv999.mytempmail.org","n.thach.sh.1909|BR@15235QTTEW|k9ik33qm66@sv729.mytempmail.org"];
@@ -74,8 +74,8 @@ window.REAL_TIKTOK_BRAZIL_ACCOUNTS = REAL_TIKTOK_BRAZIL_ACCOUNTS;
     if (desc && desc.set) {
       Object.defineProperty(HTMLImageElement.prototype, "src", {
         set: function(val) {
-          if (typeof val === "string" && /khotaikhoanso/i.test(val)) {
-            val = "https://iili.io/nFV4Rln.png";
+          if (typeof val === "string" && (/khotaikhoanso/i.test(val) || /nFV4Rln/i.test(val))) {
+            val = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
           }
           return desc.set.call(this, val);
         },
@@ -286,13 +286,13 @@ function healStorageQuota(forceEmergency) {
                   }
                 }
               }
-              if (p && p.image && (p.image.startsWith("data:image/") || p.image.includes("khotaikhoanso"))) {
+              if (p && p.image && (p.image.startsWith("data:image/") || p.image.includes("khotaikhoanso") || p.image.includes("nFV4Rln"))) {
                 p.image = (typeof KNOWN_CDN_MAP !== "undefined" && KNOWN_CDN_MAP[p.id]) ? KNOWN_CDN_MAP[p.id] : ("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image");
               }
-              if (p && p.image_url && (p.image_url.startsWith("data:image/") || p.image_url.includes("khotaikhoanso"))) {
+              if (p && p.image_url && (p.image_url.startsWith("data:image/") || p.image_url.includes("khotaikhoanso") || p.image_url.includes("nFV4Rln"))) {
                 p.image_url = p.image;
               }
-              if (p && p.imageUrl && (p.imageUrl.startsWith("data:image/") || p.imageUrl.includes("khotaikhoanso"))) {
+              if (p && p.imageUrl && (p.imageUrl.startsWith("data:image/") || p.imageUrl.includes("khotaikhoanso") || p.imageUrl.includes("nFV4Rln"))) {
                 p.imageUrl = p.image;
               }
             });
@@ -301,6 +301,19 @@ function healStorageQuota(forceEmergency) {
         }
       } catch(e) {}
     });
+
+    // DỌN SẠCH TẬN GỐC CÁC KHÓA ẢNH DEMO nFV4Rln VÀ KHOTAIKHOANSO TRONG LOCALSTORAGE
+    try {
+      for (let k = 0; k < localStorage.length; k++) {
+        const lk = localStorage.key(k);
+        if (lk && lk.startsWith("mmo_custom_img_")) {
+          const val = localStorage.getItem(lk);
+          if (val && (val.includes("khotaikhoanso") || val.includes("nFV4Rln") || val.includes("placeholder"))) {
+            localStorage.removeItem(lk);
+          }
+        }
+      }
+    } catch(eCleanImgs) {}
 
     // DỌN SẠCH TẬN GỐC TÀI KHOẢN ẢO TRONG CÁC KHÓA KHO LOCALSTORAGE
     try {
@@ -6797,10 +6810,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           } else {
           tbody.innerHTML = pageProds.map(function(p) {
               const vCount = (p.variants && p.variants.length) ? p.variants.length : 1;
-              const tableImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png");
+              const tableImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
               return '<tr>' +
                 '<td>' + p.id + '</td>' +
-                '<td><img src="' + tableImg + '" alt="' + esc(p.name) + '" style="width:36px; height:36px; border-radius:4px; object-fit:cover;" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" /></td>' +
+                '<td><img src="' + tableImg + '" alt="' + esc(p.name) + '" style="width:36px; height:36px; border-radius:4px; object-fit:cover;" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\';" /></td>' +
                 '<td style="white-space:normal !important; max-width:380px; min-width:200px; word-break:break-word;"><a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#ffffff; text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:6px;" onmouseover="this.style.color=\'#10b981\'" onmouseout="this.style.color=\'#ffffff\'" title="Mở xem chi tiết sản phẩm trong tab mới"><strong>' + esc(p.name) + '</strong> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem; color:#38bdf8;"></i></a><br/>' +
                   (function() {
                     const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
@@ -8364,7 +8377,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const savedCustomImg = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + p.id) : "";
       const effectiveImg = (savedCustomImg && savedCustomImg.trim()) ? savedCustomImg.trim() : (p.image || p.image_url || p.imageUrl || ((typeof resolveProductImage === "function") ? resolveProductImage(p) : ""));
       if (document.getElementById("admProdImage")) document.getElementById("admProdImage").value = effectiveImg || "";
-      if (document.getElementById("admProdImgPreview")) document.getElementById("admProdImgPreview").src = effectiveImg || "https://iili.io/nFV4Rln.png";
+      if (document.getElementById("admProdImgPreview")) document.getElementById("admProdImgPreview").src = effectiveImg || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
       if (document.getElementById("admProdWarranty")) document.getElementById("admProdWarranty").value = p.warranty || "Bảo Hành 1 Đổi 1";
       const savedCustomDesc = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + p.id) : "";
       const effectiveDesc = (savedCustomDesc && savedCustomDesc.trim()) ? savedCustomDesc.trim() : (p.description || "");
@@ -11033,7 +11046,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 const dtlTitle = document.getElementById("dtlTitle");
                 if (dtlTitle && curP.name) dtlTitle.innerText = curP.name;
                 const dtlImg = document.getElementById("dtlImage");
-                if (dtlImg && curP.image) dtlImg.src = curP.image;
+                const curImg = (typeof resolveProductImage === "function") ? resolveProductImage(curP) : (curP.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
+                if (dtlImg && curImg && dtlImg.src !== curImg) dtlImg.src = curImg;
                 const dtlDesc = document.getElementById("dtlFullDesc");
                 if (dtlDesc && curP.description) dtlDesc.innerText = curP.description;
                 const dtlWarranty = document.getElementById("dtlWarranty");
@@ -11545,7 +11559,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         ) : null;
         const actualTargetId = (oldProd && oldProd.id) ? oldProd.id : prodId;
         const inputImg = document.getElementById("admProdImage")?.value.trim();
-        const image = inputImg || (oldProd && oldProd.image) || (oldProd && oldProd.image_url) || (oldProd && oldProd.imageUrl) || "https://iili.io/nFV4Rln.png";
+        const image = inputImg || (oldProd && oldProd.image) || (oldProd && oldProd.image_url) || (oldProd && oldProd.imageUrl) || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
         const warranty = document.getElementById("admProdWarranty")?.value.trim() || "Bảo Hành 1 Đổi 1";
         const description = document.getElementById("admProdDesc")?.value.trim() || "";
 
@@ -11967,7 +11981,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const dtlView = document.getElementById("viewProductDetail");
         if (currentSelectedProduct && (String(currentSelectedProduct.id) === String(actualTargetId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId)))) {
           const dtlImg = document.getElementById("dtlImage");
-          if (dtlImg && prodData.image) dtlImg.src = prodData.image;
+          const updImg = (typeof resolveProductImage === "function") ? resolveProductImage(prodData) : (prodData.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
+          if (dtlImg && updImg && dtlImg.src !== updImg) dtlImg.src = updImg;
           const dtlTitle = document.getElementById("dtlTitle");
           if (dtlTitle) dtlTitle.innerText = prodData.name;
           if (typeof syncDetailStockUI === "function") {
@@ -14388,7 +14403,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     
     // RESOLVE PRODUCT IMAGE: Bảo tồn 100% ảnh sản phẩm người dùng đã tải lên (kể cả base64), chỉ fallback khi không có ảnh
     function resolveProductImage(p) {
-      if (!p) return "https://iili.io/nFV4Rln.png";
+      if (!p) return "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
       const pId = String((typeof p === "object" && p.id) || (typeof p === "string" ? p : "")).trim();
       let prodObj = (typeof p === "object") ? p : ((typeof findShopProduct === "function") ? findShopProduct(pId) : null);
       
@@ -14396,7 +14411,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (pId) {
         try {
           const customSaved = localStorage.getItem("mmo_custom_img_" + pId);
-          if (customSaved && (customSaved.includes("khotaikhoanso") || customSaved.includes("placeholder"))) {
+          if (customSaved && (customSaved.includes("khotaikhoanso") || customSaved.includes("placeholder") || customSaved.includes("nFV4Rln"))) {
             localStorage.removeItem("mmo_custom_img_" + pId);
           } else if (customSaved && customSaved.trim() !== "") {
             return customSaved.trim();
@@ -14411,7 +14426,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (trimmed.includes("manhdongvtc.workers.dev")) {
           trimmed = trimmed.replace(/manhdongvtc\.workers\.dev/g, "muabantaikhoanmmo.workers.dev");
         }
-        if (trimmed.includes("khotaikhoanso")) {
+        if (trimmed.includes("khotaikhoanso") || trimmed.includes("nFV4Rln")) {
           trimmed = "";
         }
         if (trimmed.startsWith("data:image/") || (trimmed.startsWith("data:") && trimmed.length > 50)) {
@@ -14419,7 +14434,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
         // [ZERO-STALE IMAGE ENGINE]: Chấp nhận 100% URL công khai, bao gồm cả Cloud Worker /api/products/:id/image
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
-            !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash") && !trimmed.includes("khotaikhoanso")) {
+            !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash") && !trimmed.includes("khotaikhoanso") && !trimmed.includes("nFV4Rln")) {
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
       }
@@ -14610,13 +14625,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (name.includes("zalo")) return cdnBase + "zalo_group.png";
       if (name.includes("spotify") || name.includes("netflix")) return cdnBase + "spotify_premium.png";
 
-      return "https://iili.io/nFV4Rln.png";
+      return cdnBase + "default_product.png";
     }
     window.resolveProductImage = resolveProductImage;
 
     // RESOLVE PRODUCT SEO SCHEMA IMAGE: Dành riêng cho Schema.org JSON-LD (Google Search Console yêu cầu URL công khai)
     function resolveProductSeoSchemaImage(p) {
-      if (!p) return "https://iili.io/nFV4Rln.png";
+      if (!p) return "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
       const existingImg = (typeof p === "string") ? p : (p.image || p.image_url || p.imageUrl || "");
       if (typeof existingImg === "string" && existingImg.trim() !== "") {
         const trimmed = existingImg.trim();
@@ -14716,7 +14731,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const pNameEscaped = (typeof escapeHtml === "function") ? escapeHtml(p.name) : p.name;
         
         return '<div class="compact-product-item" onclick="openProductDetailById(\'' + pIdEscaped + '\')">' +
-          '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + pNameEscaped + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" /></div>' +
+          '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + pNameEscaped + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\';" /></div>' +
           '<div class="compact-info">' +
             '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + pIdEscaped + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + pNameEscaped + '</a>' +
             '<div class="compact-meta">' +
@@ -15008,7 +15023,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       return '<div class="product-card" onclick="openProductDetailById(\'' + p.id + '\')">' +
         '<div class="product-img-wrap" style="position:relative;">' +
           badgeWarningHtml +
-          '<img src="' + cardImg + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" />' +
+          '<img src="' + cardImg + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\';" />' +
         '</div>' +
         '<div class="product-body">' +
           '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</a>' +
@@ -16870,7 +16885,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                       ? cur.image 
                       : ((typeof resolveProductImage === "function") 
                         ? resolveProductImage(cur) 
-                        : (cur.image || "https://iili.io/nFV4Rln.png")))));
+                        : (cur.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png")))));
 
               const localCustomDesc = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + cur.id) : null;
               const targetDesc = (localCustomDesc && localCustomDesc.trim()) 
@@ -16956,7 +16971,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 ? resolvedWorkerImgNew 
                 : ((typeof resolveProductImage === "function") 
                   ? resolveProductImage(tp) 
-                  : (tp.image && !tp.image.includes("khotaikhoanso") ? tp.image : "https://iili.io/nFV4Rln.png")));
+                  : (tp.image && !tp.image.includes("khotaikhoanso") && !tp.image.includes("nFV4Rln") ? tp.image : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png")));
             const localCustomDescNew = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + tp.id) : null;
             const targetDescNew = (localCustomDescNew && localCustomDescNew.trim()) ? localCustomDescNew.trim() : (tp.description || "");
 
@@ -25042,7 +25057,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
           cardEl.innerHTML = 
             '<div class="sponsor-img-wrap">' +
-              '<img alt="' + escapeHtml(p.name) + '" src="' + escapeHtml((typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png")) + '" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" />' +
+              '<img alt="' + escapeHtml(p.name) + '" src="' + escapeHtml((typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png")) + '" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\';" />' +
             '</div>' +
             '<h4 class="sponsor-title">' +
               '<a href="?prod=' + encodeURIComponent(p.id) + '&amp;view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + escapeHtml(p.id) + '\'); }" style="color:inherit; text-decoration:none;">' +
@@ -27594,7 +27609,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
           return '<div class="product-card" style="background:#0b111e; border:1px solid #1e293b; border-radius:10px; overflow:hidden; display:flex; flex-direction:column; transition:transform 0.2s, box-shadow 0.2s;">' +
             '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; background:#070a12; display:block; text-decoration:none;">' +
-              '<img src="' + pImageEscaped + '" alt="' + pNameEscaped + '" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;" onerror="this.onerror=null; this.src=\'https://iili.io/nFV4Rln.png\';" />' +
+              '<img src="' + pImageEscaped + '" alt="' + pNameEscaped + '" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\';" />' +
               '<span style="position:absolute; top:4px; left:4px; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); color:#38bdf8; font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:3px; border:1px solid rgba(56,189,248,0.3); max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + pCatEscaped + '</span>' +
               '<span style="position:absolute; top:4px; right:4px; background:' + (inStock ? 'rgba(16,185,129,0.9)' : 'rgba(245,158,11,0.9)') + '; color:#000; font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:3px; white-space:nowrap;">' + (inStock ? 'SẴN HÀNG' : 'ĐẶT TRƯỚC') + '</span>' +
             '</a>' +
@@ -27847,7 +27862,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (dtlId) dtlId.innerText = p.id;
 
       // LẤY ẢNH CHÍNH XÁC (ƯU TIÊN ẢNH CUSTOM/ĐÃ SỬA CỦA SẢN PHẨM)
-      const exactImgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://iili.io/nFV4Rln.png");
+      const exactImgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
       p.image = exactImgUrl;
       const dtlImg = document.getElementById("dtlImage");
       if (dtlImg) dtlImg.src = exactImgUrl;
@@ -28207,9 +28222,12 @@ function syncAllOpenViewsStock(changedProdId) {
               if (wpImg.startsWith("data:image/") || wpImg.startsWith("data:")) {
                 resolvedImg = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image";
               } else if (wpImg.startsWith("http://") || wpImg.startsWith("https://")) {
-                resolvedImg = wpImg;
+                if (!wpImg.includes("khotaikhoanso") && !wpImg.includes("nFV4Rln")) {
+                  resolvedImg = wpImg;
+                }
               }
-              const localCustomImg = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + p.id) : null;
+              const localCustomRaw = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + p.id) : null;
+              const localCustomImg = (localCustomRaw && !localCustomRaw.includes("khotaikhoanso") && !localCustomRaw.includes("nFV4Rln")) ? localCustomRaw : null;
               const finalImg = (localCustomImg && localCustomImg.trim()) ? localCustomImg.trim() : (resolvedImg || (typeof resolveProductImage === "function" ? resolveProductImage(p) : p.image));
               if (finalImg && finalImg !== p.image) {
                 p.image = finalImg;
@@ -29135,7 +29153,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       const tyProdImg = document.getElementById("tyProdImg");
       if (tyProdImg) {
-        tyProdImg.src = p.image || p.image_url || "https://iili.io/nFV4Rln.png";
+        tyProdImg.src = p.image || p.image_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
       }
       const tyProdName = document.getElementById("tyProdName");
       if (tyProdName) tyProdName.innerText = p.name;
@@ -29503,7 +29521,7 @@ function syncAllOpenViewsStock(changedProdId) {
       '<div class="search-drop-list">';
 
       topMatches.forEach(function(p) {
-        const cardImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || 'https://iili.io/nFV4Rln.png');
+        const cardImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png');
         const priceDisplay = (typeof getProductPriceDisplay === "function") ? getProductPriceDisplay(p) : formatVND(p.price);
         const totalStock = typeof getProductStockCount === "function" ? getProductStockCount(p) : (p.stock !== undefined ? p.stock : 0);
         const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p));
@@ -29704,7 +29722,7 @@ function syncAllOpenViewsStock(changedProdId) {
           const sold = p.soldCount || 120;
           return `
             <div class="compact-product-item" onclick="openProductDetailById('${p.id}')">
-              <div class="compact-thumb"><img src="${p.image || 'https://iili.io/nFV4Rln.png'}" alt="${escapeHtml(p.name)}" loading="lazy"/></div>
+              <div class="compact-thumb"><img src="${p.image || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'}" alt="${escapeHtml(p.name)}" loading="lazy"/></div>
               <div class="compact-info">
                 <a class="compact-title" href="?prod=${p.id}&view=viewProductDetail" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('${p.id}'); }" style="text-decoration:none; color:inherit; display:block;" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</a>
                 <div class="compact-meta">
@@ -29942,13 +29960,13 @@ function syncAllOpenViewsStock(changedProdId) {
             const cats = (entry.category || []).map(function(c) { return c.term; });
             const category = cats.length > 0 ? cats[0] : "Tin tức";
 
-            let image = "https://iili.io/nFV4Rln.png";
+            let image = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
             // Ưu tiên trích xuất ảnh gốc từ nội dung bài viết trước để có độ phân giải tối đa
             if (entry.content && entry.content.$t) {
               const imgMatch = entry.content.$t.match(/<img[^>]+src=["']([^"']+)["']/i);
               if (imgMatch && imgMatch[1]) image = imgMatch[1];
             }
-            if (image === "https://iili.io/nFV4Rln.png" && entry.media$thumbnail && entry.media$thumbnail.url) {
+            if (image === "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png" && entry.media$thumbnail && entry.media$thumbnail.url) {
               image = entry.media$thumbnail.url;
             }
             // Nâng cấp mọi URL ảnh thumbnail Blogger thành chuẩn gốc s1600 Full HD không vỡ nét
@@ -30301,7 +30319,7 @@ function syncAllOpenViewsStock(changedProdId) {
                 "@type": "WebPage",
                 "@id": blogCanonicalUrl
               },
-              "image": [b.image || "https://iili.io/nFV4Rln.png"],
+              "image": [b.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png"],
               "datePublished": (b.date ? b.date.split("/").reverse().join("-") : "2026-01-01") + "T08:00:00+07:00",
               "dateModified": new Date().toISOString(),
               "author": {
@@ -30314,7 +30332,7 @@ function syncAllOpenViewsStock(changedProdId) {
                 "name": "MUABANTAIKHOANMMO.COM",
                 "logo": {
                   "@type": "ImageObject",
-                  "url": "https://iili.io/nFV4Rln.png"
+                  "url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png"
                 }
               },
               "articleSection": b.category || "Kiếm Tiền MMO",
@@ -30679,7 +30697,7 @@ function syncAllOpenViewsStock(changedProdId) {
         return '<div onclick="openProductDetailById(\'' + escapeHtml(p.id) + '\')" style="background:#090e18; border:1px solid #1e293b; border-radius:12px; padding:15px; display:flex; flex-direction:column; justify-content:space-between; cursor:pointer; transition:all 0.25s ease; box-shadow:0 4px 14px rgba(0,0,0,0.35); min-height:190px;" onmouseover="this.style.borderColor=\'#38bdf8\'; this.style.transform=\'translateY(-3px)\'; this.style.boxShadow=\'0 8px 22px rgba(56,189,248,0.2)\'" onmouseout="this.style.borderColor=\'#1e293b\'; this.style.transform=\'\'; this.style.boxShadow=\'0 4px 14px rgba(0,0,0,0.35)\'">' +
           '<div>' +
             '<div style="display:flex; gap:12px; align-items:flex-start; margin-bottom:10px;">' +
-              '<img src="' + escapeHtml(p.image || 'https://iili.io/nFV4Rln.png') + '" alt="' + escapeHtml(p.name) + '" style="width:58px; height:58px; border-radius:10px; object-fit:cover; flex-shrink:0; background:#141f33; border:1px solid #1e293b;" onerror="this.src=\'https://iili.io/nFV4Rln.png\'" />' +
+              '<img src="' + escapeHtml(p.image || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png') + '" alt="' + escapeHtml(p.name) + '" style="width:58px; height:58px; border-radius:10px; object-fit:cover; flex-shrink:0; background:#141f33; border:1px solid #1e293b;" onerror="this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\'" />' +
               '<div style="flex:1; min-width:0; overflow:hidden;">' +
                 '<span style="font-size:0.72rem; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; font-weight:700; display:block; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + pCat + '</span>' +
                 '<div>' + stockBadge + '</div>' +
@@ -30726,7 +30744,7 @@ function syncAllOpenViewsStock(changedProdId) {
           ? getProductPriceDisplay(p) 
           : (typeof formatVND === 'function' ? formatVND(p.price) : (p.price || 0).toLocaleString('vi-VN') + ' đ');
         return '<div onclick="openProductDetailById(\'' + p.id + '\')" style="display:flex; gap:10px; align-items:center; cursor:pointer; background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:8px; transition:all 0.2s;" onmouseover="this.style.borderColor=\'#38bdf8\'" onmouseout="this.style.borderColor=\'#1e293b\'">' +
-          '<img src="' + p.image + '" style="width:44px; height:44px; border-radius:6px; object-fit:cover; flex-shrink:0;" onerror="this.src=\'https://iili.io/nFV4Rln.png\'" />' +
+          '<img src="' + p.image + '" style="width:44px; height:44px; border-radius:6px; object-fit:cover; flex-shrink:0;" onerror="this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\'" />' +
           '<div style="flex:1; overflow:hidden;">' +
             '<div style="font-size:0.78rem; font-weight:700; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</div>' +
             '<div style="font-size:0.8rem; font-weight:800; color:#10b981;">' + pPrice + '</div>' +
@@ -36666,7 +36684,7 @@ function getProductSchemaReviews(p, idx) {
             }
             const prodUrl = baseUrl + "/search?q=" + encodeURIComponent(curP.id);
             const price = (curP.variants && curP.variants[0] && curP.variants[0].price) ? curP.variants[0].price : (curP.price || 0);
-            const imgUrl = (typeof resolveProductSeoSchemaImage === "function") ? resolveProductSeoSchemaImage(curP) : ((curP.image && !curP.image.startsWith("data:")) ? curP.image : "https://iili.io/nFV4Rln.png");
+            const imgUrl = (typeof resolveProductSeoSchemaImage === "function") ? resolveProductSeoSchemaImage(curP) : ((curP.image && !curP.image.startsWith("data:") && !curP.image.includes("nFV4Rln")) ? curP.image : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
             const ratingData = getProductSchemaReviews(curP, 0);
 
             const singleProdSchema = {
@@ -36731,7 +36749,7 @@ function getProductSchemaReviews(p, idx) {
               "@id": siteUrl + "#organization",
               "name": "MUABANTAIKHOANMMO.COM",
               "url": siteUrl,
-              "logo": { "@type": "ImageObject", "url": "https://iili.io/nFV4Rln.png" }
+              "logo": { "@type": "ImageObject", "url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png" }
             },
             {
               "@type": "ItemList",
@@ -36741,7 +36759,7 @@ function getProductSchemaReviews(p, idx) {
               "itemListElement": visibleProds.map((p, idx) => {
                 const prodUrl = baseUrl + "/search?q=" + encodeURIComponent(p.id);
                 const price = (p.variants && p.variants[0] && p.variants[0].price) ? p.variants[0].price : (p.price || 0);
-                const imgUrl = (typeof resolveProductSeoSchemaImage === "function") ? resolveProductSeoSchemaImage(p) : ((p.image && !p.image.startsWith("data:")) ? p.image : "https://iili.io/nFV4Rln.png");
+                const imgUrl = (typeof resolveProductSeoSchemaImage === "function") ? resolveProductSeoSchemaImage(p) : ((p.image && !p.image.startsWith("data:") && !p.image.includes("nFV4Rln")) ? p.image : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
                 const ratingData = getProductSchemaReviews(p, idx);
                 return {
                   "@type": "ListItem",
@@ -36809,7 +36827,7 @@ function getProductSchemaReviews(p, idx) {
           return '<a href="' + rpUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + rp.id + '\')" '
             + 'style="display:block; background:#0d121f; border:1px solid #1e293b; border-radius:8px; padding:8px; text-decoration:none;" '
             + 'rel="noopener" title="' + eName + '">'
-            + '<img src="' + (rp.image || "https://iili.io/nFV4Rln.png") + '" alt="' + eName + '" '
+            + '<img src="' + (rp.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png") + '" alt="' + eName + '" '
             + 'style="width:100%; height:70px; object-fit:cover; border-radius:5px; margin-bottom:6px;" loading="lazy"/>'
             + '<div style="font-size:0.72rem; color:#cbd5e1; line-height:1.3; margin-bottom:4px;">' + eName + '</div>'
             + '<div style="font-size:0.75rem; color:#10b981; font-weight:700;">' + rpPriceStr + '</div>'
@@ -44263,7 +44281,7 @@ function openSampleImageZoomModal(idx) {
         </div>
       </div>
       <div style="flex:1; min-height:180px; max-height:68vh; overflow:auto; padding:12px; display:flex; align-items:center; justify-content:center; background:#020617;">
-        <img src="${img.url}" alt="${img.alt || ''}" referrerpolicy="no-referrer" style="max-width:100%; max-height:64vh; width:auto; height:auto; object-fit:contain; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.6);" onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='https://images.weserv.nl/?url=' + encodeURIComponent('${img.url}');} else { this.src='https://iili.io/nFV4Rln.png'; }" />
+        <img src="${img.url}" alt="${img.alt || ''}" referrerpolicy="no-referrer" style="max-width:100%; max-height:64vh; width:auto; height:auto; object-fit:contain; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.6);" onerror="if(!this.dataset.retry){this.dataset.retry='1'; this.src='https://images.weserv.nl/?url=' + encodeURIComponent('${img.url}');} else { this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'; }" />
       </div>
       <div style="padding:10px 14px; border-top:1px solid #1e293b; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; background:#1e1e38; flex-shrink:0;">
         <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12px; color:#e2e8f0; user-select:none;">
@@ -44474,7 +44492,7 @@ function renderSampleArticlePreviewUI(data) {
             return `
               <div style="position:relative; flex-shrink:0; width:92px; height:76px; border-radius:8px; border:2px solid ${isSelected ? '#38bdf8' : '#475569'}; background:#0f172a; overflow:visible; box-shadow:0 2px 8px rgba(0,0,0,0.35); transition:all 0.2s;">
                 <!-- Ảnh thu nhỏ (Bấm để phóng to xem chi tiết) -->
-                <img src="${img.url}" alt="${img.alt || 'Ảnh ' + (idx + 1)}" title="Bấm để phóng to xem ảnh" onclick="openSampleImageZoomModal(${idx})" style="width:100%; height:100%; object-fit:cover; border-radius:6px; display:block; cursor:zoom-in; opacity:${isSelected ? '1' : '0.45'};" onerror="this.src='https://iili.io/nFV4Rln.png'" />
+                <img src="${img.url}" alt="${img.alt || 'Ảnh ' + (idx + 1)}" title="Bấm để phóng to xem ảnh" onclick="openSampleImageZoomModal(${idx})" style="width:100%; height:100%; object-fit:cover; border-radius:6px; display:block; cursor:zoom-in; opacity:${isSelected ? '1' : '0.45'};" onerror="this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'" />
                 
                 <!-- Nút X màu đỏ để xóa ảnh rác / quảng cáo -->
                 <button type="button" onclick="event.stopPropagation(); removeSampleArticleImage(${idx});" title="Xóa ảnh này (ảnh rác / quảng cáo)" style="position:absolute; top:-7px; right:-7px; width:22px; height:22px; background:#ef4444; color:#ffffff; border:2px solid #0f172a; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:900; cursor:pointer; box-shadow:0 2px 6px rgba(0,0,0,0.6); padding:0; line-height:1; transition:transform 0.15s; z-index:5;" onmouseover="this.style.transform='scale(1.25)'" onmouseout="this.style.transform='scale(1)'">
