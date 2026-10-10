@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.6.4";
+const MMO_CURRENT_CODE_VERSION = "4.6.5";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const REAL_TIKTOK_BRAZIL_ACCOUNTS = [];
@@ -16146,6 +16146,58 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     // [CLOUDFLARE WORKER API CLIENT - KIẾN TRÚC 3 TẦNG BẢO MẬT & SSOT TURSO]
     // =========================================================================
+    
+    // =========================================================================
+    // USER IDENTITY & SESSION MANAGEMENT (HMAC-SHA256 SESSION TOKEN)
+    // =========================================================================
+    function getUserSessionToken() {
+      return (localStorage.getItem("mmo_user_session_token") || "").trim();
+    }
+    window.getUserSessionToken = getUserSessionToken;
+
+    async function ensureUserSessionToken() {
+      try {
+        let tok = getUserSessionToken();
+        const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+        if (!curUser || !curUser.email) return "";
+
+        // Kiểm tra xem token còn hạn không (ít nhất 2 phút trước khi hết hạn)
+        if (tok && tok.includes(".")) {
+          try {
+            const pStr = tok.split(".")[0].replace(/-/g, "+").replace(/_/g, "/");
+            const p = JSON.parse(decodeURIComponent(escape(atob(pStr))));
+            if (p && p.email && p.email.toLowerCase() === curUser.email.toLowerCase() && p.exp && Date.now() < p.exp - 120000) {
+              return tok;
+            }
+          } catch(eParse) {}
+        }
+
+        // Lấy token phiên làm việc mới từ Worker
+        const apiUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+        const res = await fetch(apiUrl + "/api/auth/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: curUser.email,
+            name: curUser.name || curUser.username || curUser.email.split("@")[0]
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success && data.token) {
+            localStorage.setItem("mmo_user_session_token", data.token);
+            return data.token;
+          }
+        }
+      } catch(eTok) {
+        console.warn("ensureUserSessionToken error:", eTok);
+      }
+      return getUserSessionToken();
+    }
+    window.ensureUserSessionToken = ensureUserSessionToken;
+
     var MMO_WORKER_API = window.MMO_WORKER_API = {
       DEFAULT_API_URL: "https://mmo-shop-api.muabantaikhoanmmo.workers.dev",
       _workerDeadUntil: 0,
@@ -26395,6 +26447,21 @@ function syncAllOpenViewsStock(changedProdId) {
               if (Array.isArray(generalList)) cloudOrders = cloudOrders.concat(generalList);
             }
           } catch(e) {}
+        } else if (!isAdm && cleanUserMail) {
+          try {
+            const userTok = await ensureUserSessionToken();
+            if (userTok) {
+              const uRes = await fetch(apiUrl + "/api/orders?limit=200", {
+                cache: "no-store",
+                headers: { "Authorization": "Bearer " + userTok, "x-user-token": userTok }
+              });
+              if (uRes.ok) {
+                const uData = await uRes.json();
+                const uList = Array.isArray(uData) ? uData : (uData.orders || []);
+                if (Array.isArray(uList)) cloudOrders = cloudOrders.concat(uList);
+              }
+            }
+          } catch(e) {}
         }
 
         if (!Array.isArray(cloudOrders) || cloudOrders.length === 0) return;
@@ -29086,6 +29153,17 @@ function syncAllOpenViewsStock(changedProdId) {
           ? (MMO_WORKER_API.getApiUrl() + "/api/orders/checkout")
           : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/orders/checkout";
 
+        const userTok = await ensureUserSessionToken();
+        const checkoutHeaders = { "Content-Type": "application/json" };
+        if (userTok) {
+          checkoutHeaders["Authorization"] = "Bearer " + userTok;
+          checkoutHeaders["x-user-token"] = userTok;
+        }
+        const admSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "";
+        if (admSec) {
+          checkoutHeaders["x-admin-token"] = admSec;
+        }
+
         const checkoutPayload = {
           product_id: p.id,
           variant_idx: vIdx,
@@ -29101,7 +29179,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
         const wRes = await fetch(workerCheckoutUrl, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: checkoutHeaders,
           body: JSON.stringify(checkoutPayload)
         });
 
@@ -29109,6 +29187,9 @@ function syncAllOpenViewsStock(changedProdId) {
         if (wData && wData.success && Array.isArray(wData.accounts) && wData.accounts.length >= qty) {
           credsLines = wData.accounts;
           workerHandled = true;
+          if (wData.order_token) {
+            window.lastDeliveredOrderToken = wData.order_token;
+          }
           if (wData.balance_after !== undefined && !isNaN(Number(wData.balance_after))) {
             currentUser.balance = Number(wData.balance_after);
           }
@@ -35267,6 +35348,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (currentUser && currentUser.email.toLowerCase() === item.userEmail.toLowerCase()) {
         currentUser.balance = newBal;
         safeStorageSet("mmo_user", JSON.stringify(currentUser));
+        if (typeof ensureUserSessionToken === "function") ensureUserSessionToken();
         updateUserUI();
       }
 
