@@ -1498,33 +1498,67 @@
     .detail-specs-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px 12px;
       background: #090e17;
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      padding: 10px 14px;
+      padding: 9px 12px;
       margin-bottom: 12px;
+      box-sizing: border-box;
     }
     .spec-item {
       display: flex;
+      align-items: center;
       justify-content: space-between;
       font-size: 0.78rem;
+      white-space: nowrap;
+      min-width: 0;
+      gap: 6px;
     }
-    .spec-label { color: #64748b; }
-    .spec-val { color: #e2e8f0; font-weight: 600; }
+    .spec-label { 
+      color: #64748b; 
+      flex-shrink: 0; 
+      white-space: nowrap; 
+      font-weight: 500;
+    }
+    .spec-val { 
+      color: #e2e8f0; 
+      font-weight: 600; 
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis; 
+      text-align: right; 
+      min-width: 0;
+    }
     .spec-val.green { color: var(--accent-light); font-weight: 700; }
 
     .detail-warranty-alert {
       background: rgba(245, 158, 11, 0.08);
       border: 1px solid rgba(245, 158, 11, 0.25);
       border-radius: var(--radius-md);
-      padding: 10px 14px;
+      padding: 8px 12px;
       font-size: 0.76rem;
       color: #fbbf24;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       gap: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      box-sizing: border-box;
+    }
+    .detail-warranty-alert i {
+      flex-shrink: 0;
+    }
+    .detail-warranty-alert span,
+    #dtlWarrantyNotice {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+      flex: 1;
+      min-width: 0;
     }
 
     /* Variants Selector */
