@@ -2,11 +2,8 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.6.5";
+const MMO_CURRENT_CODE_VERSION = "4.6.6";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
-
-const REAL_TIKTOK_BRAZIL_ACCOUNTS = [];
-window.REAL_TIKTOK_BRAZIL_ACCOUNTS = REAL_TIKTOK_BRAZIL_ACCOUNTS;
 
 // =========================================================================
 // [FIREWALL ĐỘC LẬP]: CHẶN TOÀN BỘ KẾT NỐI & ĐỒNG BỘ TỪ WEB KHOTAIKHOANSO-NET
@@ -18172,7 +18169,7 @@ function syncAllOpenViewsStock(changedProdId) {
         badgeColor: "#10b981",
         baseUrl: "https://mail72h.com",
         apiKey: "",
-        username: "manhdong",
+        username: "",
         rechargeUrl: "https://mail72h.com/client/recharge"
       },
       sellmmo: {
@@ -18181,7 +18178,7 @@ function syncAllOpenViewsStock(changedProdId) {
         badgeColor: "#38bdf8",
         baseUrl: "https://sellmmo.vn",
         apiKey: "",
-        username: "manhdong",
+        username: "",
         rechargeUrl: "https://sellmmo.vn/recharge"
       },
       nguyenlieummo: {
@@ -18190,7 +18187,7 @@ function syncAllOpenViewsStock(changedProdId) {
         badgeColor: "#f59e0b",
         baseUrl: "https://nguyenlieummo.com.vn",
         apiKey: "",
-        username: "manhdong",
+        username: "",
         rechargeUrl: "https://nguyenlieummo.com.vn/client/wallet"
       },
       selltainguyenmmo: {
@@ -18199,7 +18196,7 @@ function syncAllOpenViewsStock(changedProdId) {
         badgeColor: "#8b5cf6",
         baseUrl: "https://selltainguyenmmo.com",
         apiKey: "",
-        username: "manhdong",
+        username: "",
         rechargeUrl: "https://selltainguyenmmo.com/client/wallet"
       },
       shop1989nd: {
@@ -18207,7 +18204,7 @@ function syncAllOpenViewsStock(changedProdId) {
         name: "shop1989nd.com",
         badgeColor: "#f97316",
         baseUrl: "https://www.shop1989nd.com",
-        username: "manhdong",
+        username: "",
         password: "",
         rechargeUrl: "https://www.shop1989nd.com/user/recharge",
         authType: "userpass"
@@ -18218,7 +18215,7 @@ function syncAllOpenViewsStock(changedProdId) {
         badgeColor: "#6366f1",
         baseUrl: "https://ultrammo.com",
         apiKey: "",
-        username: "manhdong",
+        username: "",
         password: "",
         rechargeUrl: "https://ultrammo.com/client/wallet"
       }
@@ -19465,7 +19462,7 @@ function syncAllOpenViewsStock(changedProdId) {
           executeSourceApiCall("getProducts", { provider: "selltainguyenmmo", baseUrl: API_SOURCES.selltainguyenmmo.baseUrl, apiKey: API_SOURCES.selltainguyenmmo.apiKey }),
           executeSourceApiCall("getProducts", { provider: "sellmmo", baseUrl: API_SOURCES.sellmmo.baseUrl, apiKey: API_SOURCES.sellmmo.apiKey }),
           executeSourceApiCall("getProducts", { provider: "nguyenlieummo", baseUrl: API_SOURCES.nguyenlieummo.baseUrl, apiKey: API_SOURCES.nguyenlieummo.apiKey }),
-          executeSourceApiCall("getProducts", { provider: "ultrammo", baseUrl: (API_SOURCES.ultrammo ? API_SOURCES.ultrammo.baseUrl : "https://ultrammo.com"), apiKey: (API_SOURCES.ultrammo ? API_SOURCES.ultrammo.apiKey : "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F") })
+          executeSourceApiCall("getProducts", { provider: "ultrammo", baseUrl: (API_SOURCES.ultrammo ? API_SOURCES.ultrammo.baseUrl : "https://ultrammo.com"), apiKey: (API_SOURCES.ultrammo ? API_SOURCES.ultrammo.apiKey : "") })
         ]);
 
         if (typeof window !== "undefined") {
