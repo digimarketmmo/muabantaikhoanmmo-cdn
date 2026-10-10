@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.6.8";
+const MMO_CURRENT_CODE_VERSION = "4.6.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -5752,8 +5752,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           ? MMO_WORKER_API.getApiUrl()
           : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
 
+        const sTok = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mmo_session_token")) ||
+                     (typeof localStorage !== "undefined" && localStorage.getItem("mmo_session_token")) || "";
+        const pHeaders = { "Cache-Control": "no-store" };
+        if (sTok) pHeaders["Authorization"] = "Bearer " + sTok;
+
         const resp = await fetch(workerUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail), {
-          cache: "no-store"
+          cache: "no-store",
+          headers: pHeaders
         });
         if (resp.ok) {
           const data = await resp.json();
@@ -8866,10 +8872,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           ? MMO_WORKER_API.getApiUrl()
           : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
 
+        const sTok = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mmo_session_token")) ||
+                     (typeof localStorage !== "undefined" && localStorage.getItem("mmo_session_token")) || "";
+        const pHeaders = { "Cache-Control": "no-store" };
+        if (sTok) pHeaders["Authorization"] = "Bearer " + sTok;
+
         const [ordersRes, walletRes, workerRes] = await Promise.allSettled([
           typeof callGasApi === "function" ? callGasApi("getUserOrders", { email: cleanEmail }) : Promise.resolve(null),
           typeof callGasApi === "function" ? callGasApi("getUserWallet", { email: cleanEmail }) : Promise.resolve(null),
-          fetch(workerApiUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail)).then(r => r.json()).catch(() => null)
+          fetch(workerApiUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail), { headers: pHeaders }).then(r => r.json()).catch(() => null)
         ]);
 
         let newDeps = [];
@@ -13184,6 +13195,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         try { saveRegisteredUsers(users); } catch(uErr) {}
         safeStorageSet("mmo_user", JSON.stringify(currentUser));
         try { sessionStorage.setItem("mmo_user", JSON.stringify(currentUser)); } catch(sErr) {}
+
+        // Tự động nhận Server-Signed Session Token từ Cloudflare Worker
+        try {
+          const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+            ? MMO_WORKER_API.getApiUrl()
+            : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          fetch(workerUrl + "/api/auth/session", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: email, name: name })
+          }).then(function(r) { return r.json(); }).then(function(sRes) {
+            if (sRes && sRes.token) {
+              sessionStorage.setItem("mmo_session_token", sRes.token);
+              localStorage.setItem("mmo_session_token", sRes.token);
+            }
+          }).catch(function() {});
+        } catch(tokErr) {}
 
         closeModal("authModal");
         updateUserUI();
@@ -26463,7 +26491,12 @@ function syncAllOpenViewsStock(changedProdId) {
 
         // Tự động đồng bộ số dư người dùng từ Turso Database
         if (cleanUserMail) {
-          fetch(apiUrl + "/api/user/profile?email=" + encodeURIComponent(cleanUserMail))
+          const sTok = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mmo_session_token")) ||
+                       (typeof localStorage !== "undefined" && localStorage.getItem("mmo_session_token")) || "";
+          const pHeaders = { "Cache-Control": "no-store" };
+          if (sTok) pHeaders["Authorization"] = "Bearer " + sTok;
+
+          fetch(apiUrl + "/api/user/profile?email=" + encodeURIComponent(cleanUserMail), { headers: pHeaders })
             .then(r => r.json())
             .then(uData => {
               if (uData && uData.success && uData.user && uData.user.balance !== undefined) {
@@ -33714,8 +33747,13 @@ function syncAllOpenViewsStock(changedProdId) {
           ? MMO_WORKER_API.getApiUrl()
           : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
 
+        const sTok = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mmo_session_token")) ||
+                     (typeof localStorage !== "undefined" && localStorage.getItem("mmo_session_token")) || "";
+        const pHeaders = { "Cache-Control": "no-store" };
+        if (sTok) pHeaders["Authorization"] = "Bearer " + sTok;
+
         const [tursoRes, walletRes] = await Promise.all([
-          fetch(workerUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail), { cache: "no-store" })
+          fetch(workerUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail), { cache: "no-store", headers: pHeaders })
             .then(r => r.json()).catch(() => null),
           (typeof callGasApi === "function") 
             ? callGasApi("getUserWallet", { email: cleanEmail }).catch(() => null) 
