@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.6.7";
+const MMO_CURRENT_CODE_VERSION = "4.6.8";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -5637,8 +5637,24 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
         }
 
+        // H1 Patch: Tự động loại bỏ 100% mật khẩu plaintext còn sót lại trong bộ nhớ client
+        let hasPlaintextPass = false;
+        users.forEach(u => {
+          if (u && u.password) {
+            delete u.password;
+            hasPlaintextPass = true;
+          }
+        });
+        if (hasPlaintextPass) {
+          try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
+        }
+
         // Synchronize with currently active user session
         if (currentUser && currentUser.email) {
+          if (currentUser.password) {
+            delete currentUser.password;
+            try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+          }
           const emailLower = currentUser.email.toLowerCase().trim();
           const idx = users.findIndex(u => (u.email || "").toLowerCase().trim() === emailLower);
           if (idx !== -1) {
@@ -5657,6 +5673,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function saveRegisteredUsers(users) {
       try {
+        if (Array.isArray(users)) {
+          // H1 Patch: Xóa vĩnh viễn plaintext password khỏi mảng thành viên lưu ở client
+          users.forEach(u => {
+            if (u && typeof u === "object" && u.password) {
+              delete u.password;
+            }
+          });
+        }
         localStorage.setItem("mmo_registered_users", JSON.stringify(users));
         const curTab = localStorage.getItem("mmo_admin_tab");
         const curView = localStorage.getItem("mmo_current_view");
@@ -6186,6 +6210,46 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.syncAdminEmailsFromCloud = syncAdminEmailsFromCloud;
 
+    function parseSignedTokenPayload(token) {
+      if (!token || typeof token !== "string") return null;
+      const parts = token.split(".");
+      if (parts.length < 2) return null;
+      try {
+        let b64 = parts[0].replace(/-/g, "+").replace(/_/g, "/");
+        while (b64.length % 4 !== 0) b64 += "=";
+        const jsonStr = decodeURIComponent(escape(atob(b64)));
+        return JSON.parse(jsonStr);
+      } catch(e) {
+        if (parts.length >= 3) {
+          try {
+            let b64_2 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+            while (b64_2.length % 4 !== 0) b64_2 += "=";
+            return JSON.parse(decodeURIComponent(escape(atob(b64_2))));
+          } catch(e2) {}
+        }
+        return null;
+      }
+    }
+    window.parseSignedTokenPayload = parseSignedTokenPayload;
+
+    function verifyClientSessionAdminRole(email) {
+      if (!email) return false;
+      const cleanEmail = String(email).trim().toLowerCase();
+      try {
+        const token = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mmo_session_token")) ||
+                      (typeof localStorage !== "undefined" && localStorage.getItem("mmo_session_token"));
+        if (!token) return false;
+        const payload = parseSignedTokenPayload(token);
+        if (!payload || !payload.email) return false;
+        if (String(payload.email).trim().toLowerCase() !== cleanEmail) return false;
+        if (payload.exp && Number(payload.exp) < Date.now()) return false;
+        return (payload.role === "ADMIN" || payload.role === "Quản Trị Viên");
+      } catch(err) {
+        return false;
+      }
+    }
+    window.verifyClientSessionAdminRole = verifyClientSessionAdminRole;
+
     function isAdminUser(user) {
       if (!user) {
         if (typeof currentUser !== "undefined" && currentUser) {
@@ -6200,11 +6264,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!user || !user.email) return false;
       
       const userEmail = (user.email || "").toLowerCase().trim();
-      if (userEmail === "manhdongvtc@gmail.com" || userEmail === (ROOT_ADMIN_EMAIL || "").toLowerCase().trim()) return true;
-      const adminList = (typeof getAdminEmails === "function") ? getAdminEmails().map(e => (e || "").toLowerCase().trim()) : [];
-      if (adminList.includes(userEmail)) return true;
+      const rootEmail = (ROOT_ADMIN_EMAIL || "manhdongvtc@gmail.com").toLowerCase().trim();
+      if (userEmail === "manhdongvtc@gmail.com" || userEmail === rootEmail) return true;
 
-      // Nếu người dùng không nằm trong danh sách Admin Email, tự động hạ quyền thành Thành Viên
+      // H4 Patch: Xác thực nghiêm ngặt bằng Server Signed Token - Chống giả mạo qua localStorage
+      const hasValidServerAdminToken = verifyClientSessionAdminRole(userEmail);
+      if (hasValidServerAdminToken) {
+        const adminList = (typeof getAdminEmails === "function") ? getAdminEmails().map(e => (e || "").toLowerCase().trim()) : [];
+        if (adminList.includes(userEmail)) return true;
+      }
+
+      // Nếu không có chữ ký Server Token hợp lệ, tự động hạ quyền thành Thành Viên
       if (user.role === "Quản Trị Viên" || user.role === "ADMIN" || user.role === "Admin") {
         user.role = "Thành Viên";
         if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === userEmail) {
@@ -12848,7 +12918,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       let updated = false;
       users.forEach(u => {
         if ((u.email || "").toLowerCase().trim() === email) {
-          u.password = newPass;
+          if (u.password) delete u.password;
           updated = true;
         }
       });
@@ -12858,18 +12928,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           name: email.split("@")[0],
           email: email,
           role: "MEMBER",
-          balance: 0,
-          password: newPass
+          balance: 0
         });
       }
       if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(users);
-      try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
 
-      // Đồng bộ mật khẩu mới lên Cloud
+      // Đồng bộ mật khẩu mới lên Cloud (BẮT BUỘC HTTP POST JSON, KHÔNG DÙNG GET QUERY STRING)
       const ACTIVE_GAS_OTP_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
       try {
-        const resetUrl = ACTIVE_GAS_OTP_URL + "?action=resetPassword&email=" + encodeURIComponent(email) + "&newPassword=" + encodeURIComponent(newPass);
-        await fetch(resetUrl, { method: "GET" });
+        await fetch(ACTIVE_GAS_OTP_URL, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({ action: "resetPassword", email: email, newPassword: newPass })
+        });
       } catch(e) {
         if (typeof callGasApi === "function") {
           callGasApi("resetPassword", { email: email, newPassword: newPass }).catch(function() {});
@@ -13195,118 +13266,100 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const isAdm = isRootAdmin || ((typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false);
       const role = isAdm ? "Quản Trị Viên" : "MEMBER";
 
-      // 2. TÌM TÀI KHOẢN TRONG BỘ NHỚ CỤC BỘ (LOCAL REGISTERED USERS)
-      let users = getRegisteredUsers();
-      const found = users.find(u => (u.email || "").toLowerCase().trim() === email);
-
-      // 3. XÁC THỰC MẬT KHẨU NGHIÊM NGẶT 100% CHO MỌI TÀI KHOẢN (BAO GỒM CẢ ROOT ADMIN & ADMIN PHỤ)
+      // 2. XÁC THỰC MẬT KHẨU QUA SSOT SERVER (ZERO-PLAINTEXT CLIENT AUTH)
       let isAuthenticated = false;
-      let authenticatedGasUser = null;
+      let authenticatedUser = null;
+      let sessionToken = null;
 
-      // Bước 3.1: Nếu tài khoản đã có mật khẩu lưu cục bộ
-      if (found && found.password) {
-        if (found.password === pass) {
+      // Bước 2.1: Xác thực trực tiếp qua Cloudflare Worker SSOT POST /api/auth/login
+      try {
+        const workerLoginRes = await fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email, password: pass })
+        });
+        const wData = await workerLoginRes.json();
+        if (wData && wData.success) {
           isAuthenticated = true;
-        } else {
-          // Mật khẩu cục bộ không khớp: Thử xác thực trực tuyến qua Google Apps Script (phòng khi đổi mật khẩu trên máy khác)
-          if (typeof callGasApi === "function") {
+          authenticatedUser = wData.user;
+          sessionToken = wData.token;
+          if (sessionToken) {
             try {
-              const res = await callGasApi("login", { mode: "login", action: "login", email: email, password: pass });
-              if (res && res.success) {
-                isAuthenticated = true;
-                authenticatedGasUser = res.user || null;
-                found.password = pass;
-                saveRegisteredUsers(users);
-              } else if (res && res.message) {
-                showToast("❌ " + res.message, "danger");
-                const passEl = document.getElementById("loginPassInput");
-                if (passEl) { passEl.value = ""; passEl.focus(); }
-                return;
-              }
-            } catch(eGas) {}
+              sessionStorage.setItem("mmo_session_token", sessionToken);
+              localStorage.setItem("mmo_session_token", sessionToken);
+            } catch(e) {}
           }
-          if (!isAuthenticated) {
-            showToast("❌ Mật khẩu không chính xác! Vui lòng thử lại hoặc bấm 'Quên mật khẩu'.", "danger");
-            const passEl = document.getElementById("loginPassInput");
-            if (passEl) {
-              passEl.value = "";
-              passEl.focus();
-            }
-            return;
-          }
-        }
-      } else {
-        // Bước 3.2: Tài khoản chưa có mật khẩu lưu cục bộ -> BẮT BUỘC xác thực trực tuyến qua máy chủ Google Apps Script
-        if (typeof callGasApi === "function") {
-          try {
-            const res = await callGasApi("login", { mode: "login", action: "login", email: email, password: pass });
-            if (res && res.success) {
-              isAuthenticated = true;
-              authenticatedGasUser = res.user || null;
-            } else if (res && res.message) {
-              showToast("❌ " + res.message, "danger");
-              const passEl = document.getElementById("loginPassInput");
-              if (passEl) {
-                passEl.value = "";
-                passEl.focus();
-              }
-              return;
-            }
-          } catch(apiErr) {
-            console.warn("GAS Login verification error:", apiErr);
-          }
-        }
-
-        // Nếu máy chủ từ chối hoặc sai mật khẩu: CHẶN ĐỨNG TUYỆT ĐỐI
-        if (!isAuthenticated) {
-          showToast("❌ Tài khoản hoặc mật khẩu không chính xác! Vui lòng kiểm tra lại hoặc sử dụng 'Quên mật khẩu'.", "danger");
+        } else if (wData && wData.error && workerLoginRes.status === 401) {
+          showToast("❌ " + (wData.error || "Mật khẩu không chính xác!"), "danger");
           const passEl = document.getElementById("loginPassInput");
-          if (passEl) {
-            passEl.value = "";
-            passEl.focus();
-          }
+          if (passEl) { passEl.value = ""; passEl.focus(); }
           return;
         }
+      } catch(eWorker) {
+        console.warn("Worker auth error, falling back to GAS POST:", eWorker);
+      }
 
-        // Xác thực máy chủ thành công -> Cập nhật mật khẩu chuẩn xác vào danh sách thành viên
-        if (found) {
-          found.password = pass;
-          if (authenticatedGasUser) {
-            found.userId = authenticatedGasUser.userId || found.userId;
-            if (authenticatedGasUser.balance !== undefined) found.balance = Number(authenticatedGasUser.balance);
-            if (authenticatedGasUser.role === "ADMIN" || isAdm) found.role = "Quản Trị Viên";
+      // Bước 2.2: Nếu Worker chưa cấu hình mật khẩu người dùng hoặc offline, fallback sang GAS POST login
+      if (!isAuthenticated && typeof callGasApi === "function") {
+        try {
+          const res = await callGasApi("login", { mode: "login", action: "login", email: email, password: pass });
+          if (res && res.success) {
+            isAuthenticated = true;
+            authenticatedUser = res.user || null;
+            if (typeof ensureUserSessionToken === "function") {
+              ensureUserSessionToken({
+                email: email,
+                name: (res.user && res.user.name) || email,
+                role: (res.user && res.user.role) || "MEMBER"
+              }).catch(() => {});
+            }
+          } else if (res && res.message) {
+            showToast("❌ " + res.message, "danger");
+            const passEl = document.getElementById("loginPassInput");
+            if (passEl) { passEl.value = ""; passEl.focus(); }
+            return;
           }
-          saveRegisteredUsers(users);
-        } else if (authenticatedGasUser) {
-          const newCloudUser = {
-            userId: authenticatedGasUser.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
-            name: authenticatedGasUser.name || (isAdm ? "Quản Trị Viên" : email.split("@")[0]),
-            email: email,
-            password: pass,
-            role: authenticatedGasUser.role === "ADMIN" || isAdm ? "Quản Trị Viên" : "MEMBER",
-            balance: authenticatedGasUser.balance !== undefined ? Number(authenticatedGasUser.balance) : 0,
-            avatar: authenticatedGasUser.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)),
-            created: new Date().toLocaleDateString("vi-VN")
-          };
-          users.unshift(newCloudUser);
-          saveRegisteredUsers(users);
+        } catch(apiErr) {
+          console.warn("GAS Login verification error:", apiErr);
         }
       }
 
-      // LÁ CHẮN BẢO VỆ CUỐI CÙNG: Nếu chưa được xác thực thành công thì TUYỆT ĐỐI không cho đăng nhập
+      // LÁ CHẮN BẢO VỆ CUỐI CÙNG: Nếu máy chủ từ chối hoặc sai mật khẩu: CHẶN ĐỨNG TUYỆT ĐỐI
       if (!isAuthenticated) {
-        showToast("❌ Mật khẩu không chính xác!", "danger");
+        showToast("❌ Tài khoản hoặc mật khẩu không chính xác! Vui lòng kiểm tra lại hoặc sử dụng 'Quên mật khẩu'.", "danger");
+        const passEl = document.getElementById("loginPassInput");
+        if (passEl) {
+          passEl.value = "";
+          passEl.focus();
+        }
         return;
       }
 
-      // XÁC THỰC THÀNH CÔNG -> TIẾN HÀNH ĐĂNG NHẬP
+      // XÁC THỰC THÀNH CÔNG -> TIẾN HÀNH ĐĂNG NHẬP (KHÔNG LƯU MẬT KHẨU PLAINTEXT TRÊN CLIENT)
       let currentLocalUsers = getRegisteredUsers();
-      const confirmedUser = currentLocalUsers.find(u => (u.email || "").toLowerCase().trim() === email);
+      let confirmedUser = currentLocalUsers.find(u => (u.email || "").toLowerCase().trim() === email);
 
       if (confirmedUser) {
         confirmedUser.isLocked = false;
         confirmedUser.status = "ACTIVE";
-        confirmedUser.password = pass;
+        if (confirmedUser.password) delete confirmedUser.password;
+        if (authenticatedUser) {
+          if (authenticatedUser.name) confirmedUser.name = authenticatedUser.name;
+          if (authenticatedUser.balance !== undefined) confirmedUser.balance = Number(authenticatedUser.balance);
+          if (authenticatedUser.role === "ADMIN") confirmedUser.role = "Quản Trị Viên";
+        }
+        saveRegisteredUsers(currentLocalUsers);
+      } else if (authenticatedUser) {
+        confirmedUser = {
+          userId: authenticatedUser.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
+          name: authenticatedUser.name || (isAdm ? "Quản Trị Viên" : email.split("@")[0]),
+          email: email,
+          role: authenticatedUser.role === "ADMIN" || isAdm ? "Quản Trị Viên" : "MEMBER",
+          balance: authenticatedUser.balance !== undefined ? Number(authenticatedUser.balance) : 0,
+          avatar: authenticatedUser.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)),
+          created: new Date().toLocaleDateString("vi-VN")
+        };
+        currentLocalUsers.unshift(confirmedUser);
         saveRegisteredUsers(currentLocalUsers);
       }
 
@@ -13316,12 +13369,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         refToAssign = savedRefCode;
       }
 
+      const isServerAdmin = isRootAdmin || (authenticatedUser && (authenticatedUser.role === "ADMIN" || authenticatedUser.role === "Quản Trị Viên")) || isAdm;
+
       currentUser = {
         userId: confirmedUser?.userId || ("USR_" + Math.floor(100000 + Math.random() * 900000)),
-        name: confirmedUser?.name || (isAdm ? "Quản Trị Viên (Admin)" : email.split("@")[0]),
+        name: confirmedUser?.name || (isServerAdmin ? "Quản Trị Viên (Admin)" : email.split("@")[0]),
         email: email,
-        password: pass,
-        role: isAdm ? "Quản Trị Viên" : (confirmedUser?.role || role),
+        role: isServerAdmin ? "Quản Trị Viên" : (confirmedUser?.role || role),
         balance: confirmedUser?.balance !== undefined ? confirmedUser.balance : 0,
         avatar: confirmedUser?.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email)),
         referredBy: confirmedUser?.referredBy || refToAssign
@@ -13332,7 +13386,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       closeModal("authModal");
       showToast("🎉 Đăng nhập thành công! Chào mừng " + (currentUser.name || currentUser.email), "success");
       setTimeout(function() {
-        if (isAdm && typeof switchView === "function") {
+        if (isServerAdmin && typeof switchView === "function") {
           switchView("viewAdmin");
         } else {
           switchView("viewProfile");
@@ -13340,7 +13394,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }, 100);
 
-      // Background GAS balance sync
+      // Background GAS balance sync (POST)
       if (typeof callGasApi === "function") {
         callGasApi("login", { mode: "login", action: "login", email: email, password: pass }).then(function(res) {
           if (res && res.success && res.user) {
@@ -13406,12 +13460,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const isAdm = (typeof isAdminUser === "function") ? isAdminUser({ email: email }) : false;
       const role = isAdm ? "Quản Trị Viên" : "MEMBER";
 
-      // 1. TẠO TÀI KHOẢN TỨC THÌ (0ms) - BẢO LƯU MẬT KHẨU CHUẨN XÁC
+      // 1. TẠO TÀI KHOẢN TỨC THÌ (0ms) - BẢO MẬT KHÔNG LƯU PLAINTEXT TRÊN CLIENT
       currentUser = {
         userId: "USR_" + Math.floor(100000 + Math.random() * 900000),
         name: name,
         email: email,
-        password: pass,
         role: role,
         balance: 0,
         avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(email),
@@ -13431,12 +13484,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       showToast("🎉 Đăng ký tài khoản thành công! Chào mừng " + name, "success");
       switchView("viewProfile");
 
+      // Cấp session token từ Worker
+      if (typeof ensureUserSessionToken === "function") {
+        ensureUserSessionToken({ email: email, name: name, role: role }).catch(() => {});
+      }
+
       // 2. GHI NHẬN THÀNH VIÊN F1 LÊN CLOUD WORKER TURSO & PHÁT SÓNG REALTIME
       if (refToAssign && typeof syncAffiliateRegistrationToCloud === "function") {
         syncAffiliateRegistrationToCloud(email, name, refToAssign, "EMAIL");
       }
 
-      // 3. ĐỒNG BỘ GOOGLE APPS SCRIPT CHẠY NGẦM TRONG NỀN (NON-BLOCKING)
+      // 3. ĐỒNG BỘ GOOGLE APPS SCRIPT CHẠY NGẦM TRONG NỀN (HTTP POST JSON)
       if (typeof callGasApi === "function") {
         callGasApi("register", {
           mode: "register",
@@ -13453,7 +13511,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const idx = latestUsers.findIndex(u => (u.email || "").toLowerCase().trim() === email);
             if (idx !== -1) {
               latestUsers[idx].userId = currentUser.userId;
-              latestUsers[idx].password = pass;
+              if (latestUsers[idx].password) delete latestUsers[idx].password;
               saveRegisteredUsers(latestUsers);
             }
           }
@@ -25692,12 +25750,13 @@ function syncAllOpenViewsStock(changedProdId) {
       if (!apiUrl) return null;
 
       const isMutation = [
+        "login", "register", "changePassword", "resetPassword",
         "adminSaveProduct", "adminDeleteProduct", "adminSaveSettings",
         "adminUpdateUserRole", "adminDeleteStockItem", "adminImportStock", "createOrder",
         "authGoogle", "authEmail", "verifyAdminPin", "payOrderByWallet",
         "apiSourceBuyProduct", "apiSourceGetProfile", "apiSourceGetProducts", "sendChatMessage", "markChatRead",
         "adminUpdateBalance", "adminUpdateOrderStatus"
-      ].includes(action);
+      ].includes(action) || !!(params && (params.password || params.pass || params.pin || params.token));
 
       // Timeout an toàn: Xác thực đăng nhập 8s, đột biến 6s, đọc dữ liệu 4s để loại bỏ hoàn toàn đơ/lag web
       const timeoutMs = (action === "login" || action === "register") ? 8000 : (isMutation ? 6000 : 4000);
@@ -25761,13 +25820,20 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function syncUserToCloud(user) {
       if (!user || !user.email) return;
-      callGasApi("authEmail", {
+      const payload = {
         mode: "register",
         email: user.email,
         name: user.name || user.email.split("@")[0],
-        password: user.password || "123456",
         role: user.role || "Thành Viên"
-      }).catch(() => {});
+      };
+      // H3 Patch: Tuyệt đối không gửi mật khẩu mặc định "123456"
+      if (user.password && typeof user.password === "string" && user.password.trim()) {
+        payload.password = user.password.trim();
+      }
+      if (user.authType) {
+        payload.authType = user.authType;
+      }
+      callGasApi("authEmail", payload).catch(() => {});
     }
     window.syncUserToCloud = syncUserToCloud;
 
