@@ -20811,11 +20811,6 @@ function syncAllOpenViewsStock(changedProdId) {
       if (typeof renderBestSellers === "function") renderBestSellers();
       if (typeof renderRecommended === "function") renderRecommended();
       if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-      if (typeof showToast === "function") {
-        showToast("⚡ Đã lưu và đồng bộ tức thì " + updatedCount + " sản phẩm liên kết API!", "success");
-      }
-    }
-
       const curP = typeof currentSelectedProduct !== "undefined" ? currentSelectedProduct : null;
       if (curP && typeof syncDetailStockUI === "function") {
         const curVIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
@@ -20823,7 +20818,7 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (typeof showToast === "function") {
-        showToast("💾 Đã lưu và đồng bộ " + updatedCount + " sản phẩm trên trang hiện tại!", "success");
+        showToast("⚡ Đã lưu và đồng bộ tức thì " + updatedCount + " sản phẩm liên kết API!", "success");
       }
     }
     window.saveAllApiMappings = saveAllApiMappings;
