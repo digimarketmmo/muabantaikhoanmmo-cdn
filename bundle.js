@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.7.2";
+const MMO_CURRENT_CODE_VERSION = "4.7.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -31182,19 +31182,13 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function getArticleProxyShareUrl(b) {
       if (!b) return window.location.href;
-      const slug = (typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "");
-      let shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?post=" + encodeURIComponent(slug || b.id);
-      if (b.title) {
-        shareUrl += "&title=" + encodeURIComponent(b.title);
+      let slug = "";
+      if (typeof sanitizeBlogSlug === "function") {
+        slug = sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id);
       }
-      if (b.snippet || b.description) {
-        const rawDesc = String(b.snippet || b.description).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
-        if (rawDesc) shareUrl += "&desc=" + encodeURIComponent(rawDesc);
-      }
-      if (b.image) {
-        shareUrl += "&img=" + encodeURIComponent(b.image);
-      }
-      return shareUrl;
+      if (!slug) slug = b.slug || b.id || "";
+      if (!slug) return window.location.href;
+      return "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/b/" + encodeURIComponent(slug);
     }
     window.getArticleProxyShareUrl = getArticleProxyShareUrl;
 
