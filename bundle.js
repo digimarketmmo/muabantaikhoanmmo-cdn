@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.7.8";
+const MMO_CURRENT_CODE_VERSION = "4.7.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -388,23 +388,70 @@ function healStorageQuota(forceEmergency) {
   }
 }
 
-function safeStorageSet(key, value) {
-  if (typeof localStorage === "undefined") return false;
+function safeStorageSet(key, value, maxItems) {
+  if (typeof localStorage === "undefined" || !key) return false;
   try {
-    localStorage.setItem(key, value);
+    let serialized = value;
+    if (typeof value === "object" && value !== null) {
+      if (Array.isArray(value) && typeof maxItems === "number" && maxItems > 0 && value.length > maxItems) {
+        serialized = JSON.stringify(value.slice(0, maxItems));
+      } else {
+        serialized = JSON.stringify(value);
+      }
+    } else {
+      serialized = String(value);
+    }
+    localStorage.setItem(key, serialized);
     return true;
   } catch(e) {
     console.warn("[STORAGE] Quota exceeded on setItem('" + key + "'). Running emergency purge...", e.message);
     healStorageQuota(true);
     try {
-      localStorage.setItem(key, value);
+      let serialized = value;
+      if (typeof value === "object" && value !== null) {
+        if (Array.isArray(value)) {
+          const limit = (typeof maxItems === "number" && maxItems > 0) ? Math.min(100, maxItems) : 100;
+          serialized = JSON.stringify(value.slice(0, limit));
+        } else {
+          serialized = JSON.stringify(value);
+        }
+      } else {
+        serialized = String(value);
+      }
+      localStorage.setItem(key, serialized);
       return true;
     } catch(retryErr) {
       console.warn("[STORAGE] Secondary retry failed for '" + key + "'. Storing in sessionStorage and memory.", retryErr.message);
-      try { sessionStorage.setItem(key, value); } catch(sErr) {}
+      try {
+        const sVal = (typeof value === "object" && value !== null) ? JSON.stringify(value) : String(value);
+        sessionStorage.setItem(key, sVal);
+      } catch(sErr) {}
       return false;
     }
   }
+}
+window.safeStorageSet = safeStorageSet;
+
+// [MULTI-TAB REALTIME SESSION SYNC]: Tự động đồng bộ trạng thái đăng nhập/đăng xuất giữa các tab
+if (typeof window !== "undefined") {
+  window.addEventListener("storage", function(event) {
+    if (event.key === "mmo_user") {
+      try {
+        if (event.newValue) {
+          const newUser = JSON.parse(event.newValue);
+          if (newUser && newUser.email) {
+            window.currentUser = newUser;
+            if (typeof currentUser !== "undefined") currentUser = newUser;
+            if (typeof updateUserUI === "function") updateUserUI();
+          }
+        } else {
+          window.currentUser = null;
+          if (typeof currentUser !== "undefined") currentUser = null;
+          if (typeof updateUserUI === "function") updateUserUI();
+        }
+      } catch(eStorageSync) {}
+    }
+  });
 }
 
 function safeStorageGet(key) {
@@ -12078,6 +12125,43 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
         showToast("🎉 Đã lưu sản phẩm [" + (name || actualTargetId) + "] thành công!", "success");
 
+        // Lưu ngay URL ảnh vào mmo_custom_img_ để UI hiển thị tức thì không qua fallback
+        if (actualTargetId && image) {
+          try {
+            localStorage.setItem("mmo_custom_img_" + actualTargetId, image);
+          } catch(eImgLS) {}
+        }
+
+        // Tự động đẩy ngầm ảnh Base64 lên Cloud CDN nếu chưa kịp tải
+        if (actualTargetId && image && String(image).startsWith("data:") && image.length > 2000) {
+          try {
+            const wSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+            const wUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+            fetch(wUrl + "/api/upload-image", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "Authorization": "Bearer " + wSec, "X-Admin-Secret": wSec, "x-admin-token": wSec },
+              body: JSON.stringify({ image: image, name: actualTargetId + ".png" })
+            }).then(r => r.json()).then(d => {
+              if (d && d.success && d.url) {
+                const cUrl = String(d.url).trim();
+                try { localStorage.setItem("mmo_custom_img_" + actualTargetId, cUrl); } catch(e) {}
+                if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+                  const mIdx = MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === actualTargetId.toLowerCase());
+                  if (mIdx !== -1) {
+                    MOCK_DATA.products[mIdx].image = cUrl;
+                    MOCK_DATA.products[mIdx].image_url = cUrl;
+                  }
+                }
+                fetch(wUrl + "/api/admin/products/save", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json", "Authorization": "Bearer " + wSec },
+                  body: JSON.stringify({ product: { ...prodData, image: cUrl, image_url: cUrl } })
+                }).catch(() => {});
+              }
+            }).catch(() => {});
+          } catch(eUp) {}
+        }
+
         // Đồng bộ an toàn vào LocalStorage (chống QuotaExceededError khi ảnh Base64 lớn)
         try {
           const sanitizedProds = MOCK_DATA.products.map(p => {
@@ -12097,7 +12181,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           try {
             localStorage.removeItem("mmo_transaction_history");
             localStorage.removeItem("cached_source_products");
-            const prodsJson2 = JSON.stringify(MOCK_DATA.products.map(p => ({ id: p.id, name: p.name, price: p.price, stock: p.stock, category: p.category, delivery_type: p.delivery_type })));
+            const prodsJson2 = JSON.stringify(MOCK_DATA.products.map(p => ({
+              id: p.id,
+              name: p.name,
+              price: p.price,
+              stock: p.stock,
+              category: p.category,
+              delivery_type: p.delivery_type,
+              image: (p.image && !String(p.image).startsWith("data:")) ? p.image : ("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image")
+            })));
             localStorage.setItem("mmo_admin_products", prodsJson2);
             localStorage.setItem("mmo_products", prodsJson2);
           } catch(e2) {}
@@ -25994,9 +26086,21 @@ function syncAllOpenViewsStock(changedProdId) {
 
           // Đồng bộ tải lên Cloudflare Worker CDN ngầm
           window._isUploadingProductImage = true;
-          fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/upload-image", {
+          const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+            ? MMO_WORKER_API.getAdminSecret()
+            : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+          const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+            ? MMO_WORKER_API.getApiUrl()
+            : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+
+          fetch(workerUrl + "/api/upload-image", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + adminSec,
+              "X-Admin-Secret": adminSec,
+              "x-admin-token": adminSec
+            },
             body: JSON.stringify({
               image: optimizedDataUrl,
               mimeType: mimeType,
@@ -26008,8 +26112,25 @@ function syncAllOpenViewsStock(changedProdId) {
             window._isUploadingProductImage = false;
             if (statusEl) statusEl.style.display = "none";
             if (data && data.success && data.url) {
-              if (imgInput) imgInput.value = data.url;
-              if (preview) preview.src = data.url;
+              const cloudUrl = String(data.url).trim();
+              if (imgInput) imgInput.value = cloudUrl;
+              if (preview) preview.src = cloudUrl;
+
+              // Đồng bộ ngay lập tức vào sản phẩm đang chỉnh sửa
+              const curProdId = document.getElementById("admProdId") ? document.getElementById("admProdId").value.trim() : "";
+              if (curProdId) {
+                try {
+                  localStorage.setItem("mmo_custom_img_" + curProdId, cloudUrl);
+                } catch(eLS) {}
+                if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+                  const pIdx = MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === curProdId.toLowerCase());
+                  if (pIdx !== -1) {
+                    MOCK_DATA.products[pIdx].image = cloudUrl;
+                    MOCK_DATA.products[pIdx].image_url = cloudUrl;
+                    MOCK_DATA.products[pIdx].imageUrl = cloudUrl;
+                  }
+                }
+              }
               showToast("🎉 Tải ảnh lên Cloud CDN thành công!", "success");
             } else {
               showToast("Đã tối ưu hóa ảnh thành công!", "success");
@@ -26030,6 +26151,25 @@ function syncAllOpenViewsStock(changedProdId) {
             const rawData = evt.target.result;
             if (preview) preview.src = rawData;
             if (imgInput) imgInput.value = rawData;
+
+            // Tải lên Cloud CDN ngay cả khi dùng FileReader
+            const adminSec2 = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+            const workerUrl2 = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+            fetch(workerUrl2 + "/api/upload-image", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "Authorization": "Bearer " + adminSec2, "X-Admin-Secret": adminSec2, "x-admin-token": adminSec2 },
+              body: JSON.stringify({ image: rawData, name: file.name })
+            }).then(r => r.json()).then(d => {
+              if (d && d.success && d.url) {
+                if (imgInput) imgInput.value = d.url;
+                if (preview) preview.src = d.url;
+                const curProdId = document.getElementById("admProdId") ? document.getElementById("admProdId").value.trim() : "";
+                if (curProdId) {
+                  try { localStorage.setItem("mmo_custom_img_" + curProdId, d.url); } catch(eLS) {}
+                }
+              }
+            }).catch(() => {});
+
             showToast("Tải ảnh sản phẩm thành công!", "success");
           };
           reader.readAsDataURL(file);
@@ -26392,7 +26532,7 @@ function syncAllOpenViewsStock(changedProdId) {
     // =========================================================================
     if (!window._mmoInMemoryOrders) window._mmoInMemoryOrders = [];
 
-    function safeStorageSet(key, list, maxItems = 250) {
+    function safeStorageSetOrderList(key, list, maxItems = 250) {
       if (!Array.isArray(list)) return;
       try {
         let cleanList = list.slice(0, maxItems);
@@ -26409,7 +26549,6 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       }
     }
-    window.safeStorageSet = safeStorageSet;
 
     function recordAndSaveNewOrder(orderObj) {
       if (!orderObj) return null;
