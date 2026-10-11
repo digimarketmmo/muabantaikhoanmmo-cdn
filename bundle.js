@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.7.6";
+const MMO_CURRENT_CODE_VERSION = "4.7.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -8508,9 +8508,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       }
       if (pNameLower.includes("gemini") && (initialProv === "sellmmo" || !initialProv)) {
-        initialProv = "nguyenlieummo";
+        initialProv = "selltainguyenmmo";
       }
-      if (!initialProv) initialProv = "nguyenlieummo";
+      if (!initialProv) initialProv = "selltainguyenmmo";
 
       if (typeof syncModalProviderOptions === "function") syncModalProviderOptions(initialProv);
       if (typeof toggleAdmProductSourceFields === "function") toggleAdmProductSourceFields();
@@ -8518,8 +8518,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         let prov = initialProv;
         let srcId = (existingMap && existingMap.sourceProdId) ? String(existingMap.sourceProdId) : (p.apiMapping && p.apiMapping.sourceProdId) ? String(p.apiMapping.sourceProdId) : "";
         if (pNameLower.includes("gemini") && (!srcId || srcId === "32428" || srcId === "23586" || srcId === "23607")) {
-          prov = "nguyenlieummo";
-          srcId = "119295";
+          prov = "selltainguyenmmo";
+          srcId = "26440";
         }
 
         const pSel = document.getElementById("admProdApiProvider");
@@ -12031,6 +12031,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         } else {
           MOCK_DATA.products.unshift(prodData);
         }
+
+        // Tự động đồng bộ ngay lập tức cho ID sinh đôi Gemini (PROD_MU2AB1XEGI <-> PROD_MU6R34FZ4Z)
+        if (actualTargetId === "PROD_MU2AB1XEGI" || actualTargetId === "PROD_MU6R34FZ4Z") {
+          const twinId = (actualTargetId === "PROD_MU2AB1XEGI") ? "PROD_MU6R34FZ4Z" : "PROD_MU2AB1XEGI";
+          const twinIdx = MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === twinId.toLowerCase());
+          if (twinIdx !== -1) {
+            MOCK_DATA.products[twinIdx] = Object.assign({}, MOCK_DATA.products[twinIdx], prodData, {
+              id: twinId,
+              apiMapping: prodData.apiMapping ? Object.assign({}, prodData.apiMapping, { targetProdId: twinId }) : prodData.apiMapping
+            });
+          }
+        }
         if (typeof window !== "undefined" && window.MOCK_DATA) {
           window.MOCK_DATA.products = MOCK_DATA.products;
         }
@@ -12149,6 +12161,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               console.log("✅ Đã lưu thành công qua secret dự phòng!");
               localStorage.setItem("mmo_admin_secret", "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
             }
+          }
+
+          if (actualTargetId === "PROD_MU2AB1XEGI" || actualTargetId === "PROD_MU6R34FZ4Z") {
+            const twinId = (actualTargetId === "PROD_MU2AB1XEGI") ? "PROD_MU6R34FZ4Z" : "PROD_MU2AB1XEGI";
+            const sec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+            fetch(workerUrl + "/api/admin/products/save", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sec },
+              body: JSON.stringify({
+                product: {
+                  ...syncProductPayload,
+                  id: twinId,
+                  apiMapping: syncProductPayload.apiMapping ? Object.assign({}, syncProductPayload.apiMapping, { targetProdId: twinId }) : syncProductPayload.apiMapping
+                }
+              })
+            }).catch(() => {});
           }
         } catch(eSaveWorker) {
           console.warn("Cloud saveProduct warning:", eSaveWorker);
@@ -20015,10 +20043,10 @@ function syncAllOpenViewsStock(changedProdId) {
       "PROD_MU5PWT7PP7": {"enabled":true,"provider":"ultrammo","sourceProdId":"13629","sourcePrice":1200,"sourceStock":532,"sourceProdName":"TÀI KHOẢN KLING AI 65 CREDIT","baseUrl":"https://ultrammo.com"},
       "PROD_MTQZT2Y1": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"121063","sourcePrice":656,"sourceStock":88181,"sourceProdName":"Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months"},
       "PROD_MU5SPLMSEC": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"31699","sourcePrice":16000,"sourceStock":16037,"sourceProdName":"🔥ChatGPT Free đã verify phone codex"},
-      "PROD_MU5T3T47AE": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"119295","sourcePrice":108272,"sourceStock":534,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://nguyenlieummo.com.vn"},
-      "PROD_MU6R34FZ4Z": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"119295","sourcePrice":108272,"sourceStock":534,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://nguyenlieummo.com.vn"},
-      "PROD_MU2AB1XEGI": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"119295","sourcePrice":108272,"sourceStock":534,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://nguyenlieummo.com.vn"},
-      "PROD_MUQIMRJYG0": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"119295","sourcePrice":108272,"sourceStock":534,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://nguyenlieummo.com.vn"},
+      "PROD_MU5T3T47AE": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"26440","sourcePrice":42800,"sourceStock":326,"sourceProdName":"[VPN] #26440 Link Gemini Pro 18 Months - 42.800 đ (Tồn: 326)","baseUrl":"https://selltainguyenmmo.com"},
+      "PROD_MU6R34FZ4Z": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"26440","sourcePrice":42800,"sourceStock":326,"sourceProdName":"[VPN] #26440 Link Gemini Pro 18 Months - 42.800 đ (Tồn: 326)","baseUrl":"https://selltainguyenmmo.com"},
+      "PROD_MU2AB1XEGI": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"26440","sourcePrice":42800,"sourceStock":326,"sourceProdName":"[VPN] #26440 Link Gemini Pro 18 Months - 42.800 đ (Tồn: 326)","baseUrl":"https://selltainguyenmmo.com"},
+      "PROD_MUQIMRJYG0": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"26440","sourcePrice":42800,"sourceStock":326,"sourceProdName":"[VPN] #26440 Link Gemini Pro 18 Months - 42.800 đ (Tồn: 326)","baseUrl":"https://selltainguyenmmo.com"},
       "PROD_MTPJ88O9": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"25289","sourcePrice":60000,"sourceStock":250,"sourceProdName":"NÂNG CẤP CANVA PRO 1 NĂM"},
       "PROD_MUAULFFCDT": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"31694","sourcePrice":300000,"sourceStock":20,"sourceProdName":"CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG )"},
       "PROD_MU4YOZEU2M": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"25646","sourcePrice":198,"sourceStock":1200,"sourceProdName":"Outlook Hotmail Trusted - OAuth2 Live 6 - 12 tháng"},
@@ -20227,34 +20255,22 @@ function syncAllOpenViewsStock(changedProdId) {
         maps[prodId].sourceStock = 88181;
       }
 
-      // Tự động chuyển tiếp Gemini mã cũ (32428, 23586, 23607) sang 119295 (nguyenlieummo)
-      const isGeminiProd = (prodId === "PROD_MU2AB1XEGI" || prodId === "PROD_MU6R34FZ4Z" || prodId === "PROD_MU5T3T47AE" || prodId === "PROD_MUQIMRJYG0" || (prodObj && (prodObj.name || "").toLowerCase().includes("gemini")));
-      if (isGeminiProd) {
-        if (prodObj && prodObj.apiMapping && (["32428", "23586", "23607"].includes(String(prodObj.apiMapping.sourceProdId)) || prodObj.apiMapping.provider === "sellmmo" || prodObj.apiMapping.provider === "selltainguyenmmo")) {
-          prodObj.apiMapping.provider = "nguyenlieummo";
-          prodObj.apiMapping.sourceProdId = "119295";
-          prodObj.apiMapping.sourcePrice = 108272;
-          prodObj.apiMapping.sourceStock = 534;
-          prodObj.apiMapping.isSourceDeleted = false;
-        }
-        if (prodObj && Array.isArray(prodObj.variants)) {
-          prodObj.variants.forEach(v => {
-            if (v && v.apiMapping && (["32428", "23586", "23607"].includes(String(v.apiMapping.sourceProdId)) || v.apiMapping.provider === "sellmmo" || v.apiMapping.provider === "selltainguyenmmo")) {
-              v.apiMapping.provider = "nguyenlieummo";
-              v.apiMapping.sourceProdId = "119295";
-              v.apiMapping.sourcePrice = 108272;
-              v.apiMapping.sourceStock = 534;
-              v.apiMapping.isSourceDeleted = false;
-            }
-          });
-        }
-        if (prodId && maps[prodId] && (["32428", "23586", "23607"].includes(String(maps[prodId].sourceProdId)) || maps[prodId].provider === "sellmmo" || maps[prodId].provider === "selltainguyenmmo")) {
-          maps[prodId].provider = "nguyenlieummo";
-          maps[prodId].sourceProdId = "119295";
-          maps[prodId].sourcePrice = 108272;
-          maps[prodId].sourceStock = 534;
-          maps[prodId].isSourceDeleted = false;
-        }
+      // Tự động chuyển tiếp nếu gặp đúng mã nguồn cũ đã bị NCC xóa vĩnh viễn (32428)
+      if (prodObj && prodObj.apiMapping && String(prodObj.apiMapping.sourceProdId) === "32428") {
+        prodObj.apiMapping.provider = "selltainguyenmmo";
+        prodObj.apiMapping.sourceProdId = "26440";
+        prodObj.apiMapping.sourcePrice = 42800;
+        prodObj.apiMapping.sourceStock = 326;
+        prodObj.apiMapping.sourceProdName = "[VPN] #26440 Link Gemini Pro 18 Months - 42.800 đ (Tồn: 326)";
+        prodObj.apiMapping.isSourceDeleted = false;
+      }
+      if (prodId && maps[prodId] && String(maps[prodId].sourceProdId) === "32428") {
+        maps[prodId].provider = "selltainguyenmmo";
+        maps[prodId].sourceProdId = "26440";
+        maps[prodId].sourcePrice = 42800;
+        maps[prodId].sourceStock = 326;
+        maps[prodId].sourceProdName = "[VPN] #26440 Link Gemini Pro 18 Months - 42.800 đ (Tồn: 326)";
+        maps[prodId].isSourceDeleted = false;
       }
 
       // 1. Kiểm tra cấu hình explicitly bị tắt
