@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.7.1";
+const MMO_CURRENT_CODE_VERSION = "4.7.2";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -31180,14 +31180,31 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.renderArticleRelatedGrid = renderArticleRelatedGrid;
 
+    function getArticleProxyShareUrl(b) {
+      if (!b) return window.location.href;
+      const slug = (typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "");
+      let shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?post=" + encodeURIComponent(slug || b.id);
+      if (b.title) {
+        shareUrl += "&title=" + encodeURIComponent(b.title);
+      }
+      if (b.snippet || b.description) {
+        const rawDesc = String(b.snippet || b.description).replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 200);
+        if (rawDesc) shareUrl += "&desc=" + encodeURIComponent(rawDesc);
+      }
+      if (b.image) {
+        shareUrl += "&img=" + encodeURIComponent(b.image);
+      }
+      return shareUrl;
+    }
+    window.getArticleProxyShareUrl = getArticleProxyShareUrl;
+
     function copyArticleLink() {
       const b = window.currentViewingBlog;
-      // Dùng link native chính thức của Blogger (200 OK) để khi dán đi đâu cũng nhận diện ảnh thật 100%
-      const shareUrl = (b && b.url) ? b.url : window.location.href;
+      const shareUrl = getArticleProxyShareUrl(b);
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(shareUrl).then(() => {
-          if (typeof showNotification === "function") showNotification("Đã sao chép liên kết bài viết thành công!");
-          else alert("Đã sao chép liên kết bài viết!");
+          if (typeof showNotification === "function") showNotification("Đã sao chép liên kết chia sẻ bài viết!");
+          else alert("Đã sao chép liên kết chia sẻ bài viết!");
         });
       } else {
         alert("Đã copy link bài viết: " + shareUrl);
@@ -31197,16 +31214,15 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function shareArticleFb() {
       const b = window.currentViewingBlog;
-      // DÙNG 100% LINK GỐC BÀI VIẾT TRÊN DOMAIN CHÍNH CHỦ MUABANTAIKHOANMMO.COM
-      // TUYỆT ĐỐI KHÔNG DÙNG WORKERS.DEV ĐỂ TRÁNH BỊ CHẶN LINK WEB!
-      let shareUrl = (b && b.url) ? b.url : window.location.href;
+      // Dùng proxy trung gian workers.dev hiển thị đầy đủ 100% Ảnh thực tế và Mô tả bài viết
+      const shareUrl = getArticleProxyShareUrl(b);
       window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank', 'width=600,height=500,menubar=no,toolbar=no');
     }
     window.shareArticleFb = shareArticleFb;
 
     function shareArticleTg() {
       const b = window.currentViewingBlog;
-      let shareUrl = (b && b.url) ? b.url : window.location.href;
+      const shareUrl = getArticleProxyShareUrl(b);
       const title = (b && b.title) ? (b.title + " | MUABANTAIKHOANMMO.COM") : "";
       window.open('https://t.me/share/url?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(title + '\n' + shareUrl), '_blank', 'width=600,height=500');
     }
@@ -31214,7 +31230,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function shareArticleZalo() {
       const b = window.currentViewingBlog;
-      let shareUrl = (b && b.url) ? b.url : window.location.href;
+      const shareUrl = getArticleProxyShareUrl(b);
       const title = (b && b.title) ? (b.title + " | MUABANTAIKHOANMMO.COM") : "";
       window.open('https://zalo.me/share?url=' + encodeURIComponent(shareUrl) + '&title=' + encodeURIComponent(title), '_blank', 'width=600,height=500');
     }
