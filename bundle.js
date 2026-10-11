@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.7.0";
+const MMO_CURRENT_CODE_VERSION = "4.7.1";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -31182,38 +31182,31 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function copyArticleLink() {
       const b = window.currentViewingBlog;
-      const cleanSlug = b ? ((typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "")) : "";
-      const url = cleanSlug ? (window.location.origin + "/blog/" + cleanSlug + "/") : window.location.href;
+      // Dùng link native chính thức của Blogger (200 OK) để khi dán đi đâu cũng nhận diện ảnh thật 100%
+      const shareUrl = (b && b.url) ? b.url : window.location.href;
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(() => {
+        navigator.clipboard.writeText(shareUrl).then(() => {
           if (typeof showNotification === "function") showNotification("Đã sao chép liên kết bài viết thành công!");
           else alert("Đã sao chép liên kết bài viết!");
         });
       } else {
-        alert("Đã copy link bài viết: " + url);
+        alert("Đã copy link bài viết: " + shareUrl);
       }
     }
     window.copyArticleLink = copyArticleLink;
 
     function shareArticleFb() {
       const b = window.currentViewingBlog;
-      const cleanSlug = b ? ((typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "")) : "";
-      // Sử dụng Worker OG endpoint để Facebook, Zalo bot lấy 100% Ảnh Thật HD, Tiêu Đề Thật và Tự Động Chuyển Hướng!
-      let shareUrl = window.location.href;
-      if (cleanSlug) {
-        shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?blog=" + encodeURIComponent(cleanSlug);
-      }
+      // DÙNG 100% LINK GỐC BÀI VIẾT TRÊN DOMAIN CHÍNH CHỦ MUABANTAIKHOANMMO.COM
+      // TUYỆT ĐỐI KHÔNG DÙNG WORKERS.DEV ĐỂ TRÁNH BỊ CHẶN LINK WEB!
+      let shareUrl = (b && b.url) ? b.url : window.location.href;
       window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank', 'width=600,height=500,menubar=no,toolbar=no');
     }
     window.shareArticleFb = shareArticleFb;
 
     function shareArticleTg() {
       const b = window.currentViewingBlog;
-      const cleanSlug = b ? ((typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "")) : "";
-      let shareUrl = window.location.href;
-      if (cleanSlug) {
-        shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?blog=" + encodeURIComponent(cleanSlug);
-      }
+      let shareUrl = (b && b.url) ? b.url : window.location.href;
       const title = (b && b.title) ? (b.title + " | MUABANTAIKHOANMMO.COM") : "";
       window.open('https://t.me/share/url?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(title + '\n' + shareUrl), '_blank', 'width=600,height=500');
     }
@@ -31221,11 +31214,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
     function shareArticleZalo() {
       const b = window.currentViewingBlog;
-      const cleanSlug = b ? ((typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "")) : "";
-      let shareUrl = window.location.href;
-      if (cleanSlug) {
-        shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?blog=" + encodeURIComponent(cleanSlug);
-      }
+      let shareUrl = (b && b.url) ? b.url : window.location.href;
       const title = (b && b.title) ? (b.title + " | MUABANTAIKHOANMMO.COM") : "";
       window.open('https://zalo.me/share?url=' + encodeURIComponent(shareUrl) + '&title=' + encodeURIComponent(title), '_blank', 'width=600,height=500');
     }
