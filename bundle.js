@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.6.9";
+const MMO_CURRENT_CODE_VERSION = "4.7.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -30598,38 +30598,13 @@ function syncAllOpenViewsStock(changedProdId) {
       try {
         localStorage.setItem("mmo_current_blog_id", b.id);
         window.currentViewingBlog = b;
-        const curPath = (window.location.pathname || "").toLowerCase();
         const cleanSlug = (typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "");
-
-        // 1. Nếu người dùng đang truy cập trực tiếp qua /blog/... thì giữ nguyên chuẩn SEO /blog/[cleanSlug]/
-        if (curPath.startsWith("/blog/")) {
-          cleanShortPath = "/blog/" + cleanSlug + "/";
-        } else if (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes(".")) {
-          // 2. Nếu đang ở URL rút gọn đơn 1 cấp (như /tai-khoan-ai hoặc /gmail-thue) -> giữ nguyên 100% không đổi!
-          cleanShortPath = curPath.endsWith("/") ? curPath.slice(0, -1) : curPath;
-        } else {
-          // 3. Nếu người dùng vào qua link Blogger gốc /YYYY/MM/xxx.html hoặc click xem bài viết:
-          const rawPath = String(b.pathname || b.url || "").toLowerCase();
-          const rawFilenameMatch = rawPath.match(/\/([^\/\?#]+)\.html/);
-          const rawFilename = rawFilenameMatch ? rawFilenameMatch[1] : "";
-          const isOriginallyBlogPrefixed = /^blog[-_a-z0-9]/i.test(rawFilename) || (b.slug && /^blog/i.test(b.slug));
-
-          if (isOriginallyBlogPrefixed) {
-            cleanShortPath = "/blog/" + cleanSlug + "/";
-          } else if (cleanSlug) {
-            cleanShortPath = "/" + cleanSlug;
-          } else {
-            cleanShortPath = b.pathname || "";
-            if (!cleanShortPath && b.url) {
-              try { cleanShortPath = new URL(b.url).pathname; } catch(e) {}
-            }
-            cleanShortPath = cleanShortPath.replace(/^\/\d{4}\/\d{2}\//, '/');
-            if (!cleanShortPath.startsWith("/")) cleanShortPath = "/" + cleanShortPath;
-            if (!cleanShortPath.endsWith(".html") && !cleanShortPath.endsWith("/")) cleanShortPath += ".html";
-          }
-        }
+        cleanShortPath = "/blog/" + (cleanSlug || "tin-tuc") + "/";
 
         window.history.replaceState(null, "", window.location.origin + cleanShortPath);
+        if (b.title) {
+          try { document.title = b.title + " | MUABANTAIKHOANMMO.COM"; } catch(e) {}
+        }
       } catch(e) {}
 
       const bCat = document.getElementById("articleBreadcrumbCat");
@@ -31206,29 +31181,55 @@ function syncAllOpenViewsStock(changedProdId) {
     window.renderArticleRelatedGrid = renderArticleRelatedGrid;
 
     function copyArticleLink() {
-      const url = window.location.href;
+      const b = window.currentViewingBlog;
+      const cleanSlug = b ? ((typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "")) : "";
+      const url = cleanSlug ? (window.location.origin + "/blog/" + cleanSlug + "/") : window.location.href;
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(() => {
           if (typeof showNotification === "function") showNotification("Đã sao chép liên kết bài viết thành công!");
           else alert("Đã sao chép liên kết bài viết!");
         });
       } else {
-        alert("Đã copy link bài viết!");
+        alert("Đã copy link bài viết: " + url);
       }
     }
     window.copyArticleLink = copyArticleLink;
 
     function shareArticleFb() {
-      const url = encodeURIComponent(window.location.href);
-      window.open('https://www.facebook.com/sharer/sharer.php?u=' + url, '_blank', 'width=600,height=400');
+      const b = window.currentViewingBlog;
+      const cleanSlug = b ? ((typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "")) : "";
+      // Sử dụng Worker OG endpoint để Facebook, Zalo bot lấy 100% Ảnh Thật HD, Tiêu Đề Thật và Tự Động Chuyển Hướng!
+      let shareUrl = window.location.href;
+      if (cleanSlug) {
+        shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?blog=" + encodeURIComponent(cleanSlug);
+      }
+      window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(shareUrl), '_blank', 'width=600,height=500,menubar=no,toolbar=no');
     }
     window.shareArticleFb = shareArticleFb;
 
     function shareArticleTg() {
-      const url = encodeURIComponent(window.location.href);
-      window.open('https://t.me/share/url?url=' + url, '_blank', 'width=600,height=400');
+      const b = window.currentViewingBlog;
+      const cleanSlug = b ? ((typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "")) : "";
+      let shareUrl = window.location.href;
+      if (cleanSlug) {
+        shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?blog=" + encodeURIComponent(cleanSlug);
+      }
+      const title = (b && b.title) ? (b.title + " | MUABANTAIKHOANMMO.COM") : "";
+      window.open('https://t.me/share/url?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(title + '\n' + shareUrl), '_blank', 'width=600,height=500');
     }
     window.shareArticleTg = shareArticleTg;
+
+    function shareArticleZalo() {
+      const b = window.currentViewingBlog;
+      const cleanSlug = b ? ((typeof sanitizeBlogSlug === "function") ? sanitizeBlogSlug(b.slug || b.url || b.pathname || b.id) : (b.slug || "")) : "";
+      let shareUrl = window.location.href;
+      if (cleanSlug) {
+        shareUrl = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/og?blog=" + encodeURIComponent(cleanSlug);
+      }
+      const title = (b && b.title) ? (b.title + " | MUABANTAIKHOANMMO.COM") : "";
+      window.open('https://zalo.me/share?url=' + encodeURIComponent(shareUrl) + '&title=' + encodeURIComponent(title), '_blank', 'width=600,height=500');
+    }
+    window.shareArticleZalo = shareArticleZalo;
 
     function handleAddNewBlog() {
       const title = document.getElementById("admBlogTitle")?.value.trim();
