@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.7.3";
+const MMO_CURRENT_CODE_VERSION = "4.7.4";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -15203,8 +15203,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (target === "gmail") {
         return pCat === "gmail" || pCat.startsWith("gmail ") || pCat.endsWith(" gmail");
       }
-      if (target.includes("rom") || target.includes("phone farm")) {
-        return pCat === "phone farm" || pCat === "rom & tools" || pCat.includes("phone farm") || pCat.includes("rom");
+      if (target === "phone farm" || target.includes("phone farm")) {
+        return pCat === "phone farm" || pCat.includes("phone farm");
+      }
+      if (target.includes("rom") || target.includes("tools")) {
+        // LOẠI BỎ TRIỆT ĐỂ SẢN PHẨM PHONE FARM KHỎI ROM & TOOLS THEO YÊU CẦU NGƯỜI DÙNG
+        if (pCat === "phone farm" || pCat.includes("phone farm")) return false;
+        return pCat === "rom & tools" || pCat === "rom" || pCat === "tools" || pCat.includes("rom & tools");
       }
       if (target.includes("vpn") || target.includes("proxy")) {
         return pCat === "vpn proxy" || pCat === "vpn" || pCat === "proxy" || pCat.includes("proxy") || pCat.includes("vpn");
