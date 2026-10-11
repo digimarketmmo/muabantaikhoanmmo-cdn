@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.8.2";
+const MMO_CURRENT_CODE_VERSION = "4.8.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -5680,6 +5680,25 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     function showToast(msg, type = "success") {
       try {
+        // [QUY TẮC BẢO MẬT]: CẤM HIỂN THỊ THÔNG BÁO BÁN LỖ TRÊN TRANG NGƯỜI DÙNG BÌNH THƯỜNG
+        const isLossRelated = /bán lỗ|chống bán lỗ|nguy cơ bán lỗ|giá vốn|ANTI_LOSS/i.test(String(msg || ""));
+        if (isLossRelated) {
+          const isAdmin = (typeof isCurrentUserAdminOrAdminView === "function") 
+            ? isCurrentUserAdminOrAdminView() 
+            : (typeof isAdminUser === "function" && isAdminUser());
+          if (!isAdmin) {
+            // Nếu là thao tác mua hàng hoặc đặt đơn: thay bằng câu thân thiện cho khách
+            if (/lá chắn|cảnh báo bảo vệ|nâng giá|thấp hơn hoặc bằng|hệ thống đã tự động/i.test(String(msg || ""))) {
+              msg = "Sản phẩm đang được hệ thống cập nhật giá mới. Quý khách vui lòng tải lại trang để xem giá mới nhất và tiếp tục đặt mua!";
+              type = "warning";
+            } else {
+              // Các thông báo tự động tăng giá ngầm: drop hoàn toàn không làm phiền khách
+              console.log("[AntiLoss Shield Filtered for Guest/User]:", msg);
+              return;
+            }
+          }
+        }
+
         let container = document.getElementById("toastContainer");
         if (!container) {
           container = document.createElement("div");
@@ -6415,6 +6434,32 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       return false;
     }
     window.isAdminUser = isAdminUser;
+
+    // Hàm kiểm tra an toàn xem phiên hiện tại có phải Quản trị viên hoặc đang ở giao diện Admin không
+    function isCurrentUserAdminOrAdminView() {
+      try {
+        // 1. Đang mở giao diện trang quản trị Admin
+        const viewAdmin = document.getElementById("viewAdmin");
+        if (viewAdmin && viewAdmin.style.display !== "none" && !viewAdmin.classList.contains("hidden")) return true;
+
+        // 2. URL có tham số viewAdmin hoặc hash #admin
+        if (typeof window !== "undefined" && window.location) {
+          const s = (window.location.search || "").toLowerCase();
+          const h = (window.location.hash || "").toLowerCase();
+          if (s.includes("view=viewadmin") || s.includes("admin=1") || h.includes("admin")) return true;
+        }
+
+        // 3. Tài khoản đã đăng nhập là Quản Trị Viên
+        if (typeof isAdminUser === "function" && isAdminUser()) return true;
+        if (typeof currentUser !== "undefined" && currentUser) {
+          const role = (currentUser.role || "").toLowerCase();
+          const email = (currentUser.email || "").toLowerCase().trim();
+          if (role === "admin" || role === "quản trị viên" || email === "manhdongvtc@gmail.com" || email === "muabantaikhoanmmo@gmail.com") return true;
+        }
+      } catch(e) {}
+      return false;
+    }
+    window.isCurrentUserAdminOrAdminView = isCurrentUserAdminOrAdminView;
 
     function handleAddAdminEmail() {
       const input = document.getElementById("newAdminEmailInput");
@@ -14163,7 +14208,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function addUserNotification(opts) {
       try {
         const userEmail = opts.email || (currentUser && currentUser.email ? currentUser.email : "");
-        const notifs = getStoredNotifications(userEmail);
+        const isStrictAdminNotif = opts.onlyAdmin || (opts.forAdmin && (!opts.email || opts.email === "admin")) || opts.type === "PRICE_ADJUST";
+
         const newNotif = {
           id: "NOTIF_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
           title: opts.title || "Thông báo mới",
@@ -14175,23 +14221,30 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           time: new Date().toLocaleTimeString("vi-VN") + " " + new Date().toLocaleDateString("vi-VN"),
           timestamp: Date.now()
         };
-        notifs.unshift(newNotif);
-        saveStoredNotifications(notifs, userEmail);
 
-        // TỰ ĐỘNG LƯU VÀO KHO THÔNG BÁO ADMIN CHO MỌI SỰ KIỆN ĐƠN HÀNG, ĐẶT TRƯỚC, NẠP TIỀN
-        if (opts.forAdmin || ["PRE_ORDER", "ORDER", "DEPOSIT", "WARRANTY", "AFFILIATE", "CANCEL"].includes(opts.type)) {
+        // CHỈ LƯU VÀO HỘP THƯ NGƯỜI DÙNG NẾU KHÔNG PHẢI LÀ THÔNG BÁO NỘI BỘ ADMIN
+        if (!isStrictAdminNotif && userEmail && userEmail !== "admin") {
+          const notifs = getStoredNotifications(userEmail);
+          notifs.unshift(newNotif);
+          saveStoredNotifications(notifs, userEmail);
+        }
+
+        // TỰ ĐỘNG LƯU VÀO KHO THÔNG BÁO ADMIN CHO MỌI SỰ KIỆN QUẢN TRỊ & ĐƠN HÀNG
+        if (opts.forAdmin || isStrictAdminNotif || ["PRE_ORDER", "ORDER", "DEPOSIT", "WARRANTY", "AFFILIATE", "CANCEL", "PRICE_ADJUST"].includes(opts.type)) {
           const admNotifs = getStoredNotifications("admin");
           const adminCopy = Object.assign({}, newNotif, {
             title: (opts.adminTitle || opts.title || "Thông báo hệ thống"),
-            message: (opts.adminMessage || (userEmail ? "[" + userEmail + "] " : "") + opts.message)
+            message: (opts.adminMessage || (userEmail && userEmail !== "admin" ? "[" + userEmail + "] " : "") + opts.message)
           });
           admNotifs.unshift(adminCopy);
           saveStoredNotifications(admNotifs, "admin");
         }
 
-        // Phát âm thanh chuông thông báo nếu được phép
+        // Phát âm thanh chuông: nếu là thông báo nội bộ Admin thì chỉ rung chuông khi đang là Admin
         if (opts.playSound !== false) {
-          playNotificationSound();
+          if (!isStrictAdminNotif || (typeof isCurrentUserAdminOrAdminView === "function" && isCurrentUserAdminOrAdminView())) {
+            playNotificationSound();
+          }
         }
 
         // Phát sóng BroadcastChannel tức thì để các tab khác (kể cả tab Admin) cập nhật ngay lập tức trong 0ms
@@ -24417,9 +24470,10 @@ function syncAllOpenViewsStock(changedProdId) {
         isAuto: isSilent
       });
 
-      // 7. Thông báo chuông & Toast
+      // 7. Thông báo chuông & Toast (CHỈ HIỂN THỊ VỚI QUẢN TRỊ VIÊN)
+      const isAdmUser = (typeof isCurrentUserAdminOrAdminView === "function") ? isCurrentUserAdminOrAdminView() : false;
       const msg = "Đã tự động tăng giá [" + (prod.name || prod.id) + "] từ " + formatVND(oldPrice) + " lên " + formatVND(newSafePrice) + " (+" + targetPct + "% so với vốn " + formatVND(liveCost) + ") chống bán lỗ!";
-      if (typeof addUserNotification === "function") {
+      if (isAdmUser && typeof addUserNotification === "function") {
         addUserNotification({
           title: "🛡️ Tự Động Tăng Giá Chống Bán Lỗ",
           message: msg,
@@ -24428,7 +24482,7 @@ function syncAllOpenViewsStock(changedProdId) {
           playSound: true
         });
       }
-      if (!isSilent && typeof showToast === "function") {
+      if (!isSilent && isAdmUser && typeof showToast === "function") {
         showToast("🎉 " + msg, "success");
       }
 
@@ -24443,7 +24497,7 @@ function syncAllOpenViewsStock(changedProdId) {
       const lossAlerts = alerts.filter(a => a.isLoss && a.product);
 
       if (lossAlerts.length === 0) {
-        if (isManual && typeof showToast === "function") {
+        if (isManual && (typeof isCurrentUserAdminOrAdminView === "function" ? isCurrentUserAdminOrAdminView() : false) && typeof showToast === "function") {
           showToast("🎉 Không có sản phẩm nào có nguy cơ bán lỗ! Toàn bộ sản phẩm đều an toàn.", "info");
         }
         return 0;
@@ -24472,7 +24526,7 @@ function syncAllOpenViewsStock(changedProdId) {
       renderAutoPriceLogs();
       if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
 
-      if (isManual && typeof showToast === "function") {
+      if (isManual && (typeof isCurrentUserAdminOrAdminView === "function" ? isCurrentUserAdminOrAdminView() : false) && typeof showToast === "function") {
         showToast("⚡ Đã tự động tăng giá an toàn cho toàn bộ " + adjustedCount + " sản phẩm bị lỗ (+" + configuredPct + "% so với giá vốn)!", "success");
       }
 
@@ -24496,7 +24550,8 @@ function syncAllOpenViewsStock(changedProdId) {
         if (lossAlerts.length > 0) {
           console.log("[AutoPriceProtect] Phát hiện " + lossAlerts.length + " sản phẩm có nguy cơ bán lỗ -> Tự động tăng giá bảo vệ!");
           const count = applyAutoPriceBoostToAllLoss(false);
-          if (count > 0 && typeof showToast === "function") {
+          const isAdm = (typeof isCurrentUserAdminOrAdminView === "function") ? isCurrentUserAdminOrAdminView() : false;
+          if (count > 0 && isAdm && typeof showToast === "function") {
             const configuredPct = getAutoPriceMarginPercent();
             showToast("🛡️ ĐÃ TỰ ĐỘNG TĂNG GIÁ " + count + " SẢN PHẨM CHỐNG BÁN LỖ (+" + configuredPct + "% THEO CÀI ĐẶT)!", "success");
           }
@@ -29834,7 +29889,13 @@ function syncAllOpenViewsStock(changedProdId) {
               }
               if (typeof saveProducts === "function") saveProducts();
             }
-            showToast("🛡️ " + errMsg, "warning");
+            const isAdm = (typeof isCurrentUserAdminOrAdminView === "function") ? isCurrentUserAdminOrAdminView() : false;
+            if (isAdm) {
+              const fullMsg = (wData && wData.admin_message) ? wData.admin_message : errMsg;
+              showToast("🛡️ " + fullMsg, "warning");
+            } else {
+              showToast("ℹ️ " + (wData.user_message || wData.message || "Sản phẩm đang được hệ thống cập nhật giá mới. Quý khách vui lòng tải lại trang để xem giá mới nhất và tiếp tục đặt mua!"), "warning");
+            }
             return;
           }
           const isOutOfStock = /hết hàng|không đủ|out of stock|tồn kho|số lượng/i.test(errMsg);
@@ -29867,7 +29928,12 @@ function syncAllOpenViewsStock(changedProdId) {
             if (typeof applyAutoPriceBoostToProduct === "function") {
               applyAutoPriceBoostToProduct(p.id, knownSrcCost, true);
             }
-            showToast("🛡️ Lá chắn chống bán lỗ: Giá bán (" + formatVND(unitPrice) + ") thấp hơn hoặc bằng giá vốn nhà cung cấp (" + formatVND(knownSrcCost) + ")! Hệ thống đã tự động nâng giá an toàn, vui lòng thử lại.", "warning");
+            const isAdm = (typeof isCurrentUserAdminOrAdminView === "function") ? isCurrentUserAdminOrAdminView() : false;
+            if (isAdm) {
+              showToast("🛡️ Lá chắn chống bán lỗ: Giá bán (" + formatVND(unitPrice) + ") thấp hơn hoặc bằng giá vốn nhà cung cấp (" + formatVND(knownSrcCost) + ")! Hệ thống đã tự động nâng giá an toàn, vui lòng thử lại.", "warning");
+            } else {
+              showToast("ℹ️ Sản phẩm đang được hệ thống cập nhật giá mới. Quý khách vui lòng tải lại trang để xem giá mới nhất và tiếp tục đặt mua!", "warning");
+            }
             return;
           }
           const providerKey = apiMap.provider || "sellmmo";
