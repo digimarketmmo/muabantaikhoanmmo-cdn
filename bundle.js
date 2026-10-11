@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.7.9";
+const MMO_CURRENT_CODE_VERSION = "4.8.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -13253,11 +13253,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // Đồng bộ mật khẩu mới lên Cloud (BẮT BUỘC HTTP POST JSON, KHÔNG DÙNG GET QUERY STRING)
       const ACTIVE_GAS_OTP_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
       try {
-        await fetch(ACTIVE_GAS_OTP_URL, {
+        const resetRes = await fetch(ACTIVE_GAS_OTP_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
           body: JSON.stringify({ action: "resetPassword", email: email, newPassword: newPass })
         });
+        const resetJson = await resetRes.json().catch(() => null);
+        if (resetJson && resetJson.success) {
+          console.log("✅ Đã cập nhật mật khẩu mới trên Google Cloud!");
+        }
       } catch(e) {
         if (typeof callGasApi === "function") {
           callGasApi("resetPassword", { email: email, newPassword: newPass }).catch(function() {});
@@ -13612,7 +13616,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: email, password: pass })
         });
-        const wData = await workerLoginRes.json();
+        const wData = await workerLoginRes.json().catch(() => null);
         if (wData && wData.success) {
           isAuthenticated = true;
           authenticatedUser = wData.user;
@@ -13623,20 +13627,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               localStorage.setItem("mmo_session_token", sessionToken);
             } catch(e) {}
           }
-        } else if (wData && wData.error && workerLoginRes.status === 401) {
-          showToast("❌ " + (wData.error || "Mật khẩu không chính xác!"), "danger");
-          const passEl = document.getElementById("loginPassInput");
-          if (passEl) { passEl.value = ""; passEl.focus(); }
-          return;
         }
       } catch(eWorker) {
         console.warn("Worker auth error, falling back to GAS POST:", eWorker);
       }
 
-      // Bước 2.2: Nếu Worker chưa cấu hình mật khẩu người dùng hoặc offline, fallback sang GAS POST login
+      // Bước 2.2: Nếu Worker chưa xác thực thành công, fallback sang GAS POST authEmail / login
       if (!isAuthenticated && typeof callGasApi === "function") {
         try {
-          const res = await callGasApi("login", { mode: "login", action: "login", email: email, password: pass });
+          let res = await callGasApi("authEmail", { mode: "login", action: "authEmail", email: email, password: pass });
+          if (!res || !res.success) {
+            res = await callGasApi("login", { mode: "login", action: "login", email: email, password: pass });
+          }
           if (res && res.success) {
             isAuthenticated = true;
             authenticatedUser = res.user || null;
@@ -13647,11 +13649,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 role: (res.user && res.user.role) || "MEMBER"
               }).catch(() => {});
             }
-          } else if (res && res.message) {
-            showToast("❌ " + res.message, "danger");
-            const passEl = document.getElementById("loginPassInput");
-            if (passEl) { passEl.value = ""; passEl.focus(); }
-            return;
           }
         } catch(apiErr) {
           console.warn("GAS Login verification error:", apiErr);
