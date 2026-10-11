@@ -19588,6 +19588,11 @@ function syncAllOpenViewsStock(changedProdId) {
                     raw: json
                   };
                 }
+              }
+            }
+          } catch(e) {
+            lastErr = e;
+          }
         }
 
         // [HTML SCRAPING FALLBACK KHÔNG CẦN API KEY]: Dành cho selltainguyenmmo, nguyenlieummo, ultrammo, sellmmo
