@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.8.4";
+const MMO_CURRENT_CODE_VERSION = "4.8.5";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -13797,6 +13797,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       safeStorageSet("mmo_user", JSON.stringify(currentUser));
       updateUserUI();
+      if (typeof ensureUserSessionToken === "function") {
+        ensureUserSessionToken().catch(() => {});
+      }
       closeModal("authModal");
       showToast("🎉 Đăng nhập thành công! Chào mừng " + (currentUser.name || currentUser.email), "success");
       setTimeout(function() {
@@ -16643,7 +16646,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     async function ensureUserSessionToken() {
       try {
         let tok = getUserSessionToken();
-        const curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+        let curUser = (typeof currentUser !== "undefined" && currentUser) ? currentUser : null;
+        if (!curUser || !curUser.email) {
+          try {
+            const stored = safeStorageGet("mmo_user");
+            if (stored) {
+              const u = JSON.parse(stored);
+              if (u && u.email) {
+                curUser = u;
+                if (typeof currentUser !== "undefined") currentUser = u;
+              }
+            }
+          } catch(e) {}
+        }
         if (!curUser || !curUser.email) return "";
 
         // Kiểm tra xem token còn hạn không (ít nhất 2 phút trước khi hết hạn)
@@ -20355,8 +20370,8 @@ function syncAllOpenViewsStock(changedProdId) {
       "PROD_MTQQXO2E": {"enabled":true,"provider":"mail72h","sourceProdId":"712","sourcePrice":259,"sourceStock":72357,"sourceProdName":"24h [ ID 712 ]"},
       "PROD_MTQWMPL5": {"enabled":true,"provider":"mail72h","sourceProdId":"818","sourcePrice":979,"sourceStock":5410,"sourceProdName":"7 ngày [ ID 818 ]"},
       "PROD_MTQWQFZD": {"enabled":true,"provider":"mail72h","sourceProdId":"817","sourcePrice":3879,"sourceStock":4890,"sourceProdName":"30 ngày [ ID 817 ]"},
-      "PROD_MTQX1C7X": {"enabled":true,"provider":"shop1989nd","sourceProdId":"19745","sourcePrice":138.6,"sourceStock":9999,"sourceProdName":"Gmail Domain Cho Thuê live 12h+"},
-      "PROD_MTQX465U": {"enabled":true,"provider":"shop1989nd","sourceProdId":"19768","sourcePrice":53.2,"sourceStock":9999,"sourceProdName":"Gmail Domain Cho Thuê .live 10 phút"},
+      "PROD_MTQX1C7X": {"enabled":true,"provider":"ultrammo","sourceProdId":"34707","sourcePrice":673,"sourceStock":2628,"sourceProdName":"Gmail Domain 1h - 10h .tokyo","baseUrl":"https://ultrammo.com"},
+      "PROD_MTQX465U": {"enabled":true,"provider":"ultrammo","sourceProdId":"39530","sourcePrice":133,"sourceStock":532,"sourceProdName":"Gmail Domain Cho Thuê live 10phut -1h .random","baseUrl":"https://ultrammo.com"},
       "PROD_MU5PWT7PP7": {"enabled":true,"provider":"ultrammo","sourceProdId":"13629","sourcePrice":1200,"sourceStock":532,"sourceProdName":"TÀI KHOẢN KLING AI 65 CREDIT","baseUrl":"https://ultrammo.com"},
       "PROD_MTQZT2Y1": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"121063","sourcePrice":656,"sourceStock":88181,"sourceProdName":"Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months"},
       "PROD_MU5SPLMSEC": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"31699","sourcePrice":16000,"sourceStock":16037,"sourceProdName":"🔥ChatGPT Free đã verify phone codex"},
@@ -29900,6 +29915,12 @@ function syncAllOpenViewsStock(changedProdId) {
           }
         } else if (wData && !wData.success) {
           const errMsg = wData.message || "Kho hàng tạm thời không đủ số lượng tài khoản!";
+          if (wData.code === "UNAUTHENTICATED_CHECKOUT") {
+            restoreBtn();
+            showToast("🔒 " + errMsg, "warning");
+            if (typeof openAuthModal === "function") openAuthModal("login");
+            return;
+          }
           if (wData.code === "INSUFFICIENT_BALANCE") {
             restoreBtn();
             showToast("⚠️ " + errMsg, "warning");
@@ -29994,7 +30015,16 @@ function syncAllOpenViewsStock(changedProdId) {
                   setTimeout(() => openPreOrderModal(p, vIdx), 800);
                 }
               } else {
-                showToast(errMsg, "warning");
+                // [LÁ CHẮN BẢO VỆ CHỐNG RÒ RỈ LỖI NGUỒN]: Không bao giờ hiển thị "Vui lòng đăng nhập" của đối tác lên khách hàng
+                const isPartnerAuthLeak = /đăng nhập|login|auth|unauthorized|thông tin đăng nhập|tài khoản\/mật khẩu/i.test(errMsg);
+                if (isPartnerAuthLeak) {
+                  showToast("⚠️ Nguồn hàng đối tác đang bảo trì cập nhật kho. Quý khách vui lòng chọn loại khác hoặc bấm Đặt Hàng Trước để Shop chuẩn bị đơn riêng!", "warning");
+                  if (typeof openPreOrderModal === "function") {
+                    setTimeout(() => openPreOrderModal(p, vIdx), 800);
+                  }
+                } else {
+                  showToast(errMsg, "warning");
+                }
               }
               return;
             }
