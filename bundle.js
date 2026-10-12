@@ -25632,8 +25632,8 @@ function syncAllOpenViewsStock(changedProdId) {
         telegramChannel: "https://t.me/muabantaikhoanmmo",
         marqueeText: "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!",
         gasUrl: "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec",
-        brandLogo: "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888969056_z00fh5.png",
-        brandFavicon: "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888988353_677lyw.png",
+        brandLogo: "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png",
+        brandFavicon: "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png",
         brandOgImage: "https://iili.io/nFV4Rln.png"
       };
       try {
@@ -25662,10 +25662,10 @@ function syncAllOpenViewsStock(changedProdId) {
             if (!merged.gasUrl || !String(merged.gasUrl).trim()) {
               merged.gasUrl = defaultSettings.gasUrl;
             }
-            if (!merged.brandLogo || !String(merged.brandLogo).trim() || merged.brandLogo === "https://iili.io/nFV4Rln.png") {
+            if (!merged.brandLogo || !String(merged.brandLogo).trim() || merged.brandLogo === "https://iili.io/nFV4Rln.png" || merged.brandLogo.includes("img_1790888969056_z00fh5")) {
               merged.brandLogo = defaultSettings.brandLogo;
             }
-            if (!merged.brandFavicon || !String(merged.brandFavicon).trim() || merged.brandFavicon === "https://iili.io/nFV4Rln.png") {
+            if (!merged.brandFavicon || !String(merged.brandFavicon).trim() || merged.brandFavicon === "https://iili.io/nFV4Rln.png" || merged.brandFavicon.includes("img_1790888988353_677lyw")) {
               merged.brandFavicon = defaultSettings.brandFavicon;
             }
             if (!merged.brandOgImage || !String(merged.brandOgImage).trim()) {
@@ -25686,6 +25686,14 @@ function syncAllOpenViewsStock(changedProdId) {
       const resetBtn = document.getElementById(resetBtnId);
       const cleanUrl = (url || "").trim();
       if (preview) {
+        // Tự động khôi phục ảnh mặc định CDN nếu URL bị lỗi mạng / 404
+        preview.onerror = function() {
+          if (previewId && previewId.includes("Logo")) {
+            this.src = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png";
+          } else if (previewId && previewId.includes("Favicon")) {
+            this.src = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png";
+          }
+        };
         if (cleanUrl) {
           preview.src = cleanUrl;
           preview.style.display = "block";
@@ -25753,13 +25761,23 @@ function syncAllOpenViewsStock(changedProdId) {
             previewBrandUrl(compactDataUrl, previewId, hintId, resetBtnId);
 
             // 2. Tải lên máy chủ Cloudflare Worker để lấy URL CDN vĩnh viễn (Bypass CORS 100%)
+            const adminSecToken = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+              ? MMO_WORKER_API.getAdminSecret()
+              : (localStorage.getItem("mmo_admin_secret") || (document.getElementById("setAdminSecretToken") ? document.getElementById("setAdminSecretToken").value.trim() : "") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+
             fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/upload-image", {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + adminSecToken,
+                "X-Admin-Secret": adminSecToken,
+                "x-admin-token": adminSecToken
+              },
               body: JSON.stringify({
                 image: compactDataUrl,
                 mimeType: mimeType,
-                name: file.name
+                name: file.name,
+                admin_secret: adminSecToken
               })
             })
             .then(res => res.json())
@@ -25855,12 +25873,12 @@ function syncAllOpenViewsStock(changedProdId) {
     function resetBrandField(type) {
       if (type === "logo") {
         const inp = document.getElementById("setSiteLogoUrl");
-        if (inp) inp.value = "";
-        previewBrandUrl("", "setSiteLogoPreview", "setSiteLogoHint", "btnResetLogo");
+        if (inp) inp.value = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png";
+        previewBrandUrl("https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png", "setSiteLogoPreview", "setSiteLogoHint", "btnResetLogo");
       } else if (type === "favicon") {
         const inp = document.getElementById("setSiteFaviconUrl");
-        if (inp) inp.value = "";
-        previewBrandUrl("", "setSiteFaviconPreview", "setSiteFaviconHint", "btnResetFavicon");
+        if (inp) inp.value = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png";
+        previewBrandUrl("https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png", "setSiteFaviconPreview", "setSiteFaviconHint", "btnResetFavicon");
       } else if (type === "ogImage") {
         const inp = document.getElementById("setSiteOgImageUrl");
         if (inp) inp.value = "https://iili.io/nFV4Rln.png";
@@ -26106,12 +26124,12 @@ function syncAllOpenViewsStock(changedProdId) {
       });
 
       // Logo URL & Preview
-      const logoUrl = (s.brandLogo && s.brandLogo.trim()) ? s.brandLogo.trim() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888969056_z00fh5.png";
+      let logoUrl = (s.brandLogo && s.brandLogo.trim() && !s.brandLogo.includes("img_1790888969056_z00fh5")) ? s.brandLogo.trim() : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png";
       if (document.getElementById("setSiteLogoUrl")) document.getElementById("setSiteLogoUrl").value = logoUrl;
       previewBrandUrl(logoUrl, "setSiteLogoPreview", "setSiteLogoHint", "btnResetLogo");
 
       // Favicon URL & Preview
-      const faviconUrl = (s.brandFavicon && s.brandFavicon.trim()) ? s.brandFavicon.trim() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888988353_677lyw.png";
+      let faviconUrl = (s.brandFavicon && s.brandFavicon.trim() && !s.brandFavicon.includes("img_1790888988353_677lyw")) ? s.brandFavicon.trim() : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png";
       if (document.getElementById("setSiteFaviconUrl")) document.getElementById("setSiteFaviconUrl").value = faviconUrl;
       previewBrandUrl(faviconUrl, "setSiteFaviconPreview", "setSiteFaviconHint", "btnResetFavicon");
 
@@ -26210,14 +26228,14 @@ function syncAllOpenViewsStock(changedProdId) {
         
         // Brand Assets (Logo, Favicon, OG Image) - Chống rỗng
         let brandLogo = document.getElementById("setSiteLogoUrl") ? document.getElementById("setSiteLogoUrl").value.trim() : "";
-        if (!brandLogo || brandLogo === "https://iili.io/nFV4Rln.png") {
-          brandLogo = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888969056_z00fh5.png";
+        if (!brandLogo || brandLogo === "https://iili.io/nFV4Rln.png" || brandLogo.includes("img_1790888969056_z00fh5")) {
+          brandLogo = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png";
           if (document.getElementById("setSiteLogoUrl")) document.getElementById("setSiteLogoUrl").value = brandLogo;
         }
 
         let brandFavicon = document.getElementById("setSiteFaviconUrl") ? document.getElementById("setSiteFaviconUrl").value.trim() : "";
-        if (!brandFavicon || brandFavicon === "https://iili.io/nFV4Rln.png") {
-          brandFavicon = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1790888988353_677lyw.png";
+        if (!brandFavicon || brandFavicon === "https://iili.io/nFV4Rln.png" || brandFavicon.includes("img_1790888988353_677lyw")) {
+          brandFavicon = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png";
           if (document.getElementById("setSiteFaviconUrl")) document.getElementById("setSiteFaviconUrl").value = brandFavicon;
         }
 
