@@ -15264,7 +15264,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "PROD_MUORGNEQOE": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUORGNEQOE/image",
         "PROD_MUOSDN0FCU": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_7day.png",
         "PROD_MUP5LB7VAB": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_7day.png",
-        "PROD_MUQIMRJYG0": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUQIMRJYG0/image"
+        "PROD_MUQIMRJYG0": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUQIMRJYG0/image",
+        "PROD_MV5PA8KZDW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp"
       };
       if (KNOWN_CDN_MAP[idUpper]) return KNOWN_CDN_MAP[idUpper];
 
@@ -20826,6 +20827,7 @@ function syncAllOpenViewsStock(changedProdId) {
     // LIÊN KẾT SẢN PHẨM ON-DEMAND API (MAPPING ENGINE v1.9.3)
     // ============================================================================
     const DEFAULT_API_PRODUCT_MAPPINGS = {
+      "PROD_MV5PA8KZDW": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32428","sourcePrice":33000,"sourceStock":1252,"sourceProdName":"[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 33.000 đ (Tồn: 1.252)","baseUrl":"https://selltainguyenmmo.com","isSourceDeleted":false},
       "PROD_MV1GO2PD8A": {"enabled":true,"provider":"vuavia","sourceProdId":"1847","sourcePrice":6000,"sourceStock":14274,"sourceProdName":"[Clone] #1847 Clone REG NEW - VER MAIL - NEW ZIN ADS - 6.000 đ (Tồn: 14.274)","baseUrl":"https://api.vuavia.io","isSourceDeleted":false},
       "PROD_MV1G02PD8A": {"enabled":true,"provider":"vuavia","sourceProdId":"1847","sourcePrice":6000,"sourceStock":14274,"sourceProdName":"[Clone] #1847 Clone REG NEW - VER MAIL - NEW ZIN ADS - 6.000 đ (Tồn: 14.274)","baseUrl":"https://api.vuavia.io","isSourceDeleted":false},
       "PROD_MTQQXO2E": {"enabled":true,"provider":"ultrammo","sourceProdId":"39182","sourcePrice":419,"sourceStock":11760,"sourceProdName":"24h plus - có box get api [ ID 39182 ]","baseUrl":"https://ultrammo.com"},
