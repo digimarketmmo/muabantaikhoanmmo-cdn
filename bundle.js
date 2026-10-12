@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.8.7";
+const MMO_CURRENT_CODE_VERSION = "4.8.8";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -19741,7 +19741,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (action === "buyProduct") {
         // [SMART ALIAS CHO SELLTAINGUYENMMO & SHOP1989ND]: Chuyển tiếp toàn bộ mã Gmail 10 phút cũ sang mã live 33097
         let rawProdId = String(payload.productId || payload.id || payload.sourceProdId || "");
-        if (["19773", "19768", "19745", "19524", "11924", "1", "23463", "30878", "31953", "30879", "31954"].includes(rawProdId) || (payload && payload.targetProdId === "PROD_MTQX465U")) {
+        if (["19773", "19768", "19745", "19524", "11924", "1", "23463", "25255", "25241", "25242", "30878", "31953", "30879", "31954"].includes(rawProdId) || (payload && payload.targetProdId === "PROD_MTQX465U")) {
           rawProdId = "33097";
           provider = "selltainguyenmmo";
           if (payload.provider) payload.provider = "selltainguyenmmo";
@@ -29828,6 +29828,16 @@ function syncAllOpenViewsStock(changedProdId) {
             apiMap = getApiProductMapping(vName);
           }
         }
+      }
+      // [SMART ALIAS CHO PROD_MTQX465U]: Tự động chuyển toàn bộ các mã Gmail 10 phút cũ (25255, 23463, 19773...) sang mã live 33097
+      if (p && p.id === "PROD_MTQX465U") {
+        if (!apiMap) apiMap = {};
+        apiMap.enabled = true;
+        apiMap.provider = "selltainguyenmmo";
+        apiMap.sourceProdId = "33097";
+        apiMap.sourcePrice = 265.5;
+        apiMap.sourceStock = 364;
+        apiMap.baseUrl = "https://selltainguyenmmo.com";
       }
       const isApiOnDemand = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
 
