@@ -988,6 +988,8 @@ if (typeof window !== "undefined") {
                 || _sourceProductsFastMap.get(normKey + ":" + idStr) 
                 || _sourceProductsFastMap.get(normKey + ":" + cleanId);
         if (item) return item;
+        var anyItem = _sourceProductsFastMap.get("any:" + idStr) || _sourceProductsFastMap.get("any:" + cleanId);
+        if (anyItem) return anyItem;
         return null;
       }
       return _sourceProductsFastMap.get("any:" + idStr) || _sourceProductsFastMap.get("any:" + cleanId) || null;
@@ -6946,6 +6948,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 apiMap.sourceStock = inSrc.amount;
                 apiMap.isSourceDeleted = false;
                 prodObj.stock = inSrc.amount;
+                if (Array.isArray(prodObj.variants)) {
+                  prodObj.variants.forEach(function(v) {
+                    if (v) {
+                      v.stock = inSrc.amount;
+                      if (v.apiMapping) {
+                        v.apiMapping.sourceStock = inSrc.amount;
+                        v.apiMapping.isSourceDeleted = false;
+                      }
+                    }
+                  });
+                }
               } else if (typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0) {
                 st = apiMap.sourceStock;
               }
@@ -7118,6 +7131,35 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                         apiMap.sourceStock = inSrc.amount;
                         stk = inSrc.amount;
                         p.stock = inSrc.amount;
+                        if (Array.isArray(p.variants)) {
+                          p.variants.forEach(function(v) {
+                            if (v) {
+                              v.stock = inSrc.amount;
+                              if (v.apiMapping) {
+                                v.apiMapping.sourceStock = inSrc.amount;
+                                v.apiMapping.isSourceDeleted = false;
+                              }
+                            }
+                          });
+                        }
+                        if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && (currentSelectedProduct.id === p.id || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, p.id)))) {
+                          currentSelectedProduct.stock = inSrc.amount;
+                          if (Array.isArray(currentSelectedProduct.variants)) {
+                            currentSelectedProduct.variants.forEach(function(cv) { if (cv) cv.stock = inSrc.amount; });
+                          }
+                          if (typeof syncDetailStockUI === "function") syncDetailStockUI(inSrc.amount);
+                          const pillsEl = document.getElementById("dtlVariantPills");
+                          if (pillsEl && Array.isArray(currentSelectedProduct.variants) && currentSelectedProduct.variants.length > 0) {
+                            const curVI = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
+                            pillsEl.innerHTML = currentSelectedProduct.variants.map((v, idx) => {
+                              const badge = inSrc.amount > 0 ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + inSrc.amount + ' acc)</small>' : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+                              return '<div class="variant-pill-option ' + (idx === curVI ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                                '<span>' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + badge + '</span>' +
+                                '<span style="font-weight:700;">' + (typeof formatVND === "function" ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
+                              '</div>';
+                            }).join("");
+                          }
+                        }
                       }
                     } else if (typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0) {
                       stk = apiMap.sourceStock;
@@ -8360,6 +8402,37 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             window._liveLoadedProviders.add(provider);
             var normP = (typeof normalizeProviderId === "function") ? normalizeProviderId(provider) : provider;
             if (normP) window._liveLoadedProviders.add(normP);
+          }
+
+          // Tự động đồng bộ tồn kho API cho toàn bộ sản phẩm đang dùng nguồn này
+          if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+            MOCK_DATA.products.forEach(p => {
+              if (!p) return;
+              const map = (typeof getApiProductMapping === "function") ? getApiProductMapping(p) : (p.apiMapping || null);
+              if (map && map.sourceProdId && (map.provider === provider || (typeof isSameProvider === "function" && isSameProvider(map.provider, provider)))) {
+                const cleanSrcId = String(map.sourceProdId || "").trim().replace(/^#/, "");
+                const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(map.provider, cleanSrcId) : null;
+                if (inSrc && typeof inSrc.amount === "number") {
+                  map.sourceStock = inSrc.amount;
+                  map.isSourceDeleted = false;
+                  p.stock = inSrc.amount;
+                  if (Array.isArray(p.variants)) {
+                    p.variants.forEach(v => {
+                      if (v) {
+                        v.stock = inSrc.amount;
+                        if (v.apiMapping) {
+                          v.apiMapping.sourceStock = inSrc.amount;
+                          v.apiMapping.isSourceDeleted = false;
+                        }
+                      }
+                    });
+                  }
+                }
+              }
+            });
+            if (typeof refreshAllShopStockUI === "function") {
+              refreshAllShopStockUI();
+            }
           }
           if (isManual && typeof showToast === "function") {
             showToast("✅ Đã quét thời gian thực " + freshProds.length + " sản phẩm live từ " + pCfg.name + "!", "success");
@@ -16465,16 +16538,24 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
       const varIdxNum = (vIdx !== null && vIdx !== undefined && vIdx !== "ALL" && vIdx !== "") ? Number(vIdx) : 0;
+      const curVar = (hasVars && prod.variants[varIdxNum]) ? prod.variants[varIdxNum] : null;
 
       // 1. Kiểm tra nếu sản phẩm là API On-demand (Ưu tiên số 1, độc lập với deliveryType cũ)
       let apiMap = null;
       if (typeof getApiProductMapping === "function") {
-        apiMap = getApiProductMapping(prod) || (prod && prod.apiMapping);
+        if (curVar && curVar.apiMapping && curVar.apiMapping.enabled && curVar.apiMapping.sourceProdId) {
+          apiMap = getApiProductMapping(curVar.apiMapping) || curVar.apiMapping;
+        }
         if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
           if (prod && prod.id) {
             apiMap = getApiProductMapping(prod.id + "_" + varIdxNum);
           }
         }
+        if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
+          apiMap = getApiProductMapping(prod) || (prod && prod.apiMapping);
+        }
+      } else if (curVar && curVar.apiMapping) {
+        apiMap = curVar.apiMapping;
       } else if (prod && prod.apiMapping) {
         apiMap = prod.apiMapping;
       }
@@ -16496,14 +16577,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             apiMap.sourceStock = st;
             apiMap.isSourceDeleted = false;
             prod.stock = st;
-            if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v) v.stock = st; });
+            if (curVar) curVar.stock = st;
+            if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v && !v.apiMapping) v.stock = st; });
             return Math.max(0, st);
           }
 
           if (apiMap && typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0 && !apiMap.isSourceDeleted) {
-            if (prod) prod.stock = apiMap.sourceStock;
-            if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v) v.stock = apiMap.sourceStock; });
-            return apiMap.sourceStock;
+            const st = apiMap.sourceStock;
+            if (prod) prod.stock = st;
+            if (curVar) curVar.stock = st;
+            if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v && !v.apiMapping) v.stock = st; });
+            return st;
           }
 
           const provHasProds = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
@@ -17593,8 +17677,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 }
                 if (Array.isArray(variants) && variants.length > 0) {
                   variants.forEach((v, vI) => {
-                    if (typeof v.stock !== "number" || isNaN(v.stock) || v.stock === 0) {
-                      v.stock = updatedStock;
+                    if (v) {
+                      const varMap = (v.apiMapping && v.apiMapping.enabled && v.apiMapping.sourceProdId) ? v.apiMapping : null;
+                      if (varMap) {
+                        const cleanVarSrcId = String(varMap.sourceProdId || "").replace(/^#/, "").trim();
+                        const varInSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(varMap.provider, cleanVarSrcId) : null;
+                        if (varInSrc && typeof varInSrc.amount === "number") {
+                          v.stock = varInSrc.amount;
+                          varMap.sourceStock = varInSrc.amount;
+                          varMap.isSourceDeleted = false;
+                        } else if (typeof varMap.sourceStock === "number") {
+                          v.stock = varMap.sourceStock;
+                        } else {
+                          v.stock = updatedStock;
+                        }
+                      } else {
+                        v.stock = updatedStock;
+                      }
                     }
                   });
                 }
@@ -17602,7 +17701,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                   cur.variants.forEach((cv, cvI) => {
                     if (variants && variants[cvI] && typeof variants[cvI].stock === "number") {
                       cv.stock = variants[cvI].stock;
-                    } else if (typeof cv.stock !== "number" || isNaN(cv.stock) || cv.stock === 0) {
+                    } else {
                       cv.stock = updatedStock;
                     }
                   });
@@ -28746,9 +28845,11 @@ function syncAllOpenViewsStock(changedProdId) {
           apiMap = getApiProductMapping(curP) || (curP && curP.apiMapping);
         }
 
+        let freshAmount = null;
+        let isDeleted = false;
+
         if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
-          let freshAmount = null;
-          let isDeleted = !!apiMap.isSourceDeleted;
+          isDeleted = !!apiMap.isSourceDeleted;
           const provLoaded = (typeof isFastSourceProviderLoaded === "function")
             ? isFastSourceProviderLoaded(apiMap.provider)
             : false;
@@ -28815,6 +28916,14 @@ function syncAllOpenViewsStock(changedProdId) {
             }
             if (Array.isArray(curP.variants)) {
               curP.variants.forEach(v => { if (v) v.stock = freshAmount; });
+            }
+            if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+              const inMock = MOCK_DATA.products.find(p => p && (p.id === curP.id || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, curP.id))));
+              if (inMock) {
+                inMock.stock = freshAmount;
+                if (inMock.apiMapping) inMock.apiMapping.sourceStock = freshAmount;
+                if (Array.isArray(inMock.variants)) inMock.variants.forEach(v => { if (v) v.stock = freshAmount; });
+              }
             }
             try {
               const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
