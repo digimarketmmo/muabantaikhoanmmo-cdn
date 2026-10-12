@@ -5289,16 +5289,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       });
     } catch(e) {}
-              const n = String(p.name || '').toLowerCase().replace(/[–—−-]/g, '-').replace(/\s+/g, ' ').trim();
-              if (seen.has(n)) return false;
-              seen.add(n);
-              return true;
-            });
-            localStorage.setItem(k, JSON.stringify(cleaned));
-          }
-        }
-      });
-    } catch(e) {}
 
 
     // [PERSISTENT VARIANT STORAGE]: Lưu trữ và bảo vệ biến thể đa tầng chống bị server hoặc cache ghi đè
