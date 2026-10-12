@@ -18971,7 +18971,7 @@ function syncAllOpenViewsStock(changedProdId) {
         name: "mail72h.com",
         badgeColor: "#10b981",
         baseUrl: "https://mail72h.com",
-        apiKey: "",
+        apiKey: "83636705f8a17c6c48fcd8b7c8a32f10",
         username: "",
         rechargeUrl: "https://mail72h.com/client/recharge"
       },
@@ -18980,7 +18980,7 @@ function syncAllOpenViewsStock(changedProdId) {
         name: "sellmmo.vn",
         badgeColor: "#38bdf8",
         baseUrl: "https://sellmmo.vn",
-        apiKey: "",
+        apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
         username: "",
         rechargeUrl: "https://sellmmo.vn/recharge"
       },
@@ -18989,7 +18989,7 @@ function syncAllOpenViewsStock(changedProdId) {
         name: "nguyenlieummo.com.vn",
         badgeColor: "#f59e0b",
         baseUrl: "https://nguyenlieummo.com.vn",
-        apiKey: "",
+        apiKey: "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
         username: "",
         rechargeUrl: "https://nguyenlieummo.com.vn/client/wallet"
       },
@@ -18998,7 +18998,7 @@ function syncAllOpenViewsStock(changedProdId) {
         name: "selltainguyenmmo.com",
         badgeColor: "#8b5cf6",
         baseUrl: "https://selltainguyenmmo.com",
-        apiKey: "",
+        apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
         username: "",
         rechargeUrl: "https://selltainguyenmmo.com/client/wallet"
       },
@@ -20040,7 +20040,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (action === "buyProduct") {
         // [SMART ALIAS CHO SELLTAINGUYENMMO & SHOP1989ND]: Chuyển tiếp toàn bộ mã Gmail 10 phút cũ sang mã live 33097
         let rawProdId = String(payload.productId || payload.id || payload.sourceProdId || "");
-        if (["19773", "19768", "19745", "19524", "11924", "1", "23463", "25255", "25241", "25242", "30878", "31953", "30879", "31954"].includes(rawProdId) || (payload && payload.targetProdId === "PROD_MTQX465U")) {
+        if (["19773", "19768", "19745", "19524", "11924", "1", "23463", "25255", "25241", "25242", "30878", "31953", "30879", "31954", "35097"].includes(rawProdId) || (payload && payload.targetProdId === "PROD_MTQX465U")) {
           rawProdId = "33097";
           provider = "selltainguyenmmo";
           if (payload.provider) payload.provider = "selltainguyenmmo";
@@ -20054,18 +20054,28 @@ function syncAllOpenViewsStock(changedProdId) {
           const wBuyUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
             ? (MMO_WORKER_API.getApiUrl() + "/api/admin/source-buy")
             : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/source-buy";
+          const wBuyHeaders = { "Content-Type": "application/json" };
+          const uTok = (typeof getUserSessionToken === "function") ? getUserSessionToken() : "";
+          if (uTok) {
+            wBuyHeaders["Authorization"] = "Bearer " + uTok;
+            wBuyHeaders["x-user-token"] = uTok;
+          }
+          const aSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "";
+          if (aSec) wBuyHeaders["x-admin-token"] = aSec;
+
           const wRes = await fetch(wBuyUrl, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: wBuyHeaders,
             body: JSON.stringify({
               provider: provider,
-              productId: payload.productId || payload.id || payload.sourceProdId,
+              productId: rawProdId,
               amount: payload.amount || 1,
               baseUrl: pCfg.baseUrl || baseUrl,
               apiKey: pCfg.apiKey || apiKey,
               username: pCfg.username,
               password: pCfg.password,
-              authType: pCfg.authType
+              authType: pCfg.authType,
+              customer_email: (currentUser && currentUser.email) || (payload && payload.customer_email) || ""
             }),
             signal: createFastSignal(12000)
           });
@@ -20092,9 +20102,10 @@ function syncAllOpenViewsStock(changedProdId) {
           console.warn("Central Worker source-buy failed, trying local proxy:", wErr);
         }
 
+        const effectiveApiKey = apiKey || (pCfg && pCfg.apiKey) || (typeof API_SOURCES !== "undefined" && API_SOURCES[provider] && API_SOURCES[provider].apiKey) || "";
         const target = baseUrl.replace(/\/+$/, "") + "/api/buy_product";
-        const bodyStr = "api_key=" + encodeURIComponent(apiKey) +
-                        "&action=buyProduct&id=" + encodeURIComponent(payload.productId || payload.id) +
+        const bodyStr = "api_key=" + encodeURIComponent(effectiveApiKey) +
+                        "&action=buyProduct&id=" + encodeURIComponent(rawProdId) +
                         "&amount=" + encodeURIComponent(payload.amount || 1) +
                         (payload.coupon ? ("&coupon=" + encodeURIComponent(payload.coupon)) : "");
 
@@ -30197,7 +30208,7 @@ function syncAllOpenViewsStock(changedProdId) {
           }
         }
       }
-      // [SMART ALIAS CHO PROD_MTQX465U]: Tự động chuyển toàn bộ các mã Gmail 10 phút cũ (25255, 23463, 19773...) sang mã live 33097
+      // [SMART ALIAS CHO PROD_MTQX465U]: Tự động chuyển toàn bộ các mã Gmail 10 phút cũ (25255, 23463, 19773, 35097...) sang mã live 33097
       if (p && p.id === "PROD_MTQX465U") {
         if (!apiMap) apiMap = {};
         apiMap.enabled = true;
@@ -30206,6 +30217,13 @@ function syncAllOpenViewsStock(changedProdId) {
         apiMap.sourcePrice = 265.5;
         apiMap.sourceStock = 364;
         apiMap.baseUrl = "https://selltainguyenmmo.com";
+        apiMap.apiKey = apiMap.apiKey || "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ";
+      }
+      if (apiMap && apiMap.sourceProdId === "35097") {
+        apiMap.sourceProdId = "33097";
+        apiMap.provider = "selltainguyenmmo";
+        apiMap.baseUrl = "https://selltainguyenmmo.com";
+        apiMap.apiKey = apiMap.apiKey || "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ";
       }
       const isApiOnDemand = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
 
@@ -30441,10 +30459,7 @@ function syncAllOpenViewsStock(changedProdId) {
                 // [LÁ CHẮN BẢO VỆ CHỐNG RÒ RỈ LỖI NGUỒN]: Không bao giờ hiển thị "Vui lòng đăng nhập" của đối tác lên khách hàng
                 const isPartnerAuthLeak = /đăng nhập|login|auth|unauthorized|thông tin đăng nhập|tài khoản\/mật khẩu/i.test(errMsg);
                 if (isPartnerAuthLeak) {
-                  showToast("⚠️ Nguồn hàng đối tác đang bảo trì cập nhật kho. Quý khách vui lòng chọn loại khác hoặc bấm Đặt Hàng Trước để Shop chuẩn bị đơn riêng!", "warning");
-                  if (typeof openPreOrderModal === "function") {
-                    setTimeout(() => openPreOrderModal(p, vIdx), 800);
-                  }
+                  showToast("⚠️ Kết nối tới nguồn hàng đối tác đang được làm mới. Vui lòng bấm Mua Lại sau vài giây!", "warning");
                 } else {
                   showToast(errMsg, "warning");
                 }
