@@ -259,14 +259,13 @@ function healStorageQuota(forceEmergency) {
             });
             cleanProds.forEach(function(p) {
               if (!p) return;
-              // [TRIỆT TIÊU 100% TÀI KHOẢN ẢO DUMMY TRONG KHO]: Quét sạch toàn bộ tài khoản USR_ ảo trong cache
               if (Array.isArray(p.accounts)) {
-                p.accounts = p.accounts.filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
+                p.accounts = p.accounts.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
               }
               if (Array.isArray(p.variants)) {
                 p.variants.forEach(function(v) {
                   if (v && Array.isArray(v.accounts)) {
-                    v.accounts = v.accounts.filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
+                    v.accounts = v.accounts.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
                   }
                 });
               }
@@ -354,7 +353,7 @@ function healStorageQuota(forceEmergency) {
             const wObj = JSON.parse(rawW);
             let changed = false;
             if (Array.isArray(wObj)) {
-              const cleanArr = wObj.filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
+              const cleanArr = wObj.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
               if (cleanArr.length !== wObj.length) {
                 localStorage.setItem(wk, JSON.stringify(cleanArr));
               }
@@ -362,7 +361,7 @@ function healStorageQuota(forceEmergency) {
               Object.keys(wObj).forEach(k => {
                 if (Array.isArray(wObj[k])) {
                   const origLen = wObj[k].length;
-                  wObj[k] = wObj[k].filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
+                  wObj[k] = wObj[k].filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
                   if (wObj[k].length !== origLen) changed = true;
                 }
               });
@@ -4305,7 +4304,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "name": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
     "category": "Facebook",
     "price": 99000,
-    "stock": 0,
+    "stock": 19,
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
@@ -4316,9 +4315,29 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         {
                 "name": "Page 2019 0 Folow",
                 "price": 99000,
-                "stock": 0,
+                "stock": 19,
                 "available": true,
-                "accounts": []
+                "accounts": [
+                        "https://www.facebook.com/TheresahCorcoran/|Theresa D. Corcoran|17K like - 17K follow",
+                        "https://www.facebook.com/JeanhJackson37|Jean J. Jackson37|19K follow",
+                        "https://www.facebook.com/Entertainment0342/|Entertainment channel|59K follow",
+                        "https://www.facebook.com/JeanJackson32/|Jean J. Jackson32|6.2K follow",
+                        "https://www.facebook.com/SNEWTV/|S New|25K follow",
+                        "https://www.facebook.com/SadieDBarnes/|Sadie D. Barnes|3.4K follow",
+                        "https://www.facebook.com/JeanhJackson37|Amber J. Sanchez|18K follow",
+                        "https://www.facebook.com/phuongle968/|Phương Lê|46K follow",
+                        "https://www.facebook.com/EvaGraham01/|Eva Graham|2.7K follow",
+                        "https://www.facebook.com/DorothydDaulton/|Dorothy C. Daulton|1.5K follow",
+                        "https://www.facebook.com/beatvnkenhreview/|Beatvn Kênh Review|4.3K follow",
+                        "https://www.facebook.com/thuphuong968/|Thu Phương|4K follow",
+                        "https://www.facebook.com/Montemayor002/|Ella M. Montemayor|5.7K follow",
+                        "https://www.facebook.com/entertainment0980/|Thế Giới Đó Đây|2.6K follow",
+                        "https://www.facebook.com/profile.php?id=100063647443109|Robert G. Carte|2.1K follow",
+                        "https://www.facebook.com/thutrang968/|Thu Trang|996 follow",
+                        "https://www.facebook.com/thuhuong968/|Thu Hương|1.4K follow",
+                        "https://www.facebook.com/JudyFink69/|Judy D. Fink|4.7K follow",
+                        "https://www.facebook.com/JeanJackson098/|Jean J. Jackson29|3.6K follow"
+                ]
         }
 ],
     "deliveryType": "local",
@@ -16744,8 +16763,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (vAccs.length === 0 && typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.getAvailable) {
             try { vAccs = MMO_WAREHOUSE.getAvailable(curProd.id, selectedVVal) || []; } catch(eW) {}
           }
-          // Lọc sạch 100% tài khoản test/ảo khỏi giao diện
-          vAccs = vAccs.filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
+          // Lọc sạch tài khoản placeholder test ảo (nếu có)
+          vAccs = vAccs.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
           const c = vAccs.length > 0 ? vAccs.length : (typeof getShopVariantStock === "function" ? getShopVariantStock(curProd, selectedVVal) : (vObj ? (Number(vObj.stock) || 0) : 0));
           if (countLabel) countLabel.innerText = "Tồn kho biến thể " + (Number(selectedVVal) + 1) + ":";
           if (targetBadge) {
@@ -16758,7 +16777,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             countDisp.style.color = c === 0 ? "#ef4444" : (c < 5 ? "#f59e0b" : "#10b981");
           }
           if (currentView && document.activeElement !== currentView) {
-            currentView.value = vAccs.length > 0 ? vAccs.join("\n") : "";
+            if (vAccs.length > 0) {
+              currentView.value = vAccs.join("\n");
+            } else if (!currentView.value || currentView.value.trim() === "") {
+              currentView.value = "";
+            }
             currentView.placeholder = c > 0 ? ("Kho sẵn sàng: " + c + " acc. Dán tài khoản vào ô trên để nạp thêm.") : "Mỗi dòng 1 tài khoản (Định dạng: user|pass|2fa|...)";
           }
         } else {
@@ -16781,6 +16804,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               try { allAccs = MMO_WAREHOUSE.getAvailable(curProd.id, null) || []; } catch(eW) {}
             }
           }
+          allAccs = allAccs.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
           const totalStock = allAccs.length > 0 ? allAccs.length : (typeof getShopProductStock === "function" ? getShopProductStock(curProd) : (Number(curProd.stock) || 0));
           if (countLabel) countLabel.innerText = "Tổng số lượng trong kho:";
           if (targetBadge) {
@@ -16793,7 +16817,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             countDisp.style.color = totalStock === 0 ? "#ef4444" : (totalStock < 5 ? "#f59e0b" : "#10b981");
           }
           if (currentView && document.activeElement !== currentView) {
-            currentView.value = allAccs.length > 0 ? allAccs.join("\n") : "";
+            if (allAccs.length > 0) {
+              currentView.value = allAccs.join("\n");
+            } else if (!currentView.value || currentView.value.trim() === "") {
+              currentView.value = "";
+            }
             currentView.placeholder = totalStock > 0 ? ("Kho sẵn sàng: " + totalStock + " acc. Dán tài khoản vào ô trên để nạp thêm.") : "Mỗi dòng 1 tài khoản (Định dạng: user|pass|2fa|...)";
           }
         }
@@ -17999,25 +18027,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
         try {
           const prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : [];
-          const localProds = prods.filter(p => p && (p.deliveryType === "local" || p.delivery_type === "local") && Array.isArray(p.variants) && p.variants.length > 0 && (Number(p.stock) > 0 || (p.category && (p.category.includes("Rom") || p.category.includes("Phone Farm")))));
+          const localProds = prods.filter(p => p && (p.deliveryType === "local" || p.delivery_type === "local") && Array.isArray(p.variants) && p.variants.length > 0);
           
           const tasks = [];
           localProds.forEach(p => {
             p.variants.forEach((v, vi) => {
-              if (typeof v.stock === "number" && v.stock > 0) {
-                tasks.push(
-                  MMO_WORKER_API.adminGetInventory(p.id, vi).then(res => {
-                    if (res && Array.isArray(res.available) && res.available.length > 0) {
-                      v.accounts = res.available;
-                      v.stock = res.available.length;
-                      v.available = true;
-                      if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.setAccounts) {
-                        MMO_WAREHOUSE.setAccounts(p.id, vi, res.available);
-                      }
+              tasks.push(
+                MMO_WORKER_API.adminGetInventory(p.id, vi).then(res => {
+                  if (res && Array.isArray(res.available) && res.available.length > 0) {
+                    v.accounts = res.available;
+                    v.stock = res.available.length;
+                    v.available = true;
+                    if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.setAccounts) {
+                      MMO_WAREHOUSE.setAccounts(p.id, vi, res.available);
                     }
-                  }).catch(() => {})
-                );
-              }
+                  }
+                }).catch(() => {})
+              );
             });
           });
           if (tasks.length > 0) {
@@ -44445,13 +44471,14 @@ async function confirmRefundOrder() {
 
       // ƯU TIÊN 100%: NẾU ĐÃ CẤU HÌNH TURSO DATABASE, ĐỌC TRỰC TIẾP TỪ TURSO (BẢO VỆ TỒN KHO CHỐNG XÓA TRẮNG)
       if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
-        if (currentView) currentView.placeholder = "⏳ Đang tải tài khoản từ Turso Database...";
+        if (currentView && (!currentView.value || currentView.value.trim() === "")) {
+          currentView.placeholder = "⏳ Đang tải tài khoản từ Turso Database...";
+        }
         try {
           const accounts = await TURSO_CLIENT.getAvailableAccounts(prodId, vVal);
           let effectiveAccounts = (Array.isArray(accounts) && accounts.length > 0) ? accounts : [];
-          effectiveAccounts = effectiveAccounts.filter(a => typeof a === 'string' && !a.startsWith("USR_") && !a.startsWith("666666"));
+          effectiveAccounts = effectiveAccounts.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
 
-          // NẾU TURSO TRẢ VỀ RỖNG: Tự động khôi phục từ MMO_WAREHOUSE hoặc biến thể local
           const curVObj = (hasVars && vVal !== "ALL") ? (prod.variants && prod.variants[vVal]) : prod;
           if (effectiveAccounts.length === 0) {
             const localWh = (typeof MMO_WAREHOUSE !== "undefined") ? MMO_WAREHOUSE.getAvailable(prodId, vVal) : [];
@@ -44460,10 +44487,15 @@ async function confirmRefundOrder() {
             } else if (curVObj && Array.isArray(curVObj.accounts) && curVObj.accounts.length > 0) {
               effectiveAccounts = curVObj.accounts;
             }
-
-            // Tự động đẩy accounts có sẵn lên Turso chạy ngầm nếu Turso chưa có
-            if (effectiveAccounts.length > 0 && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
-              MMO_WORKER_API.adminImportAccounts(prodId, vVal === "ALL" ? 0 : (vVal || 0), effectiveAccounts, prod).catch(() => {});
+          } else {
+            // Khóa đồng bộ ngay lập tức vào biến thể và kho nội bộ để chống nhấp nháy 100%
+            if (curVObj) {
+              curVObj.accounts = effectiveAccounts;
+              curVObj.stock = effectiveAccounts.length;
+              curVObj.available = true;
+            }
+            if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.setAccounts) {
+              MMO_WAREHOUSE.setAccounts(prodId, vVal, effectiveAccounts);
             }
           }
 
