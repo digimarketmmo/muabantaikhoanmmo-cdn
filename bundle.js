@@ -8696,13 +8696,54 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (document.getElementById("admProdBuffRating")) document.getElementById("admProdBuffRating").value = p.rating || "4.9";
       if (document.getElementById("admProdBuffReviews")) document.getElementById("admProdBuffReviews").value = p.reviewCount || 11;
       // [SSOT REALTIME IMAGE RESOLVER]: Luôn giải quyết ảnh chuẩn sạch nhất (tự động loại trừ ảnh rác NordVPN trên Surfshark, nFV4Rln, placeholder)
-      let effectiveImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "");
+      let effectiveImg = "";
+      if (typeof localStorage !== "undefined") {
+        const aliasList = (typeof getProductAliasIds === "function") ? getProductAliasIds(p.id) : [p.id];
+        for (let k = 0; k < aliasList.length; k++) {
+          const c = localStorage.getItem("mmo_custom_img_" + aliasList[k]);
+          if (c && c.trim() && !c.includes("placeholder") && !c.includes("khotaikhoanso") && !c.includes("gemini_pro_veo3.png")) {
+            effectiveImg = c.trim();
+            break;
+          }
+        }
+      }
+      if (!effectiveImg && p) {
+        const rawPImg = String(p.image || p.imageUrl || p.image_url || "").trim();
+        if (rawPImg && !rawPImg.includes("placeholder") && !rawPImg.includes("khotaikhoanso") && !rawPImg.includes("/api/products/")) {
+          effectiveImg = rawPImg;
+        }
+      }
+      if (!effectiveImg) {
+        effectiveImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "");
+      }
       const isSurfModal = (p.id === "PROD_MUKAXC4Q9T") || (p.name && String(p.name).toLowerCase().includes("surfshark"));
       if (isSurfModal && (!effectiveImg || effectiveImg.includes("nord_vpn") || effectiveImg.includes("AfQAAAH0CAYAA") || effectiveImg.includes("default_product"))) {
         effectiveImg = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg";
       }
-      if (document.getElementById("admProdImage")) document.getElementById("admProdImage").value = effectiveImg || "";
-      if (document.getElementById("admProdImgPreview")) document.getElementById("admProdImgPreview").src = effectiveImg || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
+      const admImgInp = document.getElementById("admProdImage");
+      const admImgPrev = document.getElementById("admProdImgPreview");
+      if (admImgInp) {
+        admImgInp.value = effectiveImg || "";
+        admImgInp.oninput = function() {
+          const val = this.value.trim();
+          if (admImgPrev && val) admImgPrev.src = val;
+          const curId = document.getElementById("admProdId") ? document.getElementById("admProdId").value.trim() : (p.id || "");
+          const curName = document.getElementById("admProdName") ? document.getElementById("admProdName").value.trim() : (p.name || "");
+          if (curId && val) {
+            const syncIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(curId) : [curId];
+            syncIds.forEach(sid => { try { localStorage.setItem("mmo_custom_img_" + sid, val); } catch(e) {} });
+            if (typeof updateProductRealtimeEverywhere === "function") {
+              updateProductRealtimeEverywhere(curId, syncIds, { id: curId, name: curName, image: val }, null, val);
+            }
+            const dtlImgEl = document.getElementById("dtlImage");
+            if (dtlImgEl) dtlImgEl.src = val;
+            document.querySelectorAll("#dtlImage, .detail-product-img, .product-detail-image img, #dtlImageContainer img").forEach(di => {
+              if (di) di.src = val;
+            });
+          }
+        };
+      }
+      if (admImgPrev) admImgPrev.src = effectiveImg || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
       if (document.getElementById("admProdWarranty")) document.getElementById("admProdWarranty").value = p.warranty || "Bảo Hành 1 Đổi 1";
       const savedCustomDesc = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + p.id) : "";
       const effectiveDesc = (savedCustomDesc && savedCustomDesc.trim()) ? savedCustomDesc.trim() : (p.description || "");
@@ -11862,7 +11903,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       // 1. Chuẩn hóa URL ảnh tối ưu nhất
       let finalImg = rawImage || (prodData && (prodData.image || prodData.image_url || prodData.imageUrl)) || "";
-      if (typeof resolveProductImage === "function" && prodData) {
+      // Nếu rawImage đã có (ảnh do admin chọn từ máy tính hoặc paste link), BẢO TOÀN TUYỆT ĐỐI 100%, không cho resolveProductImage ghi đè bằng fallback cũ!
+      if (!rawImage && typeof resolveProductImage === "function" && prodData) {
         finalImg = resolveProductImage({ ...prodData, id: actualTargetId, image: finalImg });
       }
       const isSurf = idsToCheck.has("prod_mukaxc4q9t") || (nameLower && nameLower.includes("surfshark"));
@@ -11953,6 +11995,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (dtlImgEl && finalImg) {
           dtlImgEl.src = finalImg;
         }
+        document.querySelectorAll("#dtlImage, .detail-product-img, .product-detail-image img, #dtlImageContainer img").forEach(di => {
+          if (di && finalImg) di.src = finalImg;
+        });
         if (dtlTitleEl && prodName) {
           dtlTitleEl.innerText = prodName;
         }
@@ -15100,7 +15145,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "PROD_MU29WM90LZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/canva_pro.png",
         "PROD_MU2A2S732Y": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/express_vpn.png",
         "PROD_MU2ASBNSJT": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/facebook_via.png",
-        "PROD_MU2B32VLQY": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2B32VLQY/image",
+        "PROD_MU2B32VLQY": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_canhan_rieng.jpg",
         "PROD_MU2BIFBBNE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/hma_vpn.png",
         "PROD_MU2CZL38PH": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_france.png",
         "PROD_MU2IXVFLMW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_affiliate_gio.jpg",
@@ -26459,6 +26504,24 @@ function syncAllOpenViewsStock(changedProdId) {
           if (preview) preview.src = optimizedDataUrl;
           if (imgInput) imgInput.value = optimizedDataUrl;
 
+          // [REALTIME INSTANT 0MS SYNC]: Cập nhật ngay tức thì ra trang chi tiết (#dtlImage) và các card bên ngoài
+          const curProdId = document.getElementById("admProdId") ? document.getElementById("admProdId").value.trim() : "";
+          const curProdName = document.getElementById("admProdName") ? document.getElementById("admProdName").value.trim() : "";
+          if (curProdId) {
+            const syncIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(curProdId) : [curProdId];
+            syncIds.forEach(sid => {
+              try { localStorage.setItem("mmo_custom_img_" + sid, optimizedDataUrl); } catch(eLS) {}
+            });
+            if (typeof updateProductRealtimeEverywhere === "function") {
+              updateProductRealtimeEverywhere(curProdId, syncIds, { id: curProdId, name: curProdName, image: optimizedDataUrl }, null, optimizedDataUrl);
+            }
+            const dtlImgEl = document.getElementById("dtlImage");
+            if (dtlImgEl) dtlImgEl.src = optimizedDataUrl;
+            document.querySelectorAll("#dtlImage, .detail-product-img, .product-detail-image img, #dtlImageContainer img").forEach(di => {
+              if (di) di.src = optimizedDataUrl;
+            });
+          }
+
           // Đồng bộ tải lên Cloudflare Worker CDN ngầm
           window._isUploadingProductImage = true;
           const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
@@ -26492,7 +26555,6 @@ function syncAllOpenViewsStock(changedProdId) {
               if (preview) preview.src = cloudUrl;
 
               // Đồng bộ ngay lập tức vào sản phẩm đang chỉnh sửa
-              const curProdId = document.getElementById("admProdId") ? document.getElementById("admProdId").value.trim() : "";
               if (curProdId) {
                 const syncIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(curProdId) : [curProdId];
                 syncIds.forEach(sid => {
@@ -26506,6 +26568,20 @@ function syncAllOpenViewsStock(changedProdId) {
                     }
                   }
                 });
+                if (typeof updateProductRealtimeEverywhere === "function") {
+                  updateProductRealtimeEverywhere(curProdId, syncIds, { id: curProdId, name: curProdName, image: cloudUrl }, null, cloudUrl);
+                }
+                const dtlImgEl = document.getElementById("dtlImage");
+                if (dtlImgEl) dtlImgEl.src = cloudUrl;
+                document.querySelectorAll("#dtlImage, .detail-product-img, .product-detail-image img, #dtlImageContainer img").forEach(di => {
+                  if (di) di.src = cloudUrl;
+                });
+                // Đồng bộ Webhook tức thì lên Cloudflare Worker DB để Turso lưu ngay cloudUrl
+                fetch(workerUrl + "/api/webhook/product-update", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json", "Authorization": "Bearer " + adminSec, "x-admin-token": adminSec },
+                  body: JSON.stringify({ product: { id: curProdId, name: curProdName, image: cloudUrl, image_url: cloudUrl }, alias_ids: syncIds, webhook: true })
+                }).catch(() => {});
               }
               showToast("🎉 Tải ảnh lên Cloud CDN thành công!", "success");
             } else {
@@ -26528,6 +26604,18 @@ function syncAllOpenViewsStock(changedProdId) {
             if (preview) preview.src = rawData;
             if (imgInput) imgInput.value = rawData;
 
+            const curProdId = document.getElementById("admProdId") ? document.getElementById("admProdId").value.trim() : "";
+            const curProdName = document.getElementById("admProdName") ? document.getElementById("admProdName").value.trim() : "";
+            if (curProdId) {
+              const syncIds2 = (typeof getProductAliasIds === "function") ? getProductAliasIds(curProdId) : [curProdId];
+              syncIds2.forEach(sid => { try { localStorage.setItem("mmo_custom_img_" + sid, rawData); } catch(e) {} });
+              if (typeof updateProductRealtimeEverywhere === "function") {
+                updateProductRealtimeEverywhere(curProdId, syncIds2, { id: curProdId, name: curProdName, image: rawData }, null, rawData);
+              }
+              const dtlImgEl = document.getElementById("dtlImage");
+              if (dtlImgEl) dtlImgEl.src = rawData;
+            }
+
             // Tải lên Cloud CDN ngay cả khi dùng FileReader
             const adminSec2 = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
             const workerUrl2 = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
@@ -26540,7 +26628,6 @@ function syncAllOpenViewsStock(changedProdId) {
                 const cloudUrl2 = String(d.url).trim();
                 if (imgInput) imgInput.value = cloudUrl2;
                 if (preview) preview.src = cloudUrl2;
-                const curProdId = document.getElementById("admProdId") ? document.getElementById("admProdId").value.trim() : "";
                 if (curProdId) {
                   const syncIds2 = (typeof getProductAliasIds === "function") ? getProductAliasIds(curProdId) : [curProdId];
                   syncIds2.forEach(sid => {
@@ -26554,6 +26641,16 @@ function syncAllOpenViewsStock(changedProdId) {
                       }
                     }
                   });
+                  if (typeof updateProductRealtimeEverywhere === "function") {
+                    updateProductRealtimeEverywhere(curProdId, syncIds2, { id: curProdId, name: curProdName, image: cloudUrl2 }, null, cloudUrl2);
+                  }
+                  const dtlImgEl = document.getElementById("dtlImage");
+                  if (dtlImgEl) dtlImgEl.src = cloudUrl2;
+                  fetch(workerUrl2 + "/api/webhook/product-update", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + adminSec2, "x-admin-token": adminSec2 },
+                    body: JSON.stringify({ product: { id: curProdId, name: curProdName, image: cloudUrl2, image_url: cloudUrl2 }, alias_ids: syncIds2, webhook: true })
+                  }).catch(() => {});
                 }
               }
             }).catch(() => {});
