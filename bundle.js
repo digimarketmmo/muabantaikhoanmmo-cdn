@@ -2767,28 +2767,28 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "id": "PROD_MU6R34FZ4Z",
     "name": "Nâng Cấp Google Gemini AI Pro Veo3 - 18 Tháng Chính Chủ",
     "category": "AI & Video",
-    "price": 99000,
-    "stock": 550,
+    "price": 70000,
+    "stock": 1384,
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
     "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU6R34FZ4Z/image",
-    "warranty": "Bảo Hành 7 Ngày",
-    "description": "Link kích hoạt Gemini Pro 18 tháng\n- Đăng nhập sẵn mail cần nâng . Bảo hành kích hoạt 24H\n- Dán link là done\n- Không cần thẻ , siêu tiện\n- Kích hoạt chủ là lên chủ Family, không phải thành viên\nBạn đang tìm kiếm một giải pháp toàn diện vừa sở hữu trí tuệ nhân tạo mạnh mẽ nhất, kho lưu trữ khổng lồ để làm việc không giới hạn, vừa tích hợp công nghệ tạo video AI tiên tiến ngay trên tài khoản của chính mình?\n\nGói Combo Gemini Pro 18 Tháng Chính Chủ + Google One 5TB + Veo 3 tại shop chính là \"vũ khí tối thượng\" giúp bạn nâng tầm hiệu suất công việc lên một đẳng cấp hoàn toàn mới!\n\n✨ Trọn bộ đặc quyền khủng trong gói:\n🧠 Gemini Advanced / Pro (Thời hạn dài 18 tháng): Trợ lý AI thông minh đỉnh cao từ Google, hỗ trợ phân tích dữ liệu, viết code, tư duy chiến lược và xử lý khối lượng công việc khổng lồ với tốc độ phản hồi siêu tốc.\n\n💾 Google One 5TB (Lưu trữ 5 Terabyte): Kho lưu trữ đám mây cực lớn, thoải mái lưu trữ dữ liệu, video 4K, hình ảnh, tài liệu dự án mà không bao giờ lo đầy bộ nhớ Google Drive, Gmail hay Google Photos.\n\n🎬 Tích hợp Veo 3 (Sáng tạo video AI): Trải nghiệm công nghệ tạo video AI chân thực và đỉnh cao từ Google, biến mọi ý tưởng câu lệnh (Prompt) thành những thước phim mãn nhãn chỉ trong vài nốt nhạc.\n\n🔒 Tại sao nên chọn nâng cấp chính chủ tại shop?\n👤 Nâng cấp trực tiếp trên Email cá nhân: An toàn tuyệt đối 100%, giữ nguyên toàn bộ tài liệu, lịch sử chat và dữ liệu cá nhân của riêng bạn, không lo bị rò rỉ hay mất tài khoản giữa chừng.\n\n⏳ Thời hạn siêu dài (18 tháng): Đầu tư một lần, yên tâm sử dụng ổn định suốt gần 2 năm không phải bận tâm gia hạn hay gián đoạn công việc.\n\n💰 Tiết kiệm chi phí tối đa: Sở hữu trọn bộ combo cao cấp với mức giá ưu đãi hơn rất nhiều so với việc mua lẻ từng dịch vụ từ hãng.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành\n\n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin tài khoản từ bạn.\n\n💬 Hỗ trợ kỹ thuật 24/7, hướng dẫn sử dụng các tính năng AI và Veo từ A-Z.\n\n💡 Phù hợp cho: Nhà sáng tạo nội dung (Content Creator), lập trình viên, Marketer, Designer hoặc bất kỳ ai cần một hệ sinh thái làm việc thông minh, dung lượng khủng và công cụ tạo video AI tối tân nhất",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "description": "Link kích hoạt Gemini Pro 18 tháng\n- Đăng nhập sẵn mail cần nâng . Bảo hành kích hoạt 24H\n- Dán link là done\n- Không cần thẻ , siêu tiện\n- Kích hoạt chủ là lên chủ Family, không phải thành viên\nBạn đang tìm kiếm một giải pháp toàn diện vừa sở hữu trí tuệ nhân tạo mạnh mẽ nhất, kho lưu trữ khổng lồ để làm việc không giới hạn, vừa tích hợp công nghệ tạo video AI tiên tiến ngay trên tài khoản của chính mình?\n\nGói Combo Gemini Pro 18 Tháng Chính Chủ + Google One 5TB + Veo 3 tại shop chính là \"vũ khí tối thượng\" giúp bạn nâng tầm hiệu suất công việc lên một đẳng cấp hoàn toàn mới!\n\n✨ Trọn bộ đặc quyền khủng trong gói:\n🧠 Gemini Advanced / Pro (Thời hạn dài 18 tháng): Trợ lý AI thông minh đỉnh cao từ Google, hỗ trợ phân tích dữ liệu, viết code, tư duy chiến lược và xử lý khối lượng công việc khổng lồ với tốc độ phản hồi siêu tốc.\n\n💾 Google One 5TB (Lưu trữ 5 Terabyte): Kho lưu trữ đám mây cực lớn, thoải mái lưu trữ dữ liệu, video 4K, hình ảnh, tài liệu dự án mà không bao giờ lo đầy bộ nhớ Google Drive, Gmail hay Google Photos.\n\n🎬 Tích hợp Veo 3 (Sáng tạo video AI): Trải nghiệm công nghệ tạo video AI chân thực và đỉnh cao từ Google, biến mọi ý tưởng câu lệnh (Prompt) thành những thước phim mãn nhãn chỉ trong vài nốt nhạc.\n\n🔒 Tại sao nên chọn nâng cấp chính chủ tại shop?\n👤 Nâng cấp trực tiếp trên Email cá nhân: An toàn tuyệt đối 100%, giữ nguyên toàn bộ tài liệu, lịch sử chat và dữ liệu cá nhân của riêng bạn, không lo bị rò rỉ hay mất tài khoản giữa chừng.\n\n⏳ Thời hạn siêu dài (18 tháng): Đầu tư một lần, yên tâm sử dụng ổn định suốt gần 2 năm không phải bận tâm gia hạn hay gián đoạn công việc.\n\n💰 Tiết kiệm chi phí tối đa: Sở hữu trọn bộ combo cao cấp với mức giá ưu đãi hơn rất nhiều so với việc mua lẻ từng dịch vụ từ hãng.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành 1 Đổi 1\n\n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin tài khoản từ bạn.\n\n💬 Hỗ trợ kỹ thuật 24/7, hướng dẫn sử dụng các tính năng AI và Veo từ A-Z.\n\n💡 Phù hợp cho: Nhà sáng tạo nội dung (Content Creator), lập trình viên, Marketer, Designer hoặc bất kỳ ai cần một hệ sinh thái làm việc thông minh, dung lượng khủng và công cụ tạo video AI tối tân nhất",
     "variants": [
       {
-        "name": "Gemini AI 18 tháng 5T",
-        "price": 99000,
-        "stock": 550,
+        "name": "Gemini AI 18 tháng 5T veo 3",
+        "price": 70000,
+        "stock": 1384,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
-          "baseUrl": "https://nguyenlieummo.com.vn",
+          "provider": "selltainguyenmmo",
+          "baseUrl": "https://selltainguyenmmo.com",
           "apiKey": "",
-          "sourceProdId": "119295",
+          "sourceProdId": "32428",
           "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-          "sourcePrice": 108272,
-          "sourceStock": 534,
+          "sourcePrice": 33000,
+          "sourceStock": 1384,
           "targetProdId": "PROD_MU6R34FZ4Z",
           "targetProdName": "Nâng Cấp Google Gemini AI Pro Veo3 - 18 Tháng Chính Chủ"
         },
@@ -2800,13 +2800,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "nguyenlieummo",
-      "baseUrl": "https://nguyenlieummo.com.vn",
+      "provider": "selltainguyenmmo",
+      "baseUrl": "https://selltainguyenmmo.com",
       "apiKey": "",
-      "sourceProdId": "119295",
+      "sourceProdId": "32428",
       "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-      "sourcePrice": 108272,
-      "sourceStock": 534,
+      "sourcePrice": 33000,
+      "sourceStock": 1384,
       "targetProdId": "PROD_MU6R34FZ4Z",
       "targetProdName": "Nâng Cấp Google Gemini AI Pro Veo3 - 18 Tháng Chính Chủ"
     },
@@ -2817,28 +2817,28 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "id": "PROD_MU5T3T47AE",
     "name": "NÂNG CẤP GEMINI PRO 18 THÁNG CHÍNH CHỦ  + GG 5TB , VEO3",
     "category": "AI & Video",
-    "price": 120000,
-    "stock": 323,
+    "price": 70000,
+    "stock": 1384,
     "sold": 0,
     "buffSold": 0,
     "rating": 4.9,
     "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU5T3T47AE/image",
-    "warranty": "Bảo Hành1 Ngày",
-    "description": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )\nBạn đang tìm kiếm một giải pháp toàn diện vừa sở hữu trí tuệ nhân tạo mạnh mẽ nhất, kho lưu trữ khổng lồ để làm việc không giới hạn, vừa tích hợp công nghệ tạo video AI tiên tiến ngay trên tài khoản của chính mình?\n\nGói Combo Gemini Pro 18 Tháng Chính Chủ + Google One 5TB + Veo 3 tại shop chính là \"vũ khí tối thượng\" giúp bạn nâng tầm hiệu suất công việc lên một đẳng cấp hoàn toàn mới!\n\n✨ Trọn bộ đặc quyền khủng trong gói:\n🧠 Gemini Advanced / Pro (Thời hạn dài 18 tháng): Trợ lý AI thông minh đỉnh cao từ Google, hỗ trợ phân tích dữ liệu, viết code, tư duy chiến lược và xử lý khối lượng công việc khổng lồ với tốc độ phản hồi siêu tốc.\n\n💾 Google One 5TB (Lưu trữ 5 Terabyte): Kho lưu trữ đám mây cực lớn, thoải mái lưu trữ dữ liệu, video 4K, hình ảnh, tài liệu dự án mà không bao giờ lo đầy bộ nhớ Google Drive, Gmail hay Google Photos.\n\n🎬 Tích hợp Veo 3 (Sáng tạo video AI): Trải nghiệm công nghệ tạo video AI chân thực và đỉnh cao từ Google, biến mọi ý tưởng câu lệnh (Prompt) thành những thước phim mãn nhãn chỉ trong vài nốt nhạc.\n\n🔒 Tại sao nên chọn nâng cấp chính chủ tại shop?\n👤 Nâng cấp trực tiếp trên Email cá nhân: An toàn tuyệt đối 100%, giữ nguyên toàn bộ tài liệu, lịch sử chat và dữ liệu cá nhân của riêng bạn, không lo bị rò rỉ hay mất tài khoản giữa chừng.\n\n⏳ Thời hạn siêu dài (18 tháng): Đầu tư một lần, yên tâm sử dụng ổn định suốt gần 2 năm không phải bận tâm gia hạn hay gián đoạn công việc.\n\n💰 Tiết kiệm chi phí tối đa: Sở hữu trọn bộ combo cao cấp với mức giá ưu đãi hơn rất nhiều so với việc mua lẻ từng dịch vụ từ hãng.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành\n\n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin tài khoản từ bạn.\n\n💬 Hỗ trợ kỹ thuật 24/7, hướng dẫn sử dụng các tính năng AI và Veo từ A-Z.\n\n💡 Phù hợp cho: Nhà sáng tạo nội dung (Content Creator), lập trình viên, Marketer, Designer hoặc bất kỳ ai cần một hệ sinh thái làm việc thông minh, dung lượng khủng và công cụ tạo video AI tối tân nhất",
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "description": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )\nBạn đang tìm kiếm một giải pháp toàn diện vừa sở hữu trí tuệ nhân tạo mạnh mẽ nhất, kho lưu trữ khổng lồ để làm việc không giới hạn, vừa tích hợp công nghệ tạo video AI tiên tiến ngay trên tài khoản của chính mình?\n\nGói Combo Gemini Pro 18 Tháng Chính Chủ + Google One 5TB + Veo 3 tại shop chính là \"vũ khí tối thượng\" giúp bạn nâng tầm hiệu suất công việc lên một đẳng cấp hoàn toàn mới!\n\n✨ Trọn bộ đặc quyền khủng trong gói:\n🧠 Gemini Advanced / Pro (Thời hạn dài 18 tháng): Trợ lý AI thông minh đỉnh cao từ Google, hỗ trợ phân tích dữ liệu, viết code, tư duy chiến lược và xử lý khối lượng công việc khổng lồ với tốc độ phản hồi siêu tốc.\n\n💾 Google One 5TB (Lưu trữ 5 Terabyte): Kho lưu trữ đám mây cực lớn, thoải mái lưu trữ dữ liệu, video 4K, hình ảnh, tài liệu dự án mà không bao giờ lo đầy bộ nhớ Google Drive, Gmail hay Google Photos.\n\n🎬 Tích hợp Veo 3 (Sáng tạo video AI): Trải nghiệm công nghệ tạo video AI chân thực và đỉnh cao từ Google, biến mọi ý tưởng câu lệnh (Prompt) thành những thước phim mãn nhãn chỉ trong vài nốt nhạc.\n\n🔒 Tại sao nên chọn nâng cấp chính chủ tại shop?\n👤 Nâng cấp trực tiếp trên Email cá nhân: An toàn tuyệt đối 100%, giữ nguyên toàn bộ tài liệu, lịch sử chat và dữ liệu cá nhân của riêng bạn, không lo bị rò rỉ hay mất tài khoản giữa chừng.\n\n⏳ Thời hạn siêu dài (18 tháng): Đầu tư một lần, yên tâm sử dụng ổn định suốt gần 2 năm không phải bận tâm gia hạn hay gián đoạn công việc.\n\n💰 Tiết kiệm chi phí tối đa: Sở hữu trọn bộ combo cao cấp với mức giá ưu đãi hơn rất nhiều so với việc mua lẻ từng dịch vụ từ hãng.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành 1 Đổi 1\n\n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin tài khoản từ bạn.\n\n💬 Hỗ trợ kỹ thuật 24/7, hướng dẫn sử dụng các tính năng AI và Veo từ A-Z.\n\n💡 Phù hợp cho: Nhà sáng tạo nội dung (Content Creator), lập trình viên, Marketer, Designer hoặc bất kỳ ai cần một hệ sinh thái làm việc thông minh, dung lượng khủng và công cụ tạo video AI tối tân nhất",
     "variants": [
       {
-        "name": "GEMINI PRO 18 THÁNG+ veo 3",
-        "price": 120000,
-        "stock": 323,
+        "name": "Gemini AI 18 tháng 5T veo 3",
+        "price": 70000,
+        "stock": 1384,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
-          "baseUrl": "https://nguyenlieummo.com.vn",
+          "provider": "selltainguyenmmo",
+          "baseUrl": "https://selltainguyenmmo.com",
           "apiKey": "",
-          "sourceProdId": "119295",
+          "sourceProdId": "32428",
           "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-          "sourcePrice": 108272,
-          "sourceStock": 534,
+          "sourcePrice": 33000,
+          "sourceStock": 1384,
           "targetProdId": "PROD_MU5T3T47AE",
           "targetProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG CHÍNH CHỦ  + GG 5TB , VEO3"
         },
@@ -2850,13 +2850,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "nguyenlieummo",
-      "baseUrl": "https://nguyenlieummo.com.vn",
+      "provider": "selltainguyenmmo",
+      "baseUrl": "https://selltainguyenmmo.com",
       "apiKey": "",
-      "sourceProdId": "119295",
+      "sourceProdId": "32428",
       "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-      "sourcePrice": 108272,
-      "sourceStock": 534,
+      "sourcePrice": 33000,
+      "sourceStock": 1384,
       "targetProdId": "PROD_MU5T3T47AE",
       "targetProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG CHÍNH CHỦ  + GG 5TB , VEO3"
     },
@@ -8666,9 +8666,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           prov = "selltainguyenmmo";
           srcId = "33097";
         }
-        if (pNameLower.includes("gemini") && (!srcId || srcId === "32428" || srcId === "23586" || srcId === "23607")) {
+        if (pNameLower.includes("gemini") && (!srcId || srcId === "23586" || srcId === "23607")) {
           prov = "selltainguyenmmo";
-          srcId = "26440";
+          srcId = "32428";
         }
 
         const pSel = document.getElementById("admProdApiProvider");
@@ -12195,39 +12195,38 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
         } catch(e) {}
 
-        const existingIdx = isEditing ? MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === String(actualTargetId).trim().toLowerCase()) : -1;
-        if (existingIdx !== -1) {
-          MOCK_DATA.products[existingIdx] = Object.assign({}, MOCK_DATA.products[existingIdx], prodData);
-        } else {
-          MOCK_DATA.products.unshift(prodData);
-        }
+        const allSyncIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(actualTargetId) : [actualTargetId];
 
-        // Tự động đồng bộ ngay lập tức cho ID sinh đôi Gemini (PROD_MU2AB1XEGI <-> PROD_MU6R34FZ4Z)
-        if (actualTargetId === "PROD_MU2AB1XEGI" || actualTargetId === "PROD_MU6R34FZ4Z") {
-          const twinId = (actualTargetId === "PROD_MU2AB1XEGI") ? "PROD_MU6R34FZ4Z" : "PROD_MU2AB1XEGI";
-          const twinIdx = MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === twinId.toLowerCase());
-          if (twinIdx !== -1) {
-            MOCK_DATA.products[twinIdx] = Object.assign({}, MOCK_DATA.products[twinIdx], prodData, {
-              id: twinId,
-              apiMapping: prodData.apiMapping ? Object.assign({}, prodData.apiMapping, { targetProdId: twinId }) : prodData.apiMapping
-            });
+        allSyncIds.forEach(syncId => {
+          const sIdx = MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === syncId.toLowerCase());
+          const sCloned = Object.assign({}, prodData, {
+            id: syncId,
+            apiMapping: prodData.apiMapping ? Object.assign({}, prodData.apiMapping, { targetProdId: syncId }) : prodData.apiMapping,
+            variants: (variants || []).map(v => Object.assign({}, v, {
+              apiMapping: v.apiMapping ? Object.assign({}, v.apiMapping, { targetProdId: syncId }) : v.apiMapping
+            }))
+          });
+          if (sIdx !== -1) {
+            MOCK_DATA.products[sIdx] = Object.assign({}, MOCK_DATA.products[sIdx], sCloned);
+          } else {
+            MOCK_DATA.products.unshift(sCloned);
           }
-        }
+        });
+
         if (typeof window !== "undefined" && window.MOCK_DATA) {
           window.MOCK_DATA.products = MOCK_DATA.products;
         }
-        showToast("🎉 Đã lưu sản phẩm [" + (name || actualTargetId) + "] thành công!", "success");
+        showToast("🎉 Đã lưu & index sản phẩm [" + (name || actualTargetId) + "] thành công!", "success");
 
-        // Lưu ngay URL ảnh vào mmo_custom_img_ để UI hiển thị tức thì không qua fallback
-        if (actualTargetId && image) {
-          const sIds = [actualTargetId];
-          if (actualTargetId === "PROD_MU2AB1XEGI" || actualTargetId === "PROD_MU6R34FZ4Z") {
-            sIds.push("PROD_MU2AB1XEGI", "PROD_MU6R34FZ4Z");
-          }
-          sIds.forEach(sid => {
+        // Lưu ngay URL ảnh & mô tả vào mmo_custom_ cho toàn bộ họ ID liên kết
+        allSyncIds.forEach(sid => {
+          if (image) {
             try { localStorage.setItem("mmo_custom_img_" + sid, image); } catch(eImgLS) {}
-          });
-        }
+          }
+          if (description !== undefined && description !== null) {
+            try { localStorage.setItem("mmo_custom_desc_" + sid, description.trim()); } catch(eDescLS) {}
+          }
+        });
 
         // Tự động đẩy ngầm ảnh Base64 lên Cloud CDN nếu chưa kịp tải
         if (actualTargetId && image && String(image).startsWith("data:") && image.length > 2000) {
@@ -12241,18 +12240,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             }).then(r => r.json()).then(d => {
               if (d && d.success && d.url) {
                 const cUrl = String(d.url).trim();
-                try { localStorage.setItem("mmo_custom_img_" + actualTargetId, cUrl); } catch(e) {}
-                if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
-                  const mIdx = MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === actualTargetId.toLowerCase());
-                  if (mIdx !== -1) {
-                    MOCK_DATA.products[mIdx].image = cUrl;
-                    MOCK_DATA.products[mIdx].image_url = cUrl;
+                allSyncIds.forEach(sid => {
+                  try { localStorage.setItem("mmo_custom_img_" + sid, cUrl); } catch(e) {}
+                  if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+                    const mIdx = MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === sid.toLowerCase());
+                    if (mIdx !== -1) {
+                      MOCK_DATA.products[mIdx].image = cUrl;
+                      MOCK_DATA.products[mIdx].image_url = cUrl;
+                    }
                   }
-                }
-                fetch(wUrl + "/api/admin/products/save", {
+                });
+                fetch(wUrl + "/api/webhook/product-update", {
                   method: "POST",
                   headers: { "Content-Type": "application/json", "Authorization": "Bearer " + wSec },
-                  body: JSON.stringify({ product: { ...prodData, image: cUrl, image_url: cUrl } })
+                  body: JSON.stringify({ product: { ...prodData, image: cUrl, image_url: cUrl }, alias_ids: allSyncIds })
                 }).catch(() => {});
               }
             }).catch(() => {});
@@ -12292,7 +12293,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           } catch(e2) {}
         }
 
-        if (typeof recordProductVariants === "function") recordProductVariants(actualTargetId, variants, name);
+        // [REALTIME VARIANT SSOT INDEX]: Ghi đè biến thể mới vào bộ nhớ mọi ID alias
+        try {
+          const vMap = (typeof getProductVariantsMap === "function") ? getProductVariantsMap() : {};
+          allSyncIds.forEach(sid => {
+            const aliasVars = (variants || []).map(v => Object.assign({}, v, {
+              apiMapping: v.apiMapping ? Object.assign({}, v.apiMapping, { targetProdId: sid }) : v.apiMapping
+            }));
+            vMap[sid] = aliasVars;
+            if (typeof recordProductVariants === "function") recordProductVariants(sid, aliasVars, name);
+          });
+          if (name && typeof normApiText === "function") {
+            vMap[normApiText(name)] = (variants || []).slice();
+          }
+          if (typeof saveProductVariantsMap === "function") saveProductVariantsMap(vMap);
+        } catch(eVMap) {}
         
         // Dọn dẹp kho của các biến thể đã bị admin xóa
         if (oldProd && Array.isArray(oldProd.variants) && oldProd.variants.length > variants.length) {
@@ -12313,36 +12328,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (typeof saveProductStocksMap === "function") saveProductStocksMap(stockMap);
         }
 
-        try {
-          if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof TURSO_CLIENT.saveProduct === "function") {
-            TURSO_CLIENT.saveProduct(prodData).then(function(res) {
-              console.log("Turso saveProduct success:", res);
-            }).catch(e => console.warn("Turso save product error:", e));
-          } else if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured() && typeof MMO_WORKER_API.adminSyncProducts === "function") {
-            MMO_WORKER_API.adminSyncProducts([prodData]).then(function(res) {
-              console.log("Worker adminSyncProducts success:", res);
-            }).catch(e => console.warn("Worker save product error:", e));
-          }
-        } catch(e) {}
-
-        // [LƯU ẢNH AN TOÀN TUYỆT ĐỐI CHỐNG LỖI QUOTA]: Lưu riêng lẻ vào mmo_custom_img_
-        const twinSyncIds = [actualTargetId];
-        if (actualTargetId === "PROD_MU2AB1XEGI" || actualTargetId === "PROD_MU6R34FZ4Z") {
-          twinSyncIds.push("PROD_MU2AB1XEGI", "PROD_MU6R34FZ4Z");
-        }
-        if (image && image.trim() !== "") {
-          twinSyncIds.forEach(sid => {
-            try { localStorage.setItem("mmo_custom_img_" + sid, image.trim()); } catch(eImg) {}
-          });
-        }
-        // [LƯU MÔ TẢ AN TOÀN TUYỆT ĐỐI]: Lưu riêng lẻ vào mmo_custom_desc_
-        if (description !== undefined && description !== null) {
-          twinSyncIds.forEach(sid => {
-            try { localStorage.setItem("mmo_custom_desc_" + sid, description.trim()); } catch(eDesc) {}
-          });
-        }
-
-        // [CLOUD SYNC & TURSO SSOT]: Gửi trực tiếp lên Cloudflare Worker & Turso SQLite, chờ xác nhận lưu thành công
+        // [REALTIME WEBHOOK & CLOUD INDEX]: Gửi Webhook tới Cloudflare Worker & Turso SQLite
         try {
           const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
             ? MMO_WORKER_API.getAdminSecret()
@@ -12358,49 +12344,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             ...prodData,
             variants: leanVariants
           };
-          const saveFetchRes = await fetch(workerUrl + "/api/admin/products/save", {
+
+          fetch(workerUrl + "/api/webhook/product-update", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
               "Authorization": "Bearer " + workerSecret
             },
-            body: JSON.stringify({ product: syncProductPayload })
-          });
-          const saveJson = await saveFetchRes.json().catch(() => null);
-          console.log("Cloud saveProduct result:", saveJson);
-          if (saveJson && saveJson.success) {
-            console.log("✅ Đã lưu sản phẩm thành công vào Cloudflare Worker & Turso!");
-          } else if (saveFetchRes.status === 401) {
-            const retryRes = await fetch(workerUrl + "/api/admin/products/save", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60"
-              },
-              body: JSON.stringify({ product: syncProductPayload })
-            });
-            const retryJson = await retryRes.json().catch(() => null);
-            if (retryJson && retryJson.success) {
-              console.log("✅ Đã lưu thành công qua secret dự phòng!");
-              localStorage.setItem("mmo_admin_secret", "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
-            }
-          }
-
-          if (actualTargetId === "PROD_MU2AB1XEGI" || actualTargetId === "PROD_MU6R34FZ4Z") {
-            const twinId = (actualTargetId === "PROD_MU2AB1XEGI") ? "PROD_MU6R34FZ4Z" : "PROD_MU2AB1XEGI";
-            const sec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
-            fetch(workerUrl + "/api/admin/products/save", {
-              method: "POST",
-              headers: { "Content-Type": "application/json", "Authorization": "Bearer " + sec },
-              body: JSON.stringify({
-                product: {
-                  ...syncProductPayload,
-                  id: twinId,
-                  apiMapping: syncProductPayload.apiMapping ? Object.assign({}, syncProductPayload.apiMapping, { targetProdId: twinId }) : syncProductPayload.apiMapping
-                }
-              })
-            }).catch(() => {});
-          }
+            body: JSON.stringify({ product: syncProductPayload, alias_ids: allSyncIds, webhook: true })
+          }).then(r => r.json()).then(res => {
+            console.log("✅ Webhook Realtime Index Result:", res);
+          }).catch(eWb => console.warn("Webhook index error:", eWb));
         } catch(eSaveWorker) {
           console.warn("Cloud saveProduct warning:", eSaveWorker);
         }
@@ -12471,37 +12425,57 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
         } catch(e) {}
 
-        // Cập nhật ngay modal / trang chi tiết nếu đang xem sản phẩm này
-        if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
-          const isSame = (String(currentSelectedProduct.id) === String(actualTargetId)) || 
-                         (currentSelectedProduct.name && currentSelectedProduct.name.trim().toLowerCase() === name.toLowerCase()) ||
-                         (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId));
-          if (isSame) {
-            currentSelectedProduct = Object.assign({}, currentSelectedProduct, prodData);
-            currentSelectedProduct.variants = variants;
-            currentSelectedProduct.price = effectivePrice;
-            currentSelectedProduct.stock = prodData.stock;
-            if (currentSelectedVariantIndex >= variants.length) currentSelectedVariantIndex = 0;
-            if (typeof syncDetailStockUI === "function") {
-              syncDetailStockUI(prodData.stock);
-            }
-          }
-        }
+        // Cập nhật ngay modal / trang chi tiết nếu đang xem sản phẩm này hoặc bất kỳ ID liên kết nào
+        const isViewingSameOrAlias = (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && (
+          allSyncIds.includes(String(currentSelectedProduct.id)) || 
+          (currentSelectedProduct.name && currentSelectedProduct.name.trim().toLowerCase() === name.toLowerCase()) ||
+          (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId))
+        ));
 
-        // TỰ ĐỘNG LÀM MỚI TOÀN BỘ GIAO DIỆN TRANG XEM CHI TIẾT SẢN PHẨM (viewProductDetail)
-        const dtlView = document.getElementById("viewProductDetail");
-        if (currentSelectedProduct && (String(currentSelectedProduct.id) === String(actualTargetId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId)))) {
-          const dtlImg = document.getElementById("dtlImage");
+        if (isViewingSameOrAlias) {
+          currentSelectedProduct = Object.assign({}, currentSelectedProduct, prodData);
+          currentSelectedProduct.variants = variants;
+          currentSelectedProduct.price = effectivePrice;
+          currentSelectedProduct.stock = prodData.stock;
+          currentSelectedProduct.apiMapping = prodData.apiMapping;
+          currentSelectedVariantIndex = 0;
+          currentSelectedPrice = effectivePrice;
+
+          // 1. Cập nhật DOM trực tiếp tức thì 0ms:
+          const dtlPriceEl = document.getElementById("dtlPrice");
+          if (dtlPriceEl) dtlPriceEl.innerText = (typeof formatVND === "function") ? formatVND(effectivePrice) : (effectivePrice.toLocaleString("vi-VN") + " đ");
+
+          const dtlTitleEl = document.getElementById("dtlTitle");
+          if (dtlTitleEl) dtlTitleEl.innerText = prodData.name;
+
+          const dtlImgEl = document.getElementById("dtlImage");
           const updImg = (typeof resolveProductImage === "function") ? resolveProductImage(prodData) : (prodData.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
-          if (dtlImg && updImg && dtlImg.src !== updImg) dtlImg.src = updImg;
-          const dtlTitle = document.getElementById("dtlTitle");
-          if (dtlTitle) dtlTitle.innerText = prodData.name;
+          if (dtlImgEl && updImg) dtlImgEl.src = updImg;
+
           if (typeof syncDetailStockUI === "function") {
             syncDetailStockUI(prodData.stock);
           }
+
+          // 2. Re-render ô chọn loại sản phẩm (Variant Pills) ngay lập tức:
+          const pillsContainer = document.getElementById("dtlVariantPills");
+          if (pillsContainer && Array.isArray(variants) && variants.length > 0) {
+            pillsContainer.innerHTML = variants.map((v, idx) => {
+              const vStock = (typeof v.stock === "number") ? v.stock : prodData.stock;
+              const stockBadge = vStock > 0
+                ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
+                : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+              return '<div class="variant-pill-option ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                '<span>' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
+                '<span style="font-weight:700;">' + ((typeof formatVND === "function") ? formatVND(v.price || 0) : ((v.price || 0) + " đ")) + '</span>' +
+              '</div>';
+            }).join("");
+          }
+
+          // 3. Silent re-run openProductDetailById
+          const dtlView = document.getElementById("viewProductDetail");
           if (dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden")) {
             if (typeof openProductDetailById === "function") {
-              openProductDetailById(actualTargetId);
+              openProductDetailById(currentSelectedProduct.id, true);
             }
           }
         }
@@ -18429,12 +18403,30 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // Storage polling disabled to prevent UI freeze
     }
 
+    function getProductAliasIds(id) {
+      if (!id) return [];
+      const s = String(id).trim();
+      if (s === "PROD_MU2AB1XEGI" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU5T3T47AE" || s === "SP_GEMINI_VEO3") {
+        return ["PROD_MU2AB1XEGI", "PROD_MU6R34FZ4Z", "PROD_MU5T3T47AE"];
+      }
+      if (s === "PROD_MTPIJ9XV" || s === "PROD_MTPG0PUD" || s === "SP_TIKTOK_BRAZIL") {
+        return ["PROD_MTPIJ9XV", "PROD_MTPG0PUD"];
+      }
+      return [s];
+    }
+    window.getProductAliasIds = getProductAliasIds;
+
     function isSameOrAliasProduct(id1, id2) {
       if (!id1 || !id2) return false;
       const s1 = String(id1).trim();
       const s2 = String(id2).trim();
       if (s1 === s2) return true;
       if (s1.toLowerCase() === s2.toLowerCase()) return true;
+
+      // Họ sản phẩm Gemini Pro Veo3 liên kết thời gian thực
+      const g1 = s1 === "PROD_MU2AB1XEGI" || s1 === "PROD_MU6R34FZ4Z" || s1 === "PROD_MU5T3T47AE" || s1 === "SP_GEMINI_VEO3";
+      const g2 = s2 === "PROD_MU2AB1XEGI" || s2 === "PROD_MU6R34FZ4Z" || s2 === "PROD_MU5T3T47AE" || s2 === "SP_GEMINI_VEO3";
+      if (g1 && g2) return true;
 
       // Alias duy nhất được phép liên kết chéo là TikTok Brazil legacy
       const b1 = s1 === "PROD_MTPIJ9XV" || s1 === "PROD_MTPG0PUD" || s1 === "SP_TIKTOK_BRAZIL";
