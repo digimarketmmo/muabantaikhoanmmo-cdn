@@ -921,7 +921,17 @@ if (typeof window !== "undefined") {
     function _ensureProductSearchIndex(p) {
       if (!p) return "";
       if (!p._fastSearchKey) {
-        p._fastSearchKey = _normalizeForFastSearch((p.id || "") + " " + (p.name || "") + " " + (p.category || "") + " " + (p.provider || ""));
+        var extra = "";
+        var prov = String(p.provider || "").toLowerCase();
+        var cat = String(p.category || "").toLowerCase();
+        var name = String(p.name || "").toLowerCase();
+        if (cat.includes("mail") || prov.includes("mail") || cat.includes("cho thuê") || cat.includes("cho thue") || name.includes("24h") || name.includes("domain") || name.includes("7 ngày") || name.includes("30 ngày")) {
+          extra += " gmail mail cho thue hop thu domain 24h 7day 30day";
+        }
+        if (cat.includes("via") || cat.includes("clone") || cat.includes("bm") || prov.includes("via") || cat.includes("facebook") || cat.includes("page")) {
+          extra += " facebook fb via clone bm page";
+        }
+        p._fastSearchKey = _normalizeForFastSearch((p.id || "") + " " + (p.name || "") + " " + (p.category || "") + " " + (p.provider || "") + extra);
       }
       return p._fastSearchKey;
     }
@@ -7819,6 +7829,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const pSel = document.getElementById("admProdApiProvider");
       if (pSel) pSel.value = prov;
       updateModalProviderPillsUI(prov);
+
+      // Nếu ô tìm kiếm đang có từ khóa mà nhà cung cấp mới không có SP nào khớp từ khóa đó:
+      // Tự động xóa trắng ô tìm kiếm để hiển thị toàn bộ sản phẩm của nguồn mới
+      const searchInput = document.getElementById("admProdApiSourceSearch");
+      if (searchInput && searchInput.value.trim()) {
+        const curKw = searchInput.value.trim().toLowerCase();
+        const allP = (typeof getEffectiveSourceProducts === "function") ? getEffectiveSourceProducts() : (window.cachedSourceProducts || []);
+        const hasAnyInNew = allP.some(s => s && (s.provider === prov || (typeof isSameProvider === "function" && isSameProvider(s.provider, prov))) && (((s.name||"") + " " + (s.category||"") + " " + (s.id||"")).toLowerCase().includes(curKw)));
+        if (!hasAnyInNew) {
+          searchInput.value = "";
+          const clearBtn = document.getElementById("btnAdmClearSourceSearch");
+          if (clearBtn) clearBtn.style.display = "none";
+        }
+      }
+
       handleAdmModalProviderChange();
     }
     window.selectModalApiProvider = selectModalApiProvider;
@@ -7999,8 +8024,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       let optionsHtml = '';
 
       if (filtered.length === 0) {
+        // [ANTI AUTO-SWITCH LOOP]: Option đầu tiên BẮT BUỘC có value="" để browser KHÔNG tự động switch provider
+        optionsHtml = '<option value="">-- [' + escapeHtml(provider) + ' không có SP khớp "' + escapeHtml(rawKw) + '"] (Xem gợi ý bên dưới hoặc bấm X xóa tìm kiếm) --</option>';
         if (crossProviderMatches.length > 0) {
-          optionsHtml = '<option value="__switch__' + topProv + '">-- [' + provider + ' không có "' + escapeHtml(rawKw) + '"] 👉 BẤM ĐÂY ĐỔI SANG ' + escapeHtml(topProvName) + ' (' + crossProviderMatches.length + ' SP) --</option>';
+          optionsHtml += '<option value="__switch__' + topProv + '">👉 Bấm vào đây để chuyển sang nguồn ' + escapeHtml(topProvName.toUpperCase()) + ' (' + crossProviderMatches.length + ' SP khớp "' + escapeHtml(rawKw) + '")</option>';
           // Thêm các gợi ý SP có hàng từ nguồn khác vào ngay dropdown để admin chọn trực tiếp
           optionsHtml += '<optgroup label="✨ GỢI Ý SP CÓ HÀNG TỪ ' + escapeHtml(topProvName.toUpperCase()) + ' (' + crossProviderMatches.length + ' SP):">';
           crossProviderMatches.slice(0, 8).forEach(s => {
@@ -8011,7 +8038,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           });
           optionsHtml += '</optgroup>';
         } else {
-          optionsHtml = '<option value="">-- Không tìm thấy SP nào khớp "' + escapeHtml(rawKw) + '". Hãy thử gõ từ khóa ngắn hơn (VD: IG, Mail, Kling...) --</option>';
+          optionsHtml += '<option value="" disabled="disabled">-- Không tìm thấy SP nào khớp "' + escapeHtml(rawKw) + '". Bấm nút [X] cạnh ô tìm kiếm để xem toàn bộ SP của ' + escapeHtml(provider) + ' --</option>';
         }
       } else {
         optionsHtml = '<option value="">-- ' + (rawKw ? ('Tìm thấy ' + filtered.length + ' SP (Bấm để chọn)') : ('Chọn sản phẩm nguồn (' + filtered.length + ' SP)')) + ' --</option>';
@@ -8498,9 +8525,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const info = document.getElementById("admProdApiSourceInfo");
       if (info) info.innerHTML = '<span style="color:#94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải SP từ ' + prov + '...</span>';
 
-      // Giữ lại từ khóa hiện tại trong ô tìm kiếm (nếu admin đang gõ tìm)
+      // Kiểm tra từ khóa tìm kiếm: nếu nguồn mới không có SP nào khớp từ khóa này, xóa từ khóa để hiển thị toàn bộ SP của nguồn
       const searchInput = document.getElementById("admProdApiSourceSearch");
       let currentKw = searchInput ? searchInput.value.trim() : "";
+      if (currentKw) {
+        const allP = (typeof getEffectiveSourceProducts === "function") ? getEffectiveSourceProducts() : (window.cachedSourceProducts || []);
+        const hasMatch = allP.some(s => s && (s.provider === prov || (typeof isSameProvider === "function" && isSameProvider(s.provider, prov))) && (((s.name||"") + " " + (s.category||"") + " " + (s.id||"")).toLowerCase().includes(currentKw.toLowerCase())));
+        if (!hasMatch) {
+          currentKw = "";
+          if (searchInput) searchInput.value = "";
+        }
+      }
       
       // Nếu ô tìm kiếm đang trống, tự động nhận diện từ tên sản phẩm
       if (!currentKw) {
@@ -8561,6 +8596,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (sSel.value.startsWith("__switch__")) {
           const tProv = sSel.value.replace("__switch__", "");
           sSel.value = "";
+          // Chỉ thực hiện switch khi người dùng đang thực sự tương tác với dropdown
           if (typeof switchAdmModalProvider === "function") switchAdmModalProvider(tProv);
           return;
         } else if (sSel.value.startsWith("__pick_cross__")) {
@@ -19008,6 +19044,16 @@ function syncAllOpenViewsStock(changedProdId) {
         username: "",
         password: "",
         rechargeUrl: "https://ultrammo.com/client/wallet"
+      },
+      vuavia: {
+        id: "vuavia",
+        name: "vuavia.io",
+        badgeColor: "#06b6d4",
+        baseUrl: "https://api.vuavia.io",
+        apiKey: "",
+        username: "",
+        password: "",
+        rechargeUrl: "https://vuavia.io/wallet/recharge"
       }
     };
 
@@ -19481,6 +19527,8 @@ function syncAllOpenViewsStock(changedProdId) {
           provider = "selltainguyenmmo";
         } else if (bUrlIn.includes("ultrammo")) {
           provider = "ultrammo";
+        } else if (bUrlIn.includes("vuavia")) {
+          provider = "vuavia";
         } else {
           let foundCustom = null;
           if (typeof API_SOURCES !== "undefined") {
@@ -21977,7 +22025,7 @@ function syncAllOpenViewsStock(changedProdId) {
       html += '</optgroup>';
 
       // Thêm các sản phẩm còn hàng khác từ 5 nguồn
-      const PROVIDERS = ["sellmmo", "mail72h", "shop1989nd", "selltainguyenmmo", "nguyenlieummo"];
+      const PROVIDERS = ["sellmmo", "mail72h", "shop1989nd", "selltainguyenmmo", "nguyenlieummo", "ultrammo", "vuavia"];
       PROVIDERS.forEach(function(prov) {
         const provProds = inStockProds.filter(p => (p.provider || "sellmmo") === prov && !PINNED_VERIFIED.some(pin => pin.id === String(p.id) && pin.provider === prov));
         if (provProds.length > 0) {
@@ -22193,6 +22241,8 @@ function syncAllOpenViewsStock(changedProdId) {
       fetchSingleSourceProfile("nguyenlieummo", true);
       fetchSingleSourceProfile("selltainguyenmmo", true);
       fetchSingleSourceProfile("shop1989nd", true);
+      fetchSingleSourceProfile("ultrammo", true);
+      fetchSingleSourceProfile("vuavia", true);
     }
     window.saveSourceProxyUrl = saveSourceProxyUrl;
 
