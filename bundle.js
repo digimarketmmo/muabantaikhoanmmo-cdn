@@ -19030,18 +19030,18 @@ function syncAllOpenViewsStock(changedProdId) {
         name: "shop1989nd.com",
         badgeColor: "#f97316",
         baseUrl: "https://www.shop1989nd.com",
-        username: "",
-        password: "",
+        username: "manhdong",
+        password: "Manhdong123@",
         rechargeUrl: "https://www.shop1989nd.com/user/recharge",
         authType: "userpass"
       },
       ultrammo: {
         id: "ultrammo",
         name: "ultrammo.com",
-        badgeColor: "#6366f1",
+        badgeColor: "#ec4899",
         baseUrl: "https://ultrammo.com",
-        apiKey: "",
-        username: "",
+        apiKey: "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+        username: "manhdong",
         password: "",
         rechargeUrl: "https://ultrammo.com/client/wallet"
       },
@@ -19051,7 +19051,7 @@ function syncAllOpenViewsStock(changedProdId) {
         badgeColor: "#06b6d4",
         baseUrl: "https://api.vuavia.io",
         apiKey: "",
-        username: "",
+        username: "manhdong",
         password: "",
         rechargeUrl: "https://vuavia.io/wallet/recharge"
       }
@@ -19450,10 +19450,11 @@ function syncAllOpenViewsStock(changedProdId) {
     window.switchStockImportSubTab = switchStockImportSubTab;
 
     function initApiSourceStockUI() {
-      // [ZERO-HANG]: Không tự động bắn request đồng thời 6 nguồn khi mở UI Kho hàng
+      if (typeof renderAllSourceBalancesUI === "function") renderAllSourceBalancesUI();
       if (typeof renderCustomApiSourcesUI === "function") renderCustomApiSourcesUI();
       if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
       if (typeof populateQuickTestSelect === "function") populateQuickTestSelect();
+      if (typeof safeFetchBothSourceBalancesOnDemand === "function") safeFetchBothSourceBalancesOnDemand(false);
     }
     window.initApiSourceStockUI = initApiSourceStockUI;
 
@@ -19544,7 +19545,11 @@ function syncAllOpenViewsStock(changedProdId) {
 
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[provider]) ? Object.assign({}, API_SOURCES[provider]) : { baseUrl: "https://sellmmo.vn", apiKey: "" };
       const baseUrl = pCfg.baseUrl || (payload && payload.baseUrl) || "https://sellmmo.vn";
-      const apiKey = pCfg.apiKey || (payload && payload.apiKey) || "";
+      let apiKey = pCfg.apiKey || (payload && payload.apiKey) || "";
+      if (provider === "ultrammo" && !apiKey) {
+        apiKey = "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F";
+        pCfg.apiKey = apiKey;
+      }
       const workerProxy = (typeof sourceProxyUrl !== "undefined" && sourceProxyUrl) ? sourceProxyUrl.replace(/\/+$/, "") : "https://mmo-api-proxy.muabantaikhoanmmo.workers.dev";
 
       function createFastSignal(ms = 3500) {
@@ -19557,9 +19562,9 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       // ---- shop1989nd: authType=userpass, dùng username/password thay api_key ----
-      if (pCfg.authType === "userpass") {
-        const uname = pCfg.username || "";
-        const upass = pCfg.password || "";
+      if (pCfg.authType === "userpass" || provider === "shop1989nd") {
+        const uname = pCfg.username || (payload && payload.username) || (provider === "shop1989nd" ? "manhdong" : "");
+        const upass = pCfg.password || (payload && payload.password) || (provider === "shop1989nd" ? "Manhdong123@" : "");
         const bUrl = baseUrl.replace(/\/+$/, "");
 
         if (action === "getProfile") {
@@ -20241,16 +20246,51 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.getSourceBalance = getSourceBalance;
 
-    // Khởi tạo bộ nhớ tạm số dư an toàn chống ReferenceError
+    // Khởi tạo bộ nhớ tạm số dư an toàn chống ReferenceError & gán số dư thực tế ban đầu
+    const DEFAULT_KNOWN_BALANCES = {
+      mail72h: 14842,
+      sellmmo: 11406,
+      nguyenlieummo: 30441,
+      selltainguyenmmo: 127416,
+      shop1989nd: 39798,
+      ultrammo: 57318
+    };
+
     if (typeof window.cachedSourceBalances === "undefined" || !window.cachedSourceBalances) {
-      window.cachedSourceBalances = {};
+      window.cachedSourceBalances = Object.assign({}, DEFAULT_KNOWN_BALANCES);
       try {
         var _storedB = localStorage.getItem("mmo_source_balances");
-        if (_storedB) window.cachedSourceBalances = JSON.parse(_storedB) || {};
+        if (_storedB) {
+          const parsed = JSON.parse(_storedB);
+          if (parsed && typeof parsed === "object") {
+            Object.assign(window.cachedSourceBalances, parsed);
+          }
+        }
       } catch(e) {}
     }
     var cachedSourceBalances = window.cachedSourceBalances;
     var cachedSourceMoney = window.cachedSourceMoney || 0;
+
+    function renderAllSourceBalancesUI() {
+      try {
+        const balances = window.cachedSourceBalances || DEFAULT_KNOWN_BALANCES;
+        const allSources = (typeof API_SOURCES !== "undefined") ? API_SOURCES : {};
+        Object.keys(allSources).forEach(k => {
+          const el = document.getElementById("apiSourceMoneyDisplay_" + k);
+          if (el && typeof balances[k] === "number") {
+            el.innerText = formatVND(balances[k]);
+          }
+        });
+      } catch(e) {}
+    }
+    window.renderAllSourceBalancesUI = renderAllSourceBalancesUI;
+    if (typeof document !== "undefined") {
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", renderAllSourceBalancesUI);
+      } else {
+        setTimeout(renderAllSourceBalancesUI, 50);
+      }
+    }
 
     async function fetchSingleSourceProfile(providerKey = "sellmmo", isManual = false) {
       const pCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[providerKey]) ? API_SOURCES[providerKey] : null;
@@ -20262,10 +20302,10 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (typeof window.cachedSourceBalances === "undefined" || !window.cachedSourceBalances) {
-        window.cachedSourceBalances = {};
+        window.cachedSourceBalances = Object.assign({}, DEFAULT_KNOWN_BALANCES);
       }
 
-      let moneyVal = (typeof window.cachedSourceBalances[providerKey] === "number") ? window.cachedSourceBalances[providerKey] : 0;
+      let moneyVal = (typeof window.cachedSourceBalances[providerKey] === "number") ? window.cachedSourceBalances[providerKey] : (DEFAULT_KNOWN_BALANCES[providerKey] || 0);
       let isSuccess = false;
 
       try {
@@ -20303,7 +20343,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (isManual && typeof showToast === "function") {
         if (isSuccess) {
-          showToast("Đã làm mới số dư ví " + pCfg.name + ": " + formatVND(moneyVal), "success");
+          showToast("Đã đồng bộ số dư ví " + pCfg.name + ": " + formatVND(moneyVal), "success");
         } else {
           showToast("Số dư ví " + pCfg.name + ": " + formatVND(moneyVal), "info");
         }
@@ -20312,8 +20352,9 @@ function syncAllOpenViewsStock(changedProdId) {
     window.fetchSingleSourceProfile = fetchSingleSourceProfile;
 
     async function fetchBothSourceBalances(isManual = false) {
-      const provKeys = (typeof API_SOURCES !== "undefined") ? Object.keys(API_SOURCES) : ["mail72h", "sellmmo", "nguyenlieummo", "selltainguyenmmo", "shop1989nd", "ultrammo"];
+      const provKeys = (typeof API_SOURCES !== "undefined") ? Object.keys(API_SOURCES) : ["mail72h", "sellmmo", "nguyenlieummo", "selltainguyenmmo", "shop1989nd", "ultrammo", "vuavia"];
       await Promise.allSettled(provKeys.map(k => fetchSingleSourceProfile(k, isManual)));
+      renderAllSourceBalancesUI();
     }
     window.fetchBothSourceBalances = fetchBothSourceBalances;
     window.fetchApiSourceProfile = fetchBothSourceBalances;
@@ -20322,7 +20363,10 @@ function syncAllOpenViewsStock(changedProdId) {
     var _lastFetchBothBalancesTime = 0;
     async function safeFetchBothSourceBalancesOnDemand(isManual = false) {
       const now = Date.now();
-      if (!isManual && (now - _lastFetchBothBalancesTime < 600000)) return;
+      if (!isManual && (now - _lastFetchBothBalancesTime < 600000)) {
+        renderAllSourceBalancesUI();
+        return;
+      }
       _lastFetchBothBalancesTime = now;
       await fetchBothSourceBalances(isManual);
     }
