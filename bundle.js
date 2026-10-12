@@ -2328,56 +2328,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "imageUrl": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJUGVQXET/image"
   },
   {
-    "id": "PROD_MUJU6XY3HK",
-    "name": "Proxy 4Gvinaphone - 30 ngày",
-    "category": "VPN Proxy",
-    "price": 250000,
-    "stock": 999,
-    "sold": 0,
-    "buffSold": 0,
-    "rating": 4.9,
-    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJU6XY3HK/image",
-    "warranty": "Bảo Hành 1 Đổi 1",
-    "description": "IP Mobile 4G từ nhà mạng VinaPhone\nProxy tạo từ thiết bị Phone thực\nBăng thông không giới hạn, đa dạng dải IP\nThời gian giữ IP: tối đa 30 phút\nKhông giới hạn số lần đổi IP\nGiao thức: HTTP/HTTPS\nHỗ trợ API đổi IP\nMua gói thời hạn dài hơn sẽ có giá tốt hơn\nBạn đang cần một nguồn Proxy mạng di động (Mobile Proxy) cực kỳ ổn định, độ trust cao ngất ngưởng để chạy các chiến dịch dài hạn, nuôi hệ thống via, tài khoản mạng xã hội hay làm automation mà không lo bị quét hay chết IP giữa chừng?\n\nGói Proxy 4G VinaPhone 30 ngày tại shop chính là giải pháp toàn diện và tiết kiệm nhất cho bạn!\n\n✨ Tại sao nên đầu tư gói Proxy 4G VinaPhone 30 ngày?\nIP Mobile siêu sạch – Trust tuyệt đối: Sử dụng dải IP thật từ nhà mạng lớn VinaPhone, được các nền tảng (Facebook, TikTok, Shopee, Google, Telegram...) đánh giá độ uy tín cao nhất, hạn chế tối đa checkpoint hay khóa tài khoản.\n\nHoạt động bền bỉ 24/7 suốt cả tháng: Không lo gián đoạn kết nối, đường truyền mượt mà, tốc độ cao giúp các tool automation hoặc công việc hàng ngày chạy trơn tru không giật lag.\n\nTiết kiệm chi phí tối đa: Mua trọn gói 30 ngày với mức giá ưu đãi hơn rất nhiều so với việc thuê theo ngày, cực kỳ phù hợp cho anh em làm MMO chuyên nghiệp dài hạn.\n\nLinh hoạt cấu hình: Hỗ trợ đầy đủ các định dạng chuẩn, dễ dàng tích hợp vào mọi phần mềm nuôi nick, Antidetect Browser hoặc tool chuyên dụng.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành ổn định suốt thời gian thuê, hỗ trợ kỹ thuật và đổi IP nhanh chóng nếu gặp sự cố kết nối.\n\n🚀 Bàn giao nhanh gọn ngay sau khi thanh toán, hướng dẫn cấu hình chi tiết từ A-Z.\n\n🔒 Cam kết đúng nhà mạng VinaPhone, không tráo đổi, minh bạch chất lượng.\n\n💡 Phù hợp cho: Anh em nuôi hệ thống tài khoản số lượng lớn, chạy chiến dịch marketing dài hạn, seeding, làm Airdrop hoặc các công việc đòi hỏi IP di động sạch sẽ liên tục trong tháng!\n\n🛒 ĐẦU TƯ MỘT LẦN – AN TÂM CẢ THÁNG!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá chi tiết và chốt đơn nhanh chóng!\n\n📞 Hotline / Zalo / Telegram:",
-    "variants": [
-      {
-        "name": "Proxy 4Gvinaphone - 30 ngày 5 phút 1 ip",
-        "price": 250000,
-        "stock": 999,
-        "apiMapping": {
-          "enabled": true,
-          "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "",
-          "sourceProdId": "34238",
-          "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (30 Ngày)",
-          "sourcePrice": 220000,
-          "sourceStock": 0,
-          "targetProdId": "PROD_MUJU6XY3HK",
-          "targetProdName": "Proxy 4Gvinaphone - 30 ngày"
-        },
-        "available": true,
-        "accounts": []
-      }
-    ],
-    "deliveryType": "api",
-    "delivery_type": "api",
-    "apiMapping": {
-      "enabled": true,
-      "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "",
-      "sourceProdId": "34238",
-      "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (30 Ngày)",
-      "sourcePrice": 220000,
-      "sourceStock": 0,
-      "targetProdId": "PROD_MUJU6XY3HK",
-      "targetProdName": "Proxy 4Gvinaphone - 30 ngày"
-    },
-    "image_url": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJU6XY3HK/image",
-    "imageUrl": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJU6XY3HK/image"
-  },
-  {
     "id": "PROD_MUJTYWFTQ7",
     "name": "Proxy Xoay Mobile 4G VinaPhone 5 Phút 1 IP",
     "category": "VPN Proxy",
@@ -5186,6 +5136,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     ];
 
     const PERMANENT_DELETED_IDS = [
+      "PROD_MUJU6XY3HK", // Proxy 4Gvinaphone - 30 ngày (đã xóa)
+      "PROD_MUM6JQTW8C",
+      "PROD_MUK75H3HAR",
+      "PROD_MUK6Y4QUIL",
+      "PROD_MUK6N4RBEX",
+      "PROD_MUK5VQH55X",
+      "PROD_MUK50WMCNR",
       "PROD_MTPI7PIO",
       "PROD_MU2AB0S8FB",
       "PROD_MU345TKTK2",
@@ -5232,7 +5189,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // Kiểm tra danh sách đã bị admin xóa
       const deletedIds = getDeletedProductIds();
       if (deletedIds.includes(pid)) return true;
-      if (typeof productOrId === "object" && productOrId.name && deletedIds.includes(productOrId.name)) return true;
+      const normInput = (typeof normApiText === "function") ? normApiText(pid) : pid.toLowerCase();
+      if (deletedIds.some(d => (typeof normApiText === "function" ? normApiText(d) : d.toLowerCase()) === normInput)) return true;
+
+      if (typeof productOrId === "object" && productOrId.name) {
+        if (deletedIds.includes(productOrId.name)) return true;
+        const normName = (typeof normApiText === "function") ? normApiText(productOrId.name) : productOrId.name.trim().toLowerCase();
+        if (deletedIds.some(d => (typeof normApiText === "function" ? normApiText(d) : d.toLowerCase()) === normName)) return true;
+      }
 
       return false;
     }
@@ -15235,7 +15199,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "PROD_MUJGUY19DD": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJGUY19DD/image",
         "PROD_MUJQDTNIH9": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJQDTNIH9/image",
         "PROD_MUJTYWFTQ7": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJTYWFTQ7/image",
-        "PROD_MUJU6XY3HK": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJU6XY3HK/image",
         "PROD_MUJUGVQXET": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJUGVQXET/image",
         "PROD_MUJV1YHQ6N": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJV1YHQ6N/image",
         "PROD_MUJVFEFFNP": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJVFEFFNP/image",
@@ -17972,12 +17935,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const dtlView = document.getElementById("viewProductDetail");
             const isDtlVisible = dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden");
             if (isDtlVisible && typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
-              const freshCur = MOCK_DATA.products.find(p => p && p.id === currentSelectedProduct.id);
+              const freshCur = MOCK_DATA.products.find(p => p && p.id === currentSelectedProduct.id && !isProductDeleted(p));
               if (freshCur) {
                 currentSelectedProduct = freshCur;
                 if (typeof openProductDetailById === "function") {
                   openProductDetailById(freshCur.id, true);
                 }
+              } else {
+                // Sản phẩm đang xem đã bị xóa khỏi hệ thống -> tự động đóng view và chuyển về Cửa hàng
+                currentSelectedProduct = null;
+                try {
+                  const url = new URL(window.location.href);
+                  url.searchParams.delete("prod");
+                  url.searchParams.delete("product");
+                  window.history.replaceState(null, "", url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : ''));
+                } catch(e) {}
+                if (typeof switchView === "function") switchView("viewStore");
+                if (typeof showToast === "function") showToast("Sản phẩm bạn đang xem đã ngừng kinh doanh hoặc bị xóa", "warning");
               }
             }
           } else {
@@ -20757,7 +20731,6 @@ function syncAllOpenViewsStock(changedProdId) {
       "PROD_MUJVJCV286": {"enabled":true,"provider":"ultrammo","sourceProdId":"34234","sourcePrice":13500,"sourceStock":100,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","baseUrl":"https://ultrammo.com"},
       "PROD_MUJV1YHQ6N": {"enabled":true,"provider":"ultrammo","sourceProdId":"26818","sourcePrice":13000,"sourceStock":1000,"sourceProdName":"Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ","baseUrl":"https://ultrammo.com"},
       "PROD_MUJUGVQXET": {"enabled":true,"provider":"ultrammo","sourceProdId":"19388","sourcePrice":67000,"sourceStock":35,"sourceProdName":"🔥Capcut Pro Team 1 THÁNG ( BẢO HÀNH FULL )","baseUrl":"https://ultrammo.com"},
-      "PROD_MUJU6XY3HK": {"enabled":true,"provider":"ultrammo","sourceProdId":"34238","sourcePrice":220000,"sourceStock":50,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (30 Ngày)","baseUrl":"https://ultrammo.com"},
       "PROD_MUJTYWFTQ7": {"enabled":true,"provider":"ultrammo","sourceProdId":"34234","sourcePrice":13500,"sourceStock":100,"sourceProdName":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","baseUrl":"https://ultrammo.com"},
       "PROD_MUJGUY19DD": {"enabled":true,"provider":"ultrammo","sourceProdId":"26784","sourcePrice":13000,"sourceStock":16,"sourceProdName":"gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa","baseUrl":"https://ultrammo.com"},
       "PROD_MUH57035HQ": {"enabled":true,"provider":"ultrammo","sourceProdId":"13629","sourcePrice":1200,"sourceStock":532,"sourceProdName":"TÀI KHOẢN KLING AI 65 CREDIT","baseUrl":"https://ultrammo.com"},
@@ -29183,8 +29156,76 @@ function syncAllOpenViewsStock(changedProdId) {
         p = allProds.find(item => item && (item.id === "PROD_MTPIJ9XV" || item.id === "PROD_MTPG0PUD" || (item.name && item.name.toUpperCase().includes("TIKTOK") && item.name.toUpperCase().includes("BRAZIL"))));
       }
 
-      // Khởi tạo đối tượng sản phẩm tức thì và kích hoạt switchView ngay lập tức 0ms
-      const curP = p || { id: cleanId, name: cleanId };
+      // [BẢO VỆ TUYỆT ĐỐI]: Nếu đối tượng tìm thấy thuộc danh sách đã xóa -> Ép p = null để kích hoạt handleProductNotFound
+      if (p && typeof isProductDeleted === "function" && isProductDeleted(p)) {
+        p = null;
+      }
+
+      // Nếu chưa có trong bộ nhớ cục bộ: Nạp siêu tốc từ Cloudflare Worker Turso API (100ms)
+      if (!p) {
+        const handleProductNotFound = function() {
+          if (typeof showToast === "function") {
+            showToast("Sản phẩm không tồn tại hoặc đã ngừng kinh doanh", "warning");
+          }
+          try {
+            const cleanUrl = (window.location.origin || "https://www.muabantaikhoanmmo.com") + "/";
+            window.history.replaceState({}, "", cleanUrl);
+          } catch(e) {}
+          if (typeof switchView === "function") {
+            switchView("viewStore");
+          }
+        };
+
+        if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
+          MMO_WORKER_API.fetchProduct(cleanId).then(res => {
+            if (res && res.success && res.product && !isProductDeleted(res.product)) {
+              const wp = res.product;
+              if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+                if (!MOCK_DATA.products.some(x => x && x.id === wp.id)) {
+                  MOCK_DATA.products.unshift(wp);
+                }
+              }
+              openProductDetailById(wp.id);
+            } else if (typeof syncTursoProductsToLocalUI === "function") {
+              syncTursoProductsToLocalUI().then(() => {
+                const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
+                if (fresh && !isProductDeleted(fresh)) openProductDetailById(fresh.id);
+                else handleProductNotFound();
+              }).catch(() => handleProductNotFound());
+            } else {
+              handleProductNotFound();
+            }
+          }).catch(() => {
+            if (typeof syncTursoProductsToLocalUI === "function") {
+              syncTursoProductsToLocalUI().then(() => {
+                const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
+                if (fresh && !isProductDeleted(fresh)) openProductDetailById(fresh.id);
+                else handleProductNotFound();
+              }).catch(() => handleProductNotFound());
+            } else {
+              handleProductNotFound();
+            }
+          });
+        } else if (typeof syncTursoProductsToLocalUI === "function") {
+          syncTursoProductsToLocalUI().then(() => {
+            const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
+            if (fresh && !isProductDeleted(fresh)) openProductDetailById(fresh.id);
+            else handleProductNotFound();
+          }).catch(() => handleProductNotFound());
+        } else if (typeof syncProductsFromBackend === "function") {
+          syncProductsFromBackend().then(() => {
+            const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
+            if (fresh && !isProductDeleted(fresh)) openProductDetailById(fresh.id);
+            else handleProductNotFound();
+          }).catch(() => handleProductNotFound());
+        } else {
+          handleProductNotFound();
+        }
+        return;
+      }
+
+      // Khởi tạo đối tượng sản phẩm tức thì và kích hoạt switchView khi đã có sản phẩm hợp lệ
+      const curP = p;
       currentSelectedProduct = curP;
       window.currentSelectedProduct = curP;
       window._currentActiveDetailProduct = curP;
@@ -29198,68 +29239,6 @@ function syncAllOpenViewsStock(changedProdId) {
           switchView("viewProductDetail");
         }
         try { window.scrollTo(0, 0); } catch(e) {}
-      }
-
-      // Nếu chưa có trong bộ nhớ cục bộ: Nạp siêu tốc từ Cloudflare Worker Turso API (100ms), KHÔNG gọi Google Sheets 10s
-      if (!p) {
-        const dtlTitleEl = document.getElementById("dtlTitle");
-        if (dtlTitleEl) dtlTitleEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang tải thông tin sản phẩm...';
-
-        const handleProductNotFound = function() {
-          if (dtlTitleEl) dtlTitleEl.innerHTML = '<i class="fa-solid fa-circle-exclamation" style="color:#f59e0b;"></i> Không tìm thấy sản phẩm';
-          const dtlDesc = document.getElementById("dtlDesc");
-          if (dtlDesc) {
-            dtlDesc.innerHTML = '<div style="text-align:center; padding:35px 20px; background:#070a12; border:1px solid #1e293b; border-radius:12px; margin-top:20px;">' +
-              '<p style="color:#94a3b8; font-size:1rem; margin-bottom:16px;">Sản phẩm <b>' + escapeHtml(cleanId) + '</b> có thể đã được cập nhật hoặc tạm thời không khả dụng.</p>' +
-              '<button onclick="switchView(\'viewStore\')" class="btn-primary" style="padding:10px 24px; font-size:0.95rem; background:#10b981; border:none; border-radius:8px; color:#fff; cursor:pointer; font-weight:700;"><i class="fa-solid fa-house"></i> Xem các sản phẩm khác tại Cửa Hàng</button>' +
-            '</div>';
-          }
-        };
-
-        if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
-          MMO_WORKER_API.fetchProduct(cleanId).then(res => {
-            if (res && res.success && res.product) {
-              const wp = res.product;
-              if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
-                if (!MOCK_DATA.products.some(x => x && x.id === wp.id)) {
-                  MOCK_DATA.products.unshift(wp);
-                }
-              }
-              openProductDetailById(wp.id);
-            } else if (typeof syncTursoProductsToLocalUI === "function") {
-              syncTursoProductsToLocalUI().then(() => {
-                const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
-                if (fresh) openProductDetailById(fresh.id);
-                else handleProductNotFound();
-              }).catch(() => handleProductNotFound());
-            } else {
-              handleProductNotFound();
-            }
-          }).catch(() => {
-            if (typeof syncTursoProductsToLocalUI === "function") {
-              syncTursoProductsToLocalUI().then(() => {
-                const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
-                if (fresh) openProductDetailById(fresh.id);
-                else handleProductNotFound();
-              }).catch(() => handleProductNotFound());
-            } else {
-              handleProductNotFound();
-            }
-          });
-        } else if (typeof syncTursoProductsToLocalUI === "function") {
-          syncTursoProductsToLocalUI().then(() => {
-            const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
-            if (fresh) openProductDetailById(fresh.id);
-            else handleProductNotFound();
-          }).catch(() => handleProductNotFound());
-        } else if (typeof syncProductsFromBackend === "function") {
-          syncProductsFromBackend().then(() => {
-            const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
-            if (fresh) openProductDetailById(fresh.id);
-            else handleProductNotFound();
-          }).catch(() => handleProductNotFound());
-        }
-        return;
       }
 
       // Chuẩn hóa biến thể
@@ -37590,12 +37569,19 @@ function changeAdmUsersPage(p) {
             }
             if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && (String(currentSelectedProduct.id) === delId || (delName && currentSelectedProduct.name === delName))) {
               currentSelectedProduct = null;
+              window.currentSelectedProduct = null;
+              window._currentActiveDetailProduct = null;
               try {
                 const u = new URL(window.location.href);
                 u.searchParams.delete("prod");
                 u.searchParams.delete("product");
                 window.history.replaceState(null, "", u.pathname + (u.searchParams.toString() ? '?' + u.searchParams.toString() : ''));
               } catch(e) {}
+              const dtlView = document.getElementById("viewProductDetail");
+              if (dtlView) {
+                dtlView.style.display = "none";
+                dtlView.classList.add("hidden");
+              }
               if (typeof switchView === "function") switchView("viewStore");
             }
             if (typeof renderProductGrid === "function") renderProductGrid();
@@ -37875,7 +37861,19 @@ function initMMOApplication() {
         } else if (hash && validViews.includes(hash) && hash !== "viewProductDetail") {
           targetView = hash;
         } else if (hasProdParam && explicitProdId) {
-          targetView = "viewProductDetail";
+          if (typeof isProductDeleted === "function" && isProductDeleted(explicitProdId)) {
+            targetView = "viewStore";
+            explicitProdId = null;
+            try {
+              const url = new URL(window.location.href);
+              url.searchParams.delete("prod");
+              url.searchParams.delete("product");
+              url.searchParams.delete("view");
+              window.history.replaceState({}, "", url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : ''));
+            } catch(e) {}
+          } else {
+            targetView = "viewProductDetail";
+          }
         } else if (hasBlogParam || isArticlePath) {
           targetView = "viewBlogDetail";
         } else if (savedView && validViews.includes(savedView) && savedView !== "viewProductDetail") {
@@ -37893,8 +37891,13 @@ function initMMOApplication() {
         if (window._pendingProductId && typeof openProductDetailById === "function") {
           const pendProd = window._pendingProductId;
           window._pendingProductId = null;
-          targetView = "viewProductDetail";
-          explicitProdId = pendProd;
+          if (typeof isProductDeleted === "function" && isProductDeleted(pendProd)) {
+            targetView = "viewStore";
+            explicitProdId = null;
+          } else {
+            targetView = "viewProductDetail";
+            explicitProdId = pendProd;
+          }
         } else if (window._pendingView && window._pendingView !== "viewStore") {
           targetView = window._pendingView;
           window._pendingView = null;
@@ -37916,9 +37919,10 @@ function initMMOApplication() {
             }
           }
         } else if (targetView === "viewProductDetail") {
-          switchView("viewProductDetail");
-          if (explicitProdId && typeof openProductDetailById === "function") {
+          if (explicitProdId && (!window.isProductDeleted || !window.isProductDeleted(explicitProdId)) && typeof openProductDetailById === "function") {
             openProductDetailById(explicitProdId);
+          } else {
+            switchView("viewStore");
           }
         } else if (targetView && targetView !== "viewStore") {
           let storedUserObj = null;
@@ -37994,8 +37998,13 @@ function initMMOApplication() {
           const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
           const popProdId = urlParams.get("prod") || urlParams.get("product") || (hash.startsWith("product_") ? hash.replace("product_", "").split("?")[0] : null);
           if (view === "viewProductDetail" && popProdId) {
-            switchView("viewProductDetail");
-            if (typeof openProductDetailById === "function") openProductDetailById(popProdId);
+            if (typeof isProductDeleted === "function" && isProductDeleted(popProdId)) {
+              switchView("viewStore");
+            } else if (typeof openProductDetailById === "function") {
+              openProductDetailById(popProdId);
+            } else {
+              switchView("viewProductDetail");
+            }
           } else if (view && validViews.includes(view) && view !== "viewProductDetail") {
             switchView(view);
           } else if (hash && validViews.includes(hash) && hash !== "viewProductDetail") {
@@ -38754,11 +38763,21 @@ function getProductSchemaReviews(p, idx) {
       try {
         const url = new URL(window.location.href);
         const curProdParam = url.searchParams.get("prod") || url.searchParams.get("product");
-        if (curProdParam === pid || curProdParam === targetId || (currentSelectedProduct && (String(currentSelectedProduct.id) === String(pid) || String(currentSelectedProduct.id) === String(targetId)))) {
+        const isViewingThis = (curProdParam === pid || curProdParam === targetId || (curProdParam && normApiText(curProdParam) === normApiText(prodName))) ||
+                              (currentSelectedProduct && (String(currentSelectedProduct.id) === String(pid) || String(currentSelectedProduct.id) === String(targetId) || normApiText(currentSelectedProduct.name) === normApiText(prodName)));
+        
+        if (isViewingThis) {
           url.searchParams.delete("prod");
           url.searchParams.delete("product");
           window.history.replaceState(null, "", url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : ''));
           currentSelectedProduct = null;
+          window.currentSelectedProduct = null;
+          window._currentActiveDetailProduct = null;
+          const dtlView = document.getElementById("viewProductDetail");
+          if (dtlView) {
+            dtlView.style.display = "none";
+            dtlView.classList.add("hidden");
+          }
           if (typeof switchView === "function") switchView("viewStore");
         }
       } catch(e) {}
