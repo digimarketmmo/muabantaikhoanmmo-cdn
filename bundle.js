@@ -371,7 +371,33 @@ function healStorageQuota(forceEmergency) {
           } catch(eParseW) {}
         }
       });
-    } catch(eWClean) {}
+    } catch(eCleanWarehouses) {}
+
+    // DỌN SẠCH TẬN GỐC DANH SÁCH ĐEN SẢN PHẨM ĐÃ XÓA TRONG LOCALSTORAGE
+    // CHỈ CHO PHÉP GIỮ LẠI CÁC MÃ SẢN PHẨM (ID) HỢP LỆ, LOẠI BỎ TOÀN BỘ TÊN VÀ TỪ KHÓA GEMINI
+    try {
+      const rawDel = localStorage.getItem("mmo_deleted_product_ids");
+      if (rawDel) {
+        let arr = JSON.parse(rawDel);
+        if (Array.isArray(arr)) {
+          const whitelistGemini = ["PROD_MV5PA8KZDW", "PROD_MU6R34FZ4Z", "PROD_MU5T3T47AE", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"];
+          const sanitizedDel = arr.filter(function(item) {
+            if (typeof item !== "string") return false;
+            const s = item.trim();
+            if (!s) return false;
+            if (s.includes(" ") || s.length > 50) return false;
+            const sLower = s.toLowerCase();
+            if (sLower.includes("gemini")) {
+              return false;
+            }
+            if (whitelistGemini.includes(s)) return false;
+            return true;
+          });
+          localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(sanitizedDel));
+        }
+      }
+    } catch(eDelClean) {}
+
 
     // DỌN SẠCH TẬN GỐC TẤT CẢ KHÓA LIÊN QUAN ĐẾN SẢN PHẨM TEST 1775731336499
     try {
@@ -5166,13 +5192,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         ids = JSON.parse(localStorage.getItem("mmo_deleted_product_ids") || "[]");
       } catch(e) { ids = []; }
       if (!Array.isArray(ids)) ids = [];
-      // Khóa bảo vệ: Tuyệt đối không cho phép ID Phone Farm bị đánh dấu xóa trong localStorage
+      // Khóa bảo vệ: Tuyệt đối không cho phép ID Phone Farm hoặc ID Gemini bị đánh dấu xóa trong localStorage
       const pfWhitelist = new Set([
         "PROD_MU2OGW71GZ", "PROD_MU2OAG3IO2", "PROD_MU2LYZY5C7", "PROD_MU2O4MW4DQ",
         "PROD_MU2NX4CYEW", "PROD_MU2NUXL1Q4", "PROD_MU2NSFQCMT", "PROD_MU2NKET1OG",
-        "PROD_MU2N2TVDIJ", "PROD_MU2MY8WCOE", "PROD_MU2MOON7L6", "PROD_MUBKH47T2U", "PROD_MUBJQ6JP7O"
+        "PROD_MU2N2TVDIJ", "PROD_MU2MY8WCOE", "PROD_MU2MOON7L6", "PROD_MUBKH47T2U", "PROD_MUBJQ6JP7O",
+        "PROD_MV5PA8KZDW", "PROD_MU6R34FZ4Z", "PROD_MU5T3T47AE", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"
       ]);
-      ids = ids.filter(function(id) { return !pfWhitelist.has(id); });
+      // [BẢO VỆ TUYỆT ĐỐI]: CHỈ GIỮ LẠI MÃ SẢN PHẨM HỢP LỆ — LOẠI BỎ 100% TÊN SẢN PHẨM HOẶC CHỮ GEMINI KHỎI DANH SÁCH ĐEN
+      ids = ids.filter(function(id) {
+        if (typeof id !== "string") return false;
+        const s = id.trim();
+        if (!s || pfWhitelist.has(s)) return false;
+        // Nếu chứa khoảng trắng hoặc có chữ gemini hoặc quá dài -> đây là TÊN sản phẩm bị lưu nhầm trước đây, xóa ngay!
+        if (s.includes(" ") || /gemini/i.test(s) || s.length > 50) return false;
+        return true;
+      });
       const set = new Set([...PERMANENT_DELETED_IDS, ...ids]);
       return Array.from(set).filter(function(id) {
         return typeof id === "string" && id.trim().length > 0 && !pfWhitelist.has(id.trim());
@@ -5193,20 +5228,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (productOrId.price <= 0 && (!productOrId.variants || productOrId.variants.length === 0)) return true;
       }
 
-      // Đã đánh dấu cờ xóa trực tiếp
+      // Đã đánh dấu cờ xóa trực tiếp trên chính đối tượng này
       if (typeof productOrId === "object" && productOrId.isDeleted === true) return true;
 
-      // Kiểm tra danh sách đã bị admin xóa
+      // [QUY TẮC BẮT BUỘC]: CHỈ XÓA THEO MÃ SẢN PHẨM (ID) — TUYỆT ĐỐI KHÔNG XÓA THEO TÊN HOẶC CHỮ GEMINI!
       const deletedIds = getDeletedProductIds();
       if (deletedIds.includes(pid)) return true;
-      const normInput = (typeof normApiText === "function") ? normApiText(pid) : pid.toLowerCase();
-      if (deletedIds.some(d => (typeof normApiText === "function" ? normApiText(d) : d.toLowerCase()) === normInput)) return true;
-
-      if (typeof productOrId === "object" && productOrId.name) {
-        if (deletedIds.includes(productOrId.name)) return true;
-        const normName = (typeof normApiText === "function") ? normApiText(productOrId.name) : productOrId.name.trim().toLowerCase();
-        if (deletedIds.some(d => (typeof normApiText === "function" ? normApiText(d) : d.toLowerCase()) === normName)) return true;
-      }
 
       return false;
     }
@@ -5215,7 +5242,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function getVisibleProducts() {
       if (!MOCK_DATA || !Array.isArray(MOCK_DATA.products)) return [];
       const seenIds = new Set();
-      const seenNormNames = new Set();
       const result = [];
 
       for (let i = 0; i < MOCK_DATA.products.length; i++) {
@@ -5223,43 +5249,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (!p || !p.id || isProductDeleted(p)) continue;
 
         const cleanId = String(p.id).trim();
-        // LỌC BỎ TRIỆT ĐỂ CÁC ALIAS ID CỦA GEMINI (Chỉ giữ lại 1 sản phẩm chính thức PROD_MU6R34FZ4Z)
-        if (cleanId === 'PROD_MU2AB1XEGI' || cleanId === 'PROD_MU5T3T47AE' || cleanId === 'PROD_MUQIMRJYG0') {
-          continue;
-        }
-        const canonId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(cleanId) : cleanId;
-        if (seenIds.has(canonId) || seenIds.has(cleanId)) continue;
-
-        // Chuẩn hóa tên sản phẩm để loại bỏ triệt để sản phẩm bị trùng lặp (ví dụ Proxy Nhật trùng lặp)
-        const rawName = String(p.name || '').trim();
-        const normName = rawName.toLowerCase()
-          .replace(/[–—−-]/g, '-')
-          .replace(/\s+/g, ' ')
-          .replace(/[\(\)\[\]]/g, '')
-          .trim();
-
-        if (normName && seenNormNames.has(normName)) {
-          // Chỉ loại bỏ bản demo SP_ nếu đã có bản PROD_ thật
-          const existingIdx = result.findIndex(x => {
-            const xn = String(x.name || '').trim().toLowerCase().replace(/[–—−-]/g, '-').replace(/\s+/g, ' ').replace(/[\(\)\[\]]/g, '').trim();
-            return xn === normName;
-          });
-          if (existingIdx !== -1) {
-            const existing = result[existingIdx];
-            if (existing.id.startsWith("SP_") && !p.id.startsWith("SP_")) {
-              result[existingIdx] = p;
-              continue;
-            }
-            if (!existing.id.startsWith("SP_") && p.id.startsWith("SP_")) {
-              continue;
-            }
-            // Nếu cả 2 đều là sản phẩm PROD_ thật với ID khác nhau -> GIỮ NGUYÊN CẢ HAI, TUYỆT ĐỐI KHÔNG XÓA!
-          }
-        }
-
+        // Mỗi mã sản phẩm hiển thị độc lập, không xóa hay ghi đè sản phẩm khác
+        if (seenIds.has(cleanId)) continue;
         seenIds.add(cleanId);
-        seenIds.add(canonId);
-        if (normName) seenNormNames.add(normName);
         result.push(p);
       }
       return result;
@@ -5273,18 +5265,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           const arr = JSON.parse(raw);
           if (Array.isArray(arr)) {
             const seen = new Set();
-            const seenCanon = new Set();
             const cleaned = arr.filter(function(p) {
               if (!p || !p.id || p.id.startsWith("SP_") || DUMMY_SEED_IDS.includes(p.id)) return false;
-              if (p.id === "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY") return false;
-              if (p.id === "PROD_MU2AB1XEGI" || p.id === "PROD_MU5T3T47AE" || p.id === "PROD_MUQIMRJYG0") return false;
               if (typeof isProductDeleted === "function" && isProductDeleted(p)) return false;
-              const cid = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(p.id) : p.id;
-              if (seenCanon.has(cid)) return false;
-              seenCanon.add(cid);
-              const n = String(p.name || '').toLowerCase().replace(/[–—−-]/g, '-').replace(/\s+/g, ' ').trim();
-              if (seen.has(n)) return false;
-              seen.add(n);
+              const cleanPid = String(p.id).trim();
+              if (seen.has(cleanPid)) return false;
+              seen.add(cleanPid);
               return true;
             });
             localStorage.setItem(k, JSON.stringify(cleaned));
@@ -6882,21 +6868,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (tbody) {
           let rawProds = (MOCK_DATA && MOCK_DATA.products) ? [...MOCK_DATA.products] : [];
           const seenAdminIds = new Set();
-          const seenAdminCanon = new Set();
           let prods = [];
           for (let api = 0; api < rawProds.length; api++) {
             const p = rawProds[api];
             if (!p || !p.id || (typeof isProductDeleted === "function" && isProductDeleted(p))) continue;
             const pid = String(p.id).trim();
-            // Lọc bỏ các ID alias rác của Gemini
-            if (pid === 'PROD_MU2AB1XEGI' || pid === 'PROD_MU5T3T47AE' || pid === 'PROD_MUQIMRJYG0') {
-              continue;
-            }
             if (seenAdminIds.has(pid)) continue;
-            const cid = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(pid) : pid;
-            if (seenAdminCanon.has(cid)) continue;
             seenAdminIds.add(pid);
-            seenAdminCanon.add(cid);
             prods.push(p);
           }
           
@@ -17567,11 +17545,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (deletedIds.includes(tp.id)) return;
           if (typeof isProductDeleted === "function" && isProductDeleted(tp)) return;
 
-          // QUY CHUẨN VỀ MÃ SSOT CANONICAL (Chống nhân bản họ sản phẩm Gemini)
-          const tpCanonId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(tp.id) : tp.id;
-          if (tp.id !== tpCanonId) {
-            tp.id = tpCanonId;
-          }
           if (deletedIds.includes(tp.id)) return;
 
           // LÁ CHẮN TÁCH BIỆT: LOẠI BỎ 100% SẢN PHẨM HOẶC DỮ LIỆU TỪ WEB ĐỘC LẬP KHOTAIKHOANSO
@@ -17926,20 +17899,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
         }
 
-        // [SSOT DEDUPLICATION ENGINE]: Loại bỏ triệt để sản phẩm trùng lặp & alias rác
+        // [SSOT DEDUPLICATION ENGINE]: Loại bỏ sản phẩm trùng lặp theo ID duy nhất
         if (Array.isArray(MOCK_DATA.products)) {
-          const seenCanonical = new Set();
+          const seenIds = new Set();
           const cleanProds = [];
           for (let pi = 0; pi < MOCK_DATA.products.length; pi++) {
             const p = MOCK_DATA.products[pi];
             if (!p || !p.id) continue;
-            // Bỏ các ID alias rác của Gemini
-            if (p.id === 'PROD_MU2AB1XEGI' || p.id === 'PROD_MU5T3T47AE' || p.id === 'PROD_MUQIMRJYG0') {
-              continue;
-            }
-            const cid = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(p.id) : p.id;
-            if (seenCanonical.has(cid)) continue;
-            seenCanonical.add(cid);
+            const pid = String(p.id).trim();
+            if (seenIds.has(pid)) continue;
+            seenIds.add(pid);
             cleanProds.push(p);
           }
           MOCK_DATA.products = cleanProds;
@@ -18729,9 +18698,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function getCanonicalProductId(id) {
       if (!id) return id;
       const s = String(id).trim();
-      if (s === "PROD_MU2AB1XEGI" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU5T3T47AE" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3") {
-        return "PROD_MU6R34FZ4Z";
-      }
       if (s === "PROD_MTPG0PUD" || s === "SP_TIKTOK_BRAZIL") {
         return "PROD_MTPIJ9XV";
       }
@@ -18742,9 +18708,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function getProductAliasIds(id) {
       if (!id) return [];
       const s = String(id).trim();
-      if (s === "PROD_MU2AB1XEGI" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU5T3T47AE" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3") {
-        return ["PROD_MU6R34FZ4Z", "PROD_MU5T3T47AE", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"];
-      }
       if (s === "PROD_MTPIJ9XV" || s === "PROD_MTPG0PUD" || s === "SP_TIKTOK_BRAZIL") {
         return ["PROD_MTPIJ9XV", "PROD_MTPG0PUD"];
       }
@@ -18758,11 +18721,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const s2 = String(id2).trim();
       if (s1 === s2) return true;
       if (s1.toLowerCase() === s2.toLowerCase()) return true;
-
-      // Họ sản phẩm Gemini Pro Veo3 liên kết thời gian thực
-      const g1 = s1 === "PROD_MU2AB1XEGI" || s1 === "PROD_MU6R34FZ4Z" || s1 === "PROD_MU5T3T47AE" || s1 === "PROD_MUQIMRJYG0" || s1 === "SP_GEMINI_VEO3";
-      const g2 = s2 === "PROD_MU2AB1XEGI" || s2 === "PROD_MU6R34FZ4Z" || s2 === "PROD_MU5T3T47AE" || s2 === "PROD_MUQIMRJYG0" || s2 === "SP_GEMINI_VEO3";
-      if (g1 && g2) return true;
 
       // Alias duy nhất được phép liên kết chéo là TikTok Brazil legacy
       const b1 = s1 === "PROD_MTPIJ9XV" || s1 === "PROD_MTPG0PUD" || s1 === "SP_TIKTOK_BRAZIL";
@@ -37927,17 +37885,16 @@ function changeAdmUsersPage(p) {
             }
           }
           if (ev && ev.data && ev.data.type === "PRODUCT_DELETED") {
-            const delId = String(ev.data.prodId || "");
-            const delName = ev.data.prodName || "";
+            const delId = String(ev.data.prodId || "").trim();
             if (delId) {
               let deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
               if (!deletedIds.includes(delId)) deletedIds.push(delId);
               localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(deletedIds));
             }
             if (MOCK_DATA && Array.isArray(MOCK_DATA.products)) {
-              MOCK_DATA.products = MOCK_DATA.products.filter(p => p && String(p.id) !== delId && (delName ? p.name !== delName : true));
+              MOCK_DATA.products = MOCK_DATA.products.filter(p => p && String(p.id) !== delId);
             }
-            if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && (String(currentSelectedProduct.id) === delId || (delName && currentSelectedProduct.name === delName))) {
+            if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && String(currentSelectedProduct.id) === delId) {
               currentSelectedProduct = null;
               window.currentSelectedProduct = null;
               window._currentActiveDetailProduct = null;
@@ -39091,27 +39048,26 @@ function getProductSchemaReviews(p, idx) {
 
       if (p) p.isDeleted = true;
 
-      // 1. Ghi nhận ID vào danh sách đen đã xóa vĩnh viễn (mmo_deleted_product_ids)
+      // 1. Ghi nhận CHỈ RIÊNG MÃ SẢN PHẨM (ID) vào danh sách đen đã xóa (mmo_deleted_product_ids)
+      // TUYỆT ĐỐI KHÔNG LƯU TÊN SẢN PHẨM để tránh xóa oan các sản phẩm cùng nhóm tên!
       try {
         let deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
         if (targetId && !deletedIds.includes(targetId)) deletedIds.push(targetId);
         if (pid && !deletedIds.includes(pid)) deletedIds.push(pid);
-        if (prodName && !deletedIds.includes(prodName)) deletedIds.push(prodName);
         localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(deletedIds));
       } catch(e) {}
 
-      // 2. Lọc bỏ vĩnh viễn khỏi danh sách sản phẩm MOCK_DATA.products
+      // 2. Lọc bỏ vĩnh viễn khỏi danh sách sản phẩm MOCK_DATA.products theo đúng ID
       if (MOCK_DATA && Array.isArray(MOCK_DATA.products)) {
         MOCK_DATA.products = MOCK_DATA.products.filter(function(item) {
           if (!item) return false;
           if (item.id === targetId || item.id === pid) return false;
-          if (typeof isProductDeleted === "function" && isProductDeleted(item)) return false;
           return true;
         });
         saveProductsToStorage();
       }
 
-      // 3. Xóa triệt để kho hàng liên quan
+      // 3. Xóa triệt để kho hàng liên quan theo đúng ID
       try {
         const stocksMap = (typeof getProductStocksMap === "function") ? getProductStocksMap() : {};
         if (stocksMap) {
@@ -39121,7 +39077,7 @@ function getProductSchemaReviews(p, idx) {
         }
       } catch(e) {}
 
-      // 4. Xóa cấu hình liên kết API mappings nếu có
+      // 4. Xóa cấu hình liên kết API mappings theo đúng ID
       try {
         const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
         delete maps[targetId];
@@ -39133,8 +39089,8 @@ function getProductSchemaReviews(p, idx) {
       try {
         const url = new URL(window.location.href);
         const curProdParam = url.searchParams.get("prod") || url.searchParams.get("product");
-        const isViewingThis = (curProdParam === pid || curProdParam === targetId || (curProdParam && normApiText(curProdParam) === normApiText(prodName))) ||
-                              (currentSelectedProduct && (String(currentSelectedProduct.id) === String(pid) || String(currentSelectedProduct.id) === String(targetId) || normApiText(currentSelectedProduct.name) === normApiText(prodName)));
+        const isViewingThis = (curProdParam === pid || curProdParam === targetId) ||
+                              (currentSelectedProduct && (String(currentSelectedProduct.id) === String(pid) || String(currentSelectedProduct.id) === String(targetId)));
         
         if (isViewingThis) {
           url.searchParams.delete("prod");
@@ -39143,7 +39099,6 @@ function getProductSchemaReviews(p, idx) {
           currentSelectedProduct = null;
           window.currentSelectedProduct = null;
           window._currentActiveDetailProduct = null;
-          const dtlView = document.getElementById("viewProductDetail");
           if (dtlView) {
             dtlView.style.display = "none";
             dtlView.classList.add("hidden");
