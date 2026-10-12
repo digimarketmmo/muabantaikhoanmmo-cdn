@@ -25617,6 +25617,173 @@ function syncAllOpenViewsStock(changedProdId) {
     window.handleSavePaymentSettings = handleSavePaymentSettings;
 
     // =========================================================================
+    // HỆ THỐNG QUẢN LÝ KEY AI SỚM (HOISTED ANTI-KEY-LOSS ENGINE)
+    // =========================================================================
+    if (typeof window.MMO_AI_KEYS === 'undefined') {
+      window.MMO_AI_KEYS = {
+        get: function(provider) {
+          if (!provider) return '';
+          var p = String(provider).toLowerCase().trim();
+          var k = '';
+          try { k = localStorage.getItem('mmo_ai_key_' + p) || ''; } catch(e) {}
+          if (!k) {
+            try {
+              var backup = JSON.parse(localStorage.getItem('mmo_ai_keys_backup') || '{}');
+              k = backup[p] || backup['ai_key_' + p] || '';
+            } catch(e) {}
+          }
+          if (!k) {
+            try {
+              var perm = JSON.parse(localStorage.getItem('mmo_backup_ai_keys_permanent') || '{}');
+              k = perm[p] || perm['ai_key_' + p] || '';
+            } catch(e) {}
+          }
+          if (!k) {
+            try {
+              var s = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}');
+              k = s['ai_key_' + p] || '';
+            } catch(e) {}
+          }
+          if (!k) {
+            try {
+              var g = JSON.parse(localStorage.getItem('mmo_general_settings') || '{}');
+              k = g['ai_key_' + p] || '';
+            } catch(e) {}
+          }
+          if (!k) {
+            try {
+              var ps = JSON.parse(localStorage.getItem('mmo_settings_permanent_backup') || '{}');
+              k = ps['ai_key_' + p] || '';
+            } catch(e) {}
+          }
+          if (k && (k.includes('...') || k.includes('…'))) return '';
+          if (k && !localStorage.getItem('mmo_ai_key_' + p)) {
+            try { localStorage.setItem('mmo_ai_key_' + p, k); } catch(e) {}
+          }
+          return k;
+        },
+        set: function(provider, keyVal) {
+          if (!provider) return;
+          var p = String(provider).toLowerCase().trim();
+          var clean = (keyVal || '').trim();
+          if (clean) {
+            try { localStorage.setItem('mmo_ai_key_' + p, clean); } catch(e) {}
+            try {
+              var backup = JSON.parse(localStorage.getItem('mmo_ai_keys_backup') || '{}');
+              backup[p] = clean;
+              backup['ai_key_' + p] = clean;
+              localStorage.setItem('mmo_ai_keys_backup', JSON.stringify(backup));
+            } catch(e) {}
+            try {
+              var perm = JSON.parse(localStorage.getItem('mmo_backup_ai_keys_permanent') || '{}');
+              perm[p] = clean;
+              perm['ai_key_' + p] = clean;
+              localStorage.setItem('mmo_backup_ai_keys_permanent', JSON.stringify(perm));
+            } catch(e) {}
+            try {
+              var s = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}');
+              s['ai_key_' + p] = clean;
+              localStorage.setItem('mmo_system_settings', JSON.stringify(s));
+            } catch(e) {}
+            try {
+              var g = JSON.parse(localStorage.getItem('mmo_general_settings') || '{}');
+              g['ai_key_' + p] = clean;
+              localStorage.setItem('mmo_general_settings', JSON.stringify(g));
+            } catch(e) {}
+            try {
+              var ps = JSON.parse(localStorage.getItem('mmo_settings_permanent_backup') || '{}');
+              ps['ai_key_' + p] = clean;
+              localStorage.setItem('mmo_settings_permanent_backup', JSON.stringify(ps));
+            } catch(e) {}
+            // Sync lên Turso Cloud Worker với Auth Header
+            try {
+              const payload = {};
+              payload['ai_key_' + p] = clean;
+              const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+                ? MMO_WORKER_API.getAdminSecret()
+                : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+              fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": "Bearer " + adminSec,
+                  "x-admin-token": adminSec,
+                  "X-Admin-Secret": adminSec
+                },
+                body: JSON.stringify({ settings: payload, admin_secret: adminSec })
+              }).catch(function() {});
+            } catch(e) {}
+          }
+        },
+        remove: function(provider) {
+          if (!provider) return;
+          var p = String(provider).toLowerCase().trim();
+          try { localStorage.removeItem('mmo_ai_key_' + p); } catch(e) {}
+          try {
+            var backup = JSON.parse(localStorage.getItem('mmo_ai_keys_backup') || '{}');
+            delete backup[p];
+            delete backup['ai_key_' + p];
+            localStorage.setItem('mmo_ai_keys_backup', JSON.stringify(backup));
+          } catch(e) {}
+          try {
+            var perm = JSON.parse(localStorage.getItem('mmo_backup_ai_keys_permanent') || '{}');
+            delete perm[p];
+            delete perm['ai_key_' + p];
+            localStorage.setItem('mmo_backup_ai_keys_permanent', JSON.stringify(perm));
+          } catch(e) {}
+          try {
+            var s = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}');
+            delete s['ai_key_' + p];
+            localStorage.setItem('mmo_system_settings', JSON.stringify(s));
+          } catch(e) {}
+          try {
+            var g = JSON.parse(localStorage.getItem('mmo_general_settings') || '{}');
+            delete g['ai_key_' + p];
+            localStorage.setItem('mmo_general_settings', JSON.stringify(g));
+          } catch(e) {}
+          try {
+            var ps = JSON.parse(localStorage.getItem('mmo_settings_permanent_backup') || '{}');
+            delete ps['ai_key_' + p];
+            localStorage.setItem('mmo_settings_permanent_backup', JSON.stringify(ps));
+          } catch(e) {}
+          // Sync xóa lên Turso Cloud Worker
+          try {
+            const payload = {};
+            payload['ai_key_' + p] = "";
+            const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+              ? MMO_WORKER_API.getAdminSecret()
+              : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+            fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + adminSec,
+                "x-admin-token": adminSec,
+                "X-Admin-Secret": adminSec
+              },
+              body: JSON.stringify({ settings: payload, admin_secret: adminSec })
+            }).catch(function() {});
+          } catch(e) {}
+        }
+      };
+    }
+    const MMO_AI_KEYS = window.MMO_AI_KEYS;
+
+    function populateAllAiKeyInputs() {
+      const _aiProviders = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
+      _aiProviders.forEach(function(p) {
+        const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
+        if (el) {
+          const val = (window.MMO_AI_KEYS && typeof window.MMO_AI_KEYS.get === 'function') ? window.MMO_AI_KEYS.get(p) : '';
+          if (val) {
+            el.value = val;
+          }
+        }
+      });
+    }
+    window.populateAllAiKeyInputs = populateAllAiKeyInputs;
+
+    // =========================================================================
     // 2. GENERAL SETTINGS & GOOGLE
     // =========================================================================
     function getGeneralSettings() {
@@ -25963,7 +26130,17 @@ function syncAllOpenViewsStock(changedProdId) {
 
     async function syncSettingsFromCloud() {
       try {
-        const res = await fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings");
+        const adminSecToken = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+          ? MMO_WORKER_API.getAdminSecret()
+          : (localStorage.getItem("mmo_admin_secret") || (document.getElementById("setAdminSecretToken") ? document.getElementById("setAdminSecretToken").value.trim() : "") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+
+        const res = await fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
+          headers: {
+            "Authorization": "Bearer " + adminSecToken,
+            "x-admin-token": adminSecToken,
+            "X-Admin-Secret": adminSecToken
+          }
+        });
         if (!res.ok) return;
         const data = await res.json();
         if (data && data.success && data.settings && typeof data.settings === "object") {
@@ -26118,9 +26295,10 @@ function syncAllOpenViewsStock(changedProdId) {
       const _aiProviders = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
       _aiProviders.forEach(function(p) {
         const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
-        let val = (typeof MMO_AI_KEYS !== 'undefined' && MMO_AI_KEYS && typeof MMO_AI_KEYS.get === 'function') ? MMO_AI_KEYS.get(p) : '';
-        // Do not force leaked Gemini key
-        if (el) el.value = val || '';
+        let val = (window.MMO_AI_KEYS && typeof window.MMO_AI_KEYS.get === 'function') ? window.MMO_AI_KEYS.get(p) : '';
+        if (el && val) {
+          el.value = val;
+        }
       });
 
       // Logo URL & Preview
@@ -26148,21 +26326,29 @@ function syncAllOpenViewsStock(changedProdId) {
       let savedCount = 0;
       const keyObj = {};
 
+      const adminSecToken = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+        ? MMO_WORKER_API.getAdminSecret()
+        : (localStorage.getItem("mmo_admin_secret") || (document.getElementById("setAdminSecretToken") ? document.getElementById("setAdminSecretToken").value.trim() : "") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+
       providers.forEach(function(p) {
         const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
         let v = el ? el.value.trim() : '';
         if (v) {
-          MMO_AI_KEYS.set(p, v);
+          if (window.MMO_AI_KEYS && typeof window.MMO_AI_KEYS.set === 'function') {
+            window.MMO_AI_KEYS.set(p, v);
+          } else {
+            try { localStorage.setItem('mmo_ai_key_' + p, v); } catch(e) {}
+          }
           keyObj['ai_key_' + p] = v;
           savedCount++;
         } else {
-          let exist = MMO_AI_KEYS.get(p);
-          // Do not force leaked Gemini key
-          if (exist) {
-            keyObj['ai_key_' + p] = exist;
-            if (el) el.value = exist;
-            savedCount++;
+          // Người dùng chủ động xóa trống ô này: cho phép xóa hoặc xóa key
+          if (window.MMO_AI_KEYS && typeof window.MMO_AI_KEYS.remove === 'function') {
+            window.MMO_AI_KEYS.remove(p);
+          } else {
+            try { localStorage.removeItem('mmo_ai_key_' + p); } catch(e) {}
           }
+          keyObj['ai_key_' + p] = '';
         }
       });
 
@@ -26174,12 +26360,19 @@ function syncAllOpenViewsStock(changedProdId) {
         localStorage.setItem('mmo_backup_ai_keys_permanent', JSON.stringify(currBackup));
       } catch(e) {}
 
-      // Đồng bộ ngầm lên Turso Cloud Worker
+      // Đồng bộ trực tiếp lên Turso Cloud Worker với đầy đủ Auth Headers
       try {
         fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ settings: keyObj })
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + adminSecToken,
+            "x-admin-token": adminSecToken,
+            "X-Admin-Secret": adminSecToken
+          },
+          body: JSON.stringify({ settings: keyObj, admin_secret: adminSecToken })
+        }).then(function(r) { return r.json(); }).then(function(data) {
+          console.log("[AI Keys Sync Cloud Result]:", data);
         }).catch(function() {});
       } catch(e) {}
 
@@ -26297,12 +26490,21 @@ function syncAllOpenViewsStock(changedProdId) {
           console.warn("Storage warning mmo_settings_permanent_backup:", eSet3);
         }
 
-        // Đồng bộ lưu lên Turso Cloud Worker
+        // Đồng bộ lưu lên Turso Cloud Worker với Auth Headers đầy đủ
         try {
+          const adminSecToken = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+            ? MMO_WORKER_API.getAdminSecret()
+            : (localStorage.getItem("mmo_admin_secret") || (document.getElementById("setAdminSecretToken") ? document.getElementById("setAdminSecretToken").value.trim() : "") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+
           fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ settings: settings })
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + adminSecToken,
+              "x-admin-token": adminSecToken,
+              "X-Admin-Secret": adminSecToken
+            },
+            body: JSON.stringify({ settings: settings, admin_secret: adminSecToken })
           }).then(function() {
             if (typeof showToast === "function") showToast("🎉 Đã lưu cài đặt hệ thống & thương hiệu lên máy chủ thành công!", "success");
           }).catch(function() {
