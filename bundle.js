@@ -300,6 +300,11 @@ function healStorageQuota(forceEmergency) {
       if (staleCustomRaw && (staleCustomRaw.includes("14day") || staleCustomRaw.includes("placeholder"))) {
         localStorage.removeItem("mmo_custom_img_PROD_MTQX7SIK");
       }
+      // Thanh tẩy ảnh NordVPN rác gán nhầm cho Surfshark VPN (PROD_MUKAXC4Q9T)
+      const surfCustom = localStorage.getItem("mmo_custom_img_PROD_MUKAXC4Q9T");
+      if (surfCustom && (surfCustom.includes("nord_vpn") || surfCustom.includes("AfQAAAH0CAYAA") || surfCustom.includes("placeholder"))) {
+        localStorage.removeItem("mmo_custom_img_PROD_MUKAXC4Q9T");
+      }
       ["PROD_MU5T3T47AE", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI"].forEach(function(gid) {
         const sG = localStorage.getItem("mmo_custom_img_" + gid);
         if (sG && (sG.includes("gemini_pro_veo3.png") || sG.includes("placeholder"))) {
@@ -315,6 +320,29 @@ function healStorageQuota(forceEmergency) {
           }
         }
       }
+      // Dọn sạch ảnh rác trong danh sách sản phẩm đã cache ở localStorage
+      ["mmo_admin_products", "mmo_products"].forEach(function(k) {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            let list = JSON.parse(raw);
+            if (Array.isArray(list)) {
+              let changed = false;
+              list.forEach(p => {
+                if (p && (p.id === "PROD_MUKAXC4Q9T" || (p.name && String(p.name).toLowerCase().includes("surfshark")))) {
+                  if (p.image && (p.image.includes("nord_vpn") || p.image.includes("AfQAAAH0CAYAA"))) {
+                    p.image = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg";
+                    p.image_url = p.image;
+                    p.imageUrl = p.image;
+                    changed = true;
+                  }
+                }
+              });
+              if (changed) localStorage.setItem(k, JSON.stringify(list));
+            }
+          }
+        } catch(ePls) {}
+      });
     } catch(eCleanImgs) {}
 
     // DỌN SẠCH TẬN GỐC TÀI KHOẢN ẢO TRONG CÁC KHÓA KHO LOCALSTORAGE
@@ -1529,8 +1557,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "stock": 1289,
     "sold": 0,
     "buffSold": 0,
-    "rating": 4.9,
-    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUKAXC4Q9T/image",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg",
     "warranty": "Bảo Hành 1 Đổi 1",
     "description": "Bạn đang lo lắng về vấn đề lộ thông tin cá nhân, bị bóp băng thông khi truy cập mạng, hay muốn truy cập các nội dung, trang web bị giới hạn khu vực địa lý? Gói Surfshark VPN siêu tốc, uy tín tại shop chính là \"khiên chắn\" hoàn hảo dành cho bạn!\n\n💎 Những ưu điểm vượt trội của Surfshark VPN:\n🌐 Vượt rào kiểm duyệt, đổi IP mượt mà: Dễ dàng kết nối tới hàng nghìn server tốc độ cao tại hơn 100 quốc gia trên toàn thế giới, thỏa sức lướt web không giới hạn không gian.\n\n🚀 Tốc độ siêu khủng (No Throttling): Xem phim 4K, chơi game quốc tế, tải file nặng hay làm việc trực tuyến cực mượt mà, không lo giật lag hay bị bóp băng thông.\n\n🔒 Bảo mật & Ẩn danh tuyệt đối: Ẩn địa chỉ IP thực, mã hóa dữ liệu theo chuẩn quân sự (AES-256), chặn quảng cáo và mã độc độc hại tự động (CleanWeb).\n\n📱 Kết nối không giới hạn thiết bị: Một tài khoản có thể sử dụng cùng lúc trên vô số thiết bị từ Điện thoại (iOS/Android), Máy tính (Windows/Mac) cho đến Smart TV và Tablet.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành Full thời gian sử dụng, an tâm tuyệt đối từ lúc đăng nhập đến khi hết hạn.\n\n⚡ Bàn giao siêu tốc ngay sau khi thanh toán, tài khoản ổn định, đăng nhập dùng ngay.\n\n💬 Hỗ trợ kỹ thuật nhiệt tình 24/7, hướng dẫn cài đặt chi tiết trên mọi nền tảng.\n\n💡 Phù hợp cho: Dân MMO cần ẩn danh IP, anh em làm việc với đối tác quốc tế, game thủ chơi server nước ngoài, hoặc bất kỳ ai đề cao tính bảo mật và sự riêng tư trên không gian mạng!\n\n🛒 BẢO VỆ QUYỀN RIÊNG TƯ CỦA BẠN NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để chốt đơn và nhận tài khoản dùng ngay trong 1 nốt nhạc!\n\n📞 Hotline / Zalo / Telegram",
     "variants": [
@@ -1568,8 +1595,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "targetProdId": "PROD_MUKAXC4Q9T",
       "targetProdName": "Surfshark VPN  Chính Hãng"
     },
-    "image_url": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUKAXC4Q9T/image",
-    "imageUrl": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUKAXC4Q9T/image"
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg"
   },
   {
     "id": "PROD_MUKAMO9XPD",
@@ -8668,18 +8695,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (document.getElementById("admProdBuffSold")) document.getElementById("admProdBuffSold").value = p.buffSold !== undefined ? p.buffSold : (p.sold || 0);
       if (document.getElementById("admProdBuffRating")) document.getElementById("admProdBuffRating").value = p.rating || "4.9";
       if (document.getElementById("admProdBuffReviews")) document.getElementById("admProdBuffReviews").value = p.reviewCount || 11;
-      const savedCustomImg = (typeof localStorage !== "undefined") ? (function() {
-        let s = localStorage.getItem("mmo_custom_img_" + p.id);
-        if (!s && typeof getProductAliasIds === "function") {
-          const aList = getProductAliasIds(p.id);
-          for (let i = 0; i < aList.length; i++) {
-            const v = localStorage.getItem("mmo_custom_img_" + aList[i]);
-            if (v && v.trim()) { s = v.trim(); break; }
-          }
-        }
-        return s || "";
-      })() : "";
-      const effectiveImg = (savedCustomImg && savedCustomImg.trim()) ? savedCustomImg.trim() : (p.image || p.image_url || p.imageUrl || ((typeof resolveProductImage === "function") ? resolveProductImage(p) : ""));
+      // [SSOT REALTIME IMAGE RESOLVER]: Luôn giải quyết ảnh chuẩn sạch nhất (tự động loại trừ ảnh rác NordVPN trên Surfshark, nFV4Rln, placeholder)
+      let effectiveImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "");
+      const isSurfModal = (p.id === "PROD_MUKAXC4Q9T") || (p.name && String(p.name).toLowerCase().includes("surfshark"));
+      if (isSurfModal && (!effectiveImg || effectiveImg.includes("nord_vpn") || effectiveImg.includes("AfQAAAH0CAYAA") || effectiveImg.includes("default_product"))) {
+        effectiveImg = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg";
+      }
       if (document.getElementById("admProdImage")) document.getElementById("admProdImage").value = effectiveImg || "";
       if (document.getElementById("admProdImgPreview")) document.getElementById("admProdImgPreview").src = effectiveImg || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
       if (document.getElementById("admProdWarranty")) document.getElementById("admProdWarranty").value = p.warranty || "Bảo Hành 1 Đổi 1";
@@ -11823,6 +11844,179 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.updateCommissionEstimate = updateCommissionEstimate;
 
+    // =========================================================================
+    // CORE SYSTEM: REALTIME INSTANT PRODUCT UPDATE (TRANG NGƯỜI DÙNG & TRANG XEM CHI TIẾT SẢN PHẨM)
+    // - Cập nhật trực tiếp 0ms ảnh & thông tin trên trang chi tiết sản phẩm (#viewProductDetail, #dtlImage)
+    // - Cập nhật trực tiếp 0ms toàn bộ thẻ sản phẩm trên các lưới (Store Grid, All Products, Recommendations)
+    // - Đồng bộ MOCK_DATA.products, localStorage mmo_custom_img_, và phát sóng xuyên tab
+    // =========================================================================
+    function updateProductRealtimeEverywhere(actualTargetId, allSyncIds, prodData, variants, rawImage) {
+      if (!actualTargetId) return;
+      const syncIds = (Array.isArray(allSyncIds) && allSyncIds.length > 0) ? allSyncIds : [actualTargetId];
+      const idsToCheck = new Set(syncIds.map(x => String(x).toLowerCase().trim()));
+      idsToCheck.add(String(actualTargetId).toLowerCase().trim());
+      const prodName = prodData ? (prodData.name || "") : "";
+      const nameLower = prodName.toLowerCase().trim();
+      const effectivePrice = (prodData && prodData.price !== undefined) ? Number(prodData.price) : 0;
+      const effectiveStock = (prodData && prodData.stock !== undefined) ? Number(prodData.stock) : 0;
+
+      // 1. Chuẩn hóa URL ảnh tối ưu nhất
+      let finalImg = rawImage || (prodData && (prodData.image || prodData.image_url || prodData.imageUrl)) || "";
+      if (typeof resolveProductImage === "function" && prodData) {
+        finalImg = resolveProductImage({ ...prodData, id: actualTargetId, image: finalImg });
+      }
+      const isSurf = idsToCheck.has("prod_mukaxc4q9t") || (nameLower && nameLower.includes("surfshark"));
+      if (isSurf && (!finalImg || finalImg.includes("nord_vpn") || finalImg.includes("AfQAAAH0CAYAA") || finalImg.includes("default_product"))) {
+        finalImg = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg";
+      }
+      if (prodData) {
+        prodData.image = finalImg;
+        prodData.image_url = finalImg;
+        prodData.imageUrl = finalImg;
+      }
+
+      // 2. Lưu vào localStorage cho toàn bộ alias IDs
+      if (finalImg) {
+        syncIds.forEach(sid => {
+          try { localStorage.setItem("mmo_custom_img_" + sid, finalImg); } catch(e) {}
+        });
+      }
+
+      // 3. Cập nhật MOCK_DATA.products trong bộ nhớ
+      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+        MOCK_DATA.products.forEach(p => {
+          if (!p || !p.id) return;
+          const pid = String(p.id).toLowerCase().trim();
+          const pNameLower = (p.name || "").toLowerCase().trim();
+          if (idsToCheck.has(pid) || (nameLower && pNameLower && pNameLower === nameLower)) {
+            if (finalImg) { p.image = finalImg; p.image_url = finalImg; p.imageUrl = finalImg; }
+            if (prodData) {
+              if (prodData.name) p.name = prodData.name;
+              if (effectivePrice) p.price = effectivePrice;
+              if (effectiveStock !== undefined) p.stock = effectiveStock;
+              if (Array.isArray(variants)) p.variants = variants;
+              if (prodData.apiMapping) p.apiMapping = prodData.apiMapping;
+              if (prodData.deliveryType) p.deliveryType = prodData.deliveryType;
+              if (prodData.delivery_type) p.delivery_type = prodData.delivery_type;
+            }
+          }
+        });
+        if (typeof window !== "undefined" && window.MOCK_DATA) {
+          window.MOCK_DATA.products = MOCK_DATA.products;
+        }
+      }
+
+      // 4. Cập nhật window.currentSelectedProduct & window._currentActiveDetailProduct
+      if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
+        const curId = String(currentSelectedProduct.id || "").toLowerCase().trim();
+        const curName = String(currentSelectedProduct.name || "").toLowerCase().trim();
+        if (idsToCheck.has(curId) || (nameLower && curName && curName === nameLower)) {
+          if (finalImg) {
+            currentSelectedProduct.image = finalImg;
+            currentSelectedProduct.image_url = finalImg;
+            currentSelectedProduct.imageUrl = finalImg;
+          }
+          if (prodData) {
+            Object.assign(currentSelectedProduct, prodData);
+            if (Array.isArray(variants)) currentSelectedProduct.variants = variants;
+            currentSelectedProduct.price = effectivePrice;
+            currentSelectedProduct.stock = effectiveStock;
+          }
+        }
+      }
+      if (typeof window._currentActiveDetailProduct !== "undefined" && window._currentActiveDetailProduct) {
+        const curId2 = String(window._currentActiveDetailProduct.id || "").toLowerCase().trim();
+        const curName2 = String(window._currentActiveDetailProduct.name || "").toLowerCase().trim();
+        if (idsToCheck.has(curId2) || (nameLower && curName2 && curName2 === nameLower)) {
+          if (finalImg) {
+            window._currentActiveDetailProduct.image = finalImg;
+            window._currentActiveDetailProduct.image_url = finalImg;
+            window._currentActiveDetailProduct.imageUrl = finalImg;
+          }
+          if (prodData) {
+            Object.assign(window._currentActiveDetailProduct, prodData);
+            if (Array.isArray(variants)) window._currentActiveDetailProduct.variants = variants;
+          }
+        }
+      }
+
+      // 5. CẬP NHẬT TRỰC TIẾP TRANG CHI TIẾT SẢN PHẨM ("TRANG XEM SẢN PHẨM" - #viewProductDetail)
+      const dtlView = document.getElementById("viewProductDetail");
+      const dtlIdEl = document.getElementById("dtlId");
+      const dtlTitleEl = document.getElementById("dtlTitle");
+      const curDtlId = dtlIdEl ? dtlIdEl.innerText.trim().toLowerCase() : "";
+      const curDtlTitle = dtlTitleEl ? dtlTitleEl.innerText.trim().toLowerCase() : "";
+      const isViewingThisProd = idsToCheck.has(curDtlId) || (nameLower && curDtlTitle && curDtlTitle === nameLower) || (dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden"));
+
+      if (isViewingThisProd) {
+        const dtlImgEl = document.getElementById("dtlImage");
+        if (dtlImgEl && finalImg) {
+          dtlImgEl.src = finalImg;
+        }
+        if (dtlTitleEl && prodName) {
+          dtlTitleEl.innerText = prodName;
+        }
+        const dtlPriceEl = document.getElementById("dtlPrice");
+        if (dtlPriceEl && effectivePrice) {
+          dtlPriceEl.innerText = (typeof formatVND === "function") ? formatVND(effectivePrice) : (effectivePrice.toLocaleString("vi-VN") + " đ");
+        }
+        if (typeof syncDetailStockUI === "function" && effectiveStock !== undefined) {
+          syncDetailStockUI(effectiveStock);
+        }
+        const pillsContainer = document.getElementById("dtlVariantPills");
+        if (pillsContainer && Array.isArray(variants) && variants.length > 0) {
+          pillsContainer.innerHTML = variants.map((v, idx) => {
+            const vStock = (typeof v.stock === "number") ? v.stock : effectiveStock;
+            const stockBadge = vStock > 0
+              ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
+              : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+            return '<div class="variant-pill-option ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+              '<span>' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
+              '<span style="font-weight:700;">' + ((typeof formatVND === "function") ? formatVND(v.price || 0) : ((v.price || 0) + " đ")) + '</span>' +
+            '</div>';
+          }).join("");
+        }
+      }
+
+      // 6. CẬP NHẬT TRỰC TIẾP MỌI THẺ ẢNH TRÊN TRANG NGƯỜI DÙNG (Cửa hàng, Khối đề xuất, Danh mục, v.v.)
+      document.querySelectorAll(".product-card, .recommended-item, .order-item-card, [data-prod-id]").forEach(card => {
+        let isMatch = false;
+        const cid = card.getAttribute("data-prod-id") || card.getAttribute("data-id") || "";
+        if (cid && idsToCheck.has(cid.toLowerCase().trim())) isMatch = true;
+        if (!isMatch) {
+          const onclickStr = card.getAttribute("onclick") || "";
+          for (const s of idsToCheck) {
+            if (onclickStr.toLowerCase().includes(s)) { isMatch = true; break; }
+          }
+        }
+        if (!isMatch && nameLower) {
+          const tEl = card.querySelector(".product-title, h4, h5, .title");
+          if (tEl && tEl.innerText.trim().toLowerCase() === nameLower) isMatch = true;
+        }
+        if (isMatch) {
+          const cImg = card.querySelector("img");
+          if (cImg && finalImg) cImg.src = finalImg;
+          const cPrice = card.querySelector(".product-price");
+          if (cPrice && effectivePrice) {
+            cPrice.innerText = (typeof getProductPriceDisplay === "function" && prodData) ? getProductPriceDisplay(prodData) : ((typeof formatVND === "function") ? formatVND(effectivePrice) : (effectivePrice.toLocaleString("vi-VN") + " đ"));
+          }
+        }
+      });
+
+      // 7. Re-render đồng bộ tất cả các trang và view người dùng
+      try {
+        if (typeof renderProductGrid === "function") renderProductGrid();
+        if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+        if (typeof renderRecommended === "function") renderRecommended();
+        if (typeof renderBestSellers === "function") renderBestSellers();
+        if (typeof renderDetailRelatedProducts === "function") renderDetailRelatedProducts(window.currentSelectedProduct || prodData);
+        if (typeof renderProductDetailSidebars === "function") renderProductDetailSidebars(window.currentSelectedProduct || prodData);
+        if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+        if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+      } catch(eR) {}
+    }
+    window.updateProductRealtimeEverywhere = updateProductRealtimeEverywhere;
+
     async function handleSaveProduct(event) {
       if (event) {
         try { event.preventDefault(); } catch(e) {}
@@ -12364,13 +12558,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         resetBtnState();
         saveProductsToStorage();
 
-        // Làm mới ngay lập tức tất cả các giao diện đang mở để sản phẩm mới hiện ngay 0ms
-        try {
-          if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-          if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
-          if (typeof renderProductGrid === "function") renderProductGrid();
-          if (typeof renderAllProductsGrid === "function") renderAllProductsGrid();
-        } catch(eR) {}
+        // [REALTIME INSTANT SYNC 0MS]: Cập nhật tức thì ảnh & dữ liệu trên trang người dùng và trang xem chi tiết sản phẩm
+        if (typeof updateProductRealtimeEverywhere === "function") {
+          updateProductRealtimeEverywhere(actualTargetId, allSyncIds, prodData, variants, image);
+        }
 
         // Làm mới tức thì bảng Cảnh báo Nguồn Hàng API nếu đang mở
         try {
@@ -12390,67 +12581,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
         } catch(e) {}
 
-        // Cập nhật ngay modal / trang chi tiết nếu đang xem sản phẩm này hoặc bất kỳ ID liên kết nào
-        const isViewingSameOrAlias = (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && (
-          allSyncIds.includes(String(currentSelectedProduct.id)) || 
-          (currentSelectedProduct.name && currentSelectedProduct.name.trim().toLowerCase() === name.toLowerCase()) ||
-          (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, actualTargetId))
-        ));
-
-        if (isViewingSameOrAlias) {
-          currentSelectedProduct = Object.assign({}, currentSelectedProduct, prodData);
-          currentSelectedProduct.variants = variants;
-          currentSelectedProduct.price = effectivePrice;
-          currentSelectedProduct.stock = prodData.stock;
-          currentSelectedProduct.apiMapping = prodData.apiMapping;
-          currentSelectedVariantIndex = 0;
-          currentSelectedPrice = effectivePrice;
-
-          // 1. Cập nhật DOM trực tiếp tức thì 0ms:
-          const dtlPriceEl = document.getElementById("dtlPrice");
-          if (dtlPriceEl) dtlPriceEl.innerText = (typeof formatVND === "function") ? formatVND(effectivePrice) : (effectivePrice.toLocaleString("vi-VN") + " đ");
-
-          const dtlTitleEl = document.getElementById("dtlTitle");
-          if (dtlTitleEl) dtlTitleEl.innerText = prodData.name;
-
-          const dtlImgEl = document.getElementById("dtlImage");
-          const updImg = (typeof resolveProductImage === "function") ? resolveProductImage(prodData) : (prodData.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
-          if (dtlImgEl && updImg) dtlImgEl.src = updImg;
-
-          if (typeof syncDetailStockUI === "function") {
-            syncDetailStockUI(prodData.stock);
-          }
-
-          // 2. Re-render ô chọn loại sản phẩm (Variant Pills) ngay lập tức:
-          const pillsContainer = document.getElementById("dtlVariantPills");
-          if (pillsContainer && Array.isArray(variants) && variants.length > 0) {
-            pillsContainer.innerHTML = variants.map((v, idx) => {
-              const vStock = (typeof v.stock === "number") ? v.stock : prodData.stock;
-              const stockBadge = vStock > 0
-                ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
-                : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-              return '<div class="variant-pill-option ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                '<span>' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
-                '<span style="font-weight:700;">' + ((typeof formatVND === "function") ? formatVND(v.price || 0) : ((v.price || 0) + " đ")) + '</span>' +
-              '</div>';
-            }).join("");
-          }
-
-          // 3. Silent re-run openProductDetailById
-          const dtlView = document.getElementById("viewProductDetail");
-          if (dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden")) {
-            if (typeof openProductDetailById === "function") {
-              openProductDetailById(currentSelectedProduct.id, true);
-            }
-          }
-        }
-
         // Phát tín hiệu BroadcastChannel tức thì sang tất cả các tab / cửa sổ trình duyệt khác (<10ms)
         try {
           if (typeof BroadcastChannel !== "undefined") {
             const payload = {
               type: "PRODUCT_UPDATED",
               prodId: actualTargetId,
+              canonicalId: canonicalTargetId,
+              aliasIds: allSyncIds,
+              imageUrl: prodData.image || image,
               prodData: prodData,
               variants: variants,
               stock: prodData.stock
@@ -14881,6 +15020,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               if (aVal && aVal.trim()) { customSaved = aVal.trim(); break; }
             }
           }
+          const isSurf = pId === "PROD_MUKAXC4Q9T" || (prodObj && String(prodObj.name || '').toLowerCase().includes("surfshark"));
+          if (isSurf && customSaved && (customSaved.includes("nord_vpn") || customSaved.includes("AfQAAAH0CAYAA"))) {
+            localStorage.removeItem("mmo_custom_img_" + pId);
+            customSaved = null;
+          }
           if (customSaved && (customSaved.includes("gemini_pro_veo3.png") || customSaved.includes("khotaikhoanso") || customSaved.includes("placeholder") || customSaved.includes("nFV4Rln"))) {
             localStorage.removeItem("mmo_custom_img_" + pId);
             customSaved = null;
@@ -14894,6 +15038,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const existingImg = prodObj ? (prodObj.image || prodObj.image_url || prodObj.imageUrl || "") : ((typeof p === "string" && (p.startsWith("http") || p.startsWith("data:") || p.startsWith("/"))) ? p : "");
       if (typeof existingImg === "string" && existingImg.trim() !== "") {
         let trimmed = existingImg.trim();
+        const isSurf2 = pId === "PROD_MUKAXC4Q9T" || (prodObj && String(prodObj.name || '').toLowerCase().includes("surfshark"));
+        if (isSurf2 && (trimmed.includes("nord_vpn") || trimmed.includes("AfQAAAH0CAYAA") || trimmed.includes("/api/products/PROD_MUKAXC4Q9T/image"))) {
+          return "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg";
+        }
         if (trimmed.includes("manhdongvtc.workers.dev")) {
           trimmed = trimmed.replace(/manhdongvtc\.workers\.dev/g, "muabantaikhoanmmo.workers.dev");
         }
@@ -14985,7 +15133,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "PROD_MUK7DQMKAM": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK7DQMKAM/image",
         "PROD_MUK7P74YNT": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK7P74YNT/image",
         "PROD_MUKAMO9XPD": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUKAMO9XPD/image",
-        "PROD_MUKAXC4Q9T": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUKAXC4Q9T/image",
+        "PROD_MUKAXC4Q9T": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg",
         "PROD_MUM6JQTW8C": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUM6JQTW8C/image",
         "PROD_MUNUEKI3NM": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUNUEKI3NM/image",
         "PROD_MUOIH8CW59": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUOIH8CW59/image",
@@ -15062,7 +15210,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // 15. Khớp VPN & Proxy
       if (name.includes("hma")) return cdnBase + "hma_vpn.png";
       if (name.includes("express")) return cdnBase + "express_vpn.png";
-      if (name.includes("nord") || name.includes("surfshark")) return cdnBase + "nord_vpn.png";
+      if (name.includes("surfshark")) return cdnBase + "surfshark_vpn.jpg";
+      if (name.includes("nord")) return cdnBase + "nord_vpn.png";
       if (name.includes("us") || name.includes("usa") || name.includes("mỹ") || name.includes("my")) return cdnBase + "proxy_us.png";
       if (name.includes("viettel")) return cdnBase + "proxy_viettel.png";
       if (name.includes("japan") || name.includes("nhật") || name.includes("nhat")) return cdnBase + "proxy_japan.png";
@@ -18504,36 +18653,12 @@ function syncAllOpenViewsStock(changedProdId) {
             const updId = ev.data.prodId;
             const updVariants = ev.data.variants;
             const updData = ev.data.prodData;
-            if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
-              const target = MOCK_DATA.products.find(p => p && (
-                String(p.id) === String(updId) ||
-                (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, updId)) ||
-                (p.name && updData && p.name.trim().toLowerCase() === updData.name.trim().toLowerCase())
-              ));
-              if (target && updData) {
-                Object.assign(target, updData);
-                if (updVariants) target.variants = updVariants;
-              }
+            const updImg = ev.data.imageUrl || (updData && (updData.image || updData.image_url || updData.imageUrl));
+            const updAliases = ev.data.aliasIds || (typeof getProductAliasIds === "function" ? getProductAliasIds(updId) : [updId]);
+
+            if (typeof updateProductRealtimeEverywhere === "function") {
+              updateProductRealtimeEverywhere(updId, updAliases, updData, updVariants, updImg);
             }
-            if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && (
-              String(currentSelectedProduct.id) === String(updId) ||
-              (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, updId)) ||
-              (currentSelectedProduct.name && updData && currentSelectedProduct.name.trim().toLowerCase() === updData.name.trim().toLowerCase())
-            )) {
-              if (updData) Object.assign(currentSelectedProduct, updData);
-              if (updVariants) currentSelectedProduct.variants = updVariants;
-              if (typeof syncDetailStockUI === "function") syncDetailStockUI();
-              const dtlView = document.getElementById("viewProductDetail");
-              if (dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden")) {
-                if (typeof openProductDetailById === "function") openProductDetailById(updId);
-              }
-            }
-            if (typeof renderProductGrid === "function") renderProductGrid();
-            if (typeof renderBestSellers === "function") renderBestSellers();
-            if (typeof renderRecommended === "function") renderRecommended();
-            if (typeof renderAllProductsPage === "function") renderAllProductsPage();
-            if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
-            if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
             if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(updId, ev.data.stock, null, true);
           }
           if (ev.data && (ev.data.type === "STOCK_UPDATE" || ev.data.type === "STOCK_UPDATED")) {
