@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "4.8.8";
+const MMO_CURRENT_CODE_VERSION = "5.0.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -655,7 +655,17 @@ function checkAndApplyNetworkUpdate() {
     }).then(function(res) {
       return res.json();
     }).then(function(data) {
-      if (data && data.version && data.version > MMO_CURRENT_CODE_VERSION) {
+      function isVerHigher(newV, curV) {
+        var p1 = (newV || '').split('.').map(Number);
+        var p2 = (curV || '').split('.').map(Number);
+        for (var i = 0; i < Math.max(p1.length, p2.length); i++) {
+          var num1 = p1[i] || 0, num2 = p2[i] || 0;
+          if (num1 > num2) return true;
+          if (num1 < num2) return false;
+        }
+        return false;
+      }
+      if (data && data.version && isVerHigher(data.version, MMO_CURRENT_CODE_VERSION)) {
         window._mmoHotReloadInProgress = true;
         window._lastHotReloadTime = Date.now();
         console.warn("[MMO Universal Update] Phát hiện phiên bản code mới: v" + data.version + " (Bản hiện tại: v" + MMO_CURRENT_CODE_VERSION + ")");
@@ -686,13 +696,6 @@ function checkAndApplyNetworkUpdate() {
         nextScript.onload = function() {
           console.log("[MMO Universal Update] Đã nạp thành công code mới v" + data.version + " trên blog này!");
           if (typeof convertOutOfStockToPreOrder === "function") convertOutOfStockToPreOrder();
-          var _curView = (typeof localStorage !== "undefined" && localStorage.getItem("mmo_current_view")) || "viewStore";
-          var _curP = new URLSearchParams(window.location.search).get("prod");
-          if (_curView === "viewProductDetail" && _curP && typeof openProductDetailById === "function") {
-            openProductDetailById(_curP);
-          } else if (typeof initMMOApplication === "function") {
-            initMMOApplication();
-          }
         };
         document.body.appendChild(nextScript);
       }
@@ -18040,6 +18043,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // Tự động kéo danh sách tài khoản thực tế từ Turso SQLite vào kho MMO_WAREHOUSE & MOCK_DATA
       if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
         try {
+          const isAdm = (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser))));
+          if (!isAdm) return; // Chỉ Admin mới tải toàn bộ 52 kho inventory nội bộ, người dùng thường chỉ nhận stock counts
           const prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : [];
           const localProds = prods.filter(p => p && (p.deliveryType === "local" || p.delivery_type === "local") && Array.isArray(p.variants) && p.variants.length > 0);
           
