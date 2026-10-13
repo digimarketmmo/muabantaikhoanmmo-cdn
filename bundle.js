@@ -16729,12 +16729,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         } else {
           varWrap.style.display = "block";
           const prevVVal = varSel.value;
-          let opts = "<option value='ALL'>📦 Tất cả biến thể (Toàn bộ kho: " + getShopProductStock(curProd) + " acc)</option>";
+          const totalProdStock = (typeof getShopProductStock === "function") ? getShopProductStock(curProd) : (curProd.stock || 0);
+          let allTag = totalProdStock === 0 ? "❌ [HẾT HÀNG]" : (totalProdStock < 5 ? ("⚠️ [" + totalProdStock + " acc]") : ("(" + totalProdStock + " acc)"));
+          let opts = "<option value='ALL'>📦 Tất cả biến thể (Toàn bộ kho: " + allTag + ")</option>";
           curProd.variants.forEach((v, idx) => {
-            const vs = getShopVariantStock(curProd, idx);
-            let tag = "(" + vs + " acc)";
-            if (vs === 0) tag = "❌ [HẾT HÀNG]";
-            else if (vs < 5) tag = "⚠️ [" + vs + " acc]";
+            const vs = (typeof getShopVariantStock === "function") ? getShopVariantStock(curProd, idx) : (Array.isArray(v.accounts) ? v.accounts.length : (Number(v.stock) || 0));
+            let tag = vs === 0 ? "❌ [HẾT HÀNG]" : (vs < 5 ? ("⚠️ [" + vs + " acc]") : ("(" + vs + " acc)"));
             opts += '<option value="' + idx + '">Biến thể ' + (idx + 1) + ': ' + escapeHtml(v.name) + ' ' + tag + ' - ' + formatVND(v.price) + '</option>';
           });
           if (varSel.innerHTML !== opts) {
@@ -16776,11 +16776,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             countDisp.innerText = c + " acc";
             countDisp.style.color = c === 0 ? "#ef4444" : (c < 5 ? "#f59e0b" : "#10b981");
           }
+          const curTargetKey = curProd.id + "_" + selectedVVal;
+          const isSwitchedKey = (window._currentlyRenderedStockKey !== curTargetKey);
           if (currentView && document.activeElement !== currentView) {
-            if (vAccs.length > 0) {
-              currentView.value = vAccs.join("\n");
-            } else if (!currentView.value || currentView.value.trim() === "") {
-              currentView.value = "";
+            if (isSwitchedKey) {
+              currentView.value = vAccs.length > 0 ? vAccs.join("\n") : "";
+              window._currentlyRenderedStockKey = curTargetKey;
+            } else {
+              if (vAccs.length > 0) {
+                currentView.value = vAccs.join("\n");
+              } else if (!currentView.value || currentView.value.trim() === "") {
+                currentView.value = "";
+              }
             }
             currentView.placeholder = c > 0 ? ("Kho sẵn sàng: " + c + " acc. Dán tài khoản vào ô trên để nạp thêm.") : "Mỗi dòng 1 tài khoản (Định dạng: user|pass|2fa|...)";
           }
@@ -16816,11 +16823,18 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             countDisp.innerText = totalStock + " acc";
             countDisp.style.color = totalStock === 0 ? "#ef4444" : (totalStock < 5 ? "#f59e0b" : "#10b981");
           }
+          const curTargetKey = curProd.id + "_ALL";
+          const isSwitchedKey = (window._currentlyRenderedStockKey !== curTargetKey);
           if (currentView && document.activeElement !== currentView) {
-            if (allAccs.length > 0) {
-              currentView.value = allAccs.join("\n");
-            } else if (!currentView.value || currentView.value.trim() === "") {
-              currentView.value = "";
+            if (isSwitchedKey) {
+              currentView.value = allAccs.length > 0 ? allAccs.join("\n") : "";
+              window._currentlyRenderedStockKey = curTargetKey;
+            } else {
+              if (allAccs.length > 0) {
+                currentView.value = allAccs.join("\n");
+              } else if (!currentView.value || currentView.value.trim() === "") {
+                currentView.value = "";
+              }
             }
             currentView.placeholder = totalStock > 0 ? ("Kho sẵn sàng: " + totalStock + " acc. Dán tài khoản vào ô trên để nạp thêm.") : "Mỗi dòng 1 tài khoản (Định dạng: user|pass|2fa|...)";
           }
@@ -25119,6 +25133,7 @@ function syncAllOpenViewsStock(changedProdId) {
         }).catch(() => {});
       }
     }
+    window.initStockManagementUI = initStockManagementUI;
 
     function handleStockProductChange() {
       const select = document.getElementById("admStockProductSelect");
@@ -25146,7 +25161,7 @@ function syncAllOpenViewsStock(changedProdId) {
         updateVariantSelectForProduct(prodId);
       }
 
-      // Luôn ủy quyền sang handleStockVariantChange để truy vấn Turso Database trực tiếp
+      // Luôn ủy quyền sang handleStockVariantChange để xử lý 0ms và đồng bộ Turso
       if (hasVars || (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured())) {
         if (typeof handleStockVariantChange === "function") handleStockVariantChange();
         return;
@@ -25159,18 +25174,6 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       const count = accounts.length > 0 ? accounts.length : getProductStockCount(prodId);
-
-      // Nếu sản phẩm đã được Admin chủ động xóa sạch kho (manually cleared), KHÔNG BAO GIỜ tự động kéo lại acc cũ từ backend khi F5
-      let isManuallyCleared = false;
-      try {
-        const clearedMap = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
-        if (clearedMap[prodId] || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(prodId, "PROD_MTPIJ9XV") && (clearedMap["PROD_MTPIJ9XV"] || clearedMap["PROD_MTPG0PUD"] || clearedMap["SP_TIKTOK_BRAZIL"]))) {
-          isManuallyCleared = true;
-        }
-      } catch(e) {}
-
-      // CHỈ kéo tài khoản từ Google Sheets nếu kho trống và CHƯA TỪNG bị admin xóa sạch
-      // Đã bỏ tự động kéo acc cũ từ Cloud khi kho = 0}
 
       const countDisp = document.getElementById("admStockCountDisplay");
       if (countDisp) {
@@ -25200,18 +25203,9 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       const currentView = document.getElementById("admStockCurrentView");
-      if (currentView) {
-        const curVal = currentView.value || "";
-        const hasStaleSold = (function() {
-          try {
-            const sMap = JSON.parse(localStorage.getItem("mmo_sold_accounts") || "{}");
-            const lines = curVal.split("\n").map(l => l.trim()).filter(Boolean);
-            return lines.some(l => sMap[l]);
-          } catch(e) { return false; }
-        })();
-        if (document.activeElement !== currentView || hasStaleSold) {
-          currentView.value = accounts.join("\n");
-        }
+      if (currentView && document.activeElement !== currentView) {
+        window._currentlyRenderedStockKey = prodId + "_0";
+        currentView.value = accounts.join("\n");
       }
       const vSelectEl = document.getElementById("admStockVariantSelect");
       const vValCur = vSelectEl ? vSelectEl.value : "0";
@@ -25221,13 +25215,14 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (count > 0) {
         (MOCK_DATA && MOCK_DATA.products || []).forEach(p => {
-          if (p.id === prodId || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, prodId)) || (p.name && String(p.name).toUpperCase().includes("TIKTOK") && String(p.name).toUpperCase().includes("BRAZIL") && (prodId === "PROD_MTPIJ9XV" || prodId === "PROD_MTPG0PUD" || prodId === "SP_TIKTOK_BRAZIL"))) {
+          if (p.id === prodId || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, prodId))) {
             p.stock = count;
           }
         });
         syncAllOpenViewsStock(prodId, count, accounts);
       }
     }
+    window.handleStockProductChange = handleStockProductChange;
 
     let stockViewDebounceTimer = null;
     var _stockViewCountTimer = null;
@@ -25633,6 +25628,7 @@ function syncAllOpenViewsStock(changedProdId) {
       if (!select || !select.value) return;
       deleteProduct(select.value);
     }
+    window.handleDeleteCurrentStockProduct = handleDeleteCurrentStockProduct;
 
     // =========================================================================
     // 1. PAYMENT & SEPAY SETTINGS
@@ -44469,26 +44465,85 @@ async function confirmRefundOrder() {
         }
       }
 
-      // ƯU TIÊN 100%: NẾU ĐÃ CẤU HÌNH TURSO DATABASE, ĐỌC TRỰC TIẾP TỪ TURSO (BẢO VỆ TỒN KHO CHỐNG XÓA TRẮNG)
-      if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
-        if (currentView && (!currentView.value || currentView.value.trim() === "")) {
-          currentView.placeholder = "⏳ Đang tải tài khoản từ Turso Database...";
+      // [PHẢN HỒI TỨC THÌ 0MS]: Cập nhật ngay lập tức từ bộ nhớ cục bộ để giao diện mượt mà tuyệt đối, không bao giờ bị đơ
+      const curKey = prodId + "_" + (vVal !== null ? vVal : "0");
+      window._currentlyRenderedStockKey = curKey;
+
+      const curVObjInit = (hasVars && vVal !== "ALL") ? (prod.variants && prod.variants[vVal]) : prod;
+      let initialAccs = [];
+      if (hasVars && vVal === "ALL") {
+        prod.variants.forEach(v => {
+          if (Array.isArray(v.accounts)) initialAccs.push(...v.accounts);
+        });
+      } else if (curVObjInit && Array.isArray(curVObjInit.accounts)) {
+        initialAccs = [...curVObjInit.accounts];
+      }
+      if (initialAccs.length === 0 && typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.getAvailable) {
+        try {
+          const lWh = MMO_WAREHOUSE.getAvailable(prodId, vVal) || [];
+          if (Array.isArray(lWh) && lWh.length > 0) initialAccs = lWh;
+        } catch(eW) {}
+      }
+      initialAccs = initialAccs.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
+
+      let initialCount = initialAccs.length;
+      if (initialCount === 0 && curVObjInit) {
+        if (hasVars && vVal === "ALL") {
+          initialCount = prod.variants.reduce((s, v) => s + (Number(v.stock) || 0), 0);
+        } else if (typeof curVObjInit.stock === "number" && curVObjInit.stock > 0) {
+          initialCount = curVObjInit.stock;
         }
+      }
+
+      if (currentView && document.activeElement !== currentView) {
+        currentView.value = initialAccs.length > 0 ? initialAccs.join("\n") : "";
+        currentView.placeholder = initialCount > 0 ? ("Kho sẵn sàng: " + initialCount + " acc. Dán tài khoản vào ô trên để nạp thêm.") : "Mỗi dòng 1 tài khoản (Định dạng: user|pass|2fa|...)";
+      }
+      if (countDisp) {
+        countDisp.innerText = initialCount + " acc";
+        if (initialCount === 0) countDisp.style.color = "#ef4444";
+        else if (initialCount < 5) countDisp.style.color = "#f59e0b";
+        else countDisp.style.color = "#10b981";
+      }
+
+      if (warningBox) {
+        if (initialCount === 0) {
+          warningBox.style.display = "flex";
+          warningBox.style.borderColor = "rgba(239,68,68,0.4)";
+          warningBox.style.background = "rgba(239,68,68,0.12)";
+          warningBox.style.color = "#ef4444";
+          warningBox.innerHTML = (hasVars && vVal !== "ALL")
+            ? "<i class='fa-solid fa-triangle-exclamation'></i> <span>Kho biến thể này đang <strong>HẾT HÀNG!</strong> Vui lòng nạp thêm tài khoản vào ô bên trên.</span>"
+            : "<i class='fa-solid fa-triangle-exclamation'></i> <span>Kho sản phẩm đang <strong>HẾT HÀNG!</strong> Vui lòng nạp thêm tài khoản vào ô bên trên.</span>";
+        } else if (initialCount < 5) {
+          warningBox.style.display = "flex";
+          warningBox.style.borderColor = "rgba(245,158,11,0.4)";
+          warningBox.style.background = "rgba(245,158,11,0.12)";
+          warningBox.style.color = "#f59e0b";
+          warningBox.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i> <span>Cảnh báo: Kho chỉ còn <strong>" + initialCount + " acc!</strong></span>";
+        } else {
+          warningBox.style.display = "none";
+        }
+      }
+      if (typeof renderSoldStockAccountsView === "function") {
+        renderSoldStockAccountsView(prodId, vVal);
+      }
+
+      // [ASYNC CLOUD SYNC]: Truy vấn Turso Cloud SQLite SSOT trong nền, không chặn giao diện (0ms)
+      if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
         try {
           const accounts = await TURSO_CLIENT.getAvailableAccounts(prodId, vVal);
           let effectiveAccounts = (Array.isArray(accounts) && accounts.length > 0) ? accounts : [];
           effectiveAccounts = effectiveAccounts.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
 
+          // Kiểm tra xem người dùng có còn đang xem đúng sản phẩm và biến thể này không (chống race condition khi bấm nhanh)
+          const curActiveProdSel = document.getElementById("admStockProductSelect");
+          const curActiveVarSel = document.getElementById("admStockVariantSelect");
+          const isStillSameTarget = (!curActiveProdSel || curActiveProdSel.value === prodId) && (!hasVars || !curActiveVarSel || curActiveVarSel.value === String(vVal));
+          if (!isStillSameTarget) return;
+
           const curVObj = (hasVars && vVal !== "ALL") ? (prod.variants && prod.variants[vVal]) : prod;
-          if (effectiveAccounts.length === 0) {
-            const localWh = (typeof MMO_WAREHOUSE !== "undefined") ? MMO_WAREHOUSE.getAvailable(prodId, vVal) : [];
-            if (Array.isArray(localWh) && localWh.length > 0) {
-              effectiveAccounts = localWh;
-            } else if (curVObj && Array.isArray(curVObj.accounts) && curVObj.accounts.length > 0) {
-              effectiveAccounts = curVObj.accounts;
-            }
-          } else {
-            // Khóa đồng bộ ngay lập tức vào biến thể và kho nội bộ để chống nhấp nháy 100%
+          if (effectiveAccounts.length > 0) {
             if (curVObj) {
               curVObj.accounts = effectiveAccounts;
               curVObj.stock = effectiveAccounts.length;
@@ -44499,7 +44554,6 @@ async function confirmRefundOrder() {
             }
           }
 
-          // Tính toán số lượng tồn kho an toàn (không bao giờ ép về 0 nếu sản phẩm có tồn kho chuẩn)
           let effectiveCount = effectiveAccounts.length;
           if (effectiveCount === 0 && curVObj) {
             const pfMaster = (typeof MASTER_PF_STOCK !== "undefined" && MASTER_PF_STOCK[prodId]) ? MASTER_PF_STOCK[prodId] : null;
@@ -44511,7 +44565,7 @@ async function confirmRefundOrder() {
             }
           }
 
-          if (currentView) {
+          if (currentView && document.activeElement !== currentView) {
             currentView.value = effectiveAccounts.length > 0 ? effectiveAccounts.join("\n") : "";
             currentView.placeholder = effectiveCount > 0 ? ("Kho sẵn sàng: " + effectiveCount + " acc. Dán tài khoản vào ô trên để nạp thêm.") : "Mỗi dòng 1 tài khoản (Định dạng: user|pass|2fa|...)";
           }
@@ -44541,7 +44595,6 @@ async function confirmRefundOrder() {
             prod.stock = effectiveCount;
           }
 
-          // Cập nhật DOM, số lượng và danh sách tài khoản
           if (typeof updateVariantSelectForProduct === "function") {
             updateVariantSelectForProduct(prodId);
             const varSelAfter = document.getElementById("admStockVariantSelect");
@@ -44550,109 +44603,12 @@ async function confirmRefundOrder() {
 
           if (typeof saveProductsToStorage === "function") saveProductsToStorage();
           if (typeof recordProductVariants === "function") recordProductVariants(prodId, prod.variants, prod.name);
-          refreshAllShopStockUI(prodId);
-
-          if (currentView) {
-            currentView.value = effectiveAccounts.length > 0 ? effectiveAccounts.join("\n") : "";
-            currentView.placeholder = effectiveCount > 0 ? ("Kho sẵn sàng: " + effectiveCount + " acc. Dán tài khoản vào ô trên để nạp thêm.") : "Mỗi dòng 1 tài khoản (Định dạng: user|pass|2fa|...)";
-          }
-          if (countDisp) {
-            countDisp.innerText = effectiveCount + " acc";
-            if (effectiveCount === 0) countDisp.style.color = "#ef4444";
-            else if (effectiveCount < 5) countDisp.style.color = "#f59e0b";
-            else countDisp.style.color = "#10b981";
-          }
-
-          if (warningBox) {
-            if (effectiveCount === 0) {
-              warningBox.style.display = "flex";
-              warningBox.style.borderColor = "rgba(239,68,68,0.4)";
-              warningBox.style.background = "rgba(239,68,68,0.12)";
-              warningBox.style.color = "#ef4444";
-              warningBox.innerHTML = (hasVars && vVal !== "ALL")
-                ? "<i class='fa-solid fa-triangle-exclamation'></i> <span>Kho biến thể này đang <strong>HẾT HÀNG (0 acc trên Turso)!</strong> Vui lòng nạp thêm tài khoản vào ô bên trên.</span>"
-                : "<i class='fa-solid fa-triangle-exclamation'></i> <span>Kho sản phẩm đang <strong>HẾT HÀNG (0 acc trên Turso)!</strong> Vui lòng nạp thêm tài khoản vào ô bên trên.</span>";
-            } else if (effectiveCount < 5) {
-              warningBox.style.display = "flex";
-              warningBox.style.borderColor = "rgba(245,158,11,0.4)";
-              warningBox.style.background = "rgba(245,158,11,0.12)";
-              warningBox.style.color = "#f59e0b";
-              warningBox.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i> <span>Cảnh báo: Kho chỉ còn <strong>" + effectiveCount + " acc</strong> trên Turso Database!</span>";
-            } else {
-              warningBox.style.display = "none";
-            }
-          }
-          renderSoldStockAccountsView(prodId, vVal);
           return;
         } catch(tursoLoadErr) {
-          console.warn("Turso load failed, falling back to local warehouse:", tursoLoadErr);
-          if (currentView) currentView.placeholder = "Đang dùng kho nội bộ (Turso API tạm thời ngoại tuyến)";
-        }
-
-        // FALLBACK KHO NỘI BỘ (Khi Turso lỗi hoặc chưa cấu hình)
-        const localAccounts = (typeof MMO_WAREHOUSE !== "undefined") ? MMO_WAREHOUSE.getAvailable(prodId, vVal) : [];
-        let effectiveCount = localAccounts.length;
-        if (effectiveCount === 0 && prod) {
-          const vObj = (hasVars && vVal !== "ALL" && prod.variants && prod.variants[vVal]) ? prod.variants[vVal] : prod;
-          if (typeof vObj.stock === "number" && vObj.stock > 0) effectiveCount = vObj.stock;
-        }
-
-        if (countDisp) {
-          countDisp.innerText = effectiveCount + " acc";
-          if (effectiveCount === 0) countDisp.style.color = "#ef4444";
-          else if (effectiveCount < 5) countDisp.style.color = "#f59e0b";
-          else countDisp.style.color = "#10b981";
-        }
-
-        if (currentView) {
-          if (localAccounts.length > 0) {
-            currentView.value = localAccounts.join("\n");
-          }
-          currentView.placeholder = "Mỗi dòng 1 tài khoản (Định dạng: user|pass|2fa|...)";
-        }
-
-        if (hasVars && vVal !== "ALL" && prod.variants && prod.variants[vVal]) {
-          if (localAccounts.length > 0) prod.variants[vVal].accounts = localAccounts;
-          prod.variants[vVal].stock = effectiveCount;
-        }
-
-        renderSoldStockAccountsView(prodId, vVal);
-        return;
-      }
-
-      // FALLBACK KHO NỘI BỘ (Khi chưa cấu hình Turso)
-      const accounts = MMO_WAREHOUSE.getAvailable(prodId, vVal);
-      const count = accounts.length;
-
-      if (countDisp) {
-        countDisp.innerText = count + " acc";
-        if (count === 0) countDisp.style.color = "#ef4444";
-        else if (count < 5) countDisp.style.color = "#f59e0b";
-        else countDisp.style.color = "#10b981";
-      }
-
-      if (currentView) currentView.value = accounts.join("\n");
-      renderSoldStockAccountsView(prodId, vVal);
-
-      if (warningBox) {
-        if (count === 0) {
-          warningBox.style.display = "flex";
-          warningBox.style.borderColor = "rgba(239,68,68,0.4)";
-          warningBox.style.background = "rgba(239,68,68,0.12)";
-          warningBox.style.color = "#ef4444";
-          warningBox.innerHTML = (hasVars && vVal !== "ALL")
-            ? "<i class='fa-solid fa-triangle-exclamation'></i> <span>Kho biến thể này đang <strong>HẾT HÀNG!</strong> Vui lòng nạp thêm tài khoản vào ô bên trên.</span>"
-            : "<i class='fa-solid fa-triangle-exclamation'></i> <span>Kho sản phẩm đang <strong>HẾT HÀNG!</strong> Vui lòng nạp thêm tài khoản vào ô bên trên.</span>";
-        } else if (count < 5) {
-          warningBox.style.display = "flex";
-          warningBox.style.borderColor = "rgba(245,158,11,0.4)";
-          warningBox.style.background = "rgba(245,158,11,0.12)";
-          warningBox.style.color = "#f59e0b";
-          warningBox.innerHTML = "<i class='fa-solid fa-triangle-exclamation'></i> <span>Cảnh báo: Kho biến thể chỉ còn <strong>" + count + " acc!</strong></span>";
-        } else {
-          warningBox.style.display = "none";
+          console.warn("Turso load background note:", tursoLoadErr);
         }
       }
+
     }
     window.handleStockVariantChange = handleStockVariantChange;
 
@@ -44793,23 +44749,18 @@ async function confirmRefundOrder() {
       }
 
       const prevVal = varSelect.value;
-      const totalProdStock = (typeof getShopProductStock === "function") ? getShopProductStock(prod) : ((typeof getProductStockCount === "function") ? getProductStockCount(prod) : (prod.stock || 0));
-      let allTag = "(" + totalProdStock + " acc)";
-      if (totalProdStock === 0) allTag = "❌ [HẾT HÀNG]";
-      else if (totalProdStock < 5) allTag = "⚠️ [" + totalProdStock + " acc]";
+      const totalProdStock = (typeof getShopProductStock === "function") ? getShopProductStock(prod) : (prod.stock || 0);
+      let allTag = totalProdStock === 0 ? "❌ [HẾT HÀNG]" : (totalProdStock < 5 ? ("⚠️ [" + totalProdStock + " acc]") : ("(" + totalProdStock + " acc)"));
       let optionsHtml = "<option value='ALL'>📦 Tất cả biến thể (Toàn bộ kho: " + allTag + ")</option>";
       prod.variants.forEach(function(v, idx) {
-        const vKey = getVariantStockKey(prodId, idx);
-        const vStock = (typeof getVariantStockCount === "function") ? getVariantStockCount(prod, idx) : ((map[vKey] && Array.isArray(map[vKey])) ? map[vKey].length : 0);
-        let tag = "(" + vStock + " acc)";
-        if (vStock === 0) tag = "❌ [HẾT HÀNG]";
-        else if (vStock < 5) tag = "⚠️ [" + vStock + " acc]";
+        const vs = (typeof getShopVariantStock === "function") ? getShopVariantStock(prod, idx) : (Array.isArray(v.accounts) ? v.accounts.length : (Number(v.stock) || 0));
+        let tag = vs === 0 ? "❌ [HẾT HÀNG]" : (vs < 5 ? ("⚠️ [" + vs + " acc]") : ("(" + vs + " acc)"));
         optionsHtml += "<option value='" + idx + "'>Biến thể " + (idx + 1) + ": " + escapeHtml(v.name) + " " + tag + " - " + formatVND(v.price) + "</option>";
       });
 
       if (varSelect.innerHTML !== optionsHtml) {
         varSelect.innerHTML = optionsHtml;
-        if (prevVal !== undefined && prevVal !== "" && prod.variants[prevVal]) {
+        if (prevVal !== undefined && prevVal !== "" && (prevVal === "ALL" || prod.variants[prevVal])) {
           varSelect.value = prevVal;
         } else if (prod.variants.length > 0) {
           varSelect.value = "0";
