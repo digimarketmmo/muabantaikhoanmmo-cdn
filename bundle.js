@@ -18053,7 +18053,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                     v.stock = res.available.length;
                     v.available = true;
                     if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.setAccounts) {
-                      MMO_WAREHOUSE.setAccounts(p.id, vi, res.available);
+                      MMO_WAREHOUSE.setAccounts(p.id, vi, res.available, true);
                     }
                   }
                 }).catch(() => {})
@@ -18063,6 +18063,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (tasks.length > 0) {
             await Promise.all(tasks);
             if (typeof saveProductsToStorage === "function") saveProductsToStorage();
+            if (typeof refreshAllShopStockUI === "function") refreshAllShopStockUI();
           }
         } catch(eInvSync) {
           console.warn("syncTursoStockToLocalUI accounts sync non-fatal error:", eInvSync);
@@ -18159,7 +18160,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
       },
 
-      setAccounts: function(prodId, variantIdx, allLines) {
+      setAccounts: function(prodId, variantIdx, allLines, silent) {
         if (!prodId) return 0;
         const prod = findShopProduct(prodId);
         if (!prod) return 0;
@@ -18175,9 +18176,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           recordProductVariants(prod.id, prod.variants, prod.name);
         }
 
-        if (typeof saveProductsToStorage === "function") saveProductsToStorage();
-        refreshAllShopStockUI(prod.id);
-        this._broadcast(prod.id, vVal, targetV.accounts, targetV.stock);
+        if (!silent) {
+          if (typeof saveProductsToStorage === "function") saveProductsToStorage();
+          refreshAllShopStockUI(prod.id);
+          this._broadcast(prod.id, vVal, targetV.accounts, targetV.stock);
+        }
         return targetV.accounts.length;
       },
 
@@ -18268,8 +18271,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             finalAccounts = prod.accounts;
           }
         }
+        if (!window._mmoTabSenderId) {
+          window._mmoTabSenderId = "mmo_tab_" + Math.random().toString(36).substring(2) + "_" + Date.now();
+        }
         const payload = {
           type: "STOCK_UPDATE",
+          senderId: window._mmoTabSenderId,
           prodId: String(prodId),
           prodData: prod,
           variants: targetVars,
@@ -18711,6 +18718,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (e.key === "mmo_stock_webhook_bus") {
           try {
             const data = JSON.parse(e.newValue || "{}");
+            if (data && data.senderId && window._mmoTabSenderId && data.senderId === window._mmoTabSenderId) return;
             if (data && data.type === "STOCK_UPDATE" && data.prodId) {
               if (window._mmoBroadcastChannel && typeof window._mmoBroadcastChannel.onmessage === "function") {
                 window._mmoBroadcastChannel.onmessage({ data: data });
@@ -18815,6 +18823,9 @@ function syncAllOpenViewsStock(changedProdId) {
       try {
         function handleRealtimeSyncMessage(ev) {
           if (!ev || !ev.data) return;
+          if (ev.data.senderId && window._mmoTabSenderId && ev.data.senderId === window._mmoTabSenderId) {
+            return; // Chống lặp tin nhắn do chính tab này phát ra
+          }
           if (ev.data.type === "PRODUCT_UPDATED") {
             const updId = ev.data.prodId;
             const updVariants = ev.data.variants;
@@ -18910,7 +18921,7 @@ function syncAllOpenViewsStock(changedProdId) {
               const isTyping = (document.activeElement === currentView || document.activeElement === bulkInput);
               if (!isTyping) {
                 if (typeof updateVariantSelectForProduct === "function") updateVariantSelectForProduct(selectEl.value);
-                if (typeof handleStockVariantChange === "function") handleStockVariantChange();
+                if (typeof refreshAllShopStockUI === "function") refreshAllShopStockUI(selectEl.value);
               }
             }
           }
@@ -44531,6 +44542,9 @@ async function confirmRefundOrder() {
 
       // [ASYNC CLOUD SYNC]: Truy vấn Turso Cloud SQLite SSOT trong nền, không chặn giao diện (0ms)
       if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
+        const fetchKey = prodId + "__" + vVal;
+        if (window._inFlightStockVariantReq === fetchKey) return;
+        window._inFlightStockVariantReq = fetchKey;
         try {
           const accounts = await TURSO_CLIENT.getAvailableAccounts(prodId, vVal);
           let effectiveAccounts = (Array.isArray(accounts) && accounts.length > 0) ? accounts : [];
@@ -44550,7 +44564,7 @@ async function confirmRefundOrder() {
               curVObj.available = true;
             }
             if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.setAccounts) {
-              MMO_WAREHOUSE.setAccounts(prodId, vVal, effectiveAccounts);
+              MMO_WAREHOUSE.setAccounts(prodId, vVal, effectiveAccounts, true); // silent: true chống broadcast loop
             }
           }
 
@@ -44595,17 +44609,12 @@ async function confirmRefundOrder() {
             prod.stock = effectiveCount;
           }
 
-          if (typeof updateVariantSelectForProduct === "function") {
-            updateVariantSelectForProduct(prodId);
-            const varSelAfter = document.getElementById("admStockVariantSelect");
-            if (varSelAfter && vVal !== null) varSelAfter.value = vVal;
-          }
-
-          if (typeof saveProductsToStorage === "function") saveProductsToStorage();
-          if (typeof recordProductVariants === "function") recordProductVariants(prodId, prod.variants, prod.name);
+          if (typeof recordProductVariants === "function" && hasVars) recordProductVariants(prodId, prod.variants, prod.name);
           return;
         } catch(tursoLoadErr) {
           console.warn("Turso load background note:", tursoLoadErr);
+        } finally {
+          window._inFlightStockVariantReq = null;
         }
       }
 
