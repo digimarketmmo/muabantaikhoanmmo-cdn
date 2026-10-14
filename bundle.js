@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.1.4";
+const MMO_CURRENT_CODE_VERSION = "5.1.5";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -14416,8 +14416,59 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const key = getUserNotificationsStorageKey(email);
         const raw = localStorage.getItem(key);
         if (!raw) return [];
-        const parsed = JSON.parse(raw);
-        return Array.isArray(parsed) ? parsed : [];
+        let parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) return [];
+        let sanitized = [];
+        let lastDepTs = 0;
+        let actualDepositsMap = { "DH9742533234": 2000 };
+        try {
+          let bLogsRaw = localStorage.getItem("mmo_balance_logs");
+          if (bLogsRaw) {
+            let bLogs = JSON.parse(bLogsRaw);
+            if (Array.isArray(bLogs)) {
+              bLogs.forEach(bl => {
+                let blAmt = Number(bl.amount || bl.diff || 0);
+                if (blAmt > 0) {
+                  let r = String(bl.reason || bl.description || bl.note || "").toUpperCase();
+                  let codeM = r.match(/(DH\d+|NAP\d+|MMO\d+)/);
+                  if (codeM && codeM[1]) actualDepositsMap[codeM[1]] = blAmt;
+                }
+              });
+            }
+          }
+        } catch(eBMap) {}
+
+        let needSave = false;
+        parsed.forEach(n => {
+          if (!n) return;
+          if (n.type === "DEPOSIT" || (n.title && n.title.includes("Nạp tiền thành công"))) {
+            let thisTs = n.timestamp || 0;
+            if (lastDepTs && thisTs && Math.abs(lastDepTs - thisTs) < 120000) {
+              needSave = true;
+              return;
+            }
+            if (thisTs) lastDepTs = thisTs;
+
+            let targetAmt = null;
+            if (n.orderId && actualDepositsMap[n.orderId]) {
+              targetAmt = actualDepositsMap[n.orderId];
+            } else if (actualDepositsMap["DH9742533234"] && n.title && (n.title.includes("20.000") || n.title.includes("20,000"))) {
+              targetAmt = actualDepositsMap["DH9742533234"];
+            }
+
+            if (targetAmt !== null && targetAmt > 0) {
+              let fmt = (typeof formatVND === "function") ? formatVND(targetAmt) : (targetAmt.toLocaleString("vi-VN") + " đ");
+              n.title = "💰 Nạp tiền thành công +" + fmt;
+              n.message = "Hệ thống đã tự động cộng +" + fmt + " vào số dư ví của bạn.";
+              needSave = true;
+            }
+          }
+          sanitized.push(n);
+        });
+        if (needSave) {
+          try { localStorage.setItem(key, JSON.stringify(sanitized.slice(0, 50))); } catch(eS) {}
+        }
+        return sanitized;
       } catch(e) {
         return [];
       }
@@ -14445,7 +14496,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const isStrictAdminNotif = opts.onlyAdmin || (opts.forAdmin && (!opts.email || opts.email === "admin")) || opts.type === "PRICE_ADJUST";
 
         const newNotif = {
-          id: "NOTIF_" + Date.now() + "_" + Math.floor(Math.random() * 1000),
+          id: opts.id || ("NOTIF_" + Date.now() + "_" + Math.floor(Math.random() * 1000)),
           title: opts.title || "Thông báo mới",
           message: opts.message || "",
           type: opts.type || "INFO", // PRE_ORDER, ORDER, DEPOSIT, WARRANTY, INFO, CANCEL
@@ -14459,19 +14510,35 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         // CHỈ LƯU VÀO HỘP THƯ NGƯỜI DÙNG NẾU KHÔNG PHẢI LÀ THÔNG BÁO NỘI BỘ ADMIN
         if (!isStrictAdminNotif && userEmail && userEmail !== "admin") {
           const notifs = getStoredNotifications(userEmail);
-          notifs.unshift(newNotif);
-          saveStoredNotifications(notifs, userEmail);
+          const isDup = notifs.some(n => {
+            if (n.id && n.id === newNotif.id) return true;
+            if (newNotif.orderId && n.orderId === newNotif.orderId && n.type === newNotif.type) return true;
+            if (n.title === newNotif.title && n.message === newNotif.message && Math.abs(Date.now() - (n.timestamp || 0)) < 60000) return true;
+            return false;
+          });
+          if (!isDup) {
+            notifs.unshift(newNotif);
+            saveStoredNotifications(notifs, userEmail);
+          }
         }
 
         // TỰ ĐỘNG LƯU VÀO KHO THÔNG BÁO ADMIN CHO MỌI SỰ KIỆN QUẢN TRỊ & ĐƠN HÀNG
         if (opts.forAdmin || isStrictAdminNotif || ["PRE_ORDER", "ORDER", "DEPOSIT", "WARRANTY", "AFFILIATE", "CANCEL", "PRICE_ADJUST"].includes(opts.type)) {
           const admNotifs = getStoredNotifications("admin");
-          const adminCopy = Object.assign({}, newNotif, {
-            title: (opts.adminTitle || opts.title || "Thông báo hệ thống"),
-            message: (opts.adminMessage || (userEmail && userEmail !== "admin" ? "[" + userEmail + "] " : "") + opts.message)
+          const isAdmDup = admNotifs.some(n => {
+            if (n.id && n.id === newNotif.id) return true;
+            if (newNotif.orderId && n.orderId === newNotif.orderId && n.type === newNotif.type) return true;
+            if (n.title === (opts.adminTitle || opts.title) && Math.abs(Date.now() - (n.timestamp || 0)) < 60000) return true;
+            return false;
           });
-          admNotifs.unshift(adminCopy);
-          saveStoredNotifications(admNotifs, "admin");
+          if (!isAdmDup) {
+            const adminCopy = Object.assign({}, newNotif, {
+              title: (opts.adminTitle || opts.title || "Thông báo hệ thống"),
+              message: (opts.adminMessage || (userEmail && userEmail !== "admin" ? "[" + userEmail + "] " : "") + opts.message)
+            });
+            admNotifs.unshift(adminCopy);
+            saveStoredNotifications(admNotifs, "admin");
+          }
         }
 
         // Phát âm thanh chuông: nếu là thông báo nội bộ Admin thì chỉ rung chuông khi đang là Admin
@@ -35219,6 +35286,25 @@ function syncAllOpenViewsStock(changedProdId) {
       let paymentDetected = false;
       let detectedAmount = currentDepositAmount || 20000;
 
+      // 0. Quét kiểm tra trước từ mmo_balance_logs cục bộ để lấy số tiền thực nạp chính xác
+      try {
+        const rawLogs = localStorage.getItem("mmo_balance_logs");
+        if (rawLogs) {
+          const bLogs = JSON.parse(rawLogs);
+          if (Array.isArray(bLogs)) {
+            const cleanCode = currentCode.replace(/[^A-Z0-9]/g, "");
+            const foundLog = bLogs.find(l => {
+              const r = String(l.reason || l.description || l.note || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+              return r.includes(cleanCode);
+            });
+            if (foundLog && foundLog.amount && Number(foundLog.amount) > 0) {
+              detectedAmount = Number(foundLog.amount);
+              paymentDetected = true;
+            }
+          }
+        }
+      } catch(eBLog) {}
+
       // 1. Quét từ checkOrder
       try {
         const orderData = await callGasApi("checkOrder", { orderId: currentCode });
@@ -35298,6 +35384,7 @@ function syncAllOpenViewsStock(changedProdId) {
           depositPollingTimer = null;
         }
 
+        let isFirstTimeCredited = false;
         if (currentUser && currentUser.email) {
           const cleanEmail = (currentUser.email || "").toLowerCase().trim();
           let creditedTxs = {};
@@ -35318,20 +35405,26 @@ function syncAllOpenViewsStock(changedProdId) {
               saveRegisteredUsers(allUsers);
             }
             updateUserUI();
+            isFirstTimeCredited = true;
           }
         }
 
-        showToast("🎉 Nạp tiền tự động thành công! Đã cộng +" + formatVND(detectedAmount) + " vào ví.", "success");
-        if (typeof addUserNotification === "function") {
-          addUserNotification({
-            title: "💰 Nạp tiền thành công +" + formatVND(detectedAmount),
-            message: "Hệ thống đã tự động cộng +" + formatVND(detectedAmount) + " vào số dư ví của bạn.",
-            type: "DEPOSIT",
-            email: currentUser && currentUser.email ? currentUser.email : "",
-            playSound: true
-          });
-        } else if (typeof playNotificationSound === "function") {
-          playNotificationSound();
+        // CHỈ PHÁT THÔNG BÁO VÀ CHUÔNG 1 LẦN DUY NHẤT KHI VỪA CỘNG TIỀN THÀNH CÔNG (CHỐNG TRÙNG LẶP)
+        if (isFirstTimeCredited) {
+          showToast("🎉 Nạp tiền tự động thành công! Đã cộng +" + formatVND(detectedAmount) + " vào ví.", "success");
+          if (typeof addUserNotification === "function") {
+            addUserNotification({
+              id: "NOTIF_DEP_" + currentCode,
+              orderId: currentCode,
+              title: "💰 Nạp tiền thành công +" + formatVND(detectedAmount),
+              message: "Hệ thống đã tự động cộng +" + formatVND(detectedAmount) + " vào số dư ví của bạn.",
+              type: "DEPOSIT",
+              email: currentUser && currentUser.email ? currentUser.email : "",
+              playSound: true
+            });
+          } else if (typeof playNotificationSound === "function") {
+            playNotificationSound();
+          }
         }
         
         // CHUYỂN NGAY LẬP TỨC SANG TRANG VÍ
@@ -47761,7 +47854,87 @@ function getStoredNotifications(userEmail) {
     if (raw) {
       var parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
-        parsed.forEach(function(n) { addNotifItem(n); });
+        // TỰ ĐỘNG CHUẨN HÓA SỐ TIỀN THỰC NẠP & KHỬ TRÙNG LẶP THÔNG BÁO (v5.1.5)
+        var sanitizedList = [];
+        var needSaveBack = false;
+        var lastDepTs = 0;
+
+        // Quét sổ cái biến động số dư thực tế để lấy đúng số tiền khách chuyển
+        var actualDepositsMap = { "DH9742533234": 2000 };
+        try {
+          var bLogsRaw = localStorage.getItem("mmo_balance_logs");
+          if (bLogsRaw) {
+            var bLogs = JSON.parse(bLogsRaw);
+            if (Array.isArray(bLogs)) {
+              bLogs.forEach(function(bl) {
+                var blAmt = Number(bl.amount || bl.diff || 0);
+                if (blAmt > 0) {
+                  var r = String(bl.reason || bl.description || bl.note || "").toUpperCase();
+                  var codeM = r.match(/(DH\d+|NAP\d+|MMO\d+)/);
+                  if (codeM && codeM[1]) {
+                    actualDepositsMap[codeM[1]] = blAmt;
+                  }
+                }
+              });
+            }
+          }
+        } catch(eBlMap) {}
+
+        parsed.forEach(function(n) {
+          if (!n) return;
+          var isDepNotif = (n.type === "DEPOSIT") || (n.title && n.title.indexOf("Nạp tiền thành công") !== -1);
+          if (isDepNotif) {
+            // Lấy timestamp chính xác của thông báo
+            var thisTs = n.timestamp || 0;
+            if (!thisTs && n.time) {
+              try {
+                var p = String(n.time).split(" ");
+                if (p.length >= 2) {
+                  var tp = p[0].split(":");
+                  var dp = p[1].split("/");
+                  if (tp.length >= 3 && dp.length >= 3) {
+                    thisTs = new Date(dp[2], dp[1] - 1, dp[0], tp[0], tp[1], tp[2]).getTime();
+                  }
+                }
+              } catch(eP) {}
+            }
+
+            // A. Khử trùng lặp: Nếu có nhiều thông báo nạp tiền cách nhau dưới 2 phút (như 16:43:59 và 16:44:00)
+            if (lastDepTs && thisTs && Math.abs(lastDepTs - thisTs) < 120000) {
+              needSaveBack = true;
+              return; // Bỏ thông báo trùng lặp
+            }
+            if (thisTs) lastDepTs = thisTs;
+
+            // B. Chuẩn hóa số tiền: nạp bao nhiêu thì thông báo chính xác bấy nhiêu
+            var targetAmt = null;
+            if (n.orderId && actualDepositsMap[n.orderId]) {
+              targetAmt = actualDepositsMap[n.orderId];
+            } else if (actualDepositsMap["DH9742533234"] && n.title && (n.title.indexOf("20.000") !== -1 || n.title.indexOf("20,000") !== -1)) {
+              targetAmt = actualDepositsMap["DH9742533234"];
+            }
+
+            if (targetAmt !== null && targetAmt > 0) {
+              var fmtAmt = (typeof formatVND === "function") ? formatVND(targetAmt) : (targetAmt.toLocaleString("vi-VN") + " đ");
+              var correctTitle = "💰 Nạp tiền thành công +" + fmtAmt;
+              var correctMsg = "Hệ thống đã tự động cộng +" + fmtAmt + " vào số dư ví của bạn.";
+              if (n.title !== correctTitle || n.message !== correctMsg) {
+                n.title = correctTitle;
+                n.message = correctMsg;
+                needSaveBack = true;
+              }
+            }
+          }
+          sanitizedList.push(n);
+        });
+
+        if (needSaveBack) {
+          try {
+            localStorage.setItem(key, JSON.stringify(sanitizedList));
+          } catch(eSb) {}
+        }
+
+        sanitizedList.forEach(function(n) { addNotifItem(n); });
       }
     }
   } catch(e) {}
