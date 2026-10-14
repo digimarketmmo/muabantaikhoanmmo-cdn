@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.1.6";
+const MMO_CURRENT_CODE_VERSION = "5.1.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -40238,7 +40238,7 @@ function getProductSchemaReviews(p, idx) {
       if (lower.includes("bảo hành") || lower.includes("bao hanh") || lower.includes("lỗi") || lower.includes("sai pass") || lower.includes("đổi")) {
         replyText = "✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!";
       } else if (lower.includes("nạp") || lower.includes("tiền") || lower.includes("nap tien") || lower.includes("chuyển khoản")) {
-        replyText = "💰 Về nạp tiền tự động: Hệ thống SePay quét giao dịch 24/7 trong 1-5 giây. Nếu quá 3 phút chưa thấy tiền vào ví, bạn vui lòng gửi hình ảnh bill hoặc mã giao dịch để Admin cộng tay ngay nhé!";
+        replyText = "💰 Về nạp tiền tự động: Hệ thống quét giao dịch 24/7 trong 1-5 giây. Nếu quá 3 phút chưa thấy tiền vào ví, bạn vui lòng gửi hình ảnh bill hoặc mã giao dịch để Admin sử lý ngay nhé!";
       } else if (lower.includes("chào") || lower.includes("alo") || lower.includes("hello") || lower.includes("hi")) {
         replyText = "Dạ chào bạn! Shop MUABANTAIKHOANMMO luôn sẵn sàng phục vụ. Bạn cần hỗ trợ bảo hành sản phẩm hay tư vấn mua hàng ạ?";
       }
