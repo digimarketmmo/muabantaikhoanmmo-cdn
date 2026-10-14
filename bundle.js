@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.0.9";
+const MMO_CURRENT_CODE_VERSION = "5.1.4";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -15228,11 +15228,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "PROD_MU2CZL38PH": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_france.png",
         "PROD_MU2IXVFLMW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_affiliate_gio.jpg",
         "PROD_MU2JIBBRH8": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_vietnam.png",
-        "PROD_MU2OXBZC6K": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2OXBZC6K/image",
+        "PROD_MU2OXBZC6K": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2OXBZC6K.jpg",
         "PROD_MU2PA8VNDP": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/instagram.png",
         "PROD_MU2YQ1J3PY": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/hotmail_oauth2.png",
         "PROD_MU5PWT7PP7": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/kling_ai.png",
-        "PROD_MU5SPLMSEC": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU5SPLMSEC/image",
+        "PROD_MU5SPLMSEC": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5SPLMSEC.jpg",
         "PROD_MU5T3T47AE": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU5T3T47AE/image",
         "PROD_MU6R34FZ4Z": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU6R34FZ4Z/image",
         "PROD_MU9YH8D9FK": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU9YH8D9FK/image",
@@ -15257,7 +15257,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         "PROD_MUKAMO9XPD": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUKAMO9XPD/image",
         "PROD_MUKAXC4Q9T": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg",
         "PROD_MUM6JQTW8C": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUM6JQTW8C/image",
-        "PROD_MUNUEKI3NM": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUNUEKI3NM/image",
+        "PROD_MUNUEKI3NM": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUNUEKI3NM.jpg",
         "PROD_MUOIH8CW59": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUOIH8CW59/image",
         "PROD_MUOQDRL4F0": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUOQDRL4F0/image",
         "PROD_MUOQS3DOIU": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUOQS3DOIU/image",
@@ -18842,6 +18842,11 @@ function syncAllOpenViewsStock(changedProdId) {
               updateProductRealtimeEverywhere(updId, updAliases, updData, updVariants, updImg);
             }
             if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(updId, ev.data.stock, null, true);
+          }
+          if (ev.data && (ev.data.type === "UPDATE_PAYMENT_SETTINGS" || ev.data.type === "PAYMENT_SETTINGS_UPDATED")) {
+            if (typeof applyPaymentSettingsToUI === "function" && ev.data.settings) {
+              applyPaymentSettingsToUI(ev.data.settings);
+            }
           }
           if (ev.data && (ev.data.type === "STOCK_UPDATE" || ev.data.type === "STOCK_UPDATED")) {
             _cachedStockRaw = null;
@@ -25647,55 +25652,177 @@ function syncAllOpenViewsStock(changedProdId) {
     window.handleDeleteCurrentStockProduct = handleDeleteCurrentStockProduct;
 
     // =========================================================================
-    // 1. PAYMENT & SEPAY SETTINGS
+    // 1. PAYMENT & SEPAY SETTINGS (FLEXIBLE CLOUD-SYNCED ENGINE)
     // =========================================================================
     function getPaymentSettings() {
       try {
         const stored = localStorage.getItem("mmo_payment_settings");
         if (stored) {
           const parsed = JSON.parse(stored);
-          if (parsed && typeof parsed === "object") {
-            if (!parsed.bankAccount || parsed.bankAccount === "0968033451") parsed.bankAccount = "0975902076";
+          if (parsed && typeof parsed === "object" && (parsed.bankAccount || parsed.accountNumber)) {
             return parsed;
           }
         }
       } catch(e) {}
       return {
         bankCode: "MB",
-        bankAccount: "0975902076",
+        bankAccount: "0968033451",
+        accountNumber: "0968033451",
         accountName: "NGUYEN MANH DONG",
         depositPrefix: "NAP TIEN MMO",
-        sepayApiKey: "YOUR_SEPAY_API_KEY"
+        sepayApiKey: ""
       };
     }
     window.getPaymentSettings = getPaymentSettings;
 
+    function applyPaymentSettingsToUI(s) {
+      if (!s) s = getPaymentSettings();
+      const bCode = (s.bankCode || "MB").toUpperCase();
+      const bAcc = s.bankAccount || s.accountNumber || "0968033451";
+      const bOwner = s.accountName || s.accountOwner || "NGUYEN MANH DONG";
+      const bPrefix = s.depositPrefix || "NAP TIEN MMO";
+      const bKey = s.sepayApiKey || "";
+
+      // 1. Form Admin Cài đặt
+      if (document.getElementById("setBankCode")) document.getElementById("setBankCode").value = s.bankCode || "MB";
+      if (document.getElementById("setBankAccount")) document.getElementById("setBankAccount").value = bAcc;
+      if (document.getElementById("setAccountName")) document.getElementById("setAccountName").value = bOwner;
+      if (document.getElementById("setDepositPrefix")) document.getElementById("setDepositPrefix").value = bPrefix;
+      if (document.getElementById("setSepayApiKey") && bKey) document.getElementById("setSepayApiKey").value = bKey;
+
+      // 2. Thẻ hiển thị Nạp tiền
+      const bankNameText = bCode.includes("BANK") ? bCode : (bCode + " Bank");
+      if (document.getElementById("depositBankName")) document.getElementById("depositBankName").innerText = bankNameText;
+      if (document.getElementById("depositBankAcc")) document.getElementById("depositBankAcc").innerText = bAcc;
+      if (document.getElementById("depositBankOwner")) document.getElementById("depositBankOwner").innerText = bOwner;
+      if (document.getElementById("depBankName")) document.getElementById("depBankName").innerText = bCode;
+      if (document.getElementById("depAccountNum")) document.getElementById("depAccountNum").innerText = bAcc;
+      if (document.getElementById("depAccountName")) document.getElementById("depAccountName").innerText = bOwner;
+
+      // 3. Modal thanh toán trực tiếp
+      if (document.getElementById("dpModalBankName")) document.getElementById("dpModalBankName").innerText = bankNameText;
+      if (document.getElementById("dpModalBankAcc")) document.getElementById("dpModalBankAcc").innerText = bAcc;
+      if (document.getElementById("dpModalBankOwner")) document.getElementById("dpModalBankOwner").innerText = bOwner;
+    }
+    window.applyPaymentSettingsToUI = applyPaymentSettingsToUI;
+
+    async function fetchCloudPaymentSettings() {
+      try {
+        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+        const res = await fetch(workerUrl + "/api/payment/settings", { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.success && data.settings) {
+            const cur = getPaymentSettings();
+            const merged = { ...cur, ...data.settings };
+            if (cur.sepayApiKey && !merged.sepayApiKey) {
+              merged.sepayApiKey = cur.sepayApiKey;
+            }
+            localStorage.setItem("mmo_payment_settings", JSON.stringify(merged));
+            applyPaymentSettingsToUI(merged);
+            return merged;
+          }
+        }
+      } catch(e) {}
+      return getPaymentSettings();
+    }
+    window.fetchCloudPaymentSettings = fetchCloudPaymentSettings;
+
     function loadPaymentSettingsUI() {
       const s = getPaymentSettings();
-      if (document.getElementById("setBankCode")) document.getElementById("setBankCode").value = s.bankCode || "MB";
-      if (document.getElementById("setBankAccount")) document.getElementById("setBankAccount").value = s.bankAccount || "0975902076";
-      if (document.getElementById("setAccountName")) document.getElementById("setAccountName").value = s.accountName || "NGUYEN MANH DONG";
-      if (document.getElementById("setDepositPrefix")) document.getElementById("setDepositPrefix").value = s.depositPrefix || "NAP TIEN MMO";
-      if (document.getElementById("setSepayApiKey")) document.getElementById("setSepayApiKey").value = s.sepayApiKey || "";
+      applyPaymentSettingsToUI(s);
+      fetchCloudPaymentSettings().then(cloudS => {
+        if (cloudS) applyPaymentSettingsToUI(cloudS);
+      }).catch(() => {});
     }
     window.loadPaymentSettingsUI = loadPaymentSettingsUI;
 
-    function handleSavePaymentSettings(e) {
+    async function handleSavePaymentSettings(e) {
       if (e && e.preventDefault) e.preventDefault();
+      const btn = (e && e.target && e.target.querySelector) ? e.target.querySelector("button[type='submit']") : null;
+      let origHtml = "";
+      if (btn) {
+        origHtml = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang lưu lên Cloud...";
+      }
+
       const settings = {
-        bankCode: document.getElementById("setBankCode") ? document.getElementById("setBankCode").value : "MB",
-        bankAccount: document.getElementById("setBankAccount") ? document.getElementById("setBankAccount").value : "0975902076",
-        accountName: document.getElementById("setAccountName") ? document.getElementById("setAccountName").value : "NGUYEN MANH DONG",
-        depositPrefix: document.getElementById("setDepositPrefix") ? document.getElementById("setDepositPrefix").value : "NAP TIEN MMO",
-        sepayApiKey: document.getElementById("setSepayApiKey") ? document.getElementById("setSepayApiKey").value : ""
+        bankCode: document.getElementById("setBankCode") ? document.getElementById("setBankCode").value.trim() : "MB",
+        bankAccount: document.getElementById("setBankAccount") ? document.getElementById("setBankAccount").value.trim() : "0968033451",
+        accountName: document.getElementById("setAccountName") ? document.getElementById("setAccountName").value.trim() : "NGUYEN MANH DONG",
+        depositPrefix: document.getElementById("setDepositPrefix") ? document.getElementById("setDepositPrefix").value.trim() : "NAP TIEN MMO",
+        sepayApiKey: document.getElementById("setSepayApiKey") ? document.getElementById("setSepayApiKey").value.trim() : ""
       };
+      settings.accountNumber = settings.bankAccount;
+      settings.accountOwner = settings.accountName;
+
+      // 1. Lưu LocalStorage trình duyệt
       localStorage.setItem("mmo_payment_settings", JSON.stringify(settings));
 
-      if (document.getElementById("depBankName")) document.getElementById("depBankName").innerText = settings.bankCode;
-      if (document.getElementById("depAccountNum")) document.getElementById("depAccountNum").innerText = settings.bankAccount;
-      if (document.getElementById("depAccountName")) document.getElementById("depAccountName").innerText = settings.accountName;
+      // 2. Cập nhật ngay toàn bộ DOM UI
+      applyPaymentSettingsToUI(settings);
+      if (typeof prepareDeposit === "function" && typeof currentDepositAmount !== "undefined") {
+        prepareDeposit(currentDepositAmount || 200000, false);
+      }
 
-      showToast("🎉 Lưu cấu hình thanh toán SePay & Ngân Hàng thành công!", "success");
+      // 3. Lưu lên Turso Database qua Cloudflare Worker /api/admin/settings
+      try {
+        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+        const adminSec = "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+        await fetch(workerUrl + "/api/admin/settings", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-admin-secret": adminSec
+          },
+          body: JSON.stringify({
+            settings: {
+              mmo_payment_settings: settings,
+              BANK_ID: settings.bankCode,
+              ACCOUNT_NO: settings.bankAccount,
+              ACCOUNT_NAME: settings.accountName,
+              ORDER_PREFIX: settings.depositPrefix,
+              SEPAY_API_KEY: settings.sepayApiKey
+            }
+          })
+        });
+      } catch(eTurso) {
+        console.warn("Turso settings save error:", eTurso);
+      }
+
+      // 4. Đồng bộ Google Sheets
+      if (typeof callGasApi === "function") {
+        try {
+          await callGasApi("adminSaveSettings", {
+            settings: {
+              bankCode: settings.bankCode,
+              bankAccount: settings.bankAccount,
+              accountName: settings.accountName,
+              depositPrefix: settings.depositPrefix,
+              sepayApiKey: settings.sepayApiKey
+            }
+          });
+        } catch(eGas) {}
+      }
+
+      // 5. Phát tin tức thì qua BroadcastChannel tới tất cả các tab khách/admin
+      try {
+        const bc = new BroadcastChannel("muabanmmo_realtime_sync");
+        bc.postMessage({ type: "UPDATE_PAYMENT_SETTINGS", settings });
+        setTimeout(() => bc.close(), 1000);
+      } catch(eBc) {}
+
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = origHtml;
+      }
+
+      showToast("🎉 Lưu & đồng bộ thông tin tài khoản ngân hàng lên Cloud thành công!", "success");
     }
     window.handleSavePaymentSettings = handleSavePaymentSettings;
 
@@ -34973,7 +35100,8 @@ function syncAllOpenViewsStock(changedProdId) {
       const pay = typeof getPaymentSettings === "function" ? getPaymentSettings() : {
         bankCode: "MB",
         bankName: "MB Bank",
-        accountNumber: "0975902076",
+        bankAccount: "0968033451",
+        accountNumber: "0968033451",
         accountOwner: "NGUYEN MANH DONG",
         depositPrefix: "MMO"
       };
@@ -35008,13 +35136,18 @@ function syncAllOpenViewsStock(changedProdId) {
         curActiveBtn.style.background = "#10b981";
         curActiveBtn.style.border = "1px solid #10b981";
       }
-      if (bankNameEl) bankNameEl.innerText = pay.bankName || "MB Bank";
-      if (bankAccEl) bankAccEl.innerText = pay.accountNumber || "0975902076";
-      if (bankOwnerEl) bankOwnerEl.innerText = pay.accountOwner || "NGUYEN MANH DONG";
+      
+      const currentBankName = pay.bankName || (pay.bankCode === "MB" ? "MB Bank" : (pay.bankCode || "MB Bank"));
+      const currentBankAcc = pay.bankAccount || pay.accountNumber || "0968033451";
+      const currentBankOwner = pay.accountName || pay.accountOwner || "NGUYEN MANH DONG";
+
+      if (bankNameEl) bankNameEl.innerText = currentBankName;
+      if (bankAccEl) bankAccEl.innerText = currentBankAcc;
+      if (bankOwnerEl) bankOwnerEl.innerText = currentBankOwner;
 
       const bankCode = (pay.bankCode || "MB").toUpperCase();
-      const bankAcc = pay.accountNumber || "0975902076";
-      const bankOwner = encodeURIComponent(pay.accountOwner || "NGUYEN MANH DONG");
+      const bankAcc = currentBankAcc;
+      const bankOwner = encodeURIComponent(currentBankOwner);
       const memo = encodeURIComponent(depositOrderCode);
 
       const qrUrl = `https://img.vietqr.io/image/${bankCode}-${bankAcc}-compact.png?amount=${amount}&addInfo=${memo}&accountName=${bankOwner}`;
@@ -35091,7 +35224,24 @@ function syncAllOpenViewsStock(changedProdId) {
         const orderData = await callGasApi("checkOrder", { orderId: currentCode });
         if (orderData && (orderData.status === "COMPLETED" || orderData.status === "PAID")) {
           paymentDetected = true;
-          detectedAmount = Number(orderData.totalAmount) || detectedAmount;
+          if (orderData.actualAmount && !isNaN(Number(orderData.actualAmount)) && Number(orderData.actualAmount) > 0) {
+            detectedAmount = Number(orderData.actualAmount);
+          } else if (orderData.paidAmount && !isNaN(Number(orderData.paidAmount)) && Number(orderData.paidAmount) > 0) {
+            detectedAmount = Number(orderData.paidAmount);
+          } else if (orderData.transferAmount && !isNaN(Number(orderData.transferAmount)) && Number(orderData.transferAmount) > 0) {
+            detectedAmount = Number(orderData.transferAmount);
+          } else {
+            const noteText = String(orderData.accounts || orderData.note || orderData.message || "");
+            const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+            if (amtMatch && amtMatch[1]) {
+              const parsedAmt = Number(amtMatch[1].replace(/[\.,]/g, ""));
+              if (!isNaN(parsedAmt) && parsedAmt > 0) {
+                detectedAmount = parsedAmt;
+              }
+            } else if (orderData.totalAmount && !isNaN(Number(orderData.totalAmount))) {
+              detectedAmount = Number(orderData.totalAmount);
+            }
+          }
         }
       } catch(e) {}
 
@@ -35103,10 +35253,42 @@ function syncAllOpenViewsStock(changedProdId) {
             const matched = ordersRes.orders.find(o => String(o.orderId).trim().toUpperCase() === currentCode && (o.status === "COMPLETED" || o.status === "PAID"));
             if (matched) {
               paymentDetected = true;
-              detectedAmount = Number(matched.totalAmount) || detectedAmount;
+              if (matched.actualAmount && Number(matched.actualAmount) > 0) {
+                detectedAmount = Number(matched.actualAmount);
+              } else if (matched.paidAmount && Number(matched.paidAmount) > 0) {
+                detectedAmount = Number(matched.paidAmount);
+              } else {
+                const noteText = String(matched.accounts || matched.note || matched.message || "");
+                const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+                if (amtMatch && amtMatch[1]) {
+                  const parsedAmt = Number(amtMatch[1].replace(/[\.,]/g, ""));
+                  if (!isNaN(parsedAmt) && parsedAmt > 0) {
+                    detectedAmount = parsedAmt;
+                  }
+                } else if (matched.totalAmount && !isNaN(Number(matched.totalAmount))) {
+                  detectedAmount = Number(matched.totalAmount);
+                }
+              }
             }
           }
         } catch(e) {}
+      }
+
+      // 3. Quét kiểm tra thêm từ sổ cái lịch sử giao dịch Lich_Su_Bank nếu detectedAmount vẫn là preset
+      if (paymentDetected) {
+        try {
+          const transRes = await callGasApi("getTransactions", { adminEmail: (currentUser && currentUser.email) || "" });
+          if (transRes && Array.isArray(transRes.transactions)) {
+            const cleanCode = currentCode.replace(/[^A-Z0-9]/g, "");
+            const matchedTx = transRes.transactions.find(tx => {
+              const c = String(tx.content || tx.description || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+              return c.includes(cleanCode);
+            });
+            if (matchedTx && matchedTx.amount && Number(matchedTx.amount) > 0) {
+              detectedAmount = Number(matchedTx.amount);
+            }
+          }
+        } catch(eTx) {}
       }
 
       // XỬ LÝ KHI PHÁT HIỆN THANH TOÁN THÀNH CÔNG ĐÚNG MÃ ĐƠN NẠP NÀY
@@ -35216,8 +35398,25 @@ function syncAllOpenViewsStock(changedProdId) {
           } catch(e) {}
         }
 
+        // Xử lý tự động cân bằng số dư: Nếu trước đây đơn DH9742533234 hoặc nạp nhầm cộng thừa 18.000đ
+        if (!localStorage.getItem("mmo_reconciled_dh9742533234_v514")) {
+          localStorage.setItem("mmo_reconciled_dh9742533234_v514", "true");
+          if (cleanEmail === "manhdongvtc@gmail.com") {
+            if (gasBal !== null && localBal - gasBal >= 18000) {
+              localBal = gasBal;
+              if (currentUser) currentUser.balance = gasBal;
+            } else if (localBal >= 232000) {
+              localBal = localBal - 18000;
+              if (currentUser) currentUser.balance = localBal;
+            }
+          }
+        }
+
         // Quyết định số dư chuẩn xác: Lấy số dư hợp lệ cao nhất giữa Cloud Turso, GAS Cloud và Local
         let effectiveBal = Math.max(tursoBal || 0, gasBal || 0, localBal || 0, calcBal || 0);
+        if (gasBal !== null && gasBal > 0 && cleanEmail === "manhdongvtc@gmail.com" && (effectiveBal - gasBal === 18000)) {
+          effectiveBal = gasBal;
+        }
 
         currentUser.balance = effectiveBal;
         try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
@@ -38135,6 +38334,8 @@ function initMMOApplication() {
       if (typeof syncTelegramLinks === "function") syncTelegramLinks();
       if (typeof syncMarqueeNotice === "function") syncMarqueeNotice();
       if (typeof loadGeneralSettingsUI === "function") loadGeneralSettingsUI();
+      if (typeof loadPaymentSettingsUI === "function") loadPaymentSettingsUI();
+      if (typeof fetchCloudPaymentSettings === "function") fetchCloudPaymentSettings();
 
       // Đăng ký nhận sự kiện cập nhật cấu hình tức thì từ các tab khác
       try {
@@ -38148,6 +38349,7 @@ function initMMOApplication() {
               if (typeof syncTelegramLinks === "function") syncTelegramLinks(s.telegram);
               if (typeof syncMarqueeNotice === "function") syncMarqueeNotice(s.marqueeText);
               if (typeof loadGeneralSettingsUI === "function") loadGeneralSettingsUI();
+              if (typeof loadPaymentSettingsUI === "function") loadPaymentSettingsUI();
             }
           };
         }
@@ -40084,7 +40286,7 @@ function getProductSchemaReviews(p, idx) {
           let s = escapeHtml(t).replace(/\n/g, "<br/>");
           return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}))/gi, function(match, fullCode, cleanCode) {
             const code = cleanCode || fullCode.replace('#', '');
-            return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để mở Lịch Sử Đơn Hàng &amp; Xử Lý Đổi Trả / Hoàn Tiền" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
+            return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để xem chi tiết đơn hàng" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
           });
         })(cleanText) + "</div>") : "";
 
@@ -40385,7 +40587,7 @@ function getProductSchemaReviews(p, idx) {
             let s = escapeHtml(t).replace(/\n/g, "<br/>");
             return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}|PRE\d{6,15}))/gi, function(match, fullCode, cleanCode) {
               const code = cleanCode || fullCode.replace('#', '');
-              return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để mở Lịch Sử Đơn Hàng &amp; Xử Lý Đổi Trả / Hoàn Tiền" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
+              return '<button type="button" class="btn-chat-order-link" onclick="handleOpenOrderDetailsFromChat(\'' + code + '\')" title="Bấm để xem chi tiết đơn hàng" style="display:inline-flex; align-items:center; gap:5px; background:rgba(56,189,248,0.25); border:1px solid #38bdf8; color:#38bdf8; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.8rem; cursor:pointer; vertical-align:middle; text-decoration:none; margin:2px 4px; box-shadow:0 0 10px rgba(56,189,248,0.25);"><i class="fa-solid fa-box-archive"></i> #' + code + ' <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.68rem;"></i></button>';
             });
           })(cleanText) + "</div>") : "";
 
@@ -43504,6 +43706,18 @@ function getProductSchemaReviews(p, idx) {
       if (!orderId) return;
       const cleanId = String(orderId).replace("#", "").trim();
 
+      // [BẢO MẬT]: Chỉ Quản Trị Viên (Admin) mới có quyền mở modal xử lý Đổi Trả / Hoàn Tiền
+      const isAdm = (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser))));
+      if (!isAdm) {
+        if (typeof showToast === "function") showToast("Chỉ Quản Trị Viên mới có quyền truy cập trang này!", "warning");
+        const admModal = document.getElementById("admOrderDetailModal");
+        if (admModal) admModal.style.display = "none";
+        if (typeof openOrderCredentialsModal === "function") {
+          openOrderCredentialsModal(cleanId);
+        }
+        return;
+      }
+
       // Sử dụng resolver tìm kiếm thông tin đơn hàng chính xác
       let order = resolveOrderDetail(cleanId);
       order = autoEnrichOrderCustomerAndTime(order, cleanId);
@@ -43969,6 +44183,95 @@ function getProductSchemaReviews(p, idx) {
     }
     window.confirmExchangeOrder = confirmExchangeOrder;
 
+    // Từ Chối Bảo Hành & Chuyển Trạng Thái Thành COMPLETED (Hoàn thành)
+    async function rejectWarrantyOrder() {
+      if (!currentAdminOrderDetail) return;
+      const orderId = currentAdminOrderDetail.orderId || currentAdminOrderDetail.id;
+      const inp = document.getElementById("admOrdNewCredsInput");
+      const reasonText = (inp ? inp.value : "").trim();
+
+      if (!reasonText) {
+        showToast("Vui lòng nhập lý do từ chối bảo hành vào ô nội dung bên trên trước khi bấm nút!", "warning");
+        if (inp) inp.focus();
+        return;
+      }
+
+      const emailInputEl = document.getElementById("admOrdCustEmailInput");
+      const targetEmail = (currentAdminOrderDetail.email || currentAdminOrderDetail.userEmail || (emailInputEl ? emailInputEl.value : "") || "").toLowerCase().trim();
+
+      // 1. Cập nhật trạng thái đơn hàng sang Hoàn thành (COMPLETED)
+      const newStatus = "COMPLETED";
+      currentAdminOrderDetail.status = newStatus;
+      currentAdminOrderDetail.warrantyRejected = true;
+      currentAdminOrderDetail.warrantyRejectReason = reasonText;
+      currentAdminOrderDetail.warrantyRejectedAt = Date.now();
+      if (targetEmail) {
+        currentAdminOrderDetail.email = targetEmail;
+        currentAdminOrderDetail.userEmail = targetEmail;
+      }
+
+      // Lưu vào all orders
+      let all = getAllOrders();
+      const idx = all.findIndex(o => (o.orderId === orderId || o.id === orderId));
+      if (idx !== -1) {
+        all[idx] = Object.assign({}, all[idx], currentAdminOrderDetail);
+        saveAllOrders(all);
+      }
+
+      // Lưu vào mmo_user_orders của người dùng
+      let uOrders = typeof getUserOrders === "function" ? getUserOrders() : [];
+      const uIdx = uOrders.findIndex(o => (o.orderId === orderId || o.id === orderId));
+      if (uIdx !== -1) {
+        uOrders[uIdx] = Object.assign({}, uOrders[uIdx], currentAdminOrderDetail);
+      } else {
+        uOrders.unshift(Object.assign({}, currentAdminOrderDetail));
+      }
+      if (typeof saveUserOrders === "function") saveUserOrders(uOrders);
+
+      // 2. Tự động gửi tin nhắn chat đến khách hàng giải thích lý do từ chối bảo hành
+      const messageToCustomer = "❌ THÔNG BÁO TỪ CHỐI BẢO HÀNH CHO ĐƠN HÀNG #" + orderId + "\n" +
+        "Lý do: " + reasonText + "\n" +
+        "Trạng thái đơn hàng: Đã hoàn tất (COMPLETED).\n" +
+        "Nếu quý khách có thêm thắc mắc, vui lòng gửi phản hồi tại khung chat để được hỗ trợ giải đáp.";
+      if (targetEmail && targetEmail !== "--" && typeof sendAdminAutoMessage === "function") {
+        sendAdminAutoMessage(targetEmail, messageToCustomer);
+      }
+
+      // 3. Đồng bộ trạng thái đơn lên Google Sheets
+      if (typeof callGasApi === "function") {
+        const adminEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "admin@muabantaikhoanmmo.com";
+        callGasApi("adminUpdateOrderStatus", {
+          adminEmail: adminEmail,
+          orderId: orderId,
+          status: newStatus,
+          accounts: currentAdminOrderDetail.credentials,
+          note: "Từ chối bảo hành: " + reasonText
+        }).catch(function(e) {});
+      }
+
+      // 4. Phát tin qua BroadcastChannel để các tab cập nhật
+      try {
+        if (typeof BroadcastChannel !== "undefined") {
+          const bc = new BroadcastChannel("muabanmmo_realtime_sync");
+          bc.postMessage({
+            type: "ORDER_STATUS_UPDATED",
+            orderId: orderId,
+            status: newStatus,
+            email: targetEmail
+          });
+        }
+      } catch(e) {}
+
+      // Xóa nội dung trong ô nhập sau khi gửi
+      if (inp) inp.value = "";
+
+      closeModal("admOrderDetailModal");
+      renderAdminOrdersTable();
+      if (typeof renderProfileOrders === "function") renderProfileOrders();
+      showToast("Đã từ chối bảo hành cho đơn #" + orderId + ", gửi tin nhắn giải thích và chuyển trạng thái thành Hoàn thành!", "info");
+    }
+    window.rejectWarrantyOrder = rejectWarrantyOrder;
+
     // Quản lý số tiền hoàn lại tùy chỉnh (cho đơn nhiều sản phẩm lỗi 1 phần)
     function handleAdmOrdRefundAmountChange(val) {
       const num = parseInt(val, 10);
@@ -44366,22 +44669,40 @@ async function confirmRefundOrder() {
     }
     window.sendAdminAutoMessage = sendAdminAutoMessage;
 
-    // Thao tác khi Admin nhấp vào mã đơn hàng trong khung Chat (#DH...)
+    // Thao tác khi nhấp vào mã đơn hàng trong khung Chat (#DH... hoặc #MMO...)
     function handleOpenOrderDetailsFromChat(orderCode) {
       if (!orderCode) return;
       const cleanCode = String(orderCode).replace("#", "").trim();
 
-      // 1. Chuyển sang giao diện Admin nếu chưa ở đó
+      // [PHÂN QUYỀN]: Kiểm tra quyền hạn người dùng đang bấm vào mã đơn
+      const isAdm = (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser))));
+
+      // 1. Nếu là KHÁCH HÀNG THƯỜNG: Chỉ mở popup xem tài khoản đơn hàng hoặc đơn đặt trước của khách
+      if (!isAdm) {
+        if (cleanCode.startsWith("PRE")) {
+          if (typeof openPreOrderDetailView === "function") {
+            openPreOrderDetailView(cleanCode);
+          }
+        } else {
+          if (typeof openOrderCredentialsModal === "function") {
+            openOrderCredentialsModal(cleanCode);
+          }
+        }
+        return;
+      }
+
+      // 2. Nếu là QUẢN TRỊ VIÊN (Admin): Mở giao diện Admin và popup Xử Lý Đổi Trả / Hoàn Tiền
+      // Chuyển sang giao diện Admin nếu chưa ở đó
       if (typeof switchView === "function") {
         switchView("viewAdmin");
       }
 
-      // 2. Chuyển sang Tab Lịch Sử Đơn Hàng & Đổi Trả
+      // Chuyển sang Tab Lịch Sử Đơn Hàng & Đổi Trả
       if (typeof switchAdminTab === "function") {
         switchAdminTab("tabAdmOrders");
       }
 
-      // 3. Mở ngay lập tức Modal Chi Tiết Đơn Hàng & Đổi Trả
+      // Mở ngay lập tức Modal Chi Tiết Đơn Hàng & Đổi Trả
       setTimeout(function() {
         openAdminOrderDetailModal(cleanCode);
 
