@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.1.5";
+const MMO_CURRENT_CODE_VERSION = "5.1.6";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -25742,6 +25742,51 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.getPaymentSettings = getPaymentSettings;
 
+    const BANK_NAMES_MAP = {
+      "MB": "MB Bank",
+      "VCB": "Vietcombank",
+      "TCB": "Techcombank",
+      "ICB": "VietinBank",
+      "BIDV": "BIDV",
+      "VBA": "Agribank",
+      "ACB": "ACB",
+      "VPB": "VPBank",
+      "TPB": "TPBank",
+      "STB": "Sacombank",
+      "VIB": "VIB",
+      "SHB": "SHB",
+      "HDB": "HDBank",
+      "MSB": "MSB",
+      "LPB": "LPBank",
+      "SEAB": "SeABank",
+      "OCB": "OCB",
+      "EIB": "Eximbank",
+      "BAB": "Bac A Bank",
+      "NAB": "Nam A Bank",
+      "ABB": "ABBANK",
+      "VAB": "VietABank",
+      "VIETBANK": "VietBank",
+      "KLB": "KienlongBank",
+      "PVCB": "PVcomBank",
+      "VCCB": "BVBank",
+      "NCB": "NCB",
+      "SGICB": "Saigonbank",
+      "BVB": "BaoViet Bank",
+      "PGB": "PGBank",
+      "CAKE": "CAKE by VPBank",
+      "TIMO": "Timo by BVBank",
+      "SHBVN": "Shinhan Bank",
+      "WVN": "Woori Bank",
+      "WOO": "Woori Bank"
+    };
+
+    function getBankDisplayName(code) {
+      if (!code) return "MB Bank";
+      const upper = String(code).toUpperCase().trim();
+      return BANK_NAMES_MAP[upper] || (upper.includes("BANK") ? upper : (upper + " Bank"));
+    }
+    window.getBankDisplayName = getBankDisplayName;
+
     function applyPaymentSettingsToUI(s) {
       if (!s) s = getPaymentSettings();
       const bCode = (s.bankCode || "MB").toUpperCase();
@@ -25758,11 +25803,11 @@ function syncAllOpenViewsStock(changedProdId) {
       if (document.getElementById("setSepayApiKey") && bKey) document.getElementById("setSepayApiKey").value = bKey;
 
       // 2. Thẻ hiển thị Nạp tiền
-      const bankNameText = bCode.includes("BANK") ? bCode : (bCode + " Bank");
+      const bankNameText = getBankDisplayName(bCode);
       if (document.getElementById("depositBankName")) document.getElementById("depositBankName").innerText = bankNameText;
       if (document.getElementById("depositBankAcc")) document.getElementById("depositBankAcc").innerText = bAcc;
       if (document.getElementById("depositBankOwner")) document.getElementById("depositBankOwner").innerText = bOwner;
-      if (document.getElementById("depBankName")) document.getElementById("depBankName").innerText = bCode;
+      if (document.getElementById("depBankName")) document.getElementById("depBankName").innerText = bankNameText;
       if (document.getElementById("depAccountNum")) document.getElementById("depAccountNum").innerText = bAcc;
       if (document.getElementById("depAccountName")) document.getElementById("depAccountName").innerText = bOwner;
 
@@ -25816,8 +25861,10 @@ function syncAllOpenViewsStock(changedProdId) {
         btn.innerHTML = "<i class='fa-solid fa-spinner fa-spin'></i> Đang lưu lên Cloud...";
       }
 
+      const bCodeVal = document.getElementById("setBankCode") ? document.getElementById("setBankCode").value.trim() : "MB";
       const settings = {
-        bankCode: document.getElementById("setBankCode") ? document.getElementById("setBankCode").value.trim() : "MB",
+        bankCode: bCodeVal,
+        bankName: getBankDisplayName(bCodeVal),
         bankAccount: document.getElementById("setBankAccount") ? document.getElementById("setBankAccount").value.trim() : "0968033451",
         accountName: document.getElementById("setAccountName") ? document.getElementById("setAccountName").value.trim() : "NGUYEN MANH DONG",
         depositPrefix: document.getElementById("setDepositPrefix") ? document.getElementById("setDepositPrefix").value.trim() : "NAP TIEN MMO",
@@ -25851,6 +25898,7 @@ function syncAllOpenViewsStock(changedProdId) {
             settings: {
               mmo_payment_settings: settings,
               BANK_ID: settings.bankCode,
+              BANK_NAME: settings.bankName,
               ACCOUNT_NO: settings.bankAccount,
               ACCOUNT_NAME: settings.accountName,
               ORDER_PREFIX: settings.depositPrefix,
@@ -25868,6 +25916,7 @@ function syncAllOpenViewsStock(changedProdId) {
           await callGasApi("adminSaveSettings", {
             settings: {
               bankCode: settings.bankCode,
+              bankName: settings.bankName,
               bankAccount: settings.bankAccount,
               accountName: settings.accountName,
               depositPrefix: settings.depositPrefix,
@@ -35204,15 +35253,14 @@ function syncAllOpenViewsStock(changedProdId) {
         curActiveBtn.style.border = "1px solid #10b981";
       }
       
-      const currentBankName = pay.bankName || (pay.bankCode === "MB" ? "MB Bank" : (pay.bankCode || "MB Bank"));
+      const bankCode = (pay.bankCode || "MB").toUpperCase();
+      const currentBankName = pay.bankName || (typeof getBankDisplayName === "function" ? getBankDisplayName(bankCode) : (bankCode === "MB" ? "MB Bank" : bankCode));
       const currentBankAcc = pay.bankAccount || pay.accountNumber || "0968033451";
       const currentBankOwner = pay.accountName || pay.accountOwner || "NGUYEN MANH DONG";
 
       if (bankNameEl) bankNameEl.innerText = currentBankName;
       if (bankAccEl) bankAccEl.innerText = currentBankAcc;
       if (bankOwnerEl) bankOwnerEl.innerText = currentBankOwner;
-
-      const bankCode = (pay.bankCode || "MB").toUpperCase();
       const bankAcc = currentBankAcc;
       const bankOwner = encodeURIComponent(currentBankOwner);
       const memo = encodeURIComponent(depositOrderCode);
@@ -36913,10 +36961,16 @@ function syncAllOpenViewsStock(changedProdId) {
       { code: 'PVCB', bin: '970412', name: 'PVcomBank', keywords: ['pvcb', 'pvcom', 'pvcombank', 'dai chung'] },
       { code: 'CAKE', bin: '546034', name: 'CAKE by VPBank', keywords: ['cake'] },
       { code: 'TIMO', bin: '963388', name: 'Timo by BVBank', keywords: ['timo'] },
+      { code: 'ABB', bin: '970425', name: 'ABBANK (An Bình)', keywords: ['\\babb\\b', 'an binh', 'an bình', 'abbank'] },
       { code: 'VAB', bin: '970427', name: 'VietABank', keywords: ['\\bvab\\b', 'viet a', 'việt á', 'vietabank'] },
+      { code: 'VIETBANK', bin: '970433', name: 'VietBank (Việt Nam Thương Tín)', keywords: ['vietbank', 'thuong tin', 'thương tín'] },
+      { code: 'VCCB', bin: '970454', name: 'BVBank (Bản Việt)', keywords: ['\\bvccb\\b', 'bvbank', 'ban viet', 'bản việt', 'viet capital'] },
       { code: 'NCB', bin: '970419', name: 'NCB (Quốc Dân)', keywords: ['\\bncb\\b', 'ncbbank', 'quoc dan'] },
+      { code: 'SGICB', bin: '970400', name: 'Saigonbank (Sài Gòn Công Thương)', keywords: ['sgicb', 'saigonbank', 'sai gon cong thuong'] },
+      { code: 'BVB', bin: '970438', name: 'BaoViet Bank (Bảo Việt)', keywords: ['\\bbvb\\b', 'baoviet', 'bảo việt', 'baovietbank'] },
+      { code: 'PGB', bin: '970430', name: 'PGBank (Thịnh Vượng & Phát Triển)', keywords: ['\\bpgb\\b', 'pgbank', 'xang dau', 'xăng dầu'] },
       { code: 'SHBVN', bin: '970424', name: 'Shinhan Bank', keywords: ['shinhan'] },
-      { code: 'WOO', bin: '970457', name: 'Woori Bank', keywords: ['woori'] }
+      { code: 'WVN', bin: '970457', name: 'Woori Bank', keywords: ['woori', '\\bwoo\\b', '\\bwvn\\b'] }
     ];
 
     function resolveVietQRBankCode(bankName) {
