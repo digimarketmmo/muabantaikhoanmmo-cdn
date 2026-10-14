@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.2.0";
+const MMO_CURRENT_CODE_VERSION = "5.2.1";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -310,17 +310,17 @@ function healStorageQuota(forceEmergency) {
           localStorage.removeItem("mmo_custom_img_" + gid);
         }
       });
-      for (let k = 0; k < localStorage.length; k++) {
+      for (let k = localStorage.length - 1; k >= 0; k--) {
         const lk = localStorage.key(k);
         if (lk && lk.startsWith("mmo_custom_img_")) {
           const val = localStorage.getItem(lk);
-          if (val && (val.includes("khotaikhoanso") || val.includes("nFV4Rln") || val.includes("placeholder"))) {
+          if (val && (val.includes("cdn.jsdelivr.net") || val.includes("github") || val.includes("khotaikhoanso") || val.includes("nFV4Rln") || val.includes("placeholder"))) {
             localStorage.removeItem(lk);
           }
         }
       }
-      // Dọn sạch ảnh rác trong danh sách sản phẩm đã cache ở localStorage
-      ["mmo_admin_products", "mmo_products"].forEach(function(k) {
+      // Dọn sạch ảnh CDN cũ trong danh sách sản phẩm đã cache ở localStorage
+      ["mmo_admin_products", "mmo_products", "mmo_products_list", "mmo_shop_products"].forEach(function(k) {
         try {
           const raw = localStorage.getItem(k);
           if (raw) {
@@ -328,13 +328,11 @@ function healStorageQuota(forceEmergency) {
             if (Array.isArray(list)) {
               let changed = false;
               list.forEach(p => {
-                if (p && (p.id === "PROD_MUKAXC4Q9T" || (p.name && String(p.name).toLowerCase().includes("surfshark")))) {
-                  if (p.image && (p.image.includes("nord_vpn") || p.image.includes("AfQAAAH0CAYAA"))) {
-                    p.image = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg";
-                    p.image_url = p.image;
-                    p.imageUrl = p.image;
-                    changed = true;
-                  }
+                if (p && p.image && (p.image.includes("cdn.jsdelivr.net") || p.image.includes("github") || p.image.includes("khotaikhoanso"))) {
+                  p.image = "";
+                  p.image_url = "";
+                  p.imageUrl = "";
+                  changed = true;
                 }
               });
               if (changed) localStorage.setItem(k, JSON.stringify(list));
@@ -4854,16 +4852,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
       if (!effectiveImg && p) {
         const rawPImg = String(p.image || p.imageUrl || p.image_url || "").trim();
-        if (rawPImg && !rawPImg.includes("placeholder") && !rawPImg.includes("khotaikhoanso")) {
+        if (rawPImg && !rawPImg.includes("placeholder") && !rawPImg.includes("khotaikhoanso") && !rawPImg.includes("cdn.jsdelivr.net") && !rawPImg.includes("github")) {
           effectiveImg = rawPImg;
         }
       }
       if (!effectiveImg) {
         effectiveImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "");
       }
-      const isSurfModal = (p.id === "PROD_MUKAXC4Q9T") || (p.name && String(p.name).toLowerCase().includes("surfshark"));
-      if (isSurfModal && (!effectiveImg || effectiveImg.includes("nord_vpn") || effectiveImg.includes("AfQAAAH0CAYAA") || effectiveImg.includes("default_product"))) {
-        effectiveImg = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg";
+      if (effectiveImg && (effectiveImg.includes("cdn.jsdelivr.net") || effectiveImg.includes("github") || effectiveImg.includes("khotaikhoanso"))) {
+        effectiveImg = "";
       }
       const admImgInp = document.getElementById("admProdImage");
       const admImgPrev = document.getElementById("admProdImgPreview");
@@ -8052,10 +8049,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!rawImage && typeof resolveProductImage === "function" && prodData) {
         finalImg = resolveProductImage({ ...prodData, id: actualTargetId, image: finalImg });
       }
-      const isSurf = idsToCheck.has("prod_mukaxc4q9t") || (nameLower && nameLower.includes("surfshark"));
-      if (isSurf && (!finalImg || finalImg.includes("nord_vpn") || finalImg.includes("AfQAAAH0CAYAA") || finalImg.includes("default_product"))) {
-        finalImg = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg";
-      }
+
       if (prodData) {
         prodData.image = finalImg;
         prodData.image_url = finalImg;
@@ -11283,12 +11277,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               if (aVal && aVal.trim()) { customSaved = aVal.trim(); break; }
             }
           }
-          const isSurf = pId === "PROD_MUKAXC4Q9T" || (prodObj && String(prodObj.name || '').toLowerCase().includes("surfshark"));
-          if (isSurf && customSaved && (customSaved.includes("nord_vpn") || customSaved.includes("AfQAAAH0CAYAA"))) {
-            localStorage.removeItem("mmo_custom_img_" + pId);
-            customSaved = null;
-          }
-          if (customSaved && (customSaved.includes("gemini_pro_veo3.png") || customSaved.includes("khotaikhoanso") || customSaved.includes("placeholder") || customSaved.includes("nFV4Rln"))) {
+          if (customSaved && (customSaved.includes("cdn.jsdelivr.net") || customSaved.includes("github") || customSaved.includes("khotaikhoanso") || customSaved.includes("placeholder") || customSaved.includes("nFV4Rln"))) {
             localStorage.removeItem("mmo_custom_img_" + pId);
             customSaved = null;
           } else if (customSaved && customSaved.trim() !== "") {
@@ -11301,213 +11290,24 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const existingImg = prodObj ? (prodObj.image || prodObj.image_url || prodObj.imageUrl || "") : ((typeof p === "string" && (p.startsWith("http") || p.startsWith("data:") || p.startsWith("/"))) ? p : "");
       if (typeof existingImg === "string" && existingImg.trim() !== "") {
         let trimmed = existingImg.trim();
-        const isSurf2 = pId === "PROD_MUKAXC4Q9T" || (prodObj && String(prodObj.name || '').toLowerCase().includes("surfshark"));
-        if (isSurf2 && (trimmed.includes("nord_vpn") || trimmed.includes("AfQAAAH0CAYAA") || trimmed.includes("/api/products/PROD_MUKAXC4Q9T/image"))) {
-          return "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg";
-        }
         if (trimmed.includes("manhdongvtc.workers.dev")) {
           trimmed = trimmed.replace(/manhdongvtc\.workers\.dev/g, "muabantaikhoanmmo.workers.dev");
         }
-        if (trimmed.includes("khotaikhoanso") || trimmed.includes("nFV4Rln")) {
+        if (trimmed.includes("cdn.jsdelivr.net") || trimmed.includes("github") || trimmed.includes("khotaikhoanso") || trimmed.includes("nFV4Rln") || trimmed.includes("placeholder")) {
           trimmed = "";
         }
         if (trimmed.startsWith("data:image/") || (trimmed.startsWith("data:") && trimmed.length > 50)) {
           return trimmed;
         }
-        // [ZERO-STALE IMAGE ENGINE]: Chấp nhận 100% URL công khai, bao gồm cả Cloud Worker /api/products/:id/image
+        // Chấp nhận 100% URL ảnh mới tải lên, bao gồm cả Cloud Worker /api/products/:id/image và /api/images/
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
             !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash") && !trimmed.includes("khotaikhoanso") && !trimmed.includes("nFV4Rln")) {
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
       }
 
-      // 3. [ƯU TIÊN #3]: Tra cứu theo KNOWN_CDN_MAP chuẩn hóa 100% không trùng lặp
-      const idUpper = pId.toUpperCase();
-      const name = String((typeof p === "object" && p.name) || "").toLowerCase();
-      const cat = String((typeof p === "object" && p.category) || "").toLowerCase();
-      const cdnBase = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/";
-
-      const KNOWN_CDN_MAP = {
-        "PROD_MU2OGW71GZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_plus.png",
-        "PROD_MU2OAG3IO2": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_prime.png",
-        "PROD_MU2LYZY5C7": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png",
-        "PROD_MU2O4MW4DQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s7_android10.png",
-        "PROD_MU2NX4CYEW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s8_android10.png",
-        "PROD_MU2NUXL1Q4": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s9_android10.png",
-        "PROD_MU2NSFQCMT": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s10_android12.png",
-        "PROD_MU2NKET1OG": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png",
-        "PROD_MU2N2TVDIJ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
-        "PROD_MU2MY8WCOE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png",
-        "PROD_MU2MOON7L6": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png",
-        "PROD_MUBKH47T2U": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png",
-        "PROD_MUBJQ6JP7O": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
-        "PROD_MUR4SPH1IU": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUR4SPH1IU/image",
-        "PROD_MUR52EZ6H1": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUR52EZ6H1/image",
-        "PROD_MTPIJ9XV": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_brazil.png",
-                "PROD_MTQWMPL5": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MTQWMPL5/image",
-        "PROD_MTQWQFZD": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_30day.png",
-        "PROD_MTQX1C7X": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_1h.png",
-        "PROD_MTQX465U": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_10m.png",
-        "PROD_MTQX7SIK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_24h.png",
-        "PROD_MTQZT2Y1": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/hotmail_outlook.png",
-        "PROD_MTRB6000": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/outlook_trusted.jpg",
-        "PROD_MTTPLODQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_co.png",
-        "PROD_MTU9F5HN": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MTU9F5HN/image",
-        "PROD_MTVI44UK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_ngam_lau.jpg",
-        "PROD_MTYN7UJG": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/youtube_channel.png",
-        "PROD_MU1G6LJX": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU1G6LJX/image",
-        "PROD_MU1LSSJ7AZ": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU1LSSJ7AZ/image",
-        "PROD_MU29IZBLAK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_beta.png",
-        "PROD_MU29RGEBH0": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/facebook_fanpage.png",
-        "PROD_MU29WM90LZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/canva_pro.png",
-        "PROD_MU2A2S732Y": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/express_vpn.png",
-        "PROD_MU2ASBNSJT": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/facebook_via.png",
-        "PROD_MU2B32VLQY": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/capcut_canhan_rieng.jpg",
-        "PROD_MU2BIFBBNE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/hma_vpn.png",
-        "PROD_MU2CZL38PH": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_france.png",
-        "PROD_MU2IXVFLMW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_affiliate_gio.jpg",
-        "PROD_MU2JIBBRH8": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/tiktok_vietnam.png",
-        "PROD_MU2OXBZC6K": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2OXBZC6K.jpg",
-        "PROD_MU2PA8VNDP": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/instagram.png",
-        "PROD_MU2YQ1J3PY": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/hotmail_oauth2.png",
-        "PROD_MU5PWT7PP7": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/kling_ai.png",
-        "PROD_MU5SPLMSEC": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5SPLMSEC.jpg",
-        "PROD_MU5T3T47AE": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU5T3T47AE/image",
-        "PROD_MU6R34FZ4Z": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU6R34FZ4Z/image",
-        "PROD_MU9YH8D9FK": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU9YH8D9FK/image",
-        "PROD_MUH57035HQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/kling_ai.png",
-        "PROD_MUJGUY19DD": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJGUY19DD/image",
-        "PROD_MUJQDTNIH9": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJQDTNIH9/image",
-        "PROD_MUJTYWFTQ7": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJTYWFTQ7/image",
-        "PROD_MUJUGVQXET": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJUGVQXET/image",
-        "PROD_MUJV1YHQ6N": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJV1YHQ6N/image",
-        "PROD_MUJVFEFFNP": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJVFEFFNP/image",
-        "PROD_MUJVJCV286": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJVJCV286/image",
-        "PROD_MUJZGSUPDI": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUJZGSUPDI/image",
-        "PROD_MUK50WMCNR": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK50WMCNR/image",
-        "PROD_MUK5IKCQLN": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK5IKCQLN/image",
-        "PROD_MUK5VQH55X": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK5VQH55X/image",
-        "PROD_MUK6EFVE8X": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/instagram.png",
-        "PROD_MUK6N4RBEX": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK6N4RBEX/image",
-        "PROD_MUK6Y4QUIL": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK6Y4QUIL/image",
-        "PROD_MUK75H3HAR": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK75H3HAR/image",
-        "PROD_MUK7DQMKAM": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK7DQMKAM/image",
-        "PROD_MUK7P74YNT": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUK7P74YNT/image",
-        "PROD_MUKAMO9XPD": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUKAMO9XPD/image",
-        "PROD_MUKAXC4Q9T": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/surfshark_vpn.jpg",
-        "PROD_MUM6JQTW8C": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUM6JQTW8C/image",
-        "PROD_MUNUEKI3NM": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUNUEKI3NM.jpg",
-        "PROD_MUOIH8CW59": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUOIH8CW59/image",
-        "PROD_MUOQDRL4F0": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUOQDRL4F0/image",
-        "PROD_MUOQS3DOIU": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUOQS3DOIU/image",
-        "PROD_MUORGNEQOE": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUORGNEQOE/image",
-        "PROD_MUOSDN0FCU": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_7day.png",
-        "PROD_MUP5LB7VAB": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/gmail_7day.png",
-        "PROD_MUQIMRJYG0": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUQIMRJYG0/image",
-        "PROD_MV5PA8KZDW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/google_gemini_veo3.webp"
-      };
-      if (KNOWN_CDN_MAP[idUpper]) return KNOWN_CDN_MAP[idUpper];
-
-      // 4. Khớp chính xác theo ROM thiết bị Phone Farm
-      if (idUpper.includes("NOT8") || name.includes("not8") || name.includes("note 8") || name.includes("note8")) return cdnBase + "rom_not8_android10.png";
-      if (idUpper.includes("NOT9") || name.includes("not 9") || name.includes("note 9") || name.includes("note9")) return cdnBase + "rom_not9_android10.png";
-      if (name.includes("not10") || name.includes("note 10") || name.includes("note10")) return cdnBase + "rom_not10_android12.png";
-      if (name.includes("j7 pro")) return cdnBase + "rom_j7_pro.png";
-      if (name.includes("j7 prime")) return cdnBase + "rom_j7_prime.png";
-      if (name.includes("j7 plus") || name.includes("j7 plush")) return cdnBase + "rom_j7_plus.png";
-      if (name.includes("s10")) return cdnBase + "rom_s10_android12.png";
-      if (name.includes("s22")) return cdnBase + "rom_s22_android12.png";
-      if (name.includes("s7")) return cdnBase + "rom_s7_android10.png";
-      if (name.includes("s8")) return cdnBase + "rom_s8_android10.png";
-      if (name.includes("s9")) return cdnBase + "rom_s9_android10.png";
-
-      // 5. Khớp Canva & Wink
-      if (name.includes("wink") || cat.includes("wink")) {
-        return cdnBase + "canva_pro.png";
-      }
-      if (name.includes("canva") || cat.includes("canva")) {
-        if (name.includes("edu")) return cdnBase + "canva_edu.jpg";
-        return cdnBase + "canva_pro.png";
-      }
-
-      // 6. Khớp Capcut
-      if (name.includes("capcut") || cat.includes("capcut")) {
-        if (name.includes("team")) return cdnBase + "capcut_team_1m.jpg";
-        if (name.includes("rieng") || name.includes("riêng") || name.includes("25")) return cdnBase + "capcut_canhan_rieng.jpg";
-        return cdnBase + "capcut_canhan_20k.jpg";
-      }
-
-      // 7. Khớp Kling AI
-      if (name.includes("kling")) return cdnBase + "kling_ai.png";
-
-      // 8. Khớp Google Gemini / Veo
-      if (name.includes("gemini pro") || name.includes("gg 5tb") || name.includes("veo 3.1")) return cdnBase + "google_gemini_veo3.webp";
-      if (name.includes("gemini") || name.includes("veo3") || name.includes("veo 3")) return cdnBase + "google_gemini_veo3.webp";
-
-      // 9. Khớp ChatGPT
-      if (name.includes("gmail trial") || name.includes("new gmail trial")) return cdnBase + "chatgpt_new_trial.png";
-      if (name.includes("chatgpt") || name.includes("chat gpt") || name.includes("gpt") || cat.includes("chatgpt")) return cdnBase + "chatgpt_plus.png";
-
-      // 10. Khớp TikTok (Ưu tiên trước Mail/OAuth2 để tránh sản phẩm TikTok kèm mail/oauth2 bị hiển thị nhầm icon Hotmail)
-      if (name.includes("tiktok") || cat.includes("tiktok")) {
-        if (name.includes("brazil")) return cdnBase + "tiktok_brazil.png";
-        if (name.includes("pháp") || name.includes("phap") || name.includes("france")) return cdnBase + "tiktok_france.png";
-        if (name.includes("nhật") || name.includes("nhat") || name.includes("japan")) return cdnBase + "tiktok_japan.png";
-        if (name.includes("mở giỏ") || name.includes("affiliate")) return cdnBase + "tiktok_affiliate_gio.jpg";
-        if (name.includes("ngâm lâu")) return cdnBase + "tiktok_ngam_lau.jpg";
-        if (name.includes("việt") || name.includes("viet")) return cdnBase + "tiktok_vietnam.png";
-        return cdnBase + "tiktok_beta.png";
-      }
-
-      // 11. Khớp Hotmail / Outlook (Chỉ bắt oauth2 khi đúng là sản phẩm Hotmail/Outlook)
-      if ((name.includes("hotmail") || name.includes("outlook") || cat.includes("hotmail") || cat.includes("mail")) && name.includes("oauth2")) return cdnBase + "hotmail_oauth2.png";
-      if (name.includes("outlook trusted") || (name.includes("outlook") && name.includes("trusted"))) return cdnBase + "outlook_trusted.jpg";
-      if (name.includes("hotmail") || name.includes("outlook") || cat.includes("hotmail")) return cdnBase + "hotmail_outlook.png";
-
-      // 12. Khớp Instagram / Threads (bắt cả từ viết sai như Intagram, ig)
-      if (name.includes("instagram") || name.includes("intagram") || name.includes("threads") || name.includes(" ig ") || name.startsWith("ig ") || name.endsWith(" ig") || cat.includes("intagram") || cat.includes("instagram")) return cdnBase + "instagram.png";
-
-      // 13. Khớp Twitter / X
-      if (name.includes("twitter") || name.includes("x.com") || cat.includes("twitter")) return cdnBase + "twitter_x.png";
-
-      // 14. Khớp YouTube
-      if (name.includes("youtube") || cat.includes("youtube")) {
-        if (name.includes("premium")) return cdnBase + "youtube_premium.png";
-        return cdnBase + "youtube_channel.png";
-      }
-
-      // 15. Khớp Facebook
-      if (name.includes("fanpage") || name.includes("page facebook") || name.includes("page ")) return cdnBase + "facebook_fanpage.png";
-      if (name.includes("via") || name.includes("facebook") || cat.includes("facebook")) return cdnBase + "facebook_via.png";
-
-      // 16. Khớp VPN & Proxy
-      if (name.includes("hma")) return cdnBase + "hma_vpn.png";
-      if (name.includes("express")) return cdnBase + "express_vpn.png";
-      if (name.includes("surfshark")) return cdnBase + "surfshark_vpn.jpg";
-      if (name.includes("nord")) return cdnBase + "nord_vpn.png";
-      if (name.includes("us") || name.includes("usa") || name.includes("mỹ") || name.includes("my")) return cdnBase + "proxy_us.png";
-      if (name.includes("viettel")) return cdnBase + "proxy_viettel.png";
-      if (name.includes("japan") || name.includes("nhật") || name.includes("nhat")) return cdnBase + "proxy_japan.png";
-      if (name.includes("proxy") || cat.includes("proxy") || cat.includes("vpn")) return cdnBase + "proxy_4g.png";
-
-      // 17. Khớp Gmail
-      if (name.includes("gmail") || cat.includes("gmail")) {
-        if (name.includes("10m") || name.includes("10 phút") || name.includes("10p")) return cdnBase + "gmail_10m.png";
-        if (name.includes("1h") || name.includes("1 giờ") || name.includes("60 phút")) return cdnBase + "gmail_1h.png";
-        if (name.includes("24h") || name.includes("24 giờ") || name.includes("1 ngày")) return cdnBase + "gmail_24h.png";
-        if (name.includes("7 ngày") || name.includes("7day")) return cdnBase + "gmail_7day.png";
-        if (name.includes("14 ngày") || name.includes("14day")) return cdnBase + "gmail_14day.png";
-        if (name.includes("30 ngày") || name.includes("30day")) return cdnBase + "gmail_30day.png";
-        if (name.includes("cổ") || name.includes("co")) return cdnBase + "gmail_co.png";
-        return cdnBase + "blog_gmail.png";
-      }
-
-      // 18. Khớp Paypal, Zalo, Spotify / Netflix
-      if (name.includes("paypal")) return cdnBase + "paypal_usdt.png";
-      if (name.includes("zalo")) return cdnBase + "zalo_group.png";
-      if (name.includes("spotify") || name.includes("netflix")) return cdnBase + "spotify_premium.png";
-
-      return cdnBase + "default_product.png";
+      // 3. Fallback mặc định duy nhất: default_product.png (Không dùng ảnh gán cứng/đoán keyword cũ nữa)
+      return "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
     }
     window.resolveProductImage = resolveProductImage;
 
@@ -11519,7 +11319,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const trimmed = existingImg.trim();
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
             !trimmed.startsWith("data:") &&
-            true &&
+            !trimmed.includes("cdn.jsdelivr.net") && !trimmed.includes("github") && !trimmed.includes("khotaikhoanso") &&
             !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash")) {
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
