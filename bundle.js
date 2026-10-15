@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.3.4";
+const MMO_CURRENT_CODE_VERSION = "5.3.5";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 function isForeignKhotaikhoansoOrder(o) {
@@ -34429,7 +34429,7 @@ function changeAdmUsersPage(p) {
 
       // 2. Cross-profile & cross-incognito Realtime SSE Hub (0ms latency)
       try {
-        fetch("https://ntfy.sh/muabantaikhoanmmo_live_orders_stream_v534/publish", {
+        fetch("https://ntfy.sh/muabantaikhoanmmo_live_orders_stream_v535/publish", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
@@ -34449,7 +34449,7 @@ function changeAdmUsersPage(p) {
           if (_preOrdersRealtimeSSE) {
             _preOrdersRealtimeSSE.close();
           }
-          _preOrdersRealtimeSSE = new EventSource("https://ntfy.sh/muabantaikhoanmmo_live_orders_stream_v534/sse");
+          _preOrdersRealtimeSSE = new EventSource("https://ntfy.sh/muabantaikhoanmmo_live_orders_stream_v535/sse");
           _preOrdersRealtimeSSE.onmessage = function(ev) {
             try {
               const data = JSON.parse(ev.data);
