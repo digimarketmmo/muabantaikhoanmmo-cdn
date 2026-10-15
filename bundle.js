@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v4.4.3)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.2.3";
+const MMO_CURRENT_CODE_VERSION = "5.2.4";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // =========================================================================
@@ -260,12 +260,12 @@ function healStorageQuota(forceEmergency) {
             cleanProds.forEach(function(p) {
               if (!p) return;
               if (Array.isArray(p.accounts)) {
-                p.accounts = p.accounts.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
+                p.accounts = p.accounts.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_") && !a.includes("mmo-rom-phonefarm-adb"));
               }
               if (Array.isArray(p.variants)) {
                 p.variants.forEach(function(v) {
                   if (v && Array.isArray(v.accounts)) {
-                    v.accounts = v.accounts.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
+                    v.accounts = v.accounts.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_") && !a.includes("mmo-rom-phonefarm-adb"));
                   }
                 });
               }
@@ -351,7 +351,7 @@ function healStorageQuota(forceEmergency) {
             const wObj = JSON.parse(rawW);
             let changed = false;
             if (Array.isArray(wObj)) {
-              const cleanArr = wObj.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
+              const cleanArr = wObj.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_") && !a.includes("mmo-rom-phonefarm-adb"));
               if (cleanArr.length !== wObj.length) {
                 localStorage.setItem(wk, JSON.stringify(cleanArr));
               }
@@ -359,7 +359,7 @@ function healStorageQuota(forceEmergency) {
               Object.keys(wObj).forEach(k => {
                 if (Array.isArray(wObj[k])) {
                   const origLen = wObj[k].length;
-                  wObj[k] = wObj[k].filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
+                  wObj[k] = wObj[k].filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_") && !a.includes("mmo-rom-phonefarm-adb"));
                   if (wObj[k].length !== origLen) changed = true;
                 }
               });
@@ -564,9 +564,9 @@ try {
     "PROD_MU2OGW71GZ": { stock: 76, variants: [{ name: "rom gốc mod adb j7 plush", price: 300000, stock: 40 }, { name: "rot j7 plush", price: 100000, stock: 36 }] },
     "PROD_MU2OAG3IO2": { stock: 33, variants: [{ name: "Rom androi 10 mod adb j7 prime", price: 300000, stock: 33 }] },
     "PROD_MU2LYZY5C7": { stock: 120, variants: [{ name: "Rom androi 12 mod adb", price: 300000, stock: 60 }, { name: "Rom Gốc  mod adb", price: 300000, stock: 60 }] },
-    "PROD_MU2O4MW4DQ": { stock: 73, variants: [{ name: "Rom androi 10 s7 G930FDS", price: 300000, stock: 30 }, { name: "Rom androi  s7 edge G935", price: 300000, stock: 43 }] },
+    "PROD_MU2O4MW4DQ": { stock: 109, variants: [{ name: "Rom androi 10 s7 G930FDS", price: 300000, stock: 43 }, { name: "Rom androi  s7 edge G935", price: 300000, stock: 66 }] },
     "PROD_MU2NX4CYEW": { stock: 199, variants: [{ name: "Rom androi 10 s8 mod adb", price: 300000, stock: 43 }, { name: "Rom androi 10 s8 plush G955", price: 300000, stock: 40 }, { name: "rom gốc s8 g95f mod adb", price: 300000, stock: 60 }, { name: "rom gốc s8 g950N  mod adb", price: 300000, stock: 56 }] },
-    "PROD_MU2NUXL1Q4": { stock: 37, variants: [{ name: "Rom androi 10 s9", price: 300000, stock: 37 }] },
+    "PROD_MU2NUXL1Q4": { stock: 90, variants: [{ name: "Rom androi 10 s9", price: 300000, stock: 90 }] },
     "PROD_MU2NSFQCMT": { stock: 187, variants: [{ name: "rom s10 G973F DS", price: 500000, stock: 62 }, { name: "rom s10 G977N s10 5g", price: 500000, stock: 63 }, { name: "Rom S 10 5g G977N bản Hàn", price: 500000, stock: 62 }] },
     "PROD_MU2NKET1OG": { stock: 60, variants: [{ name: "Rom Not8 androi 10", price: 300000, stock: 30 }, { name: "Rom  gốc not8 mod adb", price: 300000, stock: 30 }] },
     "PROD_MU2N2TVDIJ": { stock: 76, variants: [{ name: "Rom androi 10  not 9", price: 500000, stock: 46 }, { name: "Rom Gốc mod adb", price: 300000, stock: 30 }] },
@@ -12847,7 +12847,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             try { vAccs = MMO_WAREHOUSE.getAvailable(curProd.id, selectedVVal) || []; } catch(eW) {}
           }
           // Lọc sạch tài khoản placeholder test ảo (nếu có)
-          vAccs = vAccs.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
+          vAccs = vAccs.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_") && !a.includes("mmo-rom-phonefarm-adb"));
           const c = vAccs.length > 0 ? vAccs.length : (typeof getShopVariantStock === "function" ? getShopVariantStock(curProd, selectedVVal) : (vObj ? (Number(vObj.stock) || 0) : 0));
           if (countLabel) countLabel.innerText = "Tồn kho biến thể " + (Number(selectedVVal) + 1) + ":";
           if (targetBadge) {
@@ -12894,7 +12894,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               try { allAccs = MMO_WAREHOUSE.getAvailable(curProd.id, null) || []; } catch(eW) {}
             }
           }
-          allAccs = allAccs.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
+          allAccs = allAccs.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_") && !a.includes("mmo-rom-phonefarm-adb"));
           const totalStock = allAccs.length > 0 ? allAccs.length : (typeof getShopProductStock === "function" ? getShopProductStock(curProd) : (Number(curProd.stock) || 0));
           if (countLabel) countLabel.innerText = "Tổng số lượng trong kho:";
           if (targetBadge) {
@@ -41307,7 +41307,7 @@ async function confirmRefundOrder() {
           if (Array.isArray(lWh) && lWh.length > 0) initialAccs = lWh;
         } catch(eW) {}
       }
-      initialAccs = initialAccs.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
+      initialAccs = initialAccs.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_") && !a.includes("mmo-rom-phonefarm-adb"));
 
       let initialCount = initialAccs.length;
       if (initialCount === 0 && curVObjInit) {
@@ -41360,7 +41360,7 @@ async function confirmRefundOrder() {
         try {
           const accounts = await TURSO_CLIENT.getAvailableAccounts(prodId, vVal);
           let effectiveAccounts = (Array.isArray(accounts) && accounts.length > 0) ? accounts : [];
-          effectiveAccounts = effectiveAccounts.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_"));
+          effectiveAccounts = effectiveAccounts.filter(a => typeof a === 'string' && !a.startsWith("test_user_v2") && !a.startsWith("test_cf_user_") && !a.includes("mmo-rom-phonefarm-adb"));
 
           // Kiểm tra xem người dùng có còn đang xem đúng sản phẩm và biến thể này không (chống race condition khi bấm nhanh)
           const curActiveProdSel = document.getElementById("admStockProductSelect");
