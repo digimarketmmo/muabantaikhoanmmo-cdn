@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.3.5";
+const MMO_CURRENT_CODE_VERSION = "5.3.6";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 function isForeignKhotaikhoansoOrder(o) {
@@ -12407,6 +12407,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
         if (tabId === "tabAdmUsers") {
           renderAdminUsersTable();
+          if (typeof fetchCloudUsers === "function") fetchCloudUsers(false);
           if (typeof syncAllDepositsFromCloud === "function") syncAllDepositsFromCloud();
         }
         if (tabId === "tabAdmWithdrawals") {
@@ -23748,8 +23749,9 @@ function syncAllOpenViewsStock(changedProdId) {
         "adminUpdateBalance", "adminUpdateOrderStatus"
       ].includes(action) || !!(params && (params.password || params.pass || params.pin || params.token));
 
-      // Timeout an toàn: Xác thực đăng nhập 8s, đột biến 6s, đọc dữ liệu 4s để loại bỏ hoàn toàn đơ/lag web
-      const timeoutMs = (action === "login" || action === "register") ? 8000 : (isMutation ? 6000 : 4000);
+      // Timeout an toàn: Đọc dữ liệu lớn (adminGetUsers, adminGetTransactions) 25s, auth 8s, ghi dữ liệu 8s
+      const isSlowQuery = (action === "adminGetUsers" || action === "adminGetTransactions" || action === "adminGetDashboard" || action === "adminGetAllOrders");
+      const timeoutMs = isSlowQuery ? 25000 : ((action === "login" || action === "register") ? 8000 : (isMutation ? 8000 : 6000));
       function createTimeoutSignal(ms) {
         if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
           return AbortSignal.timeout(ms);
@@ -23788,16 +23790,13 @@ function syncAllOpenViewsStock(changedProdId) {
         const res = await fetch(url, { method: "GET", signal: createTimeoutSignal(timeoutMs) });
         return await res.json();
       } catch (err) {
-        if (err && (err.name === 'AbortError' || err.name === 'TimeoutError')) {
-          console.warn("GAS GET timeout aborted:", action);
-          return null;
-        }
+        // Fallback POST nếu GET gặp sự cố hoặc timeout
         try {
           const res = await fetch(apiUrl, {
             method: "POST",
             headers: { "Content-Type": "text/plain;charset=utf-8" },
             body: JSON.stringify({ action, ...params }),
-            signal: createTimeoutSignal(timeoutMs)
+            signal: createTimeoutSignal(15000)
           });
           return await res.json();
         } catch (err2) {
@@ -23828,56 +23827,113 @@ function syncAllOpenViewsStock(changedProdId) {
     window.syncUserToCloud = syncUserToCloud;
 
     async function fetchCloudUsers(showNotification = false) {
-      const apiUrl = getBackendApiUrl();
-      if (!apiUrl) {
-        if (showNotification) {
-          showToast("Vui lòng dán Google Apps Script Web App URL vào Cài Đặt Hệ Thống & Google!", "warning");
-        }
-        return;
+      if (showNotification && typeof showToast === "function") {
+        showToast("⏳ Đang đồng bộ danh sách thành viên từ Cloud...", "info");
       }
-      const adminEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "muabantaikhoanmmo@gmail.com";
+
+      let localUsers = getRegisteredUsers();
+      let allCloudUsers = [];
+
+      const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
+      const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) 
+        ? MMO_WORKER_API.getAdminSecret() 
+        : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+
+      // 1. Đồng bộ siêu tốc từ Cloudflare Worker & Turso SSOT
       try {
-        if (showNotification) showToast("Đang đồng bộ dữ liệu thành viên từ Google Sheet...", "info");
-        const data = await callGasApi("adminGetUsers", { adminEmail: adminEmail });
-        if (data && data.success && Array.isArray(data.users)) {
-          let localUsers = getRegisteredUsers();
-          data.users.forEach(cloudU => {
-            const cEmail = (cloudU.email || "").toLowerCase().trim();
-            if (!cEmail) return;
-            const found = localUsers.find(u => (u.email || "").toLowerCase().trim() === cEmail);
-            if (found) {
-              found.name = cloudU.name || found.name;
-              if (cloudU.balance !== undefined && cloudU.balance !== null && !isNaN(Number(cloudU.balance))) {
-                found.balance = Number(cloudU.balance);
-                if (currentUser && (currentUser.email || "").toLowerCase().trim() === cEmail) {
-                  currentUser.balance = found.balance;
-                  safeStorageSet("mmo_user", JSON.stringify(currentUser));
-                  updateUserUI();
-                }
-              }
-              if (cloudU.role === "ADMIN" || cloudU.role === "Quản Trị Viên" || (typeof isAdminUser === "function" && isAdminUser({ email: cEmail }))) {
-                found.role = "Quản Trị Viên";
-              }
-            } else {
-              const isAdm = (typeof isAdminUser === "function" && isAdminUser({ email: cEmail })) || cloudU.role === "ADMIN" || cloudU.role === "Quản Trị Viên";
-              localUsers.push({
-                name: cloudU.name || cEmail.split("@")[0],
-                email: cEmail,
-                role: isAdm ? "Quản Trị Viên" : (cloudU.role || "Thành Viên"),
-                balance: Number(cloudU.balance) || 0,
-                created: cloudU.createdAt || new Date().toLocaleDateString("vi-VN"),
-                avatar: cloudU.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
-              });
-            }
-          });
-          saveRegisteredUsers(localUsers);
-          if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
-          if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-          if (showNotification) showToast("🎉 Đã đồng bộ thành công " + data.users.length + " thành viên từ Google Sheet!", "success");
+        const workerRes = await fetch(workerUrl + "/api/admin/users" + (showNotification ? "?sync=1" : ""), {
+          method: "GET",
+          headers: {
+            "Authorization": "Bearer " + adminSec,
+            "x-admin-token": adminSec
+          }
+        });
+        if (workerRes.ok) {
+          const wJson = await workerRes.json();
+          if (wJson && wJson.success && Array.isArray(wJson.users) && wJson.users.length > 0) {
+            allCloudUsers = allCloudUsers.concat(wJson.users);
+          }
         }
-      } catch(err) {
-        console.warn("fetchCloudUsers error:", err);
-        if (showNotification) showToast("Lỗi đồng bộ Google Sheet. Vui lòng kiểm tra lại Web App URL!", "danger");
+      } catch(wErr) {
+        console.warn("fetchCloudUsers worker error:", wErr);
+      }
+
+      // 2. Đồng bộ bổ sung từ Google Apps Script Web App
+      try {
+        const adminEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "manhdongvtc@gmail.com";
+        const gasData = await callGasApi("adminGetUsers", { adminEmail: adminEmail });
+        if (gasData && gasData.success && Array.isArray(gasData.users) && gasData.users.length > 0) {
+          allCloudUsers = allCloudUsers.concat(gasData.users);
+        }
+      } catch(gErr) {
+        console.warn("fetchCloudUsers GAS error:", gErr);
+      }
+
+      // 3. Hợp nhất, chuẩn hóa và loại bỏ trùng lặp (Deduplication)
+      if (allCloudUsers.length > 0) {
+        const userMap = new Map();
+
+        // Nạp danh sách local trước
+        localUsers.forEach(u => {
+          const em = (u.email || "").toLowerCase().trim();
+          if (em) userMap.set(em, u);
+        });
+
+        // Merge các user từ Cloud
+        allCloudUsers.forEach(cu => {
+          const em = (cu.email || "").toLowerCase().trim();
+          if (!em) return;
+
+          const existing = userMap.get(em) || {};
+          const isAdm = (em === "manhdongvtc@gmail.com" || cu.role === "ADMIN" || cu.role === "Quản Trị Viên" || existing.role === "Quản Trị Viên" || (typeof isAdminUser === "function" && isAdminUser({ email: em })));
+          const uRole = isAdm ? "Quản Trị Viên" : (cu.role || existing.role || "Thành Viên");
+
+          const uBalance = (cu.balance !== undefined && cu.balance !== null && !isNaN(Number(cu.balance)))
+            ? Number(cu.balance)
+            : (existing.balance || 0);
+
+          const uName = cu.name || existing.name || em.split("@")[0];
+
+          if (currentUser && (currentUser.email || "").toLowerCase().trim() === em) {
+            if (currentUser.balance !== uBalance) {
+              currentUser.balance = uBalance;
+              safeStorageSet("mmo_user", JSON.stringify(currentUser));
+              if (typeof updateUserUI === "function") updateUserUI();
+            }
+          }
+
+          userMap.set(em, {
+            userId: cu.userId || cu.id || existing.userId || ("USR_" + Date.now()),
+            email: em,
+            name: uName,
+            role: uRole,
+            balance: uBalance,
+            created: cu.createdAt || cu.created || existing.created || new Date().toLocaleDateString("vi-VN"),
+            avatar: cu.avatar || existing.avatar || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            isLocked: cu.isLocked !== undefined ? cu.isLocked : (existing.isLocked || false)
+          });
+        });
+
+        localUsers = Array.from(userMap.values());
+
+        // Sắp xếp: Admin lên đầu, sau đó theo số dư cao nhất đến thấp nhất
+        localUsers.sort((a, b) => {
+          if (a.role === "Quản Trị Viên" && b.role !== "Quản Trị Viên") return -1;
+          if (b.role === "Quản Trị Viên" && a.role !== "Quản Trị Viên") return 1;
+          return (Number(b.balance) || 0) - (Number(a.balance) || 0);
+        });
+
+        saveRegisteredUsers(localUsers);
+        if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
+        if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+
+        if (showNotification && typeof showToast === "function") {
+          showToast("🎉 Đã đồng bộ thành công toàn bộ " + localUsers.length + " thành viên!", "success");
+        }
+      } else {
+        if (showNotification && typeof showToast === "function") {
+          showToast("Không tìm thấy thành viên mới từ Cloud.", "warning");
+        }
       }
     }
     window.fetchCloudUsers = fetchCloudUsers;
