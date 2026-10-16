@@ -3629,6 +3629,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                       profitHtml = '<span>Gốc: <span style="color:#64748b;">--</span></span>';
                     }
 
+                    let cheaperTag = '';
+                    try {
+                      const ch = (typeof findCheaperAlternativeSources === "function") ? findCheaperAlternativeSources(p, { currentPrice: srcPrice, currentProvider: apiMap.provider, currentSourceProdId: cleanSrcId }) : null;
+                      if (ch && ch.hasCheaper && ch.bestDeal) {
+                        cheaperTag = '<div style="margin-top:3px; padding:2px 5px; background:rgba(245,158,11,0.18); border:1px solid #f59e0b; border-radius:4px; font-size:0.66rem; color:#fbbf24; display:flex; align-items:center; justify-content:space-between; gap:4px; cursor:pointer;" onclick="openSourceCompareModal(\'' + p.id + '\')" title="Bấm để xem và đổi sang nguồn ' + esc(ch.bestProvider) + ' giá ' + formatVND(ch.bestPrice) + '">' +
+                          '<span><i class="fa-solid fa-lightbulb" style="color:#facc15;"></i> Gợi ý rẻ hơn: <strong>' + esc(ch.bestProvider) + '</strong> chỉ <strong>' + formatVND(ch.bestPrice).replace(/\s*đ$/, 'đ') + '</strong> (-' + formatVND(ch.savings).replace(/\s*đ$/, 'đ') + ')</span>' +
+                          '<span style="background:#f59e0b; color:#000; font-weight:800; padding:1px 4px; border-radius:3px; font-size:0.62rem;">Đổi</span>' +
+                        '</div>';
+                      }
+                    } catch(eChTag) {}
+
                     return '<div class="adm-source-info-box" style="margin-top:4px; padding:4px 7px; background:rgba(15,23,42,0.85); border:1px solid ' + (isLoss ? 'rgba(239,68,68,0.45)' : 'rgba(6,182,212,0.3)') + '; border-left:3px solid ' + (isLoss ? '#ef4444' : '#06b6d4') + '; border-radius:5px; font-size:0.67rem; line-height:1.35; box-shadow:0 1px 4px rgba(0,0,0,0.2); text-align:left; max-width:350px; box-sizing:border-box; white-space:normal !important;">' +
                       '<div style="color:#e2e8f0; font-weight:600; display:flex; align-items:center; gap:4px; min-width:0; overflow:hidden;">' +
                         '<i class="fa-solid fa-link" style="color:' + (isLoss ? '#ef4444' : '#06b6d4') + '; font-size:0.65rem; flex-shrink:0;"></i>' +
@@ -3642,6 +3653,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                         '<span><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Tồn: <strong style="color:#38bdf8;">' + (typeof srcStock === "number" ? srcStock.toLocaleString() : '--') + '</strong></span>' +
                         ((apiMap.isSourceDeleted && (typeof DEAD_SOURCE_IDS !== "undefined" ? DEAD_SOURCE_IDS.has(cleanSrcId) : (cleanSrcId === "0" || !cleanSrcId))) ? '<span style="color:#ef4444; font-weight:800; background:rgba(239,68,68,0.2); padding:0 4px; border-radius:3px;"><i class="fa-solid fa-ban"></i> Đã gỡ</span>' : '') +
                       '</div>' +
+                      cheaperTag +
                     '</div>';
                   })() + '</td>' +
                 '<td>' + esc(p.category) + '</td>' +
@@ -20794,7 +20806,194 @@ function syncAllOpenViewsStock(changedProdId) {
       return words.slice(0, 3).join(" ");
     }
 
-    function executeCompareSourcesSearch() {
+        // =========================================================================
+    // HỆ THỐNG GỢI Ý NGUỒN HÀNG GIÁ TỐT HƠN / GIA TĂNG LỢI NHUẬN (v5.4.9)
+    // Tự động nhận diện chính xác các sản phẩm tương đương trên 6 web nguồn và so sánh giá vốn để đề xuất nguồn rẻ hơn
+    function findCheaperAlternativeSources(targetProd, options) {
+      options = options || {};
+      if (!targetProd) return null;
+
+      let p = targetProd;
+      if (typeof p === "string") {
+        const pId = p.trim();
+        const prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products))
+          ? MOCK_DATA.products
+          : ((typeof window !== "undefined" && window.MOCK_DATA && Array.isArray(window.MOCK_DATA.products)) ? window.MOCK_DATA.products : []);
+        p = prods.find(item => item && String(item.id) === pId) || (typeof findShopProduct === "function" ? findShopProduct(pId) : null);
+        if (!p) return null;
+      }
+
+      const pName = String(p.name || "").trim();
+      const pCat = String(p.category || "").trim();
+      const shopPrice = Number(p.price) || 0;
+
+      let apiMap = options.currentApiMap || ((typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null));
+      const curProv = String(options.currentProvider || (apiMap && apiMap.provider) || "").trim();
+      const rawCurId = String(options.currentSourceProdId || (apiMap && apiMap.sourceProdId) || "").trim();
+      const cleanCurId = rawCurId.replace(/^#/, "").trim();
+
+      let curCost = 0;
+      if (typeof options.currentPrice === "number" && options.currentPrice > 0) {
+        curCost = options.currentPrice;
+      } else if (apiMap && Number(apiMap.sourcePrice) > 0) {
+        curCost = Number(apiMap.sourcePrice);
+      } else if (typeof getFastSourceProduct === "function" && curProv && cleanCurId) {
+        const inSrc = getFastSourceProduct(curProv, cleanCurId);
+        if (inSrc && typeof inSrc.price === "number") curCost = inSrc.price;
+      }
+
+      if (curCost <= 0) return null;
+
+      const targetPlat = (typeof detectProductPlatform === "function") ? detectProductPlatform(pName, pCat) : "other";
+      const targetCountry = (typeof parseProductCountry === "function") ? parseProductCountry(pName, pCat) : { key: "unknown" };
+      const targetDur = (typeof parseProductDuration === "function") ? parseProductDuration(pName) : { key: "unknown", bin: "all" };
+      const normTargetName = (typeof removeVietnameseAccents === "function" ? removeVietnameseAccents(pName) : pName).toLowerCase();
+      const isTargetOtp = /\b(otp|sms|thue sim|code|thue mail)\b/i.test(normTargetName);
+
+      const isDomainRent = /\b(domain|cho thue|thue mail)\b/i.test(normTargetName);
+      const isShortRent = /\b(10\s*phut|10p|30p|1h|2h|2\s*phut)\b/i.test(normTargetName);
+      const is24hRent = /\b(24h|24\s*gio|1\s*ngay)\b/i.test(normTargetName);
+      const isFbClone = /\b(clone)\b/i.test(normTargetName);
+      const isFbVia = /\b(via)\b/i.test(normTargetName);
+      const hasTarget2Fa = /\b2fa\b/i.test(normTargetName) && !/\b(no\s*2fa|khong\s*2fa|no2fa|k\s*2fa)\b/i.test(normTargetName);
+      const hasTargetHotmail = /\b(hotmail|veri hotmail)\b/i.test(normTargetName);
+      const hasTargetGmail = /\b(gmail|google)\b/i.test(normTargetName);
+      const isMailLock = /\b(mail lock|khoa mail|lock mail)\b/i.test(normTargetName);
+
+      let sourceList = (typeof window !== "undefined" && Array.isArray(window.cachedSourceProducts) && window.cachedSourceProducts.length > 0)
+        ? window.cachedSourceProducts
+        : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts) && cachedSourceProducts.length > 0)
+          ? cachedSourceProducts
+          : ((typeof initialSourceProducts !== "undefined" && Array.isArray(initialSourceProducts)) ? initialSourceProducts : []));
+
+      if (!sourceList || sourceList.length === 0) return null;
+
+      const candidates = [];
+
+      for (let i = 0; i < sourceList.length; i++) {
+        const item = sourceList[i];
+        if (!item) continue;
+
+        const itemPrice = Number(item.price) || 0;
+        if (itemPrice <= 0 || itemPrice >= curCost) continue;
+
+        const itemStock = Number(item.amount !== undefined ? item.amount : item.stock) || 0;
+        if (itemStock <= 0) continue;
+
+        const itemProv = String(item.provider || "").trim();
+        const cleanItemId = String(item.id || "").replace(/^#/, "").trim();
+
+        if (itemProv === curProv && cleanItemId === cleanCurId) continue;
+
+        const itemName = String(item.name || "").trim();
+        const itemCat = String(item.category || "").trim();
+        const normItemName = (typeof removeVietnameseAccents === "function" ? removeVietnameseAccents(itemName) : itemName).toLowerCase();
+
+        // 1. Phân lập nền tảng
+        const itemPlat = (typeof detectProductPlatform === "function") ? detectProductPlatform(itemName, itemCat) : "other";
+        if (targetPlat !== "other" && itemPlat !== "other" && itemPlat !== targetPlat) continue;
+
+        // 2. Phân lập OTP / SMS vs Tài khoản
+        const itemOtp = /\b(otp|sms|thue sim|code|thue mail)\b/i.test(normItemName);
+        if (isTargetOtp !== itemOtp) continue;
+
+        // 3. Phân biệt Quốc Gia
+        if (targetCountry.key !== "unknown" && targetCountry.key !== "all" && targetCountry.key !== "global_mix") {
+          const itemCountry = (typeof parseProductCountry === "function") ? parseProductCountry(itemName, itemCat) : { key: "unknown" };
+          if (itemCountry.key !== targetCountry.key) continue;
+        }
+
+        // 4. Phân biệt Thời Hạn
+        if (targetDur.key !== "unknown" && targetDur.key !== "all") {
+          const itemDur = (typeof parseProductDuration === "function") ? parseProductDuration(itemName) : { key: "unknown", bin: "all" };
+          if (itemDur.key !== targetDur.key && (targetDur.bin === "none" || itemDur.bin !== targetDur.bin)) continue;
+        }
+
+        // 5. Kiểm tra ngữ nghĩa MMO
+        if (isDomainRent) {
+          const isItemDomainRent = /\b(domain|cho thue|thue mail)\b/i.test(normItemName);
+          if (!isItemDomainRent) continue;
+          if (isShortRent && /\b(24h|24\s*gio|1\s*ngay)\b/i.test(normItemName)) continue;
+          if (is24hRent && !/\b(24h|24\s*gio|1\s*ngay)\b/i.test(normItemName)) continue;
+        }
+
+        if (isFbClone && !isFbVia && /\b(via fb|via facebook)\b/i.test(normItemName) && !/\bclone\b/i.test(normItemName)) continue;
+        if (isFbVia && !isFbClone && /\b(clone fb|clone facebook)\b/i.test(normItemName) && !/\bvia\b/i.test(normItemName)) continue;
+
+        if (hasTarget2Fa) {
+          const itemHas2Fa = /\b2fa\b/i.test(normItemName) && !/\b(no\s*2fa|khong\s*2fa|no2fa|k\s*2fa)\b/i.test(normItemName);
+          if (!itemHas2Fa) continue;
+        }
+
+        if (hasTargetHotmail) {
+          if (!/\b(hotmail|outlook)\b/i.test(normItemName)) continue;
+        }
+
+        if (hasTargetGmail) {
+          if (!/\b(gmail|google)\b/i.test(normItemName)) continue;
+        }
+
+        if (isMailLock && !/\b(mail lock|khoa mail|lock mail)\b/i.test(normItemName)) continue;
+
+        // 6. Tính điểm độ khớp
+        let score = (typeof calcCompareMatchScore === "function") ? calcCompareMatchScore(item, pName, p) : 50;
+        if (score < 30) continue;
+
+        const savings = curCost - itemPrice;
+        candidates.push({
+          item: item,
+          provider: itemProv,
+          id: cleanItemId,
+          name: itemName,
+          price: itemPrice,
+          stock: itemStock,
+          savings: savings,
+          savingsPercent: Math.round((savings / curCost) * 100),
+          newProfit: shopPrice > 0 ? (shopPrice - itemPrice) : 0,
+          marginPercent: shopPrice > 0 ? Math.round(((shopPrice - itemPrice) / shopPrice) * 100) : 0,
+          score: score
+        });
+      }
+
+      if (candidates.length === 0) return null;
+
+      candidates.sort(function(a, b) {
+        if (a.price !== b.price) return a.price - b.price;
+        return b.stock - a.stock;
+      });
+
+      const best = candidates[0];
+      return {
+        hasCheaper: true,
+        bestDeal: best.item,
+        bestProvider: best.provider,
+        bestId: best.id,
+        bestName: best.name,
+        bestPrice: best.price,
+        bestStock: best.stock,
+        currentPrice: curCost,
+        savings: best.savings,
+        savingsPercent: best.savingsPercent,
+        newProfit: best.newProfit,
+        marginPercent: best.marginPercent,
+        totalCandidates: candidates.length,
+        candidates: candidates
+      };
+    }
+    window.findCheaperAlternativeSources = findCheaperAlternativeSources;
+
+    function quickApplyCheaperSource(prodId, provider, sourceProdId, sourcePrice, sourceStock, sourceProdName) {
+      try {
+        if (typeof applySwitchSource === "function") {
+          applySwitchSource(prodId, provider, sourceProdId, sourcePrice, sourceStock, sourceProdName);
+        }
+      } catch(e) {
+        console.error("quickApplyCheaperSource error:", e);
+      }
+    }
+    window.quickApplyCheaperSource = quickApplyCheaperSource;
+
+function executeCompareSourcesSearch() {
       const prodId = window.currentCompareProdId;
       const searchInp = document.getElementById("admCompareSearchInput");
       const onlyInStockCheck = document.getElementById("admCompareOnlyInStock");
@@ -21466,6 +21665,16 @@ function syncAllOpenViewsStock(changedProdId) {
       renderCompareCurrentStatus(prod || { id: effectiveId, apiMapping: mapItem, deliveryType: "api" });
       executeCompareSourcesSearch();
 
+      try {
+        if (typeof window !== "undefined" && window._currentActiveDetailProduct && String(window._currentActiveDetailProduct.id) === String(effectiveId)) {
+          if (typeof openProductDetailById === "function") {
+            setTimeout(function() {
+              openProductDetailById(effectiveId);
+            }, 100);
+          }
+        }
+      } catch(eDtlSync) {}
+
       // 6. Thông báo thành công và tự động đóng modal so sánh
       const provName = pCfg.name || provider;
       if (typeof showToast === "function") {
@@ -21623,10 +21832,24 @@ function syncAllOpenViewsStock(changedProdId) {
         const isStable = !isLoss && !isPriceUp && !isPriceDown && !isOutOfStock && !isSourceDeleted;
         const isUrgent = isLoss || isPriceUp || isOutOfStock || isSourceDeleted;
 
+        let cheaperInfo = null;
+        try {
+          if (typeof findCheaperAlternativeSources === "function") {
+            cheaperInfo = findCheaperAlternativeSources(p, {
+              currentPrice: livePrice,
+              currentProvider: prov,
+              currentSourceProdId: cleanSrcId
+            });
+          }
+        } catch(eChInfo) {}
+        const hasCheaperSource = !!(cheaperInfo && cheaperInfo.hasCheaper);
+
         results.push({
           product: p,
           prodId: String(p.id),
           prodName: p.name || "Sản phẩm",
+          cheaperInfo: cheaperInfo,
+          hasCheaperSource: hasCheaperSource,
           prodImage: p.image || p.imageUrl || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
           category: p.category || "MMO",
           provider: prov,
@@ -21733,6 +21956,12 @@ function syncAllOpenViewsStock(changedProdId) {
         }
         const filterUrgentEl = document.getElementById("filterCountUrgent");
         if (filterUrgentEl) filterUrgentEl.innerText = urgentCount;
+        let cheaperCount = 0;
+        alerts.forEach(function(item) {
+          if (item && item.hasCheaperSource) cheaperCount++;
+        });
+        const filterCheaperEl = document.getElementById("filterCountCheaper");
+        if (filterCheaperEl) filterCheaperEl.innerText = cheaperCount;
 
         // Cập nhật Banner cảnh báo bán lỗ
         const lossBanner = document.getElementById("admApiLossBanner");
@@ -21831,6 +22060,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       let filtered = alerts.filter(function(item) {
         if (provFilter !== "ALL" && item.provider !== provFilter) return false;
+        if (filter === "CHEAPER_AVAILABLE") return item.hasCheaperSource;
         if (filter === "URGENT") return item.isUrgent;
         if (filter === "LOSS") return item.isLoss;
         if (filter === "PRICE_UP") return item.isPriceUp;
@@ -21964,6 +22194,14 @@ function syncAllOpenViewsStock(changedProdId) {
           priceDiffHtml = '<div style="color:#e2e8f0; font-weight:700; font-size:0.84rem;">' + formatVND(item.currentSourcePrice) + '</div>' +
             '<div style="font-size:0.71rem; color:#10b981; margin-top:2px;">✅ Không đổi</div>';
         }
+        if (item.hasCheaperSource && item.cheaperInfo && item.cheaperInfo.bestDeal) {
+          const chDeal = item.cheaperInfo.bestDeal;
+          const chProvCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[chDeal.provider]) ? API_SOURCES[chDeal.provider] : null;
+          const chProvName = (chProvCfg && chProvCfg.name) ? chProvCfg.name : (chDeal.provider || "Nguồn");
+          priceDiffHtml += '<div style="margin-top:4px; font-size:0.69rem; color:#fbbf24; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.35); padding:2px 6px; border-radius:4px; display:inline-flex; align-items:center; gap:4px; cursor:pointer;" onclick="openSourceCompareModal(\'' + esc(item.prodId) + '\')" title="Có nguồn ' + esc(chProvName) + ' bán ' + formatVND(chDeal.price) + ' (Rẻ hơn ' + formatVND(item.cheaperInfo.savings) + '). Bấm để đổi ngay!">' +
+            '<i class="fa-solid fa-lightbulb" style="animation:pulse 1.5s infinite; color:#facc15;"></i> Rẻ hơn: <b>' + formatVND(chDeal.price).replace(/\s*đ$/, 'đ') + '</b> (-' + formatVND(item.cheaperInfo.savings).replace(/\s*đ$/, 'đ') + ')' +
+          '</div>';
+        }
         const priceDiffCell = '<td style="padding:10px 8px; width:155px; min-width:130px; box-sizing:border-box; vertical-align:middle;">' + priceDiffHtml + '</td>';
 
         // Cột 6: Giá Shop & Biên Lãi
@@ -21984,7 +22222,11 @@ function syncAllOpenViewsStock(changedProdId) {
 
         // Cột 7: Hành Động
         let compareBtnHtml = '';
-        if (item.isSourceDeleted || item.isOutOfStock) {
+        if (item.hasCheaperSource && item.cheaperInfo) {
+          compareBtnHtml = '<button type="button" onclick="openSourceCompareModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:linear-gradient(135deg,#f59e0b,#d97706); color:#000; border:1px solid #fbbf24; padding:5px 8px; border-radius:6px; font-size:0.73rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 8px rgba(245,158,11,0.35);" title="Bấm để mở so sánh và đổi ngay sang nguồn rẻ hơn">' +
+            '<i class="fa-solid fa-bolt"></i> Đổi Nguồn Rẻ Hơn (-' + formatVND(item.cheaperInfo.savings).replace(/\s*đ$/, 'đ') + ')' +
+          '</button>';
+        } else if (item.isSourceDeleted || item.isOutOfStock) {
           compareBtnHtml = '<button type="button" onclick="openSourceCompareModal(\'' + esc(item.prodId) + '\')" style="width:100%; background:linear-gradient(135deg,#9333ea,#7c3aed); color:#fff; border:1px solid #c084fc; padding:5px 8px; border-radius:6px; font-size:0.73rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:5px; box-shadow:0 2px 8px rgba(147,51,234,0.35);">' +
             '<i class="fa-solid fa-arrows-split-up-and-left"></i> Đổi Nguồn (6 Web)' +
           '</button>';
@@ -28123,6 +28365,58 @@ function syncAllOpenViewsStock(changedProdId) {
               }
             }
 
+            // [CHEAPER SOURCE RECOMMENDATION IN DETAIL ADMIN BANNER]
+            let cheaperSuggestionHtml = "";
+            try {
+              const cheaperInfo = (typeof findCheaperAlternativeSources === "function") 
+                ? findCheaperAlternativeSources(p, { currentPrice: srcPrice, currentProvider: existingMap.provider, currentSourceProdId: cleanSrcId }) 
+                : null;
+
+              if (cheaperInfo && cheaperInfo.hasCheaper && cheaperInfo.bestDeal) {
+                const bestD = cheaperInfo.bestDeal;
+                const bestProv = bestD.provider || "Nguồn";
+                const bestProvCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[bestProv]) ? API_SOURCES[bestProv] : null;
+                const bestProvName = (bestProvCfg && bestProvCfg.name) ? bestProvCfg.name : bestProv;
+                const bestPrice = Number(bestD.price) || 0;
+                const bestStock = Number(bestD.amount !== undefined ? bestD.amount : bestD.stock) || 0;
+                const bestName = (typeof cleanSourceProductName === "function") ? cleanSourceProductName(bestD.name) : bestD.name;
+                const cleanBestId = String(bestD.id || "").replace(/^#/, "").trim();
+
+                cheaperSuggestionHtml = '<div style="margin-top:8px; padding:9px 12px; background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.06)); border:1px solid #f59e0b; border-left:4px solid #f59e0b; border-radius:6px; font-size:0.75rem; line-height:1.45; box-shadow:0 3px 12px rgba(245,158,11,0.2);">' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">' +
+                    '<div style="flex:1; min-width:220px;">' +
+                      '<div style="color:#fbbf24; font-weight:800; font-size:0.8rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
+                        '<i class="fa-solid fa-lightbulb" style="animation:pulse 1.5s infinite; color:#facc15;"></i>' +
+                        '<span>GỢI Ý NGUỒN GIÁ TỐT HƠN (TĂNG LỢI NHUẬN):</span>' +
+                        '<span style="background:#f59e0b; color:#000; font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:800;">Tiết kiệm ' + formatVND(cheaperInfo.savings).replace(/\s*đ$/, 'đ') + '/acc (-' + cheaperInfo.savingsPercent + '%)</span>' +
+                      '</div>' +
+                      '<div style="color:#e2e8f0; font-weight:600; margin-top:4px; display:flex; align-items:center; gap:5px; overflow:hidden;">' +
+                        '<span style="color:#38bdf8; font-weight:700;">[' + (typeof escapeHtml === "function" ? escapeHtml(bestProvName) : bestProvName) + ' #' + cleanBestId + ']:</span> ' +
+                        '<strong style="color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (typeof escapeHtml === "function" ? escapeHtml(bestD.name) : bestD.name) + '">' + (typeof escapeHtml === "function" ? escapeHtml(bestName) : bestName) + '</strong>' +
+                      '</div>' +
+                      '<div style="display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:3px; font-size:0.72rem; color:#cbd5e1; align-items:center;">' +
+                        '<span>Giá vốn mới: <strong style="color:#10b981; font-size:0.82rem;">' + formatVND(bestPrice).replace(/\s*đ$/, 'đ') + '</strong> (hiện tại: ' + formatVND(srcPrice).replace(/\s*đ$/, 'đ') + ')</span>' +
+                        '<span>Kho live: <strong style="color:#38bdf8;">' + bestStock.toLocaleString() + ' acc</strong></span>' +
+                        '<span>Lãi mới: <strong style="color:#10b981;">+' + formatVND(cheaperInfo.newProfit).replace(/\s*đ$/, 'đ') + ' (' + cheaperInfo.marginPercent + '%)</strong></span>' +
+                      '</div>' +
+                    '</div>' +
+                    '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
+                      '<button type="button" class="btn-tool-primary" data-provider="' + bestProv + '" data-source-id="' + cleanBestId + '" data-price="' + bestPrice + '" data-stock="' + bestStock + '" data-name="' + (typeof escapeHtml === "function" ? escapeHtml(bestD.name) : bestD.name) + '" onclick="window.quickApplyCheaperSource(\'' + p.id + '\', \'' + bestProv + '\', \'' + cleanBestId + '\', ' + bestPrice + ', ' + bestStock + ', this.getAttribute(\'data-name\'))" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:800; font-size:0.75rem; padding:6px 12px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(245,158,11,0.4);" title="Đổi ngay sản phẩm này sang nguồn giá rẻ hơn">' +
+                        '<i class="fa-solid fa-bolt"></i> ⚡ Đổi Sang Nguồn Này Ngay' +
+                      '</button>' +
+                      '<button type="button" onclick="openSourceCompareModal(\'' + p.id + '\')" style="background:#1e293b; color:#38bdf8; font-weight:700; font-size:0.74rem; padding:6px 10px; border-radius:6px; border:1px solid #334155; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Xem chi tiết so sánh tất cả các nguồn API">' +
+                        '<i class="fa-solid fa-scale-balanced"></i> Xem 6 Nguồn' +
+                      '</button>' +
+                    '</div>' +
+                  '</div>' +
+                '</div>';
+              } else if (srcPrice > 0) {
+                cheaperSuggestionHtml = '<div style="margin-top:6px; padding:4px 8px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:5px; font-size:0.71rem; color:#10b981; font-weight:600; display:flex; align-items:center; gap:5px;">' +
+                  '<i class="fa-solid fa-circle-check"></i> Nguồn đang nối hiện đã là nguồn có giá vốn tốt nhất trong 6 hệ thống API!' +
+                '</div>';
+              }
+            } catch(eChDtl) {}
+
             dtlAdminSourceBox.style.display = "block";
             dtlAdminSourceBox.innerHTML = '<div style="margin-top:6px; padding:6px 10px; background:rgba(15,23,42,0.9); border:1px solid ' + (isLoss ? 'rgba(239,68,68,0.45)' : 'rgba(6,182,212,0.35)') + '; border-left:3px solid ' + (isLoss ? '#ef4444' : '#06b6d4') + '; border-radius:6px; font-size:0.73rem; line-height:1.4; text-align:left; max-width:100%; box-sizing:border-box;">' +
               '<div style="color:#e2e8f0; font-weight:600; display:flex; align-items:center; gap:5px; overflow:hidden;"><i class="fa-solid fa-link" style="color:' + (isLoss ? '#ef4444' : '#06b6d4') + '; flex-shrink:0;"></i> <span style="color:#94a3b8; flex-shrink:0;">[' + (typeof escapeHtml === "function" ? escapeHtml(provName) : provName) + ' #' + cleanSrcId + ']:</span> <strong style="color:#38bdf8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;" title="' + (typeof escapeHtml === "function" ? escapeHtml(srcName) : srcName) + '">' + (typeof escapeHtml === "function" ? escapeHtml(srcName) : srcName) + '</strong></div>' +
@@ -28132,7 +28426,7 @@ function syncAllOpenViewsStock(changedProdId) {
                 profitStr +
                 '<span><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Tồn: <strong style="color:#38bdf8;">' + (typeof srcStock === "number" ? srcStock.toLocaleString() : '--') + '</strong></span>' +
               '</div>' +
-            '</div>';
+            '</div>' + cheaperSuggestionHtml;
           } else {
             dtlAdminSourceBox.style.display = "none";
           }
