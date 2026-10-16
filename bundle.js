@@ -15432,6 +15432,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const refreshIconHtml = ' <span onclick="triggerLiveDetailStockSync(this)" class="stock-refresh-icon-btn" title="Bấm để đồng bộ tồn kho mới nhất" style="cursor:pointer; margin-left:6px; color:#38bdf8; font-size:0.85rem; padding:2px 4px; display:inline-flex; align-items:center; vertical-align:middle;"><i class="fa-solid fa-arrows-rotate" id="iconDtlLiveSync"></i></span>';
 
       let effectiveStock = (typeof stock === "number") ? stock : 0;
+      const isCurApi = !!(curP && (curP.deliveryType === "api" || curP.delivery_type === "api" || (curP.apiMapping && curP.apiMapping.enabled && curP.apiMapping.sourceProdId) || (curV && curV.apiMapping && curV.apiMapping.enabled && curV.apiMapping.sourceProdId) || (typeof isProductApi === "function" && isProductApi(curP))));
       if (curP) {
         if (isCurApi) {
           let m = (curP.apiMapping && curP.apiMapping.sourceProdId) ? curP.apiMapping : null;
@@ -27977,7 +27978,9 @@ function syncAllOpenViewsStock(changedProdId) {
       } else {
         initialVariantStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(p, currentSelectedVariantIndex) : (p.stock || 0);
       }
-      if (typeof syncDetailStockUI === "function") syncDetailStockUI(initialVariantStock);
+      try {
+        if (typeof syncDetailStockUI === "function") syncDetailStockUI(initialVariantStock);
+      } catch(e) { console.warn("syncDetailStockUI error:", e); }
 
       if (isProdApi && typeof triggerLiveDetailStockSync === "function") {
         setTimeout(function() {
@@ -28012,22 +28015,27 @@ function syncAllOpenViewsStock(changedProdId) {
       const dtlQty = document.getElementById("dtlQtyInput");
       if (dtlQty) dtlQty.value = 1;
 
-      // Render Variant Pills
+      // Render Variant Pills & Toggle Section
       const pillsContainer = document.getElementById("dtlVariantPills");
+      const variantSectionEl = document.getElementById("dtlVariantSection") || (pillsContainer ? pillsContainer.closest(".variant-section") : null);
       if (pillsContainer && Array.isArray(p.variants) && p.variants.length > 0) {
+        if (variantSectionEl) variantSectionEl.style.display = "block";
         pillsContainer.innerHTML = p.variants.map((v, idx) => {
           let vStock = isProdApi ? initialVariantStock : ((typeof getShopVariantStock === "function") ? getShopVariantStock(p, idx) : (v.stock || 0));
           v.stock = vStock;
           const stockBadge = vStock > 0
             ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
             : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+          const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)));
+          const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
           return '<div class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-            '<span>' + escapeHtml(v.name || ("Gói " + (idx + 1))) + stockBadge + '</span>' +
-            '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+            '<span>' + safeName + stockBadge + '</span>' +
+            '<span style="font-weight:700;">' + safePrice + '</span>' +
           '</div>';
         }).join("");
-      } else if (pillsContainer) {
-        pillsContainer.innerHTML = "";
+      } else {
+        if (pillsContainer) pillsContainer.innerHTML = "";
+        if (variantSectionEl) variantSectionEl.style.display = "none";
       }
 
       // Cập nhật hoa hồng
@@ -28242,18 +28250,25 @@ function syncAllOpenViewsStock(changedProdId) {
 
               // 8. Cập nhật pills biến thể
               const pillsContainer = document.getElementById("dtlVariantPills");
+              const variantSectionEl = document.getElementById("dtlVariantSection") || (pillsContainer ? pillsContainer.closest(".variant-section") : null);
               if (pillsContainer && Array.isArray(p.variants) && p.variants.length > 0) {
+                if (variantSectionEl) variantSectionEl.style.display = "block";
                 pillsContainer.innerHTML = p.variants.map((v, idx) => {
                   let vStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(p, idx) : (v.stock || 0);
                   v.stock = vStock;
                   const stockBadge = vStock > 0
                     ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
                     : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+                  const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)));
+                  const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
                   return '<div class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                    '<span>' + escapeHtml(v.name || ("Gói " + (idx + 1))) + stockBadge + '</span>' +
-                    '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
+                    '<span>' + safeName + stockBadge + '</span>' +
+                    '<span style="font-weight:700;">' + safePrice + '</span>' +
                   '</div>';
                 }).join("");
+              } else {
+                if (pillsContainer) pillsContainer.innerHTML = "";
+                if (variantSectionEl) variantSectionEl.style.display = "none";
               }
 
               // 9. Cập nhật ảnh nếu Turso Worker DB có ảnh (ƯU TIÊN TUYỆT ĐỐI SSOT)
@@ -35890,17 +35905,23 @@ function changeAdmUsersPage(p) {
                 syncAllOpenViewsStock(currentSelectedProduct.id, curStock, curAccounts || [], true, vIdx);
                 if (typeof syncDetailStockUI === "function") syncDetailStockUI(curStock);
                 const pillsContainer = document.getElementById("dtlVariantPills");
+                const variantSectionEl = document.getElementById("dtlVariantSection") || (pillsContainer ? pillsContainer.closest(".variant-section") : null);
+                if (variantSectionEl) variantSectionEl.style.display = hasV ? "block" : "none";
                 if (pillsContainer && hasV) {
                   pillsContainer.innerHTML = currentSelectedProduct.variants.map((v, idx) => {
                     const vs = getShopVariantStock(currentSelectedProduct, idx);
                     const badge = vs > 0 
                       ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
                       : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+                    const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)));
+                    const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
                     return '<div class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                      '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
-                      '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+                      '<span>' + safeName + badge + '</span>' +
+                      '<span style="font-weight:700;">' + safePrice + '</span>' +
                     '</div>';
                   }).join("");
+                } else if (pillsContainer) {
+                  pillsContainer.innerHTML = "";
                 }
               } else {
                 syncAllOpenViewsStock(null, null, null, true);
@@ -36277,17 +36298,23 @@ function changeAdmUsersPage(p) {
               if (typeof syncDetailStockUI === "function") syncDetailStockUI(activeStock);
 
               const pillsContainer = document.getElementById("dtlVariantPills");
+              const variantSectionEl = document.getElementById("dtlVariantSection") || (pillsContainer ? pillsContainer.closest(".variant-section") : null);
+              if (variantSectionEl) variantSectionEl.style.display = hasVars ? "block" : "none";
               if (pillsContainer && hasVars) {
                 pillsContainer.innerHTML = freshP.variants.map((v, idx) => {
                   const vs = getShopVariantStock(freshP, idx);
                   const badge = vs > 0 
                     ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
                     : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+                  const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)));
+                  const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
                   return '<div class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                    '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
-                    '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+                    '<span>' + safeName + badge + '</span>' +
+                    '<span style="font-weight:700;">' + safePrice + '</span>' +
                   '</div>';
                 }).join("");
+              } else if (pillsContainer) {
+                pillsContainer.innerHTML = "";
               }
             }
             if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(ev.data.prodId, ev.data.stock, ev.data.accounts || null, true, ev.data.variantIdx);
