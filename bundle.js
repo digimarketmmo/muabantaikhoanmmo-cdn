@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.4.0";
+const MMO_CURRENT_CODE_VERSION = "5.4.1";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 function isForeignKhotaikhoansoOrder(o) {
@@ -412,9 +412,9 @@ function healStorageQuota(forceEmergency) {
       if (surfCustom && (surfCustom.includes("nord_vpn") || surfCustom.includes("AfQAAAH0CAYAA") || surfCustom.includes("placeholder"))) {
         localStorage.removeItem("mmo_custom_img_PROD_MUKAXC4Q9T");
       }
-      ["PROD_MU5T3T47AE", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI"].forEach(function(gid) {
+      ["PROD_MV5PA8KZDW", "PROD_MU5T3T47AE", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"].forEach(function(gid) {
         const sG = localStorage.getItem("mmo_custom_img_" + gid);
-        if (sG && (sG.includes("gemini_pro_veo3.png") || sG.includes("placeholder"))) {
+        if (sG && (sG.includes("gemini_pro_veo3.png") || sG.includes("placeholder") || sG.toLowerCase().includes("chatgpt") || sG.toLowerCase().includes("munueki3nm") || sG.includes("default_product.png"))) {
           localStorage.removeItem("mmo_custom_img_" + gid);
         }
       });
@@ -422,7 +422,7 @@ function healStorageQuota(forceEmergency) {
         const lk = localStorage.key(k);
         if (lk && lk.startsWith("mmo_custom_img_")) {
           const val = localStorage.getItem(lk);
-          if (val && (val.includes("khotaikhoanso") || val.includes("nFV4Rln"))) {
+          if (val && (val.includes("khotaikhoanso") || val.includes("nFV4Rln") || val.includes("placeholder"))) {
             localStorage.removeItem(lk);
           }
         }
@@ -441,6 +441,23 @@ function healStorageQuota(forceEmergency) {
                   p.image_url = "";
                   p.imageUrl = "";
                   changed = true;
+                }
+                const pId = String(p && p.id || "").trim();
+                const pName = String(p && p.name || "").toLowerCase();
+                const isGem = pName.includes("gemini") || pName.includes("veo") || pId === "PROD_MV5PA8KZDW" || pId === "PROD_MU6R34FZ4Z" || pId === "PROD_MU5T3T47AE";
+                if (p && isGem) {
+                  const pImg = String(p.image || p.image_url || "").toLowerCase();
+                  if (pImg.includes("chatgpt") || pImg.includes("munueki3nm") || pImg.includes("default_product.png")) {
+                    p.image = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5PA8KZDW_NANG_CAP_GEMINI_PRO_CHINH_CHU_18_Thang.png";
+                    p.image_url = p.image;
+                    p.imageUrl = p.image;
+                    changed = true;
+                  }
+                  if (Number(p.stock) === 1890) {
+                    p.stock = 184;
+                    if (Array.isArray(p.variants)) p.variants.forEach(v => { if (v) v.stock = 184; });
+                    changed = true;
+                  }
                 }
               });
               if (changed) localStorage.setItem(k, JSON.stringify(list));
@@ -12078,7 +12095,21 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const pId = String((typeof p === "object" && p.id) || (typeof p === "string" ? p : "")).trim();
       let prodObj = (typeof p === "object") ? p : ((typeof findShopProduct === "function") ? findShopProduct(pId) : null);
       
-      // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: Ảnh do Admin vừa chỉnh sửa/tải lên được lưu trong mmo_custom_img_
+      const pNameLower = String((prodObj && prodObj.name) || "").toLowerCase();
+      const isGeminiProd = pNameLower.includes("gemini") || pNameLower.includes("veo") || pId === "PROD_MV5PA8KZDW" || pId === "PROD_MU6R34FZ4Z" || pId === "PROD_MU5T3T47AE";
+
+      // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: Ảnh do Admin vừa upload lên Worker DB (/api/images/ hoặc /api/products/:id/image)
+      if (prodObj) {
+        const directImg = String(prodObj.image || prodObj.image_url || prodObj.imageUrl || "").trim();
+        if (directImg && (directImg.includes("/api/images/") || directImg.includes("/api/products/")) && !directImg.includes("undefined") && !directImg.includes("null")) {
+          if (pId) {
+            try { localStorage.setItem("mmo_custom_img_" + pId, directImg); } catch(e) {}
+          }
+          return directImg;
+        }
+      }
+
+      // 2. [ƯU TIÊN #2]: Ảnh trong localStorage (với tường lửa cô lập nền tảng nghiêm ngặt)
       if (pId) {
         try {
           let customSaved = localStorage.getItem("mmo_custom_img_" + pId);
@@ -12089,23 +12120,33 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               if (aVal && aVal.trim()) { customSaved = aVal.trim(); break; }
             }
           }
-          if (customSaved && (customSaved.includes("khotaikhoanso") || customSaved.includes("nFV4Rln"))) {
-            localStorage.removeItem("mmo_custom_img_" + pId);
-            customSaved = null;
-          } else if (customSaved && customSaved.trim() !== "") {
+          if (customSaved) {
+            const sLower = customSaved.toLowerCase();
+            if (isGeminiProd && (sLower.includes("chatgpt") || sLower.includes("munueki3nm") || sLower.includes("mu2oxbzc6k") || sLower.includes("tiktok") || sLower.includes("facebook") || sLower.includes("gmail"))) {
+              localStorage.removeItem("mmo_custom_img_" + pId);
+              customSaved = null;
+            } else if (customSaved.includes("khotaikhoanso") || customSaved.includes("nFV4Rln") || customSaved.includes("placeholder") || customSaved.includes("default_product.png") || customSaved.includes("gemini_pro_veo3.png")) {
+              localStorage.removeItem("mmo_custom_img_" + pId);
+              customSaved = null;
+            }
+          }
+          if (customSaved && customSaved.trim() !== "") {
             return customSaved.trim();
           }
         } catch(e) {}
       }
 
-      // 2. [ƯU TIÊN #2]: Ảnh Data URI (Base64) hoặc URL công khai có sẵn trên đối tượng p
+      // 3. [ƯU TIÊN #3]: Ảnh Data URI (Base64) hoặc URL công khai có sẵn trên đối tượng p
       const existingImg = prodObj ? (prodObj.image || prodObj.image_url || prodObj.imageUrl || "") : ((typeof p === "string" && (p.startsWith("http") || p.startsWith("data:") || p.startsWith("/"))) ? p : "");
       if (typeof existingImg === "string" && existingImg.trim() !== "") {
         let trimmed = existingImg.trim();
         if (trimmed.includes("manhdongvtc.workers.dev")) {
           trimmed = trimmed.replace(/manhdongvtc\.workers\.dev/g, "muabantaikhoanmmo.workers.dev");
         }
-        if (trimmed.includes("khotaikhoanso") || trimmed.includes("nFV4Rln") || trimmed.includes("placeholder")) {
+        if (trimmed.includes("khotaikhoanso") || trimmed.includes("nFV4Rln") || trimmed.includes("placeholder") || trimmed.includes("default_product.png")) {
+          trimmed = "";
+        }
+        if (isGeminiProd && (trimmed.toLowerCase().includes("chatgpt") || trimmed.toLowerCase().includes("munueki3nm"))) {
           trimmed = "";
         }
         if (trimmed.startsWith("data:image/") || (trimmed.startsWith("data:") && trimmed.length > 50)) {
@@ -12113,12 +12154,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
         // Chấp nhận 100% URL ảnh mới tải lên, bao gồm cả Cloud Worker /api/products/:id/image, CDN jsdelivr và /api/images/
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
-            !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash") && !trimmed.includes("khotaikhoanso") && !trimmed.includes("nFV4Rln")) {
+            !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash") && !trimmed.includes("khotaikhoanso") && !trimmed.includes("nFV4Rln") && !trimmed.includes("default_product.png")) {
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
       }
 
-      // 3. Tra cứu ảnh chuẩn trong bản đồ KNOWN_PROD_IMAGE_MAP theo ID sản phẩm
+      // 4. Tra cứu ảnh chuẩn trong bản đồ KNOWN_PROD_IMAGE_MAP theo ID sản phẩm
       const searchId = pId || (prodObj && prodObj.id ? String(prodObj.id).trim() : "");
       if (searchId && typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && KNOWN_PROD_IMAGE_MAP[searchId]) {
         return KNOWN_PROD_IMAGE_MAP[searchId];
@@ -12127,7 +12168,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return KNOWN_PROD_IMAGE_MAP[searchId.toUpperCase()];
       }
 
-      // 4. Fallback thông minh theo Danh mục & Từ khóa sản phẩm (Bảo đảm không bao giờ văng nhầm ảnh)
+      // 5. Fallback thông minh theo Danh mục & Từ khóa sản phẩm (Bảo đảm không bao giờ văng nhầm ảnh)
       return resolveCategoryFallbackImage(prodObj || p);
     }
     window.resolveProductImage = resolveProductImage;
@@ -14546,23 +14587,34 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                   }
                 }
               }
+              const curNameLower = String(cur.name || "").toLowerCase();
+              const isCurGemini = curNameLower.includes("gemini") || curNameLower.includes("veo") || cur.id === "PROD_MV5PA8KZDW" || cur.id === "PROD_MU6R34FZ4Z" || cur.id === "PROD_MU5T3T47AE";
+              if (localCustomImg && isCurGemini && (localCustomImg.toLowerCase().includes("chatgpt") || localCustomImg.toLowerCase().includes("munueki3nm") || localCustomImg.includes("default_product.png"))) {
+                try { localStorage.removeItem("mmo_custom_img_" + cur.id); } catch(e) {}
+                localCustomImg = null;
+              }
               if (localCustomImg && (localCustomImg.includes("khotaikhoanso") || localCustomImg.includes("placeholder") || localCustomImg.includes("gemini_pro_veo3.png"))) {
                 try { localStorage.removeItem("mmo_custom_img_" + cur.id); } catch(e) {}
                 localCustomImg = null;
               }
-              const targetImage = (localCustomImg && localCustomImg.trim() && !localCustomImg.includes("/api/products/"))
-                ? localCustomImg.trim()
-                : ((resolvedWorkerImg && resolvedWorkerImg.trim() && !resolvedWorkerImg.includes("/api/products/"))
-                  ? resolvedWorkerImg.trim()
-                  : ((localCustomImg && localCustomImg.trim())
-                    ? localCustomImg.trim()
-                    : ((resolvedWorkerImg && resolvedWorkerImg.trim())
-                      ? resolvedWorkerImg.trim()
+              // [QUY TẮC BẢO VỆ SSOT]: Ảnh trả về từ Worker DB (đặc biệt là link /api/images/ do Admin lưu) LUÔN CÓ ƯU TIÊN CAO NHẤT
+              const targetImage = (resolvedWorkerImg && resolvedWorkerImg.trim() && !resolvedWorkerImg.includes("/api/products/") && !resolvedWorkerImg.includes("default_product.png"))
+                ? resolvedWorkerImg.trim()
+                : ((localCustomImg && localCustomImg.trim() && !localCustomImg.includes("/api/products/"))
+                  ? localCustomImg.trim()
+                  : ((resolvedWorkerImg && resolvedWorkerImg.trim())
+                    ? resolvedWorkerImg.trim()
+                    : ((localCustomImg && localCustomImg.trim())
+                      ? localCustomImg.trim()
                       : (isImgValid(cur.image) && !cur.image.startsWith("data:") && !cur.image.includes("khotaikhoanso")
                         ? cur.image.trim()
                         : ((typeof resolveProductImage === "function")
                           ? resolveProductImage(cur)
                           : (cur.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png"))))));
+
+              if (targetImage && !targetImage.includes("default_product.png")) {
+                try { localStorage.setItem("mmo_custom_img_" + cur.id, targetImage); } catch(eImgLS) {}
+              }
 
               const targetDesc = ((typeof tp.description === "string" && tp.description.trim() !== "") 
                 ? tp.description.trim() 
@@ -17644,7 +17696,7 @@ function syncAllOpenViewsStock(changedProdId) {
     // LIÊN KẾT SẢN PHẨM ON-DEMAND API (MAPPING ENGINE v1.9.3)
     // ============================================================================
     const DEFAULT_API_PRODUCT_MAPPINGS = {
-      "PROD_MV5PA8KZDW": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32428","sourcePrice":33000,"sourceStock":1252,"sourceProdName":"[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 33.000 đ (Tồn: 1.252)","baseUrl":"https://selltainguyenmmo.com","isSourceDeleted":false},
+      "PROD_MV5PA8KZDW": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32428","sourcePrice":51000,"sourceStock":2052,"sourceProdName":"[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 51.000 đ (Tồn: 2.052)","baseUrl":"https://selltainguyenmmo.com","isSourceDeleted":false},
       "PROD_MV1GO2PD8A": {"enabled":true,"provider":"vuavia","sourceProdId":"1847","sourcePrice":6000,"sourceStock":14274,"sourceProdName":"[Clone] #1847 Clone REG NEW - VER MAIL - NEW ZIN ADS - 6.000 đ (Tồn: 14.274)","baseUrl":"https://api.vuavia.io","isSourceDeleted":false},
       "PROD_MV1G02PD8A": {"enabled":true,"provider":"vuavia","sourceProdId":"1847","sourcePrice":6000,"sourceStock":14274,"sourceProdName":"[Clone] #1847 Clone REG NEW - VER MAIL - NEW ZIN ADS - 6.000 đ (Tồn: 14.274)","baseUrl":"https://api.vuavia.io","isSourceDeleted":false},
       "PROD_MTQQXO2E": {"enabled":true,"provider":"ultrammo","sourceProdId":"39182","sourcePrice":419,"sourceStock":11760,"sourceProdName":"24h plus - có box get api [ ID 39182 ]","baseUrl":"https://ultrammo.com"},
@@ -17655,10 +17707,10 @@ function syncAllOpenViewsStock(changedProdId) {
       "PROD_MU5PWT7PP7": {"enabled":true,"provider":"ultrammo","sourceProdId":"13629","sourcePrice":1200,"sourceStock":532,"sourceProdName":"TÀI KHOẢN KLING AI 65 CREDIT","baseUrl":"https://ultrammo.com"},
       "PROD_MTQZT2Y1": {"enabled":true,"provider":"nguyenlieummo","sourceProdId":"121063","sourcePrice":656,"sourceStock":88181,"sourceProdName":"Hotmail Trusted - OAuth2 [ Graph ] Live 12 - 36 Months"},
       "PROD_MU5SPLMSEC": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"31699","sourcePrice":16000,"sourceStock":16037,"sourceProdName":"🔥ChatGPT Free đã verify phone codex"},
-      "PROD_MU5T3T47AE": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32428","sourcePrice":33000,"sourceStock":648,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://selltainguyenmmo.com"},
-      "PROD_MU6R34FZ4Z": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32428","sourcePrice":33000,"sourceStock":648,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://selltainguyenmmo.com"},
-      "PROD_MU2AB1XEGI": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32428","sourcePrice":33000,"sourceStock":648,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://selltainguyenmmo.com"},
-      "PROD_MUQIMRJYG0": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32428","sourcePrice":33000,"sourceStock":648,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://selltainguyenmmo.com"},
+      "PROD_MU5T3T47AE": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32428","sourcePrice":51000,"sourceStock":2052,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://selltainguyenmmo.com"},
+      "PROD_MU6R34FZ4Z": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32428","sourcePrice":51000,"sourceStock":2052,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://selltainguyenmmo.com"},
+      "PROD_MU2AB1XEGI": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32428","sourcePrice":51000,"sourceStock":2052,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://selltainguyenmmo.com"},
+      "PROD_MUQIMRJYG0": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32428","sourcePrice":51000,"sourceStock":2052,"sourceProdName":"NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )","baseUrl":"https://selltainguyenmmo.com"},
       "PROD_MUR52EZ6H1": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"32186","sourcePrice":5200,"sourceStock":5955,"sourceProdName":"Tài Khoản Tiktok South Korea ( KR ) Tạo Tháng 7/2025 Mail Live Có Oauth2 , Cookie","baseUrl":"https://selltainguyenmmo.com"},
       "PROD_MUR4SPH1IU": {"enabled":true,"provider":"ultrammo","sourceProdId":"4116","sourcePrice":1400,"sourceStock":1544,"sourceProdName":"TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25","baseUrl":"https://ultrammo.com"},
       "PROD_MTPJ88O9": {"enabled":true,"provider":"selltainguyenmmo","sourceProdId":"25289","sourcePrice":60000,"sourceStock":250,"sourceProdName":"NÂNG CẤP CANVA PRO 1 NĂM"},
@@ -26546,8 +26598,8 @@ function syncAllOpenViewsStock(changedProdId) {
     // [LIVE STOCK SYNC] Nút đồng bộ thủ công & Tự động mỗi 30s
     // ============================================================
     // timer var
-
     var _dtlStockAutoSyncTimer = null;
+    var _lastLiveStockFetchMap = {};
 
     async function triggerLiveDetailStockSync(btn) {
       const icons = document.querySelectorAll("#iconDtlLiveSync, .stock-refresh-icon-btn i");
@@ -26591,28 +26643,27 @@ function syncAllOpenViewsStock(changedProdId) {
 
         if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
           isDeleted = !!apiMap.isSourceDeleted;
+          const stockCacheKey = (apiMap.provider || "sellmmo") + "_" + String(apiMap.sourceProdId);
+          const lastFetch = _lastLiveStockFetchMap[stockCacheKey] || 0;
+          const isStale = (Date.now() - lastFetch) > 30000;
           const provLoaded = (typeof isFastSourceProviderLoaded === "function")
             ? isFastSourceProviderLoaded(apiMap.provider)
             : false;
 
-          // Nếu provider đã nạp live thành công và KHÔNG PHẢI người dùng bấm nút làm mới thủ công
-          if (!btn && provLoaded && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
+          // Nếu provider đã nạp live thành công, chưa quá 30s và KHÔNG PHẢI người dùng bấm nút làm mới thủ công
+          if (!btn && !isStale && provLoaded && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
             const inCache = (typeof getFastSourceProduct === "function")
               ? getFastSourceProduct(apiMap.provider, apiMap.sourceProdId)
               : (cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider))
                 || cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId)));
             if (inCache && typeof inCache.amount === "number") {
               freshAmount = inCache.amount;
-            } else if (apiMap && typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0 && !apiMap.isSourceDeleted) {
-              freshAmount = apiMap.sourceStock;
-            } else {
-              freshAmount = null;
             }
           }
 
-          // Khi người dùng bấm nút làm mới, hoặc chưa có freshAmount, hoặc provider chưa tải live xong:
+          // Khi người dùng bấm nút làm mới, hoặc chưa có freshAmount, hoặc dữ liệu đã cũ quá 30s, hoặc provider chưa tải live xong:
           // GỌI TRỰC TIẾP executeSourceApiCall("getProductStock") để lấy số lượng tức thì thời gian thực từ API nhà cung cấp
-          if (btn || freshAmount === null || (freshAmount === 0 && !apiMap.isSourceDeleted) || !provLoaded) {
+          if (btn || isStale || freshAmount === null || (freshAmount === 0 && !apiMap.isSourceDeleted) || !provLoaded) {
             if (typeof executeSourceApiCall === "function") {
               const res = await executeSourceApiCall("getProductStock", {
                 provider: apiMap.provider || "sellmmo",
@@ -26620,6 +26671,7 @@ function syncAllOpenViewsStock(changedProdId) {
               });
               if (res && res.success && typeof res.amount === "number") {
                 freshAmount = res.amount;
+                _lastLiveStockFetchMap[stockCacheKey] = Date.now();
                 isDeleted = false;
                 if (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts)) {
                   const cIdx = window.cachedSourceProducts.findIndex(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider));
@@ -26641,6 +26693,8 @@ function syncAllOpenViewsStock(changedProdId) {
                 isDeleted = true;
                 apiMap.isSourceDeleted = true;
                 apiMap.sourceStock = 0;
+              } else if (freshAmount === null && typeof apiMap.sourceStock === "number") {
+                freshAmount = apiMap.sourceStock;
               }
             }
           }
@@ -26837,8 +26891,9 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       let cleanId = String(id).trim();
-      if (cleanId === "PROD_MU2AB1XEGI" || cleanId === "SP_GEMINI_VEO3") {
-        cleanId = "PROD_MU6R34FZ4Z";
+      if (cleanId === "PROD_MU2AB1XEGI" || cleanId === "SP_GEMINI_VEO3" || cleanId === "PROD_MU6R34FZ4Z") {
+        const canGem = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products.find(item => item && item.id === "PROD_MV5PA8KZDW") : null;
+        cleanId = (canGem && (typeof isProductDeleted !== "function" || !isProductDeleted(canGem))) ? "PROD_MV5PA8KZDW" : "PROD_MV5PA8KZDW";
       }
 
       // [BẢO VỆ TUYỆT ĐỐI]: Nếu là sản phẩm đã xóa tận gốc -> Chặn ngay lập tức 0ms, không mở chi tiết
@@ -27399,29 +27454,42 @@ function syncAllOpenViewsStock(changedProdId) {
                 }).join("");
               }
 
-              // 9. Cập nhật ảnh nếu Turso có ảnh mới
+              // 9. Cập nhật ảnh nếu Turso Worker DB có ảnh (ƯU TIÊN TUYỆT ĐỐI SSOT)
               let resolvedImg = "";
               const wpImg = String(wp.image || wp.image_url || wp.imageUrl || "").trim();
               if (wpImg.startsWith("data:image/") || wpImg.startsWith("data:")) {
                 resolvedImg = "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image";
               } else if (wpImg.startsWith("http://") || wpImg.startsWith("https://")) {
-                if (!wpImg.includes("khotaikhoanso") && !wpImg.includes("nFV4Rln")) {
+                if (!wpImg.includes("khotaikhoanso") && !wpImg.includes("nFV4Rln") && !wpImg.includes("default_product.png") && !wpImg.includes("placeholder")) {
                   resolvedImg = wpImg;
                 }
               }
-              let localCustomRaw = null;
-              if (typeof localStorage !== "undefined") {
-                const aliasCheckIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(p.id) : [p.id];
-                for (let k = 0; k < aliasCheckIds.length; k++) {
-                  const val = localStorage.getItem("mmo_custom_img_" + aliasCheckIds[k]);
-                  if (val && !val.includes("khotaikhoanso") && !val.includes("nFV4Rln") && !val.includes("gemini_pro_veo3.png")) {
-                    localCustomRaw = val;
-                    break;
+
+              let finalImg = "";
+              if (resolvedImg && resolvedImg.trim()) {
+                finalImg = resolvedImg.trim();
+                try { localStorage.setItem("mmo_custom_img_" + p.id, finalImg); } catch(e) {}
+              } else {
+                let localCustomRaw = null;
+                if (typeof localStorage !== "undefined") {
+                  const aliasCheckIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(p.id) : [p.id];
+                  for (let k = 0; k < aliasCheckIds.length; k++) {
+                    const val = localStorage.getItem("mmo_custom_img_" + aliasCheckIds[k]);
+                    if (val && !val.includes("khotaikhoanso") && !val.includes("nFV4Rln") && !val.includes("default_product.png")) {
+                      localCustomRaw = val;
+                      break;
+                    }
                   }
                 }
+                const pNameCheck = String(p.name || "").toLowerCase();
+                const isGemCheck = pNameCheck.includes("gemini") || pNameCheck.includes("veo") || p.id === "PROD_MV5PA8KZDW" || p.id === "PROD_MU6R34FZ4Z" || p.id === "PROD_MU5T3T47AE";
+                if (localCustomRaw && isGemCheck && (localCustomRaw.toLowerCase().includes("chatgpt") || localCustomRaw.toLowerCase().includes("munueki3nm") || localCustomRaw.includes("default_product.png"))) {
+                  try { localStorage.removeItem("mmo_custom_img_" + p.id); } catch(e) {}
+                  localCustomRaw = null;
+                }
+                finalImg = (localCustomRaw && localCustomRaw.trim()) ? localCustomRaw.trim() : (typeof resolveProductImage === "function" ? resolveProductImage(p) : p.image);
               }
-              const localCustomImg = (localCustomRaw && !localCustomRaw.includes("khotaikhoanso") && !localCustomRaw.includes("nFV4Rln") && !localCustomRaw.includes("gemini_pro_veo3.png")) ? localCustomRaw : null;
-              const finalImg = (localCustomImg && localCustomImg.trim()) ? localCustomImg.trim() : (resolvedImg || (typeof resolveProductImage === "function" ? resolveProductImage(p) : p.image));
+
               if (finalImg && finalImg !== p.image) {
                 p.image = finalImg;
                 p.image_url = finalImg;
@@ -27429,7 +27497,9 @@ function syncAllOpenViewsStock(changedProdId) {
                 isUpdated = true;
               }
               const dtlImgEl = document.getElementById("dtlImage");
-              if (dtlImgEl && dtlImgEl.src !== finalImg) dtlImgEl.src = finalImg;
+              if (dtlImgEl && finalImg && dtlImgEl.src !== finalImg) {
+                dtlImgEl.src = finalImg;
+              }
 
               // 10. Đồng bộ vào MOCK_DATA.products và localStorage
               if (isUpdated && MOCK_DATA && Array.isArray(MOCK_DATA.products)) {
