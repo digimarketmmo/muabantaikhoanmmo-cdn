@@ -37521,15 +37521,14 @@ function initMMOApplication() {
     window.renderSingleCardListMode = renderSingleCardListMode;
 
     function renderAllProductsPage() {
-      // Tự động khôi phục sản phẩm nếu danh sách bị rỗng hoặc bất thường (< 20 sản phẩm)
+      // Tự động nạp nhanh từ bộ nhớ đệm trước để hiển thị tức thì 0ms, chống lag khi chuyển trang
       try {
+        if ((!MOCK_DATA || !MOCK_DATA.products || MOCK_DATA.products.length === 0) && typeof loadPersistedProducts === "function") {
+          loadPersistedProducts();
+        }
         const curList = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products : []);
         if (curList.length < 20 && !window._autoHealProductsSyncing && typeof syncTursoProductsToLocalUI === "function") {
           window._autoHealProductsSyncing = true;
-          try {
-            localStorage.removeItem("mmo_deleted_product_ids");
-            localStorage.removeItem("mmo_manually_cleared_products");
-          } catch(e) {}
           syncTursoProductsToLocalUI(true).finally(function() {
             window._autoHealProductsSyncing = false;
             setTimeout(function() {
