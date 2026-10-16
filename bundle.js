@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.3.7";
+const MMO_CURRENT_CODE_VERSION = "5.3.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 function isForeignKhotaikhoansoOrder(o) {
@@ -934,7 +934,7 @@ if (typeof window !== "undefined") {
     // CHUẨN HÓA VÀ ĐỐI CHIẾU NHÀ CUNG CẤP ĐA NGUỒN (BAO GỒM NGUỒN TỰ THÊM VUAVIA & REST API)
     function normalizeProviderId(prov) {
       if (!prov) return "";
-      var p = String(prov).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+      var p = String(prov).toLowerCase().trim().replace(/https?:\/\//g, "").replace(/\.(com|vn|net|io|org|top|xyz|store)$/g, "").replace(/[^a-z0-9]/g, "");
       if (p.includes("vuavia")) return "vuavia";
       if (p.includes("ultrammo")) return "ultrammo";
       if (p.includes("shop1989")) return "shop1989nd";
@@ -942,6 +942,7 @@ if (typeof window !== "undefined") {
       if (p.includes("selltainguyen")) return "selltainguyenmmo";
       if (p.includes("sellmmo")) return "sellmmo";
       if (p.includes("nguyenlieu")) return "nguyenlieummo";
+      if (p.includes("ubrsmmo") || p.includes("ubrs")) return "ubrsmmo";
       return p;
     }
     window.normalizeProviderId = normalizeProviderId;
@@ -5198,14 +5199,30 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const price = Number(opt.getAttribute("data-price") || 0);
         const stock = Number(opt.getAttribute("data-stock") || 0);
         const optName = opt.getAttribute("data-name") || opt.text || "";
+        // TÍNH TOÁN GIÁ BÁN ĐỐI SOÁT CHUẨN XÁC THEO BIẾN THỂ THỰC TẾ
+        const vContainer = document.getElementById("admVariantsContainer") || document.getElementById("admVariantRowsContainer");
+        const varInputs = vContainer ? Array.from(vContainer.querySelectorAll(".adm-variant-price, input[type='number']")) : [];
+        const varPrices = varInputs.map(inp => Number(inp.value) || 0).filter(v => v > 0);
+
         const prodPriceInp = document.getElementById("admProdPrice");
-        const sellPrice = prodPriceInp ? (Number(prodPriceInp.value) || 0) : 0;
+        let sellPrice = varPrices.length > 0 ? Math.min(...varPrices) : (prodPriceInp ? (Number(prodPriceInp.value) || 0) : 0);
+        let maxSellPrice = varPrices.length > 0 ? Math.max(...varPrices) : sellPrice;
+
+        if (prodPriceInp && sellPrice > 0 && Number(prodPriceInp.value) !== sellPrice) {
+          prodPriceInp.value = sellPrice;
+        }
+
         const profit = sellPrice - price;
         let profitStr = "";
         if (price > 0 && sellPrice > 0) {
           if (profit > 0) {
             const pct = Math.round((profit / sellPrice) * 100);
-            profitStr = '<span><i class="fa-solid fa-arrow-trend-up" style="color:#10b981;"></i> Lãi: <strong style="color:#10b981;">+' + formatVND(profit).replace(/\s*đ$/, 'đ') + ' (' + pct + '%)</strong></span>';
+            if (maxSellPrice > sellPrice) {
+              const maxProfit = maxSellPrice - price;
+              profitStr = '<span><i class="fa-solid fa-arrow-trend-up" style="color:#10b981;"></i> Lãi: <strong style="color:#10b981;">+' + formatVND(profit).replace(/\s*đ$/, 'đ') + ' ~ +' + formatVND(maxProfit).replace(/\s*đ$/, 'đ') + '</strong></span>';
+            } else {
+              profitStr = '<span><i class="fa-solid fa-arrow-trend-up" style="color:#10b981;"></i> Lãi: <strong style="color:#10b981;">+' + formatVND(profit).replace(/\s*đ$/, 'đ') + ' (' + pct + '%)</strong></span>';
+            }
           } else if (profit === 0) {
             profitStr = '<span><strong style="color:#94a3b8;">Hòa vốn (0đ)</strong></span>';
           } else {
@@ -5213,11 +5230,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
         }
         const isLoss = (price > 0 && sellPrice > 0 && profit < 0);
+        let displaySellStr = "";
+        if (sellPrice > 0) {
+          if (maxSellPrice > sellPrice) {
+            displaySellStr = formatVND(sellPrice).replace(/\s*đ$/, 'đ') + ' ~ ' + formatVND(maxSellPrice).replace(/\s*đ$/, 'đ');
+          } else {
+            displaySellStr = formatVND(sellPrice).replace(/\s*đ$/, 'đ');
+          }
+        }
         info.innerHTML = '<div style="background:rgba(15,23,42,0.85); border:1px solid ' + (isLoss ? 'rgba(239,68,68,0.45)' : 'rgba(6,182,212,0.3)') + '; border-left:3px solid ' + (isLoss ? '#ef4444' : '#06b6d4') + '; padding:5px 8px; border-radius:6px; margin-top:5px; line-height:1.4; text-align:left; max-width:100%; box-sizing:border-box;">' +
           '<div style="color:#e2e8f0; font-size:0.73rem; display:flex; align-items:center; gap:4px; overflow:hidden;"><i class="fa-solid fa-link" style="color:' + (isLoss ? '#ef4444' : '#06b6d4') + '; flex-shrink:0;"></i> <strong style="flex-shrink:0;">SP Nguồn:</strong> <span style="color:#38bdf8; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;" title="' + (typeof esc === "function" ? esc(optName) : optName) + '">' + (typeof esc === "function" ? esc(optName) : optName) + '</span></div>' +
           '<div style="font-size:0.69rem; color:#cbd5e1; margin-top:3px; display:flex; flex-wrap:wrap; gap:4px 10px; align-items:center; border-top:1px dashed rgba(255,255,255,0.08); padding-top:3px;">' +
             '<span><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Gốc: <strong style="color:#f59e0b;">' + (price > 0 ? formatVND(price).replace(/\s*đ$/, 'đ') : '--') + '</strong></span>' +
-            (sellPrice > 0 ? '<span><i class="fa-solid fa-store" style="color:#a855f7;"></i> Bán: <strong style="color:#c084fc;">' + formatVND(sellPrice).replace(/\s*đ$/, 'đ') + '</strong></span>' : '') +
+            (displaySellStr ? '<span><i class="fa-solid fa-store" style="color:#a855f7;"></i> Bán: <strong style="color:#c084fc;">' + displaySellStr + '</strong></span>' : '') +
             profitStr +
             '<span><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Tồn: <strong style="color:#10b981;">' + stock.toLocaleString() + '</strong></span>' +
           '</div>' +
@@ -5393,6 +5418,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       renderVariantInputs(variants);
 
       updateCommissionEstimate();
+      if (typeof handleAdmModalSourceChange === "function") {
+        handleAdmModalSourceChange();
+      }
 
       if (document.getElementById("admModalTitle")) document.getElementById("admModalTitle").innerHTML = '<i class="fa-solid fa-pen-to-square green"></i> Sửa Sản Phẩm';
       const modal = document.getElementById("adminProductModal");
@@ -8489,10 +8517,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       row.className = "adm-variant-row";
       row.style.cssText = "display:flex; gap:8px; align-items:center; margin-bottom:8px;";
       row.innerHTML = '<input type="text" class="adm-variant-name" placeholder="Tên biến thể (VD: gmail 2026 / Loại 1 Tháng)" value="' + escapeHtml(name) + '" style="flex:2; background:#090e17; border:1px solid #1e293b; padding:8px 10px; border-radius:6px; color:#fff; font-size:0.85rem;" />' +
-        '<input type="number" class="adm-variant-price" placeholder="Giá bán (VNĐ)" min="0" value="' + (price !== undefined && price !== null ? price : '') + '" oninput="updateCommissionEstimate()" style="flex:1; background:#090e17; border:1px solid #1e293b; padding:8px 10px; border-radius:6px; color:#10b981; font-weight:700; font-size:0.85rem;" />' +
-        '<button type="button" onclick="this.parentElement.remove(); updateCommissionEstimate(); if(typeof showToast===\'function\') showToast(\'Đã xóa dòng biến thể. Bấm LƯU SẢN PHẨM ở dưới để áp dụng!\', \'info\');" style="background:rgba(239,68,68,0.2); border:1px solid rgba(239,68,68,0.4); color:#ef4444; width:36px; height:36px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;" title="Xóa"><i class="fa-solid fa-trash-can"></i></button>';
+        '<input type="number" class="adm-variant-price" placeholder="Giá bán (VNĐ)" min="0" value="' + (price !== undefined && price !== null ? price : '') + '" oninput="updateCommissionEstimate(); if(typeof handleAdmModalSourceChange===\'function\') handleAdmModalSourceChange();" style="flex:1; background:#090e17; border:1px solid #1e293b; padding:8px 10px; border-radius:6px; color:#10b981; font-weight:700; font-size:0.85rem;" />' +
+        '<button type="button" onclick="this.parentElement.remove(); updateCommissionEstimate(); if(typeof handleAdmModalSourceChange===\'function\') handleAdmModalSourceChange(); if(typeof showToast===\'function\') showToast(\'Đã xóa dòng biến thể. Bấm LƯU SẢN PHẨM ở dưới để áp dụng!\', \'info\');" style="background:rgba(239,68,68,0.2); border:1px solid rgba(239,68,68,0.4); color:#ef4444; width:36px; height:36px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center;" title="Xóa"><i class="fa-solid fa-trash-can"></i></button>';
       container.appendChild(row);
       updateCommissionEstimate();
+      if (typeof handleAdmModalSourceChange === "function") handleAdmModalSourceChange();
     }
     window.addVariantRow = addVariantRow;
 
@@ -8507,23 +8536,42 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         addVariantRow(defaultName, 50000);
       }
       updateCommissionEstimate();
+      if (typeof handleAdmModalSourceChange === "function") handleAdmModalSourceChange();
     }
     window.renderVariantInputs = renderVariantInputs;
 
     function updateCommissionEstimate() {
       const comm = parseInt(document.getElementById("admProdCommission")?.value) || 10;
       const container = document.getElementById("admVariantsContainer") || document.getElementById("admVariantRowsContainer");
-      const firstPriceInput = container ? container.querySelector(".adm-variant-price") : null;
-      const price = parseInt(firstPriceInput?.value) || parseInt(document.getElementById("admProdPrice")?.value) || 0;
+      const varInputs = container ? Array.from(container.querySelectorAll(".adm-variant-price, input[type='number']")) : [];
+      const varPrices = varInputs.map(inp => Number(inp.value) || 0).filter(v => v > 0);
+      const price = varPrices.length > 0 ? varPrices[0] : (parseInt(document.getElementById("admProdPrice")?.value) || 0);
       const priceHidden = document.getElementById("admProdPrice");
-      if (priceHidden) priceHidden.value = price;
+      if (priceHidden && price > 0) priceHidden.value = price;
       const est = Math.round(price * comm / 100);
       const preview = document.getElementById("admCommissionPreview");
       if (preview) {
         preview.innerText = "(~" + formatVND(est) + " / đơn hàng)";
       }
+      if (typeof handleAdmModalSourceChange === "function") {
+        handleAdmModalSourceChange();
+      }
     }
     window.updateCommissionEstimate = updateCommissionEstimate;
+
+    // [REALTIME INSTANT SYNC]: Bắt sự kiện gõ giá bán biến thể để cập nhật ngay lập tức lãi/lỗ trên box SP Nguồn
+    document.addEventListener("input", function(e) {
+      if (e.target && e.target.classList && e.target.classList.contains("adm-variant-price")) {
+        if (typeof updateCommissionEstimate === "function") updateCommissionEstimate();
+        if (typeof handleAdmModalSourceChange === "function") handleAdmModalSourceChange();
+      }
+    });
+    document.addEventListener("change", function(e) {
+      if (e.target && e.target.classList && e.target.classList.contains("adm-variant-price")) {
+        if (typeof updateCommissionEstimate === "function") updateCommissionEstimate();
+        if (typeof handleAdmModalSourceChange === "function") handleAdmModalSourceChange();
+      }
+    });
 
     // =========================================================================
     // CORE SYSTEM: REALTIME INSTANT PRODUCT UPDATE (TRANG NGƯỜI DÙNG & TRANG XEM CHI TIẾT SẢN PHẨM)
@@ -8645,6 +8693,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (typeof syncDetailStockUI === "function" && effectiveStock !== undefined) {
           syncDetailStockUI(effectiveStock);
         }
+        const dtlSoldEl = document.getElementById("dtlSold");
+        if (dtlSoldEl) {
+          const soldVal = (typeof getRealisticProductSold === "function" && prodData) ? getRealisticProductSold(prodData) : (buffSold || effectiveStock || 0);
+          dtlSoldEl.innerText = "• Đã bán: " + Number(soldVal).toLocaleString("vi-VN");
+        }
         const pillsContainer = document.getElementById("dtlVariantPills");
         if (pillsContainer && Array.isArray(variants) && variants.length > 0) {
           pillsContainer.innerHTML = variants.map((v, idx) => {
@@ -8681,6 +8734,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           const cPrice = card.querySelector(".product-price");
           if (cPrice && effectivePrice) {
             cPrice.innerText = (typeof getProductPriceDisplay === "function" && prodData) ? getProductPriceDisplay(prodData) : ((typeof formatVND === "function") ? formatVND(effectivePrice) : (effectivePrice.toLocaleString("vi-VN") + " đ"));
+          }
+          const cSold = card.querySelector(".product-sold, .sold-count, [data-sold]");
+          if (cSold) {
+            const soldVal = (typeof getRealisticProductSold === "function" && prodData) ? getRealisticProductSold(prodData) : (buffSold || 0);
+            cSold.innerText = "• Đã bán: " + Number(soldVal).toLocaleString("vi-VN");
           }
         }
       });
@@ -8799,16 +8857,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (window._editingProductOldImage === "") {
             const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()]) : "";
             image = mapped || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
-          } else if (oldImgBeforeSave && !oldImgBeforeSave.includes("default_product.png") && !oldImgBeforeSave.includes("placeholder") && !oldImgBeforeSave.includes("khotaikhoanso") && !oldImgBeforeSave.includes("/api/products/")) {
+          } else if (oldImgBeforeSave && !oldImgBeforeSave.includes("default_product.png") && !oldImgBeforeSave.includes("placeholder") && !oldImgBeforeSave.includes("khotaikhoanso")) {
             image = oldImgBeforeSave;
           } else {
             const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()]) : "";
             image = mapped || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
           }
         }
-        if (image && image.includes("/api/products/")) {
-          const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()]) : "";
-          if (mapped) image = mapped;
+        if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && image && !image.includes("default_product.png")) {
+          KNOWN_PROD_IMAGE_MAP[actualTargetId] = image;
+          KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()] = image;
         }
 
         // Nếu ảnh mới khác ảnh cũ: xóa sạch dữ liệu ảnh cũ theo thời gian thực
@@ -8997,7 +9055,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           price: effectivePrice,
           commission: commissionVal + "% (~" + formatVND(Math.round(effectivePrice * commissionVal / 100)) + ")",
           buffSold: buffSold,
-          sold: (oldProd && oldProd.sold !== undefined) ? oldProd.sold : buffSold,
+          sold: (buffSold > 0) ? buffSold : ((oldProd && oldProd.sold !== undefined) ? oldProd.sold : 0),
           stock: isApiSelected ? liveSourceStock : totalCalculatedStock,
           rating: rating,
           reviewCount: reviewsCount,
@@ -12042,11 +12100,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         // Chấp nhận 100% URL ảnh mới tải lên, bao gồm cả Cloud Worker /api/products/:id/image, CDN jsdelivr và /api/images/
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
             !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash") && !trimmed.includes("khotaikhoanso") && !trimmed.includes("nFV4Rln")) {
-          if (trimmed.includes("/api/products/")) {
-            const sId = pId || (prodObj && prodObj.id ? String(prodObj.id).trim() : "");
-            const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[sId] || KNOWN_PROD_IMAGE_MAP[sId.toUpperCase()]) : "";
-            if (mapped) return mapped;
-          }
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
       }
@@ -12084,6 +12137,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function getRealisticProductSold(p) {
       if (!p) return 0;
+      // 1. ƯU TIÊN TUYỆT ĐỐI THEO THỜI GIAN THỰC SỐ LƯỢNG ĐÃ BÁN DO ADMIN THIẾT LẬP (buffSold / sold)
+      const directSold = (p.buffSold !== undefined && p.buffSold !== null && Number(p.buffSold) > 0)
+        ? Number(p.buffSold)
+        : ((p.sold !== undefined && p.sold !== null && Number(p.sold) > 0) ? Number(p.sold) : null);
+      if (directSold !== null && !isNaN(directSold) && directSold > 0) {
+        return directSold;
+      }
+
       const PRESET_SOLD = {
         'PROD_MTQX465U': 3420, // Gmail cho Thuê 10 phút live 10 phút
         'PROD_MTQQXO2E': 2180, // Gmail cho Thuê 24h
@@ -17763,9 +17824,9 @@ function syncAllOpenViewsStock(changedProdId) {
           if (inSrc.price) res.sourcePrice = inSrc.price;
           if (inSrc.name) res.sourceProdName = inSrc.name;
         } else {
-          // Chỉ đánh dấu nguồn đã xóa nếu nhà cung cấp đã nạp live thành công và sản phẩm không hề có tồn kho hợp lệ
+          // Khi nhà cung cấp đã nạp live thành công nhưng mã SP không còn trong danh mục nguồn -> Đã bị shop nguồn xóa/gỡ!
           const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(res.provider) : false;
-          if (provLoaded && (!res.sourceStock || Number(res.sourceStock) <= 0)) {
+          if (provLoaded) {
             stock = 0;
             res.sourceStock = 0;
             res.isSourceDeleted = true;
@@ -17773,7 +17834,7 @@ function syncAllOpenViewsStock(changedProdId) {
             stock = 0;
             res.sourceStock = 0;
           } else {
-            // Bảo tồn tồn kho đã lưu từ Turso SSOT / cấu hình mapping, không vội đánh dấu đã xóa
+            // Nhà cung cấp chưa nạp xong: bảo tồn tạm thời số tồn kho cũ từ Turso SSOT để tránh giật lag UI
             res.isSourceDeleted = false;
             stock = Number(res.sourceStock) || 0;
           }
