@@ -16887,7 +16887,7 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (action === "getProducts") {
         // [WORKER BACKEND HIGH-SPEED PROXY]: Lấy sản phẩm live thời gian thực qua Worker server cho tất cả các nguồn chính thức
-        if (["selltainguyenmmo", "nguyenlieummo", "sellmmo", "mail72h", "ultrammo"].includes(provider)) {
+        if (["selltainguyenmmo", "nguyenlieummo", "sellmmo", "mail72h", "ultrammo", "shop1989nd"].includes(provider)) {
           try {
             const wSourcesUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
               ? (MMO_WORKER_API.getApiUrl() + "/api/sources/products?provider=" + encodeURIComponent(provider))
