@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.3.6";
+const MMO_CURRENT_CODE_VERSION = "5.3.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 function isForeignKhotaikhoansoOrder(o) {
@@ -1846,9 +1846,407 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     const ROOT_ADMIN_EMAILS = ["manhdongvtc@gmail.com"];
     window.ROOT_ADMIN_EMAILS = ROOT_ADMIN_EMAILS;
     const DEFAULT_REGISTERED_USERS = [
-      { name: "Mạnh Đồng Official", email: "manhdongvtc@gmail.com", role: "Quản Trị Viên", balance: 225500, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" },
-      { name: "Nguyễn Mạnh Đông", email: "digimarketmmo@gmail.com", role: "Thành Viên", balance: 213620, created: "01/03/2026", avatar: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png" }
-    ];
+      {
+            "userId": "USR_791847",
+            "name": "muabantaikhoanmmo",
+            "email": "muabantaikhoanmmo@gmail.com",
+            "role": "Quản Trị Viên",
+            "balance": 233880,
+            "created": "18/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_1791739240939",
+            "name": "Mạnh Đông Oficial",
+            "email": "manhdongvtc@gmail.com",
+            "role": "Quản Trị Viên",
+            "balance": 225500,
+            "created": "2026-10-11 17:20:40",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_1791242528175",
+            "name": "digimarketmmo",
+            "email": "digimarketmmo@gmail.com",
+            "role": "Quản Trị Viên",
+            "balance": 210120,
+            "created": "2026-10-05 23:22:08",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_1791307755216",
+            "name": "hoangtuananh0968",
+            "email": "hoangtuananh0968@gmail.com",
+            "role": "Thành Viên",
+            "balance": 200200,
+            "created": "2026-10-06 17:29:15",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_457932",
+            "name": "Mạnh Đông Academy",
+            "email": "manhdongacademy@gmail.com",
+            "role": "Thành Viên",
+            "balance": 20000,
+            "created": "21/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_596924",
+            "name": "realuser",
+            "email": "realuser@gmail.com",
+            "role": "Thành Viên",
+            "balance": 15000,
+            "created": "21/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_678694",
+            "name": "huyphamfo3",
+            "email": "huyphamfo3@gmail.com",
+            "role": "Thành Viên",
+            "balance": 8000,
+            "created": "3/10/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_436479",
+            "name": "Wu Kinn",
+            "email": "kinnwu02@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "8/10/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_180829",
+            "name": "vien ku",
+            "email": "nguyenvienx3@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "8/10/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_926830",
+            "name": "hanggain17998",
+            "email": "hanggain17998@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "5/10/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_269623",
+            "name": "Minh Phước Vưu",
+            "email": "vuuminhphuoc@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "30/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_170407",
+            "name": "Phuong Minh",
+            "email": "dautukiemtien.vn@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "30/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_297880",
+            "name": "Đông Mạnh",
+            "email": "manhdong09d@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "30/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_763032",
+            "name": "hamy2026",
+            "email": "tnhamy2026@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "30/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_461520",
+            "name": "TimeKP TK",
+            "email": "nguyenqhanduyhung@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "3/10/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_276771",
+            "name": "khánh nguyễn",
+            "email": "khanhkenvidboy@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "25/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_711824",
+            "name": "Công phúc Hoàng",
+            "email": "hoangcongphuc14091997@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "24/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_379307",
+            "name": "fgbfds",
+            "email": "fgbfds@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "24/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_980492",
+            "name": "dongphanvts",
+            "email": "dongphanvts@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "23/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_135501",
+            "name": "shanktricia262",
+            "email": "shanktricia262@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "22/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_687780",
+            "name": "TestUser",
+            "email": "testxyz999@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "22/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_820591",
+            "name": "TestUser",
+            "email": "test_new_user_87654@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "22/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_173771",
+            "name": "nnam883566",
+            "email": "nnam883566@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "22/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_886552",
+            "name": "Đầu tư Blog",
+            "email": "blogdautu.me@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "22/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_599817",
+            "name": "Speed",
+            "email": "testspeed1@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "22/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_726016",
+            "name": "nguyen van anh",
+            "email": "manhdong22024@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "22/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_253814",
+            "name": "test",
+            "email": "test@example.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "22/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_374560",
+            "name": "test",
+            "email": "test@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "21/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_1791822983704",
+            "name": "manhdongofficial",
+            "email": "manhdongofficial@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "2026-10-12 16:36:23",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_1791534125632",
+            "name": "nguyenvinh09678",
+            "email": "nguyenvinh09678@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "2026-10-09 08:22:05",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_1791378968732",
+            "name": "kim long nguyen thi",
+            "email": "nguyenthikimlong400@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "2026-10-07 13:16:08",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_1791347421214",
+            "name": "khotaikhoanso.net",
+            "email": "khotaikhoanso.net@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "2026-10-07 04:30:21",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_286081",
+            "name": "thanhmx333",
+            "email": "thanhmx333@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "19/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_916091",
+            "name": "Mạnh Đông",
+            "email": "manhdongvt2019@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "18/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_479492",
+            "name": "Customer Test",
+            "email": "customer123@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "18/9/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_830832",
+            "name": "Phước hữu",
+            "email": "huu226111@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "16/10/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_118416",
+            "name": "pii lùn",
+            "email": "piihattieu698107@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "14/10/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_148939",
+            "name": "5D Khẩu Trang",
+            "email": "nhuanfuni@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "14/10/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_554268",
+            "name": "Cơ Thi",
+            "email": "ngocthico123@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "13/10/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      },
+      {
+            "userId": "USR_443561",
+            "name": "Chí Điệp",
+            "email": "chidiep003@gmail.com",
+            "role": "Thành Viên",
+            "balance": 0,
+            "created": "1/10/2026",
+            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+            "isLocked": false
+      }
+];
 
     // HÀM TỰ ĐỘNG XÓA SẠCH 100% DỮ LIỆU DEMO / ĐƠN ẢO / TỒN KHO ẢO KHI KHỞI ĐỘNG
     function purgeAllSystemDemoData() {
@@ -1865,6 +2263,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (!Array.isArray(users) || users.length === 0) {
           users = JSON.parse(JSON.stringify(DEFAULT_REGISTERED_USERS));
           safeStorageSet("mmo_registered_users", JSON.stringify(users));
+        } else if (users.length <= 4 && Array.isArray(DEFAULT_REGISTERED_USERS) && DEFAULT_REGISTERED_USERS.length > 4) {
+          const uMap = new Map();
+          users.forEach(u => { if (u && u.email) uMap.set(u.email.toLowerCase().trim(), u); });
+          DEFAULT_REGISTERED_USERS.forEach(du => {
+            const em = (du.email || "").toLowerCase().trim();
+            if (em && !uMap.has(em)) uMap.set(em, du);
+          });
+          users = Array.from(uMap.values());
+          try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
         }
 
         // Tự động xoá sạch hoàn toàn tất cả khách hàng mẫu demo (Nguyễn Văn Hùng, Trần Minh Đức, Lê Hoàng Nam, Khách Hàng Mẫu...)
@@ -23841,32 +24248,33 @@ function syncAllOpenViewsStock(changedProdId) {
 
       // 1. Đồng bộ siêu tốc từ Cloudflare Worker & Turso SSOT
       try {
-        const workerRes = await fetch(workerUrl + "/api/admin/users" + (showNotification ? "?sync=1" : ""), {
-          method: "GET",
-          headers: {
-            "Authorization": "Bearer " + adminSec,
-            "x-admin-token": adminSec
-          }
+        const workerApiUrl = workerUrl + "/api/admin/users?token=" + encodeURIComponent(adminSec) + (showNotification ? "&sync=1" : "");
+        const workerRes = await fetch(workerApiUrl, {
+          method: "GET"
         });
         if (workerRes.ok) {
           const wJson = await workerRes.json();
           if (wJson && wJson.success && Array.isArray(wJson.users) && wJson.users.length > 0) {
             allCloudUsers = allCloudUsers.concat(wJson.users);
           }
+        } else {
+          console.warn("fetchCloudUsers worker response not ok:", workerRes.status);
         }
       } catch(wErr) {
         console.warn("fetchCloudUsers worker error:", wErr);
       }
 
-      // 2. Đồng bộ bổ sung từ Google Apps Script Web App
-      try {
-        const adminEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "manhdongvtc@gmail.com";
-        const gasData = await callGasApi("adminGetUsers", { adminEmail: adminEmail });
-        if (gasData && gasData.success && Array.isArray(gasData.users) && gasData.users.length > 0) {
-          allCloudUsers = allCloudUsers.concat(gasData.users);
+      // 2. Đồng bộ bổ sung từ Google Apps Script Web App (chỉ khi cần hoặc khi nhấn nút)
+      if (allCloudUsers.length === 0 || showNotification) {
+        try {
+          const adminEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "manhdongvtc@gmail.com";
+          const gasData = await callGasApi("adminGetUsers", { adminEmail: adminEmail });
+          if (gasData && gasData.success && Array.isArray(gasData.users) && gasData.users.length > 0) {
+            allCloudUsers = allCloudUsers.concat(gasData.users);
+          }
+        } catch(gErr) {
+          console.warn("fetchCloudUsers GAS error:", gErr);
         }
-      } catch(gErr) {
-        console.warn("fetchCloudUsers GAS error:", gErr);
       }
 
       // 3. Hợp nhất, chuẩn hóa và loại bỏ trùng lặp (Deduplication)
