@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.3.9";
+const MMO_CURRENT_CODE_VERSION = "5.4.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 function isForeignKhotaikhoansoOrder(o) {
@@ -4478,6 +4478,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       let prodsInProvider = prods.filter(s => s && s.id && !DEAD_SOURCE_IDS.has(String(s.id)) && (!s.provider || s.provider === provider || (typeof isSameProvider === "function" && isSameProvider(s.provider, provider))));
       const totalInProvider = prodsInProvider.length;
       let filtered = prodsInProvider.slice();
+
+      // Phân lập nền tảng thông minh cho dropdown chọn nguồn: Tránh tìm clone lại ra mail/tiktok
+      const catSel = document.getElementById("admProdCategory");
+      const prodNameInp = document.getElementById("admProdName");
+      let targetPlat = (typeof detectProductPlatform === "function" && rawKw) ? detectProductPlatform(rawKw, "") : "other";
+      if (targetPlat === "other" && typeof detectProductPlatform === "function") {
+        targetPlat = detectProductPlatform(prodNameInp ? prodNameInp.value : "", catSel ? catSel.value : "");
+      }
+      if (targetPlat !== "other" && typeof detectProductPlatform === "function") {
+        filtered = filtered.filter(s => {
+          const p = detectProductPlatform(s.name, s.category);
+          return p === "other" || p === targetPlat;
+        });
+      }
 
       // Sắp xếp ưu tiên: Sản phẩm còn hàng (amount > 0) hiển thị lên trên đầu
       filtered.sort(function(a, b) {
@@ -19789,40 +19803,140 @@ function syncAllOpenViewsStock(changedProdId) {
     }
     window.removeAccentsCompare = removeAccentsCompare;
 
-    function matchesCompareProductFamily(item, qRaw) {
+    // HỆ THỐNG PHÂN LẬP NỀN TẢNG (PLATFORM ISOLATION ENGINE - v5.4.0)
+    // Tách biệt tuyệt đối giữa các hệ sinh thái sản phẩm: Facebook, Gmail, TikTok, Hotmail, Proxy...
+    function detectProductPlatform(name, category) {
+      const n = removeAccentsCompare(name || "").toLowerCase();
+      const c = removeAccentsCompare(category || "").toLowerCase();
+      const text = n + " " + c;
+
+      // 1. TikTok (kể cả Clone TikTok)
+      if (/\b(tiktok|tik tok|titok)\b/.test(text)) return "tiktok";
+
+      // 2. Instagram (kể cả Clone Instagram)
+      if (/\b(instagram|insta|intagram|\big\b)\b/.test(text) && !/\b(big|sign|design|eight)\b/.test(text)) return "instagram";
+
+      // 3. Facebook: VIA, Clone, BM, NVR, Novery, Page, Group...
+      // (Ngoại trừ trường hợp đã xác định là tiktok hay instagram clone ở trên)
+      if (/\b(facebook|\bfb\b|via|nvr|novery|fanpage|\bpage\b|group fb|nick fb|acc fb|quang cao fb|ads fb)\b/.test(text) ||
+          (/\bclone\b/.test(text) && !/\b(tiktok|instagram|twitter|tele)\b/.test(text))) {
+        return "facebook";
+      }
+
+      // 4. Các dịch vụ cụ thể khác
+      if (/\b(youtube|ytb)\b/.test(text)) return "youtube";
+      if (/\b(twitter|\bx\.com\b)\b/.test(text)) return "twitter";
+      if (/\b(telegram|\btele\b)\b/.test(text)) return "telegram";
+      if (/\b(discord|nitro)\b/.test(text)) return "discord";
+      if (/\b(chatgpt|openai|\bgpt\b|gpt4|gpt-4|gpt3)\b/.test(text)) return "openai";
+      if (/\b(canva)\b/.test(text)) return "canva";
+      if (/\b(capcut)\b/.test(text)) return "capcut";
+      if (/\b(netflix)\b/.test(text)) return "netflix";
+      if (/\b(kling)\b/.test(text)) return "kling";
+      if (/\b(gemini|veo3)\b/.test(text)) return "gemini";
+      if (/\b(proxy|socks5|ipv4|ipv6|mobile 4g|\b4g\b)\b/.test(text)) return "proxy";
+
+      // 5. Dịch vụ Mail chuyên biệt
+      if (/\b(hotmail|outlook|live\.com|msn)\b/.test(text)) return "microsoft_mail";
+      if (/\b(gmail|google drive|gg drive|google one|gg one|workspace|gg domain|gmail domain|thue mail|thuê mail|gvoice|google)\b/.test(text)) return "gmail";
+
+      return "other";
+    }
+    window.detectProductPlatform = detectProductPlatform;
+
+    // Từ khóa bổ trợ / thuộc tính (không dùng đơn lẻ để phán đoán nền tảng)
+    const COMPARE_GENERIC_MODIFIERS = new Set([
+      "name", "ngoai", "viet", "vn", "us", "uk", "thai", "random", "live", "ngam", 
+      "reg", "new", "old", "2fa", "full", "pro", "vip", "zin", "ads", "sub", "view", 
+      "like", "follow", "share", "page", "group", "chat", "feed", "reel", "avatar", 
+      "co", "tay", "app", "cookie", "token", "phone", "sim", "mail", "lock", "link",
+      "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "24h", "12h", "2h", "4h"
+    ]);
+
+    // TÍNH ĐIỂM ĐỘ KHỚP TỪ KHÓA (RELEVANCE SCORING ENGINE)
+    function calcCompareMatchScore(item, qRaw, targetProd) {
+      if (!item) return 0;
+      let score = 0;
+      const sNameNorm = removeAccentsCompare(item.name || "");
+      const sCatNorm = removeAccentsCompare(item.category || "");
+      const fullText = sNameNorm + " " + sCatNorm;
+      
+      const qNorm = removeAccentsCompare(qRaw || "").trim();
+      if (!qNorm) return 50;
+      
+      const tokens = qNorm.split(/\s+/).filter(Boolean);
+      let matchedTokens = 0;
+      
+      tokens.forEach(tok => {
+        let tokMatched = false;
+        if (fullText.includes(tok)) {
+          tokMatched = true;
+        } else {
+          if (tok === "clone" && /\b(nvr|novery|via|clone)\b/.test(fullText)) tokMatched = true;
+          if (tok === "gmail" && /\b(gmail|google|workspace|mail domain)\b/.test(fullText)) tokMatched = true;
+          if (tok === "hotmail" && /\b(hotmail|outlook)\b/.test(fullText)) tokMatched = true;
+          if (tok === "outlook" && /\b(hotmail|outlook)\b/.test(fullText)) tokMatched = true;
+          if (tok === "fb" && /\b(facebook|fb|via|clone)\b/.test(fullText)) tokMatched = true;
+          if (tok === "facebook" && /\b(facebook|fb|via|clone)\b/.test(fullText)) tokMatched = true;
+          if (tok === "ngoai" && /\b(ngoai|global|us|uk|thai|inter|quoc te)\b/.test(fullText)) tokMatched = true;
+        }
+        if (tokMatched) {
+          matchedTokens++;
+          score += COMPARE_GENERIC_MODIFIERS.has(tok) ? 15 : 35;
+        }
+      });
+
+      if (tokens.length > 0 && matchedTokens === tokens.length) {
+        score += 50; // Thưởng lớn nếu khớp 100% tất cả từ khóa
+      }
+      if (fullText.includes(qNorm)) {
+        score += 40; // Khớp nguyên cụm từ chính xác
+      }
+
+      return score;
+    }
+    window.calcCompareMatchScore = calcCompareMatchScore;
+
+    function matchesCompareProductFamily(item, qRaw, targetProd) {
       if (!item) return false;
       const q = String(qRaw || "").trim().toLowerCase();
       if (!q) return true;
-      let qNorm = removeAccentsCompare(q);
-      qNorm = qNorm.replace(/\b(intagram|inta)\b/g, "instagram")
-                   .replace(/\b(luoi|nuoi)\b/g, "nuoi")
-                   .replace(/\b(titok|tik tok)\b/g, "tiktok")
-                   .replace(/\bytb\b/g, "youtube")
-                   .replace(/\bfb\b/g, "facebook");
-
-      const sName = String(item.name || "").toLowerCase();
-      const sNameNorm = removeAccentsCompare(item.name);
-      const sCat = String(item.category || "").toLowerCase();
-      const sCatNorm = removeAccentsCompare(item.category);
-      const sProv = String(item.provider || "").toLowerCase();
+      const qNorm = removeAccentsCompare(q);
+      
+      const sNameNorm = removeAccentsCompare(item.name || "");
+      const sCatNorm = removeAccentsCompare(item.category || "");
+      const fullText = sNameNorm + " " + sCatNorm;
       const sId = String(item.id || "").toLowerCase();
+      
+      // 1. Khớp chính xác ID sản phẩm
+      const cleanQ = q.replace(/^#/, "");
+      if (sId === q || sId === cleanQ || sId.includes(cleanQ)) return true;
 
-      // Khớp chính xác ID sản phẩm
-      if (sId === q || sId.includes(q)) return true;
+      // 2. PHÂN LẬP NỀN TẢNG TRIỆT ĐỂ (Cross-Platform Firewall):
+      // Tuyệt đối không cho phép tìm Clone Facebook lại lọt Gmail, TikTok, Proxy, v.v.
+      let targetPlat = detectProductPlatform(qNorm, "");
+      if (targetPlat === "other" && targetProd) {
+        targetPlat = detectProductPlatform(targetProd.name || "", targetProd.category || "");
+      }
+      if (targetPlat === "other" && typeof window !== "undefined" && window.currentCompareProdName) {
+        targetPlat = detectProductPlatform(window.currentCompareProdName, "");
+      }
 
-      // [LOẠI TRỪ DỊCH VỤ KHÔNG TƯƠNG THÍCH]:
-      // Nếu sản phẩm của shop là TÀI KHOẢN (Clone, VIA, Nuôi, Trâu...) thì TUYỆT ĐỐI KHÔNG gợi ý dịch vụ Thuê OTP / Code / SIM
-      const targetName = removeAccentsCompare(window.currentCompareProdName || "").toLowerCase();
+      const itemPlat = detectProductPlatform(item.name, item.category);
+
+      // Nếu cả 2 đều xác định được nền tảng và khác nhau: CHẶN 100%!
+      if (targetPlat !== "other" && itemPlat !== "other" && itemPlat !== targetPlat) {
+        return false;
+      }
+
+      // 3. Loại trừ dịch vụ không tương thích: OTP / SMS
+      const targetName = removeAccentsCompare((targetProd && targetProd.name) || (typeof window !== "undefined" ? window.currentCompareProdName : "") || "").toLowerCase();
       const isTargetOtp = /\b(otp|sms|thue sim|code|thue mail)\b/i.test(targetName);
       const isItemOtp = /\b(otp|sms|thue sim|code|thue mail)\b/i.test(sNameNorm);
-      if (!isTargetOtp && isItemOtp) {
-        return false;
-      }
-      if (isTargetOtp && !isItemOtp) {
-        return false;
-      }
+      if (!isTargetOtp && isItemOtp) return false;
+      if (isTargetOtp && !isItemOtp) return false;
 
-      // Tìm xem query có thuộc gia đình sản phẩm nào không
+      // 4. Tìm kiếm theo gia đình sản phẩm tương đồng (Semantic Product Family)
       let matchedFamily = null;
       for (const famKey in COMPARE_PRODUCT_FAMILIES) {
         const fam = COMPARE_PRODUCT_FAMILIES[famKey];
@@ -19833,7 +19947,6 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       if (matchedFamily) {
-        // Nếu thuộc cùng họ sản phẩm (ví dụ tìm Outlook thì Hotmail cũng khớp, tìm Gmail thì Google/Domain mail cũng khớp)
         if (matchedFamily.keywords.some(k => {
           const kNorm = removeAccentsCompare(k);
           return sNameNorm.includes(kNorm) || sCatNorm.includes(kNorm);
@@ -19842,20 +19955,48 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       }
 
-      // Khớp theo các token từ khóa thông thường (hỗ trợ cả có dấu và không dấu)
+      // 5. Khớp theo Tokens từ khóa thông minh
       const stopWords = ["cho", "the", "cac", "nhung", "ngay", "thang", "nam", "live", "da", "cuc", "ky", "sieu", "gia", "re", "chat", "luong", "trau", "nang", "cap", "phan", "mem", "dich", "vu", "tai", "khoan", "chinh", "chu", "bao", "hanh", "mua", "ban"];
       const tokens = qNorm.split(/\s+/).filter(Boolean);
       if (tokens.length === 0) return true;
 
-      // 1. Nếu tất cả tokens khớp
-      if (tokens.every(tok => sNameNorm.includes(tok) || sCatNorm.includes(tok) || sProv.includes(tok))) {
-        return true;
+      let matchedTokens = 0;
+      let hasCoreMatch = false;
+
+      tokens.forEach(tok => {
+        let m = false;
+        if (fullText.includes(tok)) {
+          m = true;
+        } else {
+          if (tok === "clone" && /\b(nvr|novery|via|clone)\b/.test(fullText)) m = true;
+          if (tok === "gmail" && /\b(gmail|google|workspace|mail domain)\b/.test(fullText)) m = true;
+          if (tok === "hotmail" && /\b(hotmail|outlook)\b/.test(fullText)) m = true;
+          if (tok === "outlook" && /\b(hotmail|outlook)\b/.test(fullText)) m = true;
+          if (tok === "fb" && /\b(facebook|fb|via|clone)\b/.test(fullText)) m = true;
+          if (tok === "facebook" && /\b(facebook|fb|via|clone)\b/.test(fullText)) m = true;
+          if (tok === "ngoai" && /\b(ngoai|global|us|uk|thai|inter|quoc te)\b/.test(fullText)) m = true;
+        }
+        if (m) {
+          matchedTokens++;
+          if (!COMPARE_GENERIC_MODIFIERS.has(tok) || tok === "clone" || tok === "via" || tok === "fb" || tok === "nvr") {
+            hasCoreMatch = true;
+          }
+        }
+      });
+
+      // Nếu truy vấn có từ 2 từ trở lên:
+      // - KHÔNG cho phép chỉ khớp 1 từ modifier phụ (như chỉ có chữ "name" hoặc chỉ có chữ "ngoai")!
+      // - Bắt buộc phải khớp ít nhất 2 tokens, HOẶC khớp core token chính của nền tảng!
+      if (tokens.length >= 2) {
+        if (matchedTokens >= 2) return true;
+        if (hasCoreMatch && matchedTokens >= 1) return true;
+        return false;
       }
 
-      // 2. Thử khớp theo từ khóa chính quan trọng (bỏ qua các hư từ / tính từ tiếng Việt)
+      // Nếu truy vấn 1 từ đơn:
       const sigTokens = tokens.filter(tok => tok.length >= 2 && !stopWords.includes(tok));
       if (sigTokens.length > 0) {
-        return sigTokens.some(tok => sNameNorm.includes(tok) || sCatNorm.includes(tok));
+        return matchedTokens > 0;
       }
 
       return false;
@@ -19958,7 +20099,7 @@ function syncAllOpenViewsStock(changedProdId) {
       // 1. Lọc theo từ khóa / gia đình sản phẩm thông minh (Semantic & Family Search)
       let candidates = (sourceList || []).slice();
       if (qRaw) {
-        candidates = candidates.filter(item => matchesCompareProductFamily(item, qRaw));
+        candidates = candidates.filter(item => matchesCompareProductFamily(item, qRaw, currentProd));
       }
 
       // 2. Lọc theo Nhà Cung Cấp
@@ -20069,7 +20210,12 @@ function syncAllOpenViewsStock(changedProdId) {
         }
       }
 
-      // Sắp xếp: Còn hàng xếp trước, giá tăng dần (price ASC) -> Vị trí #1 luôn luôn là rẻ nhất!
+      // Tính điểm độ khớp từ khóa thông minh (Relevance Score) cho các ứng viên
+      filtered.forEach(function(item) {
+        item._matchScore = (typeof calcCompareMatchScore === "function") ? calcCompareMatchScore(item, qRaw, currentProd) : 0;
+      });
+
+      // Sắp xếp: Còn hàng xếp trước -> Điểm khớp từ khóa (Relevance Score) cao trước -> Giá tăng dần (price ASC) -> Vị trí #1 luôn luôn là rẻ nhất trong nhóm khớp nhất!
       filtered.sort(function(a, b) {
         const stockA = Number(a.amount !== undefined ? a.amount : a.stock) || 0;
         const stockB = Number(b.amount !== undefined ? b.amount : b.stock) || 0;
@@ -20081,6 +20227,12 @@ function syncAllOpenViewsStock(changedProdId) {
         // BẢO VỆ CHỐNG LỖI GIÁ 0Đ: Sản phẩm có giá hợp lệ (> 0) LUÔN XẾP TRƯỚC sản phẩm lỗi giá 0đ!
         if ((priceA > 0) !== (priceB > 0)) {
           return priceA > 0 ? -1 : 1;
+        }
+        // ƯU TIÊN 1: ĐỘ KHỚP TỪ KHÓA CHUẨN XÁC CAO XẾP TRƯỚC (Hạn chế lộn xộn sản phẩm không khớp)
+        const scoreA = a._matchScore || 0;
+        const scoreB = b._matchScore || 0;
+        if (scoreA !== scoreB) {
+          return scoreB - scoreA;
         }
         if (priceA !== priceB) return priceA - priceB;
         return stockB - stockA;
