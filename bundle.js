@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.3.8";
+const MMO_CURRENT_CODE_VERSION = "5.3.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 function isForeignKhotaikhoansoOrder(o) {
@@ -934,7 +934,7 @@ if (typeof window !== "undefined") {
     // CHUẨN HÓA VÀ ĐỐI CHIẾU NHÀ CUNG CẤP ĐA NGUỒN (BAO GỒM NGUỒN TỰ THÊM VUAVIA & REST API)
     function normalizeProviderId(prov) {
       if (!prov) return "";
-      var p = String(prov).toLowerCase().trim().replace(/[^a-z0-9]/g, "");
+      var p = String(prov).toLowerCase().trim().replace(/https?:\/\//g, "").replace(/\.(com|vn|net|io|org|top|xyz|store)$/g, "").replace(/[^a-z0-9]/g, "");
       if (p.includes("vuavia")) return "vuavia";
       if (p.includes("ultrammo")) return "ultrammo";
       if (p.includes("shop1989")) return "shop1989nd";
@@ -942,6 +942,7 @@ if (typeof window !== "undefined") {
       if (p.includes("selltainguyen")) return "selltainguyenmmo";
       if (p.includes("sellmmo")) return "sellmmo";
       if (p.includes("nguyenlieu")) return "nguyenlieummo";
+      if (p.includes("ubrsmmo") || p.includes("ubrs")) return "ubrsmmo";
       return p;
     }
     window.normalizeProviderId = normalizeProviderId;
@@ -8692,6 +8693,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (typeof syncDetailStockUI === "function" && effectiveStock !== undefined) {
           syncDetailStockUI(effectiveStock);
         }
+        const dtlSoldEl = document.getElementById("dtlSold");
+        if (dtlSoldEl) {
+          const soldVal = (typeof getRealisticProductSold === "function" && prodData) ? getRealisticProductSold(prodData) : (buffSold || effectiveStock || 0);
+          dtlSoldEl.innerText = "• Đã bán: " + Number(soldVal).toLocaleString("vi-VN");
+        }
         const pillsContainer = document.getElementById("dtlVariantPills");
         if (pillsContainer && Array.isArray(variants) && variants.length > 0) {
           pillsContainer.innerHTML = variants.map((v, idx) => {
@@ -8728,6 +8734,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           const cPrice = card.querySelector(".product-price");
           if (cPrice && effectivePrice) {
             cPrice.innerText = (typeof getProductPriceDisplay === "function" && prodData) ? getProductPriceDisplay(prodData) : ((typeof formatVND === "function") ? formatVND(effectivePrice) : (effectivePrice.toLocaleString("vi-VN") + " đ"));
+          }
+          const cSold = card.querySelector(".product-sold, .sold-count, [data-sold]");
+          if (cSold) {
+            const soldVal = (typeof getRealisticProductSold === "function" && prodData) ? getRealisticProductSold(prodData) : (buffSold || 0);
+            cSold.innerText = "• Đã bán: " + Number(soldVal).toLocaleString("vi-VN");
           }
         }
       });
@@ -8846,16 +8857,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (window._editingProductOldImage === "") {
             const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()]) : "";
             image = mapped || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
-          } else if (oldImgBeforeSave && !oldImgBeforeSave.includes("default_product.png") && !oldImgBeforeSave.includes("placeholder") && !oldImgBeforeSave.includes("khotaikhoanso") && !oldImgBeforeSave.includes("/api/products/")) {
+          } else if (oldImgBeforeSave && !oldImgBeforeSave.includes("default_product.png") && !oldImgBeforeSave.includes("placeholder") && !oldImgBeforeSave.includes("khotaikhoanso")) {
             image = oldImgBeforeSave;
           } else {
             const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()]) : "";
             image = mapped || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
           }
         }
-        if (image && image.includes("/api/products/")) {
-          const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()]) : "";
-          if (mapped) image = mapped;
+        if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && image && !image.includes("default_product.png")) {
+          KNOWN_PROD_IMAGE_MAP[actualTargetId] = image;
+          KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()] = image;
         }
 
         // Nếu ảnh mới khác ảnh cũ: xóa sạch dữ liệu ảnh cũ theo thời gian thực
@@ -9044,7 +9055,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           price: effectivePrice,
           commission: commissionVal + "% (~" + formatVND(Math.round(effectivePrice * commissionVal / 100)) + ")",
           buffSold: buffSold,
-          sold: (oldProd && oldProd.sold !== undefined) ? oldProd.sold : buffSold,
+          sold: (buffSold > 0) ? buffSold : ((oldProd && oldProd.sold !== undefined) ? oldProd.sold : 0),
           stock: isApiSelected ? liveSourceStock : totalCalculatedStock,
           rating: rating,
           reviewCount: reviewsCount,
@@ -12089,11 +12100,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         // Chấp nhận 100% URL ảnh mới tải lên, bao gồm cả Cloud Worker /api/products/:id/image, CDN jsdelivr và /api/images/
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
             !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash") && !trimmed.includes("khotaikhoanso") && !trimmed.includes("nFV4Rln")) {
-          if (trimmed.includes("/api/products/")) {
-            const sId = pId || (prodObj && prodObj.id ? String(prodObj.id).trim() : "");
-            const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[sId] || KNOWN_PROD_IMAGE_MAP[sId.toUpperCase()]) : "";
-            if (mapped) return mapped;
-          }
           return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
         }
       }
@@ -12131,6 +12137,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function getRealisticProductSold(p) {
       if (!p) return 0;
+      // 1. ƯU TIÊN TUYỆT ĐỐI THEO THỜI GIAN THỰC SỐ LƯỢNG ĐÃ BÁN DO ADMIN THIẾT LẬP (buffSold / sold)
+      const directSold = (p.buffSold !== undefined && p.buffSold !== null && Number(p.buffSold) > 0)
+        ? Number(p.buffSold)
+        : ((p.sold !== undefined && p.sold !== null && Number(p.sold) > 0) ? Number(p.sold) : null);
+      if (directSold !== null && !isNaN(directSold) && directSold > 0) {
+        return directSold;
+      }
+
       const PRESET_SOLD = {
         'PROD_MTQX465U': 3420, // Gmail cho Thuê 10 phút live 10 phút
         'PROD_MTQQXO2E': 2180, // Gmail cho Thuê 24h
@@ -17810,9 +17824,9 @@ function syncAllOpenViewsStock(changedProdId) {
           if (inSrc.price) res.sourcePrice = inSrc.price;
           if (inSrc.name) res.sourceProdName = inSrc.name;
         } else {
-          // Chỉ đánh dấu nguồn đã xóa nếu nhà cung cấp đã nạp live thành công và sản phẩm không hề có tồn kho hợp lệ
+          // Khi nhà cung cấp đã nạp live thành công nhưng mã SP không còn trong danh mục nguồn -> Đã bị shop nguồn xóa/gỡ!
           const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(res.provider) : false;
-          if (provLoaded && (!res.sourceStock || Number(res.sourceStock) <= 0)) {
+          if (provLoaded) {
             stock = 0;
             res.sourceStock = 0;
             res.isSourceDeleted = true;
@@ -17820,7 +17834,7 @@ function syncAllOpenViewsStock(changedProdId) {
             stock = 0;
             res.sourceStock = 0;
           } else {
-            // Bảo tồn tồn kho đã lưu từ Turso SSOT / cấu hình mapping, không vội đánh dấu đã xóa
+            // Nhà cung cấp chưa nạp xong: bảo tồn tạm thời số tồn kho cũ từ Turso SSOT để tránh giật lag UI
             res.isSourceDeleted = false;
             stock = Number(res.sourceStock) || 0;
           }
