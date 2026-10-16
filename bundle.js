@@ -20844,15 +20844,98 @@ function syncAllOpenViewsStock(changedProdId) {
 
       if (curCost <= 0) return null;
 
-      const targetPlat = (typeof detectProductPlatform === "function") ? detectProductPlatform(pName, pCat) : "other";
+      // Chuẩn hóa văn bản không dấu để so sánh
+      const normFn = (typeof removeVietnameseAccents === "function") ? removeVietnameseAccents : function(s) {
+        return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+      };
+
+      const normTargetName = (" " + normFn(pName) + " " + normFn(pCat) + " ").toLowerCase().replace(/[\-_–—,\(\)\[\]\.\/\+:\&\|]/g, " ");
+
+      // Helper nhận diện nền tảng nghiêm ngặt 100%
+      function getStrictPlatform(n, c) {
+        const text = (" " + normFn(n) + " " + normFn(c) + " ").toLowerCase().replace(/[\-_–—,\(\)\[\]\.\/\+:\&\|]/g, " ");
+        if (/\b(steam)\b/.test(text)) return "steam";
+        if (/\b(gemini|veo\s*3|veo3|google\s*ai)\b/.test(text)) return "gemini";
+        if (/\b(chatgpt|openai|\bgpt\b|gpt4|gpt-4|gpt3)\b/.test(text)) return "openai";
+        if (/\b(canva)\b/.test(text)) return "canva";
+        if (/\b(capcut)\b/.test(text)) return "capcut";
+        if (/\b(kling)\b/.test(text)) return "kling";
+        if (/\b(youtube|ytb)\b/.test(text)) return "youtube";
+        if (/\b(netflix)\b/.test(text)) return "netflix";
+        if (/\b(tiktok|tik tok|titok)\b/.test(text)) return "tiktok";
+        if (/\b(instagram|inta|intagram|\big\b)\b/.test(text) && !/\b(big|sign|design|eight)\b/.test(text)) return "instagram";
+        if (/\b(facebook|\bfb\b|via|nvr|novery|fanpage|\bpage\b|group fb|nick fb|acc fb|quang cao fb|ads fb)\b/.test(text) ||
+            (/\bclone\b/.test(text) && !/\b(tiktok|instagram|twitter|tele)\b/.test(text))) {
+          return "facebook";
+        }
+        if (/\b(twitter|\bx\.com\b)\b/.test(text)) return "twitter";
+        if (/\b(telegram|\btele\b)\b/.test(text)) return "telegram";
+        if (/\b(discord|nitro)\b/.test(text)) return "discord";
+        if (/\b(spotify)\b/.test(text)) return "spotify";
+        if (/\b(proxy|socks5|ipv4|ipv6|mobile 4g|\b4g\b)\b/.test(text)) return "proxy";
+        if (/\b(hotmail|outlook|live\.com|msn)\b/.test(text)) return "microsoft_mail";
+        if (/\b(gmail|google drive|gg drive|google one|gg one|workspace|gg domain|gmail domain|thue mail|thuê mail|gvoice)\b/.test(text)) return "gmail";
+        return "other";
+      }
+
+      // Helper nhận diện thời hạn / chu kỳ sử dụng nghiêm ngặt
+      function getStrictDuration(n) {
+        if (!n) return { key: "unknown", label: "Chung / Khác" };
+        const norm = (" " + normFn(n) + " ").toLowerCase().replace(/[\-_–—,\(\)\[\]\.\/\+:\&\|]/g, " ");
+
+        if (/\b(vinh\s*vien|lifetime)\b/.test(norm)) return { key: "lifetime", label: "Vĩnh Viễn" };
+        if (/\b(2\s*(nam|year|years|yr)|24\s*(thang|month|months|m))\b/.test(norm)) return { key: "2_years", label: "2 Năm" };
+        if (/\b(18\s*(thang|month|months|m)|1\.5\s*(nam|year)|12\s*36|6\s*36)\b/.test(norm)) return { key: "18_months", label: "18 Tháng" };
+        if (/\b(1\s*(nam|year|years|yr)|365\s*(ngay|day|days)|12\s*(thang|month|months|m))\b/.test(norm)) return { key: "1_year", label: "1 Năm (365 ngày)" };
+        if (/\b(6\s*(thang|month|months|m)|180\s*(ngay|day|days))\b/.test(norm)) return { key: "6_months", label: "6 Tháng" };
+        if (/\b(3\s*(thang|month|months|m)|90\s*(ngay|day|days))\b/.test(norm)) return { key: "3_months", label: "3 Tháng" };
+        if (/\b(1\s*(thang|month|months|m)|30\s*(ngay|day|days))\b/.test(norm)) return { key: "1_month", label: "1 Tháng (30 ngày)" };
+        if (/\b(14\s*(ngay|day|days)|2\s*(tuan|week|weeks))\b/.test(norm)) return { key: "14_days", label: "14 Ngày" };
+        if (/\b(7\s*(ngay|day|days)|1\s*(tuan|week|weeks))\b/.test(norm)) return { key: "7_days", label: "7 Ngày / 1 Tuần" };
+        if (/\b(24\s*(h|gio|hour|hours)|1\s*(ngay|day))\b/.test(norm)) return { key: "24h", label: "24 Giờ / 1 Ngày" };
+        if (/\b(10\s*(phut|p)|30\s*(phut|p)|1\s*(h|gio)|2\s*(h|gio)|4\s*(h|gio))\b/.test(norm)) return { key: "short_hours", label: "Thuê Giờ / Phút (10p-2h)" };
+        if (/\b(2\s*(phut|p))\b/.test(norm)) return { key: "2_mins", label: "Thuê 2 Phút" };
+        return { key: "unknown", label: "Chung / Khác" };
+      }
+
+      // Helper tính độ tương đồng từ khóa >= 60%
+      function calcSemanticSimilarity60(titleA, titleB) {
+        const stopWords = new Set(["tai", "khoan", "acc", "nick", "gia", "re", "chinh", "chu", "uy", "tin", "bao", "hanh", "chat", "luong", "cuc", "sieu", "mua", "ban", "cho", "the", "hang", "sale", "vip", "pro", "full", "tang", "kem"]);
+        function extractTokens(str) {
+          const norm = normFn(str).toLowerCase().replace(/[\-_–—,\(\)\[\]\.\/\+:\&\|]/g, " ");
+          return norm.split(/\s+/).filter(t => t.length >= 2 && !stopWords.has(t));
+        }
+        const tokensA = extractTokens(titleA);
+        const tokensB = extractTokens(titleB);
+        if (tokensA.length === 0 || tokensB.length === 0) return 0;
+        const setB = new Set(tokensB);
+        let matched = 0;
+        tokensA.forEach(t => {
+          if (setB.has(t)) matched++;
+          else {
+            for (let b of setB) {
+              if (b.includes(t) || t.includes(b)) {
+                matched += 0.8;
+                break;
+              }
+            }
+          }
+        });
+        return matched / Math.max(tokensA.length, tokensB.length);
+      }
+
+      const targetPlat = getStrictPlatform(pName, pCat);
+      const targetDur = getStrictDuration(pName);
       const targetCountry = (typeof parseProductCountry === "function") ? parseProductCountry(pName, pCat) : { key: "unknown" };
-      const targetDur = (typeof parseProductDuration === "function") ? parseProductDuration(pName) : { key: "unknown", bin: "all" };
-      const normTargetName = (typeof removeVietnameseAccents === "function" ? removeVietnameseAccents(pName) : pName).toLowerCase();
       const isTargetOtp = /\b(otp|sms|thue sim|code|thue mail)\b/i.test(normTargetName);
 
-      const isDomainRent = /\b(domain|cho thue|thue mail)\b/i.test(normTargetName);
-      const isShortRent = /\b(10\s*phut|10p|30p|1h|2h|2\s*phut)\b/i.test(normTargetName);
-      const is24hRent = /\b(24h|24\s*gio|1\s*ngay)\b/i.test(normTargetName);
+      // Phân lập Proxy IPv4 vs IPv6
+      const isTargetProxy = targetPlat === "proxy";
+      const targetIsV6 = isTargetProxy && /\b(ipv6|v6)\b/i.test(normTargetName);
+      const targetIsV4 = isTargetProxy && (/\b(ipv4|v4)\b/i.test(normTargetName) || (!targetIsV6 && /\bproxy\b/i.test(normTargetName)));
+      const targetIsRotating = isTargetProxy && /\b(xoay|rotating|dynamic)\b/i.test(normTargetName);
+
+      // Thuộc tính tài khoản mạng xã hội
       const isFbClone = /\b(clone)\b/i.test(normTargetName);
       const isFbVia = /\b(via)\b/i.test(normTargetName);
       const hasTarget2Fa = /\b2fa\b/i.test(normTargetName) && !/\b(no\s*2fa|khong\s*2fa|no2fa|k\s*2fa)\b/i.test(normTargetName);
@@ -20875,48 +20958,50 @@ function syncAllOpenViewsStock(changedProdId) {
         if (!item) continue;
 
         const itemPrice = Number(item.price) || 0;
-        if (itemPrice <= 0 || itemPrice >= curCost) continue;
+        if (itemPrice <= 0 || itemPrice >= curCost) continue; // Giá vốn bắt buộc phải RẺ HƠN
 
         const itemStock = Number(item.amount !== undefined ? item.amount : item.stock) || 0;
-        if (itemStock <= 0) continue;
+        if (itemStock <= 0) continue; // Phải còn hàng
 
         const itemProv = String(item.provider || "").trim();
         const cleanItemId = String(item.id || "").replace(/^#/, "").trim();
 
-        if (itemProv === curProv && cleanItemId === cleanCurId) continue;
+        if (itemProv === curProv && cleanItemId === cleanCurId) continue; // Bỏ qua chính nó
 
         const itemName = String(item.name || "").trim();
         const itemCat = String(item.category || "").trim();
-        const normItemName = (typeof removeVietnameseAccents === "function" ? removeVietnameseAccents(itemName) : itemName).toLowerCase();
+        const normItemName = (" " + normFn(itemName) + " " + normFn(itemCat) + " ").toLowerCase().replace(/[\-_–—,\(\)\[\]\.\/\+:\&\|]/g, " ");
 
-        // 1. Phân lập nền tảng
-        const itemPlat = (typeof detectProductPlatform === "function") ? detectProductPlatform(itemName, itemCat) : "other";
-        if (targetPlat !== "other" && itemPlat !== "other" && itemPlat !== targetPlat) continue;
+        // 1. Phân lập nền tảng tuyệt đối (Platform Firewall 100%)
+        const itemPlat = getStrictPlatform(itemName, itemCat);
+        if (targetPlat !== "other" && itemPlat !== targetPlat) continue;
+        if (targetPlat === "other" && itemPlat !== "other") continue;
 
-        // 2. Phân lập OTP / SMS vs Tài khoản
+        // 2. Phân lập OTP / SMS vs Nick đăng nhập
         const itemOtp = /\b(otp|sms|thue sim|code|thue mail)\b/i.test(normItemName);
         if (isTargetOtp !== itemOtp) continue;
 
-        // 3. Phân biệt Quốc Gia
+        // 3. Phân biệt Thời Hạn / Chu kỳ gói nghiêm ngặt (18 tháng chỉ khớp 18 tháng, 7 ngày chỉ khớp 7 ngày...)
+        const itemDur = getStrictDuration(itemName);
+        if (targetDur.key !== "unknown" && itemDur.key !== targetDur.key) continue;
+
+        // 4. Phân biệt Quốc Gia nghiêm ngặt
         if (targetCountry.key !== "unknown" && targetCountry.key !== "all" && targetCountry.key !== "global_mix") {
           const itemCountry = (typeof parseProductCountry === "function") ? parseProductCountry(itemName, itemCat) : { key: "unknown" };
           if (itemCountry.key !== targetCountry.key) continue;
         }
 
-        // 4. Phân biệt Thời Hạn
-        if (targetDur.key !== "unknown" && targetDur.key !== "all") {
-          const itemDur = (typeof parseProductDuration === "function") ? parseProductDuration(itemName) : { key: "unknown", bin: "all" };
-          if (itemDur.key !== targetDur.key && (targetDur.bin === "none" || itemDur.bin !== targetDur.bin)) continue;
+        // 5. Phân lập Proxy IPv4 vs IPv6 vs Xoay/Tĩnh
+        if (isTargetProxy) {
+          const itemIsV6 = /\b(ipv6|v6)\b/i.test(normItemName);
+          const itemIsV4 = (/\b(ipv4|v4)\b/i.test(normItemName) || (!itemIsV6 && /\bproxy\b/i.test(normItemName)));
+          if (targetIsV6 !== itemIsV6) continue;
+          if (targetIsV4 !== itemIsV4) continue;
+          const itemIsRotating = /\b(xoay|rotating|dynamic)\b/i.test(normItemName);
+          if (targetIsRotating !== itemIsRotating) continue;
         }
 
-        // 5. Kiểm tra ngữ nghĩa MMO
-        if (isDomainRent) {
-          const isItemDomainRent = /\b(domain|cho thue|thue mail)\b/i.test(normItemName);
-          if (!isItemDomainRent) continue;
-          if (isShortRent && /\b(24h|24\s*gio|1\s*ngay)\b/i.test(normItemName)) continue;
-          if (is24hRent && !/\b(24h|24\s*gio|1\s*ngay)\b/i.test(normItemName)) continue;
-        }
-
+        // 6. Kiểm tra ngữ nghĩa tài khoản mạng xã hội
         if (isFbClone && !isFbVia && /\b(via fb|via facebook)\b/i.test(normItemName) && !/\bclone\b/i.test(normItemName)) continue;
         if (isFbVia && !isFbClone && /\b(clone fb|clone facebook)\b/i.test(normItemName) && !/\bvia\b/i.test(normItemName)) continue;
 
@@ -20925,19 +21010,13 @@ function syncAllOpenViewsStock(changedProdId) {
           if (!itemHas2Fa) continue;
         }
 
-        if (hasTargetHotmail) {
-          if (!/\b(hotmail|outlook)\b/i.test(normItemName)) continue;
-        }
-
-        if (hasTargetGmail) {
-          if (!/\b(gmail|google)\b/i.test(normItemName)) continue;
-        }
-
+        if (hasTargetHotmail && !/\b(hotmail|outlook)\b/i.test(normItemName)) continue;
+        if (hasTargetGmail && !/\b(gmail|google)\b/i.test(normItemName)) continue;
         if (isMailLock && !/\b(mail lock|khoa mail|lock mail)\b/i.test(normItemName)) continue;
 
-        // 6. Tính điểm độ khớp
-        let score = (typeof calcCompareMatchScore === "function") ? calcCompareMatchScore(item, pName, p) : 50;
-        if (score < 30) continue;
+        // 7. BẮT BUỘC ĐỘ TƯƠNG ĐỒNG TIÊU ĐỀ >= 60%
+        const sim = calcSemanticSimilarity60(pName, itemName);
+        if (sim < 0.60) continue;
 
         const savings = curCost - itemPrice;
         candidates.push({
@@ -20951,12 +21030,13 @@ function syncAllOpenViewsStock(changedProdId) {
           savingsPercent: Math.round((savings / curCost) * 100),
           newProfit: shopPrice > 0 ? (shopPrice - itemPrice) : 0,
           marginPercent: shopPrice > 0 ? Math.round(((shopPrice - itemPrice) / shopPrice) * 100) : 0,
-          score: score
+          similarity: sim
         });
       }
 
       if (candidates.length === 0) return null;
 
+      // Sắp xếp: Giá thấp nhất trước, sau đó ưu tiên tồn kho cao hơn
       candidates.sort(function(a, b) {
         if (a.price !== b.price) return a.price - b.price;
         return b.stock - a.stock;
@@ -28382,29 +28462,31 @@ function executeCompareSourcesSearch() {
                 const bestName = (typeof cleanSourceProductName === "function") ? cleanSourceProductName(bestD.name) : bestD.name;
                 const cleanBestId = String(bestD.id || "").replace(/^#/, "").trim();
 
-                cheaperSuggestionHtml = '<div style="margin-top:8px; padding:9px 12px; background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.06)); border:1px solid #f59e0b; border-left:4px solid #f59e0b; border-radius:6px; font-size:0.75rem; line-height:1.45; box-shadow:0 3px 12px rgba(245,158,11,0.2);">' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">' +
-                    '<div style="flex:1; min-width:220px;">' +
-                      '<div style="color:#fbbf24; font-weight:800; font-size:0.8rem; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
-                        '<i class="fa-solid fa-lightbulb" style="animation:pulse 1.5s infinite; color:#facc15;"></i>' +
-                        '<span>GỢI Ý NGUỒN GIÁ TỐT HƠN (TĂNG LỢI NHUẬN):</span>' +
-                        '<span style="background:#f59e0b; color:#000; font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:800;">Tiết kiệm ' + formatVND(cheaperInfo.savings).replace(/\s*đ$/, 'đ') + '/acc (-' + cheaperInfo.savingsPercent + '%)</span>' +
+                cheaperSuggestionHtml = '<div style="margin-top:8px; padding:10px 12px; background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.06)); border:1px solid #f59e0b; border-left:4px solid #f59e0b; border-radius:6px; font-size:0.75rem; line-height:1.45; box-shadow:0 3px 12px rgba(245,158,11,0.2);">' +
+                  '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
+                    '<div style="flex:1; min-width:260px;">' +
+                      '<div style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; overflow:hidden;">' +
+                        '<i class="fa-solid fa-lightbulb" style="animation:pulse 1.5s infinite; color:#facc15; font-size:0.85rem; flex-shrink:0;"></i>' +
+                        '<span style="color:#fbbf24; font-weight:800; font-size:0.82rem; white-space:nowrap; flex-shrink:0;">GỢI Ý NGUỒN GIÁ TỐT HƠN (TĂNG LỢI NHUẬN):</span>' +
+                        '<span style="background:#f59e0b; color:#000; font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:800; white-space:nowrap; flex-shrink:0;">Tiết kiệm ' + formatVND(cheaperInfo.savings).replace(/\s*đ$/, 'đ') + '/acc (-' + cheaperInfo.savingsPercent + '%)</span>' +
                       '</div>' +
                       '<div style="color:#e2e8f0; font-weight:600; margin-top:4px; display:flex; align-items:center; gap:5px; overflow:hidden;">' +
-                        '<span style="color:#38bdf8; font-weight:700;">[' + (typeof escapeHtml === "function" ? escapeHtml(bestProvName) : bestProvName) + ' #' + cleanBestId + ']:</span> ' +
+                        '<span style="color:#38bdf8; font-weight:700; flex-shrink:0;">[' + (typeof escapeHtml === "function" ? escapeHtml(bestProvName) : bestProvName) + ' #' + cleanBestId + ']:</span> ' +
                         '<strong style="color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (typeof escapeHtml === "function" ? escapeHtml(bestD.name) : bestD.name) + '">' + (typeof escapeHtml === "function" ? escapeHtml(bestName) : bestName) + '</strong>' +
                       '</div>' +
-                      '<div style="display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:3px; font-size:0.72rem; color:#cbd5e1; align-items:center;">' +
-                        '<span>Giá vốn mới: <strong style="color:#10b981; font-size:0.82rem;">' + formatVND(bestPrice).replace(/\s*đ$/, 'đ') + '</strong> (hiện tại: ' + formatVND(srcPrice).replace(/\s*đ$/, 'đ') + ')</span>' +
-                        '<span>Kho live: <strong style="color:#38bdf8;">' + bestStock.toLocaleString() + ' acc</strong></span>' +
-                        '<span>Lãi mới: <strong style="color:#10b981;">+' + formatVND(cheaperInfo.newProfit).replace(/\s*đ$/, 'đ') + ' (' + cheaperInfo.marginPercent + '%)</strong></span>' +
+                      '<div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; margin-top:4px; font-size:0.72rem; color:#cbd5e1;">' +
+                        '<span style="white-space:nowrap;"><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Giá vốn mới: <strong style="color:#10b981; font-size:0.82rem;">' + formatVND(bestPrice).replace(/\s*đ$/, 'đ') + '</strong> <span style="color:#94a3b8; font-size:0.68rem;">(hiện tại: ' + formatVND(srcPrice).replace(/\s*đ$/, 'đ') + ')</span></span>' +
+                        '<span style="color:#475569;">|</span>' +
+                        '<span style="white-space:nowrap;"><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Kho live: <strong style="color:#38bdf8;">' + bestStock.toLocaleString() + ' acc</strong></span>' +
+                        '<span style="color:#475569;">|</span>' +
+                        '<span style="white-space:nowrap;"><i class="fa-solid fa-arrow-trend-up" style="color:#10b981;"></i> Lãi mới: <strong style="color:#10b981;">+' + formatVND(cheaperInfo.newProfit).replace(/\s*đ$/, 'đ') + ' (' + cheaperInfo.marginPercent + '%)</strong></span>' +
                       '</div>' +
                     '</div>' +
-                    '<div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' +
-                      '<button type="button" class="btn-tool-primary" data-provider="' + bestProv + '" data-source-id="' + cleanBestId + '" data-price="' + bestPrice + '" data-stock="' + bestStock + '" data-name="' + (typeof escapeHtml === "function" ? escapeHtml(bestD.name) : bestD.name) + '" onclick="window.quickApplyCheaperSource(\'' + p.id + '\', \'' + bestProv + '\', \'' + cleanBestId + '\', ' + bestPrice + ', ' + bestStock + ', this.getAttribute(\'data-name\'))" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:800; font-size:0.75rem; padding:6px 12px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(245,158,11,0.4);" title="Đổi ngay sản phẩm này sang nguồn giá rẻ hơn">' +
+                    '<div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">' +
+                      '<button type="button" class="btn-tool-primary" data-provider="' + bestProv + '" data-source-id="' + cleanBestId + '" data-price="' + bestPrice + '" data-stock="' + bestStock + '" data-name="' + (typeof escapeHtml === "function" ? escapeHtml(bestD.name) : bestD.name) + '" onclick="window.quickApplyCheaperSource(\'' + p.id + '\', \'' + bestProv + '\', \'' + cleanBestId + '\', ' + bestPrice + ', ' + bestStock + ', this.getAttribute(\'data-name\'))" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:800; font-size:0.75rem; padding:6px 12px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(245,158,11,0.4); white-space:nowrap;" title="Đổi ngay sản phẩm này sang nguồn giá rẻ hơn">' +
                         '<i class="fa-solid fa-bolt"></i> ⚡ Đổi Sang Nguồn Này Ngay' +
                       '</button>' +
-                      '<button type="button" onclick="openSourceCompareModal(\'' + p.id + '\')" style="background:#1e293b; color:#38bdf8; font-weight:700; font-size:0.74rem; padding:6px 10px; border-radius:6px; border:1px solid #334155; cursor:pointer; display:inline-flex; align-items:center; gap:4px;" title="Xem chi tiết so sánh tất cả các nguồn API">' +
+                      '<button type="button" onclick="openSourceCompareModal(\'' + p.id + '\')" style="background:#1e293b; color:#38bdf8; font-weight:700; font-size:0.74rem; padding:6px 10px; border-radius:6px; border:1px solid #334155; cursor:pointer; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" title="Xem chi tiết so sánh tất cả các nguồn API">' +
                         '<i class="fa-solid fa-scale-balanced"></i> Xem 6 Nguồn' +
                       '</button>' +
                     '</div>' +
