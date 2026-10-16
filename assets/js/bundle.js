@@ -3397,6 +3397,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.setAdmProductFilter = setAdmProductFilter;
 
     let admProductSearchQuery = "";
+    var _admSearchDebounceTimer = null;
     function handleSearchAdminProducts(val) {
       if (typeof val === "string") {
         admProductSearchQuery = val.trim();
@@ -3409,7 +3410,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         clearBtn.style.display = admProductSearchQuery ? "block" : "none";
       }
       if (typeof paginationState !== "undefined") paginationState.admProd = 1;
-      renderAdminDashboard();
+      if (_admSearchDebounceTimer) clearTimeout(_admSearchDebounceTimer);
+      _admSearchDebounceTimer = setTimeout(function() {
+        renderAdminDashboard();
+      }, 120);
     }
     window.handleSearchAdminProducts = handleSearchAdminProducts;
 
@@ -3688,18 +3692,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                           currentSelectedProduct.stock = inSrc.amount;
                           if (Array.isArray(currentSelectedProduct.variants)) {
                             currentSelectedProduct.variants.forEach(function(cv) { if (cv) cv.stock = inSrc.amount; });
-                          }
-                          if (typeof syncDetailStockUI === "function") syncDetailStockUI(inSrc.amount);
-                          const pillsEl = document.getElementById("dtlVariantPills");
-                          if (pillsEl && Array.isArray(currentSelectedProduct.variants) && currentSelectedProduct.variants.length > 0) {
-                            const curVI = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
-                            pillsEl.innerHTML = currentSelectedProduct.variants.map((v, idx) => {
-                              const badge = inSrc.amount > 0 ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + inSrc.amount + ' acc)</small>' : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-                              return '<div class="variant-pill-option ' + (idx === curVI ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                                '<span>' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + badge + '</span>' +
-                                '<span style="font-weight:700;">' + (typeof formatVND === "function" ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
-                              '</div>';
-                            }).join("");
                           }
                         }
                       }
@@ -11863,9 +11855,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         document.getElementById("navAdmin")?.classList.add("active");
         _viewRendered["viewAdmin"] = true;
         _viewDirty["viewAdmin"] = false;
-        if (typeof renderSystemOverview === "function") renderSystemOverview();
-        if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-        if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
         const activeAdmTab = localStorage.getItem("mmo_admin_tab") || "tabAdmDashboard";
         if (typeof switchAdminTab === "function") switchAdminTab(activeAdmTab);
       }
@@ -11999,6 +11988,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
   "PROD_MV5RNGVO93": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5RNGVO93_Facebook_US_Thue_Tick_Xanh_Co_Avatar.png",
   "PROD_MV5QIZNFCZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5QIZNFCZ_Google_Gemini_AI_Pro_Veo3_1_NAM.png",
   "PROD_MV5PA8KZDW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5PA8KZDW_NANG_CAP_GEMINI_PRO_CHINH_CHU_18_Thang.png",
+    "PROD_MV5OYRDJCA": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5PA8KZDW_NANG_CAP_GEMINI_PRO_CHINH_CHU_18_Thang.png",
   "PROD_MU6R34FZ4Z": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5PA8KZDW_NANG_CAP_GEMINI_PRO_CHINH_CHU_18_Thang.png",
   "PROD_MU5T3T47AE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5PA8KZDW_NANG_CAP_GEMINI_PRO_CHINH_CHU_18_Thang.png",
   "PROD_MU2AB1XEGI": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5PA8KZDW_NANG_CAP_GEMINI_PRO_CHINH_CHU_18_Thang.png",
@@ -15735,7 +15725,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (s === "PROD_MUH57035HQ") {
         return "PROD_MU5PWT7PP7";
       }
-      if (s === "PROD_MU2AB1XEGI" || s === "SP_GEMINI_VEO3" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MUQIMRJYG0" || s === "PROD_MU5T3T47AE") {
+      if (s === "PROD_MV5OYRDJCA" || s === "PROD_MU2AB1XEGI" || s === "SP_GEMINI_VEO3" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MUQIMRJYG0" || s === "PROD_MU5T3T47AE") {
         return "PROD_MV5PA8KZDW";
       }
       return s;
@@ -15751,8 +15741,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (s === "PROD_MU5PWT7PP7" || s === "PROD_MUH57035HQ") {
         return ["PROD_MU5PWT7PP7", "PROD_MUH57035HQ"];
       }
-      if (s === "PROD_MV5PA8KZDW" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3" || s === "PROD_MU5T3T47AE") {
-        return ["PROD_MV5PA8KZDW", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0", "PROD_MU5T3T47AE"];
+      if (s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3" || s === "PROD_MU5T3T47AE") {
+        return ["PROD_MV5PA8KZDW", "PROD_MV5OYRDJCA", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0", "PROD_MU5T3T47AE"];
       }
       return [s];
     }
@@ -15776,8 +15766,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (k1 && k2) return true;
 
       // Gemini Pro 18 Tháng
-      const g1 = s1 === "PROD_MV5PA8KZDW" || s1 === "PROD_MU6R34FZ4Z" || s1 === "PROD_MU2AB1XEGI" || s1 === "PROD_MUQIMRJYG0" || s1 === "SP_GEMINI_VEO3" || s1 === "PROD_MU5T3T47AE";
-      const g2 = s2 === "PROD_MV5PA8KZDW" || s2 === "PROD_MU6R34FZ4Z" || s2 === "PROD_MU2AB1XEGI" || s2 === "PROD_MUQIMRJYG0" || s2 === "SP_GEMINI_VEO3" || s2 === "PROD_MU5T3T47AE";
+      const g1 = s1 === "PROD_MV5PA8KZDW" || s1 === "PROD_MV5OYRDJCA" || s1 === "PROD_MU6R34FZ4Z" || s1 === "PROD_MU2AB1XEGI" || s1 === "PROD_MUQIMRJYG0" || s1 === "SP_GEMINI_VEO3" || s1 === "PROD_MU5T3T47AE";
+      const g2 = s2 === "PROD_MV5PA8KZDW" || s2 === "PROD_MV5OYRDJCA" || s2 === "PROD_MU6R34FZ4Z" || s2 === "PROD_MU2AB1XEGI" || s2 === "PROD_MUQIMRJYG0" || s2 === "SP_GEMINI_VEO3" || s2 === "PROD_MU5T3T47AE";
       if (g1 && g2) return true;
 
       // [KHÓA BẢO VỆ TUYỆT ĐỐI - KHÔNG BAO GIỜ GỘP NHẦM 2 SẢN PHẨM KHÁC NHAU]:
@@ -17933,6 +17923,16 @@ function syncAllOpenViewsStock(changedProdId) {
     "isSourceDeleted": false
   },
   "PROD_MV5PA8KZDW": {
+    "enabled": true,
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "32428",
+    "sourcePrice": 49600,
+    "sourceStock": 1112,
+    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 1.112)",
+    "baseUrl": "https://selltainguyenmmo.com",
+    "isSourceDeleted": false
+  },
+  "PROD_MV5OYRDJCA": {
     "enabled": true,
     "provider": "selltainguyenmmo",
     "sourceProdId": "32428",
@@ -20981,9 +20981,21 @@ function syncAllOpenViewsStock(changedProdId) {
         for (let si = 0; si < sourceList.length; si++) {
           const sIt = sourceList[si];
           if (!sIt) continue;
-          const sPlat = getStrictPlatform(sIt.name, sIt.category);
+          const sPlat = sIt._strictPlat || getStrictPlatform(sIt.name, sIt.category);
+          sIt._strictPlat = sPlat;
+          if (!sIt._normClean) {
+            sIt._normClean = (" " + normFn(sIt.name || "") + " " + normFn(sIt.category || "") + " ").toLowerCase().replace(/[\-_–—,\(\)\[\]\.\/\+:\&\|]/g, " ");
+            sIt._isOtp = /\b(otp|sms|thue sim|code|thue mail)\b/i.test(sIt._normClean);
+            sIt._durKey = (typeof getStrictDuration === "function") ? getStrictDuration(sIt.name).key : "unknown";
+          }
           if (!buckets[sPlat]) buckets[sPlat] = [];
           buckets[sPlat].push(sIt);
+        }
+        // Pre-sort each bucket by price ascending for instantaneous early-exit
+        for (const bk in buckets) {
+          if (Array.isArray(buckets[bk])) {
+            buckets[bk].sort(function(a, b) { return (Number(a.price) || 0) - (Number(b.price) || 0); });
+          }
         }
         buckets._sourceListRef = sourceList;
         _sourceProductsByPlatform = buckets;
@@ -21001,7 +21013,8 @@ function syncAllOpenViewsStock(changedProdId) {
         if (!item) continue;
 
         const itemPrice = Number(item.price) || 0;
-        if (itemPrice <= 0 || itemPrice >= curCost) continue; // Giá vốn bắt buộc phải RẺ HƠN
+        if (itemPrice <= 0) continue;
+        if (itemPrice >= curCost) break; // [ZERO-LAG EARLY EXIT]: Do mảng đã sắp xếp giá tăng dần, giá lớn hơn hoặc bằng curCost thì dừng quét ngay lập tức!
 
         const itemStock = Number(item.amount !== undefined ? item.amount : item.stock) || 0;
         if (itemStock <= 0) continue; // Phải còn hàng
@@ -21863,7 +21876,7 @@ function executeCompareSourcesSearch() {
 
     function computeApiSourceAlerts(force) {
       const now = Date.now();
-      if (!force && _cachedApiSourceAlerts && (now - _lastApiAlertsComputeTime < 2500)) {
+      if (!force && _cachedApiSourceAlerts && (now - _lastApiAlertsComputeTime < 60000)) {
         return _cachedApiSourceAlerts;
       }
 
@@ -28043,7 +28056,7 @@ function executeCompareSourcesSearch() {
       if (typeof getCanonicalProductId === "function") {
         cleanId = getCanonicalProductId(cleanId);
       }
-      if (cleanId === "PROD_MU2AB1XEGI" || cleanId === "SP_GEMINI_VEO3" || cleanId === "PROD_MU6R34FZ4Z" || cleanId === "PROD_MU5T3T47AE" || cleanId === "PROD_MUQIMRJYG0") {
+      if (cleanId === "PROD_MV5OYRDJCA" || cleanId === "PROD_MU2AB1XEGI" || cleanId === "SP_GEMINI_VEO3" || cleanId === "PROD_MU6R34FZ4Z" || cleanId === "PROD_MU5T3T47AE" || cleanId === "PROD_MUQIMRJYG0") {
         cleanId = "PROD_MV5PA8KZDW";
       }
       if (cleanId === "PROD_MUH57035HQ") {
