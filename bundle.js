@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.4.1";
+const MMO_CURRENT_CODE_VERSION = "5.4.2";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 function isForeignKhotaikhoansoOrder(o) {
@@ -1341,7 +1341,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     const REAL_PRODUCT_IDS = [
       "PROD_MUBKH47T2U", "PROD_MUBJQ6JP7O", "PROD_MU9YH8D9FK", "PROD_MU6R34FZ4Z",
-      "PROD_MU5T3T47AE", "PROD_MU5SPLMSEC", "PROD_MU5PWT7PP7",
+      "PROD_MU5T3T47AE", "PROD_MU5SPLMSEC", "PROD_MU5PWT7PP7", "PROD_MUH57035HQ",
       "PROD_MU2YQ1J3PY", "PROD_MU2PA8VNDP", "PROD_MU2OXBZC6K", "PROD_MU2OGW71GZ", "PROD_MU2OAG3IO2",
       "PROD_MU2O4MW4DQ", "PROD_MU2NX4CYEW", "PROD_MU2NSFQCMT", "PROD_MU2LYZY5C7", "PROD_MU2JIBBRH8",
       "PROD_MU2NUXL1Q4", "PROD_MU2NKET1OG", "PROD_MU2N2TVDIJ", "PROD_MU2MY8WCOE", "PROD_MU2MOON7L6",
@@ -1432,6 +1432,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function getVisibleProducts() {
       if (!MOCK_DATA || !Array.isArray(MOCK_DATA.products)) return [];
       const seenIds = new Set();
+      const seenCanonicals = new Set();
       const result = [];
 
       for (let i = 0; i < MOCK_DATA.products.length; i++) {
@@ -1439,9 +1440,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (!p || !p.id || isProductDeleted(p)) continue;
 
         const cleanId = String(p.id).trim();
-        // Mỗi mã sản phẩm hiển thị độc lập, không xóa hay ghi đè sản phẩm khác
-        if (seenIds.has(cleanId)) continue;
+        const canonId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(cleanId) : cleanId;
+
+        // Nếu sản phẩm hiện tại là alias không phải canonical, nhưng canonical đã tồn tại trong MOCK_DATA -> bỏ qua để ưu tiên bản chính
+        if (cleanId !== canonId && MOCK_DATA.products.some(x => x && String(x.id).trim() === canonId)) {
+          continue;
+        }
+
+        if (seenIds.has(cleanId) || seenCanonicals.has(canonId)) continue;
         seenIds.add(cleanId);
+        seenCanonicals.add(canonId);
         result.push(p);
       }
       return result;
@@ -1736,11 +1744,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (storedMaps) {
         const parsedMaps = JSON.parse(storedMaps);
         let changed = false;
-        // Gỡ bỏ bất kỳ mapping nào bị gán nhầm cho PROD_MUH57035HQ
-        if (parsedMaps["PROD_MUH57035HQ"]) {
-          delete parsedMaps["PROD_MUH57035HQ"];
-          changed = true;
-        }
         // Gỡ bỏ các key biến thể generic không phải product ID
         for (const k of Object.keys(parsedMaps)) {
           if (!k.startsWith("PROD_") && !k.startsWith("SP_")) {
@@ -1751,37 +1754,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (changed) {
           localStorage.setItem("mmo_api_product_mappings", JSON.stringify(parsedMaps));
         }
-      }
-
-      // Khôi phục deliveryType = 'local' cho PROD_MUH57035HQ nếu từng bị live sync ghi đè thành 'api'
-      const checkAndFixProd = function(pList) {
-        if (!Array.isArray(pList)) return;
-        pList.forEach(p => {
-          if (p && p.id === "PROD_MUH57035HQ") {
-            p.deliveryType = "local";
-            p.delivery_type = "local";
-            delete p.apiMapping;
-          }
-        });
-      };
-      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
-        checkAndFixProd(MOCK_DATA.products);
-      }
-      const rawAdminP = localStorage.getItem("mmo_admin_products");
-      if (rawAdminP) {
-        try {
-          const list = JSON.parse(rawAdminP);
-          checkAndFixProd(list);
-          localStorage.setItem("mmo_admin_products", JSON.stringify(list));
-        } catch(e) {}
-      }
-      const rawP = localStorage.getItem("mmo_products");
-      if (rawP) {
-        try {
-          const list = JSON.parse(rawP);
-          checkAndFixProd(list);
-          localStorage.setItem("mmo_products", JSON.stringify(list));
-        } catch(e) {}
       }
     } catch(eClean) {}
 
@@ -14435,7 +14407,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             });
           }
 
-          const existingIdx = MOCK_DATA.products.findIndex(p => p && p.id === tp.id);
+          const canonTpId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(tp.id) : tp.id;
+          const existingIdx = MOCK_DATA.products.findIndex(p => p && (p.id === tp.id || p.id === canonTpId || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, tp.id))));
           if (existingIdx !== -1) {
             const cur = MOCK_DATA.products[existingIdx];
             const isLocallyFresh = !!(cur._lastEditedAt && (Date.now() - cur._lastEditedAt < 5000));
@@ -15604,6 +15577,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (s === "PROD_MTPG0PUD" || s === "SP_TIKTOK_BRAZIL") {
         return "PROD_MTPIJ9XV";
       }
+      if (s === "PROD_MUH57035HQ") {
+        return "PROD_MU5PWT7PP7";
+      }
+      if (s === "PROD_MU2AB1XEGI" || s === "SP_GEMINI_VEO3" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MUQIMRJYG0") {
+        return "PROD_MV5PA8KZDW";
+      }
       return s;
     }
     window.getCanonicalProductId = getCanonicalProductId;
@@ -15613,6 +15592,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const s = String(id).trim();
       if (s === "PROD_MTPIJ9XV" || s === "PROD_MTPG0PUD" || s === "SP_TIKTOK_BRAZIL") {
         return ["PROD_MTPIJ9XV", "PROD_MTPG0PUD"];
+      }
+      if (s === "PROD_MU5PWT7PP7" || s === "PROD_MUH57035HQ") {
+        return ["PROD_MU5PWT7PP7", "PROD_MUH57035HQ"];
+      }
+      if (s === "PROD_MV5PA8KZDW" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3") {
+        return ["PROD_MV5PA8KZDW", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"];
       }
       return [s];
     }
@@ -15625,10 +15610,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (s1 === s2) return true;
       if (s1.toLowerCase() === s2.toLowerCase()) return true;
 
-      // Alias duy nhất được phép liên kết chéo là TikTok Brazil legacy
+      // TikTok Brazil legacy
       const b1 = s1 === "PROD_MTPIJ9XV" || s1 === "PROD_MTPG0PUD" || s1 === "SP_TIKTOK_BRAZIL";
       const b2 = s2 === "PROD_MTPIJ9XV" || s2 === "PROD_MTPG0PUD" || s2 === "SP_TIKTOK_BRAZIL";
       if (b1 && b2) return true;
+
+      // Kling AI 65 Credit
+      const k1 = s1 === "PROD_MU5PWT7PP7" || s1 === "PROD_MUH57035HQ";
+      const k2 = s2 === "PROD_MU5PWT7PP7" || s2 === "PROD_MUH57035HQ";
+      if (k1 && k2) return true;
+
+      // Gemini Pro 18 Tháng
+      const g1 = s1 === "PROD_MV5PA8KZDW" || s1 === "PROD_MU6R34FZ4Z" || s1 === "PROD_MU2AB1XEGI" || s1 === "PROD_MUQIMRJYG0" || s1 === "SP_GEMINI_VEO3";
+      const g2 = s2 === "PROD_MV5PA8KZDW" || s2 === "PROD_MU6R34FZ4Z" || s2 === "PROD_MU2AB1XEGI" || s2 === "PROD_MUQIMRJYG0" || s2 === "SP_GEMINI_VEO3";
+      if (g1 && g2) return true;
 
       // [KHÓA BẢO VỆ TUYỆT ĐỐI - KHÔNG BAO GIỜ GỘP NHẦM 2 SẢN PHẨM KHÁC NHAU]:
       // Nếu cả hai đều là ID sản phẩm (bắt đầu bằng PROD_ hoặc SP_) và khác nhau thì luôn trả về false 100%!
@@ -16769,22 +16764,28 @@ function syncAllOpenViewsStock(changedProdId) {
           const prodsRes = await executeSourceApiCall("getProducts", payload);
           if (prodsRes && prodsRes.success && Array.isArray(prodsRes.categories)) {
             let foundAmount = null;
+            let foundPrice = null;
+            let foundName = "";
             prodsRes.categories.forEach(cat => {
               const pList = cat.products || cat.accounts || [];
               pList.forEach(p => {
                 if (String(p.id) === String(payload.sourceProdId || payload.id)) {
                   foundAmount = (typeof p.amount !== "undefined") ? Number(p.amount) : ((typeof p.accounts !== "undefined") ? Number(p.accounts) : (Number(p.stock) || 0));
+                  if (typeof p.price !== "undefined" && !isNaN(Number(p.price))) {
+                    foundPrice = Number(p.price);
+                  }
+                  if (p.name) foundName = String(p.name);
                 }
               });
             });
             if (foundAmount !== null) {
-              return { success: true, amount: foundAmount, provider: provider };
+              return { success: true, amount: foundAmount, price: foundPrice, name: foundName, provider: provider };
             }
           }
         } catch(err) {
           console.warn("getProductStock error:", err);
         }
-        return { success: false, amount: 0, provider: provider };
+        return { success: false, amount: 0, price: null, provider: provider };
       }
 
       if (action === "getProducts") {
@@ -26639,6 +26640,7 @@ function syncAllOpenViewsStock(changedProdId) {
         }
 
         let freshAmount = null;
+        let freshPrice = null;
         let isDeleted = false;
 
         if (apiMap && apiMap.enabled && apiMap.sourceProdId) {
@@ -26658,6 +26660,9 @@ function syncAllOpenViewsStock(changedProdId) {
                 || cachedSourceProducts.find(s => String(s.id) === String(apiMap.sourceProdId)));
             if (inCache && typeof inCache.amount === "number") {
               freshAmount = inCache.amount;
+              if (typeof inCache.price === "number" && inCache.price > 0) {
+                freshPrice = inCache.price;
+              }
             }
           }
 
@@ -26671,17 +26676,21 @@ function syncAllOpenViewsStock(changedProdId) {
               });
               if (res && res.success && typeof res.amount === "number") {
                 freshAmount = res.amount;
+                if (typeof res.price === "number" && res.price > 0) {
+                  freshPrice = res.price;
+                }
                 _lastLiveStockFetchMap[stockCacheKey] = Date.now();
                 isDeleted = false;
                 if (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts)) {
                   const cIdx = window.cachedSourceProducts.findIndex(s => String(s.id) === String(apiMap.sourceProdId) && (!apiMap.provider || s.provider === apiMap.provider));
                   if (cIdx !== -1) {
                     window.cachedSourceProducts[cIdx].amount = freshAmount;
+                    if (freshPrice) window.cachedSourceProducts[cIdx].price = freshPrice;
                   } else {
                     window.cachedSourceProducts.push({
                       id: String(apiMap.sourceProdId),
                       name: res.name || apiMap.sourceProdName || curP.name,
-                      price: res.price || apiMap.sourcePrice || 0,
+                      price: freshPrice || apiMap.sourcePrice || 0,
                       amount: freshAmount,
                       provider: apiMap.provider
                     });
@@ -26720,16 +26729,61 @@ function syncAllOpenViewsStock(changedProdId) {
                 if (Array.isArray(inMock.variants)) inMock.variants.forEach(v => { if (v) v.stock = freshAmount; });
               }
             }
+
+            // [ANTI-LOSS REALTIME SHIELD]: Tự động nâng giá an toàn nếu nhà cung cấp nguồn tăng giá vượt mức bán hiện tại
+            if (typeof freshPrice === "number" && freshPrice > 0) {
+              apiMap.sourcePrice = freshPrice;
+              if (curP.apiMapping) curP.apiMapping.sourcePrice = freshPrice;
+
+              const sourceCost = freshPrice;
+              const calcSafePrice = (cost) => {
+                return cost < 1000
+                  ? Math.max(Math.ceil((cost * 1.5) / 10) * 10, Math.ceil(cost) + 50)
+                  : Math.max(Math.ceil((cost * 1.5) / 1000) * 1000, cost + 1000);
+              };
+
+              let needsAntiLossPriceUpdate = false;
+              if (Number(curP.price) <= sourceCost) {
+                curP.price = calcSafePrice(sourceCost);
+                needsAntiLossPriceUpdate = true;
+              }
+              if (Array.isArray(curP.variants)) {
+                curP.variants.forEach(v => {
+                  if (v && Number(v.price) <= sourceCost) {
+                    v.price = calcSafePrice(sourceCost);
+                    needsAntiLossPriceUpdate = true;
+                  }
+                });
+              }
+
+              if (needsAntiLossPriceUpdate) {
+                console.warn(`[ANTI-LOSS SHIELD ACTIVATED] Tự động nâng giá bán an toàn cho ${curP.id} lên ${curP.price}đ (giá gốc nguồn: ${sourceCost}đ)`);
+                if (typeof updateProductRealtimeEverywhere === "function") {
+                  updateProductRealtimeEverywhere(curP.id, { price: curP.price, variants: curP.variants });
+                }
+                const dtlPriceEl = document.getElementById("dtlPrice");
+                if (dtlPriceEl) {
+                  const curV = (Array.isArray(curP.variants) && curP.variants[curVIdx]) ? curP.variants[curVIdx] : curP;
+                  const activePrice = Number(curV.price) || curP.price;
+                  dtlPriceEl.textContent = typeof formatCurrency === "function" ? formatCurrency(activePrice) : (activePrice.toLocaleString("vi-VN") + " đ");
+                }
+                if (typeof syncLocalProductsToTursoCloud === "function") {
+                  syncLocalProductsToTursoCloud().catch(() => {});
+                }
+              }
+            }
+
             try {
               const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
               if (!maps[curP.id]) maps[curP.id] = Object.assign({}, apiMap);
               maps[curP.id].sourceStock = freshAmount;
+              if (freshPrice) maps[curP.id].sourcePrice = freshPrice;
               if (isDeleted) maps[curP.id].isSourceDeleted = true;
               if (Array.isArray(curP.variants)) {
                 curP.variants.forEach((v, idx) => {
                   if (v) {
                     v.stock = freshAmount;
-                    maps[curP.id + "_" + idx] = Object.assign({}, maps[curP.id], { targetProdName: v.name || "", sourceStock: freshAmount, isSourceDeleted: isDeleted });
+                    maps[curP.id + "_" + idx] = Object.assign({}, maps[curP.id], { targetProdName: v.name || "", sourceStock: freshAmount, sourcePrice: freshPrice || maps[curP.id].sourcePrice, isSourceDeleted: isDeleted });
                   }
                 });
               }
@@ -26891,9 +26945,14 @@ function syncAllOpenViewsStock(changedProdId) {
       }
 
       let cleanId = String(id).trim();
+      if (typeof getCanonicalProductId === "function") {
+        cleanId = getCanonicalProductId(cleanId);
+      }
       if (cleanId === "PROD_MU2AB1XEGI" || cleanId === "SP_GEMINI_VEO3" || cleanId === "PROD_MU6R34FZ4Z") {
-        const canGem = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products.find(item => item && item.id === "PROD_MV5PA8KZDW") : null;
-        cleanId = (canGem && (typeof isProductDeleted !== "function" || !isProductDeleted(canGem))) ? "PROD_MV5PA8KZDW" : "PROD_MV5PA8KZDW";
+        cleanId = "PROD_MV5PA8KZDW";
+      }
+      if (cleanId === "PROD_MUH57035HQ") {
+        cleanId = "PROD_MU5PWT7PP7";
       }
 
       // [BẢO VỆ TUYỆT ĐỐI]: Nếu là sản phẩm đã xóa tận gốc -> Chặn ngay lập tức 0ms, không mở chi tiết
@@ -26963,9 +27022,9 @@ function syncAllOpenViewsStock(changedProdId) {
         } catch(e) {}
       }
 
-      // TikTok Brazil legacy alias lookup ONLY
-      if (!p && (cleanId === "PROD_MTPG0PUD" || cleanId === "PROD_MTPIJ9XV" || cleanId === "SP_TIKTOK_BRAZIL")) {
-        p = allProds.find(item => item && (item.id === "PROD_MTPIJ9XV" || item.id === "PROD_MTPG0PUD" || (item.name && item.name.toUpperCase().includes("TIKTOK") && item.name.toUpperCase().includes("BRAZIL"))));
+      // Tra cứu theo họ alias (TikTok Brazil, Kling AI, Gemini Pro...)
+      if (!p && typeof isSameOrAliasProduct === "function") {
+        p = allProds.find(item => item && isSameOrAliasProduct(item.id, cleanId));
       }
 
       // [BẢO VỆ TUYỆT ĐỐI]: Nếu đối tượng tìm thấy thuộc danh sách đã xóa -> Ép p = null để kích hoạt handleProductNotFound
