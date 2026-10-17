@@ -1338,7 +1338,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "PROD_MU2NUXL1Q4", "PROD_MU2NKET1OG", "PROD_MU2N2TVDIJ", "PROD_MU2MY8WCOE", "PROD_MU2MOON7L6",
       "PROD_MU2IXVFLMW", "PROD_MU2CZL38PH", "PROD_MU2BIFBBNE", "PROD_MU2B32VLQY", "PROD_MU2ASBNSJT",
       "PROD_MU2A2S732Y", "PROD_MU29WM90LZ", "PROD_MU29RGEBH0", "PROD_MU29IZBLAK", "PROD_MU1LSSJ7AZ",
-      "PROD_MU1G6LJX", "PROD_MTQZT2Y1", "PROD_MTRB6000", "PROD_MTTPLODQ", "PROD_MTU9F5HN",
+      "PROD_MU1G6LJX", "PROD_MTQZT2Y1", "PROD_MTRB6000", "PROD_MTTPLODQ",
       "PROD_MTVI44UK", "PROD_MTPIJ9XV", "PROD_MTQQXO2E", "PROD_MTQWMPL5", "PROD_MTQWQFZD",
       "PROD_MTQX1C7X", "PROD_MTQX465U", "PROD_MTQX7SIK", "PROD_MTYN7UJG"
     ];
@@ -1382,6 +1382,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     const PERMANENT_DELETED_IDS = [
       "PROD_MV9SJ8FB6K", // Sản phẩm Capcut tải từ khotaikhoanso nhầm sang - loại bỏ vĩnh viễn
+      "PROD_MV9NXBULDO", // Paypal 2025 - 2016 (Đã xóa vĩnh viễn, cấm hiển thị)
+      "PROD_MTU9F5HN",   // Paypal seed ID cũ (Đã xóa vĩnh viễn, cấm hiển thị)
       "PROD_MUJU6XY3HK", // Proxy 4Gvinaphone - 30 ngày (đã xóa)
       "PROD_MUM6JQTW8C",
       "PROD_MUK75H3HAR",
@@ -1408,13 +1410,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!pid) return true;
 
       // TUYỆT ĐỐI KHÔNG HIỂN THỊ BẤT KỲ SẢN PHẨM DEMO, TEST HOẶC NHẦM TỪ KHOTAIKHOANSO NÀO
-      if (pid === "PROD_MV9SJ8FB6K" || pid === "PROD_TEST" || pid === "1775731336499" || pid.startsWith("SP_") || DUMMY_SEED_IDS.includes(pid) || PERMANENT_DELETED_IDS.includes(pid)) return true;
+      if (pid === "PROD_MV9SJ8FB6K" || pid === "PROD_MV9NXBULDO" || pid === "PROD_MTU9F5HN" || pid === "PROD_TEST" || pid === "1775731336499" || pid.startsWith("SP_") || DUMMY_SEED_IDS.includes(pid) || PERMANENT_DELETED_IDS.includes(pid)) return true;
 
       if (typeof productOrId === "object") {
         if (productOrId.isDeleted === true || productOrId.status === "deleted") return true;
-        if (productOrId.id === "PROD_MV9SJ8FB6K" || productOrId.name === "Tài Khoản Capcut pro 1 tháng") return true;
+        if (productOrId.id === "PROD_MV9SJ8FB6K" || productOrId.id === "PROD_MV9NXBULDO" || productOrId.id === "PROD_MTU9F5HN" || productOrId.name === "Tài Khoản Capcut pro 1 tháng") return true;
         const pName = String(productOrId.name || "").trim().toLowerCase();
-        if (pName === "test" || pName === "tét" || pName.includes("sản phẩm test") || pName.includes("san pham test") || pName.startsWith("test ") || pName.startsWith("demo ") || pid.toLowerCase().includes("test")) return true;
+        if (pName.includes("paypal") || pName === "test" || pName === "tét" || pName.includes("sản phẩm test") || pName.includes("san pham test") || pName.startsWith("test ") || pName.startsWith("demo ") || pid.toLowerCase().includes("test")) return true;
       }
 
       return false;
@@ -1697,24 +1699,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           } catch(e) {}
         }
 
-        // Đảm bảo sản phẩm Paypal luôn có đầy đủ 2 biến thể chuẩn và số lượng kho chính xác
-        (MOCK_DATA.products || []).forEach(function(p) {
-          if (p.id === "PROD_MTU9F5HN" || (p.name && p.name.toUpperCase().includes("PAYPAL") && p.name.toUpperCase().includes("NGÂM"))) {
-            p.name = "Paypal 2025 - 2016 Đã ngâm lâu cực kỳ Trâu";
-            const s0 = (typeof getVariantStockCount === "function") ? getVariantStockCount(p, 0) : 0;
-            const s1 = (typeof getVariantStockCount === "function") ? getVariantStockCount(p, 1) : 0;
-            if (!p.variants || p.variants.length <= 1 || (p.variants[0] && p.variants[0].name === p.name)) {
-              p.variants = [
-                { name: "paypal đã ngâm lâu", price: 50000, stock: s0 },
-                { name: "paypal Đã Nhận Tiền", price: 100000, stock: s1 }
-              ];
-            } else {
-              if (p.variants[0]) p.variants[0].stock = s0;
-              if (p.variants[1]) p.variants[1].stock = s1;
-            }
-            p.stock = (Number(s0) || 0) + (Number(s1) || 0);
-          }
-        });
+
 
         // Đảm bảo tất cả sản phẩm Phone Farm luôn giữ đúng danh mục Phone Farm và giá chuẩn
         (MOCK_DATA.products || []).forEach(function(p) {
@@ -7865,30 +7850,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             if (typeof serverProd.variants === "string") {
               try { serverProd.variants = JSON.parse(serverProd.variants); } catch(e) {}
             }
-            // Khôi phục biến thể Paypal và bảo toàn tồn kho chính xác
-            const isPaypalSync = (serverProd.id === "PROD_MTU9F5HN" || (serverProd.name && serverProd.name.toUpperCase().includes("PAYPAL") && serverProd.name.toUpperCase().includes("NGÂM")));
-            if (isPaypalSync) {
-              serverProd.name = "Paypal 2025 - 2016 Đã ngâm lâu cực kỳ Trâu";
-              const s0 = (typeof getVariantStockCount === "function") ? getVariantStockCount(serverProd, 0) : 0;
-              const s1 = (typeof getVariantStockCount === "function") ? getVariantStockCount(serverProd, 1) : 0;
-              if (!serverProd.variants || serverProd.variants.length <= 1) {
-                serverProd.variants = [
-                  { name: "paypal đã ngâm lâu", price: 50000, stock: s0 },
-                  { name: "paypal Đã Nhận Tiền", price: 100000, stock: s1 }
-                ];
-              } else {
-                if (serverProd.variants[0]) {
-                  serverProd.variants[0].name = "paypal đã ngâm lâu";
-                  serverProd.variants[0].price = 50000;
-                  serverProd.variants[0].stock = s0;
-                }
-                if (serverProd.variants[1]) {
-                  serverProd.variants[1].name = "paypal Đã Nhận Tiền";
-                  serverProd.variants[1].price = 100000;
-                  serverProd.variants[1].stock = s1;
-                }
-              }
-            }
+
             if (serverProd.variants && Array.isArray(serverProd.variants) && serverProd.variants.length > 0) {
               let varSum = 0;
               serverProd.variants.forEach((v, vidx) => {
@@ -11851,11 +11813,25 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       if (viewId === "viewAllProducts") {
         document.getElementById("navProducts")?.classList.add("active");
-        if (!_viewRendered["viewAllProducts"] || _viewDirty["viewAllProducts"]) {
-          _viewRendered["viewAllProducts"] = true;
-          _viewDirty["viewAllProducts"] = false;
-          if (typeof renderAllProductsPage === "function") renderAllProductsPage();
-        }
+        _viewRendered["viewAllProducts"] = true;
+        _viewDirty["viewAllProducts"] = false;
+        try {
+          const uParams = new URLSearchParams(window.location.search);
+          const catP = uParams.get("cat") || uParams.get("category");
+          if (!catP) {
+            if (typeof allProdCurrentCat !== "undefined") allProdCurrentCat = "Tất cả";
+            if (typeof allProdCurrentPage !== "undefined") allProdCurrentPage = 1;
+            const searchInp = document.getElementById("allProdSearchInp");
+            if (searchInp) searchInp.value = "";
+            const minP = document.getElementById("allProdPriceMin");
+            if (minP) minP.value = "";
+            const maxP = document.getElementById("allProdPriceMax");
+            if (maxP) maxP.value = "";
+            const inStock = document.getElementById("allProdInStockOnly");
+            if (inStock) inStock.checked = false;
+          }
+        } catch(eReset) {}
+        if (typeof renderAllProductsPage === "function") renderAllProductsPage();
       }
 
       if (viewId === "viewBlogDetail") {
