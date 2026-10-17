@@ -1397,8 +1397,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.PERMANENT_DELETED_IDS = PERMANENT_DELETED_IDS;
 
     function getDeletedProductIds() {
-      // TUYỆT ĐỐI CHỈ TRẢ VỀ CÁC ID DUMMY/TEST CẦN XÓA - KHÔNG ĐỂ LOCALSTORAGE XÓA OAN SẢN PHẨM THẬT
-      return [...PERMANENT_DELETED_IDS];
+      const set = new Set(PERMANENT_DELETED_IDS);
+      try {
+        const raw = localStorage.getItem("mmo_deleted_product_ids");
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) {
+            arr.forEach(function(id) {
+              if (id && typeof id === "string") set.add(id.trim());
+            });
+          }
+        }
+      } catch(e) {}
+      return Array.from(set);
     }
     window.getDeletedProductIds = getDeletedProductIds;
 
@@ -1409,8 +1420,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       // TUYỆT ĐỐI KHÔNG HIỂN THỊ BẤT KỲ SẢN PHẨM DEMO, TEST HOẶC NHẦM TỪ KHOTAIKHOANSO NÀO
       if (pid === "PROD_MV9SJ8FB6K" || pid === "PROD_TEST" || pid === "1775731336499" || pid.startsWith("SP_") || DUMMY_SEED_IDS.includes(pid) || PERMANENT_DELETED_IDS.includes(pid)) return true;
+
+      const delList = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : PERMANENT_DELETED_IDS;
+      if (delList.includes(pid)) return true;
+
       if (typeof productOrId === "object") {
-        if (productOrId.isDeleted === true) return true;
+        if (productOrId.isDeleted === true || productOrId.status === "deleted") return true;
         if (productOrId.id === "PROD_MV9SJ8FB6K" || productOrId.name === "Tài Khoản Capcut pro 1 tháng") return true;
         const pName = String(productOrId.name || "").trim().toLowerCase();
         if (pName === "test" || pName === "tét" || pName.includes("sản phẩm test") || pName.includes("san pham test") || pName.startsWith("test ") || pName.startsWith("demo ") || pid.toLowerCase().includes("test")) return true;
@@ -1419,6 +1434,52 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       return false;
     }
     window.isProductDeleted = isProductDeleted;
+
+    // [BẢO VỆ TUYỆT ĐỐI]: SẢN PHẨM NÀO KHÔNG CÓ TRÊN TRANG ADMIN THÌ CẤM HIỂN THỊ TRÊN TRANG XEM SẢN PHẨM
+    function isProductInAdmin(productOrId) {
+      if (!productOrId) return false;
+      if (typeof isProductDeleted === "function" && isProductDeleted(productOrId)) return false;
+
+      const pid = typeof productOrId === "object" ? String(productOrId.id || "").trim() : String(productOrId).trim();
+      if (!pid) return false;
+
+      const canonId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(pid) : pid;
+
+      // 1. Kiểm tra trực tiếp trong danh sách sản phẩm Admin MOCK_DATA.products
+      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.length > 0) {
+        const found = MOCK_DATA.products.some(function(p) {
+          if (!p || !p.id) return false;
+          if (typeof isProductDeleted === "function" && isProductDeleted(p)) return false;
+          const curId = String(p.id).trim();
+          if (curId === pid || curId === canonId) return true;
+          if (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(curId, pid)) return true;
+          return false;
+        });
+        if (found) return true;
+      }
+
+      // 2. Kiểm tra trong bộ nhớ Admin đã lưu trữ (mmo_admin_products / mmo_products)
+      try {
+        const raw = localStorage.getItem("mmo_admin_products") || localStorage.getItem("mmo_products");
+        if (raw) {
+          const list = JSON.parse(raw);
+          if (Array.isArray(list) && list.length > 0) {
+            const foundInStorage = list.some(function(p) {
+              if (!p || !p.id) return false;
+              if (typeof isProductDeleted === "function" && isProductDeleted(p)) return false;
+              const curId = String(p.id).trim();
+              if (curId === pid || curId === canonId) return true;
+              if (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(curId, pid)) return true;
+              return false;
+            });
+            if (foundInStorage) return true;
+          }
+        }
+      } catch(e) {}
+
+      return false;
+    }
+    window.isProductInAdmin = isProductInAdmin;
 
     function getVisibleProducts() {
       if (!MOCK_DATA || !Array.isArray(MOCK_DATA.products)) return [];
@@ -1429,6 +1490,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       for (let i = 0; i < MOCK_DATA.products.length; i++) {
         const p = MOCK_DATA.products[i];
         if (!p || !p.id || isProductDeleted(p)) continue;
+        if (typeof isProductInAdmin === "function" && !isProductInAdmin(p)) continue;
 
         const cleanId = String(p.id).trim();
         const canonId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(cleanId) : cleanId;
@@ -8063,7 +8125,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 hasNewOrUpdated = true;
               }
             } else {
-              if (!deletedIds.includes(serverProd.id) && !(typeof isProductDeleted === "function" && isProductDeleted(serverProd))) {
+              const sid = String(serverProd.id || '').trim();
+              if (sid && !deletedIds.includes(sid) && !(typeof isProductDeleted === "function" && isProductDeleted(serverProd)) && !sid.startsWith("SP_") && !(typeof DUMMY_SEED_IDS !== "undefined" && DUMMY_SEED_IDS.includes(sid))) {
                 MOCK_DATA.products.push(serverProd);
                 hasNewOrUpdated = true;
               }
@@ -28168,6 +28231,19 @@ function executeCompareSourcesSearch() {
     function openProductDetailById(id, isSilentRefresh) {
       if (!id) return;
 
+      const handleProductNotFound = function() {
+        if (typeof showToast === "function") {
+          showToast("Sản phẩm không tồn tại hoặc đã ngừng kinh doanh", "warning");
+        }
+        try {
+          const cleanUrl = (window.location.origin || "https://www.muabantaikhoanmmo.com") + "/";
+          window.history.replaceState({}, "", cleanUrl);
+        } catch(e) {}
+        if (typeof switchView === "function") {
+          switchView("viewStore");
+        }
+      };
+
       // [CHẶN ĐỨNG TỰ ĐỘNG CHUYỂN HƯỚNG / NHẢY VIEW]:
       // Nếu là cuộc gọi làm mới ngầm (silent refresh): BẮT BUỘC chỉ chạy khi người dùng ĐANG THỰC SỰ ở trang chi tiết sản phẩm!
       if (isSilentRefresh) {
@@ -28195,27 +28271,15 @@ function executeCompareSourcesSearch() {
 
       // [BẢO VỆ TUYỆT ĐỐI]: Nếu là sản phẩm đã xóa tận gốc -> Chặn ngay lập tức 0ms, không mở chi tiết
       if (typeof isProductDeleted === "function" && isProductDeleted(cleanId)) {
-        if (typeof showToast === "function") {
-          showToast("Sản phẩm không tồn tại hoặc đã ngừng kinh doanh", "warning");
-        }
-        try {
-          const cleanUrl = (window.location.origin || "https://www.muabantaikhoanmmo.com") + "/";
-          window.history.replaceState({}, "", cleanUrl);
-        } catch(e) {}
-        if (typeof switchView === "function") {
-          switchView("viewStore");
-        }
+        handleProductNotFound();
         return;
       }
 
-      if (!isSilentRefresh) {
-        // [TỐI ƯU CỐT LÕI - 1 LẦN BẤM TỚI NGAY TRANG ĐÍCH 0MS]: Đánh dấu mở sản phẩm & cập nhật URL tức thì
-        window._isOpeningProductDetail = true;
-        window._openingProductId = cleanId;
-        try {
-          const newUrl = (window.location.origin || "https://www.muabantaikhoanmmo.com") + "/?prod=" + encodeURIComponent(cleanId) + "&view=viewProductDetail";
-          window.history.replaceState({ prod: cleanId, view: "viewProductDetail" }, "", newUrl);
-        } catch(e) {}
+      // [QUY TẮC CỐT LÕI]: SẢN PHẨM NÀO KHÔNG CÓ TRÊN TRANG ADMIN THÌ CẤM HIỂN THỊ TRÊN TRANG XEM SẢN PHẨM
+      const hasProdsInMemory = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.length > 0);
+      if (hasProdsInMemory && typeof isProductInAdmin === "function" && !isProductInAdmin(cleanId)) {
+        handleProductNotFound();
+        return;
       }
 
       // TÌM SẢN PHẨM ĐA TẦNG SIÊU TỐC TRONG BỘ NHỚ (0ms)
@@ -28265,25 +28329,18 @@ function executeCompareSourcesSearch() {
         p = allProds.find(item => item && isSameOrAliasProduct(item.id, cleanId));
       }
 
-      // [BẢO VỆ TUYỆT ĐỐI]: Nếu đối tượng tìm thấy thuộc danh sách đã xóa -> Ép p = null để kích hoạt handleProductNotFound
-      if (p && typeof isProductDeleted === "function" && isProductDeleted(p)) {
+      // [BẢO VỆ TUYỆT ĐỐI]: Nếu đối tượng tìm thấy thuộc danh sách đã xóa hoặc không có trên Admin -> Ép p = null
+      if (p && ((typeof isProductDeleted === "function" && isProductDeleted(p)) || (typeof isProductInAdmin === "function" && !isProductInAdmin(p)))) {
         p = null;
       }
 
-      // Nếu chưa có trong bộ nhớ cục bộ: Nạp siêu tốc từ Cloudflare Worker Turso API (100ms)
+      // Nếu chưa có trong bộ nhớ cục bộ (ví dụ lần đầu tải trang vào thẳng link sản phẩm): Nạp siêu tốc từ Cloudflare Worker Turso SSOT
       if (!p) {
-        const handleProductNotFound = function() {
-          if (typeof showToast === "function") {
-            showToast("Sản phẩm không tồn tại hoặc đã ngừng kinh doanh", "warning");
-          }
-          try {
-            const cleanUrl = (window.location.origin || "https://www.muabantaikhoanmmo.com") + "/";
-            window.history.replaceState({}, "", cleanUrl);
-          } catch(e) {}
-          if (typeof switchView === "function") {
-            switchView("viewStore");
-          }
-        };
+        // Nếu bộ nhớ đã có danh sách sản phẩm nhưng không có sản phẩm này -> Chặn ngay 0ms
+        if (hasProdsInMemory) {
+          handleProductNotFound();
+          return;
+        }
 
         const preDtlImg = document.getElementById("dtlImage");
         if (preDtlImg) {
@@ -28303,12 +28360,19 @@ function executeCompareSourcesSearch() {
                   MOCK_DATA.products.unshift(wp);
                 }
               }
-              openProductDetailById(wp.id);
+              if (typeof isProductInAdmin === "function" && isProductInAdmin(wp)) {
+                openProductDetailById(wp.id);
+              } else {
+                handleProductNotFound();
+              }
             } else if (typeof syncTursoProductsToLocalUI === "function") {
               syncTursoProductsToLocalUI().then(() => {
                 const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
-                if (fresh && !isProductDeleted(fresh)) openProductDetailById(fresh.id);
-                else handleProductNotFound();
+                if (fresh && !isProductDeleted(fresh) && (typeof isProductInAdmin !== "function" || isProductInAdmin(fresh))) {
+                  openProductDetailById(fresh.id);
+                } else {
+                  handleProductNotFound();
+                }
               }).catch(() => handleProductNotFound());
             } else {
               handleProductNotFound();
@@ -28317,8 +28381,11 @@ function executeCompareSourcesSearch() {
             if (typeof syncTursoProductsToLocalUI === "function") {
               syncTursoProductsToLocalUI().then(() => {
                 const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
-                if (fresh && !isProductDeleted(fresh)) openProductDetailById(fresh.id);
-                else handleProductNotFound();
+                if (fresh && !isProductDeleted(fresh) && (typeof isProductInAdmin !== "function" || isProductInAdmin(fresh))) {
+                  openProductDetailById(fresh.id);
+                } else {
+                  handleProductNotFound();
+                }
               }).catch(() => handleProductNotFound());
             } else {
               handleProductNotFound();
@@ -28327,19 +28394,32 @@ function executeCompareSourcesSearch() {
         } else if (typeof syncTursoProductsToLocalUI === "function") {
           syncTursoProductsToLocalUI().then(() => {
             const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
-            if (fresh && !isProductDeleted(fresh)) openProductDetailById(fresh.id);
-            else handleProductNotFound();
-          }).catch(() => handleProductNotFound());
-        } else if (typeof syncProductsFromBackend === "function") {
-          syncProductsFromBackend().then(() => {
-            const fresh = (typeof findShopProduct === "function") ? findShopProduct(cleanId) : null;
-            if (fresh && !isProductDeleted(fresh)) openProductDetailById(fresh.id);
-            else handleProductNotFound();
+            if (fresh && !isProductDeleted(fresh) && (typeof isProductInAdmin !== "function" || isProductInAdmin(fresh))) {
+              openProductDetailById(fresh.id);
+            } else {
+              handleProductNotFound();
+            }
           }).catch(() => handleProductNotFound());
         } else {
           handleProductNotFound();
         }
         return;
+      }
+
+      // [QUY TẮC CỐT LÕI]: Kiểm tra lại lần cuối trước khi cập nhật URL và render DOM
+      if (!p || (typeof isProductInAdmin === "function" && !isProductInAdmin(p))) {
+        handleProductNotFound();
+        return;
+      }
+
+      if (!isSilentRefresh) {
+        // [TỐI ƯU CỐT LÕI - 1 LẦN BẤM TỚI NGAY TRANG ĐÍCH 0MS]: Đánh dấu mở sản phẩm & cập nhật URL tức thì
+        window._isOpeningProductDetail = true;
+        window._openingProductId = cleanId;
+        try {
+          const newUrl = (window.location.origin || "https://www.muabantaikhoanmmo.com") + "/?prod=" + encodeURIComponent(cleanId) + "&view=viewProductDetail";
+          window.history.replaceState({ prod: cleanId, view: "viewProductDetail" }, "", newUrl);
+        } catch(e) {}
       }
 
       // Khởi tạo đối tượng sản phẩm tức thì và kích hoạt switchView khi đã có sản phẩm hợp lệ
@@ -37235,7 +37315,8 @@ function initMMOApplication() {
         } else if (hash && validViews.includes(hash) && hash !== "viewProductDetail") {
           targetView = hash;
         } else if (hasProdParam && explicitProdId) {
-          if (typeof isProductDeleted === "function" && isProductDeleted(explicitProdId)) {
+          const isNotAdminOrDeleted = (typeof isProductDeleted === "function" && isProductDeleted(explicitProdId)) || (typeof isProductInAdmin === "function" && typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.length > 0 && !isProductInAdmin(explicitProdId));
+          if (isNotAdminOrDeleted) {
             targetView = "viewStore";
             explicitProdId = null;
             try {
@@ -37265,7 +37346,8 @@ function initMMOApplication() {
         if (window._pendingProductId && typeof openProductDetailById === "function") {
           const pendProd = window._pendingProductId;
           window._pendingProductId = null;
-          if (typeof isProductDeleted === "function" && isProductDeleted(pendProd)) {
+          const isNotAdminOrDeletedPend = (typeof isProductDeleted === "function" && isProductDeleted(pendProd)) || (typeof isProductInAdmin === "function" && typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.length > 0 && !isProductInAdmin(pendProd));
+          if (isNotAdminOrDeletedPend) {
             targetView = "viewStore";
             explicitProdId = null;
           } else {
@@ -37293,9 +37375,17 @@ function initMMOApplication() {
             }
           }
         } else if (targetView === "viewProductDetail") {
-          if (explicitProdId && (!window.isProductDeleted || !window.isProductDeleted(explicitProdId)) && typeof openProductDetailById === "function") {
+          const isNotAdminOrDeletedExec = !explicitProdId || (typeof isProductDeleted === "function" && isProductDeleted(explicitProdId)) || (typeof isProductInAdmin === "function" && typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.length > 0 && !isProductInAdmin(explicitProdId));
+          if (!isNotAdminOrDeletedExec && typeof openProductDetailById === "function") {
             openProductDetailById(explicitProdId);
           } else {
+            try {
+              const url = new URL(window.location.href);
+              url.searchParams.delete("prod");
+              url.searchParams.delete("product");
+              url.searchParams.delete("view");
+              window.history.replaceState({}, "", url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : ''));
+            } catch(e) {}
             switchView("viewStore");
           }
         } else if (targetView && targetView !== "viewStore") {
@@ -37372,12 +37462,20 @@ function initMMOApplication() {
           const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
           const popProdId = urlParams.get("prod") || urlParams.get("product") || (hash.startsWith("product_") ? hash.replace("product_", "").split("?")[0] : null);
           if (view === "viewProductDetail" && popProdId) {
-            if (typeof isProductDeleted === "function" && isProductDeleted(popProdId)) {
+            const isNotAdminOrDeleted = (typeof isProductDeleted === "function" && isProductDeleted(popProdId)) || (typeof isProductInAdmin === "function" && typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.length > 0 && !isProductInAdmin(popProdId));
+            if (isNotAdminOrDeleted) {
+              try {
+                const url = new URL(window.location.href);
+                url.searchParams.delete("prod");
+                url.searchParams.delete("product");
+                url.searchParams.delete("view");
+                window.history.replaceState({}, "", url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : ''));
+              } catch(e) {}
               switchView("viewStore");
             } else if (typeof openProductDetailById === "function") {
               openProductDetailById(popProdId);
             } else {
-              switchView("viewProductDetail");
+              switchView("viewStore");
             }
           } else if (view && validViews.includes(view) && view !== "viewProductDetail") {
             switchView(view);
