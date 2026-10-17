@@ -1399,8 +1399,19 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.PERMANENT_DELETED_IDS = PERMANENT_DELETED_IDS;
 
     function getDeletedProductIds() {
-      // TUYỆT ĐỐI CHỈ TRẢ VỀ CÁC ID DUMMY/TEST CẦN XÓA - KHÔNG ĐỂ LOCALSTORAGE XÓA OAN SẢN PHẨM THẬT
-      return [...PERMANENT_DELETED_IDS];
+      const result = new Set(PERMANENT_DELETED_IDS);
+      try {
+        const raw = localStorage.getItem("mmo_deleted_product_ids");
+        if (raw) {
+          const arr = JSON.parse(raw);
+          if (Array.isArray(arr)) {
+            arr.forEach(function(id) {
+              if (id && typeof id === "string") result.add(id.trim());
+            });
+          }
+        }
+      } catch(e) {}
+      return Array.from(result);
     }
     window.getDeletedProductIds = getDeletedProductIds;
 
@@ -1424,6 +1435,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.isProductDeleted = isProductDeleted;
 
     // [BẢO VỆ TUYỆT ĐỐI]: SẢN PHẨM NÀO KHÔNG CÓ TRÊN TRANG ADMIN THÌ CẤM HIỂN THỊ TRÊN TRANG XEM SẢN PHẨM
+    function getAdminProducts() {
+      if (!MOCK_DATA || !Array.isArray(MOCK_DATA.products)) return [];
+      const seenAdminIds = new Set();
+      const prods = [];
+      for (let api = 0; api < MOCK_DATA.products.length; api++) {
+        const p = MOCK_DATA.products[api];
+        if (!p || !p.id || (typeof isProductDeleted === "function" && isProductDeleted(p))) continue;
+        const pid = String(p.id).trim();
+        if (seenAdminIds.has(pid)) continue;
+        seenAdminIds.add(pid);
+        prods.push(p);
+      }
+      return prods;
+    }
+    window.getAdminProducts = getAdminProducts;
+
     function isProductInAdmin(productOrId) {
       if (!productOrId) return false;
       if (typeof isProductDeleted === "function" && isProductDeleted(productOrId)) return false;
@@ -1433,65 +1460,44 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       const canonId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(pid) : pid;
 
-      // 1. Kiểm tra trực tiếp trong danh sách sản phẩm Admin MOCK_DATA.products
-      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.length > 0) {
-        const found = MOCK_DATA.products.some(function(p) {
-          if (!p || !p.id) return false;
-          if (typeof isProductDeleted === "function" && isProductDeleted(p)) return false;
-          const curId = String(p.id).trim();
-          if (curId === pid || curId === canonId) return true;
-          if (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(curId, pid)) return true;
-          const curSlug = String(p.slug || "").trim().toLowerCase();
-          const curName = String(p.name || "").trim().toLowerCase();
-          const targetLower = pid.toLowerCase();
-          if (curSlug === targetLower || curName === targetLower) return true;
-          return false;
-        });
-        if (found) return true;
-      }
-
-      // 2. Kiểm tra trong bộ nhớ Admin đã lưu trữ (mmo_admin_products / mmo_products)
-      try {
-        const raw = localStorage.getItem("mmo_admin_products") || localStorage.getItem("mmo_products");
-        if (raw) {
-          const list = JSON.parse(raw);
-          if (Array.isArray(list) && list.length > 0) {
-            const foundInStorage = list.some(function(p) {
-              if (!p || !p.id) return false;
-              if (typeof isProductDeleted === "function" && isProductDeleted(p)) return false;
-              const curId = String(p.id).trim();
-              if (curId === pid || curId === canonId) return true;
-              if (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(curId, pid)) return true;
-              const curSlug = String(p.slug || "").trim().toLowerCase();
-              const curName = String(p.name || "").trim().toLowerCase();
-              const targetLower = pid.toLowerCase();
-              if (curSlug === targetLower || curName === targetLower) return true;
-              return false;
-            });
-            if (foundInStorage) return true;
-          }
-        }
-      } catch(e) {}
-
-      return false;
+      const adminProds = (typeof getAdminProducts === "function") ? getAdminProducts() : ((MOCK_DATA && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : []);
+      return adminProds.some(function(p) {
+        if (!p || !p.id) return false;
+        if (typeof isProductDeleted === "function" && isProductDeleted(p)) return false;
+        const curId = String(p.id).trim();
+        if (curId === pid || curId === canonId) return true;
+        if (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(curId, pid)) return true;
+        const curSlug = String(p.slug || "").trim().toLowerCase();
+        const curName = String(p.name || "").trim().toLowerCase();
+        const targetLower = pid.toLowerCase();
+        if (curSlug === targetLower || curName === targetLower) return true;
+        return false;
+      });
     }
     window.isProductInAdmin = isProductInAdmin;
 
     function getVisibleProducts() {
       if (!MOCK_DATA || !Array.isArray(MOCK_DATA.products)) return [];
+      // QUY TẮC BẮT BUỘC: CHỈ SẢN PHẨM CÓ TRÊN TRANG ADMIN MỚI ĐƯỢC HIỂN THỊ TRÊN TRANG NGƯỜI DÙNG!
+      const adminProds = (typeof getAdminProducts === "function") ? getAdminProducts() : MOCK_DATA.products;
       const seenIds = new Set();
       const seenCanonicals = new Set();
       const result = [];
 
-      for (let i = 0; i < MOCK_DATA.products.length; i++) {
-        const p = MOCK_DATA.products[i];
-        if (!p || !p.id || isProductDeleted(p)) continue;
+      for (let i = 0; i < adminProds.length; i++) {
+        const p = adminProds[i];
+        if (!p || !p.id || (typeof isProductDeleted === "function" && isProductDeleted(p))) continue;
+
+        // Nếu sản phẩm không có trên Admin -> Cấm hiển thị trên trang người dùng
+        if (typeof isProductInAdmin === "function" && !isProductInAdmin(p)) {
+          continue;
+        }
 
         const cleanId = String(p.id).trim();
         const canonId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(cleanId) : cleanId;
 
-        // Nếu sản phẩm hiện tại là alias không phải canonical, nhưng canonical đã tồn tại trong MOCK_DATA -> bỏ qua để ưu tiên bản chính
-        if (cleanId !== canonId && MOCK_DATA.products.some(x => x && String(x.id).trim() === canonId)) {
+        // Nếu sản phẩm hiện tại là alias không phải canonical, nhưng canonical đã tồn tại trong adminProds -> bỏ qua để ưu tiên bản chính
+        if (cleanId !== canonId && adminProds.some(x => x && String(x.id).trim() === canonId)) {
           continue;
         }
 
@@ -1504,9 +1510,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.getVisibleProducts = getVisibleProducts;
 
-    // [BẢO VỆ 100% SẢN PHẨM KHỎI LOCALSTORAGE BỊ NHIỄM ĐỘC]:
+    // [BẢO VỆ TOÀN DIỆN DANH SÁCH SẢN PHẨM ĐÃ XÓA CỦA ADMIN]:
     try {
-      localStorage.removeItem("mmo_deleted_product_ids");
       localStorage.removeItem("mmo_manually_cleared_products");
     } catch(e) {}
 
