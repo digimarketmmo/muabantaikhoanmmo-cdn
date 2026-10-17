@@ -1397,19 +1397,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.PERMANENT_DELETED_IDS = PERMANENT_DELETED_IDS;
 
     function getDeletedProductIds() {
-      const set = new Set(PERMANENT_DELETED_IDS);
-      try {
-        const raw = localStorage.getItem("mmo_deleted_product_ids");
-        if (raw) {
-          const arr = JSON.parse(raw);
-          if (Array.isArray(arr)) {
-            arr.forEach(function(id) {
-              if (id && typeof id === "string") set.add(id.trim());
-            });
-          }
-        }
-      } catch(e) {}
-      return Array.from(set);
+      // TUYỆT ĐỐI CHỈ TRẢ VỀ CÁC ID DUMMY/TEST CẦN XÓA - KHÔNG ĐỂ LOCALSTORAGE XÓA OAN SẢN PHẨM THẬT
+      return [...PERMANENT_DELETED_IDS];
     }
     window.getDeletedProductIds = getDeletedProductIds;
 
@@ -1420,9 +1409,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
       // TUYỆT ĐỐI KHÔNG HIỂN THỊ BẤT KỲ SẢN PHẨM DEMO, TEST HOẶC NHẦM TỪ KHOTAIKHOANSO NÀO
       if (pid === "PROD_MV9SJ8FB6K" || pid === "PROD_TEST" || pid === "1775731336499" || pid.startsWith("SP_") || DUMMY_SEED_IDS.includes(pid) || PERMANENT_DELETED_IDS.includes(pid)) return true;
-
-      const delList = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : PERMANENT_DELETED_IDS;
-      if (delList.includes(pid)) return true;
 
       if (typeof productOrId === "object") {
         if (productOrId.isDeleted === true || productOrId.status === "deleted") return true;
@@ -1453,6 +1439,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           const curId = String(p.id).trim();
           if (curId === pid || curId === canonId) return true;
           if (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(curId, pid)) return true;
+          const curSlug = String(p.slug || "").trim().toLowerCase();
+          const curName = String(p.name || "").trim().toLowerCase();
+          const targetLower = pid.toLowerCase();
+          if (curSlug === targetLower || curName === targetLower) return true;
           return false;
         });
         if (found) return true;
@@ -1470,6 +1460,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               const curId = String(p.id).trim();
               if (curId === pid || curId === canonId) return true;
               if (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(curId, pid)) return true;
+              const curSlug = String(p.slug || "").trim().toLowerCase();
+              const curName = String(p.name || "").trim().toLowerCase();
+              const targetLower = pid.toLowerCase();
+              if (curSlug === targetLower || curName === targetLower) return true;
               return false;
             });
             if (foundInStorage) return true;
@@ -1490,7 +1484,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       for (let i = 0; i < MOCK_DATA.products.length; i++) {
         const p = MOCK_DATA.products[i];
         if (!p || !p.id || isProductDeleted(p)) continue;
-        if (typeof isProductInAdmin === "function" && !isProductInAdmin(p)) continue;
 
         const cleanId = String(p.id).trim();
         const canonId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(cleanId) : cleanId;
@@ -1508,6 +1501,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       return result;
     }
     window.getVisibleProducts = getVisibleProducts;
+
+    // [BẢO VỆ 100% SẢN PHẨM KHỎI LOCALSTORAGE BỊ NHIỄM ĐỘC]:
+    try {
+      localStorage.removeItem("mmo_deleted_product_ids");
+      localStorage.removeItem("mmo_manually_cleared_products");
+    } catch(e) {}
+
     // Tự động dọn sạch sản phẩm demo SP_ và loại trừ trùng lặp khỏi localStorage của khách hàng
     try {
       ["mmo_products", "mmo_admin_products", "mmo_all_products"].forEach(function(k) {
