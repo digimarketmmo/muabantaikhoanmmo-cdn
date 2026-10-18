@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.6.5";
+const MMO_CURRENT_CODE_VERSION = "5.7.6";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -10418,9 +10418,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.adminSettleAllAffiliateHolding = adminSettleAllAffiliateHolding;
 
+    var _saveProductsDebounceTimer = null;
     function saveProductsToStorage() {
-      // Dùng setTimeout(0) để nhả main thread, tránh đơ trang khi data lớn
-      setTimeout(function() {
+      // Dùng debounce 100ms để gộp các lần lưu liên tiếp, giải phóng hoàn toàn main thread
+      if (_saveProductsDebounceTimer) clearTimeout(_saveProductsDebounceTimer);
+      _saveProductsDebounceTimer = setTimeout(function() {
         try {
           if (MOCK_DATA && MOCK_DATA.products) {
             // [CHỐNG GHI ĐÈ 1 SẢN PHẨM]: Tuyệt đối không lưu nếu MOCK_DATA chỉ có 1 sản phẩm mà bộ nhớ đang có nhiều hơn
@@ -15790,28 +15792,32 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       // KIỂM TRA BỘ ĐỆM TAB: Nếu tab đã render và không bị dirty, hiển thị ngay lập tức (0ms) không cần dựng lại DOM
       const needsRender = !!forceRefresh || !window._adminTabRendered[tabId] || !!window._adminTabDirty[tabId];
       if (!needsRender) {
-        // Tab đã có sẵn trong DOM và hoàn toàn sạch sẽ, không cần làm gì thêm!
+        // Tab đã có sẵn trong DOM và hoàn toàn sạch sẽ, chuyển hiển thị 0ms tức thì!
         return;
       }
 
       window._adminTabRendered[tabId] = true;
       window._adminTabDirty[tabId] = false;
 
-      // Render nội dung tab trong micro-task / rAF kế tiếp để UI chuyển tab tức thì 0ms, không bị giật lag
-      requestAnimationFrame(function() {
+      // Render nội dung tab trong task kế tiếp sau khi trình duyệt đã sơn giao diện (0ms, 60fps, chống đơ UI tuyệt đối)
+      setTimeout(function() {
         if (tabId === "tabAdmDashboard") {
           if (typeof renderSystemOverview === "function") renderSystemOverview();
         }
         if (tabId === "tabAdmProducts") {
           if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-          if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+          setTimeout(function() {
+            if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+          }, 60);
         }
         if (tabId === "tabAdmApiSources") {
           if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
-          if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
           if (typeof renderCustomApiSourcesUI === "function") renderCustomApiSourcesUI();
           if (typeof syncModalProviderOptions === "function") syncModalProviderOptions();
           if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+          setTimeout(function() {
+            if (typeof updateApiSourceAlertsBadge === "function") updateApiSourceAlertsBadge();
+          }, 80);
         }
         if (tabId === "tabAdmChat") {
           if (typeof renderAdminChatUI === "function") renderAdminChatUI();
@@ -15823,29 +15829,25 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (tabId === "tabAdmStock") {
           initStockManagementUI();
           setTimeout(function() {
-            if (typeof autoSyncAllSoldAccounts === "function") autoSyncAllSoldAccounts();
-          }, 350);
+            if (typeof autoSyncAllSoldAccounts === "function") autoSyncAllSoldAccounts(false);
+          }, 500);
         }
         if (tabId === "tabAdmUsers") {
           renderAdminUsersTable();
           setTimeout(function() {
             if (typeof fetchCloudUsers === "function") fetchCloudUsers(false);
-            if (typeof syncAllDepositsFromCloud === "function") syncAllDepositsFromCloud();
-          }, 350);
+          }, 500);
         }
         if (tabId === "tabAdmWithdrawals") {
           renderAdminWithdrawTable();
           setTimeout(function() {
-            if (typeof syncWithdrawRequestsFromCloud === "function") syncWithdrawRequestsFromCloud(true);
-          }, 350);
+            if (typeof syncWithdrawRequestsFromCloud === "function") syncWithdrawRequestsFromCloud(false);
+          }, 500);
         }
         if (isOrdersTab) {
           if (typeof switchAdmTxSubTab === "function") switchAdmTxSubTab("orders");
         } else if (tabId === "tabAdmTxLogs") {
           if (typeof switchAdmTxSubTab === "function") switchAdmTxSubTab("walletTx");
-          setTimeout(function() {
-            if (typeof syncAllDepositsFromCloud === "function") syncAllDepositsFromCloud();
-          }, 350);
         }
         if (tabId === "tabAdmAffiliate") {
           if (typeof renderAdminAffiliateTable === "function") renderAdminAffiliateTable();
@@ -15859,7 +15861,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (tabId === "tabAdmAdmins") {
           renderAdminEmailsList();
         }
-      });
+      }, 0);
     }
 
 
@@ -16390,14 +16392,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return 0;
       }
       if (vIdx === null || vIdx === undefined || vIdx === "ALL" || vIdx === "") {
+        let clm = {};
+        try {
+          clm = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
+        } catch(e) {}
+        if (clm[prod.id] || clm[prod.id + "__VAR__ALL"]) return 0;
         return prod.variants.reduce((total, v, vi) => {
           if (!v) return total;
-          let isVarCleared = false;
-          try {
-            const clm = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
-            if (clm[prod.id] || clm[prod.id + "__VAR__ALL"] || clm[prod.id + "__VAR__" + vi] || (typeof getVariantStockKey === "function" && clm[getVariantStockKey(prod.id, vi)])) isVarCleared = true;
-          } catch(e) {}
-          if (isVarCleared) return total;
+          if (clm[prod.id + "__VAR__" + vi] || (typeof getVariantStockKey === "function" && clm[getVariantStockKey(prod.id, vi)])) return total;
           let s = 0;
           if (Array.isArray(v.accounts) && v.accounts.length > 0) s = v.accounts.length;
           else if (typeof v.stock === "number") s = Math.max(0, v.stock);
@@ -16704,8 +16706,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return Date.now() >= this._workerDeadUntil;
       },
       _markWorkerDead: function(reason) {
-        this._workerDeadUntil = Date.now() + 5000;
-        console.warn("[CIRCUIT BREAKER] Worker offline/rate-limited temporarily (5s retry):", reason);
+        this._workerDeadUntil = Date.now() + 1500;
+        console.warn("[CIRCUIT BREAKER] Worker offline/rate-limited temporarily (1.5s retry):", reason);
       },
       _fastSignal: function(ms = 10000) {
         if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") {
@@ -16908,6 +16910,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           headers: headers,
           body: JSON.stringify({ products: products })
         }, 10000);
+      },
+
+      adminGetAllInventory: async function() {
+        const secret = this.getAdminSecret();
+        const headers = {};
+        if (secret) headers["Authorization"] = "Bearer " + secret;
+        const u = this.getApiUrl() + "/api/admin/inventory/all";
+        return await this._fetchJson(u, { headers: headers, cache: "no-store" }, 6000);
       },
 
       adminGetInventory: async function(productId, variantIdx) {
@@ -17803,40 +17813,81 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.syncTursoProductsToLocalUI = syncTursoProductsToLocalUI;
 
-    async function syncTursoStockToLocalUI() {
+    var _lastTursoStockSyncTime = 0;
+    async function syncTursoStockToLocalUI(force = false) {
+      const now = Date.now();
+      if (!force && (now - _lastTursoStockSyncTime < 25000)) return;
+      _lastTursoStockSyncTime = now;
+
       await syncTursoProductsToLocalUI();
 
-      // [UNIVERSAL REAL-TIME INVENTORY ACCOUNT SYNC ENGINE v4.2.8]
-      // Tự động kéo danh sách tài khoản thực tế từ Turso SQLite vào kho MMO_WAREHOUSE & MOCK_DATA
+      // [UNIVERSAL REAL-TIME INVENTORY ACCOUNT SYNC ENGINE v5.7.6 BATCH SSOT]
+      // Tự động kéo danh sách tài khoản thực tế từ Turso SQLite vào kho MMO_WAREHOUSE & MOCK_DATA chỉ trong 1 request duy nhất
       if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured() && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API._checkWorkerAvailable()) {
         try {
           const isAdm = (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser))));
-          if (!isAdm) return; // Chỉ Admin mới tải toàn bộ 52 kho inventory nội bộ, người dùng thường chỉ nhận stock counts
+          if (!isAdm) return; // Chỉ Admin mới tải toàn bộ kho inventory nội bộ
+
           const prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : [];
-          const localProds = prods.filter(p => p && (p.deliveryType === "local" || p.delivery_type === "local") && Array.isArray(p.variants) && p.variants.length > 0);
           
-          const tasks = [];
-          localProds.forEach(p => {
-            p.variants.forEach((v, vi) => {
-              tasks.push(
-                MMO_WORKER_API.adminGetInventory(p.id, vi).then(res => {
-                  if (res && Array.isArray(res.available) && res.available.length > 0) {
-                    v.accounts = res.available;
-                    v.stock = res.available.length;
-                    v.available = true;
-                    if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.setAccounts) {
-                      MMO_WAREHOUSE.setAccounts(p.id, vi, res.available, true);
+          let batchSuccess = false;
+          try {
+            const batchRes = await MMO_WORKER_API.adminGetAllInventory();
+            if (batchRes && batchRes.success && batchRes.inventories) {
+              const invMap = batchRes.inventories;
+              prods.forEach(p => {
+                if (!p) return;
+                const pId = String(p.id);
+                if (Array.isArray(p.variants) && p.variants.length > 0) {
+                  p.variants.forEach((v, vi) => {
+                    const key = pId + "__VAR__" + vi;
+                    if (invMap[key]) {
+                      const accs = invMap[key];
+                      v.accounts = accs;
+                      v.stock = accs.length;
+                      v.available = accs.length > 0;
+                      if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.setAccounts) {
+                        MMO_WAREHOUSE.setAccounts(p.id, vi, accs, true);
+                      }
                     }
-                  }
-                }).catch(() => {})
-              );
-            });
-          });
-          if (tasks.length > 0) {
-            await Promise.all(tasks);
+                  });
+                  p.stock = p.variants.reduce((s, v) => s + (Number(v.stock) || 0), 0);
+                }
+              });
+              batchSuccess = true;
+            }
+          } catch(eBatch) {
+            console.warn("syncTursoStockToLocalUI batch sync note:", eBatch);
+          }
+
+          if (batchSuccess) {
             if (typeof saveProductsToStorage === "function") saveProductsToStorage();
             if (typeof refreshAllShopStockUI === "function") refreshAllShopStockUI();
+            return;
           }
+
+          // Fallback dự phòng: Chạy tuần tự theo lô nhỏ tối đa (tránh 429 rate limit)
+          const localProds = prods.filter(p => p && (p.deliveryType === "local" || p.delivery_type === "local") && Array.isArray(p.variants) && p.variants.length > 0);
+          for (let pi = 0; pi < localProds.length; pi++) {
+            const p = localProds[pi];
+            for (let vi = 0; vi < p.variants.length; vi++) {
+              const v = p.variants[vi];
+              try {
+                const res = await MMO_WORKER_API.adminGetInventory(p.id, vi);
+                if (res && Array.isArray(res.available)) {
+                  v.accounts = res.available;
+                  v.stock = res.available.length;
+                  v.available = res.available.length > 0;
+                  if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.setAccounts) {
+                    MMO_WAREHOUSE.setAccounts(p.id, vi, res.available, true);
+                  }
+                }
+              } catch(eSingle) {}
+            }
+            p.stock = p.variants.reduce((s, v) => s + (Number(v.stock) || 0), 0);
+          }
+          if (typeof saveProductsToStorage === "function") saveProductsToStorage();
+          if (typeof refreshAllShopStockUI === "function") refreshAllShopStockUI();
         } catch(eInvSync) {
           console.warn("syncTursoStockToLocalUI accounts sync non-fatal error:", eInvSync);
         }
