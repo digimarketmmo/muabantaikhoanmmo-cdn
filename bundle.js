@@ -1456,7 +1456,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             const delNames = JSON.parse(rawNames);
             if (Array.isArray(delNames) && typeof normApiText === "function") {
               const curNorm = normApiText(productOrId.name || "");
-              if (curNorm && delNames.some(dn => normApiText(dn) === curNorm)) return true;
+              if (curNorm && delNames.some(dn => normApiText(dn) === curNorm)) {
+                const isExplicitlyActive = MOCK_DATA && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.some(p => p && String(p.id).trim() === pid && !delIds.includes(pid) && p.isDeleted !== true);
+                if (!isExplicitlyActive) return true;
+              }
             }
           }
         } catch(e) {}
@@ -5527,7 +5530,24 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     function openEditProductModal(id) {
       const delBtnEdit = document.getElementById("btnAdmDeleteProductModal"); if (delBtnEdit) delBtnEdit.style.display = "inline-flex";
-      const p = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(item => String(item.id) === String(id)) : null;
+      let p = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(item => String(item.id) === String(id)) : null;
+      if (!p && typeof findShopProduct === "function") {
+        p = findShopProduct(id);
+      }
+      if (!p) {
+        try {
+          const rawAdmin = localStorage.getItem("mmo_admin_products") || localStorage.getItem("mmo_products");
+          if (rawAdmin) {
+            const list = JSON.parse(rawAdmin);
+            if (Array.isArray(list)) {
+              p = list.find(item => String(item.id) === String(id) || (typeof getCanonicalProductId === "function" && getCanonicalProductId(item.id) === getCanonicalProductId(id)));
+            }
+          }
+        } catch(e) {}
+      }
+      if (p && MOCK_DATA && Array.isArray(MOCK_DATA.products) && !MOCK_DATA.products.some(x => String(x.id) === String(p.id))) {
+        MOCK_DATA.products.push(p);
+      }
       if (!p) {
         showToast("Không tìm thấy thông tin sản phẩm (ID: " + id + ")!", "warning");
         return;
@@ -5701,10 +5721,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.openEditProductModal = openEditProductModal;
 
     function quickOpenStockForProduct(prodId) {
+      if (typeof switchView === "function") switchView("viewAdmin");
       if (typeof switchAdminTab === "function") switchAdminTab("tabAdmStock");
       if (typeof initStockManagementUI === "function") initStockManagementUI();
       const select = document.getElementById("admStockProductSelect");
       if (select) {
+        let optExists = Array.from(select.options).some(o => o.value === prodId);
+        if (!optExists && prodId) {
+          let p = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(x => String(x.id) === String(prodId)) : null;
+          if (!p && typeof findShopProduct === "function") p = findShopProduct(prodId);
+          const opt = document.createElement("option");
+          opt.value = prodId;
+          opt.text = (p && p.name) ? p.name : ("Sản phẩm #" + prodId);
+          select.appendChild(opt);
+        }
         select.value = prodId;
         if (typeof handleStockProductChange === "function") handleStockProductChange();
       }
@@ -9393,14 +9423,27 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
         } catch(e) {}
 
-        // Nếu sản phẩm này từng nằm trong danh sách đã xóa, gỡ bỏ khỏi blacklist
+        // Nếu sản phẩm này từng nằm trong danh sách đã xóa, gỡ bỏ hoàn toàn khỏi blacklist (ID & Tên)
         try {
+          const idsToUnblock = new Set([prodId, actualTargetId, canonicalTargetId].filter(Boolean).map(x => String(x).trim()));
           let deletedIds = JSON.parse(localStorage.getItem("mmo_deleted_product_ids") || "[]");
           if (Array.isArray(deletedIds)) {
-            deletedIds = deletedIds.filter(d => d !== prodId && d !== actualTargetId);
+            deletedIds = deletedIds.filter(d => !idsToUnblock.has(String(d).trim()));
             localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(deletedIds));
+            localStorage.setItem("mmo_admin_deleted_ids", JSON.stringify(deletedIds));
           }
-        } catch(e) {}
+          if (name) {
+            let deletedNames = JSON.parse(localStorage.getItem("mmo_deleted_product_names") || "[]");
+            if (Array.isArray(deletedNames)) {
+              const curNorm = (typeof normApiText === "function") ? normApiText(name) : name.trim().toLowerCase();
+              deletedNames = deletedNames.filter(n => {
+                const dnNorm = (typeof normApiText === "function") ? normApiText(n) : String(n).trim().toLowerCase();
+                return dnNorm !== curNorm;
+              });
+              localStorage.setItem("mmo_deleted_product_names", JSON.stringify(deletedNames));
+            }
+          }
+        } catch(eUnblock) {}
 
         const canonicalTargetId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(actualTargetId) : actualTargetId;
         const allSyncIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(canonicalTargetId) : [canonicalTargetId];
@@ -13200,7 +13243,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.markAdminTabDirty = markAdminTabDirty;
 
     function switchAdminTab(tabId, forceRefresh) {
-      if (tabId === "stock") tabId = "tabAdmStock";
+      if (tabId === "stock" || tabId === "warehouse" || tabId === "tabAdmStock") tabId = "tabAdmStock";
       if (tabId === "products") tabId = "tabAdmProducts";
       if (tabId === "dashboard") tabId = "tabAdmDashboard";
       if (tabId === "users") tabId = "tabAdmUsers";
@@ -24047,10 +24090,33 @@ function executeCompareSourcesSearch() {
       const importBtn = document.querySelector("button[onclick='handleImportStock()']");
       if (!select || !textarea) return;
       const prodId = select.value;
-      if (!prodId) return;
+      if (!prodId) {
+        showToast("Vui lòng chọn sản phẩm cần nạp kho!", "warning");
+        return;
+      }
 
-      const prod = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(p => String(p.id) === String(prodId)) : null;
-      if (!prod) return;
+      let prod = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(p => String(p.id) === String(prodId)) : null;
+      if (!prod && typeof findShopProduct === "function") {
+        prod = findShopProduct(prodId);
+      }
+      if (!prod) {
+        try {
+          const rawAdmin = localStorage.getItem("mmo_admin_products") || localStorage.getItem("mmo_products");
+          if (rawAdmin) {
+            const list = JSON.parse(rawAdmin);
+            if (Array.isArray(list)) {
+              prod = list.find(item => String(item.id) === String(prodId) || (typeof getCanonicalProductId === "function" && getCanonicalProductId(item.id) === getCanonicalProductId(prodId)));
+            }
+          }
+        } catch(e) {}
+      }
+      if (prod && MOCK_DATA && Array.isArray(MOCK_DATA.products) && !MOCK_DATA.products.some(x => String(x.id) === String(prod.id))) {
+        MOCK_DATA.products.push(prod);
+      }
+      if (!prod) {
+        showToast("Không tìm thấy thông tin sản phẩm trong kho (ID: " + prodId + ")!", "error");
+        return;
+      }
 
       const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
       let vVal = hasVars ? ((varSelect && varSelect.value !== undefined && varSelect.value !== "") ? varSelect.value : "0") : null;
@@ -24139,7 +24205,24 @@ function executeCompareSourcesSearch() {
       const prodId = select.value;
       if (!prodId) return;
 
-      const prod = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(p => String(p.id) === String(prodId)) : null;
+      let prod = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(p => String(p.id) === String(prodId)) : null;
+      if (!prod && typeof findShopProduct === "function") {
+        prod = findShopProduct(prodId);
+      }
+      if (!prod) {
+        try {
+          const rawAdmin = localStorage.getItem("mmo_admin_products") || localStorage.getItem("mmo_products");
+          if (rawAdmin) {
+            const list = JSON.parse(rawAdmin);
+            if (Array.isArray(list)) {
+              prod = list.find(item => String(item.id) === String(prodId) || (typeof getCanonicalProductId === "function" && getCanonicalProductId(item.id) === getCanonicalProductId(prodId)));
+            }
+          }
+        } catch(e) {}
+      }
+      if (prod && MOCK_DATA && Array.isArray(MOCK_DATA.products) && !MOCK_DATA.products.some(x => String(x.id) === String(prod.id))) {
+        MOCK_DATA.products.push(prod);
+      }
       if (!prod) return;
 
       const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
@@ -24205,6 +24288,18 @@ function executeCompareSourcesSearch() {
       handleSaveCurrentStockViewInternal(true);
     }
     window.handleSaveCurrentStockView = handleSaveCurrentStockView;
+
+    function handleEditCurrentStockProduct() {
+      const select = document.getElementById("admStockProductSelect");
+      if (!select || !select.value) {
+        showToast("Vui lòng chọn sản phẩm trong danh sách kho trước!", "warning");
+        return;
+      }
+      if (typeof openEditProductModal === "function") {
+        openEditProductModal(select.value);
+      }
+    }
+    window.handleEditCurrentStockProduct = handleEditCurrentStockProduct;
 
     async function handleClearCurrentProductStock() {
       const select = document.getElementById("admStockProductSelect");
@@ -29298,30 +29393,36 @@ function executeCompareSourcesSearch() {
         if (isAdm) {
           const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null);
           const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p)) || !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
-          const btn = quickStockWrap.querySelector("button");
-          if (btn) {
-            btn.onclick = function() {
-              if (isApi) {
-                if (typeof openEditProductModal === "function") openEditProductModal(p.id);
+          const btnEdit = document.getElementById("btnDtlAdminEdit");
+          if (btnEdit) {
+            btnEdit.onclick = function() {
+              if (typeof openEditProductModal === "function") openEditProductModal(p.id);
+            };
+          }
+          const btnStock = document.getElementById("btnDtlAdminStock");
+          if (btnStock) {
+            btnStock.onclick = function() {
+              if (typeof quickOpenAdminStockForCurrentProduct === "function") {
+                quickOpenAdminStockForCurrentProduct();
               } else {
                 if (typeof switchView === "function") switchView("viewAdmin");
-                if (typeof switchAdminTab === "function") switchAdminTab("warehouse");
+                if (typeof switchAdminTab === "function") switchAdminTab("tabAdmStock");
                 if (typeof quickOpenStockForProduct === "function") quickOpenStockForProduct(p.id);
               }
             };
             if (isApi) {
-              btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> <span>[Quản trị viên] Đổi Kho API / Sửa Nguồn Hàng</span>';
-              btn.style.background = 'rgba(6,182,212,0.15)';
-              btn.style.color = '#06b6d4';
-              btn.style.borderColor = 'rgba(6,182,212,0.4)';
-              btn.title = 'Sản phẩm mua qua API: Nhấn để mở form Sửa Sản Phẩm và đổi kho nguồn API';
+              btnStock.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> <span>Đổi Kho API</span>';
+              btnStock.title = 'Sản phẩm mua qua API: Nhấn để mở form Sửa Sản Phẩm và đổi kho nguồn API';
             } else {
-              btn.innerHTML = '<i class="fa-solid fa-boxes-stacked"></i> <span>[Quản trị viên] Nạp Kho Nhanh Cho Sản Phẩm Này</span>';
-              btn.style.background = 'rgba(56,189,248,0.12)';
-              btn.style.color = '#38bdf8';
-              btn.style.borderColor = 'rgba(56,189,248,0.4)';
-              btn.title = 'Sản phẩm kho thủ công: Nhấn để chuyển đến mục Quản Lý Kho Hàng để nạp tài khoản';
+              btnStock.innerHTML = '<i class="fa-solid fa-boxes-stacked"></i> <span>Nạp Kho</span>';
+              btnStock.title = 'Sản phẩm kho thủ công: Nhấn để chuyển đến mục Quản Lý Kho Hàng để nạp tài khoản';
             }
+          }
+          const btnDelete = document.getElementById("btnDtlAdminDelete");
+          if (btnDelete) {
+            btnDelete.onclick = function() {
+              if (typeof deleteProduct === "function") deleteProduct(p.id);
+            };
           }
 
           let dtlAdminSourceBox = document.getElementById("dtlAdminSourceInfoBox");
@@ -29838,6 +29939,32 @@ function executeCompareSourcesSearch() {
       }, 80);
     }
     window.quickOpenAdminStockForCurrentProduct = quickOpenAdminStockForCurrentProduct;
+
+    function quickEditCurrentDetailProduct() {
+      const p = (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) ? currentSelectedProduct : (window._currentActiveDetailProduct || null);
+      const prodId = p ? p.id : new URLSearchParams(window.location.search).get("prod");
+      if (!prodId) {
+        showToast("Không tìm thấy mã sản phẩm để sửa!", "warning");
+        return;
+      }
+      if (typeof openEditProductModal === "function") {
+        openEditProductModal(prodId);
+      }
+    }
+    window.quickEditCurrentDetailProduct = quickEditCurrentDetailProduct;
+
+    function quickDeleteCurrentDetailProduct() {
+      const p = (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) ? currentSelectedProduct : (window._currentActiveDetailProduct || null);
+      const prodId = p ? p.id : new URLSearchParams(window.location.search).get("prod");
+      if (!prodId) {
+        showToast("Không tìm thấy mã sản phẩm để xóa!", "warning");
+        return;
+      }
+      if (typeof deleteProduct === "function") {
+        deleteProduct(prodId);
+      }
+    }
+    window.quickDeleteCurrentDetailProduct = quickDeleteCurrentDetailProduct;
 
     
     // =========================================================================
