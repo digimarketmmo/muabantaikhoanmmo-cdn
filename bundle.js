@@ -1382,41 +1382,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "commission": "10%"
   },
   {
-    "id": "PROD_MTPG0PUD",
-    "name": "TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU",
-    "category": "TikTok",
-    "price": 6000,
-    "stock": 75,
-    "sold": 878,
-    "rating": 4.9,
-    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1792195512820_9yqplf.png",
-    "description": "🔥 Tài khoản TikTok Brazil đã ngâm lâu, form ổn định\n💪 Acc lâu ngày – độ ổn định cao,",
-    "variants": [
-      {
-        "name": "TIKTOK BRAZIL",
-        "price": 6000,
-        "stock": 75,
-        "available": true,
-        "apiMapping": {},
-        "accounts": []
-      },
-      {
-        "name": "Tiktok BRAZIL New",
-        "price": 5000,
-        "stock": 0,
-        "available": false,
-        "apiMapping": {},
-        "accounts": []
-      }
-    ],
-    "deliveryType": "local",
-    "commission": "10%"
-  },
-  {
     "id": "PROD_MU5T3T47AE",
     "name": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 Tháng +5T +VEO3",
     "category": "AI & Video",
-    "price": 89000,
+    "price": 99000,
     "stock": 1705,
     "sold": 1238,
     "rating": 4.9,
@@ -1425,71 +1394,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "variants": [
       {
         "name": "GEMINI PRO CHÍNH CHỦ 18 Tháng+ veo 3",
-        "price": 89000,
-        "stock": 1705,
-        "apiMapping": {
-          "enabled": true,
-          "provider": "selltainguyenmmo",
-          "sourceProdId": "32428",
-          "sourcePrice": 51000,
-          "sourceStock": 1705,
-          "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 51.000 đ (Tồn: 1.705)",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "isSourceDeleted": false
-        },
-        "available": true,
-        "accounts": []
-      }
-    ],
-    "deliveryType": "api",
-    "commission": "10%"
-  },
-  {
-    "id": "PROD_MU2AB1XEGI",
-    "name": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 Tháng +5T +VEO3",
-    "category": "AI & Video",
-    "price": 89000,
-    "stock": 1705,
-    "sold": 1238,
-    "rating": 4.9,
-    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1792159517151_equhdk.png",
-    "description": "🔥 NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 THÁNG + GOOGLE ONE 5TB + VEO 3\n- Kèm nhiều AI cao cấp có cả Google VEO 3 tạo video đỉnh cao\n- Dùng riêng tài khoản chính chủ của bạn (Dán link ra trình duyệt là xong, không cần add family, không cần thẻ)\n- Bảo hành 1 đổi 1 suốt thời gian sử dụng 24/7 uy tín.",
-    "variants": [
-      {
-        "name": "GEMINI PRO CHÍNH CHỦ 18 Tháng+ veo 3",
-        "price": 89000,
-        "stock": 1705,
-        "apiMapping": {
-          "enabled": true,
-          "provider": "selltainguyenmmo",
-          "sourceProdId": "32428",
-          "sourcePrice": 51000,
-          "sourceStock": 1705,
-          "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 51.000 đ (Tồn: 1.705)",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "isSourceDeleted": false
-        },
-        "available": true,
-        "accounts": []
-      }
-    ],
-    "deliveryType": "api",
-    "commission": "10%"
-  },
-  {
-    "id": "PROD_MUQIMRJYG0",
-    "name": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 Tháng +5T +VEO3",
-    "category": "AI & Video",
-    "price": 89000,
-    "stock": 1705,
-    "sold": 1238,
-    "rating": 4.9,
-    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1792159517151_equhdk.png",
-    "description": "🔥 NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 THÁNG + GOOGLE ONE 5TB + VEO 3\n- Kèm nhiều AI cao cấp có cả Google VEO 3 tạo video đỉnh cao\n- Dùng riêng tài khoản chính chủ của bạn (Dán link ra trình duyệt là xong, không cần add family, không cần thẻ)\n- Bảo hành 1 đổi 1 suốt thời gian sử dụng 24/7 uy tín.",
-    "variants": [
-      {
-        "name": "GEMINI PRO CHÍNH CHỦ 18 Tháng+ veo 3",
-        "price": 89000,
+        "price": 99000,
         "stock": 1705,
         "apiMapping": {
           "enabled": true,
@@ -1658,70 +1563,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           "sourcePrice": 52600,
           "sourceStock": 554,
           "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "isSourceDeleted": false
-        },
-        "available": true,
-        "accounts": []
-      }
-    ],
-    "deliveryType": "api",
-    "commission": "10%"
-  },
-  {
-    "id": "PROD_MV5PA8KZDW",
-    "name": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 Tháng +5T +VEO3",
-    "category": "AI & Video",
-    "price": 89000,
-    "stock": 1705,
-    "sold": 1238,
-    "rating": 4.9,
-    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1792159517151_equhdk.png",
-    "description": "🔥 NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 THÁNG + GOOGLE ONE 5TB + VEO 3\n- Kèm nhiều AI cao cấp có cả Google VEO 3 tạo video đỉnh cao\n- Dùng riêng tài khoản chính chủ của bạn (Dán link ra trình duyệt là xong, không cần add family, không cần thẻ)\n- Bảo hành 1 đổi 1 suốt thời gian sử dụng 24/7 uy tín.",
-    "variants": [
-      {
-        "name": "GEMINI PRO CHÍNH CHỦ 18 Tháng+ veo 3",
-        "price": 89000,
-        "stock": 1705,
-        "apiMapping": {
-          "enabled": true,
-          "provider": "selltainguyenmmo",
-          "sourceProdId": "32428",
-          "sourcePrice": 51000,
-          "sourceStock": 1705,
-          "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 51.000 đ (Tồn: 1.705)",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "isSourceDeleted": false
-        },
-        "available": true,
-        "accounts": []
-      }
-    ],
-    "deliveryType": "api",
-    "commission": "10%"
-  },
-  {
-    "id": "PROD_MU6R34FZ4Z",
-    "name": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 Tháng +5T +VEO3",
-    "category": "AI & Video",
-    "price": 99000,
-    "stock": 1705,
-    "sold": 1238,
-    "rating": 4.9,
-    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1792159517151_equhdk.png",
-    "description": "🔥 NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 THÁNG + GOOGLE ONE 5TB + VEO 3\n- Kèm nhiều AI cao cấp có cả Google VEO 3 tạo video đỉnh cao\n- Dùng riêng tài khoản chính chủ của bạn (Dán link ra trình duyệt là xong, không cần add family, không cần thẻ)\n- Bảo hành 1 đổi 1 suốt thời gian sử dụng 24/7 uy tín.",
-    "variants": [
-      {
-        "name": "GEMINI PRO CHÍNH CHỦ 18 Tháng+ veo 3",
-        "price": 99000,
-        "stock": 1705,
-        "apiMapping": {
-          "enabled": true,
-          "provider": "selltainguyenmmo",
-          "sourceProdId": "32428",
-          "sourcePrice": 51000,
-          "sourceStock": 1705,
-          "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 51.000 đ (Tồn: 1.705)",
           "baseUrl": "https://selltainguyenmmo.com",
           "isSourceDeleted": false
         },
@@ -3023,41 +2864,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "commission": "10%"
   },
   {
-    "id": "PROD_MUH57035HQ",
-    "name": "TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ",
-    "category": "AI & Video",
-    "price": 2500,
-    "stock": 108,
-    "sold": 1989,
-    "rating": 4.9,
-    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1792297151356_a3dkdr.png",
-    "description": "❌ Không bảo hành lỗi busy\n✔️ Bảo hành thiếu credit trong 6h kể từ lúc mua hàng\n🚫 Lưu ý quan trọng: Mua đủ dùng, không dự trữ, 🚫 Tài khoản có thể sẽ mất credit sau vài tiếng \nTẠO VIDEO AI ĐỈNH CAO VỚI TÀI KHOẢN KLING AI 65 CREDIT GIÁ SIÊU HỜI!\nBạn đang tìm kiếm một công cụ tạo video AI chân thực, uy tín và vượt trội để phục vụ cho công việc sáng tạo nội dung, làm phim ngắn, TikTok hay Youtube Shorts? Đừng bỏ lỡ siêu phẩm Kling AI – trợ thủ đắc lực đang làm mưa làm gió trong cộng đồng AI Creator!\n\n✨ Tại sao nên chọn Kling AI?\nChuyển đổi Text-to-Video đỉnh cao: Biến mọi câu lệnh văn bản (Prompt) của bạn thành những thước phim sống động, chuyển động mượt mà và chi tiết đến kinh ngạc.\n\nImage-to-Video siêu thực: Biến các bức ảnh tĩnh thành video chuyển động 3D, nghệ thuật hoặc điện ảnh chỉ trong một nốt nhạc.\n\nĐộ phân giải và chất lượng cao: Khung hình sắc nét, ánh sáng và vật lý chân thực không thua kém các studio chuyên nghiệp.\n\n🎁 Ưu đãi gói 65 Credit tại shop:\n💰 Giá cực kỳ tiết kiệm: Phù hợp cho cả người mới bắt đầu trải nghiệm hoặc làm các dự án nhỏ.\n\n🔄 Tài khoản ổn định, bảo hành uy tín: Đăng nhập và sử dụng ngay, hỗ trợ tận tình trong suốt quá trình dùng.\n\n🚀 Bàn giao nhanh chóng: Nhận tài khoản ngay sau khi thanh toán.\n\n💡 Mẹo nhỏ: Với 65 Credit, bạn có thể thoải mái thử nghiệm hàng loạt câu lệnh sáng tạo ra những video độc quyền cho riêng mình mà không lo tốn nhiều chi phí đầu tư ban đầu!\n\n🛒 Mua ngay kẻo lỡ!\nSố lượng tài khoản ưu đãi có hạn. Inbox ngay cho shop để sở hữu chìa khóa sáng tạo nội dung triệu view ngay hôm nay!",
-    "variants": [
-      {
-        "name": "KLING - AI 65 CREDIT",
-        "price": 2500,
-        "stock": 108,
-        "apiMapping": {
-          "enabled": true,
-          "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-          "sourceProdId": "13629",
-          "sourceProdName": "[Kling AI] #13629 TÀI KHOẢN KLING AI 65 CREDIT - 1.200 đ (Tồn: 108)",
-          "sourcePrice": 1200,
-          "sourceStock": 108,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU5PWT7PP7",
-          "targetProdName": "TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ"
-        },
-        "available": true,
-        "accounts": []
-      }
-    ],
-    "deliveryType": "api",
-    "commission": "10%"
-  },
-  {
     "id": "PROD_MU9YH8D9FK",
     "name": "NÂNG CẤP CANVA EDU 1 NĂM",
     "category": "Canva",
@@ -4033,13 +3839,23 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function getAdminProducts() {
       if (!MOCK_DATA || !Array.isArray(MOCK_DATA.products)) return [];
       const seenAdminIds = new Set();
+      const seenCanonicals = new Set();
+      const seenNames = new Set();
       const prods = [];
       for (let api = 0; api < MOCK_DATA.products.length; api++) {
         const p = MOCK_DATA.products[api];
         if (!p || !p.id || (typeof isProductDeleted === "function" && isProductDeleted(p))) continue;
         const pid = String(p.id).trim();
-        if (seenAdminIds.has(pid)) continue;
+        const canId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(pid) : pid;
+        const nName = (typeof normApiText === "function") ? normApiText(p.name) : (p.name || '').trim().toLowerCase();
+
+        if (seenAdminIds.has(pid) || (canId && seenCanonicals.has(canId)) || (nName && seenNames.has(nName))) {
+          continue;
+        }
+
         seenAdminIds.add(pid);
+        if (canId) seenCanonicals.add(canId);
+        if (nName) seenNames.add(nName);
         prods.push(p);
       }
       return prods;
@@ -4093,6 +3909,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const adminProds = (typeof getAdminProducts === "function") ? getAdminProducts() : MOCK_DATA.products;
       const seenIds = new Set();
       const seenCanonicals = new Set();
+      const seenNames = new Set();
       const result = [];
 
       // [ZERO-LAG O(1) LOOKUP]: Khởi tạo Set canonical ID để kiểm tra trong 0ms, loại bỏ vòng lặp O(N^2)
@@ -4114,15 +3931,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         const cleanId = String(p.id).trim();
         const canonId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(cleanId) : cleanId;
+        const nName = (typeof normApiText === "function") ? normApiText(p.name) : (p.name || '').trim().toLowerCase();
 
         // Nếu sản phẩm hiện tại là alias không phải canonical, nhưng canonical đã tồn tại trong adminProds -> bỏ qua để ưu tiên bản chính (tra cứu O(1))
         if (cleanId !== canonId && adminCanonIdSet.has(canonId)) {
           continue;
         }
 
-        if (seenIds.has(cleanId) || seenCanonicals.has(canonId)) continue;
+        if (seenIds.has(cleanId) || (canonId && seenCanonicals.has(canonId)) || (nName && seenNames.has(nName))) continue;
         seenIds.add(cleanId);
-        seenCanonicals.add(canonId);
+        if (canonId) seenCanonicals.add(canonId);
+        if (nName) seenNames.add(nName);
         result.push(p);
       }
       _cachedVisibleProducts = result;
@@ -4351,11 +4170,45 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           } catch(e) {}
         }
 
-        // [SSOT BLACKLIST ENFORCEMENT]: Luôn lọc sạch MOCK_DATA.products theo danh sách đã xóa trong mọi trường hợp
+        // [SSOT BLACKLIST ENFORCEMENT & DEDUPLICATION ENGINE v5.7.8]: Luôn lọc sạch sản phẩm đã xóa và loại bỏ 100% sản phẩm nhân đôi
         if (MOCK_DATA && Array.isArray(MOCK_DATA.products)) {
-          MOCK_DATA.products = MOCK_DATA.products.filter(function(p) {
-            return p && p.id && !deletedIds.includes(String(p.id).trim()) && (typeof isProductDeleted !== "function" || !isProductDeleted(p));
-          });
+          const purgedRedundantIds = new Set([
+            'PROD_MTPG0PUD',
+            'PROD_MU2AB1XEGI',
+            'PROD_MUQIMRJYG0',
+            'PROD_MV5PA8KZDW',
+            'PROD_MU6R34FZ4Z',
+            'PROD_MUH57035HQ'
+          ]);
+          const seenIds = new Set();
+          const seenCanonicals = new Set();
+          const seenNames = new Set();
+          const cleanProds = [];
+
+          for (let pi = 0; pi < MOCK_DATA.products.length; pi++) {
+            const p = MOCK_DATA.products[pi];
+            if (!p || !p.id) continue;
+            const pid = String(p.id).trim();
+            if (purgedRedundantIds.has(pid)) continue;
+            if (deletedIds.includes(pid) || (typeof isProductDeleted === "function" && isProductDeleted(p))) continue;
+
+            const canId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(pid) : pid;
+            const nName = (typeof normApiText === "function") ? normApiText(p.name) : (p.name || '').trim().toLowerCase();
+
+            if (seenIds.has(pid) || (canId && seenCanonicals.has(canId)) || (nName && seenNames.has(nName))) {
+              continue;
+            }
+
+            seenIds.add(pid);
+            if (canId) seenCanonicals.add(canId);
+            if (nName) seenNames.add(nName);
+            cleanProds.push(p);
+          }
+          MOCK_DATA.products = cleanProds;
+          try {
+            localStorage.setItem("mmo_admin_products", JSON.stringify(cleanProds));
+            localStorage.setItem("mmo_products", JSON.stringify(cleanProds));
+          } catch(eLS) {}
         }
 
 
@@ -6156,13 +6009,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (tbody) {
           let rawProds = (MOCK_DATA && MOCK_DATA.products) ? [...MOCK_DATA.products] : [];
           const seenAdminIds = new Set();
+          const seenCanonicals = new Set();
+          const seenNames = new Set();
           let prods = [];
           for (let api = 0; api < rawProds.length; api++) {
             const p = rawProds[api];
             if (!p || !p.id || (typeof isProductDeleted === "function" && isProductDeleted(p))) continue;
             const pid = String(p.id).trim();
-            if (seenAdminIds.has(pid)) continue;
+            const canId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(pid) : pid;
+            const nName = (typeof normApiText === "function") ? normApiText(p.name) : (p.name || '').trim().toLowerCase();
+
+            if (seenAdminIds.has(pid) || (canId && seenCanonicals.has(canId)) || (nName && seenNames.has(nName))) continue;
             seenAdminIds.add(pid);
+            if (canId) seenCanonicals.add(canId);
+            if (nName) seenNames.add(nName);
             prods.push(p);
           }
 
@@ -17345,10 +17205,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         let hasNewOrUpdated = false;
 
+        const purgedRedundantIds = new Set(['PROD_MTPG0PUD', 'PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ']);
+
         res.products.forEach(function(tp) {
           if (!tp || !tp.id || tp.id === 'zalo-new-2016') return;
           if (tp.id === 'PROD_MV9SJ8FB6K' || tp.name === 'Tài Khoản Capcut pro 1 tháng') return;
           const cleanTpId = String(tp.id).trim();
+          if (purgedRedundantIds.has(cleanTpId)) return;
           if (deletedIds.includes(cleanTpId) || (typeof isProductDeleted === "function" && (isProductDeleted(tp) || isProductDeleted(cleanTpId)))) return;
 
           // LÁ CHẮN TÁCH BIỆT: LOẠI BỎ 100% SẢN PHẨM HOẶC DỮ LIỆU TỪ WEB ĐỘC LẬP KHOTAIKHOANSO
@@ -17376,7 +17239,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           }
 
           const canonTpId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(tp.id) : tp.id;
-          const existingIdx = MOCK_DATA.products.findIndex(p => p && (p.id === tp.id || p.id === canonTpId || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, tp.id))));
+          const normTpName = (typeof normApiText === "function" && tp.name) ? normApiText(tp.name) : "";
+          const existingIdx = MOCK_DATA.products.findIndex(p => {
+            if (!p) return false;
+            if (p.id === tp.id || p.id === canonTpId || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, tp.id))) return true;
+            if (normTpName && p.name && (typeof normApiText === "function") && normApiText(p.name) === normTpName) return true;
+            return false;
+          });
           if (existingIdx !== -1) {
             const cur = MOCK_DATA.products[existingIdx];
             const isLocallyFresh = !!(cur._lastEditedAt && (Date.now() - cur._lastEditedAt < 5000));
@@ -17713,12 +17582,32 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               if (raw) {
                 const list = JSON.parse(raw);
                 if (Array.isArray(list)) {
-                  const cleaned = list.filter(function(p) {
-                    if (!p || !p.id) return false;
+                  const purgedIds = new Set(['PROD_MTPG0PUD', 'PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ']);
+                  const seenLsCanonicals = new Set();
+                  const seenLsNames = new Set();
+                  const seenLsIds = new Set();
+                  const cleaned = [];
+
+                  list.forEach(function(p) {
+                    if (!p || !p.id) return;
                     const pid = String(p.id).trim();
-                    if (typeof isProductDeleted === "function" && isProductDeleted(p)) return false;
+                    if (purgedIds.has(pid)) return;
+                    if (typeof isProductDeleted === "function" && isProductDeleted(p)) return;
                     const isRecentlyCreated = p._createdAt && (Date.now() - Number(p._createdAt) < 60000);
-                    return cloudIdSet.has(pid) || isRecentlyCreated;
+                    if (!cloudIdSet.has(pid) && !isRecentlyCreated) return;
+
+                    const canonId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(pid) : pid;
+                    if (seenLsCanonicals.has(canonId)) return;
+
+                    const normName = (typeof normApiText === "function" && p.name) ? normApiText(p.name) : "";
+                    if (normName && seenLsNames.has(normName)) return;
+
+                    if (seenLsIds.has(pid)) return;
+
+                    seenLsIds.add(pid);
+                    seenLsCanonicals.add(canonId);
+                    if (normName) seenLsNames.add(normName);
+                    cleaned.push(p);
                   });
                   if (cleaned.length !== list.length) {
                     localStorage.setItem(k, JSON.stringify(cleaned));
@@ -17734,16 +17623,29 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           // [SSOT BLACKLIST]: BẢO TỒN TUYỆT ĐỐI mmo_deleted_product_ids - CẤM TỰ Ý XÓA ĐỂ BẢO VỆ THAO TÁC XÓA CỦA ADMIN
         }
 
-        // [SSOT DEDUPLICATION ENGINE]: Loại bỏ sản phẩm trùng lặp theo ID duy nhất
+        // [SSOT DEDUPLICATION ENGINE]: Loại bỏ triệt để sản phẩm trùng lặp theo ID, Canonical ID và Normalized Name
         if (Array.isArray(MOCK_DATA.products)) {
+          const purgedRedundantIds = new Set(['PROD_MTPG0PUD', 'PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ']);
           const seenIds = new Set();
+          const seenCanonicals = new Set();
+          const seenNames = new Set();
           const cleanProds = [];
           for (let pi = 0; pi < MOCK_DATA.products.length; pi++) {
             const p = MOCK_DATA.products[pi];
             if (!p || !p.id) continue;
             const pid = String(p.id).trim();
+            if (purgedRedundantIds.has(pid)) continue;
             if (seenIds.has(pid)) continue;
+
+            const canonId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(pid) : pid;
+            if (seenCanonicals.has(canonId)) continue;
+
+            const normName = (typeof normApiText === "function" && p.name) ? normApiText(p.name) : "";
+            if (normName && seenNames.has(normName)) continue;
+
             seenIds.add(pid);
+            seenCanonicals.add(canonId);
+            if (normName) seenNames.add(normName);
             cleanProds.push(p);
           }
           MOCK_DATA.products = cleanProds;
@@ -18650,13 +18552,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!id) return id;
       const s = String(id).trim();
       if (s === "PROD_MTPIJ9XV" || s === "PROD_MTPG0PUD" || s === "SP_TIKTOK_BRAZIL") {
-        return "PROD_MTPG0PUD";
+        return "PROD_MTPIJ9XV";
       }
-      if (s === "PROD_MUH57035HQ") {
+      if (s === "PROD_MU5PWT7PP7" || s === "PROD_MUH57035HQ") {
         return "PROD_MU5PWT7PP7";
       }
-      if (s === "PROD_MV5OYRDJCA" || s === "PROD_MU2AB1XEGI" || s === "SP_GEMINI_VEO3" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MUQIMRJYG0" || s === "PROD_MU5T3T47AE") {
-        return "PROD_MV5PA8KZDW";
+      if (s === "PROD_MU5T3T47AE" || s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3") {
+        return "PROD_MU5T3T47AE";
       }
       return s;
     }
@@ -18666,13 +18568,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!id) return [];
       const s = String(id).trim();
       if (s === "PROD_MTPIJ9XV" || s === "PROD_MTPG0PUD" || s === "SP_TIKTOK_BRAZIL") {
-        return ["PROD_MTPG0PUD", "PROD_MTPIJ9XV"];
+        return ["PROD_MTPIJ9XV", "PROD_MTPG0PUD"];
       }
       if (s === "PROD_MU5PWT7PP7" || s === "PROD_MUH57035HQ") {
         return ["PROD_MU5PWT7PP7", "PROD_MUH57035HQ"];
       }
-      if (s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3" || s === "PROD_MU5T3T47AE") {
-        return ["PROD_MV5PA8KZDW", "PROD_MV5OYRDJCA", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0", "PROD_MU5T3T47AE"];
+      if (s === "PROD_MU5T3T47AE" || s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3") {
+        return ["PROD_MU5T3T47AE", "PROD_MV5PA8KZDW", "PROD_MV5OYRDJCA", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"];
       }
       return [s];
     }
