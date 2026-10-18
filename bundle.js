@@ -3990,7 +3990,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     function getDeletedProductIds() {
       const result = new Set(PERMANENT_DELETED_IDS);
       try {
-        const raw = localStorage.getItem("mmo_deleted_product_ids");
+        const raw = localStorage.getItem("mmo_deleted_product_ids") || localStorage.getItem("mmo_admin_deleted_ids");
         if (raw) {
           const arr = JSON.parse(raw);
           if (Array.isArray(arr)) {
@@ -4009,11 +4009,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const pid = typeof productOrId === "object" ? String(productOrId.id || "").trim() : String(productOrId).trim();
       if (!pid) return true;
 
-      // TUYỆT ĐỐI KHÔNG HIỂN THỊ BẤT KỲ SẢN PHẨM DEMO, TEST HOẶC NHẦM TỪ KHOTAIKHOANSO NÀO
+      // 1. TUYỆT ĐỐI KHÔNG HIỂN THỊ BẤT KỲ SẢN PHẨM DEMO, TEST HOẶC NHẦM TỪ KHOTAIKHOANSO NÀO
       if (pid === "PROD_MV9SJ8FB6K" || pid === "PROD_MV9NXBULDO" || pid === "PROD_MUR3QMQHMM" || pid === "PROD_TEST" || pid === "1775731336499" || pid.startsWith("SP_") || DUMMY_SEED_IDS.includes(pid) || PERMANENT_DELETED_IDS.includes(pid)) return true;
+
+      // 2. [SSOT BLACKLIST]: KIỂM TRA TRỰC TIẾP DANH SÁCH ĐEN SẢN PHẨM ĐÃ BỊ ADMIN XÓA (0MS)
+      const delIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
+      if (delIds.includes(pid)) return true;
+      if (typeof getCanonicalProductId === "function" && delIds.includes(getCanonicalProductId(pid))) return true;
 
       if (typeof productOrId === "object") {
         if (productOrId.isDeleted === true || productOrId.status === "deleted") return true;
+        if (productOrId.id && delIds.includes(String(productOrId.id).trim())) return true;
         if (productOrId.id === "PROD_MV9SJ8FB6K" || productOrId.id === "PROD_MV9NXBULDO" || productOrId.id === "PROD_MUR3QMQHMM" || productOrId.name === "Tài Khoản Capcut pro 1 tháng") return true;
         const pName = String(productOrId.name || "").trim().toLowerCase();
         if (pName.includes("wink vip+") || pName.includes("wink vip") || pName === "test" || pName === "tét" || pName.includes("sản phẩm test") || pName.includes("san pham test") || pName.startsWith("test ") || pName.startsWith("demo ") || pid.toLowerCase().includes("test")) return true;
@@ -4270,11 +4276,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           try {
             let parsed = JSON.parse(savedProds);
             if (Array.isArray(parsed) && parsed.length > 0) {
-              // BẢO VỆ CHẶT CHẼ: LỌC BỎ HOÀN TOÀN SẢN PHẨM TEST
+              // BẢO VỆ CHẶT CHẼ: LỌC BỎ HOÀN TOÀN SẢN PHẨM ĐÃ XÓA VÀ SẢN PHẨM TEST
               parsed = parsed.filter(function(p) {
                 if (!p) return false;
                 const pId = String(p.id || '').trim();
                 const pNm = String(p.name || '').trim().toLowerCase();
+                if (deletedIds.includes(pId) || (typeof isProductDeleted === "function" && isProductDeleted(p))) return false;
                 return pId !== '1775731336499' && !pNm.includes('sản phẩm test') && !pNm.includes('san pham test') && pNm !== 'test' && pNm !== 'tét';
               });
               // [SSOT]: Khi load từ localStorage, bảo toàn accounts array của từng variant
@@ -4342,6 +4349,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               }
             }
           } catch(e) {}
+        }
+
+        // [SSOT BLACKLIST ENFORCEMENT]: Luôn lọc sạch MOCK_DATA.products theo danh sách đã xóa trong mọi trường hợp
+        if (MOCK_DATA && Array.isArray(MOCK_DATA.products)) {
+          MOCK_DATA.products = MOCK_DATA.products.filter(function(p) {
+            return p && p.id && !deletedIds.includes(String(p.id).trim()) && (typeof isProductDeleted !== "function" || !isProductDeleted(p));
+          });
         }
 
 
@@ -17103,7 +17117,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function") {
             const secret = MMO_WORKER_API.getAdminSecret();
             const headers = { "Content-Type": "application/json" };
-            if (secret) headers["Authorization"] = "Bearer " + secret;
+            if (secret) {
+              headers["Authorization"] = "Bearer " + secret;
+              headers["x-admin-token"] = secret;
+            }
             await fetch(MMO_WORKER_API.getApiUrl() + "/api/admin/products/" + encodeURIComponent(prodId), {
               method: "DELETE",
               headers: headers
@@ -17331,7 +17348,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         res.products.forEach(function(tp) {
           if (!tp || !tp.id || tp.id === 'zalo-new-2016') return;
           if (tp.id === 'PROD_MV9SJ8FB6K' || tp.name === 'Tài Khoản Capcut pro 1 tháng') return;
-          if (typeof isProductDeleted === "function" && isProductDeleted(tp)) return;
+          const cleanTpId = String(tp.id).trim();
+          if (deletedIds.includes(cleanTpId) || (typeof isProductDeleted === "function" && (isProductDeleted(tp) || isProductDeleted(cleanTpId)))) return;
 
           // LÁ CHẮN TÁCH BIỆT: LOẠI BỎ 100% SẢN PHẨM HOẶC DỮ LIỆU TỪ WEB ĐỘC LẬP KHOTAIKHOANSO
           if (JSON.stringify(tp).toLowerCase().includes("khotaikhoanso")) return;
@@ -17713,10 +17731,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           if (prunedAny) {
             hasNewOrUpdated = true;
           }
-          // Luôn dọn dẹp khóa mmo_deleted_product_ids để tránh làm ẩn sản phẩm
-          try {
-            localStorage.removeItem("mmo_deleted_product_ids");
-          } catch(e) {}
+          // [SSOT BLACKLIST]: BẢO TỒN TUYỆT ĐỐI mmo_deleted_product_ids - CẤM TỰ Ý XÓA ĐỂ BẢO VỆ THAO TÁC XÓA CỦA ADMIN
         }
 
         // [SSOT DEDUPLICATION ENGINE]: Loại bỏ sản phẩm trùng lặp theo ID duy nhất
@@ -41644,13 +41659,18 @@ function initMMOApplication() {
 
       if (p) p.isDeleted = true;
 
-      // 1. Ghi nhận CHỈ RIÊNG MÃ SẢN PHẨM (ID) vào danh sách đen đã xóa (mmo_deleted_product_ids)
-      // TUYỆT ĐỐI KHÔNG LƯU TÊN SẢN PHẨM để tránh xóa oan các sản phẩm cùng nhóm tên!
+      // 0. Xóa ngay lập tức bộ nhớ đệm hiển thị (0ms)
+      _cachedVisibleProducts = null;
+      _visibleProductsDirty = true;
+      if (typeof invalidateVisibleProductsCache === "function") invalidateVisibleProductsCache();
+
+      // 1. Ghi nhận CHỈ RIÊNG MÃ SẢN PHẨM (ID) vào danh sách đen đã xóa vĩnh viễn (mmo_deleted_product_ids)
       try {
         let deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
         if (targetId && !deletedIds.includes(targetId)) deletedIds.push(targetId);
         if (pid && !deletedIds.includes(pid)) deletedIds.push(pid);
         localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(deletedIds));
+        localStorage.setItem("mmo_admin_deleted_ids", JSON.stringify(deletedIds));
       } catch(e) {}
 
       // 2. Lọc bỏ vĩnh viễn khỏi danh sách sản phẩm MOCK_DATA.products theo đúng ID
@@ -41660,6 +41680,15 @@ function initMMOApplication() {
           if (item.id === targetId || item.id === pid) return false;
           return true;
         });
+        // Ghi trực tiếp đồng bộ vào localStorage (không chờ debounce) để chống mất trạng thái xóa khi F5
+        try {
+          const leanProds = MOCK_DATA.products.filter(function(item) {
+            return item && item.id !== targetId && item.id !== pid;
+          });
+          const jsonStr = JSON.stringify(leanProds);
+          localStorage.setItem("mmo_admin_products", jsonStr);
+          localStorage.setItem("mmo_products", jsonStr);
+        } catch(eDirect) {}
         saveProductsToStorage();
       }
 
@@ -41730,6 +41759,9 @@ function initMMOApplication() {
       } catch(e) {}
 
       // 8. Cập nhật lại giao diện Dashboard và toàn bộ các trang người dùng ngay lập tức
+      _cachedVisibleProducts = null;
+      _visibleProductsDirty = true;
+      if (typeof invalidateVisibleProductsCache === "function") invalidateVisibleProductsCache();
       if (typeof markAdminTabDirty === "function") markAdminTabDirty("all");
       if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(targetId, 0, []);
       if (typeof initStockManagementUI === "function") initStockManagementUI();
@@ -41738,6 +41770,7 @@ function initMMOApplication() {
       if (typeof renderBestSellers === "function") renderBestSellers();
       if (typeof renderRecommended === "function") renderRecommended();
       if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
+      if (typeof renderCategories === "function") renderCategories();
       if (typeof renderAllProductsPage === "function") renderAllProductsPage();
 
       closeModal("adminProductModal");
