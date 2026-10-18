@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.8.0";
+const MMO_CURRENT_CODE_VERSION = "5.8.1";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -3828,7 +3828,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               return '<tr>' +
                 '<td>' + p.id + '</td>' +
                 '<td><img src="' + tableImg + '" alt="' + esc(p.name) + '" style="width:36px; height:36px; border-radius:4px; object-fit:cover;" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\';" /></td>' +
-                '<td style="white-space:normal !important; max-width:380px; min-width:200px; word-break:break-word;"><a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#ffffff; text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:6px;" onmouseover="this.style.color=\'#10b981\'" onmouseout="this.style.color=\'#ffffff\'" title="Mở xem chi tiết sản phẩm trong tab mới"><strong>' + esc(p.name) + '</strong> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem; color:#38bdf8;"></i></a><br/>' +
+                '<td style="white-space:normal !important; max-width:380px; min-width:200px; word-break:break-word;"><a href="/?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#ffffff; text-decoration:none; font-weight:700; display:inline-flex; align-items:center; gap:6px;" onmouseover="this.style.color=\'#10b981\'" onmouseout="this.style.color=\'#ffffff\'" title="Mở xem chi tiết sản phẩm trong tab mới"><strong>' + esc(p.name) + '</strong> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.75rem; color:#38bdf8;"></i></a><br/>' +
                   (function() {
                     const apiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : null;
                     const isApi = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
@@ -12682,7 +12682,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return '<div class="compact-product-item" onclick="openProductDetailById(\'' + pIdEscaped + '\')">' +
           '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + pNameEscaped + '" loading="lazy" onerror="if(typeof handleProductImageError===\'function\'){handleProductImageError(this,\'' + pIdEscaped + '\');}else{this.onerror=null;this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\';}" /></div>' +
           '<div class="compact-info">' +
-            '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + pIdEscaped + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + pNameEscaped + '</a>' +
+            '<a href="/?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + pIdEscaped + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + pNameEscaped + '</a>' +
             '<div class="compact-meta">' +
               '<span class="compact-price">' + priceDisplay + '</span>' +
               '<span class="compact-sold">Đã bán: ' + displaySold + '</span>' +
@@ -12836,7 +12836,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return '<div class="compact-product-item" onclick="openProductDetailById(\'' + p.id + '\')">' +
           '<div class="compact-thumb"><img src="' + imgUrl + '" alt="' + escapeHtml(p.name) + '" loading="lazy" /></div>' +
           '<div class="compact-info">' +
-            '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + escapeHtml(p.name) + '</a>' +
+            '<a href="/?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;">' + escapeHtml(p.name) + '</a>' +
             '<div class="compact-meta">' +
               '<span class="compact-price">' + ((typeof getProductPriceDisplay === "function") ? getProductPriceDisplay(p) : formatVND(p.price)) + '</span>' +
               '<span class="compact-sold">Đã bán: ' + displaySold + '</span>' +
@@ -12975,7 +12975,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           '<img src="' + cardImg + '" alt="' + escapeHtml(p.name) + '" loading="lazy" onerror="if(typeof handleProductImageError===\'function\'){handleProductImageError(this,\'' + p.id + '\');}else{this.onerror=null;this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\';}" />' +
         '</div>' +
         '<div class="product-body">' +
-          '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</a>' +
+          '<a href="/?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + p.id + '\'); }" style="text-decoration:none; color:inherit; display:block;" title="' + escapeHtml(p.name) + '">' + escapeHtml(p.name) + '</a>' +
           commTagHtml +
           '<div class="product-footer-row">' +
             '<span class="product-price">' + ((typeof getProductPriceDisplay === "function") ? getProductPriceDisplay(p) : formatVND(p.price)) + '</span>' +
@@ -19425,7 +19425,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
             '<div style="display:flex; align-items:center; gap:6px; min-width:0;">' +
               '<img src="' + (p.image || '') + '" style="width:28px; height:28px; border-radius:4px; object-fit:cover; flex-shrink:0;" onerror="this.style.display=\'none\'" />' +
               '<div style="min-width:0; flex:1; overflow:hidden;">' +
-                '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#fff; font-weight:700; text-decoration:none; font-size:0.77rem; display:block; line-height:1.25; word-break:break-word;" title="' + (typeof escapeHtml === "function" ? escapeHtml(p.name) : p.name) + '">' + (typeof escapeHtml === "function" ? escapeHtml(p.name) : p.name) + '</a>' +
+                '<a href="/?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#fff; font-weight:700; text-decoration:none; font-size:0.77rem; display:block; line-height:1.25; word-break:break-word;" title="' + (typeof escapeHtml === "function" ? escapeHtml(p.name) : p.name) + '">' + (typeof escapeHtml === "function" ? escapeHtml(p.name) : p.name) + '</a>' +
                 '<div style="font-size:0.67rem; color:#64748b; margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Mã: ' + p.id + ' | Giá: ' + (typeof formatVND === "function" ? formatVND(p.price).replace(/\s*đ$/, 'đ') : p.price + 'đ') + '</div>' +
               '</div>' +
             '</div>' +
@@ -25767,7 +25767,7 @@ function executeCompareSourcesSearch() {
               '<img alt="' + escapeHtml(p.name) + '" src="' + escapeHtml((typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png")) + '" onerror="this.onerror=null; this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\';" />' +
             '</div>' +
             '<h4 class="sponsor-title">' +
-              '<a href="?prod=' + encodeURIComponent(p.id) + '&amp;view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + escapeHtml(p.id) + '\'); }" style="color:inherit; text-decoration:none;">' +
+              '<a href="/?prod=' + encodeURIComponent(p.id) + '&amp;view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + escapeHtml(p.id) + '\'); }" style="color:inherit; text-decoration:none;">' +
                 escapeHtml(p.name) +
               '</a>' +
             '</h4>' +
@@ -28955,7 +28955,7 @@ function executeCompareSourcesSearch() {
         });
 
         // 3. Tags tổng hợp hỗ trợ SEO MMO
-        tagHtml += '<a href="?view=viewStore" onclick="event.preventDefault(); switchView(\'viewStore\');" style="background:#0f172a; color:#94a3b8; border:1px dashed #475569; padding:3px 9px; border-radius:20px; font-size:0.72rem; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-boxes-stacked" style="font-size:0.62rem;"></i> Kho tài khoản MMO Việt Nam</a>';
+        tagHtml += '<a href="/?view=viewStore" onclick="event.preventDefault(); switchView(\'viewStore\');" style="background:#0f172a; color:#94a3b8; border:1px dashed #475569; padding:3px 9px; border-radius:20px; font-size:0.72rem; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-boxes-stacked" style="font-size:0.62rem;"></i> Kho tài khoản MMO Việt Nam</a>';
 
         clusterTagsContainer.innerHTML = tagHtml;
       }
@@ -31295,7 +31295,7 @@ function executeCompareSourcesSearch() {
             <div class="compact-product-item" onclick="openProductDetailById('${p.id}')">
               <div class="compact-thumb"><img src="${p.image || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'}" alt="${escapeHtml(p.name)}" loading="lazy"/></div>
               <div class="compact-info">
-                <a class="compact-title" href="?prod=${p.id}&view=viewProductDetail" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('${p.id}'); }" style="text-decoration:none; color:inherit; display:block;" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</a>
+                <a class="compact-title" href="/?prod=${p.id}&view=viewProductDetail" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('${p.id}'); }" style="text-decoration:none; color:inherit; display:block;" title="${escapeHtml(p.name)}">${escapeHtml(p.name)}</a>
                 <div class="compact-meta">
                   <span class="compact-price">${priceStr}</span>
                   <span class="compact-sold">Đã bán: ${sold}</span>
@@ -38415,7 +38415,7 @@ function initMMOApplication() {
       const prods = (MOCK_DATA && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : [];
       container.innerHTML = prods.map(p => {
         return '<div style="border-bottom:1px solid #1e293b; padding-bottom:8px;">' +
-          '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#e2e8f0; text-decoration:none; font-size:0.85rem; display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
+          '<a href="/?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" style="color:#e2e8f0; text-decoration:none; font-size:0.85rem; display:flex; justify-content:space-between; align-items:center; gap:8px;">' +
             '<span style="font-weight:600;"><i class="fa-solid fa-box" style="color:#10b981; font-size:0.75rem; margin-right:6px;"></i>' + escapeHtml(p.name) + '</span>' +
             '<span style="color:#38bdf8; font-weight:700; white-space:nowrap;">' + formatVND(p.price || 0) + '</span>' +
           '</a>' +
@@ -38850,7 +38850,7 @@ function initMMOApplication() {
               "name": "Danh Sach San Pham Tai Khoan MMO - MUABANTAIKHOANMMO.COM",
               "numberOfItems": visibleProds.length,
               "itemListElement": visibleProds.map((p, idx) => {
-                const prodUrl = baseUrl + "/search?q=" + encodeURIComponent(p.id);
+                const prodUrl = baseUrl + "/?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
                 const price = (p.variants && p.variants[0] && p.variants[0].price) ? p.variants[0].price : (p.price || 0);
                 const imgUrl = (typeof resolveProductSeoSchemaImage === "function") ? resolveProductSeoSchemaImage(p) : ((p.image && !p.image.startsWith("data:") && !p.image.includes("nFV4Rln")) ? p.image : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
                 const ratingData = getProductSchemaReviews(p, idx);
@@ -39091,7 +39091,7 @@ function initMMOApplication() {
         '<div style="flex:1; min-width:0;">' +
           '<div style="font-size:0.95rem; font-weight:700; color:#fff; margin-bottom:6px; line-height:1.3; display:flex; align-items:center; gap:8px;">' +
             '' +
-            '<a href="?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + p.id + '\'); }" style="color:#fff; text-decoration:none;" onmouseover="this.style.color=\'#10b981\'" onmouseout="this.style.color=\'#fff\'"><span>' + escapeHtml(p.name) + '</span></a>' +
+            '<a href="/?prod=' + encodeURIComponent(p.id) + '&view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey && !event.metaKey && event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById(\'' + p.id + '\'); }" style="color:#fff; text-decoration:none;" onmouseover="this.style.color=\'#10b981\'" onmouseout="this.style.color=\'#fff\'"><span>' + escapeHtml(p.name) + '</span></a>' +
           '</div>' +
           '<div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;">' +
             '<span style="font-size:0.75rem; color:#10b981; background:rgba(16,185,129,0.1); padding:2px 8px; border-radius:4px; font-weight:700;">' +
