@@ -1324,14 +1324,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     "name": "Paypal 2025 - 2016 Đã ngâm lâu cực kỳ Trâu",
     "category": "Khác",
     "price": 50000,
-    "stock": 20,
+    "stock": 0,
     "sold": 567,
     "rating": 4.9,
     "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTU9F5HN_Paypal_2025_-_2016_%C4%90%C3%A3_ng%C3%A2m_l%C3%A2u_c%E1%BB%B1c_k%E1%BB%B3_Tr%C3%A2u.jpg",
     "description": "💎 TỔNG QUAN TÀI KHOẢN PAYPAL VIỆT NAM (NGÂM LÂU 2025 - 2016) CỰC KỲ TRÂU BÒ\nBạn đang tìm kiếm tài khoản Paypal Việt Nam uy tín, đã ngâm lâu năm, độ trust cao để nhận tiền quốc tế, thanh toán dịch vụ MMO, checkout đơn hàng hoặc làm Affiliate/Freelancer mà không lo bị hold tiền, limit hay checkpoint vô lý?\nSản phẩm Paypal Việt Nam tại MUABANTAIKHOANMMO.COM chính là sự lựa chọn số 1 dành cho anh em làm MMO chuyên nghiệp!\n\n🔥 ĐẶC ĐIỂM NỔI BẬT & THÔNG SỐ TÀI KHOẢN:\n• Năm tạo tài khoản: Đa dạng từ năm 2016 đến 2025. Tài khoản đã ngâm cực lâu (từ 1 năm đến 9 năm), lịch sử sạch 100%.\n• Độ Trust Cực Cao: Đã qua thời gian ngâm lâu, nhận tiền mượt mà, bao ngâm, bao test, hạn chế tối đa tình trạng 21 ngày hold tiền hay limit 180 ngày.\n• Đầy đủ thông tin: Định dạng chuẩn gồm Email | Mật khẩu Paypal | Mã 2FA (hoặc Cookie) | Email khôi phục | Mật khẩu email.\n• Xác minh chuẩn chỉnh: Đã xác minh Email và số điện thoại hoàn tất, sẵn sàng liên kết thẻ ngân hàng/Visa/Mastercard để sử dụng ngay.\n• Giao hàng tự động 24/7: Hệ thống cấp thông tin tài khoản ngay lập tức trong 5 giây sau khi thanh toán.\n\n📦 BẢNG PHÂN LOẠI BIẾN THỂ:\n1. Gói \"Paypal 2025 - 2020\" (50.000 đ): Tài khoản tạo từ năm 2020 đến 2025, đã ngâm từ 1 đến 5 năm. Phù hợp cho thanh toán cá nhân, nhận tiền nhỏ giọt, mua sắm quốc tế, làm khảo sát, airdrop.\n2. Gói \"Paypal 2019 - 2016\" (80.000 đ): Tài khoản Paypal CỔ SIÊU TRÂU tạo từ 2016 đến 2019 (ngâm 6 - 9 năm). Độ trust cực đỉnh, chuyên dụng cho nhận thanh toán Affiliate, Network, Freelancer, nhận tiền ngoại tệ lớn, chạy Ads mượt mà.\n\n🛡️ CHÍNH SÁCH BẢO HÀNH (1 ĐỔI 1 UY TÍN):\n• Bảo hành 1 Đổi 1 trong 24 giờ đầu tiên nếu có lỗi sai mật khẩu, không đăng nhập được lần đầu.\n• Hỗ trợ kỹ thuật, hướng dẫn gỡ checkpoint và tư vấn liên kết ngân hàng 24/7 qua Zalo & Telegram hỗ trợ.\n• Lưu ý: Không bảo hành trong trường hợp khách hàng nhận tiền từ nguồn bẩn (scam, đâm cc, vi phạm chính sách Paypal) hoặc tự ý đổi thông tin làm khóa tài khoản.\n\n📌 HƯỚNG DẪN ĐĂNG NHẬP & SỬ DỤNG AN TOÀN TRÁNH CHECKPOINT:\n1. Đăng nhập trên trình duyệt sạch (tạo profile Chrome/Cốc Cốc mới) hoặc sử dụng trình duyệt chống phát hiện (AdsPower, Gologin, Hidemyacc...).\n2. Bắt buộc sử dụng IP Việt Nam sạch (khuyến nghị Dcom 4G, mạng gia đình hoặc Proxy IPv4 tĩnh sạch). Tuyệt đối KHÔNG dùng VPN miễn phí hoặc proxy bẩn để đăng nhập.\n3. Sau khi đăng nhập thành công, vui lòng ngâm tài khoản trên thiết bị từ 3 - 5 ngày trước khi thực hiện các giao dịch nhận/chuyển số tiền lớn.\n4. Đổi mật khẩu email và bật lại bảo mật 2FA của riêng bạn để bảo vệ tài khoản tối đa.",
     "variants": [
-      { "name": "Paypal 2025 - 2020", "price": 50000, "stock": 10, "accounts": ["paypal.vn.2025.01@gmail.com|PaypalMmo@2025#01|JBSWY3DPEHPK3PXP|recov.mmo01@outlook.com|2025","paypal.vn.2024.02@gmail.com|PaypalMmo@2024#02|HXDMVJECJJWSRZ3U|recov.mmo02@outlook.com|2024","paypal.vn.2024.03@gmail.com|PaypalMmo@2024#03|KRUGS4ZANFZSAYJA|recov.mmo03@outlook.com|2024","paypal.vn.2023.04@gmail.com|PaypalMmo@2023#04|MZXW6YTBOJUW4ZZ2|recov.mmo04@outlook.com|2023","paypal.vn.2023.05@gmail.com|PaypalMmo@2023#05|NB2HI4DTHIXS653X|recov.mmo05@outlook.com|2023","paypal.vn.2022.06@gmail.com|PaypalMmo@2022#06|ORSXG5BRGIZTINJU|recov.mmo06@outlook.com|2022","paypal.vn.2022.07@gmail.com|PaypalMmo@2022#07|PFXXK33VG44DSOR2|recov.mmo07@outlook.com|2022","paypal.vn.2021.08@gmail.com|PaypalMmo@2021#08|QJ2W65DFOI2XEYLD|recov.mmo08@outlook.com|2021","paypal.vn.2021.09@gmail.com|PaypalMmo@2021#09|RJ4XKZLENRSW44DF|recov.mmo09@outlook.com|2021","paypal.vn.2020.10@gmail.com|PaypalMmo@2020#10|SJWXG3DPEHPK3P7A|recov.mmo10@outlook.com|2020"] },
-      { "name": "Paypal 2019 - 2016", "price": 80000, "stock": 10, "accounts": ["paypal.vn.2019.01@gmail.com|PaypalMmo@2019#01|TK4XG3DPEHPK3P1B|recov.mmo11@outlook.com|2019","paypal.vn.2019.02@gmail.com|PaypalMmo@2019#02|UL4XG3DPEHPK3P2C|recov.mmo12@outlook.com|2019","paypal.vn.2018.03@gmail.com|PaypalMmo@2018#03|VM4XG3DPEHPK3P3D|recov.mmo13@outlook.com|2018","paypal.vn.2018.04@gmail.com|PaypalMmo@2018#04|WN4XG3DPEHPK3P4E|recov.mmo14@outlook.com|2018","paypal.vn.2017.05@gmail.com|PaypalMmo@2017#05|XO4XG3DPEHPK3P5F|recov.mmo15@outlook.com|2017","paypal.vn.2017.06@gmail.com|PaypalMmo@2017#06|YP4XG3DPEHPK3P6G|recov.mmo16@outlook.com|2017","paypal.vn.2017.07@gmail.com|PaypalMmo@2017#07|ZQ4XG3DPEHPK3P7H|recov.mmo17@outlook.com|2017","paypal.vn.2016.08@gmail.com|PaypalMmo@2016#08|AR4XG3DPEHPK3P8I|recov.mmo18@outlook.com|2016","paypal.vn.2016.09@gmail.com|PaypalMmo@2016#09|BS4XG3DPEHPK3P9J|recov.mmo19@outlook.com|2016","paypal.vn.2016.10@gmail.com|PaypalMmo@2016#10|CT4XG3DPEHPK3P0K|recov.mmo20@outlook.com|2016"] }
+      { "name": "Paypal 2025 - 2020", "price": 50000, "stock": 0, "accounts": [] },
+      { "name": "Paypal 2019 - 2016", "price": 80000, "stock": 0, "accounts": [] }
     ],
     "commission": "10% (~5.000 đ)"
   },]
@@ -13691,19 +13691,11 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       try {
         const clearedMap = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
         if (clearedMap && (clearedMap[prod.id] || clearedMap[prod.id + "__VAR__ALL"])) {
-          if (isAllVars) {
-            const hasActualAccounts = hasVars
-              ? prod.variants.some(v => v && Array.isArray(v.accounts) && v.accounts.length > 0)
-              : (Array.isArray(prod.accounts) && prod.accounts.length > 0);
-            if (!hasActualAccounts) return 0;
-          } else {
-            const varCleared = clearedMap[prod.id + "__VAR__" + varIdxNum] || (typeof getVariantStockKey === "function" && clearedMap[getVariantStockKey(prod.id, varIdxNum)]) || clearedMap[prod.id];
-            const hasVarAccounts = curVar && Array.isArray(curVar.accounts) && curVar.accounts.length > 0;
-            if (varCleared && !hasVarAccounts) return 0;
-          }
+          if (isAllVars) return 0;
+          const varCleared = clearedMap[prod.id + "__VAR__" + varIdxNum] || (typeof getVariantStockKey === "function" && clearedMap[getVariantStockKey(prod.id, varIdxNum)]) || clearedMap[prod.id];
+          if (varCleared) return 0;
         } else if (!isAllVars && clearedMap && (clearedMap[prod.id + "__VAR__" + varIdxNum] || (typeof getVariantStockKey === "function" && clearedMap[getVariantStockKey(prod.id, varIdxNum)]))) {
-          const hasVarAccounts = curVar && Array.isArray(curVar.accounts) && curVar.accounts.length > 0;
-          if (!hasVarAccounts) return 0;
+          return 0;
         }
       } catch(eClr) {}
 
@@ -13824,8 +13816,14 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         return 0;
       }
       if (vIdx === null || vIdx === undefined || vIdx === "ALL" || vIdx === "") {
-        return prod.variants.reduce((total, v) => {
+        return prod.variants.reduce((total, v, vi) => {
           if (!v) return total;
+          let isVarCleared = false;
+          try {
+            const clm = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
+            if (clm[prod.id] || clm[prod.id + "__VAR__ALL"] || clm[prod.id + "__VAR__" + vi] || (typeof getVariantStockKey === "function" && clm[getVariantStockKey(prod.id, vi)])) isVarCleared = true;
+          } catch(e) {}
+          if (isVarCleared) return total;
           let s = 0;
           if (Array.isArray(v.accounts) && v.accounts.length > 0) s = v.accounts.length;
           else if (typeof v.stock === "number") s = Math.max(0, v.stock);
@@ -13835,6 +13833,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const idxNum = Number(vIdx);
       const v = (!isNaN(idxNum) && prod.variants[idxNum]) ? prod.variants[idxNum] : prod.variants[0];
       if (!v) return 0;
+      let isSpecificVarCleared = false;
+      try {
+        const clm = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
+        if (clm[prod.id] || clm[prod.id + "__VAR__ALL"] || clm[prod.id + "__VAR__" + idxNum] || (typeof getVariantStockKey === "function" && clm[getVariantStockKey(prod.id, idxNum)])) isSpecificVarCleared = true;
+      } catch(e) {}
+      if (isSpecificVarCleared) return 0;
       // [SSOT RULE]: Nếu biến thể có số tồn kho dạng số (từ Turso hoặc kho cập nhật), lấy chuẩn tuyệt đối
       if (Array.isArray(v.accounts) && v.accounts.length > 0) return v.accounts.length;
       if (typeof v.stock === "number") {
@@ -15284,9 +15288,24 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const prod = findShopProduct(prodId);
         if (!prod) return [];
         const hasVars = Array.isArray(prod.variants) && prod.variants.length > 0;
+        let isProdManuallyCleared = false;
+        try {
+          const clm = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
+          if (clm[prodId] || clm[prodId + "__VAR__ALL"] || (typeof isSameOrAliasProduct === "function" && (isSameOrAliasProduct(prodId, "PROD_MTPIJ9XV") && (clm["PROD_MTPIJ9XV"] || clm["SP_TIKTOK_BRAZIL"])))) {
+            isProdManuallyCleared = true;
+          }
+        } catch(e) {}
+
         if (variantIdx === "ALL" && hasVars) {
+          if (isProdManuallyCleared) return [];
           const all = [];
-          prod.variants.forEach(v => {
+          prod.variants.forEach((v, vi) => {
+            let isVClr = isProdManuallyCleared;
+            try {
+              const clm = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
+              if (clm[prodId + "__VAR__" + vi] || (typeof getVariantStockKey === "function" && clm[getVariantStockKey(prodId, vi)])) isVClr = true;
+            } catch(e) {}
+            if (isVClr) return;
             if (typeof v.stock === "number" && v.stock <= 0) return;
             if (Array.isArray(v.accounts)) {
               const maxA = (typeof v.stock === "number") ? v.stock : v.accounts.length;
@@ -15297,14 +15316,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         }
         const targetV = hasVars ? (prod.variants[Number(variantIdx) || 0] || prod.variants[0]) : prod;
         if (!targetV) return [];
+        let isTargetVarCleared = isProdManuallyCleared;
+        try {
+          const clm = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
+          if (clm[prodId + "__VAR__" + variantIdx] || (typeof getVariantStockKey === "function" && clm[getVariantStockKey(prodId, variantIdx)])) isTargetVarCleared = true;
+        } catch(e) {}
+        if (isTargetVarCleared) {
+          targetV.accounts = [];
+          targetV.stock = 0;
+          return [];
+        }
+
         // [AUTO SEED PAYPAL 20 ACCS]: Đảm bảo luôn trả về 10 acc mỗi biến thể nếu chưa bị xóa thủ công
         if (prodId === "PROD_MTU9F5HN") {
-          let isManuallyCleared = false;
-          try {
-            const clm = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
-            if (clm["PROD_MTU9F5HN"] || clm["PROD_MTU9F5HN__VAR__ALL"] || clm["PROD_MTU9F5HN__VAR__" + variantIdx] || (typeof getVariantStockKey === "function" && clm[getVariantStockKey("PROD_MTU9F5HN", variantIdx)])) isManuallyCleared = true;
-          } catch(e) {}
-          if (isManuallyCleared) {
+          if (isTargetVarCleared || isProdManuallyCleared) {
+            targetV.accounts = [];
+            targetV.stock = 0;
             return [];
           }
           if (targetV.stock !== 0 && (!targetV.accounts || targetV.accounts.length === 0)) {
@@ -16058,15 +16085,54 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.isSameOrAliasProduct = isSameOrAliasProduct;
 
-// [DIRECT UNIFIED]: Đồng bộ thời gian thực kho hàng toàn bộ giao diện
-function syncAllOpenViewsStock(changedProdId) {
+// [DIRECT UNIFIED]: Đồng bộ thời gian thực kho hàng toàn bộ giao diện (Storefront, Cards, Detail Modal & Admin)
+function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcast, variantIdx) {
       if (typeof refreshAllShopStockUI === "function") {
         refreshAllShopStockUI(changedProdId);
       }
+
+      // 1. Cập nhật ngay lập tức các thẻ sản phẩm trên Trang Chủ (Storefront)
+      try {
+        if (typeof renderRecommended === "function") renderRecommended();
+        if (typeof renderProductGrid === "function") renderProductGrid();
+        if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+      } catch(eR) {}
+
+      // 2. Cập nhật trang Chi tiết sản phẩm nếu đang mở
+      try {
+        if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && 
+            (String(currentSelectedProduct.id) === String(changedProdId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, changedProdId)))) {
+          const curP = (typeof findShopProduct === "function" ? findShopProduct(changedProdId) : null) || currentSelectedProduct;
+          currentSelectedProduct = curP;
+          const curVIdx = (typeof currentSelectedVariantIndex !== "undefined" && currentSelectedVariantIndex !== null) ? Number(currentSelectedVariantIndex) : 0;
+          const vStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(curP, curVIdx) : (curP.stock || 0);
+          if (typeof syncDetailStockUI === "function") {
+            syncDetailStockUI(vStock);
+          }
+          const pillsContainer = document.getElementById("dtlVariantPills");
+          if (pillsContainer && curP && Array.isArray(curP.variants)) {
+            pillsContainer.innerHTML = curP.variants.map((v, idx) => {
+              const vs = (typeof getShopVariantStock === "function") ? getShopVariantStock(curP, idx) : (v.stock || 0);
+              const badge = vs > 0 
+                ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
+                : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+              return '<div class="variant-pill-option ' + (idx === curVIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                '<span>' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)))) + badge + '</span>' +
+                '<span style="font-weight:700;">' + (typeof formatVND === "function" ? formatVND(v.price || 0) : ((v.price || 0) + ' đ')) + '</span>' +
+              '</div>';
+            }).join("");
+          }
+        }
+      } catch(eD) {}
+
       if (typeof _viewDirty !== "undefined") {
         _viewDirty["viewStore"] = true;
         _viewDirty["viewAllProducts"] = true;
         _viewDirty["viewAdmin"] = true;
+      }
+      if (typeof markAdminTabDirty === "function") {
+        markAdminTabDirty("warehouse");
+        markAdminTabDirty("products");
       }
     }
     window.syncAllOpenViewsStock = syncAllOpenViewsStock;
@@ -24029,6 +24095,50 @@ function executeCompareSourcesSearch() {
       } catch(e) {}
 
       // 2. XÓA BỘ NHỚ LOCAL PROD & MMO_WAREHOUSE
+      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+        MOCK_DATA.products.forEach(p => {
+          if (p && (String(p.id) === String(prodId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, prodId)))) {
+            if (isClearAll) {
+              p.stock = 0;
+              p.accounts = [];
+              if (Array.isArray(p.variants)) {
+                p.variants.forEach(v => { if (v) { v.stock = 0; v.accounts = []; v.available = false; } });
+              }
+            } else if (Array.isArray(p.variants) && p.variants[vVal]) {
+              p.variants[vVal].stock = 0;
+              p.variants[vVal].accounts = [];
+              p.variants[vVal].available = false;
+              p.stock = p.variants.reduce((s, v) => s + (Array.isArray(v.accounts) ? v.accounts.length : (Number(v.stock) || 0)), 0);
+            }
+          }
+        });
+      }
+      try {
+        ["mmo_admin_products", "mmo_products"].forEach(k => {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const list = JSON.parse(raw);
+            if (Array.isArray(list)) {
+              list.forEach(p => {
+                if (p && (String(p.id) === String(prodId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(p.id, prodId)))) {
+                  if (isClearAll) {
+                    p.stock = 0;
+                    p.accounts = [];
+                    if (Array.isArray(p.variants)) {
+                      p.variants.forEach(v => { if (v) { v.stock = 0; v.accounts = []; v.available = false; } });
+                    }
+                  } else if (Array.isArray(p.variants) && p.variants[vVal]) {
+                    p.variants[vVal].stock = 0;
+                    p.variants[vVal].accounts = [];
+                    p.stock = p.variants.reduce((s, v) => s + (Number(v.stock) || 0), 0);
+                  }
+                }
+              });
+              localStorage.setItem(k, JSON.stringify(list));
+            }
+          }
+        });
+      } catch(e) {}
       if (hasVars) {
         if (!isClearAll && prod && prod.variants && prod.variants[vVal]) {
           prod.variants[vVal].accounts = [];
@@ -29927,7 +30037,10 @@ function executeCompareSourcesSearch() {
 
       if (availableStock <= 0 && !isApiOnDemand) {
         restoreBtn();
-        showToast("⚠️ Biến thể này hiện đã HẾT HÀNG trong kho! Vui lòng chọn biến thể khác hoặc liên hệ Admin.", "danger");
+        showToast("⚠️ Biến thể này hiện đang hết hàng. Đang chuyển sang Đặt Hàng Trước...", "warning");
+        if (typeof openPreOrderModal === "function") {
+          setTimeout(() => openPreOrderModal(p, vIdx), 400);
+        }
         return;
       }
       if (!isApiOnDemand && qty > availableStock) {
@@ -30085,11 +30198,36 @@ function executeCompareSourcesSearch() {
             }
             return;
           }
-          const isOutOfStock = /hết hàng|không đủ|out of stock|tồn kho|số lượng/i.test(errMsg);
-          if (isOutOfStock && !isApiOnDemand && typeof openPreOrderModal === "function") {
+          const isOutOfStock = (wData.code === "OUT_OF_STOCK" || wData.code === "STOCK_EMPTY") || /hết hàng|không đủ|out of stock|tồn kho|số lượng/i.test(errMsg);
+          if (isOutOfStock && !isApiOnDemand) {
+            try {
+              let clearedMap = {};
+              try { clearedMap = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}"); } catch(e) {}
+              clearedMap[p.id + "__VAR__" + vIdx] = true;
+              if (Array.isArray(p.variants) && p.variants.length > 0) {
+                if (p.variants[vIdx]) {
+                  p.variants[vIdx].stock = 0;
+                  p.variants[vIdx].accounts = [];
+                }
+              } else {
+                clearedMap[p.id] = true;
+                p.stock = 0;
+                p.accounts = [];
+              }
+              localStorage.setItem("mmo_manually_cleared_products", JSON.stringify(clearedMap));
+              if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.setAccounts) {
+                MMO_WAREHOUSE.setAccounts(p.id, vIdx, []);
+              }
+              if (typeof syncAllOpenViewsStock === "function") {
+                syncAllOpenViewsStock(p.id, 0, [], false, vIdx);
+              }
+            } catch(eStock) {}
+
             restoreBtn();
             showToast("⚠️ " + errMsg + " Đang chuyển sang Đặt Trước...", "warning");
-            setTimeout(() => openPreOrderModal(p, vIdx), 600);
+            if (typeof openPreOrderModal === "function") {
+              setTimeout(() => openPreOrderModal(p, vIdx), 500);
+            }
             return;
           }
           // Nếu không phải API on-demand, dừng và báo lỗi ngay
