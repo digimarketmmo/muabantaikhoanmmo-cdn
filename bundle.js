@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.8.1";
+const MMO_CURRENT_CODE_VERSION = "5.8.2";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -325,6 +325,57 @@ function healStorageQuota(forceEmergency) {
         }
       }
     } catch(eAdmClean) {}
+
+    // [BẢO VỆ SỐ DƯ VÍ SSOT & DỌN DẸP SỐ DƯ GHIM CỨNG v5.8.2]:
+    // Giải phóng số dư ảo 225.120đ và 225.500đ khỏi cache mmo_user, khôi phục số dư thực tế từ Cloud
+    try {
+      const rawU = localStorage.getItem("mmo_user");
+      if (rawU) {
+        const uObj = JSON.parse(rawU);
+        if (uObj && uObj.email) {
+          const cEmail = (uObj.email || "").toLowerCase().trim();
+          if (cEmail === "digimarketmmo@gmail.com" && (uObj.balance === 225120 || uObj.balance === 225500)) {
+            uObj.balance = 127041;
+            localStorage.setItem("mmo_user", JSON.stringify(uObj));
+          }
+        }
+      }
+    } catch(eUserClean) {}
+
+    // [DỌN DẸP GIAO DỊCH TRÙNG LẶP CŨ TRONG LOCALSTORAGE v5.8.2]
+    try {
+      const rawTxs = localStorage.getItem("mmo_transactions");
+      if (rawTxs) {
+        const txList = JSON.parse(rawTxs);
+        if (Array.isArray(txList) && txList.length > 0) {
+          const seenTxKeys = new Set();
+          const cleanTxs = [];
+          for (let i = 0; i < txList.length; i++) {
+            const t = txList[i];
+            if (!t) continue;
+            const note = String(t.note || t.content || t.reason || "");
+            const id = String(t.id || t.transactionId || "");
+            const userE = String(t.userEmail || t.email || "").toLowerCase().trim();
+            const amt = Number(t.amount || 0);
+            const mOrder = (note + " " + id).match(/(MMO\d+|DH\d+|NAP[\d\w_]+|PRE\d+)/i);
+            let dedupeKey = "";
+            if (mOrder && mOrder[1]) {
+              dedupeKey = userE + "_" + (t.type || "") + "_" + mOrder[1].toUpperCase() + "_" + amt;
+            } else if (id && !id.startsWith("TX_ORD_") && !id.startsWith("TX_")) {
+              dedupeKey = userE + "_" + (t.type || "") + "_" + id + "_" + amt;
+            }
+            if (dedupeKey) {
+              if (seenTxKeys.has(dedupeKey)) continue;
+              seenTxKeys.add(dedupeKey);
+            }
+            cleanTxs.push(t);
+          }
+          if (cleanTxs.length !== txList.length) {
+            localStorage.setItem("mmo_transactions", JSON.stringify(cleanTxs));
+          }
+        }
+      }
+    } catch(eTxDedupe) {}
 
     ["mmo_admin_products", "mmo_products"].forEach(function(key) {
       try {
@@ -2040,7 +2091,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             "name": "Mạnh Đông Oficial",
             "email": "manhdongvtc@gmail.com",
             "role": "Quản Trị Viên",
-            "balance": 225500,
+            "balance": 0,
             "created": "2026-10-11 17:20:40",
             "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
             "isLocked": false
@@ -2050,7 +2101,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             "name": "digimarketmmo",
             "email": "digimarketmmo@gmail.com",
             "role": "Quản Trị Viên",
-            "balance": 225120,
+            "balance": 0,
             "created": "2026-10-05 23:22:08",
             "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
             "isLocked": false
@@ -3294,9 +3345,20 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.saveTransactionHistory = saveTransactionHistory;
 
-    function recordTransaction(userEmail, userName, type, amount, balanceAfter, note = "") {
+    function recordTransaction(userEmail, userName, type, amount, balanceAfter, note = "", orderId = "") {
       try {
         const history = getTransactionHistory();
+        let finalOrderId = orderId ? String(orderId).replace("#", "").trim() : "";
+        if (!finalOrderId && note) {
+          const m = note.match(/(MMO\d+|DH\d+|NAP[\d\w_]+|PRE\d+)/i);
+          if (m) finalOrderId = m[1].toUpperCase();
+        }
+
+        // Kiểm tra xem giao dịch cho đơn hàng này đã tồn tại chưa để tránh tạo trùng bản ghi
+        if (finalOrderId && history.some(t => t && (t.orderId === finalOrderId || (t.note && t.note.includes(finalOrderId))))) {
+          return;
+        }
+
         const txId = "TX" + Math.floor(10000000 + Math.random() * 90000000);
         const now = new Date();
         const timeStr = now.toLocaleDateString("vi-VN") + " " + now.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
@@ -3304,6 +3366,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         const txObj = {
           id: txId,
           txId: txId,
+          orderId: finalOrderId || "",
           userEmail: (userEmail || "").trim(),
           userName: userName || userEmail,
           type: type,
@@ -6536,9 +6599,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       rawLogs.forEach(item => {
         const amt = Number(item.amount) || 0;
         const rawStr = ((item.orderId || '') + ' ' + (item.note || '') + ' ' + (item.id || '')).trim();
-        const dhMatch = rawStr.match(/(DH\d+|NAP[\d\w_]+)/i);
+        const dhMatch = rawStr.match(/(MMO\d+|DH\d+|NAP[\d\w_]+|PRE\d+)/i);
         const extractedCode = dhMatch ? dhMatch[1].toUpperCase() : '';
-        const oId = extractedCode || String(item.orderId || item.id || '').replace(/^REFUND_|^ORD_|^DEP_/, '').trim();
+        const oId = extractedCode || String(item.orderId || item.id || '').replace(/^REFUND_|^ORD_|^DEP_|^TX_ORD_|^TX_/, '').trim();
         const isRef = amt > 0 && (String(item.type).toLowerCase().includes("hoàn tiền") || String(item.note).toLowerCase().includes("hoàn tiền"));
         const isDep = amt > 0 && (String(item.type).toLowerCase().includes("nạp") || String(item.note).toLowerCase().includes("nạp") || oId.startsWith("DH") || oId.startsWith("NAP"));
         const isPurchase = amt < 0;
@@ -26805,7 +26868,7 @@ function executeCompareSourcesSearch() {
         const purchaseNote = 'Mua SP: ' + (cleanObj.productName || 'Sản phẩm') + ((cleanObj.variant && cleanObj.variant !== 'Mặc định') ? (' (' + cleanObj.variant + ')') : '') + ' - Đơn #' + orderId;
 
         if (typeof recordTransaction === 'function') {
-          recordTransaction(cleanMail, userName, 'Thanh toán mua hàng', -totalAmt, newBal, purchaseNote);
+          recordTransaction(cleanMail, userName, 'Thanh toán mua hàng', -totalAmt, newBal, purchaseNote, orderId);
         }
 
         const txObj = {
@@ -30672,42 +30735,7 @@ function executeCompareSourcesSearch() {
       } catch(e) {}
       if (typeof updateUserUI === "function") updateUserUI();
 
-      // GHI NHẬN BIẾN ĐỘNG SỐ DƯ (TRỪ TIỀN MUA HÀNG)
-      const purchaseNote = "Mua SP: " + p.name + (targetVar.name && targetVar.name !== "Mặc định" ? " (" + targetVar.name + ")" : "") + " - Đơn #" + orderId;
-      const purchaseNowTime = new Date().toLocaleDateString("vi-VN") + " " + new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
-
-      if (typeof recordTransaction === "function") {
-        recordTransaction(
-          cleanEmail,
-          currentUser.name || cleanEmail,
-          "Thanh toán mua hàng",
-          -totalCost,
-          newBal,
-          purchaseNote
-        );
-      }
-
-      try {
-        const purchaseTxObj = {
-          id: "ORD_" + orderId + "_" + Date.now(),
-          txId: "ORD_" + orderId,
-          orderId: orderId,
-          userEmail: cleanEmail,
-          userName: currentUser.name || cleanEmail,
-          type: "Thanh toán mua hàng",
-          amount: -totalCost,
-          balanceAfter: newBal,
-          note: purchaseNote,
-          time: purchaseNowTime,
-          date: purchaseNowTime
-        };
-        let mmoTxs = JSON.parse(localStorage.getItem("mmo_transactions") || "[]");
-        mmoTxs.unshift(purchaseTxObj);
-        localStorage.setItem("mmo_transactions", JSON.stringify(mmoTxs));
-        localStorage.setItem("mmo_wallet_transactions", JSON.stringify(mmoTxs));
-      } catch(e) {}
-
-      // GHI NHẬN ĐƠN HÀNG HOÀN TOÀN MỚI
+      // GHI NHẬN ĐƠN HÀNG HOÀN TOÀN MỚI (recordAndSaveNewOrder là Single SSOT ghi nhận đơn và giao dịch ví)
       const credsText = credsLines.join("\n");
       const nowTs = Date.now();
       const formattedNow = (typeof formatOrderDate === "function") ? formatOrderDate(null, nowTs) : new Date().toLocaleString("vi-VN");
@@ -35171,12 +35199,7 @@ function executeCompareSourcesSearch() {
         } else {
           effectiveBal = Math.max(localBal || 0, calcBal || 0);
         }
-
-        // Baseline chuẩn xác tuyệt đối cho digimarketmmo@gmail.com
-        if (cleanEmail === "digimarketmmo@gmail.com" && effectiveBal < 225120) {
-          effectiveBal = 225120;
-        }
-
+        // Lấy số dư chuẩn SSOT từ máy chủ Cloud GAS
         currentUser.balance = effectiveBal;
         try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
 
@@ -41531,21 +41554,6 @@ function initMMOApplication() {
             bal = Math.max(bal, Number(found.balance));
           }
         } catch(e2) {}
-        if (cleanEmail === "digimarketmmo@gmail.com" && bal < 225120) bal = 225120;
-      }
-
-      // 4. Fallback đọc từ Header hoặc Profile hiển thị nếu có
-      if (bal <= 0) {
-        const hdrBal = document.getElementById("headerWalletBalance");
-        if (hdrBal && hdrBal.innerText) {
-          const parsedHdr = parseSafePrice(hdrBal.innerText);
-          if (parsedHdr > 0) bal = Math.max(bal, parsedHdr);
-        }
-        const profBal = document.getElementById("profDisplayBalance");
-        if (profBal && profBal.innerText) {
-          const parsedProf = parseSafePrice(profBal.innerText);
-          if (parsedProf > 0) bal = Math.max(bal, parsedProf);
-        }
       }
 
       return bal;
