@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.7.6";
+const MMO_CURRENT_CODE_VERSION = "5.7.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -1449,6 +1449,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (productOrId.id === "PROD_MV9SJ8FB6K" || productOrId.id === "PROD_MV9NXBULDO" || productOrId.id === "PROD_MUR3QMQHMM" || productOrId.name === "Tài Khoản Capcut pro 1 tháng") return true;
         const pName = String(productOrId.name || "").trim().toLowerCase();
         if (pName.includes("wink vip+") || pName.includes("wink vip") || pName === "test" || pName === "tét" || pName.includes("sản phẩm test") || pName.includes("san pham test") || pName.startsWith("test ") || pName.startsWith("demo ") || pid.toLowerCase().includes("test")) return true;
+        try {
+          const rawNames = localStorage.getItem("mmo_deleted_product_names");
+          if (rawNames) {
+            const delNames = JSON.parse(rawNames);
+            if (Array.isArray(delNames) && typeof normApiText === "function") {
+              const curNorm = normApiText(productOrId.name || "");
+              if (curNorm && delNames.some(dn => normApiText(dn) === curNorm)) return true;
+            }
+          }
+        } catch(e) {}
       }
 
       return false;
@@ -39182,13 +39192,23 @@ function initMMOApplication() {
       _visibleProductsDirty = true;
       if (typeof invalidateVisibleProductsCache === "function") invalidateVisibleProductsCache();
 
-      // 1. Ghi nhận CHỈ RIÊNG MÃ SẢN PHẨM (ID) vào danh sách đen đã xóa vĩnh viễn (mmo_deleted_product_ids)
+      // 1. Ghi nhận CHỈ RIÊNG MÃ SẢN PHẨM (ID) & TÊN vào danh sách đen đã xóa vĩnh viễn (mmo_deleted_product_ids / mmo_deleted_product_names)
       try {
         let deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
         if (targetId && !deletedIds.includes(targetId)) deletedIds.push(targetId);
         if (pid && !deletedIds.includes(pid)) deletedIds.push(pid);
         localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(deletedIds));
         localStorage.setItem("mmo_admin_deleted_ids", JSON.stringify(deletedIds));
+
+        if (prodName) {
+          let delNames = [];
+          const rawNames = localStorage.getItem("mmo_deleted_product_names");
+          if (rawNames) delNames = JSON.parse(rawNames) || [];
+          if (!delNames.includes(prodName)) {
+            delNames.push(prodName);
+            localStorage.setItem("mmo_deleted_product_names", JSON.stringify(delNames));
+          }
+        }
       } catch(e) {}
 
       // 2. Lọc bỏ vĩnh viễn khỏi danh sách sản phẩm MOCK_DATA.products theo đúng ID
