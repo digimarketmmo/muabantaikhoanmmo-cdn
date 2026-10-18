@@ -1623,6 +1623,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!Array.isArray(p.variants)) p.variants = [];
 
       try {
+        let isProdCleared = false;
+        let clearedMap = {};
+        try {
+          clearedMap = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
+          if (clearedMap && (clearedMap[p.id] || clearedMap[p.id + "__VAR__ALL"])) {
+            isProdCleared = true;
+          }
+        } catch(e) {}
+
         const vMap = getProductVariantsMap();
         const normKey = (p.name && typeof normApiText === "function") ? normApiText(p.name) : "";
         const savedVars = (p.id && vMap[p.id]) || (normKey ? vMap[normKey] : null);
@@ -1634,6 +1643,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           } else {
             p.variants = p.variants.map((curV, i) => {
               const sv = savedVars[i] || {};
+              const isVarCleared = isProdCleared || !!(clearedMap && (clearedMap[p.id + "__VAR__" + i] || (typeof getVariantStockKey === "function" && clearedMap[getVariantStockKey(p.id, i)])));
+
+              if (isVarCleared) {
+                // Đã bị admin xóa kho thủ công: Tuyệt đối không cho phép Math.max hồi sinh số lượng cũ
+                return Object.assign({}, sv, curV, { stock: 0, accounts: [] });
+              }
+
               const curAccs = (curV && Array.isArray(curV.accounts) && curV.accounts.length > 0) ? curV.accounts : [];
               const savedAccs = (Array.isArray(sv.accounts) && sv.accounts.length > 0) ? sv.accounts : [];
               let finalAccs = curAccs.length >= savedAccs.length ? curAccs : savedAccs;
@@ -1655,13 +1671,22 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               return Object.assign({}, sv, curV, { stock: s, accounts: finalAccs });
             });
           }
-          p.stock = p.variants.reduce((tot, vr) => tot + (Number(vr.stock) || 0), 0);
+          if (isProdCleared) {
+            p.variants.forEach(v => { if (v) { v.stock = 0; v.accounts = []; } });
+            p.stock = 0;
+          } else {
+            p.stock = p.variants.reduce((tot, vr) => tot + (Number(vr.stock) || 0), 0);
+          }
           recordProductVariants(p.id, p.variants, p.name);
           return;
         }
 
         // Nếu chưa có savedVars nhưng p.variants đã có sẵn
         if (Array.isArray(p.variants) && p.variants.length > 0) {
+          if (isProdCleared) {
+            p.variants.forEach(v => { if (v) { v.stock = 0; v.accounts = []; } });
+            p.stock = 0;
+          }
           recordProductVariants(p.id, p.variants, p.name);
           return;
         }
@@ -7955,19 +7980,28 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             let isManuallyCleared = false;
             try {
               const clMap = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
-              if (clMap[serverProd.id] || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(serverProd.id, "PROD_MTPIJ9XV") && (clMap["PROD_MTPIJ9XV"] || clMap["PROD_MTPG0PUD"] || clMap["SP_TIKTOK_BRAZIL"]))) {
+              if (clMap[serverProd.id] || clMap[serverProd.id + "__VAR__ALL"] || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(serverProd.id, "PROD_MTPIJ9XV") && (clMap["PROD_MTPIJ9XV"] || clMap["PROD_MTPG0PUD"] || clMap["SP_TIKTOK_BRAZIL"]))) {
                 isManuallyCleared = true;
               }
             } catch(e) {}
 
             const realLocalAccounts = Array.isArray(localStockMap[serverProd.id]) ? localStockMap[serverProd.id].length : 0;
 
-            if (serverProd.variants && Array.isArray(serverProd.variants) && serverProd.variants.length > 0) {
+            if (isManuallyCleared && realLocalAccounts === 0) {
+              // Đã xóa kho thủ công và chưa nạp hàng mới: Ép tồn kho tổng và toàn bộ biến thể về 0
+              serverProd.stock = 0;
+              if (Array.isArray(serverProd.variants)) {
+                serverProd.variants.forEach(v => { if (v) { v.stock = 0; v.accounts = []; } });
+              }
+            } else if (serverProd.variants && Array.isArray(serverProd.variants) && serverProd.variants.length > 0) {
               let varSum = 0;
               serverProd.variants.forEach((v, vidx) => {
                 const vk = getVariantStockKey(serverProd.id, vidx);
                 if (Array.isArray(localStockMap[vk]) && localStockMap[vk].length > 0) {
                   v.stock = localStockMap[vk].length;
+                } else if (isManuallyCleared) {
+                  v.stock = 0;
+                  v.accounts = [];
                 } else {
                   v.stock = (typeof v.stock === "number") ? Math.max(0, v.stock) : 0;
                 }
@@ -7980,19 +8014,17 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               try {
                 const clMap = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
                 delete clMap[serverProd.id];
+                delete clMap[serverProd.id + "__VAR__ALL"];
                 delete clMap["PROD_MTPIJ9XV"];
                 delete clMap["PROD_MTPG0PUD"];
                 delete clMap["SP_TIKTOK_BRAZIL"];
-                delete clMap["PROD_MTU9F5HN"];
-                delete clMap["PROD_MTU9F5HN__VAR__0"];
-                delete clMap["PROD_MTU9F5HN__VAR__1"];
                 localStorage.setItem("mmo_manually_cleared_products", JSON.stringify(clMap));
               } catch(e) {}
             } else if (isManuallyCleared) {
               // Đã xóa kho thủ công và chưa nạp hàng mới: Ép tồn kho tổng và toàn bộ biến thể về 0
               serverProd.stock = 0;
               if (Array.isArray(serverProd.variants)) {
-                serverProd.variants.forEach(v => v.stock = 0);
+                serverProd.variants.forEach(v => { if (v) { v.stock = 0; v.accounts = []; } });
               }
             } else {
               // Kế thừa tồn kho từ Google Sheets nếu không bị xóa thủ công
@@ -13654,6 +13686,27 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       const varIdxNum = (vIdx !== null && vIdx !== undefined && vIdx !== "ALL" && vIdx !== "") ? Number(vIdx) : 0;
       const curVar = (hasVars && prod.variants[varIdxNum]) ? prod.variants[varIdxNum] : null;
 
+      // [CHECK MANUALLY CLEARED]: Nếu kho bị admin xóa sạch tài khoản thủ công -> Ép về 0 ngay lập tức (0ms)
+      const isAllVars = (vIdx === null || vIdx === undefined || vIdx === "ALL" || vIdx === "");
+      try {
+        const clearedMap = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
+        if (clearedMap && (clearedMap[prod.id] || clearedMap[prod.id + "__VAR__ALL"])) {
+          if (isAllVars) {
+            const hasActualAccounts = hasVars
+              ? prod.variants.some(v => v && Array.isArray(v.accounts) && v.accounts.length > 0)
+              : (Array.isArray(prod.accounts) && prod.accounts.length > 0);
+            if (!hasActualAccounts) return 0;
+          } else {
+            const varCleared = clearedMap[prod.id + "__VAR__" + varIdxNum] || (typeof getVariantStockKey === "function" && clearedMap[getVariantStockKey(prod.id, varIdxNum)]) || clearedMap[prod.id];
+            const hasVarAccounts = curVar && Array.isArray(curVar.accounts) && curVar.accounts.length > 0;
+            if (varCleared && !hasVarAccounts) return 0;
+          }
+        } else if (!isAllVars && clearedMap && (clearedMap[prod.id + "__VAR__" + varIdxNum] || (typeof getVariantStockKey === "function" && clearedMap[getVariantStockKey(prod.id, varIdxNum)]))) {
+          const hasVarAccounts = curVar && Array.isArray(curVar.accounts) && curVar.accounts.length > 0;
+          if (!hasVarAccounts) return 0;
+        }
+      } catch(eClr) {}
+
       // 1. Kiểm tra nếu sản phẩm là API On-demand (Ưu tiên số 1, độc lập với deliveryType cũ)
       let apiMap = null;
       if (typeof getApiProductMapping === "function") {
@@ -15249,9 +15302,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           let isManuallyCleared = false;
           try {
             const clm = JSON.parse(localStorage.getItem("mmo_manually_cleared_products") || "{}");
-            if (clm["PROD_MTU9F5HN"] || clm["PROD_MTU9F5HN__VAR__" + variantIdx]) isManuallyCleared = true;
+            if (clm["PROD_MTU9F5HN"] || clm["PROD_MTU9F5HN__VAR__ALL"] || clm["PROD_MTU9F5HN__VAR__" + variantIdx] || (typeof getVariantStockKey === "function" && clm[getVariantStockKey("PROD_MTU9F5HN", variantIdx)])) isManuallyCleared = true;
           } catch(e) {}
-          if (!isManuallyCleared && targetV.stock !== 0 && (!targetV.accounts || targetV.accounts.length === 0)) {
+          if (isManuallyCleared) {
+            return [];
+          }
+          if (targetV.stock !== 0 && (!targetV.accounts || targetV.accounts.length === 0)) {
             const vNum = Number(variantIdx);
             if (vNum === 1) {
               targetV.accounts = ["paypal.vn.2019.01@gmail.com|PaypalMmo@2019#01|TK4XG3DPEHPK3P1B|recov.mmo11@outlook.com|2019","paypal.vn.2019.02@gmail.com|PaypalMmo@2019#02|UL4XG3DPEHPK3P2C|recov.mmo12@outlook.com|2019","paypal.vn.2018.03@gmail.com|PaypalMmo@2018#03|VM4XG3DPEHPK3P3D|recov.mmo13@outlook.com|2018","paypal.vn.2018.04@gmail.com|PaypalMmo@2018#04|WN4XG3DPEHPK3P4E|recov.mmo14@outlook.com|2018","paypal.vn.2017.05@gmail.com|PaypalMmo@2017#05|XO4XG3DPEHPK3P5F|recov.mmo15@outlook.com|2017","paypal.vn.2017.06@gmail.com|PaypalMmo@2017#06|YP4XG3DPEHPK3P6G|recov.mmo16@outlook.com|2017","paypal.vn.2017.07@gmail.com|PaypalMmo@2017#07|ZQ4XG3DPEHPK3P7H|recov.mmo17@outlook.com|2017","paypal.vn.2016.08@gmail.com|PaypalMmo@2016#08|AR4XG3DPEHPK3P8I|recov.mmo18@outlook.com|2016","paypal.vn.2016.09@gmail.com|PaypalMmo@2016#09|BS4XG3DPEHPK3P9J|recov.mmo19@outlook.com|2016","paypal.vn.2016.10@gmail.com|PaypalMmo@2016#10|CT4XG3DPEHPK3P0K|recov.mmo20@outlook.com|2016"];
@@ -15691,7 +15747,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               m.isSourceDeleted = true;
             }
           }
-        } else if (effectiveStock <= 0 && typeof getShopVariantStock === "function") {
+        } else if ((stock === undefined || stock === null) && typeof getShopVariantStock === "function") {
           effectiveStock = getShopVariantStock(curP, curVIdx);
         }
       }
@@ -16074,6 +16130,11 @@ function syncAllOpenViewsStock(changedProdId) {
                     } else if (typeof ev.data.stock === "number") {
                       tProd.stock = ev.data.stock;
                     }
+                    if (ev.data.stock === 0 && Array.isArray(tProd.variants)) {
+                      tProd.variants.forEach(v => {
+                        if (v) { v.stock = 0; v.accounts = []; }
+                      });
+                    }
                   }
                   if (typeof ev.data.totalStock === "number") {
                     tProd.stock = ev.data.totalStock;
@@ -16093,21 +16154,30 @@ function syncAllOpenViewsStock(changedProdId) {
               if (Array.isArray(ev.data.variants)) {
                 freshP.variants = JSON.parse(JSON.stringify(ev.data.variants));
                 currentSelectedProduct.variants = JSON.parse(JSON.stringify(ev.data.variants));
+              } else if (ev.data.stock === 0 && Array.isArray(freshP.variants)) {
+                freshP.variants.forEach(v => { if (v) { v.stock = 0; v.accounts = []; } });
+                if (Array.isArray(currentSelectedProduct.variants)) {
+                  currentSelectedProduct.variants.forEach(v => { if (v) { v.stock = 0; v.accounts = []; } });
+                }
               }
               if (typeof ev.data.totalStock === "number") {
                 freshP.stock = ev.data.totalStock;
                 currentSelectedProduct.stock = ev.data.totalStock;
+              } else if (ev.data.stock === 0) {
+                freshP.stock = 0;
+                currentSelectedProduct.stock = 0;
               }
               currentSelectedProduct = freshP;
               const curVarIdx = (typeof currentSelectedVariantIndex !== "undefined") ? currentSelectedVariantIndex : 0;
               const hasVars = Array.isArray(freshP.variants) && freshP.variants.length > 0;
-              const activeStock = getShopVariantStock(freshP, hasVars ? curVarIdx : null);
+              const isClearedTotal = (ev.data.stock === 0 && (ev.data.variantIdx === "ALL" || ev.data.variantIdx === null || ev.data.variantIdx === undefined));
+              const activeStock = isClearedTotal ? 0 : getShopVariantStock(freshP, hasVars ? curVarIdx : null);
               if (typeof syncDetailStockUI === "function") syncDetailStockUI(activeStock);
 
               const pillsContainer = document.getElementById("dtlVariantPills");
               if (pillsContainer && hasVars) {
                 pillsContainer.innerHTML = freshP.variants.map((v, idx) => {
-                  const vs = getShopVariantStock(freshP, idx);
+                  const vs = isClearedTotal ? 0 : getShopVariantStock(freshP, idx);
                   const badge = vs > 0 
                     ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
                     : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
@@ -24010,6 +24080,9 @@ function executeCompareSourcesSearch() {
       // 4. XÓA TRÊN TURSO DATABASE (ASYNC NỀN)
       if (typeof TURSO_CLIENT !== "undefined" && TURSO_CLIENT.isConfigured()) {
         TURSO_CLIENT.clearAvailableAccounts(prodId, !isClearAll ? vVal : null).catch(e => console.warn("Turso clear error:", e));
+        if (prod && typeof TURSO_CLIENT.saveProduct === "function") {
+          TURSO_CLIENT.saveProduct(prod).catch(() => {});
+        }
       }
 
       // 5. ĐỒNG BỘ GIAO DIỆN TỨC THÌ (0MS)
@@ -24039,6 +24112,39 @@ function executeCompareSourcesSearch() {
       }
 
       refreshAllShopStockUI(prodId);
+
+      // Cập nhật tức thì trang chi tiết sản phẩm nếu đang mở
+      if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && 
+          (String(currentSelectedProduct.id) === String(prodId) || (typeof isSameOrAliasProduct === "function" && isSameOrAliasProduct(currentSelectedProduct.id, prodId)))) {
+        const curVarIdx = (typeof currentSelectedVariantIndex !== "undefined") ? currentSelectedVariantIndex : 0;
+        if (isClearAll) {
+          if (Array.isArray(currentSelectedProduct.variants)) {
+            currentSelectedProduct.variants.forEach(v => { if (v) { v.stock = 0; v.accounts = []; } });
+          }
+          currentSelectedProduct.stock = 0;
+          if (typeof syncDetailStockUI === "function") syncDetailStockUI(0);
+        } else if (Array.isArray(currentSelectedProduct.variants) && currentSelectedProduct.variants[vVal]) {
+          currentSelectedProduct.variants[vVal].stock = 0;
+          currentSelectedProduct.variants[vVal].accounts = [];
+          currentSelectedProduct.stock = currentSelectedProduct.variants.reduce((s, v) => s + (Number(v.stock) || 0), 0);
+          if (curVarIdx === Number(vVal) && typeof syncDetailStockUI === "function") {
+            syncDetailStockUI(0);
+          }
+        }
+        const pillsContainer = document.getElementById("dtlVariantPills");
+        if (pillsContainer && Array.isArray(currentSelectedProduct.variants)) {
+          pillsContainer.innerHTML = currentSelectedProduct.variants.map((v, idx) => {
+            const vs = isClearAll ? 0 : getShopVariantStock(currentSelectedProduct, idx);
+            const badge = vs > 0 
+              ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
+              : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
+            return '<div class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+              '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
+              '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+            '</div>';
+          }).join("");
+        }
+      }
 
       // Ép lại lần nữa sau refreshAllShopStockUI để đảm bảo không bị bất kỳ logic nào ghi đè lại
       if (currentView) {
