@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.7.9";
+const MMO_CURRENT_CODE_VERSION = "5.8.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -1447,8 +1447,9 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (typeof productOrId === "object") {
         if (productOrId.isDeleted === true || productOrId.status === "deleted") return true;
         if (productOrId.id && delIds.includes(String(productOrId.id).trim())) return true;
-        if (productOrId.id === "PROD_MV9SJ8FB6K" || productOrId.id === "PROD_MV9NXBULDO" || productOrId.id === "PROD_MUR3QMQHMM" || productOrId.name === "Tài Khoản Capcut pro 1 tháng") return true;
+        if (productOrId.id === "PROD_MV9SJ8FB6K" || productOrId.id === "PROD_MV9NXBULDO" || productOrId.id === "PROD_MTU9F5HN" || productOrId.id === "PROD_MUR3QMQHMM" || productOrId.name === "Tài Khoản Capcut pro 1 tháng") return true;
         const pName = String(productOrId.name || "").trim().toLowerCase();
+        if (pName.includes("paypal 2025") || pName.includes("paypal 2016") || pName.includes("paypal – 2016") || pName.includes("paypal - 2016") || pName.includes("ngâm lâu cực kỳ trâu") || pName.includes("ngam lau cuc ky trau")) return true;
         if (pName.includes("wink vip+") || pName.includes("wink vip") || pName === "test" || pName === "tét" || pName.includes("sản phẩm test") || pName.includes("san pham test") || pName.startsWith("test ") || pName.startsWith("demo ") || pid.toLowerCase().includes("test")) return true;
         try {
           const rawNames = localStorage.getItem("mmo_deleted_product_names");
@@ -1457,8 +1458,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             if (Array.isArray(delNames) && typeof normApiText === "function") {
               const curNorm = normApiText(productOrId.name || "");
               if (curNorm && delNames.some(dn => normApiText(dn) === curNorm)) {
-                const isExplicitlyActive = MOCK_DATA && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.some(p => p && String(p.id).trim() === pid && !delIds.includes(pid) && p.isDeleted !== true);
-                if (!isExplicitlyActive) return true;
+                return true;
               }
             }
           }
@@ -1726,6 +1726,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
             let parsed = JSON.parse(savedProds);
             if (Array.isArray(parsed) && parsed.length > 0) {
               // BẢO VỆ CHẶT CHẼ: LỌC BỎ HOÀN TOÀN SẢN PHẨM ĐÃ XÓA VÀ SẢN PHẨM TEST
+              const origLen = parsed.length;
               parsed = parsed.filter(function(p) {
                 if (!p) return false;
                 const pId = String(p.id || '').trim();
@@ -1733,6 +1734,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 if (deletedIds.includes(pId) || (typeof isProductDeleted === "function" && isProductDeleted(p))) return false;
                 return pId !== '1775731336499' && !pNm.includes('sản phẩm test') && !pNm.includes('san pham test') && pNm !== 'test' && pNm !== 'tét';
               });
+              if (parsed.length !== origLen) {
+                try {
+                  const cleanJson = JSON.stringify(parsed);
+                  localStorage.setItem("mmo_products", cleanJson);
+                  localStorage.setItem("mmo_admin_products", cleanJson);
+                } catch(eClean) {}
+              }
               // [SSOT]: Khi load từ localStorage, bảo toàn accounts array của từng variant
               // accounts là nguồn dữ liệu tuyệt đối - KHÔNG được overwrite bằng dữ liệu cũ
               if (!MOCK_DATA.products || MOCK_DATA.products.length === 0) {
@@ -29041,7 +29049,9 @@ function executeCompareSourcesSearch() {
                 String(item.id).toLowerCase() === cleanId.toLowerCase() ||
                 (!isId && item.name && item.name.toLowerCase() === cleanId.toLowerCase())
               ));
-              if (p && typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
+              if (p && typeof isProductDeleted === "function" && isProductDeleted(p)) {
+                p = null;
+              } else if (p && typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
                 if (!MOCK_DATA.products.some(x => String(x.id) === String(p.id))) {
                   MOCK_DATA.products.unshift(p);
                 }
@@ -29388,7 +29398,29 @@ function executeCompareSourcesSearch() {
 
       const quickStockWrap = document.getElementById("dtlAdminQuickStockWrap");
       if (quickStockWrap) {
-        const isAdm = (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser))));
+        let isAdm = false;
+        try {
+          if (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser)))) {
+            isAdm = true;
+          }
+          if (!isAdm && typeof isCurrentUserAdminOrAdminView === "function" && isCurrentUserAdminOrAdminView()) {
+            isAdm = true;
+          }
+          if (!isAdm) {
+            const rawUser = localStorage.getItem("mmo_user");
+            if (rawUser) {
+              const u = JSON.parse(rawUser);
+              const uRole = (u && u.role ? String(u.role).toLowerCase() : "");
+              const uEmail = (u && u.email ? String(u.email).toLowerCase().trim() : "");
+              if (uRole.includes("admin") || uRole.includes("quản trị") || uEmail === "manhdongvtc@gmail.com" || uEmail === "manhdongvt1@gmail.com" || uEmail === "manhdongofficial8x@gmail.com" || uEmail === "hoangtuananh0968@gmail.com") {
+                isAdm = true;
+              }
+            }
+          }
+          if (!isAdm && (localStorage.getItem("mmo_admin_session") || sessionStorage.getItem("mmo_admin_authenticated") || localStorage.getItem("mmo_admin_products"))) {
+            isAdm = true;
+          }
+        } catch(eAdm) {}
         quickStockWrap.style.display = isAdm ? "block" : "none";
         if (isAdm) {
           const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null);
@@ -39280,8 +39312,11 @@ function initMMOApplication() {
     async function deleteProduct(id) {
       const pid = String(id || "").trim();
       let p = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(item => item && item.id === pid) : null;
-      if (!p && typeof normApiText === "function") {
-        p = (MOCK_DATA && MOCK_DATA.products) ? MOCK_DATA.products.find(item => normApiText(item.name) === normApiText(pid)) : null;
+      if (!p && typeof findShopProduct === "function") {
+        p = findShopProduct(pid);
+      }
+      if (!p && typeof normApiText === "function" && MOCK_DATA && MOCK_DATA.products) {
+        p = MOCK_DATA.products.find(item => normApiText(item.name) === normApiText(pid));
       }
       const prodName = p ? p.name : pid;
       const targetId = p ? p.id : pid;
@@ -39321,19 +39356,29 @@ function initMMOApplication() {
         MOCK_DATA.products = MOCK_DATA.products.filter(function(item) {
           if (!item) return false;
           if (item.id === targetId || item.id === pid) return false;
+          if (prodName && item.name === prodName) return false;
           return true;
         });
-        // Ghi trực tiếp đồng bộ vào localStorage (không chờ debounce) để chống mất trạng thái xóa khi F5
-        try {
-          const leanProds = MOCK_DATA.products.filter(function(item) {
-            return item && item.id !== targetId && item.id !== pid;
-          });
-          const jsonStr = JSON.stringify(leanProds);
-          localStorage.setItem("mmo_admin_products", jsonStr);
-          localStorage.setItem("mmo_products", jsonStr);
-        } catch(eDirect) {}
-        saveProductsToStorage();
       }
+      // Ghi trực tiếp đồng bộ vào localStorage (không chờ debounce) để chống mất trạng thái xóa khi F5
+      try {
+        ["mmo_admin_products", "mmo_products", "mmo_all_products"].forEach(function(k) {
+          const rawStored = localStorage.getItem(k);
+          if (rawStored) {
+            let storedList = JSON.parse(rawStored);
+            if (Array.isArray(storedList)) {
+              storedList = storedList.filter(function(item) {
+                if (!item) return false;
+                if (item.id === targetId || item.id === pid) return false;
+                if (prodName && item.name === prodName) return false;
+                return true;
+              });
+              localStorage.setItem(k, JSON.stringify(storedList));
+            }
+          }
+        });
+      } catch(eDirect) {}
+      saveProductsToStorage();
 
       // 3. Xóa triệt để kho hàng liên quan theo đúng ID
       try {
