@@ -1397,7 +1397,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     const PERMANENT_DELETED_IDS = [
       "PROD_MV9SJ8FB6K", // Sản phẩm Capcut tải từ khotaikhoanso nhầm sang - loại bỏ vĩnh viễn
-      "PROD_MV9NXBULDO", // Paypal clone duplicate (Chỉ giữ 1 bản chính PROD_MTU9F5HN)
+      "PROD_MV9NXBULDO", // Paypal clone duplicate
+      "PROD_MTU9F5HN",   // Paypal 2025 - 2016 Đã ngâm lâu cực kỳ Trâu (Admin đã xóa vĩnh viễn)
       "PROD_MUR3QMQHMM", // BẢN TÀI KHOẢN Wink VIP+ 7 Ngày (Không có trên trang admin - CẤM HIỂN THỊ)
       "PROD_MUJU6XY3HK", // Proxy 4Gvinaphone - 30 ngày (đã xóa)
       "PROD_MUM6JQTW8C",
@@ -1436,7 +1437,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (!pid) return true;
 
       // 1. TUYỆT ĐỐI KHÔNG HIỂN THỊ BẤT KỲ SẢN PHẨM DEMO, TEST HOẶC NHẦM TỪ KHOTAIKHOANSO NÀO
-      if (pid === "PROD_MV9SJ8FB6K" || pid === "PROD_MV9NXBULDO" || pid === "PROD_MUR3QMQHMM" || pid === "PROD_TEST" || pid === "1775731336499" || pid.startsWith("SP_") || DUMMY_SEED_IDS.includes(pid) || PERMANENT_DELETED_IDS.includes(pid)) return true;
+      if (pid === "PROD_MTU9F5HN" || pid === "PROD_MV9SJ8FB6K" || pid === "PROD_MV9NXBULDO" || pid === "PROD_MUR3QMQHMM" || pid === "PROD_TEST" || pid === "1775731336499" || pid.startsWith("SP_") || DUMMY_SEED_IDS.includes(pid) || PERMANENT_DELETED_IDS.includes(pid)) return true;
 
       // 2. [SSOT BLACKLIST]: KIỂM TRA TRỰC TIẾP DANH SÁCH ĐEN SẢN PHẨM ĐÃ BỊ ADMIN XÓA (0MS)
       const delIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
@@ -14831,7 +14832,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         let hasNewOrUpdated = false;
 
-        const purgedRedundantIds = new Set(['PROD_MTPG0PUD', 'PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ']);
+        const purgedRedundantIds = new Set(['PROD_MTPG0PUD', 'PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ', 'PROD_MTU9F5HN', 'PROD_MV9NXBULDO']);
 
         res.products.forEach(function(tp) {
           if (!tp || !tp.id || tp.id === 'zalo-new-2016') return;
@@ -15208,7 +15209,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
               if (raw) {
                 const list = JSON.parse(raw);
                 if (Array.isArray(list)) {
-                  const purgedIds = new Set(['PROD_MTPG0PUD', 'PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ']);
+                  const purgedIds = new Set(['PROD_MTPG0PUD', 'PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ', 'PROD_MTU9F5HN', 'PROD_MV9NXBULDO']);
                   const seenLsCanonicals = new Set();
                   const seenLsNames = new Set();
                   const seenLsIds = new Set();
@@ -15496,23 +15497,6 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           return [];
         }
 
-        // [AUTO SEED PAYPAL 20 ACCS]: Đảm bảo luôn trả về 10 acc mỗi biến thể nếu chưa bị xóa thủ công
-        if (prodId === "PROD_MTU9F5HN") {
-          if (isTargetVarCleared || isProdManuallyCleared) {
-            targetV.accounts = [];
-            targetV.stock = 0;
-            return [];
-          }
-          if (targetV.stock !== 0 && (!targetV.accounts || targetV.accounts.length === 0)) {
-            const vNum = Number(variantIdx);
-            if (vNum === 1) {
-              targetV.accounts = ["paypal.vn.2019.01@gmail.com|PaypalMmo@2019#01|TK4XG3DPEHPK3P1B|recov.mmo11@outlook.com|2019","paypal.vn.2019.02@gmail.com|PaypalMmo@2019#02|UL4XG3DPEHPK3P2C|recov.mmo12@outlook.com|2019","paypal.vn.2018.03@gmail.com|PaypalMmo@2018#03|VM4XG3DPEHPK3P3D|recov.mmo13@outlook.com|2018","paypal.vn.2018.04@gmail.com|PaypalMmo@2018#04|WN4XG3DPEHPK3P4E|recov.mmo14@outlook.com|2018","paypal.vn.2017.05@gmail.com|PaypalMmo@2017#05|XO4XG3DPEHPK3P5F|recov.mmo15@outlook.com|2017","paypal.vn.2017.06@gmail.com|PaypalMmo@2017#06|YP4XG3DPEHPK3P6G|recov.mmo16@outlook.com|2017","paypal.vn.2017.07@gmail.com|PaypalMmo@2017#07|ZQ4XG3DPEHPK3P7H|recov.mmo17@outlook.com|2017","paypal.vn.2016.08@gmail.com|PaypalMmo@2016#08|AR4XG3DPEHPK3P8I|recov.mmo18@outlook.com|2016","paypal.vn.2016.09@gmail.com|PaypalMmo@2016#09|BS4XG3DPEHPK3P9J|recov.mmo19@outlook.com|2016","paypal.vn.2016.10@gmail.com|PaypalMmo@2016#10|CT4XG3DPEHPK3P0K|recov.mmo20@outlook.com|2016"];
-            } else {
-              targetV.accounts = ["paypal.vn.2025.01@gmail.com|PaypalMmo@2025#01|JBSWY3DPEHPK3PXP|recov.mmo01@outlook.com|2025","paypal.vn.2024.02@gmail.com|PaypalMmo@2024#02|HXDMVJECJJWSRZ3U|recov.mmo02@outlook.com|2024","paypal.vn.2024.03@gmail.com|PaypalMmo@2024#03|KRUGS4ZANFZSAYJA|recov.mmo03@outlook.com|2024","paypal.vn.2023.04@gmail.com|PaypalMmo@2023#04|MZXW6YTBOJUW4ZZ2|recov.mmo04@outlook.com|2023","paypal.vn.2023.05@gmail.com|PaypalMmo@2023#05|NB2HI4DTHIXS653X|recov.mmo05@outlook.com|2023","paypal.vn.2022.06@gmail.com|PaypalMmo@2022#06|ORSXG5BRGIZTINJU|recov.mmo06@outlook.com|2022","paypal.vn.2022.07@gmail.com|PaypalMmo@2022#07|PFXXK33VG44DSOR2|recov.mmo07@outlook.com|2022","paypal.vn.2021.08@gmail.com|PaypalMmo@2021#08|QJ2W65DFOI2XEYLD|recov.mmo08@outlook.com|2021","paypal.vn.2021.09@gmail.com|PaypalMmo@2021#09|RJ4XKZLENRSW44DF|recov.mmo09@outlook.com|2021","paypal.vn.2020.10@gmail.com|PaypalMmo@2020#10|SJWXG3DPEHPK3P7A|recov.mmo10@outlook.com|2020"];
-            }
-            targetV.stock = targetV.accounts.length;
-          }
-        }
         // [AUTO SEED TIKTOK BRAZIL 75 ACCS]: Đảm bảo luôn trả về 75 acc thật nếu chưa bị xóa thủ công
         if ((prodId === "PROD_MTPIJ9XV" || prodId === "SP_TIKTOK_BRAZIL") && (variantIdx === 0 || variantIdx === "0" || variantIdx === null)) {
           let isManuallyCleared = false;
@@ -29245,12 +29229,6 @@ function executeCompareSourcesSearch() {
         dtlNotice.title = wTxt;
       }
 
-      // [FIX MÔ TẢ PAYPAL TRÂU]: Tự động khôi phục toàn bộ thông số, bảng phân loại, chính sách bảo hành và hướng dẫn sử dụng
-      if (p && (p.id === "PROD_MTU9F5HN" || (p.name && p.name.includes("Paypal 2025")))) {
-        if (!p.description || p.description.length < 200) {
-          p.description = "💎 TỔNG QUAN TÀI KHOẢN PAYPAL VIỆT NAM (NGÂM LÂU 2025 - 2016) CỰC KỲ TRÂU BÒ\nBạn đang tìm kiếm tài khoản Paypal Việt Nam uy tín, đã ngâm lâu năm, độ trust cao để nhận tiền quốc tế, thanh toán dịch vụ MMO, checkout đơn hàng hoặc làm Affiliate/Freelancer mà không lo bị hold tiền, limit hay checkpoint vô lý?\nSản phẩm Paypal Việt Nam tại MUABANTAIKHOANMMO.COM chính là sự lựa chọn số 1 dành cho anh em làm MMO chuyên nghiệp!\n\n🔥 ĐẶC ĐIỂM NỔI BẬT & THÔNG SỐ TÀI KHOẢN:\n• Năm tạo tài khoản: Đa dạng từ năm 2016 đến 2025. Tài khoản đã ngâm cực lâu (từ 1 năm đến 9 năm), lịch sử sạch 100%.\n• Độ Trust Cực Cao: Đã qua thời gian ngâm lâu, nhận tiền mượt mà, bao ngâm, bao test, hạn chế tối đa tình trạng 21 ngày hold tiền hay limit 180 ngày.\n• Đầy đủ thông tin: Định dạng chuẩn gồm Email | Mật khẩu Paypal | Mã 2FA (hoặc Cookie) | Email khôi phục | Mật khẩu email.\n• Xác minh chuẩn chỉnh: Đã xác minh Email và số điện thoại hoàn tất, sẵn sàng liên kết thẻ ngân hàng/Visa/Mastercard để sử dụng ngay.\n• Giao hàng tự động 24/7: Hệ thống cấp thông tin tài khoản ngay lập tức trong 5 giây sau khi thanh toán.\n\n📦 BẢNG PHÂN LOẠI BIẾN THỂ:\n1. Gói \"Paypal 2025 - 2020\" (50.000 đ): Tài khoản tạo từ năm 2020 đến 2025, đã ngâm từ 1 đến 5 năm. Phù hợp cho thanh toán cá nhân, nhận tiền nhỏ giọt, mua sắm quốc tế, làm khảo sát, airdrop.\n2. Gói \"Paypal 2019 - 2016\" (80.000 đ): Tài khoản Paypal CỔ SIÊU TRÂU tạo từ 2016 đến 2019 (ngâm 6 - 9 năm). Độ trust cực đỉnh, chuyên dụng cho nhận thanh toán Affiliate, Network, Freelancer, nhận tiền ngoại tệ lớn, chạy Ads mượt mà.\n\n🛡️ CHÍNH SÁCH BẢO HÀNH (1 ĐỔI 1 UY TÍN):\n• Bảo hành 1 Đổi 1 trong 24 giờ đầu tiên nếu có lỗi sai mật khẩu, không đăng nhập được lần đầu.\n• Hỗ trợ kỹ thuật, hướng dẫn gỡ checkpoint và tư vấn liên kết ngân hàng 24/7 qua Zalo & Telegram hỗ trợ.\n• Lưu ý: Không bảo hành trong trường hợp khách hàng nhận tiền từ nguồn bẩn (scam, đâm cc, vi phạm chính sách Paypal) hoặc tự ý đổi thông tin làm khóa tài khoản.\n\n📌 HƯỚNG DẪN ĐĂNG NHẬP & SỬ DỤNG AN TOÀN TRÁNH CHECKPOINT:\n1. Đăng nhập trên trình duyệt sạch (tạo profile Chrome/Cốc Cốc mới) hoặc sử dụng trình duyệt chống phát hiện (AdsPower, Gologin, Hidemyacc...).\n2. Bắt buộc sử dụng IP Việt Nam sạch (khuyến nghị Dcom 4G, mạng gia đình hoặc Proxy IPv4 tĩnh sạch). Tuyệt đối KHÔNG dùng VPN miễn phí hoặc proxy bẩn để đăng nhập.\n3. Sau khi đăng nhập thành công, vui lòng ngâm tài khoản trên thiết bị từ 3 - 5 ngày trước khi thực hiện các giao dịch nhận/chuyển số tiền lớn.\n4. Đổi mật khẩu email và bật lại bảo mật 2FA của riêng bạn để bảo vệ tài khoản tối đa.";
-        }
-      }
 
       // [FIX MÔ TẢ PROXY NHẬT BỊ GẮN NHẦM TELEGRAM]: Tự động nhận diện và khôi phục chuẩn xác
       if (p && (p.id === "PROD_MUM6JQTW8C" || (p.name && p.name.includes("JAPAN") && p.name.includes("NHẬT")))) {
