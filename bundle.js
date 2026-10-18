@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.8.2";
+const MMO_CURRENT_CODE_VERSION = "5.8.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -27656,6 +27656,31 @@ function executeCompareSourcesSearch() {
     }
     window.goToMyOrders = goToMyOrders;
 
+    function handleOpenCartOrOrders() {
+      let storedUserObj = null;
+      try {
+        const rawU = safeStorageGet("mmo_user");
+        if (rawU) storedUserObj = JSON.parse(rawU);
+      } catch(eU) {}
+      if (storedUserObj) {
+        goToMyOrders();
+      } else {
+        if (typeof showToast === "function") showToast("💡 Vui lòng đăng nhập để xem giỏ hàng và danh sách đơn hàng đã mua!", "info");
+        if (typeof openAuthModal === "function") openAuthModal("login");
+      }
+    }
+    window.handleOpenCartOrOrders = handleOpenCartOrOrders;
+
+    function handleOpenContactModal() {
+      const ft = document.querySelector(".footer-col-4") || document.querySelector("footer");
+      if (ft) {
+        ft.scrollIntoView({ behavior: "smooth" });
+      } else {
+        window.open("https://zalo.me/0975902076", "_blank");
+      }
+    }
+    window.handleOpenContactModal = handleOpenContactModal;
+
     function copyThankYouCredentials() {
       const text = document.getElementById("tyCredentials")?.value || window.lastDeliveredCredentials;
       if (text) {
@@ -38220,6 +38245,39 @@ function initMMOApplication() {
           targetView = "viewPrivacy";
         } else if (hash === "viewTerms" || hash === "terms" || viewParam === "viewTerms") {
           targetView = "viewTerms";
+        } else if (viewParam === "cart" || hash === "cart" || viewParam === "orders" || hash === "orders") {
+          // Google Sitelinks: Giỏ Hàng & Tra Cứu Đơn Hàng
+          targetView = "viewStore";
+          setTimeout(function() {
+            if (typeof handleOpenCartOrOrders === "function") {
+              handleOpenCartOrOrders();
+            } else if (typeof goToMyOrders === "function") {
+              goToMyOrders();
+            }
+          }, 150);
+        } else if (viewParam === "register" || hash === "register") {
+          // Google Sitelinks: Đăng Ký Tài Khoản
+          targetView = "viewStore";
+          setTimeout(function() {
+            if (typeof openAuthModal === "function") openAuthModal("register");
+          }, 150);
+        } else if (viewParam === "contact" || hash === "contact") {
+          // Google Sitelinks: Liên Hệ Hỗ Trợ
+          targetView = "viewStore";
+          setTimeout(function() {
+            if (typeof handleOpenContactModal === "function") {
+              handleOpenContactModal();
+            }
+          }, 150);
+        } else if (viewParam === "tools" || hash === "tools" || viewParam === "viewTools" || hash === "viewTools") {
+          // Google Sitelinks: Authenticator ứng dụng tạo 2FA OTP
+          targetView = "viewTools";
+        } else if (viewParam === "blog" || hash === "blog" || viewParam === "viewBlog" || hash === "viewBlog") {
+          // Google Sitelinks: Tin tức & Cẩm nang MMO
+          targetView = "viewBlog";
+        } else if (viewParam === "warranty" || hash === "warranty" || viewParam === "help" || hash === "help" || viewParam === "viewWarranty" || hash === "viewWarranty") {
+          // Google Sitelinks: Trung tâm Trợ giúp & Bảo hành
+          targetView = "viewWarranty";
         } else if (viewParam && validViews.includes(viewParam) && viewParam !== "viewProductDetail") {
           targetView = viewParam;
         } else if (hash && validViews.includes(hash) && hash !== "viewProductDetail") {
@@ -38239,6 +38297,20 @@ function initMMOApplication() {
           } else {
             targetView = "viewProductDetail";
           }
+        } else if (qSearchParam && !qSearchParam.includes("PROD_") && !qSearchParam.includes("SP_")) {
+          // Google Sitelinks Search Box: Tìm kiếm từ khóa người dùng gõ từ Google Searchbox
+          targetView = "viewStore";
+          setTimeout(function() {
+            const cleanQ = qSearchParam.trim();
+            const hInp = document.getElementById("headerSearchInput");
+            const sInp = document.getElementById("storeSearchInput");
+            const aInp = document.getElementById("allProdSearchInp");
+            if (hInp) hInp.value = cleanQ;
+            if (sInp) sInp.value = cleanQ;
+            if (aInp) aInp.value = cleanQ;
+            if (typeof filterSearch === "function") filterSearch(cleanQ);
+            else if (typeof handleHeaderSearch === "function") handleHeaderSearch();
+          }, 200);
         } else if (hasBlogParam || isArticlePath) {
           targetView = "viewBlogDetail";
         } else if (savedView && validViews.includes(savedView) && savedView !== "viewProductDetail") {
