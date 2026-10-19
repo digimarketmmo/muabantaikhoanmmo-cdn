@@ -25246,8 +25246,11 @@ function executeCompareSourcesSearch() {
     // =========================================================================
     
     // =========================================================================
-    // MULTI-BRAND SEO ENGINE (v5.9.3) - Tự động nhận diện thương hiệu theo domain
-    // muabantaikhoanmmo.com <---> taphoammo.ink (Dữ liệu chung, Thương hiệu & SEO riêng)
+    // =========================================================================
+    // MULTI-BRAND SEO & ASSET ISOLATION ENGINE (v5.9.6)
+    // Tách riêng Logo, Favicon, OG Image & Tên thương hiệu cho từng Website
+    // taphoammo.ink <---> muabantaikhoanmmo.com (Dữ liệu chung, Thương hiệu & Assets riêng)
+    // Dòng dưới logo luôn giữ nguyên: SÀN SẢN PHẨM SỐ & DỊCH VỤ MMO
     // =========================================================================
     function getCurrentBrandProfile() {
       var host = '';
@@ -25261,10 +25264,10 @@ function executeCompareSourcesSearch() {
           domain: 'taphoammo.ink',
           fullDomain: 'https://www.taphoammo.ink',
           brandName: 'TAPHOAMMO.INK',
-          shortName: 'Tạp Hóa MMO',
+          shortName: 'TAPHOAMMO.INK',
           siteName: 'TAPHOAMMO.INK',
-          tagline: 'Chợ Tài Khoản & Dịch Vụ MMO Tự Động 24/7',
-          homeTitle: 'TAPHOAMMO.INK - Chợ Mua Bán Tài Khoản MMO & Dịch Vụ Số Uy Tín',
+          tagline: 'Sàn Sản Phẩm Số & Dịch Vụ MMO',
+          homeTitle: 'TAPHOAMMO.INK - Sàn Sản Phẩm Số & Dịch Vụ MMO Uy Tín',
           homeDesc: 'Taphoammo.ink là chợ tài nguyên số cho anh em làm MMO, chuyên via, clone, gmail, proxy, tool và nguyên liệu chạy ads. Giao dịch tự động 24/7.',
           marqueeText: '🎉 Chào mừng bạn đến với TAPHOAMMO.INK - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!',
           email: 'support@taphoammo.ink',
@@ -25303,63 +25306,230 @@ function executeCompareSourcesSearch() {
     }
     window.getCurrentBrandProfile = getCurrentBrandProfile;
 
-    function getGeneralSettings() {
-      const bProf = (typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile() : {
-        siteName: "MUABANTAIKHOANMMO",
-        email: "muabantaikhoanmmo@gmail.com",
-        supportEmail: "muabantaikhoanmmo@gmail.com",
-        marqueeText: "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!"
+    // =========================================================================
+    // QUẢN LÝ CẤU HÌNH THƯƠNG HIỆU TÁCH BIỆT (BRAND-SPECIFIC ASSETS & SETTINGS)
+    // =========================================================================
+    function getBrandSpecificSettings(brandKey) {
+      var bKey = brandKey || ((typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile().brandKey : 'taphoammo');
+      var isTapHoa = (bKey === 'taphoammo');
+      var defaultName = isTapHoa ? 'TAPHOAMMO.INK' : 'MUABANTAIKHOANMMO';
+      var defaultLogo = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png';
+      var defaultFavicon = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png';
+      var defaultOg = 'https://iili.io/nFV4Rln.png';
+
+      var result = {
+        siteName: defaultName,
+        brandLogo: defaultLogo,
+        brandFavicon: defaultFavicon,
+        brandOgImage: defaultOg
       };
-      const defaultSettings = {
-        siteName: bProf.siteName || "MUABANTAIKHOANMMO",
-        googleClientId: "788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com",
-        affiliateRate: 10,
-        hotline: "0975902076",
-        email: bProf.email || "muabantaikhoanmmo@gmail.com",
-        supportEmail: bProf.supportEmail || "muabantaikhoanmmo@gmail.com",
-        telegram: "https://t.me/groupmuabantaikhoanmmo",
-        telegramGroup: "https://t.me/groupmuabantaikhoanmmo",
-        telegramChannel: "https://t.me/muabantaikhoanmmo",
-        marqueeText: bProf.marqueeText || "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!",
-        gasUrl: "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec",
-        brandLogo: bProf.brandLogo || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png",
-        brandFavicon: bProf.brandFavicon || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png",
-        brandOgImage: bProf.brandOgImage || "https://iili.io/nFV4Rln.png"
-      };
+
       try {
-        let stored = localStorage.getItem("mmo_system_settings");
-        if (!stored) stored = localStorage.getItem("mmo_general_settings");
-        if (!stored) stored = localStorage.getItem("mmo_settings_permanent_backup");
+        // 1. Thử lấy từ kho riêng biệt theo brandKey
+        var stored = localStorage.getItem('mmo_brand_settings_' + bKey);
+        if (stored) {
+          var parsed = JSON.parse(stored);
+          if (parsed && typeof parsed === 'object') {
+            if (parsed.siteName && parsed.siteName.trim()) result.siteName = parsed.siteName.trim();
+            if (parsed.brandLogo && parsed.brandLogo.trim() && !parsed.brandLogo.includes('img_1790888969056_z00fh5')) result.brandLogo = parsed.brandLogo.trim();
+            if (parsed.brandFavicon && parsed.brandFavicon.trim() && !parsed.brandFavicon.includes('img_1790888988353_677lyw')) result.brandFavicon = parsed.brandFavicon.trim();
+            if (parsed.brandOgImage && parsed.brandOgImage.trim()) result.brandOgImage = parsed.brandOgImage.trim();
+            return result;
+          }
+        }
+
+        // 2. Fallback đọc từ mmo_system_settings theo prefix
+        var sysStored = localStorage.getItem('mmo_system_settings') || localStorage.getItem('mmo_general_settings');
+        if (sysStored) {
+          var sys = JSON.parse(sysStored);
+          if (sys && typeof sys === 'object') {
+            var prefix = bKey + '_';
+            var pName = sys[prefix + 'siteName'] || (isTapHoa ? '' : sys.siteName);
+            var pLogo = sys[prefix + 'brandLogo'] || (isTapHoa ? '' : sys.brandLogo);
+            var pFav = sys[prefix + 'brandFavicon'] || (isTapHoa ? '' : sys.brandFavicon);
+            var pOg = sys[prefix + 'brandOgImage'] || (isTapHoa ? '' : sys.brandOgImage);
+
+            if (pName && pName.trim()) result.siteName = pName.trim();
+            if (pLogo && pLogo.trim() && !pLogo.includes('img_1790888969056_z00fh5')) result.brandLogo = pLogo.trim();
+            if (pFav && pFav.trim() && !pFav.includes('img_1790888988353_677lyw')) result.brandFavicon = pFav.trim();
+            if (pOg && pOg.trim()) result.brandOgImage = pOg.trim();
+          }
+        }
+      } catch(e) {}
+      return result;
+    }
+    window.getBrandSpecificSettings = getBrandSpecificSettings;
+
+    function saveBrandSpecificSettings(brandKey, data) {
+      if (!brandKey || !data) return;
+      try {
+        var current = getBrandSpecificSettings(brandKey);
+        var merged = Object.assign({}, current, data);
+        localStorage.setItem('mmo_brand_settings_' + brandKey, JSON.stringify(merged));
+        return merged;
+      } catch(e) {
+        console.warn('saveBrandSpecificSettings warning:', e);
+      }
+    }
+    window.saveBrandSpecificSettings = saveBrandSpecificSettings;
+
+    // Biến lưu trạng thái tab đang chọn trong Admin
+    window._currentEditingBrandKey = ((typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile().brandKey : 'taphoammo');
+
+    function switchBrandConfigTab(brandKey) {
+      var bKey = brandKey || 'taphoammo';
+
+      // Nếu đang đổi từ brand cũ sang brand mới, lưu tạm dữ liệu trên form vào brand cũ
+      if (window._currentEditingBrandKey && window._currentEditingBrandKey !== bKey) {
+        var prevKey = window._currentEditingBrandKey;
+        var prevNameEl = document.getElementById('setSiteName');
+        var prevLogoEl = document.getElementById('setSiteLogoUrl');
+        var prevFavEl = document.getElementById('setSiteFaviconUrl');
+        var prevOgEl = document.getElementById('setSiteOgImageUrl');
+        if (prevNameEl && prevLogoEl && prevFavEl && prevOgEl) {
+          saveBrandSpecificSettings(prevKey, {
+            siteName: prevNameEl.value.trim(),
+            brandLogo: prevLogoEl.value.trim(),
+            brandFavicon: prevFavEl.value.trim(),
+            brandOgImage: prevOgEl.value.trim()
+          });
+        }
+      }
+
+      window._currentEditingBrandKey = bKey;
+      var bData = getBrandSpecificSettings(bKey);
+
+      var nameEl = document.getElementById('setSiteName');
+      if (nameEl) nameEl.value = bData.siteName || (bKey === 'taphoammo' ? 'TAPHOAMMO.INK' : 'MUABANTAIKHOANMMO');
+
+      var logoEl = document.getElementById('setSiteLogoUrl');
+      if (logoEl) {
+        logoEl.value = bData.brandLogo || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png';
+        previewBrandUrl(logoEl.value, 'setSiteLogoPreview', 'setSiteLogoHint', 'btnResetLogo');
+      }
+
+      var favEl = document.getElementById('setSiteFaviconUrl');
+      if (favEl) {
+        favEl.value = bData.brandFavicon || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png';
+        previewBrandUrl(favEl.value, 'setSiteFaviconPreview', 'setSiteFaviconHint', 'btnResetFavicon');
+      }
+
+      var ogEl = document.getElementById('setSiteOgImageUrl');
+      if (ogEl) {
+        ogEl.value = bData.brandOgImage || 'https://iili.io/nFV4Rln.png';
+        previewBrandUrl(ogEl.value, 'setSiteOgImagePreview', 'setSiteOgImageHint', 'btnResetOgImage');
+      }
+
+      // Cập nhật phong cách UI các nút Tab
+      var btnTapHoa = document.getElementById('btnBrandTabTapHoa');
+      var btnMuaBan = document.getElementById('btnBrandTabMuaBan');
+      var badgeEl = document.getElementById('activeBrandBadge') || document.getElementById('activeBrandIndicatorBadge');
+
+      if (btnTapHoa && btnMuaBan) {
+        if (bKey === 'taphoammo') {
+          btnTapHoa.style.background = '#0284c7';
+          btnTapHoa.style.borderColor = '#38bdf8';
+          btnTapHoa.style.color = '#ffffff';
+          btnTapHoa.style.fontWeight = '800';
+          btnTapHoa.style.boxShadow = '0 0 10px rgba(56,189,248,0.35)';
+
+          btnMuaBan.style.background = '#0d121f';
+          btnMuaBan.style.borderColor = '#1e293b';
+          btnMuaBan.style.color = '#94a3b8';
+          btnMuaBan.style.fontWeight = '600';
+          btnMuaBan.style.boxShadow = 'none';
+
+          if (badgeEl) {
+            badgeEl.innerText = 'Đang cấu hình: TAPHOAMMO.INK';
+            badgeEl.style.color = '#38bdf8';
+            badgeEl.style.background = 'rgba(56,189,248,0.12)';
+            badgeEl.style.borderColor = 'rgba(56,189,248,0.3)';
+          }
+        } else {
+          btnMuaBan.style.background = '#059669';
+          btnMuaBan.style.borderColor = '#10b981';
+          btnMuaBan.style.color = '#ffffff';
+          btnMuaBan.style.fontWeight = '800';
+          btnMuaBan.style.boxShadow = '0 0 10px rgba(16,185,129,0.35)';
+
+          btnTapHoa.style.background = '#0d121f';
+          btnTapHoa.style.borderColor = '#1e293b';
+          btnTapHoa.style.color = '#94a3b8';
+          btnTapHoa.style.fontWeight = '600';
+          btnTapHoa.style.boxShadow = 'none';
+
+          if (badgeEl) {
+            badgeEl.innerText = 'Đang cấu hình: MUABANTAIKHOANMMO.COM';
+            badgeEl.style.color = '#10b981';
+            badgeEl.style.background = 'rgba(16,185,129,0.12)';
+            badgeEl.style.borderColor = 'rgba(16,185,129,0.3)';
+          }
+        }
+      }
+    }
+    window.switchBrandConfigTab = switchBrandConfigTab;
+
+    function getGeneralSettings(targetBrandKey) {
+      const bProf = (typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile() : {
+        brandKey: 'taphoammo',
+        siteName: 'TAPHOAMMO.INK',
+        tagline: 'Sàn Sản Phẩm Số & Dịch Vụ MMO',
+        email: 'support@taphoammo.ink',
+        supportEmail: 'support@taphoammo.ink',
+        marqueeText: '🎉 Chào mừng bạn đến với hệ thống giao dịch tự động 24/7!'
+      };
+
+      const effectiveKey = targetBrandKey || bProf.brandKey;
+      const bAssets = getBrandSpecificSettings(effectiveKey);
+
+      const defaultSettings = {
+        siteName: bAssets.siteName || bProf.siteName || 'TAPHOAMMO.INK',
+        googleClientId: '788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com',
+        affiliateRate: 10,
+        hotline: '0975902076',
+        email: bProf.email || 'muabantaikhoanmmo@gmail.com',
+        supportEmail: bProf.supportEmail || 'muabantaikhoanmmo@gmail.com',
+        telegram: 'https://t.me/groupmuabantaikhoanmmo',
+        telegramGroup: 'https://t.me/groupmuabantaikhoanmmo',
+        telegramChannel: 'https://t.me/muabantaikhoanmmo',
+        marqueeText: bProf.marqueeText || '🎉 Chào mừng bạn đến với hệ thống giao dịch tự động 24/7!',
+        gasUrl: 'https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec',
+        brandLogo: bAssets.brandLogo,
+        brandFavicon: bAssets.brandFavicon,
+        brandOgImage: bAssets.brandOgImage
+      };
+
+      try {
+        let stored = localStorage.getItem('mmo_system_settings');
+        if (!stored) stored = localStorage.getItem('mmo_general_settings');
+        if (!stored) stored = localStorage.getItem('mmo_settings_permanent_backup');
         if (stored) {
           const parsed = JSON.parse(stored);
-          if (parsed && typeof parsed === "object") {
+          if (parsed && typeof parsed === 'object') {
             const merged = Object.assign({}, defaultSettings, parsed);
+            // Ghi đè bằng brand assets riêng biệt của site hiện tại
+            merged.siteName = bAssets.siteName;
+            merged.brandLogo = bAssets.brandLogo;
+            merged.brandFavicon = bAssets.brandFavicon;
+            merged.brandOgImage = bAssets.brandOgImage;
+
             if (!merged.telegramGroup || !String(merged.telegramGroup).trim()) {
               merged.telegramGroup = merged.telegram || defaultSettings.telegramGroup;
             }
             if (!merged.telegramChannel || !String(merged.telegramChannel).trim()) {
               merged.telegramChannel = defaultSettings.telegramChannel;
             }
-            if (!merged.hotline || !String(merged.hotline).trim() || merged.hotline.includes("0968033451") || merged.hotline.includes("0968.033.451")) {
+            if (!merged.hotline || !String(merged.hotline).trim() || merged.hotline.includes('0968033451') || merged.hotline.includes('0968.033.451')) {
               merged.hotline = defaultSettings.hotline;
             }
-            if (!merged.email || !String(merged.email).trim() || String(merged.email).toLowerCase().includes("manhdongvtc")) {
+            if (!merged.email || !String(merged.email).trim() || String(merged.email).toLowerCase().includes('manhdongvtc')) {
               merged.email = defaultSettings.email;
             }
-            if (!merged.supportEmail || !String(merged.supportEmail).trim() || String(merged.supportEmail).toLowerCase().includes("manhdongvtc")) {
+            if (!merged.supportEmail || !String(merged.supportEmail).trim() || String(merged.supportEmail).toLowerCase().includes('manhdongvtc')) {
               merged.supportEmail = defaultSettings.supportEmail;
             }
             if (!merged.gasUrl || !String(merged.gasUrl).trim()) {
               merged.gasUrl = defaultSettings.gasUrl;
-            }
-            if (!merged.brandLogo || !String(merged.brandLogo).trim() || merged.brandLogo === "https://iili.io/nFV4Rln.png" || merged.brandLogo.includes("img_1790888969056_z00fh5")) {
-              merged.brandLogo = defaultSettings.brandLogo;
-            }
-            if (!merged.brandFavicon || !String(merged.brandFavicon).trim() || merged.brandFavicon === "https://iili.io/nFV4Rln.png" || merged.brandFavicon.includes("img_1790888988353_677lyw")) {
-              merged.brandFavicon = defaultSettings.brandFavicon;
-            }
-            if (!merged.brandOgImage || !String(merged.brandOgImage).trim()) {
-              merged.brandOgImage = defaultSettings.brandOgImage;
             }
             return merged;
           }
@@ -25374,25 +25544,24 @@ function executeCompareSourcesSearch() {
       const preview = document.getElementById(previewId);
       const hint = document.getElementById(hintId);
       const resetBtn = document.getElementById(resetBtnId);
-      const cleanUrl = (url || "").trim();
+      const cleanUrl = (url || '').trim();
       if (preview) {
-        // Tự động khôi phục ảnh mặc định CDN nếu URL bị lỗi mạng / 404
         preview.onerror = function() {
-          if (previewId && previewId.includes("Logo")) {
-            this.src = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png";
-          } else if (previewId && previewId.includes("Favicon")) {
-            this.src = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png";
+          if (previewId && previewId.includes('Logo')) {
+            this.src = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png';
+          } else if (previewId && previewId.includes('Favicon')) {
+            this.src = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png';
           }
         };
         if (cleanUrl) {
           preview.src = cleanUrl;
-          preview.style.display = "block";
-          if (hint) hint.style.display = "none";
-          if (resetBtn) resetBtn.style.display = "inline-block";
+          preview.style.display = 'block';
+          if (hint) hint.style.display = 'none';
+          if (resetBtn) resetBtn.style.display = 'inline-block';
         } else {
-          preview.style.display = "none";
-          if (hint) hint.style.display = "inline-block";
-          if (resetBtn) resetBtn.style.display = "none";
+          preview.style.display = 'none';
+          if (hint) hint.style.display = 'inline-block';
+          if (resetBtn) resetBtn.style.display = 'none';
         }
       }
     }
@@ -25402,20 +25571,21 @@ function executeCompareSourcesSearch() {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
       if (file.size > 10 * 1024 * 1024) {
-        if (typeof showToast === "function") showToast("⚠️ Kích thước ảnh quá lớn! Vui lòng chọn ảnh dưới 10MB.", "warning");
+        if (typeof showToast === 'function') showToast('⚠️ Kích thước ảnh quá lớn! Vui lòng chọn ảnh dưới 10MB.', 'warning');
         return;
       }
-      if (typeof showToast === "function") showToast("⏳ Đang tối ưu và tải ảnh lên máy chủ CDN...", "info");
+      if (typeof showToast === 'function') showToast('⏳ Đang tối ưu và tải ảnh lên máy chủ CDN...', 'info');
 
-      // 1. Dùng FileReader & Canvas để nén và resize ảnh siêu nhẹ, chống tràn bộ nhớ localStorage
+      const targetKey = window._currentEditingBrandKey || ((typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile().brandKey : 'taphoammo');
+
       const reader = new FileReader();
       reader.onload = function(evt) {
         const rawDataUrl = evt.target.result;
         const img = new Image();
         img.onload = function() {
           try {
-            const isLogo = String(inputId).toLowerCase().includes("logo");
-            const isFavicon = String(inputId).toLowerCase().includes("favicon");
+            const isLogo = String(inputId).toLowerCase().includes('logo');
+            const isFavicon = String(inputId).toLowerCase().includes('favicon');
 
             let maxW = 400;
             let maxH = 140;
@@ -25423,8 +25593,8 @@ function executeCompareSourcesSearch() {
               maxW = 64;
               maxH = 64;
             } else if (!isLogo) {
-              maxW = 600;
-              maxH = 315;
+              maxW = 1200;
+              maxH = 630;
             }
 
             let width = img.width;
@@ -25435,40 +25605,45 @@ function executeCompareSourcesSearch() {
               height = Math.round(height * ratio);
             }
 
-            const canvas = document.createElement("canvas");
+            const canvas = document.createElement('canvas');
             canvas.width = width;
             canvas.height = height;
-            const ctx = canvas.getContext("2d");
-            ctx.drawImage(img, 0, 0, width, height);
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.imageSmoothingEnabled = true;
+              ctx.imageSmoothingQuality = 'high';
+              ctx.drawImage(img, 0, 0, width, height);
+            }
 
-            // Xuất compact base64
-            const mimeType = (file.type && file.type.includes("png")) ? "image/png" : "image/jpeg";
-            const compactDataUrl = canvas.toDataURL(mimeType, 0.88);
+            const format = isFavicon ? 'image/png' : (isLogo ? 'image/png' : 'image/jpeg');
+            const quality = isFavicon ? 1.0 : 0.92;
+            const compactDataUrl = canvas.toDataURL(format, quality);
 
-            // Cập nhật preview và tạm lưu vào ô input ngay lập tức
             const input = document.getElementById(inputId);
             if (input) input.value = compactDataUrl;
             previewBrandUrl(compactDataUrl, previewId, hintId, resetBtnId);
 
-            // 2. Tải lên máy chủ Cloudflare Worker để lấy URL CDN vĩnh viễn (Bypass CORS 100%)
-            const adminSecToken = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
-              ? MMO_WORKER_API.getAdminSecret()
-              : (localStorage.getItem("mmo_admin_secret") || (document.getElementById("setAdminSecretToken") ? document.getElementById("setAdminSecretToken").value.trim() : "") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+            // Tải lên Turso Cloud Worker qua endpoint /api/admin/upload-image
+            const uploadPayload = {
+              image_data: compactDataUrl,
+              type: isLogo ? 'brand_logo' : (isFavicon ? 'brand_favicon' : 'brand_og'),
+              brand_key: targetKey,
+              filename: isLogo ? ('logo_' + targetKey + '.png') : (isFavicon ? ('favicon_' + targetKey + '.png') : ('og_' + targetKey + '.jpg'))
+            };
 
-            fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/upload-image", {
-              method: "POST",
+            const adminSecToken = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getAdminSecret)
+              ? MMO_WORKER_API.getAdminSecret()
+              : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || 'mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60');
+
+            fetch('https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/upload-image', {
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + adminSecToken,
-                "X-Admin-Secret": adminSecToken,
-                "x-admin-token": adminSecToken
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + adminSecToken,
+                'x-admin-token': adminSecToken,
+                'X-Admin-Secret': adminSecToken
               },
-              body: JSON.stringify({
-                image: compactDataUrl,
-                mimeType: mimeType,
-                name: file.name,
-                admin_secret: adminSecToken
-              })
+              body: JSON.stringify(uploadPayload)
             })
             .then(res => res.json())
             .then(data => {
@@ -25476,67 +25651,65 @@ function executeCompareSourcesSearch() {
               if (input) input.value = finalImgUrl;
               previewBrandUrl(finalImgUrl, previewId, hintId, resetBtnId);
 
-              // TỰ ĐỘNG LƯU NGAY LẬP TỨC VÀO HỆ THỐNG & ĐỒNG BỘ TURSO CLOUD + DOM
-              try {
-                const curSettings = getGeneralSettings();
-                if (isLogo) {
-                  curSettings.brandLogo = finalImgUrl;
-                } else if (isFavicon) {
-                  curSettings.brandFavicon = finalImgUrl;
-                } else {
-                  curSettings.brandOgImage = finalImgUrl;
-                }
-                curSettings._lastSavedAt = Date.now();
+              // Lưu vào cấu hình riêng của brand được chọn
+              var propName = isLogo ? 'brandLogo' : (isFavicon ? 'brandFavicon' : 'brandOgImage');
+              var updateObj = {};
+              updateObj[propName] = finalImgUrl;
+              saveBrandSpecificSettings(targetKey, updateObj);
 
-                try { localStorage.setItem("mmo_system_settings", JSON.stringify(curSettings)); } catch(e1) {}
-                try { localStorage.setItem("mmo_general_settings", JSON.stringify(curSettings)); } catch(e2) {}
-                try { localStorage.setItem("mmo_settings_permanent_backup", JSON.stringify(curSettings)); } catch(e3) {}
-
-                // Lưu lên Turso Cloud Worker SSOT
-                fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ settings: curSettings })
-                }).catch(function() {});
-
-                // Áp dụng ngay lập tức lên Header, Footer và toàn trang
-                applyBrandCustomizations(curSettings);
-
-                // Phát sóng đa tab
-                if (typeof BroadcastChannel !== "undefined") {
-                  try {
-                    const bc = new BroadcastChannel("mmo_settings_channel");
-                    bc.postMessage({ type: "SETTINGS_UPDATED", settings: curSettings });
-                  } catch(eBc) {}
-                }
-              } catch(eAuto) {
-                console.error("Auto save brand asset error:", eAuto);
+              // Cập nhật lên Cloudflare Worker
+              var cloudSettings = {};
+              cloudSettings[targetKey + '_' + propName] = finalImgUrl;
+              if (targetKey === ((typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile().brandKey : 'taphoammo')) {
+                cloudSettings[propName] = finalImgUrl;
               }
 
-              if (typeof showToast === "function") {
-                showToast("🎉 Đã tải lên và lưu hình ảnh thương hiệu thành công!", "success");
+              fetch('https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + adminSecToken,
+                  'x-admin-token': adminSecToken,
+                  'X-Admin-Secret': adminSecToken
+                },
+                body: JSON.stringify({ settings: cloudSettings, admin_secret: adminSecToken })
+              }).catch(function() {});
+
+              // Nếu brand đang chỉnh sửa trùng với web đang truy cập, áp dụng ngay tức thì
+              if (targetKey === ((typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile().brandKey : 'taphoammo')) {
+                applyBrandCustomizations();
+              }
+
+              if (typeof BroadcastChannel !== 'undefined') {
+                try {
+                  const bc = new BroadcastChannel('mmo_settings_channel');
+                  bc.postMessage({ type: 'SETTINGS_UPDATED', brandKey: targetKey, updated: updateObj });
+                } catch(eBc) {}
+              }
+
+              if (typeof showToast === 'function') {
+                showToast('🎉 Đã tải lên và lưu hình ảnh thương hiệu thành công!', 'success');
               }
             })
             .catch(errUpload => {
-              console.warn("Upload to worker notice, using optimized local data:", errUpload);
+              console.warn('Upload to worker notice, using optimized local data:', errUpload);
               if (input) input.value = compactDataUrl;
               previewBrandUrl(compactDataUrl, previewId, hintId, resetBtnId);
-              try {
-                const curSettings = getGeneralSettings();
-                if (isLogo) curSettings.brandLogo = compactDataUrl;
-                else if (isFavicon) curSettings.brandFavicon = compactDataUrl;
-                else curSettings.brandOgImage = compactDataUrl;
-                curSettings._lastSavedAt = Date.now();
-                try { localStorage.setItem("mmo_system_settings", JSON.stringify(curSettings)); } catch(e1) {}
-                try { localStorage.setItem("mmo_general_settings", JSON.stringify(curSettings)); } catch(e2) {}
-                applyBrandCustomizations(curSettings);
-              } catch(eLocal) {}
-              if (typeof showToast === "function") {
-                showToast("✅ Đã tối ưu và lưu ảnh thương hiệu!", "success");
+
+              var propName = isLogo ? 'brandLogo' : (isFavicon ? 'brandFavicon' : 'brandOgImage');
+              var updateObj = {};
+              updateObj[propName] = compactDataUrl;
+              saveBrandSpecificSettings(targetKey, updateObj);
+
+              if (targetKey === ((typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile().brandKey : 'taphoammo')) {
+                applyBrandCustomizations();
+              }
+              if (typeof showToast === 'function') {
+                showToast('✅ Đã tối ưu và lưu ảnh thương hiệu!', 'success');
               }
             });
           } catch (errCanvas) {
-            console.error("Canvas compression error:", errCanvas);
+            console.error('Canvas compression error:', errCanvas);
             fallbackLocalBrandUpload(file, inputId, previewId, hintId, resetBtnId);
           }
         };
@@ -25547,6 +25720,7 @@ function executeCompareSourcesSearch() {
       };
       reader.readAsDataURL(file);
     }
+
     function fallbackLocalBrandUpload(file, inputId, previewId, hintId, resetBtnId) {
       const reader = new FileReader();
       reader.onload = function(evt) {
@@ -25554,152 +25728,178 @@ function executeCompareSourcesSearch() {
         const input = document.getElementById(inputId);
         if (input) input.value = dataUrl;
         previewBrandUrl(dataUrl, previewId, hintId, resetBtnId);
-        if (typeof showToast === "function") showToast("✅ Đã tải ảnh lên bộ nhớ tạm! Hãy bấm 'Lưu Cài Đặt Hệ Thống' để áp dụng.", "success");
+        const targetKey = window._currentEditingBrandKey || ((typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile().brandKey : 'taphoammo');
+        const isLogo = String(inputId).toLowerCase().includes('logo');
+        const isFavicon = String(inputId).toLowerCase().includes('favicon');
+        var propName = isLogo ? 'brandLogo' : (isFavicon ? 'brandFavicon' : 'brandOgImage');
+        var updateObj = {};
+        updateObj[propName] = dataUrl;
+        saveBrandSpecificSettings(targetKey, updateObj);
+        if (typeof showToast === 'function') showToast('✅ Đã tải ảnh lên bộ nhớ tạm! Hãy bấm "Lưu Cài Đặt Hệ Thống" để áp dụng.', 'success');
       };
       reader.readAsDataURL(file);
     }
     window.handleUploadBrandFile = handleUploadBrandFile;
 
     function resetBrandField(type) {
-      if (type === "logo") {
-        const inp = document.getElementById("setSiteLogoUrl");
-        if (inp) inp.value = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png";
-        previewBrandUrl("https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png", "setSiteLogoPreview", "setSiteLogoHint", "btnResetLogo");
-      } else if (type === "favicon") {
-        const inp = document.getElementById("setSiteFaviconUrl");
-        if (inp) inp.value = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png";
-        previewBrandUrl("https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png", "setSiteFaviconPreview", "setSiteFaviconHint", "btnResetFavicon");
-      } else if (type === "ogImage") {
-        const inp = document.getElementById("setSiteOgImageUrl");
-        if (inp) inp.value = "https://iili.io/nFV4Rln.png";
-        previewBrandUrl("https://iili.io/nFV4Rln.png", "setSiteOgImagePreview", "setSiteOgImageHint", "btnResetOgImage");
+      const targetKey = window._currentEditingBrandKey || ((typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile().brandKey : 'taphoammo');
+      const isTapHoa = (targetKey === 'taphoammo');
+
+      if (type === 'logo') {
+        const inp = document.getElementById('setSiteLogoUrl');
+        const defLogo = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png';
+        if (inp) inp.value = defLogo;
+        previewBrandUrl(defLogo, 'setSiteLogoPreview', 'setSiteLogoHint', 'btnResetLogo');
+        saveBrandSpecificSettings(targetKey, { brandLogo: defLogo });
+      } else if (type === 'favicon') {
+        const inp = document.getElementById('setSiteFaviconUrl');
+        const defFav = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png';
+        if (inp) inp.value = defFav;
+        previewBrandUrl(defFav, 'setSiteFaviconPreview', 'setSiteFaviconHint', 'btnResetFavicon');
+        saveBrandSpecificSettings(targetKey, { brandFavicon: defFav });
+      } else if (type === 'ogImage') {
+        const inp = document.getElementById('setSiteOgImageUrl');
+        const defOg = 'https://iili.io/nFV4Rln.png';
+        if (inp) inp.value = defOg;
+        previewBrandUrl(defOg, 'setSiteOgImagePreview', 'setSiteOgImageHint', 'btnResetOgImage');
+        saveBrandSpecificSettings(targetKey, { brandOgImage: defOg });
       }
     }
     window.resetBrandField = resetBrandField;
 
-    // ÁP DỤNG THƯƠNG HIỆU LÊN TOÀN TRANG (LOGO, FAVICON, TIÊU ĐỀ)
+    // ÁP DỤNG THƯƠNG HIỆU LÊN TOÀN TRANG (LOGO, FAVICON, TIÊU ĐỀ, TAGLINE DƯỚI LOGO)
     function applyBrandCustomizations(s) {
       try {
-        const settings = s || getGeneralSettings();
-        if (!settings) return;
+        const bProf = (typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile() : null;
+        const bKey = (bProf && bProf.brandKey) ? bProf.brandKey : 'taphoammo';
+        const brandAssets = getBrandSpecificSettings(bKey);
+        const settings = s || getGeneralSettings(bKey);
 
-        // 1. Tên sàn & Tagline thương hiệu theo domain (Multi-Brand SEO)
-        const bProf = (typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile() : null;
-        const effectiveSiteName = (bProf && bProf.isTapHoaMmo) ? bProf.siteName : (settings.siteName || "MUABANTAIKHOANMMO");
-        const effectiveTagline = (bProf && bProf.isTapHoaMmo) ? bProf.tagline : "Sàn Sản Phẩm Số & Dịch Vụ MMO";
-        
-        const siteNameEl = document.getElementById("headerSiteName");
+        const effectiveSiteName = brandAssets.siteName || (bProf ? bProf.siteName : 'TAPHOAMMO.INK');
+        // QUY TẮC BẮT BUỘC TỪ NGƯỜI DÙNG: Dòng dưới logo luôn giữ nguyên: SÀN SẢN PHẨM SỐ & DỊCH VỤ MMO
+        const effectiveTagline = 'Sàn Sản Phẩm Số & Dịch Vụ MMO';
+
+        // 1. Tên sàn & Tagline thương hiệu Header
+        const siteNameEl = document.getElementById('headerSiteName');
         if (siteNameEl) siteNameEl.innerText = effectiveSiteName;
-        
-        // Cập nhật tagline dưới logo header
-        const logoTextSpan = document.querySelector(".header-inner .logo-text span, .logo .logo-text span");
-        if (logoTextSpan) logoTextSpan.innerHTML = effectiveTagline;
-        
+
+        // Cập nhật tagline dưới logo header (BẢO TOÀN NGUYÊN VẸN 100%)
+        const logoTextSpan = document.querySelectorAll('.header-inner .logo-text span, .logo .logo-text span, .mobile-drawer-header .logo-text span');
+        logoTextSpan.forEach(function(sp) {
+          sp.innerHTML = effectiveTagline;
+        });
+
         // Cập nhật footer brand info & copyright
-        const footerSiteNameEl = document.querySelector(".footer-col-1 .logo-text div");
+        const footerSiteNameEl = document.querySelector('.footer-col-1 .logo-text div');
         if (footerSiteNameEl) footerSiteNameEl.innerText = effectiveSiteName;
-        
-        const footerDescEl = document.querySelector(".footer-brand-desc");
+
+        const footerDescEl = document.querySelector('.footer-brand-desc');
         if (footerDescEl && bProf && bProf.footerAboutText) footerDescEl.innerText = bProf.footerAboutText;
-        
-        const footerCopyEl = document.querySelector(".footer-bottom-bar > div:first-child");
+
+        const footerCopyEl = document.querySelector('.footer-bottom-bar > div:first-child');
         if (footerCopyEl && bProf && bProf.copyrightText) footerCopyEl.innerHTML = bProf.copyrightText;
-        
-        const footerHoursDesc = document.querySelector(".hours-line .val");
-        
-        document.title = (bProf && bProf.homeTitle) ? bProf.homeTitle : (effectiveSiteName + " - Sàn Sản Phẩm Số & Dịch Vụ MMO Uy Tín");
 
-        // 2. Logo Header, Footer, Drawer & Toàn Bộ Trang (Bảo vệ tuyệt đối fallback logo gốc, chống 404/link rác)
-        if (settings.brandLogo && settings.brandLogo.trim() && !settings.brandLogo.includes("img_1790888969056_z00fh5.png") && settings.brandLogo.trim() !== "https://iili.io/nFV4Rln.png") {
-          const cleanLogo = settings.brandLogo.trim();
-          document.querySelectorAll(".logo img, .logo-img, img.logo-img, .header-inner .logo img, .footer-col-1 .logo img, .footer-col-1 .logo-img, .mobile-drawer-header .logo-img, #headerSiteLogo, #footerSiteLogo, #drawerSiteLogo").forEach(function(img) {
-            const originalSrc = img.getAttribute("data-original-src") || img.src;
-            if (!img.getAttribute("data-original-src")) img.setAttribute("data-original-src", originalSrc);
-            img.onerror = function() {
-              this.onerror = null;
-              if (originalSrc && originalSrc !== cleanLogo) this.src = originalSrc;
-            };
-            img.src = cleanLogo;
-          });
-        } else {
-          // Khôi phục logo gốc mặc định nếu brandLogo rỗng hoặc link lỗi
-          document.querySelectorAll(".logo img, .logo-img, img.logo-img, .header-inner .logo img, .footer-col-1 .logo img, .footer-col-1 .logo-img, .mobile-drawer-header .logo-img, #headerSiteLogo, #footerSiteLogo, #drawerSiteLogo").forEach(function(img) {
-            const orig = img.getAttribute("data-original-src");
-            if (orig) img.src = orig;
-          });
-        }
+        document.title = (bProf && bProf.homeTitle) ? bProf.homeTitle : (effectiveSiteName + ' - Sàn Sản Phẩm Số & Dịch Vụ MMO Uy Tín');
 
-        // Đảm bảo toàn bộ Logo Website có href='/' hợp lệ để mở tab mới bằng chuột phải hoặc Ctrl+click
-        document.querySelectorAll(".logo, .header-inner .logo, .footer-col-1 .logo").forEach(function(a) {
-          if (!a.getAttribute("href") || a.getAttribute("href") === "javascript:void(0)" || a.getAttribute("href") === "#") {
-            a.setAttribute("href", "/");
+        // 2. Logo Header, Footer, Drawer & Toàn Bộ Trang (Đúng Logo riêng của Website)
+        const activeLogoUrl = (brandAssets.brandLogo && brandAssets.brandLogo.trim() && !brandAssets.brandLogo.includes('img_1790888969056_z00fh5.png') && brandAssets.brandLogo.trim() !== 'https://iili.io/nFV4Rln.png')
+          ? brandAssets.brandLogo.trim()
+          : (bProf && bProf.brandLogo ? bProf.brandLogo : 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png');
+
+        document.querySelectorAll('.logo img, .logo-img, img.logo-img, .header-inner .logo img, .footer-col-1 .logo img, .footer-col-1 .logo-img, .mobile-drawer-header .logo-img, #headerSiteLogo, #footerSiteLogo, #drawerSiteLogo').forEach(function(img) {
+          const originalSrc = img.getAttribute('data-original-src') || img.src;
+          if (!img.getAttribute('data-original-src')) img.setAttribute('data-original-src', originalSrc);
+          img.onerror = function() {
+            this.onerror = null;
+            if (originalSrc && originalSrc !== activeLogoUrl) this.src = originalSrc;
+          };
+          img.src = activeLogoUrl;
+        });
+
+        // Đảm bảo toàn bộ Logo Website có href='/' hợp lệ
+        document.querySelectorAll('.logo, .header-inner .logo, .footer-col-1 .logo').forEach(function(a) {
+          if (!a.getAttribute('href') || a.getAttribute('href') === 'javascript:void(0)' || a.getAttribute('href') === '#') {
+            a.setAttribute('href', '/');
           }
           a.onclick = function(event) {
             if (!event.ctrlKey && !event.metaKey && event.button === 0) {
               event.preventDefault();
-              if (typeof switchView === "function") switchView("viewStore");
+              if (typeof switchView === 'function') switchView('viewStore');
             }
           };
         });
 
-        // 3. Favicon Website
-        if (settings.brandFavicon && settings.brandFavicon.trim()) {
-          const cleanFavicon = settings.brandFavicon.trim();
-          document.querySelectorAll("link[rel*='icon']").forEach(function(el) { el.remove(); });
-          const favLink = document.createElement("link");
-          favLink.rel = "shortcut icon";
-          favLink.type = "image/png";
-          favLink.href = cleanFavicon;
-          document.head.appendChild(favLink);
-        }
+        // 3. Favicon Website riêng biệt
+        const activeFaviconUrl = (brandAssets.brandFavicon && brandAssets.brandFavicon.trim() && !brandAssets.brandFavicon.includes('img_1790888988353_677lyw.png') && brandAssets.brandFavicon.trim() !== 'https://iili.io/nFV4Rln.png')
+          ? brandAssets.brandFavicon.trim()
+          : (bProf && bProf.brandFavicon ? bProf.brandFavicon : 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png');
 
-        // 4. Ảnh OG Image
-        if (settings.brandOgImage && settings.brandOgImage.trim()) {
-          const cleanOg = settings.brandOgImage.trim();
-          let ogMeta = document.querySelector("meta[property='og:image']");
-          if (ogMeta) ogMeta.setAttribute("content", cleanOg);
-        }
+        document.querySelectorAll("link[rel*='icon']").forEach(function(el) { el.remove(); });
+        const favLink = document.createElement('link');
+        favLink.rel = 'shortcut icon';
+        favLink.type = 'image/png';
+        favLink.href = activeFaviconUrl;
+        document.head.appendChild(favLink);
+
+        // 4. Ảnh OG Image riêng biệt
+        const activeOgUrl = (brandAssets.brandOgImage && brandAssets.brandOgImage.trim())
+          ? brandAssets.brandOgImage.trim()
+          : (bProf && bProf.brandOgImage ? bProf.brandOgImage : 'https://iili.io/nFV4Rln.png');
+
+        let ogMeta = document.querySelector("meta[property='og:image']");
+        if (ogMeta) ogMeta.setAttribute('content', activeOgUrl);
 
         // 5. Đồng bộ Hotline / Zalo toàn trang
-        if (typeof syncZaloLinks === "function") {
+        if (typeof syncZaloLinks === 'function') {
           syncZaloLinks(settings.hotline);
         }
       } catch(e) {
-        console.error("applyBrandCustomizations error:", e);
+        console.error('applyBrandCustomizations error:', e);
       }
     }
     window.applyBrandCustomizations = applyBrandCustomizations;
 
     async function syncSettingsFromCloud() {
       try {
-        const adminSecToken = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+        const adminSecToken = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getAdminSecret)
           ? MMO_WORKER_API.getAdminSecret()
-          : (localStorage.getItem("mmo_admin_secret") || (document.getElementById("setAdminSecretToken") ? document.getElementById("setAdminSecretToken").value.trim() : "") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+          : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || 'mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60');
 
-        const res = await fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
+        const res = await fetch('https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings', {
           headers: {
-            "Authorization": "Bearer " + adminSecToken,
-            "x-admin-token": adminSecToken,
-            "X-Admin-Secret": adminSecToken
+            'Authorization': 'Bearer ' + adminSecToken,
+            'x-admin-token': adminSecToken,
+            'X-Admin-Secret': adminSecToken
           }
         });
         if (!res.ok) return;
         const data = await res.json();
-        if (data && data.success && data.settings && typeof data.settings === "object") {
-          // LỌC BỎ 100% CÁC THIẾT LẬP HOẶC DỮ LIỆU TỪ WEB ĐỘC LẬP KHOTAIKHOANSO
+        if (data && data.success && data.settings && typeof data.settings === 'object') {
           const cs = {};
           Object.keys(data.settings || {}).forEach(function(k) {
             if (/khotaikhoanso/i.test(k) || /^kts_/i.test(k)) return;
             const val = data.settings[k];
-            if (typeof val === "string" && /khotaikhoanso/i.test(val)) return;
+            if (typeof val === 'string' && /khotaikhoanso/i.test(val)) return;
             cs[k] = val;
           });
-          if (cs.marqueeText && /kho tài khoản số/i.test(cs.marqueeText)) {
-            cs.marqueeText = "🎉 CHÀO MỪNG BẠN ĐẾN VỚI MUABANTAIKHOANMMO.COM - CHÚ Ý NẠP TIỀN TỪ 6H - 22H ĐỂ KHÔNG BỊ GIÁN ĐOẠN SAU 22H NGÂN HÀNG BẢO TRÌ SÁNG HÔM SAU MỚI + TIỀN";
-          }
-          if (cs.siteName && /kho tài khoản số/i.test(cs.siteName)) {
-            cs.siteName = "MUABANTAIKHOANMMO";
-          }
+
+          // TÁCH BIỆT VÀ ĐỒNG BỘ CẤU HÌNH CHO TỪNG BRAND VÀO LOCALSTORAGE
+          const tapHoaData = {
+            siteName: cs.taphoammo_siteName || 'TAPHOAMMO.INK',
+            brandLogo: cs.taphoammo_brandLogo || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
+            brandFavicon: cs.taphoammo_brandFavicon || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
+            brandOgImage: cs.taphoammo_brandOgImage || 'https://iili.io/nFV4Rln.png'
+          };
+          saveBrandSpecificSettings('taphoammo', tapHoaData);
+
+          const muaBanData = {
+            siteName: cs.muabantaikhoanmmo_siteName || cs.siteName || 'MUABANTAIKHOANMMO',
+            brandLogo: cs.muabantaikhoanmmo_brandLogo || cs.brandLogo || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
+            brandFavicon: cs.muabantaikhoanmmo_brandFavicon || cs.brandFavicon || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
+            brandOgImage: cs.muabantaikhoanmmo_brandOgImage || cs.brandOgImage || 'https://iili.io/nFV4Rln.png'
+          };
+          saveBrandSpecificSettings('muabantaikhoanmmo', muaBanData);
+
           const _aiProviders = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
           _aiProviders.forEach(function(p) {
             const cloudKey = cs['ai_key_' + p] || cs['mmo_ai_key_' + p];
@@ -25712,97 +25912,59 @@ function executeCompareSourcesSearch() {
               }
             }
           });
-          const gasInp = document.getElementById("setGasUrl");
-          if (cs.gasUrl && gasInp && (!gasInp.value || gasInp.value.trim() === "")) {
+
+          const gasInp = document.getElementById('setGasUrl');
+          if (cs.gasUrl && gasInp && (!gasInp.value || gasInp.value.trim() === '')) {
             gasInp.value = cs.gasUrl;
           }
 
-          // ĐỒNG BỘ THƯƠNG HIỆU TỪ TURSO CLOUD DATABASE SSOT VÀO LOCAL & GIAO DIỆN
-          const curSettings = getGeneralSettings();
-          let settingsChanged = false;
-
-          if (cs.brandLogo && cs.brandLogo.trim() && cs.brandLogo.trim() !== "https://iili.io/nFV4Rln.png" && !cs.brandLogo.includes("img_1790888969056_z00fh5.png")) {
-            curSettings.brandLogo = cs.brandLogo.trim();
-            settingsChanged = true;
-            const logoInp = document.getElementById("setSiteLogoUrl");
-            if (logoInp) logoInp.value = curSettings.brandLogo;
-            previewBrandUrl(curSettings.brandLogo, "setSiteLogoPreview", "setSiteLogoHint", "btnResetLogo");
-          }
-          if (cs.brandFavicon && cs.brandFavicon.trim() && cs.brandFavicon.trim() !== "https://iili.io/nFV4Rln.png") {
-            curSettings.brandFavicon = cs.brandFavicon.trim();
-            settingsChanged = true;
-            const favInp = document.getElementById("setSiteFaviconUrl");
-            if (favInp) favInp.value = curSettings.brandFavicon;
-            previewBrandUrl(curSettings.brandFavicon, "setSiteFaviconPreview", "setSiteFaviconHint", "btnResetFavicon");
-          }
-          if (cs.brandOgImage && cs.brandOgImage.trim()) {
-            curSettings.brandOgImage = cs.brandOgImage.trim();
-            settingsChanged = true;
-            const ogInp = document.getElementById("setSiteOgImageUrl");
-            if (ogInp) ogInp.value = curSettings.brandOgImage;
-            previewBrandUrl(curSettings.brandOgImage, "setSiteOgImagePreview", "setSiteOgImageHint", "btnResetOgImage");
-          }
-          if (cs.siteName && cs.siteName.trim()) {
-            curSettings.siteName = cs.siteName.trim();
-            settingsChanged = true;
-            const nameInp = document.getElementById("setSiteName");
-            if (nameInp) nameInp.value = curSettings.siteName;
-          }
           if (cs.hotline && cs.hotline.trim()) {
-            curSettings.hotline = cs.hotline.trim();
-            settingsChanged = true;
-            const hotInp = document.getElementById("setHotline");
-            if (hotInp && document.activeElement !== hotInp) hotInp.value = curSettings.hotline;
-          }
-          if (cs.email && cs.email.trim()) {
-            curSettings.email = cs.email.trim();
-            settingsChanged = true;
-          }
-          if (cs.supportEmail && cs.supportEmail.trim()) {
-            curSettings.supportEmail = cs.supportEmail.trim();
-            settingsChanged = true;
+            const hotInp = document.getElementById('setHotline');
+            if (hotInp && document.activeElement !== hotInp) hotInp.value = cs.hotline.trim();
           }
           if (cs.telegram && cs.telegram.trim()) {
-            curSettings.telegram = cs.telegram.trim();
-            settingsChanged = true;
-            const teleInp = document.getElementById("setTelegram");
-            if (teleInp && document.activeElement !== teleInp) teleInp.value = curSettings.telegram;
+            const teleInp = document.getElementById('setTelegram');
+            if (teleInp && document.activeElement !== teleInp) teleInp.value = cs.telegram.trim();
           }
           if (cs.telegramGroup && cs.telegramGroup.trim()) {
-            curSettings.telegramGroup = cs.telegramGroup.trim();
-            settingsChanged = true;
-            const teleGroupInp = document.getElementById("setTelegramGroup");
-            if (teleGroupInp && document.activeElement !== teleGroupInp) teleGroupInp.value = curSettings.telegramGroup;
+            const teleGroupInp = document.getElementById('setTelegramGroup');
+            if (teleGroupInp && document.activeElement !== teleGroupInp) teleGroupInp.value = cs.telegramGroup.trim();
           }
           if (cs.telegramChannel && cs.telegramChannel.trim()) {
-            curSettings.telegramChannel = cs.telegramChannel.trim();
-            settingsChanged = true;
-            const teleChanInp = document.getElementById("setTelegramChannel");
-            if (teleChanInp && document.activeElement !== teleChanInp) teleChanInp.value = curSettings.telegramChannel;
+            const teleChanInp = document.getElementById('setTelegramChannel');
+            if (teleChanInp && document.activeElement !== teleChanInp) teleChanInp.value = cs.telegramChannel.trim();
           }
           if (cs.marqueeText && cs.marqueeText.trim()) {
-            curSettings.marqueeText = cs.marqueeText.trim();
-            settingsChanged = true;
-            const marqInp = document.getElementById("setMarqueeText");
-            if (marqInp && document.activeElement !== marqInp) marqInp.value = curSettings.marqueeText;
+            const marqInp = document.getElementById('setMarqueeText');
+            if (marqInp && document.activeElement !== marqInp) marqInp.value = cs.marqueeText.trim();
           }
 
-          if (cs.adminEmails && typeof cs.adminEmails === "string") {
-            let cloudAdminList = cs.adminEmails.split(",").map(e => (e || "").trim().toLowerCase()).filter(Boolean);
-            if (!cloudAdminList.includes("manhdongvtc@gmail.com")) cloudAdminList.unshift("manhdongvtc@gmail.com");
-            cloudAdminList = cloudAdminList.filter(e => e !== "digimarketmmo@gmail.com");
-            try { localStorage.setItem("mmo_admin_emails", JSON.stringify(cloudAdminList)); } catch(eAdm) {}
-            if (typeof renderAdminEmailsList === "function") renderAdminEmailsList();
+          if (cs.adminEmails && typeof cs.adminEmails === 'string') {
+            let cloudAdminList = cs.adminEmails.split(',').map(e => (e || '').trim().toLowerCase()).filter(Boolean);
+            if (!cloudAdminList.includes('manhdongvtc@gmail.com')) cloudAdminList.unshift('manhdongvtc@gmail.com');
+            cloudAdminList = cloudAdminList.filter(e => e !== 'digimarketmmo@gmail.com');
+            try { localStorage.setItem('mmo_admin_emails', JSON.stringify(cloudAdminList)); } catch(eAdm) {}
+            if (typeof renderAdminEmailsList === 'function') renderAdminEmailsList();
           }
 
-          if (settingsChanged) {
-            try { localStorage.setItem("mmo_system_settings", JSON.stringify(curSettings)); } catch(e1) {}
-            try { localStorage.setItem("mmo_general_settings", JSON.stringify(curSettings)); } catch(e2) {}
-            try { localStorage.setItem("mmo_settings_permanent_backup", JSON.stringify(curSettings)); } catch(e3) {}
-          }
-          applyBrandCustomizations(curSettings);
-          if (typeof syncContactInfoToUI === "function") {
+          // Cập nhật hệ thống settings lưu trữ
+          try {
+            const curSys = JSON.parse(localStorage.getItem('mmo_system_settings') || '{}');
+            Object.assign(curSys, cs);
+            localStorage.setItem('mmo_system_settings', JSON.stringify(curSys));
+            localStorage.setItem('mmo_general_settings', JSON.stringify(curSys));
+            localStorage.setItem('mmo_settings_permanent_backup', JSON.stringify(curSys));
+          } catch(eStorage) {}
+
+          // Áp dụng lên giao diện của web đang xem
+          applyBrandCustomizations();
+          if (typeof syncContactInfoToUI === 'function') {
             syncContactInfoToUI();
+          }
+
+          // Nếu đang mở tab Admin Settings, làm mới các ô input theo tab đang chọn
+          if (document.getElementById('tabAdmGeneral') && document.getElementById('tabAdmGeneral').style.display !== 'none') {
+            switchBrandConfigTab(window._currentEditingBrandKey);
           }
         }
       } catch(e) {}
@@ -25810,30 +25972,34 @@ function executeCompareSourcesSearch() {
     window.syncSettingsFromCloud = syncSettingsFromCloud;
 
     function loadGeneralSettingsUI() {
-      const s = getGeneralSettings();
-      if (document.getElementById("setSiteName")) document.getElementById("setSiteName").value = s.siteName || "MUABANTAIKHOANMMO";
-      if (document.getElementById("setGoogleClientId")) document.getElementById("setGoogleClientId").value = s.googleClientId || "788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com";
-      if (document.getElementById("setAffiliateRate")) document.getElementById("setAffiliateRate").value = s.affiliateRate || 10;
-      if (document.getElementById("setHotline")) document.getElementById("setHotline").value = s.hotline || "0975902076";
-      if (document.getElementById("setTelegram")) document.getElementById("setTelegram").value = s.telegramGroup || s.telegram || "https://t.me/groupmuabantaikhoanmmo";
-      if (document.getElementById("setTelegramGroup")) document.getElementById("setTelegramGroup").value = s.telegramGroup || s.telegram || "https://t.me/groupmuabantaikhoanmmo";
-      if (document.getElementById("setTelegramChannel")) document.getElementById("setTelegramChannel").value = s.telegramChannel || "https://t.me/muabantaikhoanmmo";
-      
-      // Marquee text
-      const marqueeInp = document.getElementById("setMarqueeText");
+      const bProf = (typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile() : { brandKey: 'taphoammo' };
+      const currentBrandKey = window._currentEditingBrandKey || bProf.brandKey || 'taphoammo';
+
+      // Nạp dữ liệu thương hiệu theo tab
+      switchBrandConfigTab(currentBrandKey);
+
+      // Nạp các cài đặt chung
+      const s = getGeneralSettings(currentBrandKey);
+      if (document.getElementById('setGoogleClientId')) document.getElementById('setGoogleClientId').value = s.googleClientId || '788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com';
+      if (document.getElementById('setAffiliateRate')) document.getElementById('setAffiliateRate').value = s.affiliateRate || 10;
+      if (document.getElementById('setHotline')) document.getElementById('setHotline').value = s.hotline || '0975902076';
+      if (document.getElementById('setTelegram')) document.getElementById('setTelegram').value = s.telegramGroup || s.telegram || 'https://t.me/groupmuabantaikhoanmmo';
+      if (document.getElementById('setTelegramGroup')) document.getElementById('setTelegramGroup').value = s.telegramGroup || s.telegram || 'https://t.me/groupmuabantaikhoanmmo';
+      if (document.getElementById('setTelegramChannel')) document.getElementById('setTelegramChannel').value = s.telegramChannel || 'https://t.me/muabantaikhoanmmo';
+
+      const marqueeInp = document.getElementById('setMarqueeText');
       if (marqueeInp) {
-        marqueeInp.value = (s.marqueeText !== undefined && s.marqueeText !== null && s.marqueeText !== "") ? s.marqueeText : "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!";
+        marqueeInp.value = (s.marqueeText !== undefined && s.marqueeText !== null && s.marqueeText !== '') ? s.marqueeText : (bProf.marqueeText || '🎉 Chào mừng bạn đến với hệ thống giao dịch tự động 24/7!');
       }
 
-      // Google Apps Script Web App URL - Chống rỗng, fallback URL thật
-      const defaultGas = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
+      const defaultGas = 'https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec';
       const gasVal = (s.gasUrl && s.gasUrl.trim()) ? s.gasUrl.trim() : defaultGas;
-      if (document.getElementById("setGasUrl")) document.getElementById("setGasUrl").value = gasVal;
-      if (document.getElementById("setAdminSecretToken")) {
-        document.getElementById("setAdminSecretToken").value = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "";
+      if (document.getElementById('setGasUrl')) document.getElementById('setGasUrl').value = gasVal;
+      if (document.getElementById('setAdminSecretToken')) {
+        document.getElementById('setAdminSecretToken').value = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : '';
       }
 
-      // AI API Keys - Tự động nạp và bảo vệ chống mất dữ liệu đa tầng (Anti-Key-Loss Shield)
+      // Nạp AI API Keys
       const _aiProviders = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
       _aiProviders.forEach(function(p) {
         const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
@@ -25842,21 +26008,6 @@ function executeCompareSourcesSearch() {
           el.value = val;
         }
       });
-
-      // Logo URL & Preview
-      let logoUrl = (s.brandLogo && s.brandLogo.trim() && !s.brandLogo.includes("img_1790888969056_z00fh5")) ? s.brandLogo.trim() : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png";
-      if (document.getElementById("setSiteLogoUrl")) document.getElementById("setSiteLogoUrl").value = logoUrl;
-      previewBrandUrl(logoUrl, "setSiteLogoPreview", "setSiteLogoHint", "btnResetLogo");
-
-      // Favicon URL & Preview
-      let faviconUrl = (s.brandFavicon && s.brandFavicon.trim() && !s.brandFavicon.includes("img_1790888988353_677lyw")) ? s.brandFavicon.trim() : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png";
-      if (document.getElementById("setSiteFaviconUrl")) document.getElementById("setSiteFaviconUrl").value = faviconUrl;
-      previewBrandUrl(faviconUrl, "setSiteFaviconPreview", "setSiteFaviconHint", "btnResetFavicon");
-
-      // OG Image URL & Preview (Đảm bảo dùng link CDN công khai cho Facebook / Zalo / Telegram)
-      const ogUrl = (s.brandOgImage && s.brandOgImage.trim()) ? s.brandOgImage.trim() : "https://iili.io/nFV4Rln.png";
-      if (document.getElementById("setSiteOgImageUrl")) document.getElementById("setSiteOgImageUrl").value = ogUrl;
-      previewBrandUrl(ogUrl, "setSiteOgImagePreview", "setSiteOgImageHint", "btnResetOgImage");
 
       // Đồng bộ từ Turso Cloud Worker
       syncSettingsFromCloud();
@@ -25868,9 +26019,9 @@ function executeCompareSourcesSearch() {
       let savedCount = 0;
       const keyObj = {};
 
-      const adminSecToken = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+      const adminSecToken = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getAdminSecret)
         ? MMO_WORKER_API.getAdminSecret()
-        : (localStorage.getItem("mmo_admin_secret") || (document.getElementById("setAdminSecretToken") ? document.getElementById("setAdminSecretToken").value.trim() : "") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+        : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || 'mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60');
 
       providers.forEach(function(p) {
         const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
@@ -25884,7 +26035,6 @@ function executeCompareSourcesSearch() {
           keyObj['ai_key_' + p] = v;
           savedCount++;
         } else {
-          // Người dùng chủ động xóa trống ô này: cho phép xóa hoặc xóa key
           if (window.MMO_AI_KEYS && typeof window.MMO_AI_KEYS.remove === 'function') {
             window.MMO_AI_KEYS.remove(p);
           } else {
@@ -25894,39 +26044,23 @@ function executeCompareSourcesSearch() {
         }
       });
 
-      // BẢO VỆ ĐA TẦNG: Lưu cả vào backup vĩnh viễn
       try {
-        const currBackup = JSON.parse(localStorage.getItem('mmo_ai_keys_backup') || '{}');
-        Object.assign(currBackup, keyObj);
-        localStorage.setItem('mmo_ai_keys_backup', JSON.stringify(currBackup));
-        localStorage.setItem('mmo_backup_ai_keys_permanent', JSON.stringify(currBackup));
-      } catch(e) {}
-
-      // Đồng bộ trực tiếp lên Turso Cloud Worker với đầy đủ Auth Headers
-      try {
-        fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
-          method: "POST",
+        fetch('https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + adminSecToken,
-            "x-admin-token": adminSecToken,
-            "X-Admin-Secret": adminSecToken
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + adminSecToken,
+            'x-admin-token': adminSecToken,
+            'X-Admin-Secret': adminSecToken
           },
           body: JSON.stringify({ settings: keyObj, admin_secret: adminSecToken })
-        }).then(function(r) { return r.json(); }).then(function(data) {
-          console.log("[AI Keys Sync Cloud Result]:", data);
         }).catch(function() {});
       } catch(e) {}
 
-      const statusEl = document.getElementById('aiSystemKeySaveStatus');
-      if (statusEl) {
-        statusEl.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Đã lưu thành công danh sách API Key AI (' + savedCount + ' key đang hoạt động)!</span>';
-        setTimeout(function() { if (statusEl) statusEl.innerHTML = ''; }, 4000);
-      }
       if (!silent && typeof showToast === 'function') {
-        showToast('✅ Đã lưu danh sách API Key AI thành công (' + savedCount + ' key)!', 'success');
+        showToast('🔑 Đã lưu thành công ' + savedCount + ' khóa AI API!', 'success');
       }
-      if (typeof onAiProviderChange === 'function') onAiProviderChange();
+      return savedCount;
     }
     window.saveAllAiApiKeysFromSystem = saveAllAiApiKeysFromSystem;
 
@@ -25936,52 +26070,70 @@ function executeCompareSourcesSearch() {
         if (e.stopPropagation) e.stopPropagation();
       }
       try {
-        const siteName = document.getElementById("setSiteName") ? document.getElementById("setSiteName").value.trim() : "MUABANTAIKHOANMMO";
-        const googleClientId = document.getElementById("setGoogleClientId") ? document.getElementById("setGoogleClientId").value.trim() : "788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com";
-        const affiliateRate = parseInt(document.getElementById("setAffiliateRate") ? document.getElementById("setAffiliateRate").value : 10) || 10;
-        const hotline = document.getElementById("setHotline") ? document.getElementById("setHotline").value.trim() : "0975902076";
-        const telegramInput = document.getElementById("setTelegram") ? document.getElementById("setTelegram").value.trim() : "";
-        const telegramGroup = document.getElementById("setTelegramGroup") ? document.getElementById("setTelegramGroup").value.trim() : (telegramInput || "https://t.me/groupmuabantaikhoanmmo");
-        const telegramChannel = document.getElementById("setTelegramChannel") ? document.getElementById("setTelegramChannel").value.trim() : "https://t.me/muabantaikhoanmmo";
-        const telegram = telegramGroup || telegramInput || "https://t.me/groupmuabantaikhoanmmo";
-        
-        // Marquee text (lấy đúng giá trị người dùng vừa gõ vào ô)
-        const marqueeInput = document.getElementById("setMarqueeText");
-        const marqueeText = marqueeInput ? marqueeInput.value.trim() : "";
-        const adminSecInp = document.getElementById("setAdminSecretToken");
-        if (adminSecInp && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.setAdminSecret) {
+        // 1. Xác định brand đang được chỉnh sửa trên Tab
+        const activeEditingKey = window._currentEditingBrandKey || ((typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile().brandKey : 'taphoammo');
+
+        // 2. Lấy dữ liệu trên Form hiện tại
+        const siteName = document.getElementById('setSiteName') ? document.getElementById('setSiteName').value.trim() : (activeEditingKey === 'taphoammo' ? 'TAPHOAMMO.INK' : 'MUABANTAIKHOANMMO');
+        let brandLogo = document.getElementById('setSiteLogoUrl') ? document.getElementById('setSiteLogoUrl').value.trim() : '';
+        if (!brandLogo || brandLogo === 'https://iili.io/nFV4Rln.png' || brandLogo.includes('img_1790888969056_z00fh5')) {
+          brandLogo = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png';
+          if (document.getElementById('setSiteLogoUrl')) document.getElementById('setSiteLogoUrl').value = brandLogo;
+        }
+
+        let brandFavicon = document.getElementById('setSiteFaviconUrl') ? document.getElementById('setSiteFaviconUrl').value.trim() : '';
+        if (!brandFavicon || brandFavicon === 'https://iili.io/nFV4Rln.png' || brandFavicon.includes('img_1790888988353_677lyw')) {
+          brandFavicon = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png';
+          if (document.getElementById('setSiteFaviconUrl')) document.getElementById('setSiteFaviconUrl').value = brandFavicon;
+        }
+
+        let brandOgImage = document.getElementById('setSiteOgImageUrl') ? document.getElementById('setSiteOgImageUrl').value.trim() : '';
+        if (!brandOgImage) {
+          brandOgImage = 'https://iili.io/nFV4Rln.png';
+          if (document.getElementById('setSiteOgImageUrl')) document.getElementById('setSiteOgImageUrl').value = brandOgImage;
+        }
+
+        // Lưu vào kho riêng của brand đang chỉnh sửa
+        saveBrandSpecificSettings(activeEditingKey, {
+          siteName: siteName,
+          brandLogo: brandLogo,
+          brandFavicon: brandFavicon,
+          brandOgImage: brandOgImage
+        });
+
+        // 3. Đọc dữ liệu riêng của CẢ HAI WEBSITE để đảm bảo không bên nào bị mất
+        const tapHoaSettings = getBrandSpecificSettings('taphoammo');
+        const muaBanSettings = getBrandSpecificSettings('muabantaikhoanmmo');
+
+        // 4. Các cài đặt chung
+        const googleClientId = document.getElementById('setGoogleClientId') ? document.getElementById('setGoogleClientId').value.trim() : '788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com';
+        const affiliateRate = parseInt(document.getElementById('setAffiliateRate') ? document.getElementById('setAffiliateRate').value : 10) || 10;
+        const hotline = document.getElementById('setHotline') ? document.getElementById('setHotline').value.trim() : '0975902076';
+        const telegramInput = document.getElementById('setTelegram') ? document.getElementById('setTelegram').value.trim() : '';
+        const telegramGroup = document.getElementById('setTelegramGroup') ? document.getElementById('setTelegramGroup').value.trim() : (telegramInput || 'https://t.me/groupmuabantaikhoanmmo');
+        const telegramChannel = document.getElementById('setTelegramChannel') ? document.getElementById('setTelegramChannel').value.trim() : 'https://t.me/muabantaikhoanmmo';
+        const telegram = telegramGroup || telegramInput || 'https://t.me/groupmuabantaikhoanmmo';
+
+        const marqueeInput = document.getElementById('setMarqueeText');
+        const marqueeText = marqueeInput ? marqueeInput.value.trim() : '';
+        const adminSecInp = document.getElementById('setAdminSecretToken');
+        if (adminSecInp && typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.setAdminSecret) {
           MMO_WORKER_API.setAdminSecret(adminSecInp.value.trim());
         }
 
-        // Google Apps Script Web App URL - Chống rỗng, fallback URL thật
-        const defaultGas = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
-        let gasUrl = document.getElementById("setGasUrl") ? document.getElementById("setGasUrl").value.trim() : "";
+        const defaultGas = 'https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec';
+        let gasUrl = document.getElementById('setGasUrl') ? document.getElementById('setGasUrl').value.trim() : '';
         if (!gasUrl) {
           gasUrl = defaultGas;
-          if (document.getElementById("setGasUrl")) document.getElementById("setGasUrl").value = gasUrl;
-        }
-        
-        // Brand Assets (Logo, Favicon, OG Image) - Chống rỗng
-        let brandLogo = document.getElementById("setSiteLogoUrl") ? document.getElementById("setSiteLogoUrl").value.trim() : "";
-        if (!brandLogo || brandLogo === "https://iili.io/nFV4Rln.png" || brandLogo.includes("img_1790888969056_z00fh5")) {
-          brandLogo = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png";
-          if (document.getElementById("setSiteLogoUrl")) document.getElementById("setSiteLogoUrl").value = brandLogo;
+          if (document.getElementById('setGasUrl')) document.getElementById('setGasUrl').value = gasUrl;
         }
 
-        let brandFavicon = document.getElementById("setSiteFaviconUrl") ? document.getElementById("setSiteFaviconUrl").value.trim() : "";
-        if (!brandFavicon || brandFavicon === "https://iili.io/nFV4Rln.png" || brandFavicon.includes("img_1790888988353_677lyw")) {
-          brandFavicon = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png";
-          if (document.getElementById("setSiteFaviconUrl")) document.getElementById("setSiteFaviconUrl").value = brandFavicon;
-        }
+        // TỔNG HỢP TOÀN BỘ SETTINGS ĐỂ LƯU LÊN CLOUD & LOCALSTORAGE
+        const currentSiteProfile = (typeof getCurrentBrandProfile === 'function') ? getCurrentBrandProfile() : { brandKey: 'taphoammo' };
+        const activeSiteBrand = (currentSiteProfile.brandKey === 'taphoammo') ? tapHoaSettings : muaBanSettings;
 
-        let brandOgImage = document.getElementById("setSiteOgImageUrl") ? document.getElementById("setSiteOgImageUrl").value.trim() : "";
-        if (!brandOgImage) {
-          brandOgImage = "https://iili.io/nFV4Rln.png";
-          if (document.getElementById("setSiteOgImageUrl")) document.getElementById("setSiteOgImageUrl").value = brandOgImage;
-        }
-
-        const settings = {
-          siteName: siteName,
+        const payloadSettings = {
+          // Cài đặt chung
           googleClientId: googleClientId,
           affiliateRate: affiliateRate,
           hotline: hotline,
@@ -25990,115 +26142,96 @@ function executeCompareSourcesSearch() {
           telegramChannel: telegramChannel,
           marqueeText: marqueeText,
           gasUrl: gasUrl,
-          brandLogo: brandLogo,
-          brandFavicon: brandFavicon,
-          brandOgImage: brandOgImage,
+
+          // Tách riêng TAPHOAMMO.INK
+          taphoammo_siteName: tapHoaSettings.siteName,
+          taphoammo_brandLogo: tapHoaSettings.brandLogo,
+          taphoammo_brandFavicon: tapHoaSettings.brandFavicon,
+          taphoammo_brandOgImage: tapHoaSettings.brandOgImage,
+
+          // Tách riêng MUABANTAIKHOANMMO.COM
+          muabantaikhoanmmo_siteName: muaBanSettings.siteName,
+          muabantaikhoanmmo_brandLogo: muaBanSettings.brandLogo,
+          muabantaikhoanmmo_brandFavicon: muaBanSettings.brandFavicon,
+          muabantaikhoanmmo_brandOgImage: muaBanSettings.brandOgImage,
+
+          // Tương thích ngược theo web hiện tại
+          siteName: activeSiteBrand.siteName,
+          brandLogo: activeSiteBrand.brandLogo,
+          brandFavicon: activeSiteBrand.brandFavicon,
+          brandOgImage: activeSiteBrand.brandOgImage,
           _lastSavedAt: Date.now()
         };
 
-        // BẢO VỆ VÀ THU THẬP TẤT CẢ AI KEYS VÀO SETTINGS
+        // Thu thập các AI Keys
         const providers = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
         providers.forEach(function(p) {
           const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
           let v = el ? el.value.trim() : '';
-          if (!v) {
+          if (!v && typeof MMO_AI_KEYS !== 'undefined') {
             v = MMO_AI_KEYS.get(p);
           }
-          // Do not force leaked Gemini key
           if (v) {
-            MMO_AI_KEYS.set(p, v);
-            settings['ai_key_' + p] = v;
+            if (typeof MMO_AI_KEYS !== 'undefined') MMO_AI_KEYS.set(p, v);
+            payloadSettings['ai_key_' + p] = v;
             if (el && !el.value) el.value = v;
           }
         });
 
+        // Lưu vào LocalStorage
         try {
-          localStorage.setItem("mmo_system_settings", JSON.stringify(settings));
-        } catch(eSet1) {
-          console.warn("Storage warning mmo_system_settings:", eSet1);
-        }
-        try {
-          localStorage.setItem("mmo_general_settings", JSON.stringify(settings));
-        } catch(eSet2) {
-          console.warn("Storage warning mmo_general_settings:", eSet2);
+          localStorage.setItem('mmo_system_settings', JSON.stringify(payloadSettings));
+          localStorage.setItem('mmo_general_settings', JSON.stringify(payloadSettings));
+          localStorage.setItem('mmo_settings_permanent_backup', JSON.stringify(payloadSettings));
+        } catch(eStorage) {
+          console.warn('Storage warning:', eStorage);
         }
 
-        // Lưu bản backup độc lập vĩnh viễn không thể bị ghi đè
+        // Lưu lên Turso Cloud Worker
         try {
-          const permBackup = JSON.parse(localStorage.getItem('mmo_settings_permanent_backup') || '{}');
-          Object.assign(permBackup, settings);
-          localStorage.setItem('mmo_settings_permanent_backup', JSON.stringify(permBackup));
-        } catch(eSet3) {
-          console.warn("Storage warning mmo_settings_permanent_backup:", eSet3);
-        }
-
-        // Đồng bộ lưu lên Turso Cloud Worker với Auth Headers đầy đủ
-        try {
-          const adminSecToken = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+          const adminSecToken = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getAdminSecret)
             ? MMO_WORKER_API.getAdminSecret()
-            : (localStorage.getItem("mmo_admin_secret") || (document.getElementById("setAdminSecretToken") ? document.getElementById("setAdminSecretToken").value.trim() : "") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+            : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || 'mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60');
 
-          fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
-            method: "POST",
+          fetch('https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings', {
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer " + adminSecToken,
-              "x-admin-token": adminSecToken,
-              "X-Admin-Secret": adminSecToken
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + adminSecToken,
+              'x-admin-token': adminSecToken,
+              'X-Admin-Secret': adminSecToken
             },
-            body: JSON.stringify({ settings: settings, admin_secret: adminSecToken })
+            body: JSON.stringify({ settings: payloadSettings, admin_secret: adminSecToken })
           }).then(function() {
-            if (typeof showToast === "function") showToast("🎉 Đã lưu cài đặt hệ thống & thương hiệu lên máy chủ thành công!", "success");
+            if (typeof showToast === 'function') showToast('🎉 Đã lưu cài đặt hệ thống & thương hiệu lên máy chủ thành công!', 'success');
           }).catch(function() {
-            if (typeof showToast === "function") showToast("✅ Đã lưu cài đặt hệ thống!", "success");
+            if (typeof showToast === 'function') showToast('✅ Đã lưu cài đặt hệ thống!', 'success');
           });
         } catch(e) {
-          if (typeof showToast === "function") showToast("✅ Đã lưu cài đặt hệ thống!", "success");
+          if (typeof showToast === 'function') showToast('✅ Đã lưu cài đặt hệ thống!', 'success');
         }
 
-        // Áp dụng ngay lập tức lên toàn bộ giao diện
-        applyBrandCustomizations(settings);
-        if (typeof syncZaloLinks === "function") syncZaloLinks(settings.hotline);
-        if (typeof syncTelegramLinks === "function") syncTelegramLinks(settings.telegramGroup || settings.telegram, settings.telegramChannel || settings.telegram);
-        if (typeof syncMarqueeNotice === "function") syncMarqueeNotice(settings.marqueeText);
+        // Áp dụng ngay tức thì lên giao diện
+        applyBrandCustomizations(payloadSettings);
+        if (typeof syncZaloLinks === 'function') syncZaloLinks(payloadSettings.hotline);
+        if (typeof syncTelegramLinks === 'function') syncTelegramLinks(payloadSettings.telegramGroup || payloadSettings.telegram, payloadSettings.telegramChannel || payloadSettings.telegram);
+        if (typeof syncMarqueeNotice === 'function') syncMarqueeNotice(payloadSettings.marqueeText);
 
-        // Phát sóng đa tab (BroadcastChannel) để cập nhật tức thì mọi tab đang mở
+        // Phát sóng đa tab
         try {
-          if (typeof BroadcastChannel !== "undefined") {
-            const bc = new BroadcastChannel("mmo_settings_channel");
-            bc.postMessage({ type: "SETTINGS_UPDATED", settings: settings });
+          if (typeof BroadcastChannel !== 'undefined') {
+            const bc = new BroadcastChannel('mmo_settings_channel');
+            bc.postMessage({ type: 'SETTINGS_UPDATED', settings: payloadSettings });
           }
         } catch(e) {}
 
-        // Đồng bộ lưu lên Google Apps Script / Google Sheets nếu có cấu hình
-        if (typeof callGasApi === "function") {
-          const callerEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : ((typeof getAdminEmails === "function" && getAdminEmails()[0]) || "muabantaikhoanmmo@gmail.com");
-          callGasApi("adminSaveSettings", {
-            adminEmail: callerEmail,
-            settings: {
-              tickerText: marqueeText,
-              TICKER_TEXT: marqueeText,
-              siteName: siteName,
-              SITE_NAME: siteName,
-              hotline: hotline,
-              HOTLINE: hotline,
-              telegram: telegram,
-              TELEGRAM: telegram,
-              googleClientId: googleClientId,
-              GOOGLE_CLIENT_ID: googleClientId
-            }
-          }).then(function(res) {
-            console.log("Đã đồng bộ thông báo & cài đặt lên máy chủ:", res);
-          }).catch(function(e) { console.warn("Lỗi đồng bộ cấu hình lên Google Sheets:", e); });
-        }
-
-        if (typeof showToast === "function") {
-          showToast("🎉 Lưu cài đặt hệ thống, thương hiệu & thông báo thành công!", "success");
+        if (typeof showToast === 'function') {
+          showToast('🎉 Lưu cài đặt hệ thống & thương hiệu riêng từng website thành công!', 'success');
         }
       } catch(errSave) {
-        console.error("handleSaveGeneralSettings error:", errSave);
-        if (typeof showToast === "function") {
-          showToast("⚠️ Có lỗi khi lưu: " + errSave.message, "danger");
+        console.error('handleSaveGeneralSettings error:', errSave);
+        if (typeof showToast === 'function') {
+          showToast('⚠️ Có lỗi khi lưu: ' + errSave.message, 'danger');
         }
       }
       return false;
