@@ -7,11 +7,23 @@ window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
 (function cleanLegacyProductImageStorage() {
-  // [BẢO TỒN 100% ẢNH ADMIN TẢI LÊN]: Tuyệt đối không xóa mmo_custom_img_ để bảo vệ ảnh người dùng tải lên bằng tay!
   if (typeof localStorage === "undefined") return;
   try {
-    if (localStorage.getItem("mmo_products") && localStorage.getItem("mmo_products").length > 5000000) {
+    // Tự động dọn dẹp các cache cũ chứa ảnh phôi lỗi thời để nạp ngay poster mới chuẩn 100% từ Turso DB
+    const pRaw = localStorage.getItem("mmo_products") || "";
+    if (pRaw.includes("tiktok_brazil.png") || pRaw.includes("gmail_24h.png") || pRaw.length > 3000000) {
       localStorage.removeItem("mmo_products");
+      localStorage.removeItem("mmo_admin_products");
+    }
+    // Dọn sạch các custom_img cũ nếu trỏ tới phôi cũ
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith("mmo_custom_img_")) {
+        const val = localStorage.getItem(k) || "";
+        if (val.includes("tiktok_brazil.png") || val.includes("gmail_24h.png") || val.includes("khotaikhoanso")) {
+          localStorage.removeItem(k);
+        }
+      }
     }
   } catch(e) {}
 })();
@@ -12411,6 +12423,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     
         var KNOWN_PROD_IMAGE_MAP = {
   "PROD_MTPIJ9XV": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTPIJ9XV_T%C3%80I_KHO%E1%BA%A2N_TIKTOK_BRAZIL_%C4%90%C3%83_NG%C3%82M_L%C3%82U_-_C%E1%BB%B0.png",
+  "PROD_MTPG0PUD": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTPIJ9XV_T%C3%80I_KHO%E1%BA%A2N_TIKTOK_BRAZIL_%C4%90%C3%83_NG%C3%82M_L%C3%82U_-_C%E1%BB%B0.png",
   "PROD_MTQQXO2E": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQQXO2E_Gmail_cho_Thu%C3%AA_24h.png",
   "PROD_MTQWMPL5": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWMPL5_Gmail_cho_thu%C3%AA_7_Ng%C3%A0y.png",
   "PROD_MTQWQFZD": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWQFZD_Gmail_cho_thu%C3%AA_30_Ng%C3%A0y.png",
