@@ -3482,8 +3482,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     // CORE SYSTEM: ADMIN TRANSACTION HISTORY & WALLET LOGS (TOÀN SÀN)
     // =========================================================================
-    let admTxSearchQuery = "";
-    let admTxTypeFilter = "ALL";
+    var admTxSearchQuery = "";
+    var admTxTypeFilter = "ALL";
 
     function handleSearchAdminTx(val) {
       admTxSearchQuery = (val || "").toLowerCase().trim();
