@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.8.4";
+const MMO_CURRENT_CODE_VERSION = "5.8.5";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -8445,8 +8445,12 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 const dtlImg = document.getElementById("dtlImage");
                 const curImg = (typeof resolveProductImage === "function") ? resolveProductImage(curP) : (curP.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
                 if (dtlImg && curImg && dtlImg.src !== curImg) dtlImg.src = curImg;
-                const dtlDesc = document.getElementById("dtlFullDesc");
-                if (dtlDesc && curP.description) dtlDesc.innerText = curP.description;
+                if (typeof renderProductDetailArticle === "function") {
+                  renderProductDetailArticle(curP, curP.description);
+                } else {
+                  const dtlDesc = document.getElementById("dtlFullDesc");
+                  if (dtlDesc && curP.description) dtlDesc.innerText = curP.description;
+                }
                 const dtlWarranty = document.getElementById("dtlWarranty");
                 if (dtlWarranty && curP.warranty) dtlWarranty.innerText = "🛡 " + curP.warranty;
 
@@ -29432,8 +29436,12 @@ function executeCompareSourcesSearch() {
 
       const savedLocalDesc = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + p.id) : "";
       const effectiveFullDesc = (savedLocalDesc && savedLocalDesc.trim()) ? savedLocalDesc.trim() : (p.description || "");
-      const dtlDesc = document.getElementById("dtlFullDesc");
-      if (dtlDesc) dtlDesc.innerText = effectiveFullDesc;
+      if (typeof renderProductDetailArticle === "function") {
+        renderProductDetailArticle(p, effectiveFullDesc);
+      } else {
+        const dtlDesc = document.getElementById("dtlFullDesc");
+        if (dtlDesc) dtlDesc.innerText = effectiveFullDesc;
+      }
 
       const dtlQty = document.getElementById("dtlQtyInput");
       if (dtlQty) dtlQty.value = 1;
@@ -30090,6 +30098,159 @@ function executeCompareSourcesSearch() {
     // =========================================================================
     // CHUYỂN TAB THÔNG TIN CHI TIẾT SẢN PHẨM: CHI TIẾT, HƯỚNG DẪN & ĐÁNH GIÁ
     // =========================================================================
+    
+// =========================================================================
+// PRODUCT DETAIL TABLE OF CONTENTS (TOC) & COLLAPSIBLE READ MORE (v5.8.5)
+// =========================================================================
+function toggleDetailToc() {
+  const box = document.getElementById("dtlTocBox");
+  if (!box) return;
+  box.classList.toggle("collapsed");
+}
+window.toggleDetailToc = toggleDetailToc;
+
+function toggleDetailDescExpand() {
+  const wrap = document.getElementById("dtlDescWrapper");
+  const txt = document.getElementById("dtlDescToggleText");
+  const icon = document.getElementById("dtlDescToggleIcon");
+  if (!wrap) return;
+
+  const isCollapsed = wrap.classList.contains("collapsed");
+  if (isCollapsed) {
+    wrap.classList.remove("collapsed");
+    if (txt) txt.textContent = "Thu gọn";
+    if (icon) icon.className = "fa-solid fa-chevron-up";
+  } else {
+    wrap.classList.add("collapsed");
+    if (txt) txt.textContent = "Xem thêm";
+    if (icon) icon.className = "fa-solid fa-chevron-down";
+    const targetAnchor = document.getElementById("dtlTocBox") || wrap;
+    if (targetAnchor && typeof targetAnchor.scrollIntoView === "function") {
+      targetAnchor.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+}
+window.toggleDetailDescExpand = toggleDetailDescExpand;
+
+function scrollToDetailSection(sectionId) {
+  if (!sectionId) return;
+  const target = document.getElementById(sectionId);
+  if (target && typeof target.scrollIntoView === "function") {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+window.scrollToDetailSection = scrollToDetailSection;
+
+function renderProductDetailArticle(p, customDesc) {
+  if (!p) return;
+  const name = (p.name || "Sản Phẩm MMO").trim();
+  const cat = (p.category || "Tài nguyên MMO").trim();
+  const warranty = (p.warranty || "Bảo Hành 1 Đổi 1").trim();
+  const custom = (typeof customDesc === "string" ? customDesc : (p.description || "")).trim();
+  const esc = (typeof escapeHtml === "function") ? escapeHtml : function(str) {
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  };
+
+  let adv1 = "Hệ thống kích hoạt và bàn giao tự động 24/7";
+  let adv2 = "Tài nguyên sạch 100%, bảo mật xài riêng";
+  let adv3 = "Tương thích đa thiết bị, tốc độ ổn định";
+  let adv4 = "Tiết kiệm chi phí, giá tốt nhất thị trường";
+
+  const upper = name.toUpperCase();
+  if (upper.includes("VPN") || upper.includes("PROXY") || upper.includes("IPV4") || upper.includes("SOCKS")) {
+    adv1 = "Kết nối nhanh, độ trễ (ping) cực thấp";
+    adv2 = "Hỗ trợ đa quốc gia & máy chủ tốc độ cao";
+    adv3 = "Bảo mật an toàn, tuyệt đối không quảng cáo";
+    adv4 = "Dùng mượt mà trên tối đa 10 thiết bị";
+  } else if (upper.includes("TIKTOK")) {
+    adv1 = "Tài khoản live 100%, ngâm trâu kháng cày view";
+    adv2 = "Đầy đủ email, cookie, token đăng nhập mượt mà";
+    adv3 = "Phù hợp làm affiliate, chạy ads, reup video";
+    adv4 = "Bảo hành login lần đầu 1 đổi 1 nhanh chóng";
+  } else if (upper.includes("FACEBOOK") || upper.includes("CLONE") || upper.includes("VIA")) {
+    adv1 = "Clone ngâm lâu, đầy đủ 2FA chống checkpoint";
+    adv2 = "Profile bạn bè tương tác thật, độ trust cao";
+    adv3 = "Tương thích mọi tool nuôi nick (FPlus, MaxCare...)";
+    adv4 = "Giao định dạng chuẩn UID|Pass|2FA|Mail";
+  } else if (upper.includes("GEMINI") || upper.includes("GPT") || upper.includes("CHATGPT") || upper.includes("AI")) {
+    adv1 = "Nâng cấp chính chủ tài khoản của bạn, kích hoạt nhanh";
+    adv2 = "Mô hình AI mới nhất, tốc độ phản hồi cực nhanh";
+    adv3 = "Hỗ trợ đầy đủ tính năng Premium độc quyền";
+    adv4 = "Thời hạn chuẩn xác, bảo hành suốt chu kỳ sử dụng";
+  } else if (upper.includes("MAIL") || upper.includes("GMAIL")) {
+    adv1 = "Gmail tạo tay hoặc ngâm chuẩn, bảo mật 2 lớp";
+    adv2 = "Đã bật POP3/IMAP, dễ dàng đồng bộ vào tool";
+    adv3 = "Không checkpoint, có thể đổi mật khẩu và mail phục hồi";
+    adv4 = "Bảo hành đăng nhập 1 đổi 1 uy tín 24/7";
+  }
+
+  // 1. Render Table of Contents (TOC)
+  const tocNav = document.getElementById("dtlTocNav");
+  if (tocNav) {
+    tocNav.innerHTML = [
+      '<a class="dtl-toc-item dtl-toc-level-1" onclick="scrollToDetailSection(\'dtl-sec-1\')"><span class="dtl-toc-num">1</span> Mua ' + esc(name) + ' Giá Rẻ Tại Muabantaikhoanmmo.com</a>',
+      '<a class="dtl-toc-item dtl-toc-level-1" onclick="scrollToDetailSection(\'dtl-sec-2\')"><span class="dtl-toc-num">2</span> ' + esc(name) + ' Là Gì?</a>',
+      '<a class="dtl-toc-item dtl-toc-level-1" onclick="scrollToDetailSection(\'dtl-sec-3\')"><span class="dtl-toc-num">3</span> Ưu Điểm Khi Sử Dụng ' + esc(name) + '</a>',
+      '<a class="dtl-toc-item dtl-toc-level-2" onclick="scrollToDetailSection(\'dtl-sec-3-1\')"><span class="dtl-toc-num">3.1</span> ' + esc(adv1) + '</a>',
+      '<a class="dtl-toc-item dtl-toc-level-2" onclick="scrollToDetailSection(\'dtl-sec-3-2\')"><span class="dtl-toc-num">3.2</span> ' + esc(adv2) + '</a>',
+      '<a class="dtl-toc-item dtl-toc-level-2" onclick="scrollToDetailSection(\'dtl-sec-3-3\')"><span class="dtl-toc-num">3.3</span> ' + esc(adv3) + '</a>',
+      '<a class="dtl-toc-item dtl-toc-level-2" onclick="scrollToDetailSection(\'dtl-sec-3-4\')"><span class="dtl-toc-num">3.4</span> ' + esc(adv4) + '</a>',
+      '<a class="dtl-toc-item dtl-toc-level-1" onclick="scrollToDetailSection(\'dtl-sec-4\')"><span class="dtl-toc-num">4</span> Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn</a>',
+      '<a class="dtl-toc-item dtl-toc-level-1" onclick="scrollToDetailSection(\'dtl-sec-5\')"><span class="dtl-toc-num">5</span> Chính Sách Bảo Hành &amp; Cam Kết Đổi Trả</a>'
+    ].join("");
+  }
+
+  // 2. Render Rich Article Body
+  const dtlDesc = document.getElementById("dtlFullDesc");
+  if (dtlDesc) {
+    let customNoteHtml = "";
+    if (custom) {
+      customNoteHtml = '<div style="background:#070d1e; border:1px solid #1e293b; border-left:3px solid #38bdf8; padding:12px 14px; margin-bottom:14px; border-radius:6px; font-size:0.86rem; color:#cbd5e1; line-height:1.65; white-space:pre-line;">' +
+        '<div style="color:#38bdf8; font-weight:700; margin-bottom:4px; font-size:0.8rem; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-circle-info"></i> THÔNG TIN CHI TIẾT TỪ HỆ THỐNG:</div>' +
+        esc(custom) +
+      '</div>';
+    }
+
+    dtlDesc.innerHTML = [
+      '<h2 id="dtl-sec-1" class="dtl-article-h2">Mua ' + esc(name) + ' Giá Rẻ Tại Muabantaikhoanmmo.com</h2>',
+      '<p class="dtl-article-p">Nếu bạn đang cần một sản phẩm <strong>' + esc(name) + '</strong> chất lượng cao, dễ sử dụng, kết nối ổn định và an toàn để phục vụ công việc kiếm tiền online (MMO), chạy quảng cáo hoặc sử dụng thường ngày, <strong>' + esc(name) + '</strong> là một lựa chọn rất đáng cân nhắc. Sàn <strong>MUABANTAIKHOANMMO</strong> cung cấp nguồn tài nguyên uy tín, bàn giao hoàn toàn tự động chỉ trong 3 - 5 giây sau khi thanh toán.</p>',
+      customNoteHtml,
+      '<h2 id="dtl-sec-2" class="dtl-article-h2">' + esc(name) + ' Là Gì?</h2>',
+      '<p class="dtl-article-p"><strong>' + esc(name) + '</strong> là giải pháp thuộc danh mục <strong>' + esc(cat) + '</strong> được đông đảo cộng đồng kiếm tiền online, anh em media buyer và các đội nhóm chuyên nghiệp tin dùng. Sản phẩm giúp tối ưu hóa hiệu suất vận hành công việc, bảo vệ an toàn thông tin danh tính số và tiết kiệm chi phí tối đa.</p>',
+      '<h2 id="dtl-sec-3" class="dtl-article-h2">Ưu Điểm Khi Sử Dụng ' + esc(name) + '</h2>',
+      '<p class="dtl-article-p">Khi trải nghiệm và sử dụng <strong>' + esc(name) + '</strong> tại sàn <strong>Muabantaikhoanmmo.com</strong>, bạn hoàn toàn an tâm với những thế mạnh vượt trội:</p>',
+      '<h3 id="dtl-sec-3-1" class="dtl-article-h3">3.1 ' + esc(adv1) + '</h3>',
+      '<p class="dtl-article-p">Hệ thống xử lý đơn hàng tự động 24/7 không gián đoạn. Ngay khi thanh toán thành công, bạn sẽ nhận được thông tin bàn giao đầy đủ tại màn hình và tab Lịch Sử Đơn Hàng.</p>',
+      '<h3 id="dtl-sec-3-2" class="dtl-article-h3">3.2 ' + esc(adv2) + '</h3>',
+      '<p class="dtl-article-p">Tài nguyên bàn giao cam kết live 100%, chất lượng sạch, không bị blacklist và đáp ứng hoàn hảo các thuật toán kiểm tra gắt gao của nền tảng.</p>',
+      '<h3 id="dtl-sec-3-3" class="dtl-article-h3">3.3 ' + esc(adv3) + '</h3>',
+      '<p class="dtl-article-p">Tài nguyên được cấp riêng biệt (Private), không dùng chung, không chia sẻ với bên thứ ba, bảo đảm tính riêng tư và bảo mật tối đa cho dữ liệu công việc.</p>',
+      '<h3 id="dtl-sec-3-4" class="dtl-article-h3">3.4 ' + esc(adv4) + '</h3>',
+      '<p class="dtl-article-p">Mức giá cạnh tranh tận gốc so với mặt bằng chung thị trường, đa dạng gói dung lượng và thời hạn giúp bạn linh hoạt đầu tư theo từng quy mô dự án.</p>',
+      '<h2 id="dtl-sec-4" class="dtl-article-h2">Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn</h2>',
+      '<ul class="dtl-article-list">',
+        '<li><strong>Bước 1:</strong> Sau khi mua thành công, kiểm tra thông tin bàn giao theo định dạng chuẩn (Email | Mật khẩu | 2FA hoặc Key kích hoạt).</li>',
+        '<li><strong>Bước 2:</strong> Nếu tài khoản có bảo mật 2FA, truy cập mục <em>Công Cụ MMO &gt; Lấy Mã 2FA Hàng Loạt</em> trực tiếp trên website để lấy mã 6 số đăng nhập.</li>',
+        '<li><strong>Bước 3:</strong> Nên sử dụng phần mềm Anti-detect Browser (Gologin, Hidemyacc, AdsPower...) kết hợp Proxy sạch để đăng nhập tài khoản nhằm duy trì độ trust cao nhất.</li>',
+        '<li><strong>Bước 4:</strong> Khi kiểm tra tài khoản hoạt động bình thường, tiến hành đổi mật khẩu hoặc cập nhật email khôi phục theo nhu cầu cá nhân.</li>',
+      '</ul>',
+      '<h2 id="dtl-sec-5" class="dtl-article-h2">Chính Sách Bảo Hành &amp; Cam Kết Đổi Trả</h2>',
+      '<p class="dtl-article-p">Sàn <strong>MUABANTAIKHOANMMO</strong> áp dụng chính sách <strong>' + esc(warranty) + '</strong> minh bạch và rõ ràng. Mọi vấn đề lỗi đăng nhập lần đầu hoặc lỗi xuất phát từ hệ thống đều được hỗ trợ xử lý 1:1 siêu tốc qua đội ngũ CSKH trực tuyến 24/7 trên kênh Zalo và Telegram.</p>'
+    ].join("");
+  }
+
+  // 3. Reset Wrapper to Collapsed state by default
+  const wrap = document.getElementById("dtlDescWrapper");
+  const txt = document.getElementById("dtlDescToggleText");
+  const icon = document.getElementById("dtlDescToggleIcon");
+  const btnWrap = document.getElementById("dtlDescToggleWrap");
+  if (wrap) wrap.classList.add("collapsed");
+  if (txt) txt.textContent = "Xem thêm";
+  if (icon) icon.className = "fa-solid fa-chevron-down";
+  if (btnWrap) btnWrap.style.display = "block";
+}
+window.renderProductDetailArticle = renderProductDetailArticle;
+
     function switchProductDescTab(tabKey, btnElement) {
       const secDesc = document.getElementById("dtlTabSecDesc");
       const secGuide = document.getElementById("dtlTabSecGuide");
