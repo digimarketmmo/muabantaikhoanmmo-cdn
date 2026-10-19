@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.8.5";
+const MMO_CURRENT_CODE_VERSION = "5.8.6";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -5776,7 +5776,16 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (admImgPrev) admImgPrev.src = effectiveImg || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
       if (document.getElementById("admProdWarranty")) document.getElementById("admProdWarranty").value = p.warranty || "Bảo Hành 1 Đổi 1";
       const effectiveDesc = (p.description !== undefined && p.description !== null) ? p.description : "";
-      if (document.getElementById("admProdDesc")) document.getElementById("admProdDesc").value = effectiveDesc;
+      const admRawDesc = document.getElementById("admProdDesc");
+      const admVisDesc = document.getElementById("admProdDescVisual");
+      if (admRawDesc) admRawDesc.value = effectiveDesc;
+      if (admVisDesc) {
+        if (/<[a-z][\s\S]*>/i.test(effectiveDesc)) {
+          admVisDesc.innerHTML = effectiveDesc;
+        } else {
+          admVisDesc.innerHTML = effectiveDesc ? effectiveDesc.replace(/\n/g, "<br>") : "";
+        }
+      }
 
       const variants = (p.variants && p.variants.length > 0) ? p.variants : [{ name: p.name, price: p.price }];
       renderVariantInputs(variants);
@@ -8782,6 +8791,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (document.getElementById("admProdImgPreview")) document.getElementById("admProdImgPreview").src = "";
       if (document.getElementById("admProdWarranty")) document.getElementById("admProdWarranty").value = "Bảo Hành 1 Đổi 1";
       if (document.getElementById("admProdDesc")) document.getElementById("admProdDesc").value = "";
+      if (document.getElementById("admProdDescVisual")) document.getElementById("admProdDescVisual").innerHTML = "";
 
       // Khởi tạo và reset Loại Nguồn Hàng
       const radioLocal = document.getElementById("admProdTypeLocal");
@@ -9253,7 +9263,15 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           } catch(eDel) {}
         }
         const warranty = document.getElementById("admProdWarranty")?.value.trim() || "Bảo Hành 1 Đổi 1";
-        const description = document.getElementById("admProdDesc")?.value.trim() || "";
+        const admVisDescEl = document.getElementById("admProdDescVisual");
+        const admRawDescEl = document.getElementById("admProdDesc");
+        let description = "";
+        if (admVisDescEl && admVisDescEl.style.display !== "none") {
+          description = admVisDescEl.innerHTML.trim();
+        } else if (admRawDescEl) {
+          description = admRawDescEl.value.trim();
+        }
+        if (admRawDescEl) admRawDescEl.value = description;
 
         const container = document.getElementById("admVariantsContainer") || document.getElementById("admVariantRowsContainer");
         const varRows = container ? container.querySelectorAll(".adm-variant-row") : [];
@@ -30100,7 +30118,121 @@ function executeCompareSourcesSearch() {
     // =========================================================================
     
 // =========================================================================
-// PRODUCT DETAIL TABLE OF CONTENTS (TOC) & COLLAPSIBLE READ MORE (v5.8.5)
+// RICH TEXT WYSIWYG EDITOR FOR PRODUCT DESCRIPTION (ADMIN) (v5.8.6)
+// =========================================================================
+function syncAdmDescFromVisual() {
+  const visual = document.getElementById("admProdDescVisual");
+  const raw = document.getElementById("admProdDesc");
+  if (visual && raw) {
+    raw.value = visual.innerHTML;
+  }
+}
+window.syncAdmDescFromVisual = syncAdmDescFromVisual;
+
+function syncAdmDescFromRaw() {
+  const visual = document.getElementById("admProdDescVisual");
+  const raw = document.getElementById("admProdDesc");
+  if (visual && raw) {
+    visual.innerHTML = raw.value;
+  }
+}
+window.syncAdmDescFromRaw = syncAdmDescFromRaw;
+
+function admEditorExec(cmd, val) {
+  const visual = document.getElementById("admProdDescVisual");
+  if (!visual) return;
+  visual.focus();
+  document.execCommand(cmd, false, val !== undefined ? val : null);
+  syncAdmDescFromVisual();
+}
+window.admEditorExec = admEditorExec;
+
+function admEditorFormatBlock(tag) {
+  if (!tag) return;
+  const visual = document.getElementById("admProdDescVisual");
+  if (!visual) return;
+  visual.focus();
+  document.execCommand("formatBlock", false, tag);
+  syncAdmDescFromVisual();
+}
+window.admEditorFormatBlock = admEditorFormatBlock;
+
+function admEditorFontSize(size) {
+  if (!size) return;
+  const visual = document.getElementById("admProdDescVisual");
+  if (!visual) return;
+  visual.focus();
+  document.execCommand("fontSize", false, size);
+  syncAdmDescFromVisual();
+}
+window.admEditorFontSize = admEditorFontSize;
+
+function admEditorInsertHeading(tag) {
+  const visual = document.getElementById("admProdDescVisual");
+  if (!visual) return;
+  visual.focus();
+  const headingTitle = tag === "h2" ? "Tiêu đề mục chính (H2)" : "Tiêu đề mục con (H3)";
+  const html = '<' + tag + ' style="color:#38bdf8; margin:12px 0 6px 0;">' + headingTitle + '</' + tag + '><p><br></p>';
+  document.execCommand("insertHTML", false, html);
+  syncAdmDescFromVisual();
+}
+window.admEditorInsertHeading = admEditorInsertHeading;
+
+function admEditorInsertLink() {
+  const visual = document.getElementById("admProdDescVisual");
+  if (!visual) return;
+  const url = prompt("Nhập đường dẫn liên kết (URL):", "https://");
+  if (url && url.trim()) {
+    visual.focus();
+    document.execCommand("createLink", false, url.trim());
+    syncAdmDescFromVisual();
+  }
+}
+window.admEditorInsertLink = admEditorInsertLink;
+
+function admEditorInsertMedia() {
+  const visual = document.getElementById("admProdDescVisual");
+  if (!visual) return;
+  const url = prompt("Nhập đường dẫn hình ảnh (URL):", "https://");
+  if (url && url.trim()) {
+    visual.focus();
+    const imgHtml = '<img src="' + url.trim() + '" alt="Hình ảnh mô tả sản phẩm" style="max-width:100%; border-radius:6px; margin:8px 0; display:block;" onerror="this.style.display=\'none\'"/><p><br></p>';
+    document.execCommand("insertHTML", false, imgHtml);
+    syncAdmDescFromVisual();
+  }
+}
+window.admEditorInsertMedia = admEditorInsertMedia;
+
+function admEditorToggleCodeView() {
+  const visual = document.getElementById("admProdDescVisual");
+  const raw = document.getElementById("admProdDesc");
+  const txt = document.getElementById("admEditorCodeToggleText");
+  const toolbar = document.getElementById("admEditorToolbar");
+  if (!visual || !raw) return;
+
+  const isCodeMode = (raw.style.display !== "none");
+  if (isCodeMode) {
+    // Switch to Visual mode
+    visual.innerHTML = raw.value;
+    raw.style.display = "none";
+    visual.style.display = "block";
+    if (toolbar) toolbar.style.opacity = "1";
+    if (toolbar) toolbar.style.pointerEvents = "auto";
+    if (txt) txt.textContent = "Mã HTML";
+  } else {
+    // Switch to Code mode
+    raw.value = visual.innerHTML;
+    visual.style.display = "none";
+    raw.style.display = "block";
+    if (toolbar) toolbar.style.opacity = "0.5";
+    if (toolbar) toolbar.style.pointerEvents = "none";
+    if (txt) txt.textContent = "Trực quan";
+  }
+}
+window.admEditorToggleCodeView = admEditorToggleCodeView;
+
+// =========================================================================
+// TABLE OF CONTENTS (TOC) & SMOOTH SCROLL ENGINE (v5.8.6)
 // =========================================================================
 function toggleDetailToc() {
   const box = document.getElementById("dtlTocBox");
@@ -30132,12 +30264,39 @@ function toggleDetailDescExpand() {
 }
 window.toggleDetailDescExpand = toggleDetailDescExpand;
 
+// [SỬA LỖI TRIỆT ĐỂ: BẤM VÀO MỤC LỤC TỰ ĐỘNG MỞ RỘNG VÀ CUỘN MƯỢT XUỐNG BÀI VIẾT]
 function scrollToDetailSection(sectionId) {
   if (!sectionId) return;
-  const target = document.getElementById(sectionId);
-  if (target && typeof target.scrollIntoView === "function") {
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  // 1. TỰ ĐỘNG MỞ RỘNG BÀI VIẾT NẾU ĐANG BỊ THU GỌN (BẮT BUỘC ĐỂ KHÔNG BỊ OVERFLOW:HIDDEN CHẶN)
+  const wrap = document.getElementById("dtlDescWrapper");
+  const txt = document.getElementById("dtlDescToggleText");
+  const icon = document.getElementById("dtlDescToggleIcon");
+  if (wrap && wrap.classList.contains("collapsed")) {
+    wrap.classList.remove("collapsed");
+    if (txt) txt.textContent = "Thu gọn";
+    if (icon) icon.className = "fa-solid fa-chevron-up";
   }
+
+  // 2. CUỘN MƯỢT CHÍNH XÁC XUỐNG VỊ TRÍ TIÊU ĐỀ
+  setTimeout(function() {
+    const target = document.getElementById(sectionId);
+    if (target) {
+      const yOffset = -90; // Bù trừ sticky header
+      const y = target.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+
+      // Hiệu ứng highlight nhẹ để người dùng nhận diện ngay tiêu đề
+      target.style.transition = "all 0.3s ease";
+      const oldColor = target.style.color;
+      target.style.color = "#38bdf8";
+      target.style.transform = "translateX(6px)";
+      setTimeout(function() {
+        target.style.color = oldColor;
+        target.style.transform = "none";
+      }, 1200);
+    }
+  }, 60);
 }
 window.scrollToDetailSection = scrollToDetailSection;
 
@@ -30151,70 +30310,106 @@ function renderProductDetailArticle(p, customDesc) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   };
 
-  let adv1 = "Hệ thống kích hoạt và bàn giao tự động 24/7";
-  let adv2 = "Tài nguyên sạch 100%, bảo mật xài riêng";
-  let adv3 = "Tương thích đa thiết bị, tốc độ ổn định";
-  let adv4 = "Tiết kiệm chi phí, giá tốt nhất thị trường";
+  // KIỂM TRA XEM MÔ TẢ TÙY CHỈNH CÓ CHỨA THẺ TIÊU ĐỀ H2 HOẶC H3 KHÔNG
+  const hasCustomHeadings = /<h[23][^>]*>/i.test(custom);
+  let finalArticleHtml = "";
+  let tocItems = [];
 
-  const upper = name.toUpperCase();
-  if (upper.includes("VPN") || upper.includes("PROXY") || upper.includes("IPV4") || upper.includes("SOCKS")) {
-    adv1 = "Kết nối nhanh, độ trễ (ping) cực thấp";
-    adv2 = "Hỗ trợ đa quốc gia & máy chủ tốc độ cao";
-    adv3 = "Bảo mật an toàn, tuyệt đối không quảng cáo";
-    adv4 = "Dùng mượt mà trên tối đa 10 thiết bị";
-  } else if (upper.includes("TIKTOK")) {
-    adv1 = "Tài khoản live 100%, ngâm trâu kháng cày view";
-    adv2 = "Đầy đủ email, cookie, token đăng nhập mượt mà";
-    adv3 = "Phù hợp làm affiliate, chạy ads, reup video";
-    adv4 = "Bảo hành login lần đầu 1 đổi 1 nhanh chóng";
-  } else if (upper.includes("FACEBOOK") || upper.includes("CLONE") || upper.includes("VIA")) {
-    adv1 = "Clone ngâm lâu, đầy đủ 2FA chống checkpoint";
-    adv2 = "Profile bạn bè tương tác thật, độ trust cao";
-    adv3 = "Tương thích mọi tool nuôi nick (FPlus, MaxCare...)";
-    adv4 = "Giao định dạng chuẩn UID|Pass|2FA|Mail";
-  } else if (upper.includes("GEMINI") || upper.includes("GPT") || upper.includes("CHATGPT") || upper.includes("AI")) {
-    adv1 = "Nâng cấp chính chủ tài khoản của bạn, kích hoạt nhanh";
-    adv2 = "Mô hình AI mới nhất, tốc độ phản hồi cực nhanh";
-    adv3 = "Hỗ trợ đầy đủ tính năng Premium độc quyền";
-    adv4 = "Thời hạn chuẩn xác, bảo hành suốt chu kỳ sử dụng";
-  } else if (upper.includes("MAIL") || upper.includes("GMAIL")) {
-    adv1 = "Gmail tạo tay hoặc ngâm chuẩn, bảo mật 2 lớp";
-    adv2 = "Đã bật POP3/IMAP, dễ dàng đồng bộ vào tool";
-    adv3 = "Không checkpoint, có thể đổi mật khẩu và mail phục hồi";
-    adv4 = "Bảo hành đăng nhập 1 đổi 1 uy tín 24/7";
-  }
+  if (hasCustomHeadings) {
+    // A. NẾU ADMIN ĐÃ DÙNG BỘ CHỈNH SỬA TẠO CÁC THẺ H2, H3:
+    // TỰ ĐỘNG BÓC TÁCH TIÊU ĐỀ ĐỂ TẠO MỤC LỤC ĐỘNG CHUẨN XÁC 100%
+    let hCount = 0;
+    let h2Idx = 0;
+    let h3Idx = 0;
 
-  // 1. Render Table of Contents (TOC)
-  const tocNav = document.getElementById("dtlTocNav");
-  if (tocNav) {
-    tocNav.innerHTML = [
-      '<a class="dtl-toc-item dtl-toc-level-1" onclick="scrollToDetailSection(\'dtl-sec-1\')"><span class="dtl-toc-num">1</span> Mua ' + esc(name) + ' Giá Rẻ Tại Muabantaikhoanmmo.com</a>',
-      '<a class="dtl-toc-item dtl-toc-level-1" onclick="scrollToDetailSection(\'dtl-sec-2\')"><span class="dtl-toc-num">2</span> ' + esc(name) + ' Là Gì?</a>',
-      '<a class="dtl-toc-item dtl-toc-level-1" onclick="scrollToDetailSection(\'dtl-sec-3\')"><span class="dtl-toc-num">3</span> Ưu Điểm Khi Sử Dụng ' + esc(name) + '</a>',
-      '<a class="dtl-toc-item dtl-toc-level-2" onclick="scrollToDetailSection(\'dtl-sec-3-1\')"><span class="dtl-toc-num">3.1</span> ' + esc(adv1) + '</a>',
-      '<a class="dtl-toc-item dtl-toc-level-2" onclick="scrollToDetailSection(\'dtl-sec-3-2\')"><span class="dtl-toc-num">3.2</span> ' + esc(adv2) + '</a>',
-      '<a class="dtl-toc-item dtl-toc-level-2" onclick="scrollToDetailSection(\'dtl-sec-3-3\')"><span class="dtl-toc-num">3.3</span> ' + esc(adv3) + '</a>',
-      '<a class="dtl-toc-item dtl-toc-level-2" onclick="scrollToDetailSection(\'dtl-sec-3-4\')"><span class="dtl-toc-num">3.4</span> ' + esc(adv4) + '</a>',
-      '<a class="dtl-toc-item dtl-toc-level-1" onclick="scrollToDetailSection(\'dtl-sec-4\')"><span class="dtl-toc-num">4</span> Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn</a>',
-      '<a class="dtl-toc-item dtl-toc-level-1" onclick="scrollToDetailSection(\'dtl-sec-5\')"><span class="dtl-toc-num">5</span> Chính Sách Bảo Hành &amp; Cam Kết Đổi Trả</a>'
-    ].join("");
-  }
+    finalArticleHtml = custom.replace(/<h([23])([^>]*)>(.*?)<\/h\1>/gi, function(match, level, attrs, innerText) {
+      hCount++;
+      const secId = "dtl-custom-sec-" + hCount;
+      const cleanText = innerText.replace(/<[^>]*>/g, "").trim();
+      let numStr = "";
+      if (level === "2") {
+        h2Idx++;
+        h3Idx = 0;
+        numStr = String(h2Idx);
+      } else {
+        h3Idx++;
+        numStr = (h2Idx || 1) + "." + h3Idx;
+      }
+      tocItems.push({
+        id: secId,
+        level: level === "2" ? 1 : 2,
+        num: numStr,
+        title: cleanText || (level === "2" ? "Mục " + numStr : "Chi tiết " + numStr)
+      });
+      return '<h' + level + ' id="' + secId + '" class="dtl-article-h' + level + '" ' + attrs + '>' + innerText + '</h' + level + '>';
+    });
+  } else {
+    // B. NẾU CHƯA CÓ THẺ H2/H3 (VĂN BẢN THƯỜNG HOẶC ĐỂ TRỐNG):
+    // TỰ ĐỘNG TẠO BÀI VIẾT CẤU TRÚC CHUẨN SEO VỚI 5 PHẦN NHƯ HÌNH MẪU
+    let adv1 = "Hệ thống kích hoạt và bàn giao tự động 24/7";
+    let adv2 = "Tài nguyên sạch 100%, bảo mật xài riêng";
+    let adv3 = "Tương thích đa thiết bị, tốc độ ổn định";
+    let adv4 = "Tiết kiệm chi phí, giá tốt nhất thị trường";
 
-  // 2. Render Rich Article Body
-  const dtlDesc = document.getElementById("dtlFullDesc");
-  if (dtlDesc) {
-    let customNoteHtml = "";
+    const upper = name.toUpperCase();
+    if (upper.includes("VPN") || upper.includes("PROXY") || upper.includes("IPV4") || upper.includes("SOCKS")) {
+      adv1 = "Kết nối nhanh, độ trễ (ping) cực thấp";
+      adv2 = "Hỗ trợ đa quốc gia & máy chủ tốc độ cao";
+      adv3 = "Bảo mật an toàn, tuyệt đối không quảng cáo";
+      adv4 = "Dùng mượt mà trên tối đa 10 thiết bị";
+    } else if (upper.includes("TIKTOK")) {
+      adv1 = "Tài khoản live 100%, ngâm trâu kháng cày view";
+      adv2 = "Đầy đủ email, cookie, token đăng nhập mượt mà";
+      adv3 = "Phù hợp làm affiliate, chạy ads, reup video";
+      adv4 = "Bảo hành login lần đầu 1 đổi 1 nhanh chóng";
+    } else if (upper.includes("FACEBOOK") || upper.includes("CLONE") || upper.includes("VIA")) {
+      adv1 = "Clone ngâm lâu, đầy đủ 2FA chống checkpoint";
+      adv2 = "Profile bạn bè tương tác thật, độ trust cao";
+      adv3 = "Tương thích mọi tool nuôi nick (FPlus, MaxCare...)";
+      adv4 = "Giao định dạng chuẩn UID|Pass|2FA|Mail";
+    } else if (upper.includes("GEMINI") || upper.includes("GPT") || upper.includes("CHATGPT") || upper.includes("AI")) {
+      adv1 = "Nâng cấp chính chủ tài khoản của bạn, kích hoạt nhanh";
+      adv2 = "Mô hình AI mới nhất, tốc độ phản hồi cực nhanh";
+      adv3 = "Hỗ trợ đầy đủ tính năng Premium độc quyền";
+      adv4 = "Thời hạn chuẩn xác, bảo hành suốt chu kỳ sử dụng";
+    } else if (upper.includes("MAIL") || upper.includes("GMAIL")) {
+      adv1 = "Gmail tạo tay hoặc ngâm chuẩn, bảo mật 2 lớp";
+      adv2 = "Đã bật POP3/IMAP, dễ dàng đồng bộ vào tool";
+      adv3 = "Không checkpoint, có thể đổi mật khẩu và mail phục hồi";
+      adv4 = "Bảo hành đăng nhập 1 đổi 1 uy tín 24/7";
+    } else if (upper.includes("CAPCUT") || upper.includes("CANVA")) {
+      adv1 = "Mở khóa trọn vẹn toàn bộ tính năng Pro độc quyền";
+      adv2 = "Kho hiệu ứng, công cụ AI đỉnh cao và bộ lọc cao cấp";
+      adv3 = "Tiết kiệm siêu hời so với mua gói cá nhân chính hãng";
+      adv4 = "Sử dụng đa nền tảng trên cả Điện thoại và Máy tính";
+    }
+
+    tocItems = [
+      { id: "dtl-sec-1", level: 1, num: "1", title: "Mua " + name + " Giá Rẻ Tại Muabantaikhoanmmo.com" },
+      { id: "dtl-sec-2", level: 1, num: "2", title: name + " Là Gì?" },
+      { id: "dtl-sec-3", level: 1, num: "3", title: "Ưu Điểm Khi Sử Dụng " + name },
+      { id: "dtl-sec-3-1", level: 2, num: "3.1", title: adv1 },
+      { id: "dtl-sec-3-2", level: 2, num: "3.2", title: adv2 },
+      { id: "dtl-sec-3-3", level: 2, num: "3.3", title: adv3 },
+      { id: "dtl-sec-3-4", level: 2, num: "3.4", title: adv4 },
+      { id: "dtl-sec-4", level: 1, num: "4", title: "Hướng Dẫn Sử Dụng & Đăng Nhập An Toàn" },
+      { id: "dtl-sec-5", level: 1, num: "5", title: "Chính Sách Bảo Hành & Cam Kết Đổi Trả" }
+    ];
+
+    let customBoxHtml = "";
     if (custom) {
-      customNoteHtml = '<div style="background:#070d1e; border:1px solid #1e293b; border-left:3px solid #38bdf8; padding:12px 14px; margin-bottom:14px; border-radius:6px; font-size:0.86rem; color:#cbd5e1; line-height:1.65; white-space:pre-line;">' +
-        '<div style="color:#38bdf8; font-weight:700; margin-bottom:4px; font-size:0.8rem; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-circle-info"></i> THÔNG TIN CHI TIẾT TỪ HỆ THỐNG:</div>' +
-        esc(custom) +
+      // Nếu có sẵn mô tả tùy chỉnh, hiển thị đẹp mắt có phân đoạn
+      const formattedCustom = (/<[a-z][sS]*>/i.test(custom)) ? custom : esc(custom).replace(/\n/g, "<br>");
+      customBoxHtml = '<div style="background:#070d1e; border:1px solid #1e293b; border-left:3px solid #38bdf8; padding:12px 14px; margin-bottom:14px; border-radius:6px; font-size:0.86rem; color:#cbd5e1; line-height:1.65;">' +
+        '<div style="color:#38bdf8; font-weight:700; margin-bottom:6px; font-size:0.8rem; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-circle-info"></i> THÔNG TIN CHI TIẾT SẢN PHẨM:</div>' +
+        formattedCustom +
       '</div>';
     }
 
-    dtlDesc.innerHTML = [
+    finalArticleHtml = [
       '<h2 id="dtl-sec-1" class="dtl-article-h2">Mua ' + esc(name) + ' Giá Rẻ Tại Muabantaikhoanmmo.com</h2>',
       '<p class="dtl-article-p">Nếu bạn đang cần một sản phẩm <strong>' + esc(name) + '</strong> chất lượng cao, dễ sử dụng, kết nối ổn định và an toàn để phục vụ công việc kiếm tiền online (MMO), chạy quảng cáo hoặc sử dụng thường ngày, <strong>' + esc(name) + '</strong> là một lựa chọn rất đáng cân nhắc. Sàn <strong>MUABANTAIKHOANMMO</strong> cung cấp nguồn tài nguyên uy tín, bàn giao hoàn toàn tự động chỉ trong 3 - 5 giây sau khi thanh toán.</p>',
-      customNoteHtml,
+      customBoxHtml,
       '<h2 id="dtl-sec-2" class="dtl-article-h2">' + esc(name) + ' Là Gì?</h2>',
       '<p class="dtl-article-p"><strong>' + esc(name) + '</strong> là giải pháp thuộc danh mục <strong>' + esc(cat) + '</strong> được đông đảo cộng đồng kiếm tiền online, anh em media buyer và các đội nhóm chuyên nghiệp tin dùng. Sản phẩm giúp tối ưu hóa hiệu suất vận hành công việc, bảo vệ an toàn thông tin danh tính số và tiết kiệm chi phí tối đa.</p>',
       '<h2 id="dtl-sec-3" class="dtl-article-h2">Ưu Điểm Khi Sử Dụng ' + esc(name) + '</h2>',
@@ -30239,7 +30434,30 @@ function renderProductDetailArticle(p, customDesc) {
     ].join("");
   }
 
-  // 3. Reset Wrapper to Collapsed state by default
+  // 1. RENDER MỤC LỤC TỰ ĐỘNG (TOC)
+  const tocNav = document.getElementById("dtlTocNav");
+  if (tocNav) {
+    tocNav.innerHTML = tocItems.map(item => {
+      const levelClass = item.level === 1 ? "dtl-toc-level-1" : "dtl-toc-level-2";
+      return '<a class="dtl-toc-item ' + levelClass + '" onclick="scrollToDetailSection(\'' + item.id + '\')">' +
+        '<span class="dtl-toc-num">' + item.num + '</span> ' + esc(item.title) +
+      '</a>';
+    }).join("");
+  }
+
+  // BẢO ĐẢM KHỐI MỤC LỤC LUÔN LUÔN THU GỌN MẶC ĐỊNH (KHI BẤM MỚI SỔ XUỐNG)
+  const tocBox = document.getElementById("dtlTocBox");
+  if (tocBox) {
+    tocBox.classList.add("collapsed");
+  }
+
+  // 2. RENDER NỘI DUNG BÀI VIẾT VÀO #dtlFullDesc
+  const dtlDesc = document.getElementById("dtlFullDesc");
+  if (dtlDesc) {
+    dtlDesc.innerHTML = finalArticleHtml;
+  }
+
+  // 3. THIẾT LẬP KHỐI BÀI VIẾT THU GỌN VỚI NÚT "XEM THÊM"
   const wrap = document.getElementById("dtlDescWrapper");
   const txt = document.getElementById("dtlDescToggleText");
   const icon = document.getElementById("dtlDescToggleIcon");
