@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.8.9";
+const MMO_CURRENT_CODE_VERSION = "5.9.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -15188,6 +15188,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
                 try { localStorage.setItem("mmo_custom_img_" + cur.id, targetImage); } catch(eImgLS) {}
               }
 
+              const localCustomDesc = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + cur.id) : null;
               const targetDesc = ((typeof tp.description === "string" && tp.description.trim() !== "") 
                 ? tp.description.trim() 
                 : ((localCustomDesc && localCustomDesc.trim()) 
@@ -32223,7 +32224,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     if (typeof window !== "undefined" && !window._bloggerFeedIntervalSet) {
       window._bloggerFeedIntervalSet = true;
       try {
-        setTimeout(function() { fetchBloggerFeedPosts(false); }, 150);
+        setTimeout(function() { fetchBloggerFeedPosts(false); }, 4500);
         setInterval(function() { fetchBloggerFeedPosts(false); }, 180000);
       } catch(e) {}
     }
@@ -38941,7 +38942,7 @@ function initMMOApplication() {
     if (typeof window !== "undefined") {
       window.addEventListener("hashchange", function() {
         const hash = (window.location.hash || "").replace("#", "").trim();
-        const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
+        const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewFaq"];
         if (hash && (hash === "viewPrivacy" || hash === "privacy")) {
           switchView("viewPrivacy");
         } else if (hash && validViews.includes(hash) && hash !== "viewProductDetail") {
@@ -38959,7 +38960,7 @@ function initMMOApplication() {
           const urlParams = new URLSearchParams(window.location.search);
           const view = urlParams.get("view");
           const hash = (window.location.hash || "").replace("#", "").trim();
-          const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
+          const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewFaq"];
           const popProdId = urlParams.get("prod") || urlParams.get("product") || (hash.startsWith("product_") ? hash.replace("product_", "").split("?")[0] : null);
           if (view === "viewProductDetail" && popProdId) {
             const isNotAdminOrDeleted = (typeof isProductDeleted === "function" && isProductDeleted(popProdId)) || (typeof isProductInAdmin === "function" && typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.length > 0 && !isProductInAdmin(popProdId));
@@ -40238,19 +40239,39 @@ function initMMOApplication() {
     let chatRealtimeSSE = null;
     function initChatRealtimeSSE() {
       try {
+        if (typeof window === "undefined" || typeof EventSource === "undefined") return;
         if (chatRealtimeSSE) {
           chatRealtimeSSE.close();
+          chatRealtimeSSE = null;
         }
-        chatRealtimeSSE = new EventSource("https://ntfy.sh/" + CHAT_REALTIME_TOPIC + "/sse");
-        chatRealtimeSSE.onmessage = function(ev) {
+        const startChatSSE = function() {
           try {
-            const data = JSON.parse(ev.data);
-            if (data && data.event === "message" && data.message) {
-              const incoming = JSON.parse(data.message);
-              handleIncomingChatMessage(incoming, true);
-            }
-          } catch(err) {}
+            if (chatRealtimeSSE) chatRealtimeSSE.close();
+            chatRealtimeSSE = new EventSource("https://ntfy.sh/" + CHAT_REALTIME_TOPIC + "/sse");
+            chatRealtimeSSE.onmessage = function(ev) {
+              try {
+                const data = JSON.parse(ev.data);
+                if (data && data.event === "message" && data.message) {
+                  const incoming = JSON.parse(data.message);
+                  handleIncomingChatMessage(incoming, true);
+                }
+              } catch(err) {}
+            };
+            chatRealtimeSSE.onerror = function() {
+              if (chatRealtimeSSE) {
+                chatRealtimeSSE.close();
+                chatRealtimeSSE = null;
+              }
+            };
+          } catch(e) {}
         };
+        if (document.readyState === "complete") {
+          setTimeout(startChatSSE, 4500);
+        } else {
+          window.addEventListener("load", function() {
+            setTimeout(startChatSSE, 4500);
+          });
+        }
       } catch(e) {}
     }
 
