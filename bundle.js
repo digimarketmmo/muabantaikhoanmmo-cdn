@@ -7,13 +7,11 @@ window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
 (function cleanLegacyProductImageStorage() {
+  // [BẢO TỒN 100% ẢNH ADMIN TẢI LÊN]: Tuyệt đối không xóa mmo_custom_img_ để bảo vệ ảnh người dùng tải lên bằng tay!
   if (typeof localStorage === "undefined") return;
   try {
-    for (var i = localStorage.length - 1; i >= 0; i--) {
-      var k = localStorage.key(i);
-      if (k && (k.startsWith("mmo_custom_img_") || k.startsWith("mmo_prod_img_") || k === "mmo_products" || k === "mmo_cached_products")) {
-        localStorage.removeItem(k);
-      }
+    if (localStorage.getItem("mmo_products") && localStorage.getItem("mmo_products").length > 5000000) {
+      localStorage.removeItem("mmo_products");
     }
   } catch(e) {}
 })();
@@ -9232,7 +9230,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const preUpRes = await fetch(wUrlPre + "/api/upload-image", {
               method: "POST",
               headers: { "Content-Type": "application/json", "Authorization": "Bearer " + wSecPre, "X-Admin-Secret": wSecPre, "x-admin-token": wSecPre },
-              body: JSON.stringify({ image: inputImg, name: actualTargetId + ".png" })
+              body: JSON.stringify({ image: inputImg, name: actualTargetId + ".png", productId: actualTargetId, product_id: actualTargetId })
             });
             const preUpJson = await preUpRes.json().catch(() => null);
             if (preUpJson && preUpJson.success && preUpJson.url) {
@@ -12674,28 +12672,32 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       let prodObj = (typeof p === "object") ? p : ((typeof findShopProduct === "function") ? findShopProduct(pId) : null);
       const searchId = pId || (prodObj && prodObj.id ? String(prodObj.id).trim() : "");
 
-      // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: BẢNG ĐỒ ẢNH CHUẨN XÁC TỪ BẢN BACKUP (CDN GITHUB JSDELIVR CHÍNH THỨC)
-      if (searchId && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
-        if (KNOWN_PROD_IMAGE_MAP[searchId]) {
-          try { localStorage.removeItem("mmo_custom_img_" + searchId); } catch(e) {}
-          return KNOWN_PROD_IMAGE_MAP[searchId];
-        }
-        if (KNOWN_PROD_IMAGE_MAP[searchId.toUpperCase()]) {
-          try { localStorage.removeItem("mmo_custom_img_" + searchId); } catch(e) {}
-          return KNOWN_PROD_IMAGE_MAP[searchId.toUpperCase()];
-        }
+      // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: Ảnh người dùng vừa tải lên bằng tay (mmo_custom_img_ trong localStorage)
+      if (searchId && typeof localStorage !== "undefined") {
+        try {
+          const localCustom = localStorage.getItem("mmo_custom_img_" + searchId);
+          if (localCustom && localCustom.trim().length > 20 && !localCustom.includes("default_product.png") && !localCustom.includes("placeholder")) {
+            return localCustom.trim();
+          }
+        } catch(e) {}
       }
 
-      // 2. Ảnh từ object sản phẩm nếu có URL hợp lệ
-      const existingImg = prodObj ? (prodObj.image || prodObj.image_url || prodObj.imageUrl || "") : ((typeof p === "string" && (p.startsWith("http") || p.startsWith("data:") || p.startsWith("/"))) ? p : "");
+      // 2. [ƯU TIÊN #2]: Dữ liệu thực tế từ Database Turso / Sản phẩm (image_url / image / imageUrl)
+      const existingImg = prodObj ? (prodObj.image_url || prodObj.image || prodObj.imageUrl || "") : ((typeof p === "string" && (p.startsWith("http") || p.startsWith("data:") || p.startsWith("/"))) ? p : "");
       if (typeof existingImg === "string" && existingImg.trim() !== "") {
         let trimmed = existingImg.trim();
-        if (!trimmed.includes("/api/images/") && !trimmed.includes("/api/products/") && !trimmed.includes("default_product.png") && !trimmed.includes("khotaikhoanso") && !trimmed.includes("placeholder")) {
+        if (!trimmed.includes("default_product.png") && !trimmed.includes("khotaikhoanso") && !trimmed.includes("placeholder")) {
           return trimmed;
         }
       }
 
-      // 3. Fallback theo danh mục
+      // 3. [ƯU TIÊN #3]: Bảng đồ ảnh dự phòng KNOWN_PROD_IMAGE_MAP (chỉ dùng khi database chưa có ảnh)
+      if (searchId && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+        if (KNOWN_PROD_IMAGE_MAP[searchId]) return KNOWN_PROD_IMAGE_MAP[searchId];
+        if (KNOWN_PROD_IMAGE_MAP[searchId.toUpperCase()]) return KNOWN_PROD_IMAGE_MAP[searchId.toUpperCase()];
+      }
+
+      // 4. Fallback theo danh mục
       return resolveCategoryFallbackImage(prodObj ? prodObj.category : "", prodObj ? prodObj.name : "");
     }
     window.resolveProductImage = resolveProductImage;
