@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.8.7";
+const MMO_CURRENT_CODE_VERSION = "5.8.8";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -24025,6 +24025,10 @@ function executeCompareSourcesSearch() {
     window.initStockManagementUI = initStockManagementUI;
 
     function handleStockProductChange() {
+      if (stockViewDebounceTimer) {
+        clearTimeout(stockViewDebounceTimer);
+        stockViewDebounceTimer = null;
+      }
       const select = document.getElementById("admStockProductSelect");
       if (!select) return;
       const prodId = select.value;
@@ -24137,11 +24141,24 @@ function executeCompareSourcesSearch() {
         countDisp.style.color = lines.length === 0 ? "#ef4444" : (lines.length < 5 ? "#f59e0b" : "#10b981");
       }
 
-      // Tự động lưu lên Turso Cloud Database và đồng bộ tức thì sau 600ms ngừng gõ
+      // Tự động lưu lên Turso Cloud Database và đồng bộ tức thì sau 800ms ngừng gõ
+      // [SAFEGUARD KHÓA SẢN PHẨM & BIẾN THỂ]: Đóng băng targetProdId & targetVVal chống race condition khi chuyển select
+      const targetProdId = String(prodId);
+      const targetVVal = String(vVal);
       if (stockViewDebounceTimer) clearTimeout(stockViewDebounceTimer);
       stockViewDebounceTimer = setTimeout(() => {
+        const curSel = document.getElementById("admStockProductSelect");
+        const curVarSel = document.getElementById("admStockVariantSelect");
+        if (!curSel || String(curSel.value) !== targetProdId) {
+          console.warn("[SAFEGUARD] Bỏ qua auto-save vì Admin đã chuyển sang sản phẩm khác:", targetProdId, "->", curSel ? curSel.value : null);
+          return;
+        }
+        if (curVarSel && String(curVarSel.value) !== targetVVal) {
+          console.warn("[SAFEGUARD] Bỏ qua auto-save vì Admin đã chuyển sang biến thể khác:", targetVVal, "->", curVarSel ? curVarSel.value : null);
+          return;
+        }
         handleSaveCurrentStockViewInternal(false);
-      }, 600);
+      }, 800);
     }
     window.handleCurrentStockViewInput = handleCurrentStockViewInput;
 
@@ -24324,6 +24341,22 @@ function executeCompareSourcesSearch() {
 
       const text = textarea.value.trim();
       const accounts = text ? text.split("\n").map(l => l.trim()).filter(Boolean) : [];
+
+      // [CRITICAL INVENTORY SAFEGUARD]:
+      // 1. Auto-save chạy ngầm (!isUserClick) TUYỆT ĐỐI KHÔNG ĐƯỢC PHÉP XÓA SẠCH KHO VỀ 0
+      // Tránh việc textarea đang load dở hoặc mất focus vô tình xóa sạch kho hàng trên Turso
+      if (!isUserClick && accounts.length === 0) {
+        console.warn("[SAFEGUARD] Auto-save ngầm bị hủy do ô tài khoản trống (ngăn ngừa tuyệt đối xóa nhầm kho hàng):", prodId, vVal);
+        return;
+      }
+
+      // 2. Nếu Admin chủ động bấm nút [Lưu Kho Này] (isUserClick = true) khi ô trống, bắt buộc phải xác nhận
+      if (isUserClick && accounts.length === 0) {
+        const confirmZero = confirm("⚠️ CẢNH BÁO: Danh sách tài khoản trong kho đang để trống!\n\nBạn có chắc chắn muốn LƯU KHO RỖNG (0 tài khoản) cho sản phẩm/biến thể này không?\n(Khách hàng sẽ không thể mua và sản phẩm sẽ hiển thị Hết hàng / Đặt trước).");
+        if (!confirmZero) {
+          return;
+        }
+      }
 
       // [UNIFIED WAREHOUSE CORE]: Cập nhật bộ nhớ local và broadcast tức thì (0ms)
       const newTotalStock = MMO_WAREHOUSE.setAccounts(prodId, vVal, accounts);
@@ -30118,7 +30151,7 @@ function executeCompareSourcesSearch() {
     // =========================================================================
     
 // =========================================================================
-// HTML CLEANER & ENTITY DECODER FOR PRODUCT DESCRIPTIONS (v5.8.7)
+// HTML CLEANER & ENTITY DECODER FOR PRODUCT DESCRIPTIONS (v5.8.8)
 // =========================================================================
 function cleanAndNormalizeHtml(raw) {
   if (!raw) return "";
@@ -30257,7 +30290,7 @@ function admEditorToggleCodeView() {
 window.admEditorToggleCodeView = admEditorToggleCodeView;
 
 // =========================================================================
-// TABLE OF CONTENTS (TOC) & SMOOTH SCROLL ENGINE (v5.8.7)
+// TABLE OF CONTENTS (TOC) & SMOOTH SCROLL ENGINE (v5.8.8)
 // =========================================================================
 function toggleDetailToc() {
   const box = document.getElementById("dtlTocBox");
@@ -45314,6 +45347,10 @@ async function confirmRefundOrder() {
 
     // [TURSO CLOUD WAREHOUSE & SSOT]: Đọc danh sách tài khoản trực tiếp từ Turso Database
     async function handleStockVariantChange() {
+      if (stockViewDebounceTimer) {
+        clearTimeout(stockViewDebounceTimer);
+        stockViewDebounceTimer = null;
+      }
       const select = document.getElementById("admStockProductSelect");
       const varSelect = document.getElementById("admStockVariantSelect");
       if (!select) return;
