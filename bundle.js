@@ -5746,22 +5746,26 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (document.getElementById("admProdBuffRating")) document.getElementById("admProdBuffRating").value = p.rating || "4.9";
       if (document.getElementById("admProdBuffReviews")) document.getElementById("admProdBuffReviews").value = p.reviewCount || 11;
       // [SSOT REALTIME IMAGE RESOLVER]: Luôn giải quyết ảnh chuẩn sạch nhất trực tiếp từ sản phẩm (SSOT)
+      window._imageExplicitlyDeleted = false;
+      const isMarkedNoImage = (typeof localStorage !== "undefined" && localStorage.getItem("mmo_no_image_" + p.id) === "true") || p.image === "__NO_IMAGE__" || p.image_url === "__NO_IMAGE__" || p._imageExplicitlyDeleted;
       let effectiveImg = "";
-      const rawPImg = String(p.image || p.imageUrl || p.image_url || "").trim();
-      if (rawPImg && !rawPImg.includes("placeholder") && !rawPImg.includes("khotaikhoanso") && !rawPImg.includes("/api/products/")) {
-        effectiveImg = rawPImg;
-      }
-      if (!effectiveImg && typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && p && p.id && (KNOWN_PROD_IMAGE_MAP[p.id] || KNOWN_PROD_IMAGE_MAP[p.id.toUpperCase()])) {
-        effectiveImg = KNOWN_PROD_IMAGE_MAP[p.id] || KNOWN_PROD_IMAGE_MAP[p.id.toUpperCase()];
-      }
-      if (!effectiveImg && typeof resolveProductImage === "function") {
-        effectiveImg = resolveProductImage(p);
-      }
-      if (effectiveImg && (effectiveImg.includes("default_product.png") || effectiveImg.includes("khotaikhoanso"))) {
-        effectiveImg = "";
+      if (!isMarkedNoImage) {
+        const rawPImg = String(p.image || p.imageUrl || p.image_url || "").trim();
+        if (rawPImg && !rawPImg.includes("placeholder") && !rawPImg.includes("khotaikhoanso") && !rawPImg.includes("/api/products/") && rawPImg !== "__NO_IMAGE__") {
+          effectiveImg = rawPImg;
+        }
+        if (!effectiveImg && typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && p && p.id && (KNOWN_PROD_IMAGE_MAP[p.id] || KNOWN_PROD_IMAGE_MAP[p.id.toUpperCase()])) {
+          effectiveImg = KNOWN_PROD_IMAGE_MAP[p.id] || KNOWN_PROD_IMAGE_MAP[p.id.toUpperCase()];
+        }
+        if (!effectiveImg && typeof resolveProductImage === "function") {
+          effectiveImg = resolveProductImage(p);
+        }
+        if (effectiveImg && (effectiveImg.includes("default_product.png") || effectiveImg.includes("khotaikhoanso") || effectiveImg === "__NO_IMAGE__")) {
+          effectiveImg = "";
+        }
       }
       // Ghi nhớ ảnh cũ trước khi sửa để nếu tải ảnh mới thì xóa sạch ảnh cũ theo thời gian thực
-      window._editingProductOldImage = effectiveImg || rawPImg || "";
+      window._editingProductOldImage = effectiveImg || "";
 
       const admImgInp = document.getElementById("admProdImage");
       const admImgPrev = document.getElementById("admProdImgPreview");
@@ -8980,25 +8984,32 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const effectiveStock = (prodData && prodData.stock !== undefined) ? Number(prodData.stock) : 0;
 
       // 1. Chuẩn hóa URL ảnh tối ưu nhất
-      let finalImg = rawImage || (prodData && (prodData.image || prodData.image_url || prodData.imageUrl)) || "";
-      if (!finalImg && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+      const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
+      const isExplicitlyNoImg = (typeof localStorage !== "undefined" && localStorage.getItem("mmo_no_image_" + actualTargetId) === "true") || (prodData && (prodData.image === "__NO_IMAGE__" || prodData._imageExplicitlyDeleted)) || rawImage === "__NO_IMAGE__";
+      let finalImg = rawImage !== undefined ? rawImage : ((prodData && (prodData.image || prodData.image_url || prodData.imageUrl)) || "");
+      if (isExplicitlyNoImg || finalImg === "" || finalImg === "__NO_IMAGE__") {
+        finalImg = defaultPlaceholder;
+      } else if (!finalImg && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
         finalImg = KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()] || "";
       }
-      // Nếu rawImage đã có (ảnh do admin chọn từ máy tính hoặc paste link), BẢO TOÀN TUYỆT ĐỐI 100%, không cho resolveProductImage ghi đè bằng fallback cũ!
-      if (!rawImage && typeof resolveProductImage === "function" && prodData) {
-        finalImg = resolveProductImage({ ...prodData, id: actualTargetId, image: finalImg });
-      }
+      if (!finalImg) finalImg = defaultPlaceholder;
 
-      if (prodData && finalImg && !finalImg.includes("default_product.png")) {
+      if (prodData) {
         prodData.image = finalImg;
         prodData.image_url = finalImg;
         prodData.imageUrl = finalImg;
       }
 
       // 2. Lưu vào localStorage cho toàn bộ alias IDs
-      if (finalImg) {
+      if (finalImg && finalImg !== defaultPlaceholder) {
         syncIds.forEach(sid => {
           try { localStorage.setItem("mmo_custom_img_" + sid, finalImg); } catch(e) {}
+          try { localStorage.removeItem("mmo_no_image_" + sid); } catch(e) {}
+        });
+      } else {
+        syncIds.forEach(sid => {
+          try { localStorage.removeItem("mmo_custom_img_" + sid); } catch(e) {}
+          try { localStorage.setItem("mmo_no_image_" + sid, "true"); } catch(e) {}
         });
       }
 
@@ -9240,28 +9251,27 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             }
           } catch(ePreUp) {}
         }
+        const wasExplicitlyDeleted = !!window._imageExplicitlyDeleted;
         const oldImgBeforeSave = (window._editingProductOldImage || (oldProd && (oldProd.image || oldProd.image_url || oldProd.imageUrl)) || "").trim();
-        // [ƯU TIÊN ẢNH CHUẨN XÁC NHẤT]:
-        // 1. Nếu admin nhập/tải ảnh mới: nhận 100% ảnh mới.
-        // 2. Nếu ô ảnh không nhập: giữ nguyên ảnh cũ chuẩn của sản phẩm.
-        // 3. Nếu chưa từng có ảnh: tra cứu ảnh chuẩn trong KNOWN_PROD_IMAGE_MAP theo ID.
-        // 4. Cuối cùng mới dùng default_product.png (ảnh logo trung tính).
         let image = inputImg;
         if (!image) {
-          if (oldImgBeforeSave && !oldImgBeforeSave.includes("default_product.png") && !oldImgBeforeSave.includes("placeholder") && !oldImgBeforeSave.includes("khotaikhoanso")) {
-            image = oldImgBeforeSave;
-          } else {
-            const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()]) : "";
-            image = mapped || ((typeof resolveCategoryFallbackImage === "function") ? resolveCategoryFallbackImage(actualTargetId) : "");
+          image = "";
+        }
+        if (image && !image.includes("default_product.png")) {
+          if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+            KNOWN_PROD_IMAGE_MAP[actualTargetId] = image;
+            KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()] = image;
           }
+          try { localStorage.removeItem("mmo_no_image_" + actualTargetId); } catch(e) {}
+        } else {
+          image = "";
+          if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+            delete KNOWN_PROD_IMAGE_MAP[actualTargetId];
+            delete KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()];
+          }
+          try { localStorage.setItem("mmo_no_image_" + actualTargetId, "true"); } catch(e) {}
         }
-        if (!image) {
-          image = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
-        }
-        if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && image && !image.includes("default_product.png")) {
-          KNOWN_PROD_IMAGE_MAP[actualTargetId] = image;
-          KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()] = image;
-        }
+        window._imageExplicitlyDeleted = false;
 
         // Chỉ xóa ảnh cũ trên Worker DB KHI VÀ CHỈ KHI admin đã thực sự tải lên một tệp ảnh mới vào /api/images/
         if (oldImgBeforeSave && image && oldImgBeforeSave !== image && !image.includes("default_product.png") && image.includes("/api/images/") && oldImgBeforeSave.includes("/api/images/")) {
@@ -9590,6 +9600,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         allSyncIds.forEach(sid => {
           if (image) {
             try { localStorage.setItem("mmo_custom_img_" + sid, image); } catch(eImgLS) {}
+            try { localStorage.removeItem("mmo_no_image_" + sid); } catch(eNo) {}
+          } else {
+            try { localStorage.removeItem("mmo_custom_img_" + sid); } catch(eImgLS) {}
+            try { localStorage.setItem("mmo_no_image_" + sid, "true"); } catch(eNo) {}
           }
           if (description !== undefined && description !== null) {
             try { localStorage.setItem("mmo_custom_desc_" + sid, description.trim()); } catch(eDescLS) {}
@@ -9724,7 +9738,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               "Content-Type": "application/json",
               "Authorization": "Bearer " + workerSecret
             },
-            body: JSON.stringify({ product: syncProductPayload, alias_ids: allSyncIds, old_image: oldImgBeforeSave, webhook: true })
+            body: JSON.stringify({ product: syncProductPayload, alias_ids: allSyncIds, old_image: oldImgBeforeSave, image_deleted: !image, webhook: true })
           }).then(r => r.json()).then(res => {
             console.log("✅ Webhook Realtime Index Result:", res);
           }).catch(eWb => console.warn("Webhook index error:", eWb));
@@ -12671,6 +12685,19 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const pId = String((typeof p === "object" && p.id) || (typeof p === "string" ? p : "")).trim();
       let prodObj = (typeof p === "object") ? p : ((typeof findShopProduct === "function") ? findShopProduct(pId) : null);
       const searchId = pId || (prodObj && prodObj.id ? String(prodObj.id).trim() : "");
+
+      // 0. Nếu sản phẩm đã bị xóa ảnh chủ động, trả về ngay ảnh mặc định trung tính
+      const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
+      if (searchId && typeof localStorage !== "undefined") {
+        try {
+          if (localStorage.getItem("mmo_no_image_" + searchId) === "true") {
+            return defaultPlaceholder;
+          }
+        } catch(eNo) {}
+      }
+      if (prodObj && (prodObj.image === "__NO_IMAGE__" || prodObj.image_url === "__NO_IMAGE__" || prodObj._imageExplicitlyDeleted)) {
+        return defaultPlaceholder;
+      }
 
       // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: Ảnh người dùng vừa tải lên bằng tay (mmo_custom_img_ trong localStorage)
       if (searchId && typeof localStorage !== "undefined") {
@@ -26444,6 +26471,7 @@ function executeCompareSourcesSearch() {
       const preview = document.getElementById("admProdImgPreview");
       const defaultImg = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
 
+      window._imageExplicitlyDeleted = true;
       if (imgInput) imgInput.value = "";
       if (preview) preview.src = defaultImg;
 
@@ -26454,26 +26482,39 @@ function executeCompareSourcesSearch() {
 
       showToast("⏳ Đang xóa sạch hoàn toàn ảnh cũ...", "info");
 
-      // 1. Xóa sạch mọi key cache trên trình duyệt
+      // 1. Xóa sạch mọi key cache trên trình duyệt & đánh dấu cờ mmo_no_image_
       const syncIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(curProdId) : [curProdId];
       syncIds.forEach(sid => {
         try { localStorage.removeItem("mmo_custom_img_" + sid); } catch(eLS) {}
+        try { localStorage.setItem("mmo_no_image_" + sid, "true"); } catch(eLS) {}
+        if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+          delete KNOWN_PROD_IMAGE_MAP[sid];
+          delete KNOWN_PROD_IMAGE_MAP[sid.toUpperCase()];
+        }
       });
+      if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+        delete KNOWN_PROD_IMAGE_MAP[curProdId];
+        delete KNOWN_PROD_IMAGE_MAP[curProdId.toUpperCase()];
+      }
 
       // 2. Cập nhật đối tượng sản phẩm trong bộ nhớ MOCK_DATA.products
       if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
-        const pObj = MOCK_DATA.products.find(x => x && String(x.id).trim().toLowerCase() === curProdId.toLowerCase());
-        if (pObj) {
-          pObj.image = "";
-          pObj.image_url = "";
-          pObj.imageUrl = "";
-          pObj._lastEditedAt = Date.now();
-        }
+        const idCheckSet = new Set(syncIds.map(x => String(x).toLowerCase().trim()));
+        idCheckSet.add(curProdId.toLowerCase());
+        MOCK_DATA.products.forEach(pObj => {
+          if (pObj && idCheckSet.has(String(pObj.id).trim().toLowerCase())) {
+            pObj.image = "__NO_IMAGE__";
+            pObj.image_url = "__NO_IMAGE__";
+            pObj.imageUrl = "__NO_IMAGE__";
+            pObj._imageExplicitlyDeleted = true;
+            pObj._lastEditedAt = Date.now();
+          }
+        });
       }
 
       // 3. Cập nhật DOM tức thì 0ms trên trang quản trị, gian hàng và trang chi tiết
       if (typeof updateProductRealtimeEverywhere === "function") {
-        updateProductRealtimeEverywhere(curProdId, syncIds, { id: curProdId, name: curProdName, image: "" }, null, defaultImg);
+        updateProductRealtimeEverywhere(curProdId, syncIds, { id: curProdId, name: curProdName, image: "__NO_IMAGE__", _imageExplicitlyDeleted: true }, null, defaultImg);
       }
       const dtlImgEl = document.getElementById("dtlImage");
       if (dtlImgEl) dtlImgEl.src = defaultImg;
