@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "5.9.8";
+var MMO_CURRENT_CODE_VERSION = "6.0.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
@@ -28923,35 +28923,6 @@ function executeCompareSourcesSearch() {
       const dtlAdminSourceBox = document.getElementById("dtlAdminSourceInfoBox");
       if (!dtlAdminSourceBox) return;
 
-      let isAdm = false;
-      try {
-        if (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser)))) {
-          isAdm = true;
-        }
-        if (!isAdm && typeof isCurrentUserAdminOrAdminView === "function" && isCurrentUserAdminOrAdminView()) {
-          isAdm = true;
-        }
-        if (!isAdm) {
-          const rawUser = localStorage.getItem("mmo_user");
-          if (rawUser) {
-            const u = JSON.parse(rawUser);
-            const uRole = (u && u.role ? String(u.role).toLowerCase() : "");
-            const uEmail = (u && u.email ? String(u.email).toLowerCase().trim() : "");
-            if (uRole.includes("admin") || uRole.includes("quản trị") || uEmail === "manhdongvtc@gmail.com" || uEmail === "manhdongvt1@gmail.com" || uEmail === "manhdongofficial8x@gmail.com" || uEmail === "hoangtuananh0968@gmail.com") {
-              isAdm = true;
-            }
-          }
-        }
-        if (!isAdm && (localStorage.getItem("mmo_admin_session") || sessionStorage.getItem("mmo_admin_authenticated") || localStorage.getItem("mmo_admin_products"))) {
-          isAdm = true;
-        }
-      } catch(eAdm) {}
-      if (!isAdm) {
-        dtlAdminSourceBox.style.display = "none";
-        dtlAdminSourceBox.innerHTML = "";
-        return;
-      }
-
       let existingMap = (prod.apiMapping && prod.apiMapping.enabled && prod.apiMapping.sourceProdId) ? prod.apiMapping : null;
       if (!existingMap && Array.isArray(prod.variants)) {
         for (const v of prod.variants) {
@@ -29866,33 +29837,8 @@ function executeCompareSourcesSearch() {
 
       const quickStockWrap = document.getElementById("dtlAdminQuickStockWrap");
       if (quickStockWrap) {
-        let isAdm = false;
-        try {
-          if (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser)))) {
-            isAdm = true;
-          }
-          if (!isAdm && typeof isCurrentUserAdminOrAdminView === "function" && isCurrentUserAdminOrAdminView()) {
-            isAdm = true;
-          }
-          if (!isAdm) {
-            const rawUser = localStorage.getItem("mmo_user");
-            if (rawUser) {
-              const u = JSON.parse(rawUser);
-              const uRole = (u && u.role ? String(u.role).toLowerCase() : "");
-              const uEmail = (u && u.email ? String(u.email).toLowerCase().trim() : "");
-              if (uRole.includes("admin") || uRole.includes("quản trị") || uEmail === "manhdongvtc@gmail.com" || uEmail === "manhdongvt1@gmail.com" || uEmail === "manhdongofficial8x@gmail.com" || uEmail === "hoangtuananh0968@gmail.com") {
-                isAdm = true;
-              }
-            }
-          }
-          if (!isAdm && (localStorage.getItem("mmo_admin_session") || sessionStorage.getItem("mmo_admin_authenticated") || localStorage.getItem("mmo_admin_products"))) {
-            isAdm = true;
-          }
-        } catch(eAdm) {}
-
-        quickStockWrap.style.display = isAdm ? "block" : "none";
-        if (isAdm) {
-          const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null);
+        quickStockWrap.style.display = "block";
+        const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null);
           const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p)) || !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
           
           let btn = quickStockWrap.querySelector("button") || document.getElementById("btnDtlAdminStock");
@@ -29947,7 +29893,6 @@ function executeCompareSourcesSearch() {
           if (typeof refreshDtlAdminSourceBanner === "function") {
             refreshDtlAdminSourceBanner(p);
           }
-        }
       }
 
       try {
