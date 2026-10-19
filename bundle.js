@@ -1015,26 +1015,31 @@ if (typeof window !== "undefined") {
 
       
     // CHUẨN HÓA VÀ ĐỐI CHIẾU NHÀ CUNG CẤP ĐA NGUỒN (BAO GỒM NGUỒN TỰ THÊM VUAVIA & REST API)
+    var _provNormMap = new Map();
     function normalizeProviderId(prov) {
       if (!prov) return "";
+      var cached = _provNormMap.get(prov);
+      if (cached !== undefined) return cached;
       var p = String(prov).toLowerCase().trim().replace(/https?:\/\//g, "").replace(/\.(com|vn|net|io|org|top|xyz|store)$/g, "").replace(/[^a-z0-9]/g, "");
-      if (p.includes("vuavia")) return "vuavia";
-      if (p.includes("ultrammo")) return "ultrammo";
-      if (p.includes("shop1989")) return "shop1989nd";
-      if (p.includes("mail72h")) return "mail72h";
-      if (p.includes("selltainguyen")) return "selltainguyenmmo";
-      if (p.includes("sellmmo")) return "sellmmo";
-      if (p.includes("nguyenlieu")) return "nguyenlieummo";
-      if (p.includes("ubrsmmo") || p.includes("ubrs")) return "ubrsmmo";
-      return p;
+      var res = p;
+      if (p.includes("vuavia")) res = "vuavia";
+      else if (p.includes("ultrammo")) res = "ultrammo";
+      else if (p.includes("shop1989")) res = "shop1989nd";
+      else if (p.includes("mail72h")) res = "mail72h";
+      else if (p.includes("selltainguyen")) res = "selltainguyenmmo";
+      else if (p.includes("sellmmo")) res = "sellmmo";
+      else if (p.includes("nguyenlieu")) res = "nguyenlieummo";
+      else if (p.includes("ubrsmmo") || p.includes("ubrs")) res = "ubrsmmo";
+      _provNormMap.set(prov, res);
+      return res;
     }
     window.normalizeProviderId = normalizeProviderId;
 
     function isSameProvider(p1, p2) {
       if (!p1 || !p2) return false;
       if (p1 === p2) return true;
-      var n1 = normalizeProviderId(p1);
-      var n2 = normalizeProviderId(p2);
+      var n1 = _provNormMap.get(p1) || normalizeProviderId(p1);
+      var n2 = _provNormMap.get(p2) || normalizeProviderId(p2);
       return (n1 && n2 && n1 === n2);
     }
     window.isSameProvider = isSameProvider;
@@ -1166,6 +1171,7 @@ if (typeof window !== "undefined") {
         var list = prods || (typeof window !== "undefined" && window.cachedSourceProducts) || (typeof cachedSourceProducts !== "undefined" && cachedSourceProducts) || [];
         var map = new Map();
         var provSet = new Set();
+        var provCountMap = new Map();
         for (var i = 0; i < list.length; i++) {
           var p = list[i];
           if (!p) continue;
@@ -1173,8 +1179,12 @@ if (typeof window !== "undefined") {
           var prov = p.provider || "";
           if (prov) {
             provSet.add(prov);
+            provCountMap.set(prov, (provCountMap.get(prov) || 0) + 1);
             var normProv = (typeof normalizeProviderId === "function") ? normalizeProviderId(prov) : prov;
-            if (normProv) provSet.add(normProv);
+            if (normProv) {
+              provSet.add(normProv);
+              if (normProv !== prov) provCountMap.set(normProv, (provCountMap.get(normProv) || 0) + 1);
+            }
           }
           var idStr = String(p.id || "").trim();
           var cleanId = idStr.replace(/^#/, "");
@@ -1196,6 +1206,7 @@ if (typeof window !== "undefined") {
         }
         _sourceProductsFastMap = map;
         _sourceProductsProviderSet = provSet;
+        window._sourceProductsProviderCountMap = provCountMap;
         if (typeof window !== "undefined") {
           window._sourceProductsFastMap = map;
           window._sourceProductsProviderSet = provSet;
@@ -1242,26 +1253,15 @@ if (typeof window !== "undefined") {
       if (!provider) return true;
       var pKey = String(provider).toLowerCase().trim();
       var norm = (typeof normalizeProviderId === "function") ? normalizeProviderId(pKey) : pKey;
-      // Chỉ coi là đã tải đầy đủ nếu được quét trực tiếp toàn diện từ live API trong phiên này
+      // 1. Kiểm tra live scanner set (0ms)
       if (typeof window !== "undefined" && window._liveFullyScannedProviders && (window._liveFullyScannedProviders instanceof Set)) {
         if (window._liveFullyScannedProviders.has(pKey) || (norm && window._liveFullyScannedProviders.has(norm))) return true;
-        for (var pItem of window._liveFullyScannedProviders) {
-          if (typeof isSameProvider === "function" && isSameProvider(pItem, provider)) return true;
-        }
       }
-      // Hoặc nếu số lượng sản phẩm của nguồn trong cache thực sự lớn (trên 100 sản phẩm)
-      var prods = (typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts))
-        ? cachedSourceProducts
-        : ((typeof window !== "undefined" && Array.isArray(window.cachedSourceProducts)) ? window.cachedSourceProducts : []);
-      if (prods && prods.length >= 100) {
-        var count = 0;
-        for (var i = 0; i < prods.length; i++) {
-          var s = prods[i];
-          if (s && (s.provider === provider || (typeof isSameProvider === "function" && isSameProvider(s.provider, provider)))) {
-            count++;
-            if (count >= 100) return true;
-          }
-        }
+      // 2. Tra cứu tức thì từ bảng đếm O(1) (0ms)
+      var countMap = (typeof window !== "undefined" && window._sourceProductsProviderCountMap) ? window._sourceProductsProviderCountMap : null;
+      if (countMap) {
+        var c = countMap.get(pKey) || (norm ? countMap.get(norm) : 0) || 0;
+        if (c >= 100) return true;
       }
       return false;
     }
@@ -13926,73 +13926,107 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     // 100% kho hàng, tài khoản và lịch sử bán nằm trực tiếp trong sản phẩm và biến thể.
     // Không dùng bất kỳ bảng map phân mảnh nào khác.
     // =========================================================================
+    var _shopProductFastMap = new Map();
+    var _memAdminProductsList = null;
+    var _lastMemAdminProductsTime = 0;
+
+    function getMemAdminProductsList() {
+      var now = Date.now();
+      if (_memAdminProductsList && (now - _lastMemAdminProductsTime < 15000)) {
+        return _memAdminProductsList;
+      }
+      try {
+        var raw = localStorage.getItem("mmo_admin_products") || localStorage.getItem("mmo_products");
+        if (raw) {
+          _memAdminProductsList = JSON.parse(raw);
+          _lastMemAdminProductsTime = now;
+          return _memAdminProductsList;
+        }
+      } catch(e) {}
+      return [];
+    }
+
+    function rebuildShopProductFastMap() {
+      _shopProductFastMap.clear();
+      var prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : [];
+      for (var i = 0; i < prods.length; i++) {
+        var p = prods[i];
+        if (!p || !p.id) continue;
+        var pId = String(p.id).trim();
+        _shopProductFastMap.set(pId, p);
+        _shopProductFastMap.set(pId.toLowerCase(), p);
+      }
+      var adminList = getMemAdminProductsList();
+      if (Array.isArray(adminList)) {
+        for (var j = 0; j < adminList.length; j++) {
+          var ap = adminList[j];
+          if (!ap || !ap.id) continue;
+          var aId = String(ap.id).trim();
+          if (!_shopProductFastMap.has(aId)) {
+            _shopProductFastMap.set(aId, ap);
+            _shopProductFastMap.set(aId.toLowerCase(), ap);
+          }
+        }
+      }
+      // Aliases
+      var bz = _shopProductFastMap.get("PROD_MTPIJ9XV") || _shopProductFastMap.get("PROD_MTPG0PUD");
+      if (bz) {
+        _shopProductFastMap.set("PROD_MTPIJ9XV", bz);
+        _shopProductFastMap.set("PROD_MTPG0PUD", bz);
+        _shopProductFastMap.set("SP_TIKTOK_BRAZIL", bz);
+      }
+      var gem = _shopProductFastMap.get("PROD_MU6R34FZ4Z") || _shopProductFastMap.get("PROD_MU5T3T47AE");
+      if (gem) {
+        _shopProductFastMap.set("PROD_MU2AB1XEGI", gem);
+        _shopProductFastMap.set("SP_GEMINI_VEO3", gem);
+      }
+    }
+    window.rebuildShopProductFastMap = rebuildShopProductFastMap;
+
     function findShopProduct(prodId) {
       if (!prodId) return null;
-      const sId = String(prodId).trim();
+      var sId = String(prodId).trim();
       if (typeof isProductDeleted === "function" && isProductDeleted(sId)) {
         return null;
       }
-      const isId = /^(PROD_|SP_)/i.test(sId);
-
-      // 1. Tìm chính xác tuyệt đối theo ID trong MOCK_DATA.products (0ms)
-      if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
-        const exact = MOCK_DATA.products.find(p => p && (
-          String(p.id) === sId || String(p.id).toLowerCase() === sId.toLowerCase()
-        ));
-        if (exact) {
-          if (typeof isProductDeleted === "function" && isProductDeleted(exact)) return null;
-          return exact;
-        }
-
-        // TikTok Brazil legacy alias duy nhất
-        if (sId === "PROD_MTPIJ9XV" || sId === "PROD_MTPG0PUD" || sId === "SP_TIKTOK_BRAZIL") {
-          const bz = MOCK_DATA.products.find(p => p && (p.id === "PROD_MTPIJ9XV" || p.id === "PROD_MTPG0PUD" || p.id === "SP_TIKTOK_BRAZIL"));
-          if (bz && (typeof isProductDeleted !== "function" || !isProductDeleted(bz))) return bz;
-        }
-
-        // Google Gemini AI Pro Veo3 legacy alias
-        if (sId === "PROD_MU2AB1XEGI" || sId === "SP_GEMINI_VEO3") {
-          const gem = MOCK_DATA.products.find(p => p && (p.id === "PROD_MU6R34FZ4Z" || p.id === "PROD_MU5T3T47AE"));
-          if (gem && (typeof isProductDeleted !== "function" || !isProductDeleted(gem))) return gem;
-        }
-
-        // Chỉ khi sId KHÔNG PHẢI là mã ID (ví dụ truyền chuỗi tên sản phẩm), mới tìm theo tên chính xác
-        if (!isId) {
-          const normFn = (typeof normApiText === "function") ? normApiText : (t => String(t || '').toLowerCase().trim());
-          const targetNorm = normFn(sId);
-          const foundByName = MOCK_DATA.products.find(p => p && p.name && normFn(p.name) === targetNorm && (typeof isProductDeleted !== "function" || !isProductDeleted(p)));
-          if (foundByName) return foundByName;
-        }
+      // 1. Tra cứu siêu tốc 0ms từ bảng Map index O(1)
+      if (_shopProductFastMap.has(sId)) {
+        var item = _shopProductFastMap.get(sId);
+        if (item && (typeof isProductDeleted !== "function" || !isProductDeleted(item))) return item;
+        return null;
+      }
+      var sIdLower = sId.toLowerCase();
+      if (_shopProductFastMap.has(sIdLower)) {
+        var itemLower = _shopProductFastMap.get(sIdLower);
+        if (itemLower && (typeof isProductDeleted !== "function" || !isProductDeleted(itemLower))) return itemLower;
+        return null;
       }
 
-      // 2. Tra cứu trong bộ nhớ lưu trữ localStorage (mmo_admin_products / mmo_products)
-      try {
-        const raw = localStorage.getItem("mmo_admin_products") || localStorage.getItem("mmo_products");
-        if (raw) {
-          const list = JSON.parse(raw);
-          if (Array.isArray(list)) {
-            let f = list.find(p => p && (String(p.id) === sId || String(p.id).toLowerCase() === sId.toLowerCase()));
-            if (!f && (sId === "PROD_MTPIJ9XV" || sId === "PROD_MTPG0PUD" || sId === "SP_TIKTOK_BRAZIL")) {
-              f = list.find(p => p && (p.id === "PROD_MTPIJ9XV" || p.id === "PROD_MTPG0PUD" || p.id === "SP_TIKTOK_BRAZIL"));
-            }
-            if (!f && (sId === "PROD_MU2AB1XEGI" || sId === "SP_GEMINI_VEO3")) {
-              f = list.find(p => p && (p.id === "PROD_MU6R34FZ4Z" || p.id === "PROD_MU5T3T47AE"));
-            }
-            if (!f && !isId) {
-              const normFn = (typeof normApiText === "function") ? normApiText : (t => String(t || '').toLowerCase().trim());
-              const targetNorm = normFn(sId);
-              f = list.find(p => p && p.name && normFn(p.name) === targetNorm);
-            }
-            if (f) {
-              if (typeof isProductDeleted === "function" && isProductDeleted(f)) return null;
-              if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products) && !MOCK_DATA.products.some(p => String(p.id) === String(f.id))) {
-                MOCK_DATA.products.unshift(f);
-              }
-              return f;
-            }
-          }
+      // 2. Nếu chưa có trong Map, xây dựng lại Map (tối đa 1 lần mỗi 15s) và tra cứu
+      rebuildShopProductFastMap();
+      if (_shopProductFastMap.has(sId)) {
+        var item2 = _shopProductFastMap.get(sId);
+        if (item2 && (typeof isProductDeleted !== "function" || !isProductDeleted(item2))) return item2;
+        return null;
+      }
+      if (_shopProductFastMap.has(sIdLower)) {
+        var item2Lower = _shopProductFastMap.get(sIdLower);
+        if (item2Lower && (typeof isProductDeleted !== "function" || !isProductDeleted(item2Lower))) return item2Lower;
+        return null;
+      }
+
+      // 3. Fallback theo tên chính xác nếu không phải ID PROD_
+      var isId = /^(PROD_|SP_)/i.test(sId);
+      if (!isId) {
+        var normFn = (typeof normApiText === "function") ? normApiText : (t => String(t || '').toLowerCase().trim());
+        var targetNorm = normFn(sId);
+        var prods = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : [];
+        var foundByName = prods.find(p => p && p.name && normFn(p.name) === targetNorm && (typeof isProductDeleted !== "function" || !isProductDeleted(p)));
+        if (foundByName) {
+          _shopProductFastMap.set(sId, foundByName);
+          return foundByName;
         }
-      } catch(e) {}
+      }
       return null;
     }
     window.findShopProduct = findShopProduct;
@@ -14659,7 +14693,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       adminGetAllInventory: async function() {
         const secret = this.getAdminSecret();
         const headers = {};
-        if (secret) headers["Authorization"] = "Bearer " + secret;
+        if (secret) {
+          headers["Authorization"] = "Bearer " + secret;
+          headers["x-admin-token"] = secret;
+          headers["X-Admin-Secret"] = secret;
+        }
         const u = this.getApiUrl() + "/api/admin/inventory/all";
         return await this._fetchJson(u, { headers: headers, cache: "no-store" }, 6000);
       },
@@ -14667,7 +14705,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       adminGetInventory: async function(productId, variantIdx) {
         const secret = this.getAdminSecret();
         const headers = {};
-        if (secret) headers["Authorization"] = "Bearer " + secret;
+        if (secret) {
+          headers["Authorization"] = "Bearer " + secret;
+          headers["x-admin-token"] = secret;
+          headers["X-Admin-Secret"] = secret;
+        }
         let u = this.getApiUrl() + "/api/admin/inventory/" + encodeURIComponent(productId);
         if (variantIdx !== null && variantIdx !== undefined && variantIdx !== "ALL") {
           u += "?variant=" + variantIdx;
@@ -15654,28 +15696,32 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             return;
           }
 
-          // Fallback dự phòng: Chạy tuần tự theo lô nhỏ tối đa (tránh 429 rate limit)
-          const localProds = prods.filter(p => p && (p.deliveryType === "local" || p.delivery_type === "local") && Array.isArray(p.variants) && p.variants.length > 0);
-          for (let pi = 0; pi < localProds.length; pi++) {
-            const p = localProds[pi];
-            for (let vi = 0; vi < p.variants.length; vi++) {
-              const v = p.variants[vi];
-              try {
-                const res = await MMO_WORKER_API.adminGetInventory(p.id, vi);
-                if (res && Array.isArray(res.available)) {
-                  v.accounts = res.available;
-                  v.stock = res.available.length;
-                  v.available = res.available.length > 0;
-                  if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.setAccounts) {
-                    MMO_WAREHOUSE.setAccounts(p.id, vi, res.available, true);
-                  }
+          // Fallback dự phòng: Chạy phi chặn trong nền (không làm đơ Main Thread của trình duyệt)
+          setTimeout(async function() {
+            try {
+              const localProds = prods.filter(p => p && (p.deliveryType === "local" || p.delivery_type === "local") && Array.isArray(p.variants) && p.variants.length > 0).slice(0, 10);
+              for (let pi = 0; pi < localProds.length; pi++) {
+                const p = localProds[pi];
+                for (let vi = 0; vi < p.variants.length; vi++) {
+                  const v = p.variants[vi];
+                  try {
+                    const res = await MMO_WORKER_API.adminGetInventory(p.id, vi);
+                    if (res && Array.isArray(res.available)) {
+                      v.accounts = res.available;
+                      v.stock = res.available.length;
+                      v.available = res.available.length > 0;
+                      if (typeof MMO_WAREHOUSE !== "undefined" && MMO_WAREHOUSE.setAccounts) {
+                        MMO_WAREHOUSE.setAccounts(p.id, vi, res.available, true);
+                      }
+                    }
+                  } catch(eSingle) {}
                 }
-              } catch(eSingle) {}
-            }
-            p.stock = p.variants.reduce((s, v) => s + (Number(v.stock) || 0), 0);
-          }
-          if (typeof saveProductsToStorage === "function") saveProductsToStorage();
-          if (typeof refreshAllShopStockUI === "function") refreshAllShopStockUI();
+                p.stock = p.variants.reduce((s, v) => s + (Number(v.stock) || 0), 0);
+              }
+              if (typeof saveProductsToStorage === "function") saveProductsToStorage();
+              if (typeof refreshAllShopStockUI === "function") refreshAllShopStockUI();
+            } catch(eAsyncFallback) {}
+          }, 1000);
         } catch(eInvSync) {
           console.warn("syncTursoStockToLocalUI accounts sync non-fatal error:", eInvSync);
         }
