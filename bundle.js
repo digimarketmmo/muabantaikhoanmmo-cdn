@@ -2,8 +2,21 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "5.9.4";
+var MMO_CURRENT_CODE_VERSION = "5.9.8";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
+
+// KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
+(function cleanLegacyProductImageStorage() {
+  if (typeof localStorage === "undefined") return;
+  try {
+    for (var i = localStorage.length - 1; i >= 0; i--) {
+      var k = localStorage.key(i);
+      if (k && (k.startsWith("mmo_custom_img_") || k.startsWith("mmo_prod_img_") || k === "mmo_products" || k === "mmo_cached_products")) {
+        localStorage.removeItem(k);
+      }
+    }
+  } catch(e) {}
+})();
 
 var KHOTAIKHOANSO_FOREIGN_EMAILS = [
   'hoangtuananh0968@gmail.com',
