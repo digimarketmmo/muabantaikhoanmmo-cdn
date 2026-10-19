@@ -2,10 +2,10 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.9.2";
+var MMO_CURRENT_CODE_VERSION = "5.9.2";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
-const KHOTAIKHOANSO_FOREIGN_EMAILS = [
+var KHOTAIKHOANSO_FOREIGN_EMAILS = [
   'hoangtuananh0968@gmail.com',
   'manhdongvt1@gmail.com',
   'manhdongofficial8x@gmail.com',
@@ -72,7 +72,7 @@ function cleanForeignKhotaikhoansoStorage() {
 window.cleanForeignKhotaikhoansoStorage = cleanForeignKhotaikhoansoStorage;
 cleanForeignKhotaikhoansoStorage();
 
-const MASTER_PF_STOCK = {
+var MASTER_PF_STOCK = {
   "PROD_MUBKH47T2U": { stock: 30, variants: [{ name: "Rom Androi 10 Not8 N950 cài =TW", price: 300000, stock: 30 }] },
   "PROD_MUBJQ6JP7O": { stock: 46, variants: [{ name: "Not 9  N960 F/DS Cài bằng TW", price: 300000, stock: 46 }] },
   "PROD_MU2OGW71GZ": { stock: 76, variants: [{ name: "rom gốc mod adb j7 plush", price: 300000, stock: 40 }, { name: "rot j7 plush", price: 100000, stock: 36 }] },
@@ -1280,9 +1280,9 @@ if (typeof window !== "undefined") {
     window.adminOrdersStatusFilter = "ALL";
   
 
-const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
+var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec";
 
-    const MOCK_DATA = {
+    var MOCK_DATA = {
       categories: ["Tất cả","AI & Video","Facebook","Gmail","Rom & Tools","TikTok","HOT MAIL","Intagram","Chatgpt","Phone Farm","VPN Proxy","Capcut","Canva","Khác","YOUTUBE"],
       blogCategories: ["Tất cả","Tin tức","Hướng dẫn","Học sinh","Kiếm Tiền MMO","TikTok & Affiliate","AI & Tools"],
       blogs: [
@@ -1380,7 +1380,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     // CHUẨN HÓA VĂN BẢN VÀ DANH SÁCH SẢN PHẨM MẪU DUMMY / ĐÃ XÓA VĨNH VIỄN
         // CHUẨN HÓA VĂN BẢN VÀ DANH SÁCH SẢN PHẨM MẪU DUMMY / ĐÃ XÓA VĨNH VIỄN
-    const _mmoNormTextCache = new Map();
+    var _mmoNormTextCache = new Map();
     function normApiText(str) {
       const key = String(str || '');
       if (_mmoNormTextCache.has(key)) return _mmoNormTextCache.get(key);
@@ -1402,7 +1402,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.cleanCompareText = cleanCompareText;
 
-    const REAL_PRODUCT_IDS = [
+    var REAL_PRODUCT_IDS = [
       "PROD_MV5PA8KZDW", "PROD_MUBKH47T2U", "PROD_MUBJQ6JP7O", "PROD_MU9YH8D9FK", "PROD_MU6R34FZ4Z",
       "PROD_MU5T3T47AE", "PROD_MU5SPLMSEC", "PROD_MU5PWT7PP7", "PROD_MUH57035HQ", "PROD_MTPG0PUD",
       "PROD_MU2YQ1J3PY", "PROD_MU2PA8VNDP", "PROD_MU2OXBZC6K", "PROD_MU2OGW71GZ", "PROD_MU2OAG3IO2",
@@ -1416,7 +1416,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     ];
     window.REAL_PRODUCT_IDS = REAL_PRODUCT_IDS;
 
-    const DUMMY_SEED_IDS = [
+    var DUMMY_SEED_IDS = [
       "PROD_TEST",
       "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY",
       "SP_CAPCUT_PRO",
@@ -1452,7 +1452,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       "1775731336499"
     ];
 
-    const PERMANENT_DELETED_IDS = [
+    var PERMANENT_DELETED_IDS = [
       "PROD_MV9SJ8FB6K", // Sản phẩm Capcut tải từ khotaikhoanso nhầm sang - loại bỏ vĩnh viễn
       "PROD_MV9NXBULDO", // Paypal clone duplicate
       "PROD_MTU9F5HN",   // Paypal 2025 - 2016 Đã ngâm lâu cực kỳ Trâu (Admin đã xóa vĩnh viễn)
@@ -1578,8 +1578,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.isProductInAdmin = isProductInAdmin;
 
-    let _cachedVisibleProducts = null;
-    let _visibleProductsDirty = true;
+    var _cachedVisibleProducts = null;
+    var _visibleProductsDirty = true;
     function invalidateVisibleProductsCache() {
       _cachedVisibleProducts = null;
       _visibleProductsDirty = true;
@@ -2018,13 +2018,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
     // APP STATE
     window.MOCK_DATA = MOCK_DATA;
-    let currentCategory = "Tất cả";
-    let currentBlogCategory = "Tất cả";
-    let currentUser = null;
-    let currentSelectedProduct = null;
-    let currentSelectedVariantIndex = 0;
-    let currentSelectedPrice = 0;
-    let depositOrderCode = "MMO" + Math.floor(100000 + Math.random() * 900000);
+    var currentCategory = "Tất cả";
+    var currentBlogCategory = "Tất cả";
+    var currentUser = null;
+    var currentSelectedProduct = null;
+    var currentSelectedVariantIndex = 0;
+    var currentSelectedPrice = 0;
+    var depositOrderCode = "MMO" + Math.floor(100000 + Math.random() * 900000);
 
     
     // =========================================================================
@@ -2078,10 +2078,10 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     // CORE SYSTEM: USER DATABASE & REGISTERED MEMBERS SYSTEM
     // =========================================================================
-    const ROOT_ADMIN_EMAIL = "manhdongvtc@gmail.com";
-    const ROOT_ADMIN_EMAILS = ["manhdongvtc@gmail.com"];
+    var ROOT_ADMIN_EMAIL = "manhdongvtc@gmail.com";
+    var ROOT_ADMIN_EMAILS = ["manhdongvtc@gmail.com"];
     window.ROOT_ADMIN_EMAILS = ROOT_ADMIN_EMAILS;
-    const DEFAULT_REGISTERED_USERS = [
+    var DEFAULT_REGISTERED_USERS = [
       {
             "userId": "USR_791847",
             "name": "muabantaikhoanmmo",
@@ -2939,7 +2939,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // ADMIN PRIVILEGES & ADMIN ROLES SYSTEM
     // =========================================================================
     // ROOT_ADMIN_EMAIL already declared above
-    const DEFAULT_ADMIN_EMAILS = [
+    var DEFAULT_ADMIN_EMAILS = [
       "manhdongvtc@gmail.com"
     ];
 
@@ -3629,7 +3629,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // =========================================================================
     // CORE SYSTEM: ADMIN DASHBOARD & STATS
     // =========================================================================
-    let admProductStockFilter = "ALL";
+    var admProductStockFilter = "ALL";
     function setAdmProductFilter(filterType) {
       admProductStockFilter = filterType;
       const btns = {
@@ -3655,7 +3655,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.setAdmProductFilter = setAdmProductFilter;
 
-    let admProductCategoryFilter = "ALL";
+    var admProductCategoryFilter = "ALL";
     function setAdmProductCategoryFilter(cat) {
       admProductCategoryFilter = cat || "ALL";
       if (typeof paginationState !== "undefined") paginationState.admProd = 1;
@@ -3666,7 +3666,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     window.setAdmProductCategoryFilter = setAdmProductCategoryFilter;
     window.admProductCategoryFilter = admProductCategoryFilter;
 
-    let admProductSearchQuery = "";
+    var admProductSearchQuery = "";
     var _admSearchDebounceTimer = null;
     function handleSearchAdminProducts(val) {
       if (typeof val === "string") {
@@ -5077,7 +5077,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.switchAdmModalProvider = switchAdmModalProvider;
 
-    let _admModalSourceFilterTimer = null;
+    var _admModalSourceFilterTimer = null;
     function debouncedAdmModalSourceFilter(val, delay = 120) {
       if (_admModalSourceFilterTimer) clearTimeout(_admModalSourceFilterTimer);
       _admModalSourceFilterTimer = setTimeout(function() {
@@ -5834,7 +5834,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     // - Khắc phục tình trạng chỉ hiện trừ tiền mua hàng mà không hiện giao dịch nạp tiền
     // - Tự động đối soát, truy xuất Google Apps Script & VietQR SePay thời gian thực
     // =========================================================================
-    const INITIAL_COMPLETED_DEPOSITS = [
+    var INITIAL_COMPLETED_DEPOSITS = [
       {
         orderId: "DH5281561978",
         id: "DH5281561978",
@@ -10194,7 +10194,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.generateTOTP = generateTOTP;
 
-    let live2FaInterval = null;
+    var live2FaInterval = null;
 
     function switch2FaMode(mode) {
       const sBox = document.getElementById("box2FaSingle");
@@ -10482,8 +10482,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
     window.switchAuthTab = switchAuthTab;
 
-    let forgotCooldownTimer = null;
-    let forgotCooldownSec = 0;
+    var forgotCooldownTimer = null;
+    var forgotCooldownSec = 0;
 
     function handleResendForgotOtp() {
       if (forgotCooldownSec > 0) {
@@ -12335,7 +12335,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
 
         // SMART SYNCHRONIZED SOLD QUANTITY CALCULATOR (KHÔNG BỊ 100 ĐỒNG LOẠT)
     
-        const KNOWN_PROD_IMAGE_MAP = {
+        var KNOWN_PROD_IMAGE_MAP = {
   "PROD_MTPIJ9XV": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTPIJ9XV_T%C3%80I_KHO%E1%BA%A2N_TIKTOK_BRAZIL_%C4%90%C3%83_NG%C3%82M_L%C3%82U_-_C%E1%BB%B0.png",
   "PROD_MTQQXO2E": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQQXO2E_Gmail_cho_Thu%C3%AA_24h.png",
   "PROD_MTQWMPL5": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWMPL5_Gmail_cho_thu%C3%AA_7_Ng%C3%A0y.png",
@@ -12970,7 +12970,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
     }
 
     // RENDER RECOMMENDED (TRANG CHỦ: ĐÚNG 1 HÀNG 6 SẢN PHẨM LUÂN PHIÊN; TRANG CHI TIẾT: PHÂN BIỆT 100%)
-    let _recRotationIndex = 0;
+    var _recRotationIndex = 0;
     try {
       _recRotationIndex = parseInt(sessionStorage.getItem("mmo_rec_rot_idx") || "0", 10) || 0;
       sessionStorage.setItem("mmo_rec_rot_idx", String(_recRotationIndex + 6));
@@ -17927,7 +17927,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     window.getSourceBalance = getSourceBalance;
 
     // Khởi tạo bộ nhớ tạm số dư an toàn chống ReferenceError & gán số dư thực tế ban đầu
-    const DEFAULT_KNOWN_BALANCES = {
+    var DEFAULT_KNOWN_BALANCES = {
       mail72h: 14842,
       sellmmo: 11406,
       nguyenlieummo: 30441,
@@ -18505,7 +18505,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     // ============================================================================
     // LIÊN KẾT SẢN PHẨM ON-DEMAND API (MAPPING ENGINE v1.9.3)
     // ============================================================================
-        const DEFAULT_API_PRODUCT_MAPPINGS = {
+        var DEFAULT_API_PRODUCT_MAPPINGS = {
   "PROD_MU5T3T47AE": {
     "enabled": true,
     "provider": "selltainguyenmmo",
@@ -21079,7 +21079,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     }
     window.openSourceCompareModal = openSourceCompareModal;
 
-    let _compareSourcesSearchTimer = null;
+    var _compareSourcesSearchTimer = null;
     function debouncedCompareSourcesSearch(delay = 150) {
       if (_compareSourcesSearchTimer) clearTimeout(_compareSourcesSearchTimer);
       _compareSourcesSearchTimer = setTimeout(function() {
@@ -21167,7 +21167,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
 
     // GIA ĐÌNH SẢN PHẨM & TỪ ĐỒNG NGHĨA LIÊN THÔNG 5 NGUỒN (v3.4.2)
     // Tự động liên thông Outlook <-> Hotmail, Gmail <-> Thuê Mail, ChatGPT <-> OpenAI...
-    const COMPARE_PRODUCT_FAMILIES = {
+    var COMPARE_PRODUCT_FAMILIES = {
       microsoft_mail: {
         canonical: "Microsoft Mail (Hotmail / Outlook)",
         keywords: ["outlook", "hotmail", "live.com", "msn", "mail trusted", "mail live"]
@@ -21278,7 +21278,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     window.detectProductPlatform = detectProductPlatform;
 
     // Từ khóa bổ trợ / thuộc tính (không dùng đơn lẻ để phán đoán nền tảng)
-    const COMPARE_GENERIC_MODIFIERS = new Set([
+    var COMPARE_GENERIC_MODIFIERS = new Set([
       "name", "ngoai", "viet", "vn", "us", "uk", "thai", "random", "live", "ngam", 
       "reg", "new", "old", "2fa", "full", "pro", "vip", "zin", "ads", "sub", "view", 
       "like", "follow", "share", "page", "group", "chat", "feed", "reel", "avatar", 
@@ -23459,9 +23459,9 @@ function executeCompareSourcesSearch() {
     // =========================================================================
     // HỆ THỐNG CHỐNG BÁN LỖ TỰ ĐỘNG & TỰ ĐỘNG TĂNG GIÁ THÔNG MINH (ANTI-LOSS AUTO PRICING)
     // =========================================================================
-    const STORAGE_KEY_AUTO_PRICE_MARGIN = "mmo_auto_price_margin_percent";
-    const STORAGE_KEY_AUTO_PRICE_PROTECT_ENABLED = "mmo_auto_price_protect_enabled";
-    const STORAGE_KEY_AUTO_PRICE_LOGS = "mmo_auto_price_adjust_logs";
+    var STORAGE_KEY_AUTO_PRICE_MARGIN = "mmo_auto_price_margin_percent";
+    var STORAGE_KEY_AUTO_PRICE_PROTECT_ENABLED = "mmo_auto_price_protect_enabled";
+    var STORAGE_KEY_AUTO_PRICE_LOGS = "mmo_auto_price_adjust_logs";
 
     function getAutoPriceMarginPercent() {
       try {
@@ -23991,7 +23991,7 @@ function executeCompareSourcesSearch() {
 
     // Hook tự động bảo vệ khi quét giá nguồn hoặc cập nhật alerts:
     // Nếu isAutoPriceProtectEnabled() === true và có sản phẩm bị lỗ -> Tự động kích hoạt chống bán lỗ ngay!
-    let _lastAutoProtectCheckTime = 0;
+    var _lastAutoProtectCheckTime = 0;
     function checkAndAutoProtectLossProductsOnScan() {
       if (!isAutoPriceProtectEnabled()) return;
       const now = Date.now();
@@ -24150,7 +24150,7 @@ function executeCompareSourcesSearch() {
     }
     window.handleStockProductChange = handleStockProductChange;
 
-    let stockViewDebounceTimer = null;
+    var stockViewDebounceTimer = null;
     var _stockViewCountTimer = null;
 
     function handleCurrentStockViewInput() {
@@ -24744,7 +24744,7 @@ function executeCompareSourcesSearch() {
     }
     window.getPaymentSettings = getPaymentSettings;
 
-    const BANK_NAMES_MAP = {
+    var BANK_NAMES_MAP = {
       "MB": "MB Bank",
       "VCB": "Vietcombank",
       "TCB": "Techcombank",
@@ -25095,7 +25095,7 @@ function executeCompareSourcesSearch() {
         }
       };
     }
-    const MMO_AI_KEYS = window.MMO_AI_KEYS;
+    var MMO_AI_KEYS = window.MMO_AI_KEYS;
 
     function populateAllAiKeyInputs() {
       const _aiProviders = ['groq', 'cerebras', 'openrouter', 'gemini', 'nvidia', 'mistral'];
@@ -30341,7 +30341,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     window.switchProductDescTab = switchProductDescTab;
 
     // Dữ liệu đánh giá mặc định chất lượng cao cho sản phẩm MMO
-    const DEFAULT_MMO_REVIEWS = [
+    var DEFAULT_MMO_REVIEWS = [
       { name: "hoangnam***@gmail.com", rating: 5, date: "Hôm qua", comment: "Tài khoản chất lượng, đúng mô tả, đăng nhập mượt không bị checkpoint. Ủng hộ shop lâu dài!" },
       { name: "mmo_pro_99", rating: 5, date: "2 ngày trước", comment: "Giao hàng tự động trong 5 giây, có đầy đủ 2FA và mail khôi phục. Rất uy tín." },
       { name: "tranthanh***@yahoo.com", rating: 5, date: "3 ngày trước", comment: "Support nhiệt tình, tài khoản ngâm lâu form rất cứng. Chạy ads ngon lành." },
@@ -31392,7 +31392,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     }
     window.renderHeroSearchDropdown = renderHeroSearchDropdown;
 
-    let _searchDebounceTimer = null;
+    var _searchDebounceTimer = null;
     function handleSearchInput(e) {
       if (e && e.key === "Enter") {
         triggerSearch();
@@ -33183,7 +33183,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         // ==========================================
     // TOOL 2: CHECK LIVE TIKTOK (MULTI-STRATEGY)
     // ==========================================
-    let isTtLiveChecking = false;
+    var isTtLiveChecking = false;
 
     // Helper to extract TikTok target username accurately
     function extractTikTokTarget(rawLine) {
@@ -33394,7 +33394,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       return (typeof generateTOTP === "function") ? generateTOTP(secret) : "ERROR";
     }
 
-    let totpTimerInterval = null;
+    var totpTimerInterval = null;
 
     function runGet2Fa() {
       const secret = (document.getElementById("secret2FaInput") ? document.getElementById("secret2FaInput").value : "").trim();
@@ -33429,7 +33429,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     // ==========================================
     // TOOL 4: FAKE NAME (FULL INFO PERSONA, ACCURATE GEO ADDRESS & ZIP CODE)
     // ==========================================
-    const fakeDataDictionary = {
+    var fakeDataDictionary = {
       VN: {
         lastNames: ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Huỳnh", "Phan", "Vũ", "Võ", "Đặng", "Bùi", "Đỗ", "Hồ", "Ngô", "Dương", "Lý"],
         middleNamesMale: ["Văn", "Đức", "Minh", "Hữu", "Gia", "Đình", "Quốc", "Thành", "Quang", "Tiến", "Ngọc", "Bảo", "Trọng", "Duy", "Anh", "Hoàng"],
@@ -33951,7 +33951,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       }
     };
 
-    let currentFakeProfiles = [];
+    var currentFakeProfiles = [];
 
     function generateRandomProfile(country, gender) {
       const cData = fakeDataDictionary[country] || fakeDataDictionary.VN;
@@ -34102,7 +34102,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       showToast("Đã tạo thành công " + count + " hồ sơ Fake Name!", "success");
     }
 
-    const runGenerateFakePersona = generateFakeProfiles;
+    var runGenerateFakePersona = generateFakeProfiles;
 
     function copyFirstProfileName(idx) {
       if (currentFakeProfiles && currentFakeProfiles[idx]) {
@@ -34185,11 +34185,11 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     // ==========================================
     // TOOL 5: CHECK FOLLOWER TIKTOK HÀNG LOẠT (REAL-TIME METRIC ENGINE)
     // ==========================================
-    let ttFollowResultsList = [];
-    let isTtFollowRunning = false;
+    var ttFollowResultsList = [];
+    var isTtFollowRunning = false;
 
     // Bộ nhớ đệm số liệu chính xác từ TikTok cho các tài khoản thực tế
-    const REAL_TIKTOK_METRICS = {
+    var REAL_TIKTOK_METRICS = {
       // 4 tai khoan moi kiem tra
       "kieutrang_7606": { nickname: "Kim Trang", followers: 120, likes: 501, following: 122 },
       "huyenthu_40279": { nickname: "Nguyễn Huyền Thư", followers: 102, likes: 408, following: 84 },
@@ -34778,8 +34778,8 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     // ==========================================
     // TOOL 6: CHECK FOLLOWER FACEBOOK HÀNG LOẠT (SMART METRIC ENGINE)
     // ==========================================
-    let fbFollowResultsList = [];
-    let isFbFollowRunning = false;
+    var fbFollowResultsList = [];
+    var isFbFollowRunning = false;
 
     function resolveFacebookMetrics(uid) {
       const u = uid.toLowerCase();
@@ -34989,7 +34989,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     }
 
     // DEPOSIT LOGIC (CHỌN SỐ TIỀN & TẠO QR ĐỘNG)
-    let currentDepositAmount = 200000;
+    var currentDepositAmount = 200000;
 
     function selectDepositAmount(amt) {
       currentDepositAmount = amt;
@@ -35366,7 +35366,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       return false;
     }
 
-    let cachedCloudWalletHistory = [];
+    var cachedCloudWalletHistory = [];
 
     var _lastWalletCloudFetchTime = 0;
     var _isLoadingWalletFromCloud = false;
@@ -35990,7 +35990,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
 
     // ==================== WITHDRAWAL REQUEST & PLATFORM FINANCE SYSTEM ====================
-    const DEFAULT_WITHDRAW_REQUESTS = [];
+    var DEFAULT_WITHDRAW_REQUESTS = [];
 
     function getWithdrawRequests() {
       try {
@@ -36060,8 +36060,8 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     window.saveWithdrawRequests = saveWithdrawRequests;
 
     // ĐỒNG BỘ YÊU CẦU RÚT TIỀN TỪ CLOUDFLARE WORKER TURSO (SSOT 24/7)
-    let _lastWithdrawSyncTime = 0;
-    let _isSyncingWithdraw = false;
+    var _lastWithdrawSyncTime = 0;
+    var _isSyncingWithdraw = false;
 
     async function syncWithdrawRequestsFromCloud(force = false) {
       const now = Date.now();
@@ -36527,8 +36527,8 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     window.getAllPlatformWalletTransactions = getAllPlatformWalletTransactions;
 
     // Bộ lọc & Tìm kiếm cho Tab Nạp & Rút Tiền
-    let adminWithdrawActiveFilter = "ALL";
-    let adminWithdrawSearchQuery = "";
+    var adminWithdrawActiveFilter = "ALL";
+    var adminWithdrawSearchQuery = "";
 
     function handleFilterAdminWithdraw(filterType) {
       adminWithdrawActiveFilter = filterType || "ALL";
@@ -36805,7 +36805,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
 
     // ==================== VIETQR APPROVE WITHDRAWAL SYSTEM ====================
-    const VIETQR_BANKS = [
+    var VIETQR_BANKS = [
       { code: 'MB', bin: '970422', name: 'MBBank (Quân Đội)', keywords: ['\\bmb\\b', 'mbbank', 'quan doi', 'quân đội'] },
       { code: 'VCB', bin: '970436', name: 'Vietcombank', keywords: ['vcb', 'vietcom', 'vietcombank', 'ngoai thuong', 'ngoại thương'] },
       { code: 'TCB', bin: '970407', name: 'Techcombank', keywords: ['tcb', 'techcom', 'techcombank', 'ky thuong', 'kỹ thương'] },
@@ -36869,7 +36869,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       return VIETQR_BANKS[0];
     }
 
-    let currentApproveWithdrawItem = null;
+    var currentApproveWithdrawItem = null;
 
     function openApproveWithdrawQrModal(wdId) {
       const list = getWithdrawRequests();
@@ -39329,11 +39329,11 @@ function initMMOApplication() {
 
 
     // ==================== ALL PRODUCTS PAGE LOGIC ====================
-    let allProdCurrentCat = "Tất cả";
-    let allProdCurrentSort = "featured";
-    let allProdViewMode = "grid";
-    let allProdCurrentPage = 1;
-    const ALL_PROD_PAGE_SIZE = 21; // 7 cột x 3 hàng = 21 sản phẩm/trang
+    var allProdCurrentCat = "Tất cả";
+    var allProdCurrentSort = "featured";
+    var allProdViewMode = "grid";
+    var allProdCurrentPage = 1;
+    var ALL_PROD_PAGE_SIZE = 21; // 7 cột x 3 hàng = 21 sản phẩm/trang
 
     function setAllProdCategory(cat) {
       allProdCurrentCat = cat;
@@ -39864,7 +39864,7 @@ function initMMOApplication() {
       } catch(e) { return true; }
     })();
 
-    const CHAT_REALTIME_TOPIC = "mmo_chat_live_v2_0975902076";
+    var CHAT_REALTIME_TOPIC = "mmo_chat_live_v2_0975902076";
     var chatBroadcast = null;
     window.chatBroadcast = null;
     try {
@@ -40006,7 +40006,7 @@ function initMMOApplication() {
     }
 
     // LẮNG NGHE REALTIME CLOUD SSE (Server-Sent Events)
-    let chatRealtimeSSE = null;
+    var chatRealtimeSSE = null;
     function initChatRealtimeSSE() {
       try {
         if (typeof window === "undefined" || typeof EventSource === "undefined") return;
@@ -41267,7 +41267,7 @@ function initMMOApplication() {
     // =========================================================================
     // QUẢN LÝ LỊCH SỬ ĐƠN HÀNG, KHIẾU NẠI & ĐỔI TRẢ CHO ADMIN
     // =========================================================================
-    let currentAdminOrderDetail = null;
+    var currentAdminOrderDetail = null;
     var adminOrdersSearchQuery = "";
     window.adminOrdersSearchQuery = "";
     var adminOrdersStatusFilter = "ALL";
@@ -45805,8 +45805,8 @@ async function confirmRefundOrder() {
 // ============================================================
 // MMO_AI_KEYS is declared earlier with full Cloud Auth & Persistence shield
 
-const DEFAULT_GEMINI_API_KEY = '';
-const AI_PROVIDERS = {
+var DEFAULT_GEMINI_API_KEY = '';
+var AI_PROVIDERS = {
   groq: {
     name: 'Groq',
     badge: 'Miễn phí / Siêu tốc',
@@ -45944,7 +45944,7 @@ function saveCurrentProviderApiKey() {
   onAiProviderChange();
 }
 
-const BLOGGER_BLOG_ID_WRITER = '1442157221767603343';
+var BLOGGER_BLOG_ID_WRITER = '1442157221767603343';
 
 
 function switchAiMobileTab(tab) {
@@ -45971,7 +45971,7 @@ function switchAiMobileTab(tab) {
 }
 window.switchAiMobileTab = switchAiMobileTab;
 
-let currentAiWritingMode = 'keyword';
+var currentAiWritingMode = 'keyword';
 
 function switchAiWritingMode(mode) {
   currentAiWritingMode = mode || 'keyword';
