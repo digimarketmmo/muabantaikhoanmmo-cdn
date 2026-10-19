@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.9.0";
+const MMO_CURRENT_CODE_VERSION = "5.9.1";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -28635,121 +28635,16 @@ function executeCompareSourcesSearch() {
     // Đồng bộ số liệu thời gian thực giữa tồn kho trên và banner quản trị viên dưới
     // ==========================================
     function refreshDtlAdminSourceBanner(prod) {
-      if (!prod) prod = typeof currentSelectedProduct !== "undefined" ? currentSelectedProduct : null;
-      if (!prod) return;
       const dtlAdminSourceBox = document.getElementById("dtlAdminSourceInfoBox");
-      if (!dtlAdminSourceBox) return;
-
-      let existingMap = (prod.apiMapping && prod.apiMapping.enabled && prod.apiMapping.sourceProdId) ? prod.apiMapping : null;
-      if (!existingMap && Array.isArray(prod.variants)) {
-        for (const v of prod.variants) {
-          if (v && v.apiMapping && v.apiMapping.enabled && v.apiMapping.sourceProdId) {
-            existingMap = v.apiMapping;
-            break;
-          }
-        }
-      }
-      if (!existingMap && typeof getApiProductMapping === "function") {
-        existingMap = getApiProductMapping(prod);
-      }
-      if (!existingMap || !existingMap.sourceProdId) {
+      if (dtlAdminSourceBox) {
         dtlAdminSourceBox.style.display = "none";
-        return;
+        dtlAdminSourceBox.innerHTML = "";
       }
-
-      const cleanSrcId = String(existingMap.sourceProdId || "").replace(/^#/, "").trim();
-      const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(existingMap.provider, cleanSrcId) : null;
-      const srcName = (inSrc && inSrc.name) ? inSrc.name : (existingMap.sourceProdName || ("Sản phẩm nguồn #" + cleanSrcId));
-
-      let srcPrice = (inSrc && typeof inSrc.price === "number" && inSrc.price > 0)
-        ? inSrc.price
-        : ((existingMap && Number(existingMap.sourcePrice) > 0) ? Number(existingMap.sourcePrice) : (Number(prod.price) || 0));
-
-      let srcStock = (inSrc && typeof inSrc.amount === "number")
-        ? inSrc.amount
-        : ((typeof prod.stock === "number" && prod.stock >= 0) ? prod.stock : ((existingMap && typeof existingMap.sourceStock === "number") ? existingMap.sourceStock : 0));
-
-      const shopPrice = Number(prod.price) || 0;
-      const profit = shopPrice - srcPrice;
-      const isLoss = srcPrice > 0 && profit < 0;
-      const provCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[existingMap.provider]) ? API_SOURCES[existingMap.provider] : null;
-      const provName = (provCfg && provCfg.name) ? provCfg.name : (existingMap.provider || "Nguồn API");
-
-      let profitStr = "";
-      if (srcPrice > 0) {
-        if (profit > 0) {
-          profitStr = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-arrow-trend-up"></i> Lãi: +' + formatVND(profit).replace(/\s*đ$/, 'đ') + ' (' + Math.round((profit / shopPrice) * 100) + '%)</span>';
-        } else if (profit === 0) {
-          profitStr = '<span style="color:#94a3b8; font-weight:700;">Hòa vốn (0đ)</span>';
-        } else {
-          profitStr = '<span style="color:#ef4444; font-weight:800; background:rgba(239,68,68,0.2); padding:1px 5px; border-radius:3px;"><i class="fa-solid fa-triangle-exclamation"></i> LỖ: -' + formatVND(Math.abs(profit)).replace(/\s*đ$/, 'đ') + '!</span>';
-        }
+      const quickStockWrap = document.getElementById("dtlAdminQuickStockWrap");
+      if (quickStockWrap) {
+        quickStockWrap.style.display = "none";
+        quickStockWrap.innerHTML = "";
       }
-
-      // Gợi ý nguồn giá rẻ hơn
-      let cheaperSuggestionHtml = "";
-      try {
-        const cheaperInfo = (typeof findCheaperAlternativeSources === "function") 
-          ? findCheaperAlternativeSources(prod, { currentPrice: srcPrice, currentProvider: existingMap.provider, currentSourceProdId: cleanSrcId }) 
-          : null;
-
-        if (cheaperInfo && cheaperInfo.hasCheaper && cheaperInfo.bestDeal) {
-          const bestD = cheaperInfo.bestDeal;
-          const bestProv = bestD.provider || "Nguồn";
-          const bestProvCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[bestProv]) ? API_SOURCES[bestProv] : null;
-          const bestProvName = (bestProvCfg && bestProvCfg.name) ? bestProvCfg.name : bestProv;
-          const bestPrice = Number(bestD.price) || 0;
-          const bestStock = Number(bestD.amount !== undefined ? bestD.amount : bestD.stock) || 0;
-          const bestName = (typeof cleanSourceProductName === "function") ? cleanSourceProductName(bestD.name) : bestD.name;
-          const cleanBestId = String(bestD.id || "").replace(/^#/, "").trim();
-
-          cheaperSuggestionHtml = '<div style="margin-top:8px; padding:10px 12px; background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.06)); border:1px solid #f59e0b; border-left:4px solid #f59e0b; border-radius:6px; font-size:0.75rem; line-height:1.45; box-shadow:0 3px 12px rgba(245,158,11,0.2);">' +
-            '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
-              '<div style="flex:1; min-width:260px;">' +
-                '<div style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; overflow:hidden;">' +
-                  '<i class="fa-solid fa-lightbulb" style="animation:pulse 1.5s infinite; color:#facc15; font-size:0.85rem; flex-shrink:0;"></i>' +
-                  '<span style="color:#fbbf24; font-weight:800; font-size:0.82rem; white-space:nowrap; flex-shrink:0;">GỢI Ý NGUỒN GIÁ TỐT HƠN (TĂNG LỢI NHUẬN):</span>' +
-                  '<span style="background:#f59e0b; color:#000; font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:800; white-space:nowrap; flex-shrink:0;">Tiết kiệm ' + formatVND(cheaperInfo.savings).replace(/\s*đ$/, 'đ') + '/acc (-' + cheaperInfo.savingsPercent + '%)</span>' +
-                '</div>' +
-                '<div style="color:#e2e8f0; font-weight:600; margin-top:4px; display:flex; align-items:center; gap:5px; overflow:hidden;">' +
-                  '<span style="color:#38bdf8; font-weight:700; flex-shrink:0;">[' + (typeof escapeHtml === "function" ? escapeHtml(bestProvName) : bestProvName) + ' #' + cleanBestId + ']:</span> ' +
-                  '<strong style="color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (typeof escapeHtml === "function" ? escapeHtml(bestD.name) : bestD.name) + '">' + (typeof escapeHtml === "function" ? escapeHtml(bestName) : bestName) + '</strong>' +
-                '</div>' +
-                '<div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; margin-top:4px; font-size:0.72rem; color:#cbd5e1;">' +
-                  '<span style="white-space:nowrap;"><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Giá vốn mới: <strong style="color:#10b981; font-size:0.82rem;">' + formatVND(bestPrice).replace(/\s*đ$/, 'đ') + '</strong> <span style="color:#94a3b8; font-size:0.68rem;">(hiện tại: ' + formatVND(srcPrice).replace(/\s*đ$/, 'đ') + ')</span></span>' +
-                  '<span style="color:#475569;">|</span>' +
-                  '<span style="white-space:nowrap;"><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Kho live: <strong style="color:#38bdf8;">' + bestStock.toLocaleString() + ' acc</strong></span>' +
-                  '<span style="color:#475569;">|</span>' +
-                  '<span style="white-space:nowrap;"><i class="fa-solid fa-arrow-trend-up" style="color:#10b981;"></i> Lãi mới: <strong style="color:#10b981;">+' + formatVND(cheaperInfo.newProfit).replace(/\s*đ$/, 'đ') + ' (' + cheaperInfo.marginPercent + '%)</strong></span>' +
-                '</div>' +
-              '</div>' +
-              '<div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">' +
-                '<button type="button" class="btn-tool-primary" data-provider="' + bestProv + '" data-source-id="' + cleanBestId + '" data-price="' + bestPrice + '" data-stock="' + bestStock + '" data-name="' + (typeof escapeHtml === "function" ? escapeHtml(bestD.name) : bestD.name) + '" onclick="window.quickApplyCheaperSource(\'' + prod.id + '\', \'' + bestProv + '\', \'' + cleanBestId + '\', ' + bestPrice + ', ' + bestStock + ', this.getAttribute(\'data-name\'))" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:800; font-size:0.75rem; padding:6px 12px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(245,158,11,0.4); white-space:nowrap;" title="Đổi ngay sản phẩm này sang nguồn giá rẻ hơn">' +
-                  '<i class="fa-solid fa-bolt"></i> ⚡ Đổi Sang Nguồn Này Ngay' +
-                '</button>' +
-                '<button type="button" onclick="openSourceCompareModal(\'' + prod.id + '\')" style="background:#1e293b; color:#38bdf8; font-weight:700; font-size:0.74rem; padding:6px 10px; border-radius:6px; border:1px solid #334155; cursor:pointer; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" title="Xem chi tiết so sánh tất cả các nguồn API">' +
-                  '<i class="fa-solid fa-scale-balanced"></i> Xem 6 Nguồn' +
-                '</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>';
-        } else if (srcPrice > 0) {
-          cheaperSuggestionHtml = '<div style="margin-top:6px; padding:4px 8px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:5px; font-size:0.71rem; color:#10b981; font-weight:600; display:flex; align-items:center; gap:5px;">' +
-            '<i class="fa-solid fa-circle-check"></i> Nguồn đang nối hiện đã là nguồn có giá vốn tốt nhất trong 6 hệ thống API!' +
-          '</div>';
-        }
-      } catch(eChDtl) {}
-
-      dtlAdminSourceBox.style.display = "block";
-      dtlAdminSourceBox.innerHTML = '<div style="margin-top:6px; padding:6px 10px; background:rgba(15,23,42,0.9); border:1px solid ' + (isLoss ? 'rgba(239,68,68,0.45)' : 'rgba(6,182,212,0.35)') + '; border-left:3px solid ' + (isLoss ? '#ef4444' : '#06b6d4') + '; border-radius:6px; font-size:0.73rem; line-height:1.4; text-align:left; max-width:100%; box-sizing:border-box;">' +
-        '<div style="color:#e2e8f0; font-weight:600; display:flex; align-items:center; gap:5px; overflow:hidden;"><i class="fa-solid fa-link" style="color:' + (isLoss ? '#ef4444' : '#06b6d4') + '; flex-shrink:0;"></i> <span style="color:#94a3b8; flex-shrink:0;">[' + (typeof escapeHtml === "function" ? escapeHtml(provName) : provName) + ' #' + cleanSrcId + ']:</span> <strong style="color:#38bdf8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;" title="' + (typeof escapeHtml === "function" ? escapeHtml(srcName) : srcName) + '">' + (typeof escapeHtml === "function" ? escapeHtml(srcName) : srcName) + '</strong></div>' +
-        '<div style="display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:4px; font-size:0.7rem; color:#cbd5e1; border-top:1px dashed rgba(255,255,255,0.08); padding-top:4px; align-items:center;">' +
-          '<span><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Gốc: <strong style="color:#f59e0b;">' + (srcPrice > 0 ? formatVND(srcPrice).replace(/\s*đ$/, 'đ') : '--') + '</strong></span>' +
-          '<span><i class="fa-solid fa-store" style="color:#a855f7;"></i> Bán: <strong style="color:#c084fc;">' + formatVND(shopPrice).replace(/\s*đ$/, 'đ') + '</strong></span>' +
-          profitStr +
-          '<span><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Tồn: <strong style="color:#38bdf8;">' + (typeof srcStock === "number" ? srcStock.toLocaleString() : '--') + '</strong></span>' +
-        '</div>' +
-      '</div>' + cheaperSuggestionHtml;
     }
     window.refreshDtlAdminSourceBanner = refreshDtlAdminSourceBanner;
 
@@ -29543,185 +29438,13 @@ function executeCompareSourcesSearch() {
 
       const quickStockWrap = document.getElementById("dtlAdminQuickStockWrap");
       if (quickStockWrap) {
-        let isAdm = false;
-        try {
-          if (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser)))) {
-            isAdm = true;
-          }
-          if (!isAdm && typeof isCurrentUserAdminOrAdminView === "function" && isCurrentUserAdminOrAdminView()) {
-            isAdm = true;
-          }
-          if (!isAdm) {
-            const rawUser = localStorage.getItem("mmo_user");
-            if (rawUser) {
-              const u = JSON.parse(rawUser);
-              const uRole = (u && u.role ? String(u.role).toLowerCase() : "");
-              const uEmail = (u && u.email ? String(u.email).toLowerCase().trim() : "");
-              if (uRole.includes("admin") || uRole.includes("quản trị") || uEmail === "manhdongvtc@gmail.com" || uEmail === "manhdongvt1@gmail.com" || uEmail === "manhdongofficial8x@gmail.com" || uEmail === "hoangtuananh0968@gmail.com") {
-                isAdm = true;
-              }
-            }
-          }
-          if (!isAdm && (localStorage.getItem("mmo_admin_session") || sessionStorage.getItem("mmo_admin_authenticated") || localStorage.getItem("mmo_admin_products"))) {
-            isAdm = true;
-          }
-        } catch(eAdm) {}
-        quickStockWrap.style.display = isAdm ? "block" : "none";
-        if (isAdm) {
-          const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null);
-          const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p)) || !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
-          const btnEdit = document.getElementById("btnDtlAdminEdit");
-          if (btnEdit) {
-            btnEdit.onclick = function() {
-              if (typeof openEditProductModal === "function") openEditProductModal(p.id);
-            };
-          }
-          const btnStock = document.getElementById("btnDtlAdminStock");
-          if (btnStock) {
-            btnStock.onclick = function() {
-              if (typeof quickOpenAdminStockForCurrentProduct === "function") {
-                quickOpenAdminStockForCurrentProduct();
-              } else {
-                if (typeof switchView === "function") switchView("viewAdmin");
-                if (typeof switchAdminTab === "function") switchAdminTab("tabAdmStock");
-                if (typeof quickOpenStockForProduct === "function") quickOpenStockForProduct(p.id);
-              }
-            };
-            if (isApi) {
-              btnStock.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> <span>Đổi Kho API</span>';
-              btnStock.title = 'Sản phẩm mua qua API: Nhấn để mở form Sửa Sản Phẩm và đổi kho nguồn API';
-            } else {
-              btnStock.innerHTML = '<i class="fa-solid fa-boxes-stacked"></i> <span>Nạp Kho</span>';
-              btnStock.title = 'Sản phẩm kho thủ công: Nhấn để chuyển đến mục Quản Lý Kho Hàng để nạp tài khoản';
-            }
-          }
-          const btnDelete = document.getElementById("btnDtlAdminDelete");
-          if (btnDelete) {
-            btnDelete.onclick = function() {
-              if (typeof deleteProduct === "function") deleteProduct(p.id);
-            };
-          }
-
-          let dtlAdminSourceBox = document.getElementById("dtlAdminSourceInfoBox");
-          if (!dtlAdminSourceBox) {
-            dtlAdminSourceBox = document.createElement("div");
-            dtlAdminSourceBox.id = "dtlAdminSourceInfoBox";
-            quickStockWrap.appendChild(dtlAdminSourceBox);
-          }
-          if (isApi && existingMap && existingMap.sourceProdId) {
-            const cleanSrcId = String(existingMap.sourceProdId || "").replace(/^#/, "").trim();
-            const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(existingMap.provider, cleanSrcId) : null;
-            const srcName = (inSrc && inSrc.name) ? inSrc.name : (existingMap.sourceProdName || ("Sản phẩm nguồn #" + cleanSrcId));
-
-            // [CHUẨN HÓA DỮ LIỆU ĐỐI SOÁT NGOÀI & TRONG EDIT MODAL (v5.5.1)]:
-            // Ưu tiên số liệu live API hoặc số liệu đã được lưu trong existingMap (từ modal/sync), không để snapshot cũ đè
-            // [CHUẨN HÓA DỮ LIỆU ĐỐI SOÁT NGOÀI & TRONG (v5.5.3)]:
-            // Ưu tiên số liệu từ inSrc (nguồn live/cache), sau đó tới p.stock và existingMap
-            let srcPrice = 0;
-            if (inSrc && typeof inSrc.price === "number" && inSrc.price > 0) {
-              srcPrice = inSrc.price;
-            } else if (existingMap && Number(existingMap.sourcePrice) > 0) {
-              srcPrice = Number(existingMap.sourcePrice);
-            } else {
-              srcPrice = Number(p.price) || 0;
-            }
-
-            let srcStock = 0;
-            if (inSrc && typeof inSrc.amount === "number") {
-              srcStock = inSrc.amount;
-            } else if (typeof p.stock === "number" && p.stock >= 0) {
-              srcStock = p.stock;
-            } else if (existingMap && typeof existingMap.sourceStock === "number" && existingMap.sourceStock >= 0) {
-              srcStock = existingMap.sourceStock;
-            } else {
-              srcStock = 0;
-            }
-
-            const shopPrice = Number(p.price) || 0;
-            const profit = shopPrice - srcPrice;
-            const isLoss = srcPrice > 0 && profit < 0;
-            const provCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[existingMap.provider]) ? API_SOURCES[existingMap.provider] : null;
-            const provName = (provCfg && provCfg.name) ? provCfg.name : (existingMap.provider || "Nguồn API");
-
-            let profitStr = "";
-            if (srcPrice > 0) {
-              if (profit > 0) {
-                profitStr = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-arrow-trend-up"></i> Lãi: +' + formatVND(profit).replace(/\s*đ$/, 'đ') + ' (' + Math.round((profit / shopPrice) * 100) + '%)</span>';
-              } else if (profit === 0) {
-                profitStr = '<span style="color:#94a3b8; font-weight:700;">Hòa vốn (0đ)</span>';
-              } else {
-                profitStr = '<span style="color:#ef4444; font-weight:800; background:rgba(239,68,68,0.2); padding:1px 5px; border-radius:3px;"><i class="fa-solid fa-triangle-exclamation"></i> LỖ: -' + formatVND(Math.abs(profit)).replace(/\s*đ$/, 'đ') + '!</span>';
-              }
-            }
-
-            // [CHEAPER SOURCE RECOMMENDATION IN DETAIL ADMIN BANNER]
-            let cheaperSuggestionHtml = "";
-            try {
-              const cheaperInfo = (typeof findCheaperAlternativeSources === "function") 
-                ? findCheaperAlternativeSources(p, { currentPrice: srcPrice, currentProvider: existingMap.provider, currentSourceProdId: cleanSrcId }) 
-                : null;
-
-              if (cheaperInfo && cheaperInfo.hasCheaper && cheaperInfo.bestDeal) {
-                const bestD = cheaperInfo.bestDeal;
-                const bestProv = bestD.provider || "Nguồn";
-                const bestProvCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[bestProv]) ? API_SOURCES[bestProv] : null;
-                const bestProvName = (bestProvCfg && bestProvCfg.name) ? bestProvCfg.name : bestProv;
-                const bestPrice = Number(bestD.price) || 0;
-                const bestStock = Number(bestD.amount !== undefined ? bestD.amount : bestD.stock) || 0;
-                const bestName = (typeof cleanSourceProductName === "function") ? cleanSourceProductName(bestD.name) : bestD.name;
-                const cleanBestId = String(bestD.id || "").replace(/^#/, "").trim();
-
-                cheaperSuggestionHtml = '<div style="margin-top:8px; padding:10px 12px; background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.06)); border:1px solid #f59e0b; border-left:4px solid #f59e0b; border-radius:6px; font-size:0.75rem; line-height:1.45; box-shadow:0 3px 12px rgba(245,158,11,0.2);">' +
-                  '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
-                    '<div style="flex:1; min-width:260px;">' +
-                      '<div style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; overflow:hidden;">' +
-                        '<i class="fa-solid fa-lightbulb" style="animation:pulse 1.5s infinite; color:#facc15; font-size:0.85rem; flex-shrink:0;"></i>' +
-                        '<span style="color:#fbbf24; font-weight:800; font-size:0.82rem; white-space:nowrap; flex-shrink:0;">GỢI Ý NGUỒN GIÁ TỐT HƠN (TĂNG LỢI NHUẬN):</span>' +
-                        '<span style="background:#f59e0b; color:#000; font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:800; white-space:nowrap; flex-shrink:0;">Tiết kiệm ' + formatVND(cheaperInfo.savings).replace(/\s*đ$/, 'đ') + '/acc (-' + cheaperInfo.savingsPercent + '%)</span>' +
-                      '</div>' +
-                      '<div style="color:#e2e8f0; font-weight:600; margin-top:4px; display:flex; align-items:center; gap:5px; overflow:hidden;">' +
-                        '<span style="color:#38bdf8; font-weight:700; flex-shrink:0;">[' + (typeof escapeHtml === "function" ? escapeHtml(bestProvName) : bestProvName) + ' #' + cleanBestId + ']:</span> ' +
-                        '<strong style="color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (typeof escapeHtml === "function" ? escapeHtml(bestD.name) : bestD.name) + '">' + (typeof escapeHtml === "function" ? escapeHtml(bestName) : bestName) + '</strong>' +
-                      '</div>' +
-                      '<div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; margin-top:4px; font-size:0.72rem; color:#cbd5e1;">' +
-                        '<span style="white-space:nowrap;"><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Giá vốn mới: <strong style="color:#10b981; font-size:0.82rem;">' + formatVND(bestPrice).replace(/\s*đ$/, 'đ') + '</strong> <span style="color:#94a3b8; font-size:0.68rem;">(hiện tại: ' + formatVND(srcPrice).replace(/\s*đ$/, 'đ') + ')</span></span>' +
-                        '<span style="color:#475569;">|</span>' +
-                        '<span style="white-space:nowrap;"><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Kho live: <strong style="color:#38bdf8;">' + bestStock.toLocaleString() + ' acc</strong></span>' +
-                        '<span style="color:#475569;">|</span>' +
-                        '<span style="white-space:nowrap;"><i class="fa-solid fa-arrow-trend-up" style="color:#10b981;"></i> Lãi mới: <strong style="color:#10b981;">+' + formatVND(cheaperInfo.newProfit).replace(/\s*đ$/, 'đ') + ' (' + cheaperInfo.marginPercent + '%)</strong></span>' +
-                      '</div>' +
-                    '</div>' +
-                    '<div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">' +
-                      '<button type="button" class="btn-tool-primary" data-provider="' + bestProv + '" data-source-id="' + cleanBestId + '" data-price="' + bestPrice + '" data-stock="' + bestStock + '" data-name="' + (typeof escapeHtml === "function" ? escapeHtml(bestD.name) : bestD.name) + '" onclick="window.quickApplyCheaperSource(\'' + p.id + '\', \'' + bestProv + '\', \'' + cleanBestId + '\', ' + bestPrice + ', ' + bestStock + ', this.getAttribute(\'data-name\'))" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:800; font-size:0.75rem; padding:6px 12px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(245,158,11,0.4); white-space:nowrap;" title="Đổi ngay sản phẩm này sang nguồn giá rẻ hơn">' +
-                        '<i class="fa-solid fa-bolt"></i> ⚡ Đổi Sang Nguồn Này Ngay' +
-                      '</button>' +
-                      '<button type="button" onclick="openSourceCompareModal(\'' + p.id + '\')" style="background:#1e293b; color:#38bdf8; font-weight:700; font-size:0.74rem; padding:6px 10px; border-radius:6px; border:1px solid #334155; cursor:pointer; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" title="Xem chi tiết so sánh tất cả các nguồn API">' +
-                        '<i class="fa-solid fa-scale-balanced"></i> Xem 6 Nguồn' +
-                      '</button>' +
-                    '</div>' +
-                  '</div>' +
-                '</div>';
-              } else if (srcPrice > 0) {
-                cheaperSuggestionHtml = '<div style="margin-top:6px; padding:4px 8px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:5px; font-size:0.71rem; color:#10b981; font-weight:600; display:flex; align-items:center; gap:5px;">' +
-                  '<i class="fa-solid fa-circle-check"></i> Nguồn đang nối hiện đã là nguồn có giá vốn tốt nhất trong 6 hệ thống API!' +
-                '</div>';
-              }
-            } catch(eChDtl) {}
-
-            dtlAdminSourceBox.style.display = "block";
-            dtlAdminSourceBox.innerHTML = '<div style="margin-top:6px; padding:6px 10px; background:rgba(15,23,42,0.9); border:1px solid ' + (isLoss ? 'rgba(239,68,68,0.45)' : 'rgba(6,182,212,0.35)') + '; border-left:3px solid ' + (isLoss ? '#ef4444' : '#06b6d4') + '; border-radius:6px; font-size:0.73rem; line-height:1.4; text-align:left; max-width:100%; box-sizing:border-box;">' +
-              '<div style="color:#e2e8f0; font-weight:600; display:flex; align-items:center; gap:5px; overflow:hidden;"><i class="fa-solid fa-link" style="color:' + (isLoss ? '#ef4444' : '#06b6d4') + '; flex-shrink:0;"></i> <span style="color:#94a3b8; flex-shrink:0;">[' + (typeof escapeHtml === "function" ? escapeHtml(provName) : provName) + ' #' + cleanSrcId + ']:</span> <strong style="color:#38bdf8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;" title="' + (typeof escapeHtml === "function" ? escapeHtml(srcName) : srcName) + '">' + (typeof escapeHtml === "function" ? escapeHtml(srcName) : srcName) + '</strong></div>' +
-              '<div style="display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:4px; font-size:0.7rem; color:#cbd5e1; border-top:1px dashed rgba(255,255,255,0.08); padding-top:4px; align-items:center;">' +
-                '<span><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Gốc: <strong style="color:#f59e0b;">' + (srcPrice > 0 ? formatVND(srcPrice).replace(/\s*đ$/, 'đ') : '--') + '</strong></span>' +
-                '<span><i class="fa-solid fa-store" style="color:#a855f7;"></i> Bán: <strong style="color:#c084fc;">' + formatVND(shopPrice).replace(/\s*đ$/, 'đ') + '</strong></span>' +
-                profitStr +
-                '<span><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Tồn: <strong style="color:#38bdf8;">' + (typeof srcStock === "number" ? srcStock.toLocaleString() : '--') + '</strong></span>' +
-              '</div>' +
-            '</div>' + cheaperSuggestionHtml;
-          } else {
-            dtlAdminSourceBox.style.display = "none";
-          }
-        }
+        quickStockWrap.style.display = "none";
+        quickStockWrap.innerHTML = "";
+      }
+      const dtlAdminSourceBox = document.getElementById("dtlAdminSourceInfoBox");
+      if (dtlAdminSourceBox) {
+        dtlAdminSourceBox.style.display = "none";
+        dtlAdminSourceBox.innerHTML = "";
       }
 
       try {
