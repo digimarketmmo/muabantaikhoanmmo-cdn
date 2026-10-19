@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.8.8";
+const MMO_CURRENT_CODE_VERSION = "5.8.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -12117,7 +12117,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
 
       // 1. TỨC THÌ 0MS: Chuyển đổi hiển thị view độc lập 100% (chống kẹt view với !important)
-      const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
+      const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewFaq"];
       views.forEach(function(v) {
         const el = document.getElementById(v);
         if (el) {
@@ -13154,11 +13154,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       if (target.includes("vpn") || target.includes("proxy")) {
         return pCat === "vpn proxy" || pCat === "vpn" || pCat === "proxy" || pCat.includes("proxy") || pCat.includes("vpn");
       }
-      if (target === "ai & video" || target === "ai") {
-        return pCat === "ai & video" || pCat === "ai" || pCat.includes("ai & video");
-      }
-      if (target === "chatgpt") {
-        return pCat === "chatgpt";
+      if (target === "ai & video" || target === "ai" || target.includes("chatgpt & kling") || target.includes("kling") || target.includes("chatgpt")) {
+        return pCat === "ai & video" || pCat === "ai" || pCat === "chatgpt" || pCat.includes("ai & video") || pCat.includes("chatgpt");
       }
       if (target.includes("hot mail") || target.includes("hotmail") || target.includes("outlook")) {
         return pCat === "hot mail" || pCat === "hotmail" || pCat === "outlook" || pCat.includes("hot mail") || pCat.includes("hotmail") || pCat.includes("outlook");
@@ -30151,7 +30148,7 @@ function executeCompareSourcesSearch() {
     // =========================================================================
     
 // =========================================================================
-// HTML CLEANER & ENTITY DECODER FOR PRODUCT DESCRIPTIONS (v5.8.8)
+// HTML CLEANER & ENTITY DECODER FOR PRODUCT DESCRIPTIONS (v5.8.9)
 // =========================================================================
 function cleanAndNormalizeHtml(raw) {
   if (!raw) return "";
@@ -30290,7 +30287,7 @@ function admEditorToggleCodeView() {
 window.admEditorToggleCodeView = admEditorToggleCodeView;
 
 // =========================================================================
-// TABLE OF CONTENTS (TOC) & SMOOTH SCROLL ENGINE (v5.8.8)
+// TABLE OF CONTENTS (TOC) & SMOOTH SCROLL ENGINE (v5.8.9)
 // =========================================================================
 function toggleDetailToc() {
   const box = document.getElementById("dtlTocBox");
@@ -38683,7 +38680,7 @@ function initMMOApplication() {
         const isKnownView = (curPath === "/viewstore" || curPath === "/viewallproducts" || curPath === "/viewblog");
         const isArticlePath = !isKnownRoot && !isKnownView && (curPath.startsWith("/blog/") || curPath.indexOf("/blog/") !== -1 || curPath.endsWith(".html") || /\/\d{4}\/\d{2}\//.test(curPath) || curPath.indexOf("/p/") !== -1 || (curPath.split("/").filter(Boolean).length === 1 && !curPath.includes(".")));
         
-        const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty"];
+        const validViews = ["viewStore", "viewProductDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewFaq"];
         const viewParam = urlParams.get("view");
         const catParam = urlParams.get("category");
         if (hash === "viewPrivacy" || hash === "privacy" || viewParam === "viewPrivacy" || (viewParam === "viewTerms" && (hash === "viewPrivacy" || hash === "privacy"))) {
@@ -38723,6 +38720,9 @@ function initMMOApplication() {
         } else if (viewParam === "warranty" || hash === "warranty" || viewParam === "help" || hash === "help" || viewParam === "viewWarranty" || hash === "viewWarranty") {
           // Google Sitelinks: Trung tâm Trợ giúp & Bảo hành
           targetView = "viewWarranty";
+        } else if (viewParam === "faq" || hash === "faq" || viewParam === "viewFaq" || hash === "viewFaq" || viewParam === "cau-hoi-thuong-gap") {
+          // Google Sitelinks: Câu Hỏi Thường Gặp (FAQ)
+          targetView = "viewFaq";
         } else if (viewParam && validViews.includes(viewParam) && viewParam !== "viewProductDetail") {
           targetView = viewParam;
         } else if (hash && validViews.includes(hash) && hash !== "viewProductDetail") {
@@ -38861,6 +38861,66 @@ function initMMOApplication() {
         } catch(eDepWatch) {}
       } catch(e) {}
     }
+
+    // =========================================================================
+    // CÂU HỎI THƯỜNG GẶP (FAQ & KNOWLEDGE BASE) CONTROLLERS
+    // =========================================================================
+    function toggleFaqItem(id) {
+      const ans = document.getElementById("faqAns" + id);
+      const chev = document.getElementById("faqChevron" + id);
+      if (!ans) return;
+      const isClosed = (ans.style.display === "none");
+      ans.style.display = isClosed ? "block" : "none";
+      if (chev) {
+        chev.style.transform = isClosed ? "rotate(180deg)" : "rotate(0deg)";
+        chev.style.color = isClosed ? "#38bdf8" : "#64748b";
+      }
+    }
+    window.toggleFaqItem = toggleFaqItem;
+
+    function filterFaqCategory(cat, btn) {
+      const items = document.querySelectorAll(".faq-item");
+      items.forEach(function(item) {
+        const itemCat = item.getAttribute("data-cat");
+        if (cat === "all" || itemCat === cat) {
+          item.style.display = "block";
+        } else {
+          item.style.display = "none";
+        }
+      });
+      document.querySelectorAll(".faq-filter-pill").forEach(function(p) {
+        p.classList.remove("active");
+        p.style.background = "#1e293b";
+        p.style.color = "#94a3b8";
+        p.style.borderColor = "#334155";
+      });
+      if (btn) {
+        btn.classList.add("active");
+        btn.style.background = "#0284c7";
+        btn.style.color = "#fff";
+        btn.style.borderColor = "#0284c7";
+      }
+    }
+    window.filterFaqCategory = filterFaqCategory;
+
+    function filterFaqQuestions(query) {
+      const q = String(query || "").toLowerCase().trim();
+      const items = document.querySelectorAll(".faq-item");
+      items.forEach(function(item) {
+        const text = (item.innerText || item.textContent || "").toLowerCase();
+        if (!q || text.includes(q)) {
+          item.style.display = "block";
+          if (q) {
+            const ans = item.querySelector(".faq-ans");
+            if (ans) ans.style.display = "block";
+          }
+        } else {
+          item.style.display = "none";
+        }
+      });
+    }
+    window.filterFaqQuestions = filterFaqQuestions;
+
     window.initMMOApplication = initMMOApplication;
     if (typeof document !== "undefined") {
       document.addEventListener("DOMContentLoaded", function() {
