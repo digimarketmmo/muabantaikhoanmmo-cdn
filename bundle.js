@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "5.9.3";
+var MMO_CURRENT_CODE_VERSION = "5.9.4";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 var KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -10401,13 +10401,48 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     function switchAuthTab(tab) {
       const btnLogin = document.getElementById("tabBtnLogin");
       const btnRegister = document.getElementById("tabBtnRegister");
+      const btnAdmin = document.getElementById("tabBtnAdmin");
       const formLogin = document.getElementById("formLoginBlock");
       const formRegister = document.getElementById("formRegisterBlock");
       const formForgot = document.getElementById("formForgotBlock");
       const googleSection = document.getElementById("googleAuthSection");
       const title = document.getElementById("authModalTitle");
+      const btnSubmit = document.querySelector("#formLoginBlock .btn-big-buy");
 
-      if (tab === "forgot") {
+      if (tab === "admin") {
+        if (formLogin) formLogin.style.display = "flex";
+        if (formRegister) formRegister.style.display = "none";
+        if (formForgot) formForgot.style.display = "none";
+        if (googleSection) googleSection.style.display = "none";
+        if (btnLogin) {
+          btnLogin.style.background = "transparent";
+          btnLogin.style.color = "#94a3b8";
+          btnLogin.style.fontWeight = "500";
+        }
+        if (btnRegister) {
+          btnRegister.style.background = "transparent";
+          btnRegister.style.color = "#94a3b8";
+          btnRegister.style.fontWeight = "500";
+        }
+        if (btnAdmin) {
+          btnAdmin.style.background = "#f59e0b";
+          btnAdmin.style.color = "#000000";
+          btnAdmin.style.fontWeight = "700";
+        }
+        if (title) title.innerHTML = "<i class='fa-solid fa-shield-halved' style='color:#f59e0b;'></i> Đăng Nhập Quản Trị Viên";
+        const emailEl = document.getElementById("loginEmailInput");
+        if (emailEl && !emailEl.value) {
+          emailEl.value = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com");
+        }
+        const passEl = document.getElementById("loginPassInput");
+        if (passEl) {
+          passEl.placeholder = "Nhập mật khẩu Quản Trị hoặc Admin Secret Key...";
+          setTimeout(function() { passEl.focus(); }, 60);
+        }
+        if (btnSubmit) {
+          btnSubmit.innerHTML = "<i class='fa-solid fa-right-to-bracket'></i> VÀO TRANG QUẢN TRỊ";
+        }
+      } else if (tab === "forgot") {
         if (formLogin) formLogin.style.display = "none";
         if (formRegister) formRegister.style.display = "none";
         if (formForgot) formForgot.style.display = "flex";
@@ -10421,6 +10456,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           btnRegister.style.background = "transparent";
           btnRegister.style.color = "#94a3b8";
           btnRegister.style.fontWeight = "500";
+        }
+        if (btnAdmin) {
+          btnAdmin.style.background = "transparent";
+          btnAdmin.style.color = "#f59e0b";
+          btnAdmin.style.fontWeight = "500";
         }
         if (title) title.innerHTML = "<i class='fa-solid fa-key' style='color:#38bdf8;'></i> Khôi Phục Mật Khẩu";
         
@@ -10462,6 +10502,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           btnRegister.style.color = "#ffffff";
           btnRegister.style.fontWeight = "700";
         }
+        if (btnAdmin) {
+          btnAdmin.style.background = "transparent";
+          btnAdmin.style.color = "#f59e0b";
+          btnAdmin.style.fontWeight = "500";
+        }
         if (title) title.innerHTML = "<i class='fa-solid fa-user-plus' style='color:#3b82f6;'></i> Đăng Ký Tài Khoản";
       } else {
         if (formLogin) formLogin.style.display = "flex";
@@ -10478,7 +10523,17 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           btnRegister.style.color = "#94a3b8";
           btnRegister.style.fontWeight = "500";
         }
+        if (btnAdmin) {
+          btnAdmin.style.background = "transparent";
+          btnAdmin.style.color = "#f59e0b";
+          btnAdmin.style.fontWeight = "500";
+        }
         if (title) title.innerHTML = "<i class='fa-solid fa-user-shield green'></i> Đăng Nhập Hệ Thống";
+        const passEl = document.getElementById("loginPassInput");
+        if (passEl) passEl.placeholder = "Nhập mật khẩu...";
+        if (btnSubmit) {
+          btnSubmit.innerHTML = "<i class='fa-solid fa-right-to-bracket'></i> ĐĂNG NHẬP";
+        }
       }
     }
     window.switchAuthTab = switchAuthTab;
@@ -10738,6 +10793,21 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
     function triggerGoogleSignIn() {
       const clientId = getGoogleClientId();
+      const isCustomDomain = window.location.hostname.includes("taphoammo");
+
+      if (isCustomDomain) {
+        showToast("💡 Lưu ý: Nếu popup Google bị trắng (do Google Console chưa cấu hình tên miền taphoammo.ink), bạn hãy đăng nhập bằng Email/Mật khẩu hoặc tab Quản Trị bên dưới để vào ngay!", "info", 6500);
+      }
+
+      // Safety Watchdog: Nếu sau 5s popup Google không phản hồi hoặc bị trắng
+      setTimeout(function() {
+        if (typeof currentUser === "undefined" || !currentUser) {
+          const authModal = document.getElementById("authModal");
+          if (authModal && authModal.style.display !== "none") {
+            showToast("💡 Bạn có thể đăng nhập nhanh bằng Email/Mật khẩu hoặc bấm tab Quản Trị ở trên để vào hệ thống ngay lập tức!", "info", 5000);
+          }
+        }
+      }, 5000);
 
       // 1. Nếu Google GIS có OAuth2, mở Popup Google chính thức để chọn tài khoản
       if (window.google && window.google.accounts && window.google.accounts.oauth2) {
@@ -11005,7 +11075,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       let authenticatedUser = null;
       let sessionToken = null;
 
-      // Bước 2.1: Xác thực trực tiếp qua Cloudflare Worker SSOT POST /api/auth/login
+      // Bước 2.1: Xác thực trực tiếp qua Cloudflare Worker SSOT POST /api/auth/login (Fast-Path 0ms)
+      let workerNetworkError = false;
       try {
         const workerLoginRes = await fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/auth/login", {
           method: "POST",
@@ -11023,13 +11094,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               localStorage.setItem("mmo_session_token", sessionToken);
             } catch(e) {}
           }
+        } else if (workerLoginRes.status === 401) {
+          workerNetworkError = false;
         }
       } catch(eWorker) {
         console.warn("Worker auth error, falling back to GAS POST:", eWorker);
+        workerNetworkError = true;
       }
 
-      // Bước 2.2: Nếu Worker chưa xác thực thành công, fallback sang GAS POST authEmail / login
-      if (!isAuthenticated && typeof callGasApi === "function") {
+      // Bước 2.2: Chỉ fallback sang GAS khi Worker gặp sự cố kết nối mạng
+      if (!isAuthenticated && workerNetworkError && typeof callGasApi === "function") {
         try {
           let res = await callGasApi("authEmail", { mode: "login", action: "authEmail", email: email, password: pass });
           if (!res || !res.success) {
@@ -19192,12 +19266,11 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     }
     window.getApiProductMappings = getApiProductMappings;
 
-    function saveApiProductMappings(maps) {
-      try {
-        if (typeof invalidateApiProductMappingsCache === "function") {
-          invalidateApiProductMappingsCache();
-        }
-        localStorage.setItem("mmo_api_product_mappings", JSON.stringify(maps || {}));
+    var _adminSaveMappingsTimeout = null;
+    function syncApiMappingsToCloudDebounced(maps) {
+      if (typeof isAdminUser !== "function" || !isAdminUser()) return;
+      if (_adminSaveMappingsTimeout) clearTimeout(_adminSaveMappingsTimeout);
+      _adminSaveMappingsTimeout = setTimeout(function() {
         if (typeof callGasApi === "function") {
           callGasApi("adminSaveSettings", {
             settings: {
@@ -19205,6 +19278,16 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
             }
           }).catch(function() {});
         }
+      }, 5000);
+    }
+    window.syncApiMappingsToCloudDebounced = syncApiMappingsToCloudDebounced;
+
+    function saveApiProductMappings(maps) {
+      try {
+        if (typeof invalidateApiProductMappingsCache === "function") {
+          invalidateApiProductMappingsCache();
+        }
+        localStorage.setItem("mmo_api_product_mappings", JSON.stringify(maps || {}));
       } catch(e) {}
     }
     window.saveApiProductMappings = saveApiProductMappings;
