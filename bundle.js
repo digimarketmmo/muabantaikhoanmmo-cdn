@@ -9,18 +9,31 @@ window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 (function cleanLegacyProductImageStorage() {
   if (typeof localStorage === "undefined") return;
   try {
+    const clearedOldIds = [
+      "PROD_MV5SHIF0DU", "PROD_MV5RZ46QPB", "PROD_MV5RNGVO93", "PROD_MU29RGEBH0", "PROD_MV1GO2PD8A", "PROD_MU2ASBNSJT",
+      "PROD_MTQWQFZD", "PROD_MTQWMPL5", "PROD_MUP5LB7VAB", "PROD_MUOSDN0FCU", "PROD_MUJGUY19DD", "PROD_MTTPLODQ",
+      "PROD_MTQQXO2E", "PROD_MTQX1C7X", "PROD_MTQX465U", "PROD_MTQX7SIK", "PROD_MTYN7UJG",
+      "PROD_MU2YQ1J3PY", "PROD_MTQZT2Y1", "PROD_MTRB6000"
+    ];
+    clearedOldIds.forEach(function(did) {
+      localStorage.removeItem("mmo_custom_img_" + did);
+      localStorage.setItem("mmo_no_image_" + did, "true");
+    });
+
     // Tự động dọn dẹp các cache cũ chứa ảnh phôi lỗi thời để nạp ngay poster mới chuẩn 100% từ Turso DB
     const pRaw = localStorage.getItem("mmo_products") || "";
-    if (pRaw.includes("tiktok_brazil.png") || pRaw.includes("gmail_24h.png") || pRaw.length > 3000000) {
+    if (pRaw.includes("tiktok_brazil.png") || pRaw.includes("gmail_24h.png") || pRaw.includes("outlook_trusted") || pRaw.includes("blog_gmail") || pRaw.length > 3000000) {
       localStorage.removeItem("mmo_products");
       localStorage.removeItem("mmo_admin_products");
+      localStorage.removeItem("mmo_products_list");
+      localStorage.removeItem("mmo_shop_products");
     }
     // Dọn sạch các custom_img cũ nếu trỏ tới phôi cũ
     for (let i = localStorage.length - 1; i >= 0; i--) {
       const k = localStorage.key(i);
       if (k && k.startsWith("mmo_custom_img_")) {
         const val = localStorage.getItem(k) || "";
-        if (val.includes("tiktok_brazil.png") || val.includes("gmail_24h.png") || val.includes("khotaikhoanso")) {
+        if (val.includes("tiktok_brazil.png") || val.includes("gmail_24h.png") || val.includes("outlook_trusted") || val.includes("blog_gmail") || val.includes("facebook_via") || val.includes("khotaikhoanso")) {
           localStorage.removeItem(k);
         }
       }
@@ -28905,16 +28918,151 @@ function executeCompareSourcesSearch() {
     // Đồng bộ số liệu thời gian thực giữa tồn kho trên và banner quản trị viên dưới
     // ==========================================
     function refreshDtlAdminSourceBanner(prod) {
+      if (!prod) prod = typeof currentSelectedProduct !== "undefined" ? currentSelectedProduct : null;
+      if (!prod) return;
       const dtlAdminSourceBox = document.getElementById("dtlAdminSourceInfoBox");
-      if (dtlAdminSourceBox) {
+      if (!dtlAdminSourceBox) return;
+
+      let isAdm = false;
+      try {
+        if (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser)))) {
+          isAdm = true;
+        }
+        if (!isAdm && typeof isCurrentUserAdminOrAdminView === "function" && isCurrentUserAdminOrAdminView()) {
+          isAdm = true;
+        }
+        if (!isAdm) {
+          const rawUser = localStorage.getItem("mmo_user");
+          if (rawUser) {
+            const u = JSON.parse(rawUser);
+            const uRole = (u && u.role ? String(u.role).toLowerCase() : "");
+            const uEmail = (u && u.email ? String(u.email).toLowerCase().trim() : "");
+            if (uRole.includes("admin") || uRole.includes("quản trị") || uEmail === "manhdongvtc@gmail.com" || uEmail === "manhdongvt1@gmail.com" || uEmail === "manhdongofficial8x@gmail.com" || uEmail === "hoangtuananh0968@gmail.com") {
+              isAdm = true;
+            }
+          }
+        }
+        if (!isAdm && (localStorage.getItem("mmo_admin_session") || sessionStorage.getItem("mmo_admin_authenticated") || localStorage.getItem("mmo_admin_products"))) {
+          isAdm = true;
+        }
+      } catch(eAdm) {}
+      if (!isAdm) {
         dtlAdminSourceBox.style.display = "none";
         dtlAdminSourceBox.innerHTML = "";
+        return;
       }
-      const quickStockWrap = document.getElementById("dtlAdminQuickStockWrap");
-      if (quickStockWrap) {
-        quickStockWrap.style.display = "none";
-        quickStockWrap.innerHTML = "";
+
+      let existingMap = (prod.apiMapping && prod.apiMapping.enabled && prod.apiMapping.sourceProdId) ? prod.apiMapping : null;
+      if (!existingMap && Array.isArray(prod.variants)) {
+        for (const v of prod.variants) {
+          if (v && v.apiMapping && v.apiMapping.enabled && v.apiMapping.sourceProdId) {
+            existingMap = v.apiMapping;
+            break;
+          }
+        }
       }
+      if (!existingMap && typeof getApiProductMapping === "function") {
+        existingMap = getApiProductMapping(prod);
+      }
+      if (!existingMap || !existingMap.sourceProdId) {
+        dtlAdminSourceBox.style.display = "none";
+        dtlAdminSourceBox.innerHTML = "";
+        return;
+      }
+
+      const cleanSrcId = String(existingMap.sourceProdId || "").replace(/^#/, "").trim();
+      const inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(existingMap.provider, cleanSrcId) : null;
+      const srcName = (inSrc && inSrc.name) ? inSrc.name : (existingMap.sourceProdName || ("Sản phẩm nguồn #" + cleanSrcId));
+
+      let srcPrice = (inSrc && typeof inSrc.price === "number" && inSrc.price > 0)
+        ? inSrc.price
+        : ((existingMap && Number(existingMap.sourcePrice) > 0) ? Number(existingMap.sourcePrice) : (Number(prod.price) || 0));
+
+      let srcStock = (inSrc && typeof inSrc.amount === "number")
+        ? inSrc.amount
+        : ((typeof prod.stock === "number" && prod.stock >= 0) ? prod.stock : ((existingMap && typeof existingMap.sourceStock === "number") ? existingMap.sourceStock : 0));
+
+      const shopPrice = Number(prod.price) || 0;
+      const profit = shopPrice - srcPrice;
+      const isLoss = srcPrice > 0 && profit < 0;
+      const provCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[existingMap.provider]) ? API_SOURCES[existingMap.provider] : null;
+      const provName = (provCfg && provCfg.name) ? provCfg.name : (existingMap.provider || "Nguồn API");
+
+      let profitStr = "";
+      if (srcPrice > 0) {
+        if (profit > 0) {
+          profitStr = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-arrow-trend-up"></i> Lãi: +' + formatVND(profit).replace(/\s*đ$/, 'đ') + ' (' + Math.round((profit / shopPrice) * 100) + '%)</span>';
+        } else if (profit === 0) {
+          profitStr = '<span style="color:#94a3b8; font-weight:700;">Hòa vốn (0đ)</span>';
+        } else {
+          profitStr = '<span style="color:#ef4444; font-weight:800; background:rgba(239,68,68,0.2); padding:1px 5px; border-radius:3px;"><i class="fa-solid fa-triangle-exclamation"></i> LỖ: -' + formatVND(Math.abs(profit)).replace(/\s*đ$/, 'đ') + '!</span>';
+        }
+      }
+
+      // Gợi ý nguồn giá rẻ hơn
+      let cheaperSuggestionHtml = "";
+      try {
+        const cheaperInfo = (typeof findCheaperAlternativeSources === "function") 
+          ? findCheaperAlternativeSources(prod, { currentPrice: srcPrice, currentProvider: existingMap.provider, currentSourceProdId: cleanSrcId }) 
+          : null;
+
+        if (cheaperInfo && cheaperInfo.hasCheaper && cheaperInfo.bestDeal) {
+          const bestD = cheaperInfo.bestDeal;
+          const bestProv = bestD.provider || "Nguồn";
+          const bestProvCfg = (typeof API_SOURCES !== "undefined" && API_SOURCES[bestProv]) ? API_SOURCES[bestProv] : null;
+          const bestProvName = (bestProvCfg && bestProvCfg.name) ? bestProvCfg.name : bestProv;
+          const bestPrice = Number(bestD.price) || 0;
+          const bestStock = Number(bestD.amount !== undefined ? bestD.amount : bestD.stock) || 0;
+          const bestName = (typeof cleanSourceProductName === "function") ? cleanSourceProductName(bestD.name) : bestD.name;
+          const cleanBestId = String(bestD.id || "").replace(/^#/, "").trim();
+
+          cheaperSuggestionHtml = '<div style="margin-top:8px; padding:10px 12px; background:linear-gradient(135deg, rgba(245,158,11,0.15), rgba(217,119,6,0.06)); border:1px solid #f59e0b; border-left:4px solid #f59e0b; border-radius:6px; font-size:0.75rem; line-height:1.45; box-shadow:0 3px 12px rgba(245,158,11,0.2);">' +
+            '<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">' +
+              '<div style="flex:1; min-width:260px;">' +
+                '<div style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap; overflow:hidden;">' +
+                  '<i class="fa-solid fa-lightbulb" style="animation:pulse 1.5s infinite; color:#facc15; font-size:0.85rem; flex-shrink:0;"></i>' +
+                  '<span style="color:#fbbf24; font-weight:800; font-size:0.82rem; white-space:nowrap; flex-shrink:0;">GỢI Ý NGUỒN GIÁ TỐT HƠN (TĂNG LỢI NHUẬN):</span>' +
+                  '<span style="background:#f59e0b; color:#000; font-size:0.68rem; padding:1px 6px; border-radius:4px; font-weight:800; white-space:nowrap; flex-shrink:0;">Tiết kiệm ' + formatVND(cheaperInfo.savings).replace(/\s*đ$/, 'đ') + '/acc (-' + cheaperInfo.savingsPercent + '%)</span>' +
+                '</div>' +
+                '<div style="color:#e2e8f0; font-weight:600; margin-top:4px; display:flex; align-items:center; gap:5px; overflow:hidden;">' +
+                  '<span style="color:#38bdf8; font-weight:700; flex-shrink:0;">[' + (typeof escapeHtml === "function" ? escapeHtml(bestProvName) : bestProvName) + ' #' + cleanBestId + ']:</span> ' +
+                  '<strong style="color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + (typeof escapeHtml === "function" ? escapeHtml(bestD.name) : bestD.name) + '">' + (typeof escapeHtml === "function" ? escapeHtml(bestName) : bestName) + '</strong>' +
+                '</div>' +
+                '<div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; margin-top:4px; font-size:0.72rem; color:#cbd5e1;">' +
+                  '<span style="white-space:nowrap;"><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Giá vốn mới: <strong style="color:#10b981; font-size:0.82rem;">' + formatVND(bestPrice).replace(/\s*đ$/, 'đ') + '</strong> <span style="color:#94a3b8; font-size:0.68rem;">(hiện tại: ' + formatVND(srcPrice).replace(/\s*đ$/, 'đ') + ')</span></span>' +
+                  '<span style="color:#475569;">|</span>' +
+                  '<span style="white-space:nowrap;"><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Kho live: <strong style="color:#38bdf8;">' + bestStock.toLocaleString() + ' acc</strong></span>' +
+                  '<span style="color:#475569;">|</span>' +
+                  '<span style="white-space:nowrap;"><i class="fa-solid fa-arrow-trend-up" style="color:#10b981;"></i> Lãi mới: <strong style="color:#10b981;">+' + formatVND(cheaperInfo.newProfit).replace(/\s*đ$/, 'đ') + ' (' + cheaperInfo.marginPercent + '%)</strong></span>' +
+                '</div>' +
+              '</div>' +
+              '<div style="display:flex; align-items:center; gap:6px; flex-shrink:0;">' +
+                '<button type="button" class="btn-tool-primary" data-provider="' + bestProv + '" data-source-id="' + cleanBestId + '" data-price="' + bestPrice + '" data-stock="' + bestStock + '" data-name="' + (typeof escapeHtml === "function" ? escapeHtml(bestD.name) : bestD.name) + '" onclick="window.quickApplyCheaperSource(\'' + prod.id + '\', \'' + bestProv + '\', \'' + cleanBestId + '\', ' + bestPrice + ', ' + bestStock + ', this.getAttribute(\'data-name\'))" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:#000; font-weight:800; font-size:0.75rem; padding:6px 12px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(245,158,11,0.4); white-space:nowrap;" title="Đổi ngay sản phẩm này sang nguồn giá rẻ hơn">' +
+                  '<i class="fa-solid fa-bolt"></i> ⚡ Đổi Sang Nguồn Này Ngay' +
+                '</button>' +
+                '<button type="button" onclick="openSourceCompareModal(\'' + prod.id + '\')" style="background:#1e293b; color:#38bdf8; font-weight:700; font-size:0.74rem; padding:6px 10px; border-radius:6px; border:1px solid #334155; cursor:pointer; display:inline-flex; align-items:center; gap:4px; white-space:nowrap;" title="Xem chi tiết so sánh tất cả các nguồn API">' +
+                  '<i class="fa-solid fa-scale-balanced"></i> Xem 6 Nguồn' +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>';
+        } else if (srcPrice > 0) {
+          cheaperSuggestionHtml = '<div style="margin-top:6px; padding:4px 8px; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); border-radius:5px; font-size:0.71rem; color:#10b981; font-weight:600; display:flex; align-items:center; gap:5px;">' +
+            '<i class="fa-solid fa-circle-check"></i> Nguồn đang nối hiện đã là nguồn có giá vốn tốt nhất trong 6 hệ thống API!' +
+          '</div>';
+        }
+      } catch(eChDtl) {}
+
+      dtlAdminSourceBox.style.display = "block";
+      dtlAdminSourceBox.innerHTML = '<div style="margin-top:6px; padding:6px 10px; background:rgba(15,23,42,0.9); border:1px solid ' + (isLoss ? 'rgba(239,68,68,0.45)' : 'rgba(6,182,212,0.35)') + '; border-left:3px solid ' + (isLoss ? '#ef4444' : '#06b6d4') + '; border-radius:6px; font-size:0.73rem; line-height:1.4; text-align:left; max-width:100%; box-sizing:border-box;">' +
+        '<div style="color:#e2e8f0; font-weight:600; display:flex; align-items:center; gap:5px; overflow:hidden;"><i class="fa-solid fa-link" style="color:' + (isLoss ? '#ef4444' : '#06b6d4') + '; flex-shrink:0;"></i> <span style="color:#94a3b8; flex-shrink:0;">[' + (typeof escapeHtml === "function" ? escapeHtml(provName) : provName) + ' #' + cleanSrcId + ']:</span> <strong style="color:#38bdf8; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;" title="' + (typeof escapeHtml === "function" ? escapeHtml(srcName) : srcName) + '">' + (typeof escapeHtml === "function" ? escapeHtml(srcName) : srcName) + '</strong></div>' +
+        '<div style="display:flex; flex-wrap:wrap; gap:4px 10px; margin-top:4px; font-size:0.7rem; color:#cbd5e1; border-top:1px dashed rgba(255,255,255,0.08); padding-top:4px; align-items:center;">' +
+          '<span><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Gốc: <strong style="color:#f59e0b;">' + (srcPrice > 0 ? formatVND(srcPrice).replace(/\s*đ$/, 'đ') : '--') + '</strong></span>' +
+          '<span><i class="fa-solid fa-store" style="color:#a855f7;"></i> Bán: <strong style="color:#c084fc;">' + formatVND(shopPrice).replace(/\s*đ$/, 'đ') + '</strong></span>' +
+          profitStr +
+          '<span><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Tồn: <strong style="color:#38bdf8;">' + (typeof srcStock === "number" ? srcStock.toLocaleString() : '--') + '</strong></span>' +
+        '</div>' +
+      '</div>' + cheaperSuggestionHtml;
     }
     window.refreshDtlAdminSourceBanner = refreshDtlAdminSourceBanner;
 
@@ -29718,13 +29866,88 @@ function executeCompareSourcesSearch() {
 
       const quickStockWrap = document.getElementById("dtlAdminQuickStockWrap");
       if (quickStockWrap) {
-        quickStockWrap.style.display = "none";
-        quickStockWrap.innerHTML = "";
-      }
-      const dtlAdminSourceBox = document.getElementById("dtlAdminSourceInfoBox");
-      if (dtlAdminSourceBox) {
-        dtlAdminSourceBox.style.display = "none";
-        dtlAdminSourceBox.innerHTML = "";
+        let isAdm = false;
+        try {
+          if (typeof isAdminUser === "function" && (isAdminUser() || (typeof currentUser !== "undefined" && isAdminUser(currentUser)))) {
+            isAdm = true;
+          }
+          if (!isAdm && typeof isCurrentUserAdminOrAdminView === "function" && isCurrentUserAdminOrAdminView()) {
+            isAdm = true;
+          }
+          if (!isAdm) {
+            const rawUser = localStorage.getItem("mmo_user");
+            if (rawUser) {
+              const u = JSON.parse(rawUser);
+              const uRole = (u && u.role ? String(u.role).toLowerCase() : "");
+              const uEmail = (u && u.email ? String(u.email).toLowerCase().trim() : "");
+              if (uRole.includes("admin") || uRole.includes("quản trị") || uEmail === "manhdongvtc@gmail.com" || uEmail === "manhdongvt1@gmail.com" || uEmail === "manhdongofficial8x@gmail.com" || uEmail === "hoangtuananh0968@gmail.com") {
+                isAdm = true;
+              }
+            }
+          }
+          if (!isAdm && (localStorage.getItem("mmo_admin_session") || sessionStorage.getItem("mmo_admin_authenticated") || localStorage.getItem("mmo_admin_products"))) {
+            isAdm = true;
+          }
+        } catch(eAdm) {}
+
+        quickStockWrap.style.display = isAdm ? "block" : "none";
+        if (isAdm) {
+          const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null);
+          const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p)) || !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
+          
+          let btn = quickStockWrap.querySelector("button") || document.getElementById("btnDtlAdminStock");
+          if (!btn) {
+            btn = document.createElement("button");
+            btn.type = "button";
+            btn.id = "btnDtlAdminStock";
+            btn.style.width = "100%";
+            btn.style.height = "36px";
+            btn.style.borderRadius = "6px";
+            btn.style.fontSize = "0.82rem";
+            btn.style.fontWeight = "700";
+            btn.style.cursor = "pointer";
+            btn.style.display = "flex";
+            btn.style.alignItems = "center";
+            btn.style.justifyContent = "center";
+            btn.style.gap = "8px";
+            quickStockWrap.appendChild(btn);
+          }
+          
+          btn.onclick = function() {
+            if (isApi) {
+              if (typeof openEditProductModal === "function") openEditProductModal(p.id);
+            } else {
+              if (typeof switchView === "function") switchView("viewAdmin");
+              if (typeof switchAdminTab === "function") switchAdminTab("warehouse");
+              if (typeof quickOpenStockForProduct === "function") quickOpenStockForProduct(p.id);
+            }
+          };
+
+          if (isApi) {
+            btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down"></i> <span>[Quản trị viên] Đổi Kho API / Sửa Nguồn Hàng</span>';
+            btn.style.background = 'rgba(6,182,212,0.15)';
+            btn.style.color = '#06b6d4';
+            btn.style.border = '1px solid rgba(6,182,212,0.4)';
+            btn.title = 'Sản phẩm mua qua API: Nhấn để mở form Sửa Sản Phẩm và đổi kho nguồn API';
+          } else {
+            btn.innerHTML = '<i class="fa-solid fa-boxes-stacked"></i> <span>[Quản trị viên] Nạp Kho Nhanh Cho Sản Phẩm Này</span>';
+            btn.style.background = 'rgba(56,189,248,0.12)';
+            btn.style.color = '#38bdf8';
+            btn.style.border = '1px solid rgba(56,189,248,0.4)';
+            btn.title = 'Sản phẩm kho thủ công: Nhấn để chuyển đến mục Quản Lý Kho Hàng để nạp tài khoản';
+          }
+
+          let dtlAdminSourceBox = document.getElementById("dtlAdminSourceInfoBox");
+          if (!dtlAdminSourceBox) {
+            dtlAdminSourceBox = document.createElement("div");
+            dtlAdminSourceBox.id = "dtlAdminSourceInfoBox";
+            quickStockWrap.appendChild(dtlAdminSourceBox);
+          }
+
+          if (typeof refreshDtlAdminSourceBanner === "function") {
+            refreshDtlAdminSourceBanner(p);
+          }
+        }
       }
 
       try {
@@ -29872,8 +30095,16 @@ function executeCompareSourcesSearch() {
                 }
               }
 
+              const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
+              const isExplicitlyNoImg = (typeof localStorage !== "undefined" && localStorage.getItem("mmo_no_image_" + p.id) === "true") ||
+                wp.image === "__NO_IMAGE__" || wp.image_url === "__NO_IMAGE__" || wp.image === "none" || wp.image_url === "none" ||
+                (typeof wpImg === "string" && (wpImg === "" || wpImg.includes("default_product.png")));
+
               let finalImg = "";
-              if (resolvedImg && resolvedImg.trim()) {
+              if (isExplicitlyNoImg) {
+                finalImg = defaultPlaceholder;
+                try { localStorage.removeItem("mmo_custom_img_" + p.id); } catch(e) {}
+              } else if (resolvedImg && resolvedImg.trim()) {
                 finalImg = resolvedImg.trim();
                 try { localStorage.setItem("mmo_custom_img_" + p.id, finalImg); } catch(e) {}
               } else {
