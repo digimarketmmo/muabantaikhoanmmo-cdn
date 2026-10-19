@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.9.1";
+const MMO_CURRENT_CODE_VERSION = "5.9.2";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -1155,8 +1155,14 @@ if (typeof window !== "undefined") {
     }
     window._ensureProductSearchIndex = _ensureProductSearchIndex;
 
-    function rebuildSourceProductsFastIndex(prods) {
+    var _lastFastIndexRebuildTime = 0;
+    function rebuildSourceProductsFastIndex(prods, force) {
       try {
+        var now = Date.now();
+        if (!force && _sourceProductsFastMap && (now - _lastFastIndexRebuildTime < 10000)) {
+          return;
+        }
+        _lastFastIndexRebuildTime = now;
         var list = prods || (typeof window !== "undefined" && window.cachedSourceProducts) || (typeof cachedSourceProducts !== "undefined" && cachedSourceProducts) || [];
         var map = new Map();
         var provSet = new Set();
@@ -12044,6 +12050,8 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         _isSwitchingView = false;
       }
     }
+    window.switchView = switchView;
+    window._mmoFullSwitchView = _doSwitchView;
     function _doSwitchView(viewId) {
       const currentActiveView = localStorage.getItem("mmo_current_view") || "viewStore";
       if (currentActiveView !== viewId && currentActiveView !== "viewPreOrderDetail") {
@@ -12107,6 +12115,29 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         window._openingProductId = null;
         window._pendingProductId = null;
         try { localStorage.removeItem("mmo_last_viewed_prod"); } catch(e) {}
+
+        // Tức thì 0ms: Làm sạch URL trình duyệt, loại bỏ triệt để tham số ?prod=... và ?view=viewProductDetail
+        try {
+          const origin = window.location.origin || "https://www.muabantaikhoanmmo.com";
+          const pathMap = {
+            viewStore: "/",
+            viewAllProducts: "/?view=viewAllProducts",
+            viewBlog: "/?view=viewBlog",
+            viewTools: "/?view=tools",
+            viewAdmin: "/?view=admin",
+            viewDeposit: "/?view=deposit",
+            viewProfile: "/?view=profile",
+            viewFaq: "/?view=faq",
+            viewSitemap: "/?view=sitemap",
+            viewTerms: "/?view=terms",
+            viewPrivacy: "/?view=privacy",
+            viewWarranty: "/?view=warranty"
+          };
+          const targetUrl = origin + (pathMap[viewId] || "/");
+          if (window.location.search && (window.location.search.includes("prod=") || window.location.search.includes("product="))) {
+            window.history.replaceState({ view: viewId }, "", targetUrl);
+          }
+        } catch(eUrlClean) {}
       }
 
       localStorage.setItem("mmo_current_view", viewId);
@@ -12138,7 +12169,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       document.querySelectorAll(".nav-link").forEach(function(l) { l.classList.remove("active"); });
       if (typeof updateMobileBottomNav === "function") updateMobileBottomNav(viewId);
 
-      // 3. Render thông minh theo nhu cầu (Chỉ render 1 lần duy nhất hoặc khi có dữ liệu mới)
+      // 3. Render thông minh theo nhu cầu (Sử dụng setTimeout 0ms không block luồng UI chính)
       if (viewId === "viewStore") {
         document.getElementById("navStore")?.classList.add("active");
         const bList = document.getElementById("bestSellerList");
@@ -12150,11 +12181,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
         if (!_viewRendered["viewStore"] || _viewDirty["viewStore"] || isBListEmpty || isRGridEmpty || isPGridEmpty) {
           _viewRendered["viewStore"] = true;
           _viewDirty["viewStore"] = false;
-          if (typeof renderProductGrid === "function") renderProductGrid();
-          if (typeof renderBestSellers === "function") renderBestSellers();
-          if (typeof renderRecommended === "function") renderRecommended();
-          if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
-          if (typeof syncMarqueeNotice === "function") syncMarqueeNotice();
+          setTimeout(function() {
+            if (typeof renderProductGrid === "function") renderProductGrid();
+            if (typeof renderBestSellers === "function") renderBestSellers();
+            if (typeof renderRecommended === "function") renderRecommended();
+            if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
+            if (typeof syncMarqueeNotice === "function") syncMarqueeNotice();
+          }, 0);
         }
       }
 
@@ -13003,11 +13036,13 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
           window._recRotationIntervalSet = true;
           setInterval(function() {
             const rGrid = document.getElementById("recommendedGrid");
-            const curV = (typeof currentView !== "undefined") ? currentView : "viewStore";
+            const curV = (typeof currentView !== "undefined") ? currentView : (localStorage.getItem("mmo_current_view") || "viewStore");
             const admV = document.getElementById("viewAdmin");
             const isAdmViewing = (curV === "viewAdmin") || (admV && admV.style.display !== "none" && !admV.classList.contains("hidden"));
             if (isAdmViewing) return; // Tuyệt đối không xoay khi đang ở Quản trị Admin
-            if (rGrid && (curV === "viewStore" || !document.getElementById("viewStore")?.classList.contains("hidden"))) {
+            const storeEl = document.getElementById("viewStore");
+            const isStoreVisible = storeEl && storeEl.style.display !== "none" && !storeEl.classList.contains("hidden");
+            if (rGrid && curV === "viewStore" && isStoreVisible) {
               _recRotationIndex += 6;
               try { sessionStorage.setItem("mmo_rec_rot_idx", String(_recRotationIndex)); } catch(e) {}
               renderRecommended();
@@ -28749,7 +28784,17 @@ function executeCompareSourcesSearch() {
                       provider: apiMap.provider
                     });
                   }
-                  if (typeof rebuildSourceProductsFastIndex === "function") rebuildSourceProductsFastIndex(window.cachedSourceProducts);
+                  if (typeof window._sourceProductsFastMap !== "undefined" && window._sourceProductsFastMap && apiMap && apiMap.sourceProdId) {
+                    const cleanId = String(apiMap.sourceProdId).trim().replace(/^#/, "");
+                    const prov = apiMap.provider || "sellmmo";
+                    const item = window._sourceProductsFastMap.get(prov + ":" + cleanId);
+                    if (item) {
+                      item.amount = freshAmount;
+                      if (freshPrice) item.price = freshPrice;
+                    }
+                  } else if (typeof rebuildSourceProductsFastIndex === "function") {
+                    rebuildSourceProductsFastIndex(window.cachedSourceProducts);
+                  }
                 }
               } else if (res && !res.success && (String(res.error || "").toLowerCase().includes("not found") || String(res.msg || "").toLowerCase().includes("không tồn tại") || String(res.error || "").toLowerCase().includes("deleted"))) {
                 freshAmount = 0;
@@ -29470,9 +29515,11 @@ function executeCompareSourcesSearch() {
 
       // [NON-BLOCKING DEFERRED TASKS]: Trì hoãn các tác vụ nền nặng (SEO, Live sync, Sidebar) để UI chuyển tức thì 0ms
       setTimeout(function() {
-        if (typeof refreshAllShopStockUI === "function") refreshAllShopStockUI(p.id);
+        const admStockModal = document.getElementById("admStockModal");
+        if (admStockModal && admStockModal.style.display !== "none" && typeof refreshAllShopStockUI === "function") {
+          refreshAllShopStockUI(p.id);
+        }
         if (typeof renderDetailRelatedProducts === "function") renderDetailRelatedProducts(p);
-        if (typeof renderProductDetailSidebars === "function") renderProductDetailSidebars(p);
         if (typeof renderProductApiIntegration === "function") renderProductApiIntegration();
         if (typeof renderRelatedProductsSeo === "function") renderRelatedProductsSeo(p);
         if (typeof injectAllProductsSchema === "function") injectAllProductsSchema();
