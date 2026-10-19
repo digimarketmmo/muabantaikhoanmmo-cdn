@@ -12504,7 +12504,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   "PROD_MU2OGW71GZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_plus.png",
   "PROD_MU2LYZY5C7": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png",
   "PROD_MUBJQ6JP7O": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
-  "PROD_MUBKH47T2U": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png"
+  "PROD_MUBKH47T2U": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png",
+  "PROD_MVDQYLNMKF": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTU9F5HN_Paypal_2025_-_2016_%C4%90%C3%A3_ng%C3%A2m_l%C3%A2u_c%E1%BB%B1c_k%E1%BB%B3_Tr%C3%A2u.jpg",
+  "PROD_MV1GO2PD8A": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5SHIF0DU_Clone_Facebook_Da_ngam_Lau_CO_2FA.png"
 };
     window.KNOWN_PROD_IMAGE_MAP = KNOWN_PROD_IMAGE_MAP;
 
@@ -12663,102 +12665,40 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     window.handleProductImageError = handleProductImageError;
     window.handleProductImgError = handleProductImageError;
 
-    // RESOLVE PRODUCT IMAGE: Bảo tồn 100% ảnh sản phẩm người dùng đã tải lên (kể cả base64), chỉ fallback khi không có ảnh
+    // RESOLVE PRODUCT IMAGE: Khôi phục 100% ảnh sản phẩm chuẩn xác từ GitHub CDN chính thức
     function resolveProductImage(p) {
       if (!p) return resolveCategoryFallbackImage();
       const pId = String((typeof p === "object" && p.id) || (typeof p === "string" ? p : "")).trim();
       let prodObj = (typeof p === "object") ? p : ((typeof findShopProduct === "function") ? findShopProduct(pId) : null);
-      
-      const pNameLower = String((prodObj && prodObj.name) || "").toLowerCase();
-      const isGeminiProd = pNameLower.includes("gemini") || pNameLower.includes("veo") || pId === "PROD_MV5PA8KZDW" || pId === "PROD_MU6R34FZ4Z" || pId === "PROD_MU5T3T47AE";
+      const searchId = pId || (prodObj && prodObj.id ? String(prodObj.id).trim() : "");
 
-      // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: Ảnh do Admin vừa upload lên Worker DB (/api/images/ hoặc /api/products/:id/image)
-      if (prodObj) {
-        let directImg = String(prodObj.image || prodObj.image_url || prodObj.imageUrl || "").trim();
-        if (directImg.startsWith("http://mmo-shop-api.muabantaikhoanmmo.workers.dev")) {
-          directImg = directImg.replace(/^http:\/\/mmo-shop-api\.muabantaikhoanmmo\.workers\.dev/i, "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
+      // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: BẢNG ĐỒ ẢNH SẢN PHẨM CHUẨN XÁC KNOWN_PROD_IMAGE_MAP (CDN jsDelivr chính thức)
+      if (searchId && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+        if (KNOWN_PROD_IMAGE_MAP[searchId]) {
+          try { localStorage.removeItem("mmo_custom_img_" + searchId); } catch(e) {}
+          return KNOWN_PROD_IMAGE_MAP[searchId];
         }
-        if (directImg && (directImg.includes("/api/images/") || directImg.includes("/api/products/")) && !directImg.includes("undefined") && !directImg.includes("null")) {
-          if (pId) {
-            try { localStorage.setItem("mmo_custom_img_" + pId, directImg); } catch(e) {}
-          }
-          return directImg;
+        if (KNOWN_PROD_IMAGE_MAP[searchId.toUpperCase()]) {
+          try { localStorage.removeItem("mmo_custom_img_" + searchId); } catch(e) {}
+          return KNOWN_PROD_IMAGE_MAP[searchId.toUpperCase()];
         }
       }
 
-      // 2. [ƯU TIÊN #2]: Ảnh trong localStorage (với tường lửa cô lập nền tảng nghiêm ngặt)
-      if (pId) {
-        try {
-          let customSaved = localStorage.getItem("mmo_custom_img_" + pId);
-          if (!customSaved && typeof getProductAliasIds === "function") {
-            const aList = getProductAliasIds(pId);
-            for (let i = 0; i < aList.length; i++) {
-              const aVal = localStorage.getItem("mmo_custom_img_" + aList[i]);
-              if (aVal && aVal.trim()) { customSaved = aVal.trim(); break; }
-            }
-          }
-          if (customSaved) {
-            if (customSaved.startsWith("http://mmo-shop-api.muabantaikhoanmmo.workers.dev")) {
-              customSaved = customSaved.replace(/^http:\/\/mmo-shop-api\.muabantaikhoanmmo\.workers\.dev/i, "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
-            }
-            const sLower = customSaved.toLowerCase();
-            if (isGeminiProd && (sLower.includes("chatgpt") || sLower.includes("munueki3nm") || sLower.includes("mu2oxbzc6k") || sLower.includes("tiktok") || sLower.includes("facebook") || sLower.includes("gmail"))) {
-              localStorage.removeItem("mmo_custom_img_" + pId);
-              customSaved = null;
-            } else if (customSaved.includes("khotaikhoanso") || customSaved.includes("nFV4Rln") || customSaved.includes("placeholder") || customSaved.includes("default_product.png") || customSaved.includes("gemini_pro_veo3.png")) {
-              localStorage.removeItem("mmo_custom_img_" + pId);
-              customSaved = null;
-            }
-          }
-          if (customSaved && customSaved.trim() !== "") {
-            let cs = customSaved.trim();
-            if (cs.startsWith("http://mmo-shop-api.muabantaikhoanmmo.workers.dev")) {
-              cs = cs.replace(/^http:\/\/mmo-shop-api\.muabantaikhoanmmo\.workers\.dev/i, "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
-            }
-            return cs;
-          }
-        } catch(e) {}
-      }
-
-      // 3. [ƯU TIÊN #3]: Ảnh Data URI (Base64) hoặc URL công khai có sẵn trên đối tượng p
+      // 2. [ƯU TIÊN #2]: Ảnh Data URI (Base64) người dùng vừa tải lên cục bộ hoặc link CDN tĩnh hợp lệ
       const existingImg = prodObj ? (prodObj.image || prodObj.image_url || prodObj.imageUrl || "") : ((typeof p === "string" && (p.startsWith("http") || p.startsWith("data:") || p.startsWith("/"))) ? p : "");
       if (typeof existingImg === "string" && existingImg.trim() !== "") {
         let trimmed = existingImg.trim();
-        if (trimmed.startsWith("http://mmo-shop-api.muabantaikhoanmmo.workers.dev")) {
-          trimmed = trimmed.replace(/^http:\/\/mmo-shop-api\.muabantaikhoanmmo\.workers\.dev/i, "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
-        }
-        if (trimmed.includes("manhdongvtc.workers.dev")) {
-          trimmed = trimmed.replace(/manhdongvtc\.workers\.dev/g, "muabantaikhoanmmo.workers.dev");
-        }
-        if (trimmed.includes("khotaikhoanso") || trimmed.includes("nFV4Rln") || trimmed.includes("placeholder") || trimmed.includes("default_product.png")) {
-          trimmed = "";
-        }
-        if (isGeminiProd && (trimmed.toLowerCase().includes("chatgpt") || trimmed.toLowerCase().includes("munueki3nm"))) {
-          trimmed = "";
-        }
         if (trimmed.startsWith("data:image/") || (trimmed.startsWith("data:") && trimmed.length > 50)) {
           return trimmed;
         }
-        // Chấp nhận 100% URL ảnh mới tải lên, bao gồm cả Cloud Worker /api/products/:id/image, CDN jsdelivr và /api/images/
-        if ((trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.startsWith("/")) &&
-            !trimmed.includes("undefined") && !trimmed.includes("null") && !trimmed.includes("placeholder") && !trimmed.includes("unsplash") && !trimmed.includes("khotaikhoanso") && !trimmed.includes("nFV4Rln") && !trimmed.includes("default_product.png")) {
-          if (trimmed.startsWith("http://mmo-shop-api.muabantaikhoanmmo.workers.dev")) {
-            trimmed = trimmed.replace(/^http:\/\/mmo-shop-api\.muabantaikhoanmmo\.workers\.dev/i, "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
-          }
-          return trimmed.startsWith("/") ? ("https://www.muabantaikhoanmmo.com" + trimmed) : trimmed;
+        if ((trimmed.startsWith("http://") || trimmed.startsWith("https://")) &&
+            !trimmed.includes("/api/images/") && !trimmed.includes("/api/products/") &&
+            !trimmed.includes("default_product.png") && !trimmed.includes("khotaikhoanso") && !trimmed.includes("placeholder")) {
+          return trimmed;
         }
       }
 
-      // 4. Tra cứu ảnh chuẩn trong bản đồ KNOWN_PROD_IMAGE_MAP theo ID sản phẩm
-      const searchId = pId || (prodObj && prodObj.id ? String(prodObj.id).trim() : "");
-      if (searchId && typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && KNOWN_PROD_IMAGE_MAP[searchId]) {
-        return KNOWN_PROD_IMAGE_MAP[searchId];
-      }
-      if (searchId && typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && KNOWN_PROD_IMAGE_MAP[searchId.toUpperCase()]) {
-        return KNOWN_PROD_IMAGE_MAP[searchId.toUpperCase()];
-      }
-
-      // 5. Fallback thông minh theo Danh mục & Từ khóa sản phẩm (Bảo đảm không bao giờ văng nhầm ảnh)
+      // 3. Fallback thông minh theo Danh mục & Từ khóa sản phẩm (Bảo đảm không bao giờ văng nhầm ảnh)
       return resolveCategoryFallbackImage(prodObj || p);
     }
     window.resolveProductImage = resolveProductImage;
