@@ -25688,7 +25688,7 @@ function executeCompareSourcesSearch() {
               }
 
               if (typeof showToast === 'function') {
-                showToast('🎉 Đã tải lên và lưu hình ảnh thương hiệu thành công!', 'success');
+                showToast('🎉 Đã tải lên và lưu ảnh cho ' + (targetKey === 'taphoammo' ? 'TAPHOAMMO.INK' : 'MUABANTAIKHOANMMO.COM') + ' (Độc lập, không lưu vào Turso Khotaikhoanso)!', 'success');
               }
             })
             .catch(errUpload => {
@@ -25705,7 +25705,7 @@ function executeCompareSourcesSearch() {
                 applyBrandCustomizations();
               }
               if (typeof showToast === 'function') {
-                showToast('✅ Đã tối ưu và lưu ảnh thương hiệu!', 'success');
+                showToast('✅ Đã lưu ảnh cục bộ cho ' + (targetKey === 'taphoammo' ? 'TAPHOAMMO.INK' : 'MUABANTAIKHOANMMO.COM') + '!', 'success');
               }
             });
           } catch (errCanvas) {
