@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "5.9.2";
+var MMO_CURRENT_CODE_VERSION = "5.9.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 var KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -8754,7 +8754,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         }
       }
       const priceStr = (typeof formatVND === "function") ? formatVND(window.currentSelectedPrice || (p && p.price) || 0) : "";
-      const title = (p && p.name) ? (p.name + (priceStr ? (" - " + priceStr) : "") + " | MUABANTAIKHOANMMO.COM") : "MUABANTAIKHOANMMO.COM - Mua Bán Tài Khoản MMO";
+      const bProfDtl = (typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile() : { brandName: "MUABANTAIKHOANMMO.COM" };
+      const title = (p && p.name) ? (p.name + (priceStr ? (" - " + priceStr) : "") + " | " + bProfDtl.brandName) : (bProfDtl.brandName + " - Mua Bán Tài Khoản MMO");
 
       if (platform === "facebook") {
         window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(shareUrl), "_blank", "width=600,height=500,menubar=no,toolbar=no");
@@ -25114,22 +25115,87 @@ function executeCompareSourcesSearch() {
     // =========================================================================
     // 2. GENERAL SETTINGS & GOOGLE
     // =========================================================================
+    
+    // =========================================================================
+    // MULTI-BRAND SEO ENGINE (v5.9.3) - Tự động nhận diện thương hiệu theo domain
+    // muabantaikhoanmmo.com <---> taphoammo.ink (Dữ liệu chung, Thương hiệu & SEO riêng)
+    // =========================================================================
+    function getCurrentBrandProfile() {
+      var host = '';
+      try { host = (window.location.hostname || '').toLowerCase(); } catch(e) {}
+      var isTapHoaMmo = host.indexOf('taphoammo.ink') !== -1 || host.indexOf('taphoammo') !== -1;
+      
+      if (isTapHoaMmo) {
+        return {
+          brandKey: 'taphoammo',
+          isTapHoaMmo: true,
+          domain: 'taphoammo.ink',
+          fullDomain: 'https://www.taphoammo.ink',
+          brandName: 'TAPHOAMMO.INK',
+          shortName: 'Tạp Hóa MMO',
+          siteName: 'TAPHOAMMO.INK',
+          tagline: 'Chợ Tài Khoản & Dịch Vụ MMO Tự Động 24/7',
+          homeTitle: 'TAPHOAMMO.INK - Chợ Mua Bán Tài Khoản MMO & Dịch Vụ Số Uy Tín',
+          homeDesc: 'Taphoammo.ink là chợ tài nguyên số cho anh em làm MMO, chuyên via, clone, gmail, proxy, tool và nguyên liệu chạy ads. Giao dịch tự động 24/7.',
+          marqueeText: '🎉 Chào mừng bạn đến với TAPHOAMMO.INK - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!',
+          email: 'support@taphoammo.ink',
+          supportEmail: 'support@taphoammo.ink',
+          copyrightText: '© 2026 TAPHOAMMO.INK. All rights reserved.',
+          footerAboutText: 'Nền tảng thương mại điện tử chuyên cung cấp tài khoản và dịch vụ số uy tín hàng đầu. Giao dịch tự động 24/7.',
+          telegramGroup: 'https://t.me/groupmuabantaikhoanmmo',
+          telegramChannel: 'https://t.me/muabantaikhoanmmo',
+          brandLogo: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
+          brandFavicon: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
+          brandOgImage: 'https://iili.io/nFV4Rln.png'
+        };
+      }
+      return {
+        brandKey: 'muabantaikhoanmmo',
+        isTapHoaMmo: false,
+        domain: 'muabantaikhoanmmo.com',
+        fullDomain: 'https://www.muabantaikhoanmmo.com',
+        brandName: 'MUABANTAIKHOANMMO.COM',
+        shortName: 'MUABANTAIKHOANMMO',
+        siteName: 'MUABANTAIKHOANMMO',
+        tagline: 'Sàn Sản Phẩm Số & Dịch Vụ MMO',
+        homeTitle: 'MUABANTAIKHOANMMO.COM - Mua Bán Tài Khoản MMO & Dịch Vụ Mạng Xã Hội Uy Tín',
+        homeDesc: 'Muabantaikhoanmmo là chợ tài nguyên số cho dân MMO, chuyên via, clone, gmail, proxy, tool và nguyên liệu chạy ads. Giao dịch tự động, nhanh gọn, bảo mật cao mỗi ngày 24/7.',
+        marqueeText: '🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!',
+        email: 'muabantaikhoanmmo@gmail.com',
+        supportEmail: 'muabantaikhoanmmo@gmail.com',
+        copyrightText: '© 2026 MUABANTAIKHOANMMO. All rights reserved.',
+        footerAboutText: 'Nền tảng thương mại điện tử chuyên cung cấp tài khoản và dịch vụ số uy tín hàng đầu. Giao dịch tự động 24/7.',
+        telegramGroup: 'https://t.me/groupmuabantaikhoanmmo',
+        telegramChannel: 'https://t.me/muabantaikhoanmmo',
+        brandLogo: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
+        brandFavicon: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
+        brandOgImage: 'https://iili.io/nFV4Rln.png'
+      };
+    }
+    window.getCurrentBrandProfile = getCurrentBrandProfile;
+
     function getGeneralSettings() {
-      const defaultSettings = {
+      const bProf = (typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile() : {
         siteName: "MUABANTAIKHOANMMO",
+        email: "muabantaikhoanmmo@gmail.com",
+        supportEmail: "muabantaikhoanmmo@gmail.com",
+        marqueeText: "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!"
+      };
+      const defaultSettings = {
+        siteName: bProf.siteName || "MUABANTAIKHOANMMO",
         googleClientId: "788131580065-qev157n8l1422785caijnksf16rg1rq3.apps.googleusercontent.com",
         affiliateRate: 10,
         hotline: "0975902076",
-        email: "muabantaikhoanmmo@gmail.com",
-        supportEmail: "muabantaikhoanmmo@gmail.com",
+        email: bProf.email || "muabantaikhoanmmo@gmail.com",
+        supportEmail: bProf.supportEmail || "muabantaikhoanmmo@gmail.com",
         telegram: "https://t.me/groupmuabantaikhoanmmo",
         telegramGroup: "https://t.me/groupmuabantaikhoanmmo",
         telegramChannel: "https://t.me/muabantaikhoanmmo",
-        marqueeText: "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!",
+        marqueeText: bProf.marqueeText || "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!",
         gasUrl: "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm521HnW-Cd3vnmaKqJevPa4HPy4A_LyrQJ54T6BzgBI6Dg/exec",
-        brandLogo: "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png",
-        brandFavicon: "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png",
-        brandOgImage: "https://iili.io/nFV4Rln.png"
+        brandLogo: bProf.brandLogo || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png",
+        brandFavicon: bProf.brandFavicon || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png",
+        brandOgImage: bProf.brandOgImage || "https://iili.io/nFV4Rln.png"
       };
       try {
         let stored = localStorage.getItem("mmo_system_settings");
@@ -25388,12 +25454,31 @@ function executeCompareSourcesSearch() {
         const settings = s || getGeneralSettings();
         if (!settings) return;
 
-        // 1. Tên sàn
-        if (settings.siteName) {
-          const siteNameEl = document.getElementById("headerSiteName");
-          if (siteNameEl) siteNameEl.innerText = settings.siteName;
-          document.title = settings.siteName + " - Sàn Sản Phẩm Số & Dịch Vụ MMO Uy Tín";
-        }
+        // 1. Tên sàn & Tagline thương hiệu theo domain (Multi-Brand SEO)
+        const bProf = (typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile() : null;
+        const effectiveSiteName = (bProf && bProf.isTapHoaMmo) ? bProf.siteName : (settings.siteName || "MUABANTAIKHOANMMO");
+        const effectiveTagline = (bProf && bProf.isTapHoaMmo) ? bProf.tagline : "Sàn Sản Phẩm Số & Dịch Vụ MMO";
+        
+        const siteNameEl = document.getElementById("headerSiteName");
+        if (siteNameEl) siteNameEl.innerText = effectiveSiteName;
+        
+        // Cập nhật tagline dưới logo header
+        const logoTextSpan = document.querySelector(".header-inner .logo-text span, .logo .logo-text span");
+        if (logoTextSpan) logoTextSpan.innerHTML = effectiveTagline;
+        
+        // Cập nhật footer brand info & copyright
+        const footerSiteNameEl = document.querySelector(".footer-col-1 .logo-text div");
+        if (footerSiteNameEl) footerSiteNameEl.innerText = effectiveSiteName;
+        
+        const footerDescEl = document.querySelector(".footer-brand-desc");
+        if (footerDescEl && bProf && bProf.footerAboutText) footerDescEl.innerText = bProf.footerAboutText;
+        
+        const footerCopyEl = document.querySelector(".footer-bottom-bar > div:first-child");
+        if (footerCopyEl && bProf && bProf.copyrightText) footerCopyEl.innerHTML = bProf.copyrightText;
+        
+        const footerHoursDesc = document.querySelector(".hours-line .val");
+        
+        document.title = (bProf && bProf.homeTitle) ? bProf.homeTitle : (effectiveSiteName + " - Sàn Sản Phẩm Số & Dịch Vụ MMO Uy Tín");
 
         // 2. Logo Header, Footer, Drawer & Toàn Bộ Trang (Bảo vệ tuyệt đối fallback logo gốc, chống 404/link rác)
         if (settings.brandLogo && settings.brandLogo.trim() && !settings.brandLogo.includes("img_1790888969056_z00fh5.png") && settings.brandLogo.trim() !== "https://iili.io/nFV4Rln.png") {
@@ -30185,7 +30270,7 @@ function renderProductDetailArticle(p, customDesc) {
     finalArticleHtml = [
       '<div id="dtl-sec-main" style="color:#cbd5e1; line-height:1.75; font-size:0.9rem; margin-bottom:16px;">' + formattedBody + '</div>',
       '<h2 id="dtl-sec-warranty" class="dtl-article-h2">Chính Sách Bảo Hành &amp; Cam Kết Đổi Trả</h2>',
-      '<p class="dtl-article-p">Sàn <strong>MUABANTAIKHOANMMO</strong> áp dụng chính sách <strong>' + esc(warranty) + '</strong> minh bạch và rõ ràng. Mọi vấn đề lỗi đăng nhập lần đầu hoặc lỗi xuất phát từ hệ thống đều được hỗ trợ xử lý 1:1 siêu tốc qua đội ngũ CSKH trực tuyến 24/7 trên kênh Zalo và Telegram.</p>'
+      '<p class="dtl-article-p">Sàn <strong>' + esc((typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile().shortName : "MUABANTAIKHOANMMO") + '</strong> áp dụng chính sách <strong>' + esc(warranty) + '</strong> minh bạch và rõ ràng. Mọi vấn đề lỗi đăng nhập lần đầu hoặc lỗi xuất phát từ hệ thống đều được hỗ trợ xử lý 1:1 siêu tốc qua đội ngũ CSKH trực tuyến 24/7 trên kênh Zalo và Telegram.</p>'
     ].join("");
   } else {
     // =========================================================================
@@ -30230,7 +30315,7 @@ function renderProductDetailArticle(p, customDesc) {
     }
 
     tocItems = [
-      { id: "dtl-sec-1", level: 1, num: "1", title: "Mua " + name + " Giá Rẻ Tại Muabantaikhoanmmo.com" },
+      { id: "dtl-sec-1", level: 1, num: "1", title: "Mua " + name + " Giá Rẻ Tại " + ((typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile().brandName : "Muabantaikhoanmmo.com") },
       { id: "dtl-sec-2", level: 1, num: "2", title: name + " Là Gì?" },
       { id: "dtl-sec-3", level: 1, num: "3", title: "Ưu Điểm Khi Sử Dụng " + name },
       { id: "dtl-sec-3-1", level: 2, num: "3.1", title: adv1 },
@@ -30242,12 +30327,12 @@ function renderProductDetailArticle(p, customDesc) {
     ];
 
     finalArticleHtml = [
-      '<h2 id="dtl-sec-1" class="dtl-article-h2">Mua ' + esc(name) + ' Giá Rẻ Tại Muabantaikhoanmmo.com</h2>',
-      '<p class="dtl-article-p">Nếu bạn đang cần một sản phẩm <strong>' + esc(name) + '</strong> chất lượng cao, dễ sử dụng, kết nối ổn định và an toàn để phục vụ công việc kiếm tiền online (MMO), chạy quảng cáo hoặc sử dụng thường ngày, <strong>' + esc(name) + '</strong> là một lựa chọn rất đáng cân nhắc. Sàn <strong>MUABANTAIKHOANMMO</strong> cung cấp nguồn tài nguyên uy tín, bàn giao hoàn toàn tự động chỉ trong 3 - 5 giây sau khi thanh toán.</p>',
+      '<h2 id="dtl-sec-1" class="dtl-article-h2">Mua ' + esc(name) + ' Giá Rẻ Tại ' + esc((typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile().brandName : "Muabantaikhoanmmo.com") + '</h2>',
+      '<p class="dtl-article-p">Nếu bạn đang cần một sản phẩm <strong>' + esc(name) + '</strong> chất lượng cao, dễ sử dụng, kết nối ổn định và an toàn để phục vụ công việc kiếm tiền online (MMO), chạy quảng cáo hoặc sử dụng thường ngày, <strong>' + esc(name) + '</strong> là một lựa chọn rất đáng cân nhắc. Sàn <strong>' + esc((typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile().shortName : "MUABANTAIKHOANMMO") + '</strong> cung cấp nguồn tài nguyên uy tín, bàn giao hoàn toàn tự động chỉ trong 3 - 5 giây sau khi thanh toán.</p>',
       '<h2 id="dtl-sec-2" class="dtl-article-h2">' + esc(name) + ' Là Gì?</h2>',
       '<p class="dtl-article-p"><strong>' + esc(name) + '</strong> là giải pháp thuộc danh mục <strong>' + esc(cat) + '</strong> được đông đảo cộng đồng kiếm tiền online, anh em media buyer và các đội nhóm chuyên nghiệp tin dùng. Sản phẩm giúp tối ưu hóa hiệu suất vận hành công việc, bảo vệ an toàn thông tin danh tính số và tiết kiệm chi phí tối đa.</p>',
       '<h2 id="dtl-sec-3" class="dtl-article-h2">Ưu Điểm Khi Sử Dụng ' + esc(name) + '</h2>',
-      '<p class="dtl-article-p">Khi trải nghiệm và sử dụng <strong>' + esc(name) + '</strong> tại sàn <strong>Muabantaikhoanmmo.com</strong>, bạn hoàn toàn an tâm với những thế mạnh vượt trội:</p>',
+      '<p class="dtl-article-p">Khi trải nghiệm và sử dụng <strong>' + esc(name) + '</strong> tại sàn <strong>' + esc((typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile().brandName : "Muabantaikhoanmmo.com") + '</strong>, bạn hoàn toàn an tâm với những thế mạnh vượt trội:</p>',
       '<h3 id="dtl-sec-3-1" class="dtl-article-h3">3.1 ' + esc(adv1) + '</h3>',
       '<p class="dtl-article-p">Hệ thống xử lý đơn hàng tự động 24/7 không gián đoạn. Ngay khi thanh toán thành công, bạn sẽ nhận được thông tin bàn giao đầy đủ tại màn hình và tab Lịch Sử Đơn Hàng.</p>',
       '<h3 id="dtl-sec-3-2" class="dtl-article-h3">3.2 ' + esc(adv2) + '</h3>',
@@ -32027,7 +32112,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
         window.history.replaceState(null, "", window.location.origin + cleanShortPath);
         if (b.title) {
-          try { document.title = b.title + " | MUABANTAIKHOANMMO.COM"; } catch(e) {}
+          try { const bP = (typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile() : { brandName: "MUABANTAIKHOANMMO.COM" }; document.title = b.title + " | " + bP.brandName; } catch(e) {}
         }
       } catch(e) {}
 
@@ -39136,7 +39221,7 @@ function initMMOApplication() {
                   "sku": curP.id,
                   "mpn": curP.id,
                   "identifier_exists": "false",
-                  "brand": { "@type": "Brand", "name": "MUABANTAIKHOANMMO" },
+                  "brand": { "@type": "Brand", "name": ((typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile().shortName : "MUABANTAIKHOANMMO") },
                   "category": curP.category || "Tài Khoản MMO",
                   "offers": {
                     "@type": "Offer",
@@ -39147,7 +39232,7 @@ function initMMOApplication() {
                     "validFrom": "2026-01-01",
                     "availability": (curP.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
                     "itemCondition": "https://schema.org/NewCondition",
-                    "seller": { "@type": "Organization", "name": "MUABANTAIKHOANMMO.COM" },
+                    "seller": { "@type": "Organization", "name": ((typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile().brandName : "MUABANTAIKHOANMMO.COM") },
                     "shippingDetails": prodShippingDetails,
                     "hasMerchantReturnPolicy": prodReturnPolicy
                   },
@@ -39204,7 +39289,7 @@ function initMMOApplication() {
               "@type": "WebSite",
               "@id": siteUrl + "#website",
               "url": siteUrl,
-              "name": "MUABANTAIKHOANMMO.COM",
+              "name": ((typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile().brandName : "MUABANTAIKHOANMMO.COM"),
               "description": "He thong mua ban tai khoan mang xa hoi, cong cu MMO, proxy tu dong 24/7 uy tin so 1 Viet Nam",
               "publisher": { "@id": siteUrl + "#organization" }
             },
@@ -39218,7 +39303,7 @@ function initMMOApplication() {
             {
               "@type": "ItemList",
               "@id": siteUrl + "#productlist",
-              "name": "Danh Sach San Pham Tai Khoan MMO - MUABANTAIKHOANMMO.COM",
+              "name": "Danh Sach San Pham Tai Khoan MMO - " + ((typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile().brandName : "MUABANTAIKHOANMMO.COM"),
               "numberOfItems": visibleProds.length,
               "itemListElement": visibleProds.map((p, idx) => {
                 const prodUrl = baseUrl + "/?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
