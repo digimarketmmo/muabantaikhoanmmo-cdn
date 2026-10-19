@@ -12672,7 +12672,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       let prodObj = (typeof p === "object") ? p : ((typeof findShopProduct === "function") ? findShopProduct(pId) : null);
       const searchId = pId || (prodObj && prodObj.id ? String(prodObj.id).trim() : "");
 
-      // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: BẢNG ĐỒ ẢNH SẢN PHẨM CHUẨN XÁC KNOWN_PROD_IMAGE_MAP (CDN jsDelivr chính thức)
+      // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: Ảnh Data URI (Base64) trực tiếp từ database Turso (khôi phục từ bản backup)
+      const existingImg = prodObj ? (prodObj.image || prodObj.image_url || prodObj.imageUrl || "") : ((typeof p === "string" && (p.startsWith("http") || p.startsWith("data:") || p.startsWith("/"))) ? p : "");
+      if (typeof existingImg === "string" && existingImg.trim() !== "") {
+        let trimmed = existingImg.trim();
+        if (trimmed.startsWith("data:image/") || (trimmed.startsWith("data:") && trimmed.length > 50)) {
+          return trimmed;
+        }
+      }
+
+      // 2. [ƯU TIÊN #2]: BẢNG ĐỒ ẢNH SẢN PHẨM CHUẨN XÁC KNOWN_PROD_IMAGE_MAP (CDN jsDelivr chính thức)
       if (searchId && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
         if (KNOWN_PROD_IMAGE_MAP[searchId]) {
           try { localStorage.removeItem("mmo_custom_img_" + searchId); } catch(e) {}
@@ -12684,13 +12693,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         }
       }
 
-      // 2. [ƯU TIÊN #2]: Ảnh Data URI (Base64) người dùng vừa tải lên cục bộ hoặc link CDN tĩnh hợp lệ
-      const existingImg = prodObj ? (prodObj.image || prodObj.image_url || prodObj.imageUrl || "") : ((typeof p === "string" && (p.startsWith("http") || p.startsWith("data:") || p.startsWith("/"))) ? p : "");
+      // 3. [ƯU TIÊN #3]: Link CDN tĩnh hoặc URL hợp lệ từ đối tượng sản phẩm
       if (typeof existingImg === "string" && existingImg.trim() !== "") {
         let trimmed = existingImg.trim();
-        if (trimmed.startsWith("data:image/") || (trimmed.startsWith("data:") && trimmed.length > 50)) {
-          return trimmed;
-        }
         if ((trimmed.startsWith("http://") || trimmed.startsWith("https://")) &&
             !trimmed.includes("/api/images/") && !trimmed.includes("/api/products/") &&
             !trimmed.includes("default_product.png") && !trimmed.includes("khotaikhoanso") && !trimmed.includes("placeholder")) {
