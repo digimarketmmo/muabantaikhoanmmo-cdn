@@ -30344,6 +30344,185 @@ function admEditorToggleCodeView() {
 window.admEditorToggleCodeView = admEditorToggleCodeView;
 
 // =========================================================================
+// AI SEO PRODUCT DESCRIPTION WRITER ENGINE (v5.9.9)
+// =========================================================================
+function openAdmAiWriterModal() {
+  const modal = document.getElementById("admAiWriterModal");
+  if (!modal) return;
+
+  const prodNameInput = document.getElementById("admProdName");
+  const prodCatSelect = document.getElementById("admProdCategory");
+  const aiProdName = document.getElementById("aiWriterProdName");
+  const aiKeywords = document.getElementById("aiWriterKeywords");
+  const aiCategory = document.getElementById("aiWriterCategory");
+  const aiStatusBox = document.getElementById("aiWriterStatusBox");
+
+  const currentName = prodNameInput ? prodNameInput.value.trim() : "";
+  const currentCat = prodCatSelect ? prodCatSelect.value.trim() : "Tài Khoản MMO";
+
+  if (aiProdName) aiProdName.value = currentName || "Tài Khoản MMO Chất Lượng Cao";
+  if (aiCategory) aiCategory.value = currentCat;
+
+  // Auto suggest SEO keywords from name
+  if (aiKeywords) {
+    let kw = currentName;
+    if (currentName) {
+      kw = currentName.toLowerCase()
+        .replace(/[-\/]/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+    aiKeywords.value = kw || "mua tài khoản mmo uy tín, shop tài khoản giá rẻ";
+  }
+
+  if (aiStatusBox) {
+    aiStatusBox.style.display = "none";
+    aiStatusBox.innerHTML = "";
+  }
+
+  const btnRun = document.getElementById("btnRunAiWriter");
+  if (btnRun) {
+    btnRun.disabled = false;
+    btnRun.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> 🚀 BẮT ĐẦU VIẾT BÀI BẰNG AI';
+  }
+
+  modal.style.display = "flex";
+}
+window.openAdmAiWriterModal = openAdmAiWriterModal;
+
+function closeAdmAiWriterModal() {
+  const modal = document.getElementById("admAiWriterModal");
+  if (modal) modal.style.display = "none";
+}
+window.closeAdmAiWriterModal = closeAdmAiWriterModal;
+
+async function executeAiWriter() {
+  const aiProdName = document.getElementById("aiWriterProdName");
+  const aiKeywords = document.getElementById("aiWriterKeywords");
+  const aiCategory = document.getElementById("aiWriterCategory");
+  const aiLength = document.getElementById("aiWriterLength");
+  const aiTone = document.getElementById("aiWriterTone");
+  const aiGeminiKey = document.getElementById("aiWriterGeminiKey");
+  const aiStatusBox = document.getElementById("aiWriterStatusBox");
+  const btnRun = document.getElementById("btnRunAiWriter");
+
+  const prodName = aiProdName ? aiProdName.value.trim() : "";
+  if (!prodName) {
+    alert("Vui lòng nhập tên sản phẩm để AI viết bài chuẩn SEO!");
+    if (aiProdName) aiProdName.focus();
+    return;
+  }
+
+  const keywords = aiKeywords ? aiKeywords.value.trim() : prodName;
+  const category = aiCategory ? aiCategory.value.trim() : "Tài Khoản MMO";
+  const targetLength = aiLength ? aiLength.value : "standard";
+  const tone = aiTone ? aiTone.value : "mmo_pro";
+  const geminiApiKey = aiGeminiKey ? aiGeminiKey.value.trim() : "";
+
+  // Show status loading
+  if (btnRun) {
+    btnRun.disabled = true;
+    btnRun.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang Viết Bài Chuẩn SEO...';
+  }
+
+  if (aiStatusBox) {
+    aiStatusBox.style.display = "block";
+    aiStatusBox.innerHTML = `
+      <div style="background:rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.4); border-radius:8px; padding:12px; margin-top:12px; text-align:left;">
+        <div style="display:flex; align-items:center; gap:8px; color:#c084fc; font-weight:700; font-size:0.88rem; margin-bottom:6px;">
+          <i class="fa-solid fa-spinner fa-spin"></i> <span id="aiStepText">Đang phân tích từ khóa và cấu trúc bài viết...</span>
+        </div>
+        <div style="font-size:0.75rem; color:#94a3b8;" id="aiDetailText">Hệ thống đang khởi tạo dàn bài H2, H3, FAQ và nội dung chuyên sâu MMO (500 - 1000 từ)...</div>
+      </div>
+    `;
+  }
+
+  // Dynamic progress text
+  let stepTimer1 = setTimeout(() => {
+    const t = document.getElementById("aiStepText");
+    const d = document.getElementById("aiDetailText");
+    if (t) t.textContent = "📐 Đang tối ưu thẻ H2, H3, bảng thông số & hướng dẫn chống checkpoint...";
+    if (d) d.textContent = "Đang tích hợp từ khóa LSI và mật độ chuẩn On-Page Google...";
+  }, 1200);
+
+  let stepTimer2 = setTimeout(() => {
+    const t = document.getElementById("aiStepText");
+    const d = document.getElementById("aiDetailText");
+    if (t) t.textContent = "✍️ Đang hoàn thiện các mục FAQ & cam kết bảo hành 1 đổi 1...";
+    if (d) d.textContent = "Đang kiểm tra độ dài bài viết đạt chuẩn 500 - 1000 từ...";
+  }, 2500);
+
+  try {
+    const adminSec = localStorage.getItem("mmo_admin_secret") || "";
+    const res = await fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/ai-write-description", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-admin-secret": adminSec
+      },
+      body: JSON.stringify({
+        productName: prodName,
+        category: category,
+        keywords: keywords,
+        targetLength: targetLength,
+        tone: tone,
+        geminiApiKey: geminiApiKey
+      })
+    });
+
+    clearTimeout(stepTimer1);
+    clearTimeout(stepTimer2);
+
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.message || "Lỗi không xác định từ máy chủ AI");
+    }
+
+    // Success! Put HTML directly into visual editor and raw textarea
+    const visual = document.getElementById("admProdDescVisual");
+    const raw = document.getElementById("admProdDesc");
+
+    if (visual) visual.innerHTML = data.html;
+    if (raw) raw.value = data.html;
+
+    if (typeof syncAdmDescFromVisual === "function") {
+      syncAdmDescFromVisual();
+    }
+
+    closeAdmAiWriterModal();
+
+    if (typeof showToast === "function") {
+      showToast("✨ AI đã viết xong bài mô tả chuẩn SEO (" + (data.wordCount || "1000") + " từ)! Hãy kiểm tra và bấm 'LƯU SẢN PHẨM'.", "success");
+    } else {
+      alert("✨ AI đã tạo bài viết chuẩn SEO thành công (" + (data.wordCount || "1000") + " từ)!\n\nNội dung đã được điền vào trình soạn thảo bài viết. Bạn có thể kiểm tra và bấm 'LƯU SẢN PHẨM'.");
+    }
+
+    // Scroll visual editor into view
+    if (visual) {
+      visual.scrollIntoView({ behavior: "smooth", block: "center" });
+      visual.focus();
+    }
+  } catch (err) {
+    clearTimeout(stepTimer1);
+    clearTimeout(stepTimer2);
+    alert("Không thể viết bài bằng AI: " + (err.message || String(err)));
+    if (aiStatusBox) {
+      aiStatusBox.innerHTML = `
+        <div style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.4); border-radius:8px; padding:10px; margin-top:12px; color:#f87171; font-size:0.8rem;">
+          <i class="fa-solid fa-triangle-exclamation"></i> Lỗi: ${err.message || String(err)}
+        </div>
+      `;
+    }
+  } finally {
+    if (btnRun) {
+      btnRun.disabled = false;
+      btnRun.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> 🚀 BẮT ĐẦU VIẾT BÀI BẰNG AI';
+    }
+  }
+}
+window.executeAiWriter = executeAiWriter;
+
+// =========================================================================
 // TABLE OF CONTENTS (TOC) & SMOOTH SCROLL ENGINE (v5.8.9)
 // =========================================================================
 function toggleDetailToc() {
