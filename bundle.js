@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-const MMO_CURRENT_CODE_VERSION = "5.8.6";
+const MMO_CURRENT_CODE_VERSION = "5.8.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 const KHOTAIKHOANSO_FOREIGN_EMAILS = [
@@ -5775,7 +5775,7 @@ const API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCS
       }
       if (admImgPrev) admImgPrev.src = effectiveImg || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
       if (document.getElementById("admProdWarranty")) document.getElementById("admProdWarranty").value = p.warranty || "Bảo Hành 1 Đổi 1";
-      const effectiveDesc = (p.description !== undefined && p.description !== null) ? p.description : "";
+      const effectiveDesc = (typeof cleanAndNormalizeHtml === "function") ? cleanAndNormalizeHtml(p.description || "") : (p.description || "");
       const admRawDesc = document.getElementById("admProdDesc");
       const admVisDesc = document.getElementById("admProdDescVisual");
       if (admRawDesc) admRawDesc.value = effectiveDesc;
@@ -30118,8 +30118,33 @@ function executeCompareSourcesSearch() {
     // =========================================================================
     
 // =========================================================================
-// RICH TEXT WYSIWYG EDITOR FOR PRODUCT DESCRIPTION (ADMIN) (v5.8.6)
+// HTML CLEANER & ENTITY DECODER FOR PRODUCT DESCRIPTIONS (v5.8.7)
 // =========================================================================
+function cleanAndNormalizeHtml(raw) {
+  if (!raw) return "";
+  let str = String(raw).trim();
+  // 1. Decode HTML entities if text has &lt;p or &lt;h2 or &lt;div or &amp;lt;
+  if (/&(?:amp;)?lt;(?:p|h[1-6]|div|span|b|strong|i|em|ul|ol|li|br|table|img|a)\b/i.test(str)) {
+    str = str
+      .replace(/&(?:amp;)?lt;/gi, "<")
+      .replace(/&(?:amp;)?gt;/gi, ">")
+      .replace(/&(?:amp;)?quot;/gi, '"')
+      .replace(/&(?:amp;)?apos;/gi, "'")
+      .replace(/&amp;amp;/gi, "&");
+  }
+  // 2. If it is still double escaped (e.g. &lt;p)
+  if (/&lt;(?:p|h[1-6]|div|span|b|strong|i|em|ul|ol|li|br|table|img|a)\b/i.test(str)) {
+    str = str
+      .replace(/&lt;/gi, "<")
+      .replace(/&gt;/gi, ">")
+      .replace(/&quot;/gi, '"')
+      .replace(/&apos;/gi, "'")
+      .replace(/&amp;/gi, "&");
+  }
+  return str;
+}
+window.cleanAndNormalizeHtml = cleanAndNormalizeHtml;
+
 function syncAdmDescFromVisual() {
   const visual = document.getElementById("admProdDescVisual");
   const raw = document.getElementById("admProdDesc");
@@ -30133,7 +30158,7 @@ function syncAdmDescFromRaw() {
   const visual = document.getElementById("admProdDescVisual");
   const raw = document.getElementById("admProdDesc");
   if (visual && raw) {
-    visual.innerHTML = raw.value;
+    visual.innerHTML = cleanAndNormalizeHtml(raw.value);
   }
 }
 window.syncAdmDescFromRaw = syncAdmDescFromRaw;
@@ -30213,7 +30238,7 @@ function admEditorToggleCodeView() {
   const isCodeMode = (raw.style.display !== "none");
   if (isCodeMode) {
     // Switch to Visual mode
-    visual.innerHTML = raw.value;
+    visual.innerHTML = cleanAndNormalizeHtml(raw.value);
     raw.style.display = "none";
     visual.style.display = "block";
     if (toolbar) toolbar.style.opacity = "1";
@@ -30232,7 +30257,7 @@ function admEditorToggleCodeView() {
 window.admEditorToggleCodeView = admEditorToggleCodeView;
 
 // =========================================================================
-// TABLE OF CONTENTS (TOC) & SMOOTH SCROLL ENGINE (v5.8.6)
+// TABLE OF CONTENTS (TOC) & SMOOTH SCROLL ENGINE (v5.8.7)
 // =========================================================================
 function toggleDetailToc() {
   const box = document.getElementById("dtlTocBox");
@@ -30264,11 +30289,11 @@ function toggleDetailDescExpand() {
 }
 window.toggleDetailDescExpand = toggleDetailDescExpand;
 
-// [SỬA LỖI TRIỆT ĐỂ: BẤM VÀO MỤC LỤC TỰ ĐỘNG MỞ RỘNG VÀ CUỘN MƯỢT XUỐNG BÀI VIẾT]
+// [SỬA LỖI CUỘN MƯỢT XUỐNG BÀI VIẾT]
 function scrollToDetailSection(sectionId) {
   if (!sectionId) return;
 
-  // 1. TỰ ĐỘNG MỞ RỘNG BÀI VIẾT NẾU ĐANG BỊ THU GỌN (BẮT BUỘC ĐỂ KHÔNG BỊ OVERFLOW:HIDDEN CHẶN)
+  // 1. TỰ ĐỘNG MỞ RỘNG BÀI VIẾT NẾU ĐANG BỊ THU GỌN
   const wrap = document.getElementById("dtlDescWrapper");
   const txt = document.getElementById("dtlDescToggleText");
   const icon = document.getElementById("dtlDescToggleIcon");
@@ -30305,24 +30330,27 @@ function renderProductDetailArticle(p, customDesc) {
   const name = (p.name || "Sản Phẩm MMO").trim();
   const cat = (p.category || "Tài nguyên MMO").trim();
   const warranty = (p.warranty || "Bảo Hành 1 Đổi 1").trim();
-  const custom = (typeof customDesc === "string" ? customDesc : (p.description || "")).trim();
+  let custom = cleanAndNormalizeHtml(typeof customDesc === "string" ? customDesc : (p.description || ""));
   const esc = (typeof escapeHtml === "function") ? escapeHtml : function(str) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   };
 
   // KIỂM TRA XEM MÔ TẢ TÙY CHỈNH CÓ CHỨA THẺ TIÊU ĐỀ H2 HOẶC H3 KHÔNG
-  const hasCustomHeadings = /<h[23][^>]*>/i.test(custom);
+  const hasCustomHeadings = /<h[23]\b[^>]*>/i.test(custom);
   let finalArticleHtml = "";
   let tocItems = [];
 
   if (hasCustomHeadings) {
-    // A. NẾU ADMIN ĐÃ DÙNG BỘ CHỈNH SỬA TẠO CÁC THẺ H2, H3:
-    // TỰ ĐỘNG BÓC TÁCH TIÊU ĐỀ ĐỂ TẠO MỤC LỤC ĐỘNG CHUẨN XÁC 100%
+    // =========================================================================
+    // TRƯỜNG HỢP A: BÀI VIẾT ĐÃ CÓ TIÊU ĐỀ H2/H3 (NHƯ BÀI VIẾT PAYPAL BẠN COPY VÀO)
+    // 👉 HIỂN THỊ TRỰC TIẾP 100% NGUYÊN BẢN BÀI VIẾT CỦA BẠN DƯỚI DẠNG HTML ĐẸP
+    // 👉 TUYỆT ĐỐI KHÔNG CHÈN HỘP "THÔNG TIN CHI TIẾT SẢN PHẨM" VÀ KHÔNG CHÈN MẪU DUMMY
+    // =========================================================================
     let hCount = 0;
     let h2Idx = 0;
     let h3Idx = 0;
 
-    finalArticleHtml = custom.replace(/<h([23])([^>]*)>(.*?)<\/h\1>/gi, function(match, level, attrs, innerText) {
+    finalArticleHtml = custom.replace(/<h([23])\b([^>]*)>(.*?)<\/h\1>/gi, function(match, level, attrs, innerText) {
       hCount++;
       const secId = "dtl-custom-sec-" + hCount;
       const cleanText = innerText.replace(/<[^>]*>/g, "").trim();
@@ -30343,9 +30371,25 @@ function renderProductDetailArticle(p, customDesc) {
       });
       return '<h' + level + ' id="' + secId + '" class="dtl-article-h' + level + '" ' + attrs + '>' + innerText + '</h' + level + '>';
     });
+  } else if (custom && custom.length > 50) {
+    // =========================================================================
+    // TRƯỜNG HỢP B: BÀI VIẾT LÀ VĂN BẢN THƯỜNG / ĐOẠN VĂN
+    // 👉 HIỂN THỊ TRỰC TIẾP BÀI VIẾT, KHÔNG CHÈN HỘP KHUNG THÔ RÁP
+    // =========================================================================
+    const formattedBody = (/<[a-z][\s\S]*>/i.test(custom)) ? custom : custom.replace(/\n/g, "<br>");
+    tocItems = [
+      { id: "dtl-sec-main", level: 1, num: "1", title: name },
+      { id: "dtl-sec-warranty", level: 1, num: "2", title: "Chính Sách Bảo Hành & Cam Kết Đổi Trả" }
+    ];
+    finalArticleHtml = [
+      '<div id="dtl-sec-main" style="color:#cbd5e1; line-height:1.75; font-size:0.9rem; margin-bottom:16px;">' + formattedBody + '</div>',
+      '<h2 id="dtl-sec-warranty" class="dtl-article-h2">Chính Sách Bảo Hành &amp; Cam Kết Đổi Trả</h2>',
+      '<p class="dtl-article-p">Sàn <strong>MUABANTAIKHOANMMO</strong> áp dụng chính sách <strong>' + esc(warranty) + '</strong> minh bạch và rõ ràng. Mọi vấn đề lỗi đăng nhập lần đầu hoặc lỗi xuất phát từ hệ thống đều được hỗ trợ xử lý 1:1 siêu tốc qua đội ngũ CSKH trực tuyến 24/7 trên kênh Zalo và Telegram.</p>'
+    ].join("");
   } else {
-    // B. NẾU CHƯA CÓ THẺ H2/H3 (VĂN BẢN THƯỜNG HOẶC ĐỂ TRỐNG):
-    // TỰ ĐỘNG TẠO BÀI VIẾT CẤU TRÚC CHUẨN SEO VỚI 5 PHẦN NHƯ HÌNH MẪU
+    // =========================================================================
+    // TRƯỜNG HỢP C: SẢN PHẨM CHƯA CÓ BÀI VIẾT (ĐỂ TRỐNG): TỰ ĐỘNG SINH 5 PHẦN CHUẨN SEO
+    // =========================================================================
     let adv1 = "Hệ thống kích hoạt và bàn giao tự động 24/7";
     let adv2 = "Tài nguyên sạch 100%, bảo mật xài riêng";
     let adv3 = "Tương thích đa thiết bị, tốc độ ổn định";
@@ -30396,20 +30440,9 @@ function renderProductDetailArticle(p, customDesc) {
       { id: "dtl-sec-5", level: 1, num: "5", title: "Chính Sách Bảo Hành & Cam Kết Đổi Trả" }
     ];
 
-    let customBoxHtml = "";
-    if (custom) {
-      // Nếu có sẵn mô tả tùy chỉnh, hiển thị đẹp mắt có phân đoạn
-      const formattedCustom = (/<[a-z][sS]*>/i.test(custom)) ? custom : esc(custom).replace(/\n/g, "<br>");
-      customBoxHtml = '<div style="background:#070d1e; border:1px solid #1e293b; border-left:3px solid #38bdf8; padding:12px 14px; margin-bottom:14px; border-radius:6px; font-size:0.86rem; color:#cbd5e1; line-height:1.65;">' +
-        '<div style="color:#38bdf8; font-weight:700; margin-bottom:6px; font-size:0.8rem; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-circle-info"></i> THÔNG TIN CHI TIẾT SẢN PHẨM:</div>' +
-        formattedCustom +
-      '</div>';
-    }
-
     finalArticleHtml = [
       '<h2 id="dtl-sec-1" class="dtl-article-h2">Mua ' + esc(name) + ' Giá Rẻ Tại Muabantaikhoanmmo.com</h2>',
       '<p class="dtl-article-p">Nếu bạn đang cần một sản phẩm <strong>' + esc(name) + '</strong> chất lượng cao, dễ sử dụng, kết nối ổn định và an toàn để phục vụ công việc kiếm tiền online (MMO), chạy quảng cáo hoặc sử dụng thường ngày, <strong>' + esc(name) + '</strong> là một lựa chọn rất đáng cân nhắc. Sàn <strong>MUABANTAIKHOANMMO</strong> cung cấp nguồn tài nguyên uy tín, bàn giao hoàn toàn tự động chỉ trong 3 - 5 giây sau khi thanh toán.</p>',
-      customBoxHtml,
       '<h2 id="dtl-sec-2" class="dtl-article-h2">' + esc(name) + ' Là Gì?</h2>',
       '<p class="dtl-article-p"><strong>' + esc(name) + '</strong> là giải pháp thuộc danh mục <strong>' + esc(cat) + '</strong> được đông đảo cộng đồng kiếm tiền online, anh em media buyer và các đội nhóm chuyên nghiệp tin dùng. Sản phẩm giúp tối ưu hóa hiệu suất vận hành công việc, bảo vệ an toàn thông tin danh tính số và tiết kiệm chi phí tối đa.</p>',
       '<h2 id="dtl-sec-3" class="dtl-article-h2">Ưu Điểm Khi Sử Dụng ' + esc(name) + '</h2>',
@@ -30445,7 +30478,7 @@ function renderProductDetailArticle(p, customDesc) {
     }).join("");
   }
 
-  // BẢO ĐẢM KHỐI MỤC LỤC LUÔN LUÔN THU GỌN MẶC ĐỊNH (KHI BẤM MỚI SỔ XUỐNG)
+  // BẢO ĐẢM KHỐI MỤC LỤC LUÔN LUÔN THU GỌN MẶC ĐỊNH
   const tocBox = document.getElementById("dtlTocBox");
   if (tocBox) {
     tocBox.classList.add("collapsed");
@@ -48906,6 +48939,25 @@ if (typeof window !== "undefined") {
     });
     seoImgObserver.observe(document.documentElement, { childList: true, subtree: true });
   } catch(e) {}
+}
+
+
+// TỰ ĐỘNG CHUYỂN MÃ HTML DÁN VÀO EDITOR THÀNH NỘI DUNG TRỰC QUAN CHUẨN XÁC
+if (typeof window !== "undefined") {
+  document.addEventListener("DOMContentLoaded", function() {
+    const visual = document.getElementById("admProdDescVisual");
+    if (visual) {
+      visual.addEventListener("paste", function(e) {
+        const text = (e.clipboardData || window.clipboardData)?.getData("text") || "";
+        if (/<(?:p|h[1-6]|div|span|b|strong|i|em|ul|ol|li|br|table|img|a)\b/i.test(text) || /&lt;(?:p|h[1-6]|div)\b/i.test(text)) {
+          e.preventDefault();
+          const cleanHtml = (typeof cleanAndNormalizeHtml === "function") ? cleanAndNormalizeHtml(text) : text;
+          document.execCommand("insertHTML", false, cleanHtml);
+          if (typeof syncAdmDescFromVisual === "function") syncAdmDescFromVisual();
+        }
+      });
+    }
+  });
 }
 
 // =========================================================================
