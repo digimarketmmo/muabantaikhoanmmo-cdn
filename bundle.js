@@ -30601,39 +30601,55 @@ function renderProductDetailArticle(p, customDesc) {
     return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   };
 
-  // KIỂM TRA XEM MÔ TẢ TÙY CHỈNH CÓ CHỨA THẺ TIÊU ĐỀ H2 HOẶC H3 KHÔNG
-  const hasCustomHeadings = /<h[23]\b[^>]*>/i.test(custom);
+  // KIỂM TRA XEM MÔ TẢ TÙY CHỈNH CÓ CHỨA THẺ TIÊU ĐỀ H2, H3 HOẶC H4 KHÔNG
+  const hasCustomHeadings = /<h[2-4]\b[^>]*>/i.test(custom);
   let finalArticleHtml = "";
   let tocItems = [];
 
   if (hasCustomHeadings) {
     // =========================================================================
-    // TRƯỜNG HỢP A: BÀI VIẾT ĐÃ CÓ TIÊU ĐỀ H2/H3 (NHƯ BÀI VIẾT PAYPAL BẠN COPY VÀO)
-    // 👉 HIỂN THỊ TRỰC TIẾP 100% NGUYÊN BẢN BÀI VIẾT CỦA BẠN DƯỚI DẠNG HTML ĐẸP
-    // 👉 TUYỆT ĐỐI KHÔNG CHÈN HỘP "THÔNG TIN CHI TIẾT SẢN PHẨM" VÀ KHÔNG CHÈN MẪU DUMMY
+    // TRƯỜNG HỢP A: BÀI VIẾT ĐÃ CÓ TIÊU ĐỀ H2, H3, H4 (CHUẨN SEO / AI WRITER)
+    // 👉 BẮT CHÍNH XÁC MỌI THẺ H2, H3, H4 KỂ CẢ KHI XUỐNG DÒNG (MULTILINE [\s\S]*?)
+    // 👉 HIỂN THỊ ĐẦY ĐỦ 100% CÁC MỤC TRONG "NỘI DUNG CHÍNH" (TOC)
     // =========================================================================
     let hCount = 0;
     let h2Idx = 0;
     let h3Idx = 0;
+    let h4Idx = 0;
 
-    finalArticleHtml = custom.replace(/<h([23])\b([^>]*)>(.*?)<\/h\1>/gi, function(match, level, attrs, innerText) {
+    finalArticleHtml = custom.replace(/<h([2-4])\b([^>]*)>([\s\S]*?)<\/h\1>/gi, function(match, level, attrs, innerText) {
       hCount++;
       const secId = "dtl-custom-sec-" + hCount;
-      const cleanText = innerText.replace(/<[^>]*>/g, "").trim();
+      const cleanText = innerText.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
       let numStr = "";
       if (level === "2") {
         h2Idx++;
         h3Idx = 0;
+        h4Idx = 0;
         numStr = String(h2Idx);
-      } else {
+      } else if (level === "3") {
         h3Idx++;
+        h4Idx = 0;
         numStr = (h2Idx || 1) + "." + h3Idx;
+      } else { // level === "4"
+        h4Idx++;
+        numStr = (h2Idx || 1) + "." + (h3Idx || 1) + "." + h4Idx;
       }
+
+      // Xử lý thông minh nếu tiêu đề gốc đã có sẵn số thứ tự (ví dụ: "1. Tiêu đề...", "2. Ưu điểm...")
+      let displayTitle = cleanText;
+      let displayNum = numStr;
+      const startsWithNumber = /^(\d+(\.\d+)*)\s*[\.\-:]?\s*/.exec(cleanText);
+      if (startsWithNumber) {
+        displayNum = startsWithNumber[1];
+        displayTitle = cleanText.substring(startsWithNumber[0].length).trim();
+      }
+
       tocItems.push({
         id: secId,
-        level: level === "2" ? 1 : 2,
-        num: numStr,
-        title: cleanText || (level === "2" ? "Mục " + numStr : "Chi tiết " + numStr)
+        level: level === "2" ? 1 : (level === "3" ? 2 : 3),
+        num: displayNum,
+        title: displayTitle || (level === "2" ? "Mục " + numStr : (level === "3" ? "Chi tiết " + numStr : "Mục con " + numStr))
       });
       return '<h' + level + ' id="' + secId + '" class="dtl-article-h' + level + '" ' + attrs + '>' + innerText + '</h' + level + '>';
     });
@@ -30735,19 +30751,24 @@ function renderProductDetailArticle(p, customDesc) {
 
   // 1. RENDER MỤC LỤC TỰ ĐỘNG (TOC)
   const tocNav = document.getElementById("dtlTocNav");
+  const tocBox = document.getElementById("dtlTocBox");
   if (tocNav) {
     tocNav.innerHTML = tocItems.map(item => {
-      const levelClass = item.level === 1 ? "dtl-toc-level-1" : "dtl-toc-level-2";
+      const levelClass = item.level === 1 ? "dtl-toc-level-1" : (item.level === 2 ? "dtl-toc-level-2" : "dtl-toc-level-3");
       return '<a class="dtl-toc-item ' + levelClass + '" onclick="scrollToDetailSection(\'' + item.id + '\')">' +
         '<span class="dtl-toc-num">' + item.num + '</span> ' + esc(item.title) +
       '</a>';
     }).join("");
   }
 
-  // BẢO ĐẢM KHỐI MỤC LỤC LUÔN LUÔN THU GỌN MẶC ĐỊNH
-  const tocBox = document.getElementById("dtlTocBox");
+  // TỰ ĐỘNG HIỂN THỊ HOẶC ẨN KHỐI MỤC LỤC (MẶC ĐỊNH THU GỌN GỌN GÀNG)
   if (tocBox) {
-    tocBox.classList.add("collapsed");
+    if (tocItems.length === 0) {
+      tocBox.style.display = "none";
+    } else {
+      tocBox.style.display = "block";
+      tocBox.classList.add("collapsed");
+    }
   }
 
   // 2. RENDER NỘI DUNG BÀI VIẾT VÀO #dtlFullDesc
