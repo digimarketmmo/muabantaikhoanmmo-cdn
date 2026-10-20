@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "6.1.3";
+var MMO_CURRENT_CODE_VERSION = "6.1.8";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
@@ -35,15 +35,54 @@ window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
         localStorage.removeItem("mmo_custom_img_" + pid);
       }
     }
-    for (let i = localStorage.length - 1; i >= 0; i--) {
-      const k = localStorage.key(i);
-      if (k && k.startsWith("mmo_custom_img_")) {
-        const val = localStorage.getItem(k) || "";
-        if (val.includes("tiktok_brazil.png") || val.includes("gmail_24h.png") || val.includes("outlook_trusted") || val.includes("blog_gmail") || val.includes("facebook_via") || val.includes("khotaikhoanso")) {
-          localStorage.removeItem(k);
-        }
+    // [SELF-HEALING PROD_MU2ASBNSJT & PROD_MU29RGEBH0]: Tự động cập nhật ảnh mới chuẩn xác cho 2 sản phẩm này
+    try {
+      const fbViaPoster = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Facebook_Via_Viet_Acc_Spam.webp";
+      const fbPagePoster = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_co_2019.webp";
+
+      const curViaImg = localStorage.getItem("mmo_custom_img_PROD_MU2ASBNSJT");
+      if (!curViaImg || curViaImg.includes("ACC_C%E1%BB%94_-_ACC_SPAM_") || curViaImg.includes("default_product.png") || curViaImg.startsWith("data:")) {
+        localStorage.setItem("mmo_custom_img_PROD_MU2ASBNSJT", fbViaPoster);
       }
-    }
+      localStorage.removeItem("mmo_no_image_PROD_MU2ASBNSJT");
+
+      const curPageImg = localStorage.getItem("mmo_custom_img_PROD_MU29RGEBH0");
+      if (!curPageImg || curPageImg.includes("default_product.png") || curPageImg.startsWith("data:") || curPageImg.includes("/api/products/")) {
+        localStorage.setItem("mmo_custom_img_PROD_MU29RGEBH0", fbPagePoster);
+      }
+      localStorage.removeItem("mmo_no_image_PROD_MU29RGEBH0");
+
+      ["mmo_products", "mmo_admin_products"].forEach(function(k) {
+        const raw = localStorage.getItem(k);
+        if (raw) {
+          try {
+            const list = JSON.parse(raw);
+            if (Array.isArray(list)) {
+              let updated = false;
+              list.forEach(p => {
+                if (p && p.id === "PROD_MU2ASBNSJT") {
+                  if (!p.image || p.image.includes("ACC_C%E1%BB%94_-_ACC_SPAM_") || p.image.includes("default_product.png") || p.image.startsWith("data:")) {
+                    p.image = fbViaPoster;
+                    p.image_url = fbViaPoster;
+                    p.imageUrl = fbViaPoster;
+                    updated = true;
+                  }
+                }
+                if (p && p.id === "PROD_MU29RGEBH0") {
+                  if (!p.image || p.image.includes("default_product.png") || p.image.startsWith("data:") || p.image.includes("/api/products/")) {
+                    p.image = fbPagePoster;
+                    p.image_url = fbPagePoster;
+                    p.imageUrl = fbPagePoster;
+                    updated = true;
+                  }
+                }
+              });
+              if (updated) localStorage.setItem(k, JSON.stringify(list));
+            }
+          } catch(eJson) {}
+        }
+      });
+    } catch(eFixProds) {}
   } catch(e) {}
 })();
 
@@ -1582,9 +1621,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "slug": "prod-mtpij9xv",
     "category": "TikTok",
     "description": "<div class=\"mmo-seo-article\" style=\"line-height: 1.8; color: #cbd5e1; font-size: 15px;\">\n  <p>Bạn đang tìm kiếm địa chỉ mua <strong>Tài Khoản TikTok Brazil</strong> uy tín, chất lượng cao với giá thành cạnh tranh nhất thị trường? Bạn cần nguồn cung cấp ổn định, tài khoản có độ <em>trust</em> cao, kháng quét mạnh mẽ để phục vụ cho các chiến dịch kinh doanh, chạy quảng cáo, nuôi nick tự động hóa hoặc mở rộng quy mô kiếm tiền online (MMO)?</p>\n\n  <p>Chào mừng bạn đến với <strong>Muabantaikhoanmmo.com</strong> – Hệ sinh thái cung ứng tài nguyên số và tài khoản MMO hàng đầu Việt Nam. Với dịch vụ cung cấp <strong>Tài Khoản TikTok Brazil</strong>, chúng tôi tự tin mang đến cho bạn giải pháp an toàn, hiệu quả vượt trội giúp tối ưu hóa 100% hiệu suất công việc của bạn.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    1. Giới Thiệu Chi Tiết Về Tài Khoản TikTok Brazil\n  </h2>\n  <p>Trong kỷ nguyên marketing số và tự động hóa ngày nay, việc sở hữu những tài khoản chất lượng, được nuôi dưỡng trên môi trường sạch là yếu tố quyết định tới hơn 80% sự thành công của bất kỳ chiến dịch MMO nào. Sản phẩm <strong>Tài Khoản TikTok Brazil</strong> tại shop chúng tôi được tuyển chọn và sàng lọc qua quy trình kỹ thuật nghiêm ng��t nhằm mang lại trải nghiệm mượt mà nhất cho người dùng.</p>\n\n  <p>Khác biệt hoàn toàn so với các loại tài khoản giá rẻ trôi nổi, kém chất lượng trên mạng vốn thường bị khóa ngay sau vài giờ đăng nhập, <strong>Tài Khoản TikTok Brazil</strong> tại shop sở hữu những đặc điểm kỹ thuật ưu việt:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    \n      <li><strong>Độ ngâm tài khoản (Age/Trust):</strong> Đã được ngâm kỹ lưỡng trên thiết bị thật và địa chỉ IP chuẩn quốc gia, kháng thuật toán quét và hạn chế tối đa checkpoint.</li>\n      <li><strong>Hỗ trợ kiếm tiền &amp; Chạy Ads:</strong> Phù hợp hoàn hảo cho các chiến dịch chạy TikTok Ads, TikTok Shop, làm Affiliate TikTok, Reup video và làm nội dung viral.</li>\n      <li><strong>Tương thích đa thiết bị:</strong> Hoạt động mượt mà trên điện thoại thật (iOS/Android), trình giả lập và các phần mềm quản lý đa tài khoản (Genlogin, Hidemyacc, MoreLogin, Gologin).</li>\n      <li><strong>Đầy đủ thông tin đăng nhập:</strong> Bàn giao kèm email khôi phục hoặc mật khẩu gốc, bảo đảm khách hàng làm chủ 100% tài khoản ngay sau khi mua.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    2. Tại Sao Nên Mua tài khoản tiktok brazil Tại Muabantaikhoanmmo.com?\n  </h2>\n  <p>Với nhiều năm kinh nghiệm phục vụ hàng chục ngàn khách hàng cá nhân và doanh nghiệp trong cộng đồng MMO, chúng tôi hiểu rõ những rủi ro mà bạn thường gặp phải. Khi lựa chọn dịch vụ của chúng tôi, bạn sẽ nhận được những giá trị cam kết vững chắc:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Hệ thống giao hàng tức thì (Instant Delivery):</strong> Mọi đơn hàng đều được API xử lý tự động trong 03 giây, nhận thông tin ngay trên website và qua email.</li>\n    <li><strong>Nguồn hàng sạch 100%:</strong> Tài nguyên được tạo và nuôi dưỡng bằng địa chỉ IP chuẩn, không bị dính blacklist của các nền tảng lớn.</li>\n    <li><strong>Giá sỉ tận gốc:</strong> Cung cấp bảng giá ưu đãi đặc biệt cho anh em làm dịch vụ, chạy số lượng lớn, đội ngũ agency hoặc mua định kỳ.</li>\n    <li><strong>Bảo mật thông tin khách hàng:</strong> Toàn bộ dữ liệu giao dịch và thông tin cá nhân đều được mã hóa theo chuẩn an ninh cấp cao.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    3. Ứng Dụng Thực Tế &amp; Đối Tượng Khuyên Dùng\n  </h2>\n  <p>Sản phẩm <strong>Tài Khoản TikTok Brazil</strong> là trợ thủ đắc lực đáp ứng đa dạng mục đích sử dụng trong thực tế:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Anh em chạy quảng cáo (Ads Runner):</strong> Dùng làm tài khoản chạy Ads, cắn tiền mượt mà, hạn chế tối đa tình trạng vô hiệu hóa tài khoản bất thường.</li>\n    <li><strong>Nuôi dàn tài khoản số lượng lớn (Phone Farm / Antidetect):</strong> Tương thích hoàn hảo với các phần mềm nuôi nick, seeding bài viết, kéo tương tác tự động.</li>\n    <li><strong>Làm Affiliate Marketing &amp; Xây Kênh:</strong> Tiếp cận tệp khách hàng tiềm năng, đăng tải nội dung sáng tạo và thúc đẩy doanh số bán hàng vượt bậc.</li>\n    <li><strong>Đăng ký dịch vụ trực tuyến:</strong> Nhận mã xác minh OTP, liên kết tài khoản ngân hàng, ví điện tử hoặc các cổng thanh toán quốc tế một cách thuận tiện.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    4. Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn Chuẩn MMO\n  </h2>\n  <p>Để đảm bảo tài khoản đạt độ bền cao nhất và tránh bị hệ thống an ninh quét checkpoint thiết bị lạ, quý khách vui lòng tuân thủ quy trình khuyến nghị dưới đây:</p>\n  <div style=\"background: rgba(15,23,42,0.6); border-left: 4px solid #38bdf8; padding: 12px 16px; border-radius: 4px; margin-bottom: 15px;\">\n    \n      <ol>\n        <li><strong>Đăng nhập qua Proxy/IP sạch:</strong> Trước khi đăng nhập, hãy chuẩn bị Proxy chuẩn quốc gia của tài khoản hoặc mạng 4G/Wifi sạch, không dùng chung với các tài khoản vừa bị quét.</li>\n        <li><strong>Ngâm thiết bị từ 2 - 4 tiếng:</strong> Sau khi đăng nhập thành công, nên lướt xem video tương tác tự nhiên (like, comment, follow 1-2 kênh) như người dùng thật.</li>\n        <li><strong>Đổi thông tin an toàn:</strong> Không nên đổi mật khẩu hoặc email liên kết dồn dập ngay lập tức. Hãy đợi tài khoản quen thiết bị sau 24h - 48h rồi mới tiến hành cập nhật mật khẩu mới.</li>\n      </ol>\n  </div>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    5. Chính Sách Bảo Hành &amp; Hỗ Trợ Kỹ Thuật 24/7\n  </h2>\n  <p>Sự hài lòng của khách hàng là kim chỉ nam cho sự phát triển của chúng tôi. Chúng tôi cam kết chính sách bảo hành minh bạch và rõ ràng:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Bảo hành 1 đổi 1:</strong> Đổi mới ngay lập tức cho các trường hợp tài khoản bị sai mật khẩu, dính checkpoint trước khi mua, hoặc lỗi kỹ thuật từ hệ thống.</li>\n    <li><strong>Hỗ trợ kỹ thuật tận tâm:</strong> Đội ngũ admin trực chiến 24/7 qua Zalo, Telegram, sẵn sàng hỗ trợ giải đáp và xử lý mọi vấn đề phát sinh trong suốt quá trình sử dụng.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    6. Câu Hỏi Thường Gặp (FAQ)\n  </h2>\n  \n      <h3>Tài khoản TikTok này có thể chạy Ads hoặc làm TikTok Shop được không?</h3>\n      <p>Hoàn toàn được! Tài khoản có độ trust cao, đã ngâm sẵn nên tỷ lệ phê duyệt quảng cáo và liên kết TikTok Shop đạt hiệu quả rất tốt so với tài khoản reg mới.</p>\n      <h3>Nếu bị checkpoint đăng nhập lần đầu thì xử lý thế nào?</h3>\n      <p>Shop cam kết <strong>Bảo Hành 1 Đổi 1</strong> ngay lập tức nếu gặp lỗi sai pass hoặc checkpoint xác minh danh tính ngay trong lần đầu đăng nhập theo đúng chính sách bảo hành.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    7. Kết Luận\n  </h2>\n  <p>Sở hữu <strong>Tài Khoản TikTok Brazil</strong> chất lượng cao chính là chìa khóa giúp bạn tiết kiệm hàng chục giờ công sức, giảm thiểu rủi ro bị khóa tài khoản và bứt phá doanh thu trong công việc MMO của mình. Đừng để những tài khoản kém chất lượng làm gián đoạn kế hoạch kinh doanh của bạn!</p>\n  <p style=\"text-align: center; margin-top: 20px;\">\n    <strong style=\"color: #38bdf8; font-size: 1.1rem;\">👉 ĐẶT MUA NGAY HÔM NAY ĐỂ NHẬN ƯU ĐÃI VÀ DỊCH VỤ BẢO HÀNH TỐT NHẤT TẠI MUABANTAIKHOANMMO.COM! 👈</strong>\n  </p>\n</div>",
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
-    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
-    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTPIJ9XV_T%C3%80I_KHO%E1%BA%A2N_TIKTOK_BRAZIL_%C4%90%C3%83_NG%C3%82M_L%C3%82U_-_C%E1%BB%B0.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTPIJ9XV_T%C3%80I_KHO%E1%BA%A2N_TIKTOK_BRAZIL_%C4%90%C3%83_NG%C3%82M_L%C3%82U_-_C%E1%BB%B0.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTPIJ9XV_T%C3%80I_KHO%E1%BA%A2N_TIKTOK_BRAZIL_%C4%90%C3%83_NG%C3%82M_L%C3%82U_-_C%E1%BB%B0.png",
     "price": 6000,
     "warranty": "Bảo Hành Login",
     "variants": [
@@ -2425,9 +2464,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "slug": "prod-mu29rgebh0",
     "category": "Facebook",
     "description": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
-    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
-    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_co_2019.webp",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_co_2019.webp",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_co_2019.webp",
     "price": 99000,
     "warranty": "Bảo Hành 1 Đổi 1",
     "variants": [
@@ -4143,9 +4182,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "slug": "prod-mu2asbnsjt",
     "category": "Facebook",
     "description": "Via Việt 2014 - 2019  ACC CỔ - ACC SPAM - SEEDING",
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png",
-    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png",
-    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Facebook_Via_Viet_Acc_Spam.webp",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Facebook_Via_Viet_Acc_Spam.webp",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Facebook_Via_Viet_Acc_Spam.webp",
     "price": 25000,
     "warranty": "Bảo Hành 1 Đổi 1",
     "variants": [
@@ -11392,22 +11431,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                 }
               }
             } catch(eGuard) {}
-            // [TỐI ƯU SIÊU TỐC 0MS]: Chuẩn hóa ảnh base64 sang CDN để dung lượng lưu trữ chỉ ~160KB thay vì 2.5MB làm tràn Quota gây đơ web 10s
+            // [BẢO TỒN 100% ẢNH ADMIN TẢI LÊN / SỬA MỚI]: Giữ nguyên ảnh mới nhất của sản phẩm, tuyệt đối không tự ý đè lại ảnh cũ
             const leanProds = MOCK_DATA.products.map(function(p) {
               const cp = Object.assign({}, p);
-              if (cp.image && cp.image.startsWith("data:image/")) {
-                const cImg = localStorage.getItem("mmo_custom_img_" + cp.id);
-                if (cImg && !cImg.startsWith("data:") && (cImg.startsWith("http://") || cImg.startsWith("https://"))) {
-                  cp.image = cImg.trim();
-                } else {
-                  cp.image = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && (KNOWN_PROD_IMAGE_MAP[cp.id] || KNOWN_PROD_IMAGE_MAP[cp.id.toUpperCase()])) ? (KNOWN_PROD_IMAGE_MAP[cp.id] || KNOWN_PROD_IMAGE_MAP[cp.id.toUpperCase()]) : ("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(cp.id) + "/image");
-                }
-              }
-              if (cp.image_url && cp.image_url.startsWith("data:image/")) {
-                cp.image_url = cp.image;
-              }
-              if (cp.imageUrl && cp.imageUrl.startsWith("data:image/")) {
-                cp.imageUrl = cp.image;
+              const cImg = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + cp.id) : null;
+              if (cImg && cImg.trim() && cImg !== "__NO_IMAGE__" && !cImg.includes("default_product.png")) {
+                cp.image = cImg.trim();
+                cp.image_url = cImg.trim();
+                cp.imageUrl = cImg.trim();
               }
               return cp;
             });
@@ -12964,21 +12995,17 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
 // [OPTIMIZED]: Duplicate background upload removed for instant save speed
 
-        // Đồng bộ an toàn vào LocalStorage (chống QuotaExceededError khi ảnh Base64 lớn)
+        // Đồng bộ an toàn vào LocalStorage (Bảo toàn 100% ảnh mới của Admin, chống đè ảnh cũ)
         try {
           const sanitizedProds = MOCK_DATA.products.map(p => {
-            if (p && p.image && String(p.image).startsWith("data:") && p.image.length > 2000) {
-              const clone = Object.assign({}, p);
-              const cImg = localStorage.getItem("mmo_custom_img_" + p.id);
-              if (cImg && !cImg.startsWith("data:") && (cImg.startsWith("http://") || cImg.startsWith("https://"))) {
-                clone.image = cImg.trim();
-              } else {
-                clone.image = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && (KNOWN_PROD_IMAGE_MAP[p.id] || KNOWN_PROD_IMAGE_MAP[p.id.toUpperCase()])) ? (KNOWN_PROD_IMAGE_MAP[p.id] || KNOWN_PROD_IMAGE_MAP[p.id.toUpperCase()]) : ("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(p.id) + "/image");
-              }
-              clone.image_url = clone.image;
-              return clone;
+            const clone = Object.assign({}, p);
+            const cImg = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + p.id) : null;
+            if (cImg && cImg.trim() && cImg !== "__NO_IMAGE__" && !cImg.includes("default_product.png")) {
+              clone.image = cImg.trim();
+              clone.image_url = cImg.trim();
+              clone.imageUrl = cImg.trim();
             }
-            return p;
+            return clone;
           });
           const prodsJson = JSON.stringify(sanitizedProds);
           localStorage.setItem("mmo_admin_products", prodsJson);
@@ -15818,7 +15845,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   "PROD_MU29IZBLAK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29IZBLAK_TikTok_US_Chu%E1%BA%A9n_B%E1%BA%ADt_Ki%E1%BA%BFm_Ti%E1%BB%81n_Beta.png",
   "PROD_MU29WM90LZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29WM90LZ_Canva_pro_1_th%C3%A1ng_-3_th%C3%A1ng_-6_th%C3%A1ng.png",
   "PROD_MU2A2S732Y": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2A2S732Y_Express_VPN_2-3_ng%C3%A0y_gi%C3%A1_r%E1%BA%BB.png",
-  "PROD_MU2ASBNSJT": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png",
+  "PROD_MU29RGEBH0": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_co_2019.webp",
+  "PROD_MU2ASBNSJT": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Facebook_Via_Viet_Acc_Spam.webp",
   "PROD_MU2B32VLQY": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2B32VLQY_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y_-_D%C3%B9ng_Ri%C3%AAng.jpg",
   "PROD_MU2BIFBBNE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2BIFBBNE_Key_HMA_Androi_pc_H%E1%BA%A1n_20_-30_Ng%C3%A0y__5_Thi.png",
   "PROD_MU2CZL38PH": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2CZL38PH_TIKTOK_PH%C3%81P_Mail_Live_Trust_%C4%90%E1%BB%8Dc_Code_Qua.png",
