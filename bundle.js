@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "6.0.7";
+var MMO_CURRENT_CODE_VERSION = "6.0.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
@@ -18,14 +18,20 @@ window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
     }
     // Tự động dọn dẹp các cache cũ chứa ảnh phôi lỗi thời để nạp ngay poster mới chuẩn 100% từ Turso DB
     const pRaw = localStorage.getItem("mmo_products") || "";
-    if (pRaw.includes("tiktok_brazil.png") || pRaw.includes("gmail_24h.png") || pRaw.includes("outlook_trusted") || pRaw.includes("blog_gmail") || pRaw.includes("PROD_MU2OAG3IO2_Rom_androi_10_mod_adb_j7_prime.jpg") || pRaw.length > 3000000) {
+    if (pRaw.includes("tiktok_brazil.png") || pRaw.includes("gmail_24h.png") || pRaw.includes("outlook_trusted") || pRaw.includes("blog_gmail") || pRaw.includes("PROD_MU2OAG3IO2_Rom_androi_10_mod_adb_j7_prime.jpg") || pRaw.includes("PROD_MUOSDN0FCU_gmail_new_ng%C3%A2m_1-_10_ng%C3%A0y_ch%E1%BB%89_log_phone_.png") || pRaw.length > 3000000) {
       localStorage.removeItem("mmo_products");
       localStorage.removeItem("mmo_admin_products");
       localStorage.removeItem("mmo_products_list");
       localStorage.removeItem("mmo_shop_products");
     }
-    // Dọn sạch các custom_img cũ nếu trỏ tới phôi cũ hoặc bị gán nhầm j7_prime/s10 cho các máy khác
-    const romCorruptedMap = {
+    // Dọn sạch các custom_img cũ nếu trỏ tới phôi cũ hoặc bị gán nhầm j7_prime/s10/7_ngày cho các sản phẩm khác
+    const corruptedMap = {
+      "PROD_MUOSDN0FCU": ["7_Ng", "7_ngày", "7_Ng%C3%A0y"],
+      "PROD_MUP5LB7VAB": ["7_Ng", "7_ngày", "7_Ng%C3%A0y"],
+      "PROD_MTQX7SIK": ["14_Ng", "14_ngày", "14 Ngày", "14_Ng%C3%A0y"],
+      "PROD_MTQZT2Y1": ["default_product.png"],
+      "PROD_MTRB6000": ["default_product.png"],
+      "PROD_MU2YQ1J3PY": ["default_product.png"],
       "PROD_MU2O4MW4DQ": ["j7_prime", "j7_pro"],
       "PROD_MU2NX4CYEW": ["j7_prime", "j7_pro"],
       "PROD_MU2NUXL1Q4": ["j7_prime", "j7_pro"],
@@ -37,9 +43,9 @@ window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
       "PROD_MU2MOON7L6": ["j7_prime", "j7_pro"],
       "PROD_MU2MY8WCOE": ["j7_prime", "j7_pro"]
     };
-    for (const pid in romCorruptedMap) {
+    for (const pid in corruptedMap) {
       const val = localStorage.getItem("mmo_custom_img_" + pid) || "";
-      if (val && romCorruptedMap[pid].some(bad => val.includes(bad))) {
+      if (val && corruptedMap[pid].some(bad => val.includes(bad))) {
         localStorage.removeItem("mmo_custom_img_" + pid);
       }
     }
@@ -12527,7 +12533,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   "PROD_MTQWQFZD": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWQFZD_Gmail_cho_thu%C3%AA_30_Ng%C3%A0y.png",
   "PROD_MTQX1C7X": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX1C7X_Gmail_cho_thu%C3%AA_1_gi%E1%BB%9D_live_60_ph%C3%BAt.png",
   "PROD_MTQX465U": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX465U_Gmail_cho_Thu%E1%BA%BF_10_ph%C3%BAt_live_10_ph%C3%BAt.png",
-  "PROD_MTQX7SIK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.png",
+  "PROD_MTQX7SIK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.jpg",
   "PROD_MTQZT2Y1": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQZT2Y1_HOTMAIL_-_OUTLOOK_%C4%90%E1%BB%98_TRUST_CAO_LIVE_TR%C3%82U.png",
   "PROD_MTRB6000": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTRB6000_OUTLOOK_TRUSTED_-_LIVE_6-12_Th%C3%A1ng.png",
   "PROD_MTTPLODQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTTPLODQ_GMAIL_C%E1%BB%94_2019-2020_RAMDOM_ACC_C%E1%BB%94.png",
