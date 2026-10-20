@@ -29210,7 +29210,7 @@ function executeCompareSourcesSearch() {
         const footerCopyEl = document.querySelector('.footer-bottom-bar > div:first-child');
         if (footerCopyEl && bProf && bProf.copyrightText) footerCopyEl.innerHTML = bProf.copyrightText;
 
-        document.title = (bProf && bProf.homeTitle) ? bProf.homeTitle : (effectiveSiteName + ' - Sàn Sản Phẩm Số & Dịch Vụ MMO Uy Tín');
+        document.title = (bProf && bProf.homeTitle && bProf.homeTitle.length <= 60) ? bProf.homeTitle : 'Mua Bán Tài Khoản MMO | Sàn Dịch Vụ MMO Uy Tín';
 
         // 2. Logo Header, Footer, Drawer & Toàn Bộ Trang (Đúng Logo riêng của Website)
         const activeLogoUrl = (brandAssets.brandLogo && brandAssets.brandLogo.trim() && !brandAssets.brandLogo.includes('img_1790888969056_z00fh5.png') && brandAssets.brandLogo.trim() !== 'https://iili.io/nFV4Rln.png')
