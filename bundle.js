@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "6.0.6";
+var MMO_CURRENT_CODE_VERSION = "6.0.7";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
@@ -9282,24 +9282,38 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           : (oldProd ? (oldProd.image || oldProd.image_url || oldProd.imageUrl || "") : "");
         let inputImg = document.getElementById("admProdImage")?.value.trim() || "";
         const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
-        let image = inputImg || (typeof resolveProductImage === "function" ? resolveProductImage(actualTargetId) : "") || defaultPlaceholder;
-        if (image.includes("default_product.png") && inputImg) {
+        let image = "";
+        if (inputImg) {
           image = inputImg;
+        } else if (window._imageExplicitlyDeleted) {
+          image = defaultPlaceholder;
+        } else {
+          image = (typeof resolveProductImage === "function" ? resolveProductImage(actualTargetId) : "") || defaultPlaceholder;
         }
 
-        // Cập nhật ngay KNOWN_PROD_IMAGE_MAP để không bao giờ bị đè ảnh cũ
-        if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && image && !image.includes("default_product.png")) {
-          KNOWN_PROD_IMAGE_MAP[actualTargetId] = image;
-          KNOWN_PROD_IMAGE_MAP[actualTargetId.toUpperCase()] = image;
-        }
-
-        // Lưu vào localStorage
-        try {
-          if (image && !image.includes("default_product.png")) {
-            localStorage.setItem("mmo_custom_img_" + actualTargetId, image);
+        // Cập nhật ngay KNOWN_PROD_IMAGE_MAP và localStorage cho toàn bộ họ ID liên kết
+        const allImageSyncIds = new Set([actualTargetId, canonicalTargetId, ...allSyncIds].filter(Boolean));
+        allImageSyncIds.forEach(sid => {
+          if (image && !image.includes("default_product.png") && image !== "__NO_IMAGE__") {
+            if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+              KNOWN_PROD_IMAGE_MAP[sid] = image;
+              KNOWN_PROD_IMAGE_MAP[sid.toUpperCase()] = image;
+            }
+            try {
+              localStorage.setItem("mmo_custom_img_" + sid, image);
+              localStorage.removeItem("mmo_no_image_" + sid);
+            } catch(e) {}
+          } else {
+            if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+              delete KNOWN_PROD_IMAGE_MAP[sid];
+              delete KNOWN_PROD_IMAGE_MAP[sid.toUpperCase()];
+            }
+            try {
+              localStorage.removeItem("mmo_custom_img_" + sid);
+              localStorage.setItem("mmo_no_image_" + sid, "true");
+            } catch(e) {}
           }
-          localStorage.removeItem("mmo_no_image_" + actualTargetId);
-        } catch(e) {}
+        });
 
         // Chỉ xóa ảnh cũ trên Worker DB KHI VÀ CHỈ KHI admin đã thực sự tải lên một tệp ảnh mới vào /api/images/
         if (oldImgBeforeSave && image && oldImgBeforeSave !== image && !image.includes("default_product.png") && image.includes("/api/images/") && oldImgBeforeSave.includes("/api/images/")) {
@@ -12718,11 +12732,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       }
       if (!p) return defaultPlaceholder;
 
-      // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: Ảnh do người dùng vừa sửa hoặc lưu (localStorage)
+      // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: Ảnh do người dùng vừa sửa hoặc lưu (localStorage cho cả ID này và mọi Alias)
       if (p.id && typeof localStorage !== "undefined") {
-        const cust = localStorage.getItem("mmo_custom_img_" + p.id);
-        if (cust && cust.trim().length > 10 && cust !== "__NO_IMAGE__" && !cust.includes("placeholder") && !cust.includes("default_product.png")) {
-          return cust.trim();
+        const checkAliasIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(p.id) : [p.id];
+        for (let aIdx = 0; aIdx < checkAliasIds.length; aIdx++) {
+          const aid = checkAliasIds[aIdx];
+          const cust = localStorage.getItem("mmo_custom_img_" + aid);
+          if (cust && cust.trim().length > 10 && cust !== "__NO_IMAGE__" && !cust.includes("placeholder") && !cust.includes("default_product.png")) {
+            return cust.trim();
+          }
         }
       }
 
@@ -12734,9 +12752,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
       // 3. [ƯU TIÊN #3]: Bảng poster KNOWN_PROD_IMAGE_MAP
       if (p.id && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
-        const known = KNOWN_PROD_IMAGE_MAP[p.id] || KNOWN_PROD_IMAGE_MAP[p.id.toUpperCase()];
-        if (known && typeof known === "string" && known.trim().length > 10 && !known.includes("default_product.png")) {
-          return known.trim();
+        const checkAliasIds2 = (typeof getProductAliasIds === "function") ? getProductAliasIds(p.id) : [p.id];
+        for (let aIdx2 = 0; aIdx2 < checkAliasIds2.length; aIdx2++) {
+          const aid2 = checkAliasIds2[aIdx2];
+          const known = KNOWN_PROD_IMAGE_MAP[aid2] || KNOWN_PROD_IMAGE_MAP[aid2.toUpperCase()];
+          if (known && typeof known === "string" && known.trim().length > 10 && !known.includes("default_product.png")) {
+            return known.trim();
+          }
         }
       }
 
@@ -13245,8 +13267,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (target.includes("vpn") || target.includes("proxy")) {
         return pCat === "vpn proxy" || pCat === "vpn" || pCat === "proxy" || pCat.includes("proxy") || pCat.includes("vpn");
       }
-      if (target === "ai & video" || target === "ai" || target.includes("chatgpt & kling") || target.includes("kling") || target.includes("chatgpt")) {
-        return pCat === "ai & video" || pCat === "ai" || pCat === "chatgpt" || pCat.includes("ai & video") || pCat.includes("chatgpt");
+      if (target === "chatgpt" || target.includes("chatgpt")) {
+        return pCat === "chatgpt" || pCat.includes("chatgpt");
+      }
+      if (target === "ai & video" || target === "ai" || target.includes("ai & video") || target.includes("kling")) {
+        if (pCat === "chatgpt" || pCat.includes("chatgpt")) return false;
+        return pCat === "ai & video" || pCat === "ai" || pCat.includes("ai & video") || pCat.includes("kling");
       }
       if (target.includes("hot mail") || target.includes("hotmail") || target.includes("outlook")) {
         return pCat === "hot mail" || pCat === "hotmail" || pCat === "outlook" || pCat.includes("hot mail") || pCat.includes("hotmail") || pCat.includes("outlook");
@@ -15272,12 +15298,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                   const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[cur.id] || KNOWN_PROD_IMAGE_MAP[cur.id.toUpperCase()]) : "";
                   resolvedWorkerImg = mapped || ("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(cur.id) + "/image");
                 } else if ((tImg.startsWith("http://") || tImg.startsWith("https://")) && !tImg.includes("khotaikhoanso")) {
-                  if (tImg.includes("/api/products/")) {
-                    const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[cur.id] || KNOWN_PROD_IMAGE_MAP[cur.id.toUpperCase()]) : "";
-                    resolvedWorkerImg = mapped || tImg;
-                  } else {
-                    resolvedWorkerImg = tImg;
-                  }
+                  resolvedWorkerImg = tImg;
                 }
               }
 
@@ -15395,12 +15416,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                 const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[tp.id] || KNOWN_PROD_IMAGE_MAP[tp.id.toUpperCase()]) : "";
                 resolvedWorkerImgNew = mapped || ("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(tp.id) + "/image");
               } else if ((tImg.startsWith("http://") || tImg.startsWith("https://")) && !tImg.includes("khotaikhoanso")) {
-                if (tImg.includes("/api/products/")) {
-                  const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[tp.id] || KNOWN_PROD_IMAGE_MAP[tp.id.toUpperCase()]) : "";
-                  resolvedWorkerImgNew = mapped || tImg;
-                } else {
-                  resolvedWorkerImgNew = tImg;
-                }
+                resolvedWorkerImgNew = tImg;
               }
             }
             let localCustomImgNew = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_img_" + tp.id) : null;
@@ -26693,6 +26709,10 @@ function executeCompareSourcesSearch() {
                 const syncIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(curProdId) : [curProdId];
                 syncIds.forEach(sid => {
                   try { localStorage.setItem("mmo_custom_img_" + sid, cloudUrl); } catch(eLS) {}
+                  if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+                    KNOWN_PROD_IMAGE_MAP[sid] = cloudUrl;
+                    KNOWN_PROD_IMAGE_MAP[sid.toUpperCase()] = cloudUrl;
+                  }
                   if (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) {
                     const pIdx = MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === sid.toLowerCase());
                     if (pIdx !== -1) {
@@ -29455,8 +29475,8 @@ function executeCompareSourcesSearch() {
       if (typeof getCanonicalProductId === "function") {
         cleanId = getCanonicalProductId(cleanId);
       }
-      if (cleanId === "PROD_MV5OYRDJCA" || cleanId === "PROD_MU2AB1XEGI" || cleanId === "SP_GEMINI_VEO3" || cleanId === "PROD_MU6R34FZ4Z" || cleanId === "PROD_MU5T3T47AE" || cleanId === "PROD_MUQIMRJYG0") {
-        cleanId = "PROD_MV5PA8KZDW";
+      if (cleanId === "PROD_MV5OYRDJCA" || cleanId === "PROD_MU2AB1XEGI" || cleanId === "SP_GEMINI_VEO3" || cleanId === "PROD_MU6R34FZ4Z" || cleanId === "PROD_MV5PA8KZDW" || cleanId === "PROD_MUQIMRJYG0") {
+        cleanId = "PROD_MU5T3T47AE";
       }
       if (cleanId === "PROD_MUH57035HQ") {
         cleanId = "PROD_MU5PWT7PP7";
