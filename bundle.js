@@ -2,20 +2,13 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "6.1.0";
+var MMO_CURRENT_CODE_VERSION = "6.1.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
 (function cleanLegacyProductImageStorage() {
   if (typeof localStorage === "undefined") return;
   try {
-    // XÓA BỎ 100% TẤT CẢ CỜ mmo_no_image_ VÀ CÁC CƠ CHẾ RÁC CŨ
-    for (let i = localStorage.length - 1; i >= 0; i--) {
-      const k = localStorage.key(i);
-      if (k && (k.startsWith("mmo_no_image_") || k.includes("no_image"))) {
-        localStorage.removeItem(k);
-      }
-    }
     // [BẢO TỒN TUYỆT ĐỐI SẢN PHẨM]: Tuyệt đối KHÔNG xóa mmo_products/mmo_admin_products
     // Dọn sạch các custom_img cũ nếu trỏ tới phôi cũ hoặc bị gán nhầm j7_prime/s10/7_ngày cho các sản phẩm khác
     const corruptedMap = {
@@ -2423,9 +2416,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "slug": "prod-mu29rgebh0",
     "category": "Facebook",
     "description": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_c%E1%BB%95_2019_-_ch%E1%BA%A1y_ADS_-_B%E1%BA%ADt_k.png",
-    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_c%E1%BB%95_2019_-_ch%E1%BA%A1y_ADS_-_B%E1%BA%ADt_k.png",
-    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_c%E1%BB%95_2019_-_ch%E1%BA%A1y_ADS_-_B%E1%BA%ADt_k.png",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
     "price": 99000,
     "warranty": "Bảo Hành 1 Đổi 1",
     "variants": [
@@ -12573,18 +12566,19 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         let inputImg = document.getElementById("admProdImage")?.value.trim() || "";
         const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
         let image = "";
-        if (inputImg) {
-          image = inputImg;
-        } else if (window._imageExplicitlyDeleted) {
-          image = defaultPlaceholder;
+        let isImageDeleted = false;
+        if (window._imageExplicitlyDeleted || !inputImg || inputImg === "__NO_IMAGE__" || inputImg.includes("default_product.png")) {
+          image = "__NO_IMAGE__";
+          isImageDeleted = true;
         } else {
-          image = (typeof resolveProductImage === "function" ? resolveProductImage(actualTargetId) : "") || defaultPlaceholder;
+          image = inputImg;
+          isImageDeleted = false;
         }
 
         // Cập nhật ngay KNOWN_PROD_IMAGE_MAP và localStorage cho toàn bộ họ ID liên kết
         const allImageSyncIds = new Set([actualTargetId, canonicalTargetId, ...allSyncIds].filter(Boolean));
         allImageSyncIds.forEach(sid => {
-          if (image && !image.includes("default_product.png") && image !== "__NO_IMAGE__") {
+          if (!isImageDeleted && image && !image.includes("default_product.png") && image !== "__NO_IMAGE__") {
             if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
               KNOWN_PROD_IMAGE_MAP[sid] = image;
               KNOWN_PROD_IMAGE_MAP[sid.toUpperCase()] = image;
@@ -13045,7 +13039,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               "Content-Type": "application/json",
               "Authorization": "Bearer " + workerSecret
             },
-            body: JSON.stringify({ product: syncProductPayload, alias_ids: allSyncIds, old_image: oldImgBeforeSave, image_deleted: !image, webhook: true })
+            body: JSON.stringify({ product: syncProductPayload, alias_ids: allSyncIds, old_image: oldImgBeforeSave, image_deleted: isImageDeleted, webhook: true })
           }).then(r => r.json()).then(res => {
             console.log("✅ Webhook Realtime Index Result:", res);
           }).catch(eWb => console.warn("Webhook index error:", eWb));
@@ -13165,7 +13159,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               prodId: actualTargetId,
               canonicalId: canonicalTargetId,
               aliasIds: allSyncIds,
-              imageUrl: prodData.image || image,
+              imageUrl: isImageDeleted ? "__NO_IMAGE__" : (prodData.image || image),
+              imageDeleted: isImageDeleted,
               prodData: prodData,
               variants: variants,
               stock: prodData.stock
@@ -15786,7 +15781,6 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   "PROD_MU1G6LJX": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU1G6LJX_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y.jpg",
   "PROD_MU1LSSJ7AZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU1LSSJ7AZ_Tiktok_nh%E1%BA%ADt_2024-2026__tiktok_like__-_tiktok_th%C6%B0%E1%BB%9Dn.jpg",
   "PROD_MU29IZBLAK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29IZBLAK_TikTok_US_Chu%E1%BA%A9n_B%E1%BA%ADt_Ki%E1%BA%BFm_Ti%E1%BB%81n_Beta.png",
-  "PROD_MU29RGEBH0": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_c%E1%BB%95_2019_-_ch%E1%BA%A1y_ADS_-_B%E1%BA%ADt_k.png",
   "PROD_MU29WM90LZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29WM90LZ_Canva_pro_1_th%C3%A1ng_-3_th%C3%A1ng_-6_th%C3%A1ng.png",
   "PROD_MU2A2S732Y": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2A2S732Y_Express_VPN_2-3_ng%C3%A0y_gi%C3%A1_r%E1%BA%BB.png",
   "PROD_MU2ASBNSJT": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png",
@@ -16022,7 +16016,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     window.handleProductImageError = handleProductImageError;
     window.handleProductImgError = handleProductImageError;
 
-    // RESOLVE PRODUCT IMAGE: Khôi phục 100% ảnh sản phẩm chuẩn xác từ GitHub CDN chính thức
+    // RESOLVE PRODUCT IMAGE: Khôi phục 100% ảnh sản phẩm chuẩn xác hoặc tôn trọng việc xóa ảnh của Admin
     function resolveProductImage(p) {
       const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
       if (!p) return defaultPlaceholder;
@@ -16031,6 +16025,23 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         p = (typeof findShopProduct === "function") ? findShopProduct(p) : null;
       }
       if (!p) return defaultPlaceholder;
+
+      // 0. [BẢO VỆ TUYỆT ĐỐI #0]: NẾU ADMIN ĐÃ BẤM XÓA ẢNH HOẶC ĐÁNH DẤU NO_IMAGE -> TRẢ VỀ DEFAULT, TUYỆT ĐỐI CẤM LẤY LẠI ẢNH CŨ
+      if (p.id && typeof localStorage !== "undefined") {
+        const checkAliasIds0 = (typeof getProductAliasIds === "function") ? getProductAliasIds(p.id) : [p.id];
+        for (let a0 = 0; a0 < checkAliasIds0.length; a0++) {
+          const aid0 = checkAliasIds0[a0];
+          if (localStorage.getItem("mmo_no_image_" + aid0) === "true") {
+            const custCheck = localStorage.getItem("mmo_custom_img_" + aid0);
+            if (!custCheck || custCheck === "__NO_IMAGE__" || custCheck.includes("default_product.png")) {
+              return defaultPlaceholder;
+            }
+          }
+        }
+      }
+      if (p.image === "__NO_IMAGE__" || p.image_url === "__NO_IMAGE__" || p.imageUrl === "__NO_IMAGE__" || p._imageExplicitlyDeleted === true) {
+        return defaultPlaceholder;
+      }
 
       // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: Ảnh do người dùng vừa sửa hoặc lưu (localStorage cho cả ID này và mọi Alias)
       if (p.id && typeof localStorage !== "undefined") {
@@ -16050,7 +16061,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         return direct.trim();
       }
 
-      // 3. [ƯU TIÊN #3]: Bảng poster KNOWN_PROD_IMAGE_MAP
+      // 3. [ƯU TIÊN #3]: Bảng poster KNOWN_PROD_IMAGE_MAP (chỉ dùng khi sản phẩm chưa từng bị xóa ảnh)
       if (p.id && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
         const checkAliasIds2 = (typeof getProductAliasIds === "function") ? getProductAliasIds(p.id) : [p.id];
         for (let aIdx2 = 0; aIdx2 < checkAliasIds2.length; aIdx2++) {
@@ -19890,15 +19901,51 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
           if (ev.data.senderId && window._mmoTabSenderId && ev.data.senderId === window._mmoTabSenderId) {
             return; // Chống lặp tin nhắn do chính tab này phát ra
           }
+          if (ev.data.type === "PRODUCT_IMAGE_DELETED") {
+            const updId = ev.data.prodId;
+            const updAliases = ev.data.aliasIds || (typeof getProductAliasIds === "function" ? getProductAliasIds(updId) : [updId]);
+            const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
+            updAliases.forEach(aid => {
+              try { localStorage.removeItem("mmo_custom_img_" + aid); } catch(e) {}
+              try { localStorage.setItem("mmo_no_image_" + aid, "true"); } catch(e) {}
+              if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+                delete KNOWN_PROD_IMAGE_MAP[aid];
+                delete KNOWN_PROD_IMAGE_MAP[aid.toUpperCase()];
+              }
+            });
+            if (typeof updateProductRealtimeEverywhere === "function") {
+              updateProductRealtimeEverywhere(updId, updAliases, { id: updId, image: "__NO_IMAGE__", _imageExplicitlyDeleted: true }, null, defaultPlaceholder);
+            }
+          }
+          if (ev.data.type === "PRODUCT_IMAGE_CHANGED") {
+            const updId = ev.data.prodId;
+            const updAliases = ev.data.aliasIds || (typeof getProductAliasIds === "function" ? getProductAliasIds(updId) : [updId]);
+            const updImg = ev.data.imageUrl;
+            if (updImg) {
+              updAliases.forEach(aid => {
+                try { localStorage.setItem("mmo_custom_img_" + aid, updImg); } catch(e) {}
+                try { localStorage.removeItem("mmo_no_image_" + aid); } catch(e) {}
+                if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+                  KNOWN_PROD_IMAGE_MAP[aid] = updImg;
+                  KNOWN_PROD_IMAGE_MAP[aid.toUpperCase()] = updImg;
+                }
+              });
+              if (typeof updateProductRealtimeEverywhere === "function") {
+                updateProductRealtimeEverywhere(updId, updAliases, { id: updId, image: updImg }, null, updImg);
+              }
+            }
+          }
           if (ev.data.type === "PRODUCT_UPDATED") {
             const updId = ev.data.prodId;
             const updVariants = ev.data.variants;
             const updData = ev.data.prodData;
             const updImg = ev.data.imageUrl || (updData && (updData.image || updData.image_url || updData.imageUrl));
             const updAliases = ev.data.aliasIds || (typeof getProductAliasIds === "function" ? getProductAliasIds(updId) : [updId]);
+            const isImageDeleted = Boolean(ev.data.imageDeleted || updImg === "__NO_IMAGE__" || !updImg || String(updImg).includes("default_product.png"));
+            const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
 
             if (typeof updateProductRealtimeEverywhere === "function") {
-              updateProductRealtimeEverywhere(updId, updAliases, updData, updVariants, updImg);
+              updateProductRealtimeEverywhere(updId, updAliases, updData, updVariants, isImageDeleted ? defaultPlaceholder : updImg);
             }
             if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(updId, ev.data.stock, null, true);
           }
@@ -29854,6 +29901,24 @@ function executeCompareSourcesSearch() {
         if (di) di.src = defaultImg;
       });
 
+      // 3b. Phát sóng BroadcastChannel tức thì sang mọi tab/cửa sổ khác (0ms)
+      try {
+        if (typeof BroadcastChannel !== "undefined") {
+          const delMsg = {
+            type: "PRODUCT_IMAGE_DELETED",
+            prodId: curProdId,
+            aliasIds: syncIds
+          };
+          const bcD1 = new BroadcastChannel("muabanmmo_channel");
+          bcD1.postMessage(delMsg);
+          setTimeout(() => bcD1.close(), 1000);
+
+          const bcD2 = new BroadcastChannel("muabanmmo_realtime_sync");
+          bcD2.postMessage(delMsg);
+          setTimeout(() => bcD2.close(), 1000);
+        }
+      } catch(eBcDel) {}
+
       // 4. Gọi Cloudflare Worker API để xóa sạch vĩnh viễn ảnh cũ trong DB Turso và cache
       try {
         const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
@@ -29952,6 +30017,7 @@ function executeCompareSourcesSearch() {
           }
 
           // Hiển thị ngay ảnh preview tức thì trong 10ms
+          window._imageExplicitlyDeleted = false;
           if (preview) preview.src = optimizedDataUrl;
           if (imgInput) imgInput.value = optimizedDataUrl;
 
@@ -29960,6 +30026,11 @@ function executeCompareSourcesSearch() {
             const syncIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(curProdId) : [curProdId];
             syncIds.forEach(sid => {
               try { localStorage.setItem("mmo_custom_img_" + sid, optimizedDataUrl); } catch(eLS) {}
+              try { localStorage.removeItem("mmo_no_image_" + sid); } catch(eLS) {}
+              if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+                KNOWN_PROD_IMAGE_MAP[sid] = optimizedDataUrl;
+                KNOWN_PROD_IMAGE_MAP[sid.toUpperCase()] = optimizedDataUrl;
+              }
             });
             if (typeof updateProductRealtimeEverywhere === "function") {
               updateProductRealtimeEverywhere(curProdId, syncIds, { id: curProdId, name: curProdName, image: optimizedDataUrl }, null, optimizedDataUrl);
@@ -29969,6 +30040,24 @@ function executeCompareSourcesSearch() {
             document.querySelectorAll("#dtlImage, .detail-product-img, .product-detail-image img, #dtlImageContainer img").forEach(di => {
               if (di) di.src = optimizedDataUrl;
             });
+
+            // Phát sóng BroadcastChannel tức thì sang mọi tab khác
+            try {
+              if (typeof BroadcastChannel !== "undefined") {
+                const upMsg = {
+                  type: "PRODUCT_IMAGE_CHANGED",
+                  prodId: curProdId,
+                  aliasIds: syncIds,
+                  imageUrl: optimizedDataUrl
+                };
+                const bcU1 = new BroadcastChannel("muabanmmo_channel");
+                bcU1.postMessage(upMsg);
+                setTimeout(() => bcU1.close(), 1000);
+                const bcU2 = new BroadcastChannel("muabanmmo_realtime_sync");
+                bcU2.postMessage(upMsg);
+                setTimeout(() => bcU2.close(), 1000);
+              }
+            } catch(eBcUp) {}
           }
 
           // Đồng bộ tải lên Cloudflare Worker CDN ngầm trong 200ms
@@ -42183,19 +42272,77 @@ function changeAdmUsersPage(p) {
             if (typeof renderAllProductsPage === "function") renderAllProductsPage();
             if (typeof refreshAllShopStockUI === "function") refreshAllShopStockUI();
           }
+          if (ev && ev.data && ev.data.type === "PRODUCT_IMAGE_DELETED") {
+            const updId = ev.data.prodId;
+            const aliasIds = Array.isArray(ev.data.aliasIds) ? ev.data.aliasIds : [updId];
+            const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
+            aliasIds.forEach(aid => {
+              try { localStorage.removeItem("mmo_custom_img_" + aid); } catch(e) {}
+              try { localStorage.setItem("mmo_no_image_" + aid, "true"); } catch(e) {}
+              if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+                delete KNOWN_PROD_IMAGE_MAP[aid];
+                delete KNOWN_PROD_IMAGE_MAP[aid.toUpperCase()];
+              }
+            });
+            if (typeof updateProductRealtimeEverywhere === "function") {
+              updateProductRealtimeEverywhere(updId, aliasIds, { id: updId, image: "__NO_IMAGE__", _imageExplicitlyDeleted: true }, null, defaultPlaceholder);
+            }
+            const dtlImgEl = document.getElementById("dtlImage");
+            if (dtlImgEl) dtlImgEl.src = defaultPlaceholder;
+            document.querySelectorAll("#dtlImage, .detail-product-img, .product-detail-image img, #dtlImageContainer img").forEach(di => {
+              if (di) di.src = defaultPlaceholder;
+            });
+          }
+
+          if (ev && ev.data && ev.data.type === "PRODUCT_IMAGE_CHANGED") {
+            const updId = ev.data.prodId;
+            const aliasIds = Array.isArray(ev.data.aliasIds) ? ev.data.aliasIds : [updId];
+            const updImg = ev.data.imageUrl;
+            if (updImg) {
+              aliasIds.forEach(aid => {
+                try { localStorage.setItem("mmo_custom_img_" + aid, updImg); } catch(e) {}
+                try { localStorage.removeItem("mmo_no_image_" + aid); } catch(e) {}
+                if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+                  KNOWN_PROD_IMAGE_MAP[aid] = updImg;
+                  KNOWN_PROD_IMAGE_MAP[aid.toUpperCase()] = updImg;
+                }
+              });
+              if (typeof updateProductRealtimeEverywhere === "function") {
+                updateProductRealtimeEverywhere(updId, aliasIds, { id: updId, image: updImg }, null, updImg);
+              }
+              const dtlImgEl = document.getElementById("dtlImage");
+              if (dtlImgEl) dtlImgEl.src = updImg;
+              document.querySelectorAll("#dtlImage, .detail-product-img, .product-detail-image img, #dtlImageContainer img").forEach(di => {
+                if (di) di.src = updImg;
+              });
+            }
+          }
+
           if (ev && ev.data && ev.data.type === "PRODUCT_UPDATED") {
             const updId = ev.data.prodId;
             const updVariants = ev.data.variants;
             const updData = ev.data.prodData;
             const updImg = ev.data.imageUrl || (updData && (updData.image || updData.imageUrl || updData.image_url));
             const aliasIds = Array.isArray(ev.data.aliasIds) ? ev.data.aliasIds : [updId];
+            const isImageDeleted = Boolean(ev.data.imageDeleted || updImg === "__NO_IMAGE__" || !updImg || String(updImg).includes("default_product.png"));
+            const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
 
-            if (updImg && !updImg.includes("default_product.png") && updImg !== "__NO_IMAGE__") {
+            if (!isImageDeleted && updImg && !updImg.includes("default_product.png") && updImg !== "__NO_IMAGE__") {
               aliasIds.forEach(aid => {
                 try { localStorage.setItem("mmo_custom_img_" + aid, updImg); } catch(e) {}
+                try { localStorage.removeItem("mmo_no_image_" + aid); } catch(e) {}
                 if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
                   KNOWN_PROD_IMAGE_MAP[aid] = updImg;
                   KNOWN_PROD_IMAGE_MAP[aid.toUpperCase()] = updImg;
+                }
+              });
+            } else {
+              aliasIds.forEach(aid => {
+                try { localStorage.removeItem("mmo_custom_img_" + aid); } catch(e) {}
+                try { localStorage.setItem("mmo_no_image_" + aid, "true"); } catch(e) {}
+                if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+                  delete KNOWN_PROD_IMAGE_MAP[aid];
+                  delete KNOWN_PROD_IMAGE_MAP[aid.toUpperCase()];
                 }
               });
             }
@@ -42207,13 +42354,14 @@ function changeAdmUsersPage(p) {
                 Object.assign(target, updData);
                 if (updVariants) target.variants = updVariants;
                 if (ev.data.stock !== undefined) target.stock = ev.data.stock;
-                if (updImg) { target.image = updImg; target.image_url = updImg; target.imageUrl = updImg; }
+                const effImg = isImageDeleted ? "__NO_IMAGE__" : updImg;
+                target.image = effImg; target.image_url = effImg; target.imageUrl = effImg;
               }
             }
 
             // Đồng bộ tức thì tới toàn bộ DOM bằng updateProductRealtimeEverywhere
             if (typeof updateProductRealtimeEverywhere === "function" && updData) {
-              updateProductRealtimeEverywhere(updId, aliasIds, updData, updVariants, updImg);
+              updateProductRealtimeEverywhere(updId, aliasIds, updData, updVariants, isImageDeleted ? defaultPlaceholder : updImg);
             }
 
             if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(updId, ev.data.stock, null, true);
