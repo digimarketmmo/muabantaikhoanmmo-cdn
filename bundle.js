@@ -15817,6 +15817,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       }
 
       // 1. TỨC THÌ 0MS: Chuyển đổi hiển thị view độc lập 100% (chống kẹt view với !important)
+      var evs = document.getElementById("earlyViewRoutingStyle");
+      if (evs) evs.remove();
       const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewFaq"];
       views.forEach(function(v) {
         const el = document.getElementById(v);
