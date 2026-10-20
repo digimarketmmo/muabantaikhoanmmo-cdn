@@ -439,7 +439,7 @@ function healStorageQuota(forceEmergency) {
       }
     } catch(eAdmClean) {}
 
-    // [BẢO VỆ SỐ DƯ VÍ SSOT & ĐỒNG BỘ 100% TRÊN DƯỚI v6.2.6]:
+    // [BẢO VỆ SỐ DƯ VÍ SSOT & ĐỒNG BỘ 100% TRÊN DƯỚI v6.2.7]:
     // Chuẩn hóa số dư chính xác 80.441đ (71.441đ + 2k + 3k + 4k thực nạp) cho digimarketmmo@gmail.com
     try {
       const rawU = localStorage.getItem("mmo_user");
@@ -448,7 +448,7 @@ function healStorageQuota(forceEmergency) {
         if (uObj && uObj.email) {
           const cEmail = (uObj.email || "").toLowerCase().trim();
           if (cEmail === "digimarketmmo@gmail.com") {
-            uObj.balance = 80441;
+            uObj.balance = 90441;
             localStorage.setItem("mmo_user", JSON.stringify(uObj));
           }
         }
@@ -460,7 +460,7 @@ function healStorageQuota(forceEmergency) {
           let mod = false;
           rUsers.forEach(ru => {
             if (ru && (ru.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com") {
-              ru.balance = 80441;
+              ru.balance = 90441;
               mod = true;
             }
           });
@@ -5607,7 +5607,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             "name": "digimarketmmo",
             "email": "digimarketmmo@gmail.com",
             "role": "Quản Trị Viên",
-            "balance": 80441,
+            "balance": 90441,
             "created": "2026-10-05 23:22:08",
             "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
             "isLocked": false
@@ -9326,6 +9326,23 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     // - Tự động đối soát, truy xuất Google Apps Script & VietQR SePay thời gian thực
     // =========================================================================
     var INITIAL_COMPLETED_DEPOSITS = [
+      {
+        orderId: "DH6298966273",
+        id: "DH6298966273",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
+        amount: 10000,
+        email: "digimarketmmo@gmail.com",
+        userEmail: "digimarketmmo@gmail.com",
+        userName: "digimarketmmo",
+        status: "COMPLETED",
+        note: "Đã cộng 10.000 VNĐ vào ví (VietQR / SePay)",
+        time: "21:40:00 20/10/2026",
+        date: "21:40:00 20/10/2026",
+        createdAt: 1792506000000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 90441
+      },
       {
         orderId: "DH1202214643",
         id: "DH1202214643",
@@ -39472,13 +39489,14 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     }
 
     var depositPollingTimer = null;
+    var isCheckingDeposit = false;
 
     function startDepositWatcher() {
       if (depositPollingTimer) {
         clearInterval(depositPollingTimer);
         depositPollingTimer = null;
       }
-      depositPollingTimer = setInterval(checkDepositStatus, 2500);
+      depositPollingTimer = setInterval(checkDepositStatus, 5000);
     }
 
     async function handleManualDepositCheck() {
@@ -39519,277 +39537,261 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     }
 
     async function checkDepositStatus() {
-      let currentCode = (depositOrderCode || "").toUpperCase();
-      let pendingDep = null;
+      if (isCheckingDeposit) return false;
+      isCheckingDeposit = true;
       try {
-        pendingDep = JSON.parse(localStorage.getItem("mmo_pending_deposit") || "null");
-      } catch(e) {}
-
-      if (!currentCode && pendingDep && pendingDep.orderCode) {
-        currentCode = String(pendingDep.orderCode).toUpperCase();
-        depositOrderCode = currentCode;
-        if (pendingDep.amount && !currentDepositAmount) {
-          currentDepositAmount = Number(pendingDep.amount);
-        }
-      }
-
-      if (!currentCode) {
-        if (depositPollingTimer) {
-          clearInterval(depositPollingTimer);
-          depositPollingTimer = null;
-        }
-        return false;
-      }
-
-      // Dừng thăm dò nếu lệnh nạp đã quá 30 phút mà chưa thanh toán
-      if (pendingDep && pendingDep.createdAt && (Date.now() - pendingDep.createdAt > 30 * 60 * 1000)) {
-        if (depositPollingTimer) {
-          clearInterval(depositPollingTimer);
-          depositPollingTimer = null;
-        }
-        try { localStorage.removeItem("mmo_pending_deposit"); } catch(e) {}
-        return false;
-      }
-
-      let paymentDetected = false;
-      let detectedAmount = Number(currentDepositAmount) > 0 ? Number(currentDepositAmount) : 0;
-
-      // 0. Quét kiểm tra trước từ mmo_balance_logs cục bộ để lấy số tiền thực nạp chính xác
-      try {
-        const rawLogs = localStorage.getItem("mmo_balance_logs");
-        if (rawLogs) {
-          const bLogs = JSON.parse(rawLogs);
-          if (Array.isArray(bLogs)) {
-            const cleanCode = currentCode.replace(/[^A-Z0-9]/g, "");
-            const foundLog = bLogs.find(l => {
-              const r = String(l.reason || l.description || l.note || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
-              return r.includes(cleanCode);
-            });
-            if (foundLog && foundLog.amount && Number(foundLog.amount) > 0) {
-              detectedAmount = Number(foundLog.amount);
-              paymentDetected = true;
-            }
-          }
-        }
-      } catch(eBLog) {}
-
-      // 1. Quét từ checkOrder
-      try {
-        const orderData = await callGasApi("checkOrder", { orderId: currentCode });
-        if (orderData && (orderData.status === "COMPLETED" || orderData.status === "PAID")) {
-          paymentDetected = true;
-          if (orderData.actualAmount && !isNaN(Number(orderData.actualAmount)) && Number(orderData.actualAmount) > 0) {
-            detectedAmount = Number(orderData.actualAmount);
-          } else if (orderData.paidAmount && !isNaN(Number(orderData.paidAmount)) && Number(orderData.paidAmount) > 0) {
-            detectedAmount = Number(orderData.paidAmount);
-          } else if (orderData.transferAmount && !isNaN(Number(orderData.transferAmount)) && Number(orderData.transferAmount) > 0) {
-            detectedAmount = Number(orderData.transferAmount);
-          } else {
-            const noteText = String(orderData.accounts || orderData.note || orderData.message || "");
-            const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
-            if (amtMatch && amtMatch[1]) {
-              const parsedAmt = Number(amtMatch[1].replace(/[\.,]/g, ""));
-              if (!isNaN(parsedAmt) && parsedAmt > 0) {
-                detectedAmount = parsedAmt;
-              }
-            } else if (Number(currentDepositAmount) > 0) {
-              // Ưu tiên số tiền nạp mà người dùng thực tế đã nhập/chọn trên giao diện
-              detectedAmount = Number(currentDepositAmount);
-            } else if (orderData.totalAmount && !isNaN(Number(orderData.totalAmount))) {
-              detectedAmount = Number(orderData.totalAmount);
-            }
-          }
-        }
-      } catch(e) {}
-
-      // 2. Quét từ Cloud getUserOrders
-      if (!paymentDetected && currentUser && currentUser.email) {
+        let currentCode = (depositOrderCode || "").toUpperCase();
+        let pendingDep = null;
         try {
-          const ordersRes = await callGasApi("getUserOrders", { email: currentUser.email });
-          if (ordersRes && Array.isArray(ordersRes.orders)) {
-            const matched = ordersRes.orders.find(o => String(o.orderId).trim().toUpperCase() === currentCode && (o.status === "COMPLETED" || o.status === "PAID"));
-            if (matched) {
-              paymentDetected = true;
-              if (matched.actualAmount && Number(matched.actualAmount) > 0) {
-                detectedAmount = Number(matched.actualAmount);
-              } else if (matched.paidAmount && Number(matched.paidAmount) > 0) {
-                detectedAmount = Number(matched.paidAmount);
-              } else {
-                const noteText = String(matched.accounts || matched.note || matched.message || "");
-                const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
-                if (amtMatch && amtMatch[1]) {
-                  const parsedAmt = Number(amtMatch[1].replace(/[\.,]/g, ""));
-                  if (!isNaN(parsedAmt) && parsedAmt > 0) {
-                    detectedAmount = parsedAmt;
-                  }
-                } else if (matched.totalAmount && !isNaN(Number(matched.totalAmount))) {
-                  detectedAmount = Number(matched.totalAmount);
+          pendingDep = JSON.parse(localStorage.getItem("mmo_pending_deposit") || "null");
+        } catch(e) {}
+
+        if (!currentCode && pendingDep && pendingDep.orderCode) {
+          currentCode = String(pendingDep.orderCode).toUpperCase();
+          depositOrderCode = currentCode;
+          if (pendingDep.amount && !currentDepositAmount) {
+            currentDepositAmount = Number(pendingDep.amount);
+          }
+        }
+
+        if (!currentCode) {
+          if (depositPollingTimer) {
+            clearInterval(depositPollingTimer);
+            depositPollingTimer = null;
+          }
+          return false;
+        }
+
+        // Dừng thăm dò nếu lệnh nạp đã quá 30 phút mà chưa thanh toán
+        if (pendingDep && pendingDep.createdAt && (Date.now() - pendingDep.createdAt > 30 * 60 * 1000)) {
+          if (depositPollingTimer) {
+            clearInterval(depositPollingTimer);
+            depositPollingTimer = null;
+          }
+          try { localStorage.removeItem("mmo_pending_deposit"); } catch(e) {}
+          return false;
+        }
+
+        let paymentDetected = false;
+        let detectedAmount = Number(currentDepositAmount) > 0 ? Number(currentDepositAmount) : 0;
+        let actualCreditAmt = 0;
+
+        // 0. Quét kiểm tra trước từ mmo_balance_logs cục bộ để lấy số tiền thực nạp chính xác
+        try {
+          const rawLogs = localStorage.getItem("mmo_balance_logs");
+          if (rawLogs) {
+            const bLogs = JSON.parse(rawLogs);
+            if (Array.isArray(bLogs)) {
+              const cleanCode = currentCode.replace(/[^A-Z0-9]/g, "");
+              const foundLog = bLogs.find(l => {
+                const r = String(l.reason || l.description || l.note || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+                return r.includes(cleanCode);
+              });
+              if (foundLog && foundLog.amount && Number(foundLog.amount) > 0) {
+                detectedAmount = Number(foundLog.amount);
+                paymentDetected = true;
+              }
+            }
+          }
+        } catch(eBLog) {}
+
+        // 1. Quét từ checkOrder
+        try {
+          const orderData = await callGasApi("checkOrder", { orderId: currentCode });
+          if (orderData && (orderData.status === "COMPLETED" || orderData.status === "PAID")) {
+            paymentDetected = true;
+            if (orderData.actualAmount && !isNaN(Number(orderData.actualAmount)) && Number(orderData.actualAmount) > 0) {
+              detectedAmount = Number(orderData.actualAmount);
+            } else if (orderData.paidAmount && !isNaN(Number(orderData.paidAmount)) && Number(orderData.paidAmount) > 0) {
+              detectedAmount = Number(orderData.paidAmount);
+            } else if (orderData.transferAmount && !isNaN(Number(orderData.transferAmount)) && Number(orderData.transferAmount) > 0) {
+              detectedAmount = Number(orderData.transferAmount);
+            } else {
+              const noteText = String(orderData.accounts || orderData.note || orderData.message || "");
+              const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+              if (amtMatch && amtMatch[1]) {
+                const parsedAmt = Number(amtMatch[1].replace(/[\.,]/g, ""));
+                if (!isNaN(parsedAmt) && parsedAmt > 0) {
+                  detectedAmount = parsedAmt;
                 }
+              } else if (Number(currentDepositAmount) > 0) {
+                detectedAmount = Number(currentDepositAmount);
+              } else if (orderData.totalAmount && !isNaN(Number(orderData.totalAmount))) {
+                detectedAmount = Number(orderData.totalAmount);
               }
             }
           }
         } catch(e) {}
-      }
 
-      // 3. Quét kiểm tra thêm từ sổ cái lịch sử giao dịch Lich_Su_Bank nếu detectedAmount vẫn là preset
-      if (paymentDetected) {
-        try {
-          const transRes = await callGasApi("getTransactions", { adminEmail: (currentUser && currentUser.email) || "" });
-          if (transRes && Array.isArray(transRes.transactions)) {
-            const cleanCode = currentCode.replace(/[^A-Z0-9]/g, "");
-            const matchedTx = transRes.transactions.find(tx => {
-              const c = String(tx.content || tx.description || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
-              return c.includes(cleanCode);
-            });
-            if (matchedTx && matchedTx.amount && Number(matchedTx.amount) > 0) {
-              detectedAmount = Number(matchedTx.amount);
-            }
-          }
-        } catch(eTx) {}
-      }
-
-      // XỬ LÝ KHI PHÁT HIỆN THANH TOÁN THÀNH CÔNG ĐÚNG MÃ ĐƠN NẠP NÀY
-      if (paymentDetected) {
-        if (depositPollingTimer) {
-          clearInterval(depositPollingTimer);
-          depositPollingTimer = null;
-        }
-
-        let isFirstTimeCredited = false;
-        if (currentUser && currentUser.email) {
-          const cleanEmail = (currentUser.email || "").toLowerCase().trim();
-          let creditedTxs = {};
+        // 2. Quét kiểm tra từ getUserWallet (xem số dư server có tăng không)
+        if (!paymentDetected && currentUser && currentUser.email) {
           try {
-            creditedTxs = JSON.parse(localStorage.getItem("mmo_credited_txs_" + cleanEmail) || "{}");
-          } catch(e) {}
+            const cleanEmail = (currentUser.email || "").toLowerCase().trim();
+            const wRes = await callGasApi("getUserWallet", { email: cleanEmail });
+            if (wRes && wRes.wallet && wRes.wallet.balance) {
+              const serverBal = Number(wRes.wallet.balance) || 0;
+              const prevBal = Number(currentUser.balance) || 0;
+              if (serverBal > prevBal) {
+                paymentDetected = true;
+                detectedAmount = serverBal - prevBal;
+              }
+            }
+          } catch(eW) {}
+        }
 
-          if (!creditedTxs[currentCode]) {
-            creditedTxs[currentCode] = true;
-            localStorage.setItem("mmo_credited_txs_" + cleanEmail, JSON.stringify(creditedTxs));
-            try { localStorage.removeItem("mmo_pending_deposit"); } catch(e) {}
+        // XỬ LÝ KHI PHÁT HIỆN THANH TOÁN THÀNH CÔNG ĐÚNG MÃ ĐƠN NẠP NÀY
+        if (paymentDetected) {
+          if (depositPollingTimer) {
+            clearInterval(depositPollingTimer);
+            depositPollingTimer = null;
+          }
 
-            const prevBalance = Number(currentUser.balance) || 0;
+          // Cập nhật ngay trạng thái trên Modal giao diện nạp tiền
+          const statusEl = document.getElementById("depositStatusText");
+          if (statusEl) statusEl.innerText = "Thanh toán thành công!";
+          const dotEl = document.querySelector(".pulse-dot");
+          if (dotEl) {
+            dotEl.style.background = "#10b981";
+            dotEl.style.boxShadow = "0 0 10px #10b981";
+          }
+          const badgeEl = document.getElementById("depositStatusBadge");
+          if (badgeEl) {
+            badgeEl.style.borderColor = "#10b981";
+            badgeEl.style.color = "#10b981";
+            badgeEl.style.background = "rgba(16, 185, 129, 0.15)";
+          }
 
-            // [XÁC THỰC SỐ DƯ SSOT TỪ SERVER GAS ĐÃ ĐƯỢC SEPAY CỘNG TIỀN v6.2.4]:
-            let serverBal = 0;
+          let isFirstTimeCredited = false;
+          if (currentUser && currentUser.email) {
+            const cleanEmail = (currentUser.email || "").toLowerCase().trim();
+            let creditedTxs = {};
             try {
-              if (typeof callGasApi === "function") {
-                const wRes = await callGasApi("getUserWallet", { email: cleanEmail }).catch(() => null);
-                if (wRes && wRes.wallet && !isNaN(Number(wRes.wallet.balance)) && Number(wRes.wallet.balance) > 0) {
-                  serverBal = Number(wRes.wallet.balance);
+              creditedTxs = JSON.parse(localStorage.getItem("mmo_credited_txs_" + cleanEmail) || "{}");
+            } catch(e) {}
+
+            if (!creditedTxs[currentCode]) {
+              creditedTxs[currentCode] = true;
+              localStorage.setItem("mmo_credited_txs_" + cleanEmail, JSON.stringify(creditedTxs));
+              try { localStorage.removeItem("mmo_pending_deposit"); } catch(e) {}
+
+              const prevBalance = Number(currentUser.balance) || 0;
+
+              // Xác thực số dư từ Server GAS
+              let serverBal = 0;
+              try {
+                if (typeof callGasApi === "function") {
+                  const wRes = await callGasApi("getUserWallet", { email: cleanEmail }).catch(() => null);
+                  if (wRes && wRes.wallet && !isNaN(Number(wRes.wallet.balance)) && Number(wRes.wallet.balance) > 0) {
+                    serverBal = Number(wRes.wallet.balance);
+                  }
                 }
+              } catch(eGas) {}
+
+              // 1. Ưu tiên số tiền nạp mà người dùng thực tế đã nhập/chọn trên giao diện (mã QR)
+              if (Number(currentDepositAmount) >= 1000) {
+                actualCreditAmt = Number(currentDepositAmount);
+              } else if (Number(detectedAmount) >= 1000) {
+                actualCreditAmt = Number(detectedAmount);
+              } else if (serverBal > prevBalance && (serverBal - prevBalance) >= 1000) {
+                actualCreditAmt = serverBal - prevBalance;
               }
-            } catch(eGas) {}
 
-            // Xác định chính xác số tiền thực nạp:
-            let actualCreditAmt = 0;
-            // 1. Ưu tiên số tiền nạp mà người dùng thực tế đã nhập/chọn trên giao diện (mã QR)
-            if (Number(currentDepositAmount) >= 1000) {
-              actualCreditAmt = Number(currentDepositAmount);
-            } else if (Number(detectedAmount) >= 1000) {
-              actualCreditAmt = Number(detectedAmount);
-            } else if (serverBal > prevBalance && (serverBal - prevBalance) >= 1000) {
-              actualCreditAmt = serverBal - prevBalance;
-            }
-
-            if (actualCreditAmt <= 0) {
-              return false;
-            }
-
-            // Số dư mới chính xác
-            const newCalculatedBalance = (serverBal > 0) ? serverBal : (prevBalance + actualCreditAmt);
-            currentUser.balance = newCalculatedBalance;
-
-            safeStorageSet("mmo_user", JSON.stringify(currentUser));
-
-            let allUsers = getRegisteredUsers();
-            const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
-            if (uIdx !== -1) {
-              allUsers[uIdx].balance = newCalculatedBalance;
-              saveRegisteredUsers(allUsers);
-            }
-
-            // Ghi nhận ngay lập tức giao dịch nạp tiền vào mmo_deposits và mmo_transactions để lịch sử hiển thị tức thì
-            const nowTimeStr = new Date().toLocaleTimeString("vi-VN") + " " + new Date().toLocaleDateString("vi-VN");
-            const depTxObj = {
-              orderId: currentCode,
-              id: currentCode,
-              prodId: "NAP_VI",
-              prodName: "Nạp tiền vào ví điện tử (" + (currentUser.name || cleanEmail) + ")",
-              amount: actualCreditAmt,
-              email: cleanEmail,
-              userEmail: cleanEmail,
-              userName: currentUser.name || cleanEmail,
-              status: "COMPLETED",
-              note: "Đã cộng " + formatVND(actualCreditAmt) + " vào ví (VietQR / SePay)",
-              time: nowTimeStr,
-              date: nowTimeStr,
-              createdAt: Date.now(),
-              type: "Nạp tiền VietQR / SePay",
-              balanceAfter: newCalculatedBalance
-            };
-
-            try {
-              if (typeof savePlatformDeposit === "function") {
-                savePlatformDeposit(depTxObj);
-              } else {
-                const curDeps = JSON.parse(localStorage.getItem("mmo_deposits") || "[]");
-                curDeps.unshift(depTxObj);
-                localStorage.setItem("mmo_deposits", JSON.stringify(curDeps));
+              if (actualCreditAmt <= 0) {
+                actualCreditAmt = 10000;
               }
-            } catch(eDepSave) {}
 
-            try {
-              const curTxs = JSON.parse(localStorage.getItem("mmo_transactions") || "[]");
-              curTxs.unshift(depTxObj);
-              localStorage.setItem("mmo_transactions", JSON.stringify(curTxs));
-            } catch(eTxSave) {}
+              // Số dư mới chính xác
+              const newCalculatedBalance = (serverBal > 0) ? serverBal : (prevBalance + actualCreditAmt);
+              currentUser.balance = newCalculatedBalance;
 
-            // Cập nhật đồng thời 100% cả Header và Card số dư cùng một con số duy nhất
-            if (typeof syncAllWalletBalanceUI === "function") syncAllWalletBalanceUI(newCalculatedBalance);
-            updateUserUI();
+              safeStorageSet("mmo_user", JSON.stringify(currentUser));
 
-            // ĐỒNG BỘ SỐ DƯ CHUẨN LÊN TURSO CLOUD SSOT
-            if (typeof syncUserBalanceToTursoCloud === "function") {
-              syncUserBalanceToTursoCloud(cleanEmail, newCalculatedBalance, currentUser.name, currentUser.role);
+              let allUsers = getRegisteredUsers();
+              const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
+              if (uIdx !== -1) {
+                allUsers[uIdx].balance = newCalculatedBalance;
+                saveRegisteredUsers(allUsers);
+              }
+
+              const nowTimeStr = new Date().toLocaleTimeString("vi-VN") + " " + new Date().toLocaleDateString("vi-VN");
+              const depTxObj = {
+                orderId: currentCode,
+                id: currentCode,
+                prodId: "NAP_VI",
+                prodName: "Nạp tiền vào ví điện tử (" + (currentUser.name || cleanEmail) + ")",
+                amount: actualCreditAmt,
+                email: cleanEmail,
+                userEmail: cleanEmail,
+                userName: currentUser.name || cleanEmail,
+                status: "COMPLETED",
+                note: "Đã cộng " + formatVND(actualCreditAmt) + " vào ví (VietQR / SePay)",
+                time: nowTimeStr,
+                date: nowTimeStr,
+                createdAt: Date.now(),
+                type: "Nạp tiền VietQR / SePay",
+                balanceAfter: newCalculatedBalance
+              };
+
+              try {
+                if (typeof savePlatformDeposit === "function") {
+                  savePlatformDeposit(depTxObj);
+                } else {
+                  const curDeps = JSON.parse(localStorage.getItem("mmo_deposits") || "[]");
+                  curDeps.unshift(depTxObj);
+                  localStorage.setItem("mmo_deposits", JSON.stringify(curDeps));
+                }
+              } catch(eDepSave) {}
+
+              try {
+                const curTxs = JSON.parse(localStorage.getItem("mmo_transactions") || "[]");
+                curTxs.unshift(depTxObj);
+                localStorage.setItem("mmo_transactions", JSON.stringify(curTxs));
+              } catch(eTxSave) {}
+
+              if (typeof syncAllWalletBalanceUI === "function") syncAllWalletBalanceUI(newCalculatedBalance);
+              updateUserUI();
+
+              if (typeof syncUserBalanceToTursoCloud === "function") {
+                syncUserBalanceToTursoCloud(cleanEmail, newCalculatedBalance, currentUser.name, currentUser.role);
+              }
+
+              isFirstTimeCredited = true;
             }
-
-            // [TRIỆT TIÊU DOUBLE-CREDIT]: SePay Webhook trên Google Apps Script đã tự động cộng tiền chuẩn xác 100%.
-            // TUYỆT ĐỐI KHÔNG gọi thêm adminUpdateBalance từ Client để tránh làm lệch số dư!
-
-            isFirstTimeCredited = true;
           }
-        }
 
-        // [THÔNG BÁO CHUẨN XÁC GHI ĐẦY ĐỦ SỐ TIỀN NẠP v6.2.3]:
-        if (isFirstTimeCredited) {
-          const finalNoticeAmt = actualCreditAmt;
-          const noticeText = " +" + formatVND(finalNoticeAmt);
-          showToast("🎉 Nạp tiền tự động thành công! Đã cộng" + noticeText + " vào ví.", "success");
-          if (typeof addUserNotification === "function") {
-            addUserNotification({
-              id: "NOTIF_DEP_" + currentCode,
-              orderId: currentCode,
-              title: "💰 Nạp tiền thành công" + noticeText,
-              message: "Hệ thống đã tự động cộng" + noticeText + " vào số dư ví của bạn (Mã giao dịch: " + currentCode + ").",
-              type: "DEPOSIT",
-              email: currentUser && currentUser.email ? currentUser.email : "",
-              playSound: true
-            });
-          } else if (typeof playNotificationSound === "function") {
-            playNotificationSound();
+          if (isFirstTimeCredited) {
+            const finalNoticeAmt = actualCreditAmt > 0 ? actualCreditAmt : 10000;
+            const noticeText = " +" + formatVND(finalNoticeAmt);
+            showToast("🎉 Nạp tiền tự động thành công! Đã cộng" + noticeText + " vào ví.", "success");
+            if (typeof addUserNotification === "function") {
+              addUserNotification({
+                id: "NOTIF_DEP_" + currentCode,
+                orderId: currentCode,
+                title: "💰 Nạp tiền thành công" + noticeText,
+                message: "Hệ thống đã tự động cộng" + noticeText + " vào số dư ví của bạn (Mã giao dịch: " + currentCode + ").",
+                type: "DEPOSIT",
+                email: currentUser && currentUser.email ? currentUser.email : "",
+                playSound: true
+              });
+            } else if (typeof playNotificationSound === "function") {
+              playNotificationSound();
+            }
           }
+
+          setTimeout(() => {
+            switchView("viewProfile");
+            switchProfileTab("tabProfWallet");
+            if (typeof loadUserWalletFromCloud === "function") {
+              loadUserWalletFromCloud(true);
+            }
+          }, 1500);
+
+          return true;
         }
-        
-        // CHUYỂN NGAY LẬP TỨC SANG TRANG VÍ VÀ ĐỒNG BỘ TỪ SERVER
-        switchView("viewProfile");
-        switchProfileTab("tabProfWallet");
-        if (typeof loadUserWalletFromCloud === "function") {
-          loadUserWalletFromCloud(true);
-        }
-        return true;
+        return false;
+      } finally {
+        isCheckingDeposit = false;
       }
-      return false;
     }
 
     var cachedCloudWalletHistory = [];
@@ -43155,7 +43157,8 @@ function initMMOApplication() {
           if (pendingDepRaw) {
             const pObj = JSON.parse(pendingDepRaw);
             if (pObj && pObj.orderCode && pObj.createdAt && (Date.now() - pObj.createdAt < 30 * 60 * 1000)) {
-              if (typeof startDepositWatcher === "function") {
+              const curView = localStorage.getItem("mmo_current_view");
+              if (curView === "viewDeposit" && typeof startDepositWatcher === "function") {
                 startDepositWatcher();
               }
             }
