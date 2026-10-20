@@ -39540,6 +39540,9 @@ window.renderProductDetailArticle = renderProductDetailArticle;
               if (!isNaN(parsedAmt) && parsedAmt > 0) {
                 detectedAmount = parsedAmt;
               }
+            } else if (Number(currentDepositAmount) > 0) {
+              // Ưu tiên số tiền nạp mà người dùng thực tế đã nhập/chọn trên giao diện
+              detectedAmount = Number(currentDepositAmount);
             } else if (orderData.totalAmount && !isNaN(Number(orderData.totalAmount))) {
               detectedAmount = Number(orderData.totalAmount);
             }
@@ -39613,18 +39616,36 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             localStorage.setItem("mmo_credited_txs_" + cleanEmail, JSON.stringify(creditedTxs));
             try { localStorage.removeItem("mmo_pending_deposit"); } catch(e) {}
 
-            // [CỘNG ĐÚNG CHÍNH XÁC 100% SỐ TIỀN THỰC NẠP v6.2.3]:
-            // Số tiền nạp thực tế được lấy chính xác từ giao dịch phát hiện (detectedAmount) hoặc lệnh nạp (currentDepositAmount)
-            // TUYỆT ĐỐI KHÔNG CÓ BẤT KỲ GIỚI HẠN CỨNG HAY MẶC ĐỊNH NÀO (DÙ NẠP 1.000đ, 2.000đ HAY VÀI K LẺ ĐỀU CỘNG CHÍNH XÁC 100%)
-            const actualCreditAmt = (Number(detectedAmount) > 0) ? Number(detectedAmount) : (Number(currentDepositAmount) > 0 ? Number(currentDepositAmount) : 0);
+            const prevBalance = Number(currentUser.balance) || 0;
+
+            // [XÁC THỰC SỐ DƯ SSOT TỪ SERVER GAS ĐÃ ĐƯỢC SEPAY CỘNG TIỀN v6.2.4]:
+            let serverBal = 0;
+            try {
+              if (typeof callGasApi === "function") {
+                const wRes = await callGasApi("getUserWallet", { email: cleanEmail }).catch(() => null);
+                if (wRes && wRes.wallet && !isNaN(Number(wRes.wallet.balance)) && Number(wRes.wallet.balance) > 0) {
+                  serverBal = Number(wRes.wallet.balance);
+                }
+              }
+            } catch(eGas) {}
+
+            // Xác định chính xác số tiền thực nạp:
+            let actualCreditAmt = 0;
+            if (serverBal > prevBalance) {
+              // Nếu Server GAS đã được SePay Webhook cộng tiền, lấy trực tiếp số tiền chênh lệch!
+              actualCreditAmt = serverBal - prevBalance;
+            } else if (Number(currentDepositAmount) > 0) {
+              actualCreditAmt = Number(currentDepositAmount);
+            } else if (Number(detectedAmount) > 0) {
+              actualCreditAmt = Number(detectedAmount);
+            }
 
             if (actualCreditAmt <= 0) {
               return false;
             }
 
-            // Số dư mới = Số dư trước nạp + Số tiền nạp
-            const prevBalance = Number(currentUser.balance) || 0;
-            const newCalculatedBalance = prevBalance + actualCreditAmt;
+            // Số dư mới chính xác
+            const newCalculatedBalance = (serverBal > 0) ? serverBal : (prevBalance + actualCreditAmt);
             currentUser.balance = newCalculatedBalance;
 
             safeStorageSet("mmo_user", JSON.stringify(currentUser));
@@ -39681,17 +39702,20 @@ window.renderProductDetailArticle = renderProductDetailArticle;
               syncUserBalanceToTursoCloud(cleanEmail, newCalculatedBalance, currentUser.name, currentUser.role);
             }
 
-            // Đồng bộ sang Google Apps Script Server
-            try {
-              if (typeof callGasApi === "function") {
-                callGasApi("adminUpdateBalance", {
-                  adminEmail: "manhdongvtc@gmail.com",
-                  targetEmail: cleanEmail,
-                  amount: actualCreditAmt,
-                  reason: "Nạp tiền tự động qua VietQR: " + currentCode + " (+" + actualCreditAmt + ")"
-                }).catch(() => {});
-              }
-            } catch(eGasUp) {}
+            // CHỐNG CỘNG TRÙNG LẶP (ANTI-DOUBLE-CREDIT):
+            // Chỉ gọi adminUpdateBalance nếu Server GAS chưa được SePay webhook xử lý (serverBal <= prevBalance)
+            if (serverBal <= prevBalance) {
+              try {
+                if (typeof callGasApi === "function") {
+                  callGasApi("adminUpdateBalance", {
+                    adminEmail: "manhdongvtc@gmail.com",
+                    targetEmail: cleanEmail,
+                    amount: actualCreditAmt,
+                    reason: "Nạp tiền tự động qua VietQR: " + currentCode + " (+" + actualCreditAmt + ")"
+                  }).catch(() => {});
+                }
+              } catch(eGasUp) {}
+            }
 
             isFirstTimeCredited = true;
           }
