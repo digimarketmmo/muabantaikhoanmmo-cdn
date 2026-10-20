@@ -1466,52 +1466,6 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 ],
       products: [
   {
-    "id": "PROD_MTQZT2Y1",
-    "name": "HOTMAIL - OUTLOOK ĐỘ TRUST CAO LIVE TRÂU",
-    "slug": "prod-mtqzt2y1",
-    "category": "Hotmail / Outlook",
-    "description": "",
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQZT2Y1_HOTMAIL_-_OUTLOOK_%C4%90%E1%BB%98_TRUST_CAO_LIVE_TR%C3%82U.png",
-    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQZT2Y1_HOTMAIL_-_OUTLOOK_%C4%90%E1%BB%98_TRUST_CAO_LIVE_TR%C3%82U.png",
-    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQZT2Y1_HOTMAIL_-_OUTLOOK_%C4%90%E1%BB%98_TRUST_CAO_LIVE_TR%C3%82U.png",
-    "price": 141,
-    "warranty": "Bảo Hành 1 Đổi 1",
-    "variants": [
-      {
-        "name": "Mặc định",
-        "price": 141,
-        "stock": 4707,
-        "available": true,
-        "apiMapping": {
-          "enabled": true,
-          "provider": "ultrammo",
-          "sourceProdId": "26955",
-          "sourcePrice": 117,
-          "sourceStock": 4707,
-          "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
-          "baseUrl": "https://ultrammo.com",
-          "isSourceDeleted": false
-        },
-        "accounts": []
-      }
-    ],
-    "delivery_type": "api",
-    "apiMapping": {
-      "enabled": true,
-      "provider": "ultrammo",
-      "sourceProdId": "26955",
-      "sourcePrice": 117,
-      "sourceStock": 4707,
-      "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
-      "baseUrl": "https://ultrammo.com",
-      "isSourceDeleted": false
-    },
-    "stock": 4707,
-    "buffSold": 0,
-    "sold": 0,
-    "available": true
-  },
-  {
     "id": "PROD_MTRB6000",
     "name": "OUTLOOK TRUSTED - LIVE 6-12 Tháng",
     "slug": "prod-mtrb6000",
@@ -4834,6 +4788,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     ];
 
     var PERMANENT_DELETED_IDS = [
+      "PROD_MTQZT2Y1", // Hotmail do trust cao da xoa
       "PROD_MV9SJ8FB6K", // Sản phẩm Capcut tải từ khotaikhoanso nhầm sang - loại bỏ vĩnh viễn
       "PROD_MV9NXBULDO", // Paypal clone duplicate
       "PROD_MTU9F5HN",   // Paypal 2025 - 2016 Đã ngâm lâu cực kỳ Trâu (Admin đã xóa vĩnh viễn)
@@ -18934,32 +18889,40 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           if (typeof renderBestSellers === "function") renderBestSellers();
           if (typeof renderRecommended === "function") renderRecommended();
           if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
-          if (typeof renderAllProductsPage === "function") renderAllProductsPage(); else if (curActiveView === "viewProductDetail") {
-            const dtlView = document.getElementById("viewProductDetail");
-            const isDtlVisible = dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden");
-            if (isDtlVisible && typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
-              const freshCur = MOCK_DATA.products.find(p => p && p.id === currentSelectedProduct.id && !isProductDeleted(p));
-              if (freshCur) {
-                currentSelectedProduct = freshCur;
-                if (typeof openProductDetailById === "function") {
-                  openProductDetailById(freshCur.id, true);
-                }
-              } else {
-                // Sản phẩm đang xem đã bị xóa khỏi hệ thống -> tự động đóng view và chuyển về Cửa hàng
-                currentSelectedProduct = null;
-                try {
-                  const url = new URL(window.location.href);
-                  url.searchParams.delete("prod");
-                  url.searchParams.delete("product");
-                  window.history.replaceState(null, "", url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : ''));
-                } catch(e) {}
-                if (typeof switchView === "function") switchView("viewStore");
-                if (typeof showToast === "function") showToast("Sản phẩm bạn đang xem đã ngừng kinh doanh hoặc bị xóa", "warning");
+          if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+          
+          // [BẢO VỆ CHẶT CHẼ VIEW CHI TIẾT SẢN PHẨM]: Kiểm tra tức thì sau khi sync Turso DB
+          const curActiveViewNow = (typeof localStorage !== "undefined" && localStorage.getItem("mmo_current_view")) || "viewStore";
+          const dtlViewNow = document.getElementById("viewProductDetail");
+          const isDtlVisibleNow = dtlViewNow && dtlViewNow.style.display !== "none" && !dtlViewNow.classList.contains("hidden");
+          if (curActiveViewNow === "viewProductDetail" || isDtlVisibleNow) {
+            const curViewingProdId = (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && currentSelectedProduct.id) ||
+                                     (new URL(window.location.href).searchParams.get("prod")) ||
+                                     (document.getElementById("dtlProdId") && document.getElementById("dtlProdId").value) || "";
+            const freshCur = curViewingProdId ? MOCK_DATA.products.find(p => p && String(p.id).trim() === String(curViewingProdId).trim() && !isProductDeleted(p)) : null;
+            if (freshCur) {
+              currentSelectedProduct = freshCur;
+              if (typeof openProductDetailById === "function") {
+                openProductDetailById(freshCur.id, true);
               }
+            } else if (curViewingProdId) {
+              // Sản phẩm đang xem đã bị xóa khỏi hệ thống -> tự động đóng view và chuyển về Cửa hàng
+              currentSelectedProduct = null;
+              window.currentSelectedProduct = null;
+              window._currentActiveDetailProduct = null;
+              try {
+                const url = new URL(window.location.href);
+                url.searchParams.delete("prod");
+                url.searchParams.delete("product");
+                window.history.replaceState(null, "", url.pathname + (url.searchParams.toString() ? '?' + url.searchParams.toString() : ''));
+              } catch(e) {}
+              if (dtlViewNow) {
+                dtlViewNow.style.setProperty("display", "none", "important");
+                dtlViewNow.classList.add("hidden");
+              }
+              if (typeof switchView === "function") switchView("viewStore");
+              if (typeof showToast === "function") showToast("Sản phẩm bạn đang xem đã ngừng kinh doanh hoặc bị xóa", "warning");
             }
-          } else {
-            if (typeof renderCategories === "function") renderCategories();
-            if (typeof renderProductGrid === "function") renderProductGrid();
           }
         }
       } catch(e) {
@@ -32790,6 +32753,14 @@ function executeCompareSourcesSearch() {
           const cleanUrl = (window.location.origin || "https://www.muabantaikhoanmmo.com") + "/";
           window.history.replaceState({}, "", cleanUrl);
         } catch(e) {}
+        const dtlView = document.getElementById("viewProductDetail");
+        if (dtlView) {
+          dtlView.style.setProperty("display", "none", "important");
+          dtlView.classList.add("hidden");
+        }
+        currentSelectedProduct = null;
+        window.currentSelectedProduct = null;
+        window._currentActiveDetailProduct = null;
         if (typeof switchView === "function") {
           switchView("viewStore");
         }
@@ -42134,15 +42105,55 @@ function changeAdmUsersPage(p) {
           }
           if (ev && ev.data && ev.data.type === "PRODUCT_DELETED") {
             const delId = String(ev.data.prodId || "").trim();
+            const altId = String(ev.data.altId || "").trim();
+            const delName = String(ev.data.prodName || "").trim().toLowerCase();
             if (delId) {
               let deletedIds = (typeof getDeletedProductIds === "function") ? getDeletedProductIds() : [];
               if (!deletedIds.includes(delId)) deletedIds.push(delId);
+              if (altId && !deletedIds.includes(altId)) deletedIds.push(altId);
               localStorage.setItem("mmo_deleted_product_ids", JSON.stringify(deletedIds));
+              localStorage.setItem("mmo_admin_deleted_ids", JSON.stringify(deletedIds));
+            }
+            if (delName) {
+              try {
+                let delNames = [];
+                const rawNames = localStorage.getItem("mmo_deleted_product_names");
+                if (rawNames) delNames = JSON.parse(rawNames) || [];
+                if (!delNames.includes(delName)) {
+                  delNames.push(delName);
+                  localStorage.setItem("mmo_deleted_product_names", JSON.stringify(delNames));
+                }
+              } catch(eNames) {}
             }
             if (MOCK_DATA && Array.isArray(MOCK_DATA.products)) {
-              MOCK_DATA.products = MOCK_DATA.products.filter(p => p && String(p.id) !== delId);
+              MOCK_DATA.products = MOCK_DATA.products.filter(p => {
+                if (!p) return false;
+                const pid = String(p.id || "").trim();
+                if (pid === delId || (altId && pid === altId)) return false;
+                if (delName && p.name && p.name.trim().toLowerCase() === delName) return false;
+                return true;
+              });
             }
-            if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && String(currentSelectedProduct.id) === delId) {
+            if (typeof invalidateVisibleProductsCache === "function") invalidateVisibleProductsCache();
+
+            // Kiểm tra xem tab hiện tại có đang hiển thị sản phẩm vừa bị xóa không
+            let isCurrentViewing = false;
+            try {
+              const curUrl = new URL(window.location.href);
+              const curProdParam = curUrl.searchParams.get("prod") || curUrl.searchParams.get("product") || "";
+              const curDtlId = (document.getElementById("dtlProdId") && document.getElementById("dtlProdId").value) || "";
+              const curDtlTitle = (document.getElementById("dtlProdTitle") && document.getElementById("dtlProdTitle").textContent || "").trim().toLowerCase();
+              if (curProdParam && (curProdParam === delId || curProdParam === altId)) isCurrentViewing = true;
+              if (curDtlId && (curDtlId === delId || curDtlId === altId)) isCurrentViewing = true;
+              if (delName && curDtlTitle && (curDtlTitle === delName || curDtlTitle.includes(delName) || delName.includes(curDtlTitle))) isCurrentViewing = true;
+              if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
+                const cspId = String(currentSelectedProduct.id || "").trim();
+                const cspName = String(currentSelectedProduct.name || "").trim().toLowerCase();
+                if (cspId === delId || cspId === altId || (delName && cspName === delName)) isCurrentViewing = true;
+              }
+            } catch(eCheck) {}
+
+            if (isCurrentViewing) {
               currentSelectedProduct = null;
               window.currentSelectedProduct = null;
               window._currentActiveDetailProduct = null;
@@ -42154,15 +42165,18 @@ function changeAdmUsersPage(p) {
               } catch(e) {}
               const dtlView = document.getElementById("viewProductDetail");
               if (dtlView) {
-                dtlView.style.display = "none";
+                dtlView.style.setProperty("display", "none", "important");
                 dtlView.classList.add("hidden");
               }
               if (typeof switchView === "function") switchView("viewStore");
+              if (typeof showToast === "function") showToast("Sản phẩm bạn đang xem đã bị người quản trị xóa khỏi hệ thống!", "warning");
             }
+            if (typeof renderAdminDashboard === "function") renderAdminDashboard();
             if (typeof renderProductGrid === "function") renderProductGrid();
             if (typeof renderCategories === "function") renderCategories();
             if (typeof renderBestSellers === "function") renderBestSellers();
             if (typeof renderRecommended === "function") renderRecommended();
+            if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
             if (typeof renderAllProductsPage === "function") renderAllProductsPage();
             if (typeof refreshAllShopStockUI === "function") refreshAllShopStockUI();
           }
@@ -43748,9 +43762,12 @@ function initMMOApplication() {
       // 5. Xóa sạch ?prod trên thanh địa chỉ URL và chuyển về trang chủ nếu đang xem sản phẩm này
       try {
         const url = new URL(window.location.href);
-        const curProdParam = url.searchParams.get("prod") || url.searchParams.get("product");
+        const curProdParam = url.searchParams.get("prod") || url.searchParams.get("product") || "";
+        const dtlView = document.getElementById("viewProductDetail");
+        const dtlIdInDom = (document.getElementById("dtlProdId") && document.getElementById("dtlProdId").value) || "";
         const isViewingThis = (curProdParam === pid || curProdParam === targetId) ||
-                              (currentSelectedProduct && (String(currentSelectedProduct.id) === String(pid) || String(currentSelectedProduct.id) === String(targetId)));
+                              (dtlIdInDom === pid || dtlIdInDom === targetId) ||
+                              (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct && (String(currentSelectedProduct.id) === String(pid) || String(currentSelectedProduct.id) === String(targetId)));
         
         if (isViewingThis) {
           url.searchParams.delete("prod");
@@ -43760,18 +43777,20 @@ function initMMOApplication() {
           window.currentSelectedProduct = null;
           window._currentActiveDetailProduct = null;
           if (dtlView) {
-            dtlView.style.display = "none";
+            dtlView.style.setProperty("display", "none", "important");
             dtlView.classList.add("hidden");
           }
           if (typeof switchView === "function") switchView("viewStore");
         }
-      } catch(e) {}
+      } catch(e) {
+        console.error("deleteProduct view switch error:", e);
+      }
 
       // 6. Gửi broadcast tới toàn bộ các tab/cửa sổ khác đang mở để lập tức gỡ bỏ sản phẩm
       if (typeof BroadcastChannel !== "undefined") {
         try {
           const bc = new BroadcastChannel("muabanmmo_channel");
-          bc.postMessage({ type: "PRODUCT_DELETED", prodId: targetId, prodName: prodName });
+          bc.postMessage({ type: "PRODUCT_DELETED", prodId: targetId, altId: pid, prodName: prodName });
         } catch(e) {}
       }
 
