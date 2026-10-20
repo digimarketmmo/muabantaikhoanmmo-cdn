@@ -439,7 +439,7 @@ function healStorageQuota(forceEmergency) {
       }
     } catch(eAdmClean) {}
 
-    // [BẢO VỆ SỐ DƯ VÍ SSOT & ĐỒNG BỘ 100% TRÊN DƯỚI v6.2.7]:
+    // [BẢO VỆ SỐ DƯ VÍ SSOT & ĐỒNG BỘ 100% TRÊN DƯỚI v6.2.8]:
     // Chuẩn hóa số dư chính xác 80.441đ (71.441đ + 2k + 3k + 4k thực nạp) cho digimarketmmo@gmail.com
     try {
       const rawU = localStorage.getItem("mmo_user");
@@ -36372,7 +36372,13 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     if (typeof window !== "undefined" && !window._bloggerFeedIntervalSet) {
       window._bloggerFeedIntervalSet = true;
       try {
-        setTimeout(function() { fetchBloggerFeedPosts(false); }, 4500);
+        if (typeof window !== "undefined") {
+        window.addEventListener("load", function() {
+          setTimeout(function() { fetchBloggerFeedPosts(false); }, 2500);
+        });
+      } else {
+        setTimeout(function() { fetchBloggerFeedPosts(false); }, 5000);
+      }
         setInterval(function() { fetchBloggerFeedPosts(false); }, 180000);
       } catch(e) {}
     }
