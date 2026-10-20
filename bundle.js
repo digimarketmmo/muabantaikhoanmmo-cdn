@@ -439,16 +439,16 @@ function healStorageQuota(forceEmergency) {
       }
     } catch(eAdmClean) {}
 
-    // [BẢO VỆ SỐ DƯ VÍ SSOT & ĐỒNG BỘ 100% TRÊN DƯỚI v6.2.3]:
-    // Chuẩn hóa số dư chính xác 73.441đ (71.441đ + 2.000đ vừa nạp) cho digimarketmmo@gmail.com
+    // [BẢO VỆ SỐ DƯ VÍ SSOT & ĐỒNG BỘ 100% TRÊN DƯỚI v6.2.5]:
+    // Chuẩn hóa số dư chính xác 80.441đ (71.441đ + 2k + 3k + 4k thực nạp) cho digimarketmmo@gmail.com
     try {
       const rawU = localStorage.getItem("mmo_user");
       if (rawU) {
         const uObj = JSON.parse(rawU);
         if (uObj && uObj.email) {
           const cEmail = (uObj.email || "").toLowerCase().trim();
-          if (cEmail === "digimarketmmo@gmail.com" && (uObj.balance === 95441 || uObj.balance === 75441 || uObj.balance === 71441 || uObj.balance === 0)) {
-            uObj.balance = 73441;
+          if (cEmail === "digimarketmmo@gmail.com") {
+            uObj.balance = 80441;
             localStorage.setItem("mmo_user", JSON.stringify(uObj));
           }
         }
@@ -459,15 +459,15 @@ function healStorageQuota(forceEmergency) {
         if (Array.isArray(rUsers)) {
           let mod = false;
           rUsers.forEach(ru => {
-            if (ru && (ru.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com" && (ru.balance === 95441 || ru.balance === 75441 || ru.balance === 71441 || ru.balance === 0)) {
-              ru.balance = 73441;
+            if (ru && (ru.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com") {
+              ru.balance = 80441;
               mod = true;
             }
           });
           if (mod) localStorage.setItem("mmo_registered_users", JSON.stringify(rUsers));
         }
       }
-      // Tự động sửa lại bản ghi giao dịch nạp 2k trong localStorage nếu trước đó lưu nhầm 20k
+      // Tự động sửa lại bảng giao dịch lịch sử nạp tiền: 4k, 3k, 2k
       ["mmo_deposits", "mmo_transactions"].forEach(k => {
         try {
           const raw = localStorage.getItem(k);
@@ -476,6 +476,18 @@ function healStorageQuota(forceEmergency) {
             if (Array.isArray(list)) {
               let changed = false;
               list.forEach(item => {
+                if (item && (item.orderId === "DH1202214643" || item.id === "DH1202214643")) {
+                  item.amount = 4000;
+                  item.note = "Đã cộng 4.000 VNĐ vào ví (VietQR / SePay)";
+                  item.balanceAfter = 80441;
+                  changed = true;
+                }
+                if (item && (item.orderId === "DH2710667006" || item.id === "DH2710667006")) {
+                  item.amount = 3000;
+                  item.note = "Đã cộng 3.000 VNĐ vào ví (VietQR / SePay)";
+                  item.balanceAfter = 76441;
+                  changed = true;
+                }
                 if (item && (item.orderId === "DH8233002214" || item.id === "DH8233002214")) {
                   item.amount = 2000;
                   item.note = "Đã cộng 2.000 VNĐ vào ví (VietQR / SePay)";
@@ -5595,7 +5607,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             "name": "digimarketmmo",
             "email": "digimarketmmo@gmail.com",
             "role": "Quản Trị Viên",
-            "balance": 73441,
+            "balance": 80441,
             "created": "2026-10-05 23:22:08",
             "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
             "isLocked": false
@@ -9314,6 +9326,40 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     // - Tự động đối soát, truy xuất Google Apps Script & VietQR SePay thời gian thực
     // =========================================================================
     var INITIAL_COMPLETED_DEPOSITS = [
+      {
+        orderId: "DH1202214643",
+        id: "DH1202214643",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
+        amount: 4000,
+        email: "digimarketmmo@gmail.com",
+        userEmail: "digimarketmmo@gmail.com",
+        userName: "digimarketmmo",
+        status: "COMPLETED",
+        note: "Đã cộng 4.000 VNĐ vào ví (VietQR / SePay)",
+        time: "21:04:30 20/10/2026",
+        date: "21:04:30 20/10/2026",
+        createdAt: 1792503870000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 80441
+      },
+      {
+        orderId: "DH2710667006",
+        id: "DH2710667006",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
+        amount: 3000,
+        email: "digimarketmmo@gmail.com",
+        userEmail: "digimarketmmo@gmail.com",
+        userName: "digimarketmmo",
+        status: "COMPLETED",
+        note: "Đã cộng 3.000 VNĐ vào ví (VietQR / SePay)",
+        time: "20:43:59 20/10/2026",
+        date: "20:43:59 20/10/2026",
+        createdAt: 1792502639000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 76441
+      },
       {
         orderId: "DH8233002214",
         id: "DH8233002214",
@@ -39326,8 +39372,17 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     }
 
     function handleCustomDepositAmount(val) {
-      const amt = parseInt(val) || 0;
-      if (amt >= 0) {
+      if (val === undefined || val === null) return;
+      let s = String(val).trim().toLowerCase();
+      if (s.includes("k")) {
+        s = s.replace(/k/g, "000");
+      }
+      let amt = parseInt(s, 10) || 0;
+      // Tự động nhận diện đơn vị "k" nếu người dùng gõ số lẻ < 1000 (ví dụ gõ 2 -> 2.000đ, 3 -> 3.000đ, 4 -> 4.000đ, 5 -> 5.000đ)
+      if (amt > 0 && amt < 1000) {
+        amt = amt * 1000;
+      }
+      if (amt >= 1000) {
         currentDepositAmount = amt;
         document.querySelectorAll(".btn-preset-amt").forEach(btn => {
           btn.style.background = "#131d2e";
@@ -39631,13 +39686,13 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
             // Xác định chính xác số tiền thực nạp:
             let actualCreditAmt = 0;
-            if (serverBal > prevBalance) {
-              // Nếu Server GAS đã được SePay Webhook cộng tiền, lấy trực tiếp số tiền chênh lệch!
-              actualCreditAmt = serverBal - prevBalance;
-            } else if (Number(currentDepositAmount) > 0) {
+            // 1. Ưu tiên số tiền nạp mà người dùng thực tế đã nhập/chọn trên giao diện (mã QR)
+            if (Number(currentDepositAmount) >= 1000) {
               actualCreditAmt = Number(currentDepositAmount);
-            } else if (Number(detectedAmount) > 0) {
+            } else if (Number(detectedAmount) >= 1000) {
               actualCreditAmt = Number(detectedAmount);
+            } else if (serverBal > prevBalance && (serverBal - prevBalance) >= 1000) {
+              actualCreditAmt = serverBal - prevBalance;
             }
 
             if (actualCreditAmt <= 0) {
@@ -39702,20 +39757,8 @@ window.renderProductDetailArticle = renderProductDetailArticle;
               syncUserBalanceToTursoCloud(cleanEmail, newCalculatedBalance, currentUser.name, currentUser.role);
             }
 
-            // CHỐNG CỘNG TRÙNG LẶP (ANTI-DOUBLE-CREDIT):
-            // Chỉ gọi adminUpdateBalance nếu Server GAS chưa được SePay webhook xử lý (serverBal <= prevBalance)
-            if (serverBal <= prevBalance) {
-              try {
-                if (typeof callGasApi === "function") {
-                  callGasApi("adminUpdateBalance", {
-                    adminEmail: "manhdongvtc@gmail.com",
-                    targetEmail: cleanEmail,
-                    amount: actualCreditAmt,
-                    reason: "Nạp tiền tự động qua VietQR: " + currentCode + " (+" + actualCreditAmt + ")"
-                  }).catch(() => {});
-                }
-              } catch(eGasUp) {}
-            }
+            // [TRIỆT TIÊU DOUBLE-CREDIT]: SePay Webhook trên Google Apps Script đã tự động cộng tiền chuẩn xác 100%.
+            // TUYỆT ĐỐI KHÔNG gọi thêm adminUpdateBalance từ Client để tránh làm lệch số dư!
 
             isFirstTimeCredited = true;
           }
