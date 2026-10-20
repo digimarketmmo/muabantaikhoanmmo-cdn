@@ -439,7 +439,7 @@ function healStorageQuota(forceEmergency) {
       }
     } catch(eAdmClean) {}
 
-    // [BẢO VỆ SỐ DƯ VÍ SSOT & ĐỒNG BỘ 100% TRÊN DƯỚI v6.2.5]:
+    // [BẢO VỆ SỐ DƯ VÍ SSOT & ĐỒNG BỘ 100% TRÊN DƯỚI v6.2.6]:
     // Chuẩn hóa số dư chính xác 80.441đ (71.441đ + 2k + 3k + 4k thực nạp) cho digimarketmmo@gmail.com
     try {
       const rawU = localStorage.getItem("mmo_user");
@@ -15794,7 +15794,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
       localStorage.setItem("mmo_current_view", viewId);
       if (viewId === "viewDeposit" && typeof prepareDeposit === "function") {
-        const initAmt = window._targetDepositAmount || 20000;
+        const initAmt = window._targetDepositAmount || 10000;
         prepareDeposit(initAmt, true);
         window._targetDepositAmount = null;
       }
@@ -39378,11 +39378,8 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         s = s.replace(/k/g, "000");
       }
       let amt = parseInt(s, 10) || 0;
-      // Tự động nhận diện đơn vị "k" nếu người dùng gõ số lẻ < 1000 (ví dụ gõ 2 -> 2.000đ, 3 -> 3.000đ, 4 -> 4.000đ, 5 -> 5.000đ)
-      if (amt > 0 && amt < 1000) {
-        amt = amt * 1000;
-      }
-      if (amt >= 1000) {
+      // ĐƠN VỊ VẪN LÀ VNĐ (200, 300, 5000, 10000...): Tuyệt đối không tự ý nhân 1000
+      if (amt > 0) {
         currentDepositAmount = amt;
         document.querySelectorAll(".btn-preset-amt").forEach(btn => {
           btn.style.background = "#131d2e";
@@ -39397,7 +39394,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       }
     }
 
-    function prepareDeposit(amount = 200000, regenCode = true) {
+    function prepareDeposit(amount = 10000, regenCode = true) {
       const pay = typeof getPaymentSettings === "function" ? getPaymentSettings() : {
         bankCode: "MB",
         bankName: "MB Bank",
