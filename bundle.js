@@ -439,16 +439,16 @@ function healStorageQuota(forceEmergency) {
       }
     } catch(eAdmClean) {}
 
-    // [BẢO VỆ SỐ DƯ VÍ SSOT & ĐỒNG BỘ 100% TRÊN DƯỚI v6.2.2]:
-    // Chuẩn hóa số dư chính xác 95.441đ (75.441đ + 20.000đ vừa nạp) cho digimarketmmo@gmail.com
+    // [BẢO VỆ SỐ DƯ VÍ SSOT & ĐỒNG BỘ 100% TRÊN DƯỚI v6.2.3]:
+    // Chuẩn hóa số dư chính xác 73.441đ (71.441đ + 2.000đ vừa nạp) cho digimarketmmo@gmail.com
     try {
       const rawU = localStorage.getItem("mmo_user");
       if (rawU) {
         const uObj = JSON.parse(rawU);
         if (uObj && uObj.email) {
           const cEmail = (uObj.email || "").toLowerCase().trim();
-          if (cEmail === "digimarketmmo@gmail.com" && (uObj.balance < 95441 || uObj.balance === 71441 || uObj.balance === 75441)) {
-            uObj.balance = 95441;
+          if (cEmail === "digimarketmmo@gmail.com" && (uObj.balance === 95441 || uObj.balance === 75441 || uObj.balance === 71441 || uObj.balance === 0)) {
+            uObj.balance = 73441;
             localStorage.setItem("mmo_user", JSON.stringify(uObj));
           }
         }
@@ -459,14 +459,35 @@ function healStorageQuota(forceEmergency) {
         if (Array.isArray(rUsers)) {
           let mod = false;
           rUsers.forEach(ru => {
-            if (ru && (ru.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com" && (ru.balance < 95441 || ru.balance === 71441 || ru.balance === 75441)) {
-              ru.balance = 95441;
+            if (ru && (ru.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com" && (ru.balance === 95441 || ru.balance === 75441 || ru.balance === 71441 || ru.balance === 0)) {
+              ru.balance = 73441;
               mod = true;
             }
           });
           if (mod) localStorage.setItem("mmo_registered_users", JSON.stringify(rUsers));
         }
       }
+      // Tự động sửa lại bản ghi giao dịch nạp 2k trong localStorage nếu trước đó lưu nhầm 20k
+      ["mmo_deposits", "mmo_transactions"].forEach(k => {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const list = JSON.parse(raw);
+            if (Array.isArray(list)) {
+              let changed = false;
+              list.forEach(item => {
+                if (item && (item.orderId === "DH8233002214" || item.id === "DH8233002214")) {
+                  item.amount = 2000;
+                  item.note = "Đã cộng 2.000 VNĐ vào ví (VietQR / SePay)";
+                  item.balanceAfter = 73441;
+                  changed = true;
+                }
+              });
+              if (changed) localStorage.setItem(k, JSON.stringify(list));
+            }
+          }
+        } catch(eTxK) {}
+      });
     } catch(eUserClean) {}
 
     // [DỌN DẸP GIAO DỊCH TRÙNG LẶP CŨ TRONG LOCALSTORAGE v5.8.2]
@@ -5574,7 +5595,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             "name": "digimarketmmo",
             "email": "digimarketmmo@gmail.com",
             "role": "Quản Trị Viên",
-            "balance": 95441,
+            "balance": 73441,
             "created": "2026-10-05 23:22:08",
             "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
             "isLocked": false
@@ -9298,17 +9319,17 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         id: "DH8233002214",
         prodId: "NAP_VI",
         prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 20000,
+        amount: 2000,
         email: "digimarketmmo@gmail.com",
         userEmail: "digimarketmmo@gmail.com",
         userName: "digimarketmmo",
         status: "COMPLETED",
-        note: "Đã cộng 20.000 VNĐ vào ví (VietQR / SePay)",
+        note: "Đã cộng 2.000 VNĐ vào ví (VietQR / SePay)",
         time: "19:50:27 20/10/2026",
         date: "19:50:27 20/10/2026",
         createdAt: 1792499427000,
         type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 95441
+        balanceAfter: 73441
       },
       {
         orderId: "DH5281561978",
@@ -9668,21 +9689,32 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const isDep = o.prodId === "NAP_VI" || String(o.orderId).startsWith("DH") || String(o.orderId).startsWith("NAP") || String(o.prodName || "").toLowerCase().includes("nạp tiền");
             const isPaid = o.status === "COMPLETED" || o.status === "PAID";
             return isDep && isPaid;
-          }).map(o => ({
-            id: String(o.orderId || "").trim(),
-            orderId: String(o.orderId || "").trim(),
-            prodId: "NAP_VI",
-            prodName: o.prodName || "Nạp tiền vào ví điện tử",
-            amount: Number(o.totalAmount || o.price || 0) || 20000,
-            email: (o.email || o.userEmail || "").toLowerCase().trim(),
-            userEmail: (o.email || o.userEmail || "").toLowerCase().trim(),
-            userName: o.userName || (o.email ? o.email.split("@")[0] : "Khách Hàng"),
-            status: "COMPLETED",
-            note: o.accounts || ("Đã cộng " + formatVND(Number(o.totalAmount || 0)) + " vào ví (VietQR / SePay)"),
-            time: o.createdAt || (new Date().toLocaleString("vi-VN")),
-            date: o.createdAt || (new Date().toLocaleString("vi-VN")),
-            type: "Nạp tiền VietQR / SePay"
-          }));
+          }).map(o => {
+            let depAmt = Number(o.totalAmount || o.actualAmount || o.paidAmount || o.price || 0);
+            if (!depAmt) {
+              const noteText = String(o.accounts || o.note || o.message || "");
+              const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+              if (amtMatch && amtMatch[1]) {
+                const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
+                if (!isNaN(parsed) && parsed > 0) depAmt = parsed;
+              }
+            }
+            return {
+              id: String(o.orderId || "").trim(),
+              orderId: String(o.orderId || "").trim(),
+              prodId: "NAP_VI",
+              prodName: o.prodName || "Nạp tiền vào ví điện tử",
+              amount: depAmt,
+              email: (o.email || o.userEmail || "").toLowerCase().trim(),
+              userEmail: (o.email || o.userEmail || "").toLowerCase().trim(),
+              userName: o.userName || (o.email ? o.email.split("@")[0] : "Khách Hàng"),
+              status: "COMPLETED",
+              note: o.accounts || ("Đã cộng " + formatVND(depAmt) + " vào ví (VietQR / SePay)"),
+              time: o.createdAt || (new Date().toLocaleString("vi-VN")),
+              date: o.createdAt || (new Date().toLocaleString("vi-VN")),
+              type: "Nạp tiền VietQR / SePay"
+            };
+          });
 
           if (completedDeposits.length > 0) {
             savePlatformDeposits(completedDeposits);
@@ -9719,17 +9751,26 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const isDep = o.prodId === "NAP_VI" || String(o.orderId).startsWith("DH") || String(o.orderId).startsWith("NAP") || String(o.prodName || "").toLowerCase().includes("nạp tiền");
             const isPaid = o.status === "COMPLETED" || o.status === "PAID";
             if (isDep && isPaid) {
+              let depAmt = Number(o.totalAmount || o.actualAmount || o.paidAmount || o.price || 0);
+              if (!depAmt) {
+                const noteText = String(o.accounts || o.note || o.message || "");
+                const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+                if (amtMatch && amtMatch[1]) {
+                  const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
+                  if (!isNaN(parsed) && parsed > 0) depAmt = parsed;
+                }
+              }
               newDeps.push({
                 id: String(o.orderId || "").trim(),
                 orderId: String(o.orderId || "").trim(),
                 prodId: "NAP_VI",
                 prodName: o.prodName || "Nạp tiền vào ví điện tử",
-                amount: Number(o.totalAmount || o.price || 0) || 20000,
+                amount: depAmt,
                 email: cleanEmail,
                 userEmail: cleanEmail,
                 userName: cleanEmail.split("@")[0],
                 status: "COMPLETED",
-                note: o.accounts || ("Đã cộng " + formatVND(Number(o.totalAmount || 0)) + " vào ví"),
+                note: o.accounts || ("Đã cộng " + formatVND(depAmt) + " vào ví"),
                 time: o.createdAt || (new Date().toLocaleString("vi-VN")),
                 date: o.createdAt || (new Date().toLocaleString("vi-VN")),
                 type: "Nạp tiền VietQR / SePay"
@@ -9745,12 +9786,21 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const noteLow = String(h.note || h.content || h.reason || "").toLowerCase();
             if (noteLow.includes("đồng bộ") || noteLow.includes("dong bo") || noteLow.includes("hiệu chỉnh") || noteLow.includes("chuẩn hóa")) return;
             if ((t.includes("nạp") || t.includes("vietqr") || t.includes("sepay")) && (st.includes("thành công") || st.includes("success") || !st)) {
+              let hAmt = Math.abs(Number(h.amount || 0));
+              if (!hAmt) {
+                const noteText = String(h.note || h.content || h.reason || "");
+                const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+                if (amtMatch && amtMatch[1]) {
+                  const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
+                  if (!isNaN(parsed) && parsed > 0) hAmt = parsed;
+                }
+              }
               newDeps.push({
                 id: String(h.id || h.content || "").trim(),
                 orderId: String(h.content || h.id || "").trim(),
                 prodId: "NAP_VI",
                 prodName: "Nạp tiền vào ví điện tử",
-                amount: Number(h.amount || 0) || 20000,
+                amount: hAmt,
                 email: cleanEmail,
                 userEmail: cleanEmail,
                 userName: cleanEmail.split("@")[0],
@@ -39450,7 +39500,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       }
 
       let paymentDetected = false;
-      let detectedAmount = currentDepositAmount || 20000;
+      let detectedAmount = Number(currentDepositAmount) > 0 ? Number(currentDepositAmount) : 0;
 
       // 0. Quét kiểm tra trước từ mmo_balance_logs cục bộ để lấy số tiền thực nạp chính xác
       try {
@@ -39563,9 +39613,14 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             localStorage.setItem("mmo_credited_txs_" + cleanEmail, JSON.stringify(creditedTxs));
             try { localStorage.removeItem("mmo_pending_deposit"); } catch(e) {}
 
-            // [XỬ LÝ CỘNG TIỀN CHÍNH XÁC 100% v6.2.2]:
-            // Xác định số tiền nạp thực tế chính xác (tuyệt đối KHÔNG loại trừ 20.000đ hay bất kỳ mệnh giá nào!)
-            const actualCreditAmt = Math.max(Number(detectedAmount) || 0, Number(currentDepositAmount) || 0, 20000);
+            // [CỘNG ĐÚNG CHÍNH XÁC 100% SỐ TIỀN THỰC NẠP v6.2.3]:
+            // Số tiền nạp thực tế được lấy chính xác từ giao dịch phát hiện (detectedAmount) hoặc lệnh nạp (currentDepositAmount)
+            // TUYỆT ĐỐI KHÔNG CÓ BẤT KỲ GIỚI HẠN CỨNG HAY MẶC ĐỊNH NÀO (DÙ NẠP 1.000đ, 2.000đ HAY VÀI K LẺ ĐỀU CỘNG CHÍNH XÁC 100%)
+            const actualCreditAmt = (Number(detectedAmount) > 0) ? Number(detectedAmount) : (Number(currentDepositAmount) > 0 ? Number(currentDepositAmount) : 0);
+
+            if (actualCreditAmt <= 0) {
+              return false;
+            }
 
             // Số dư mới = Số dư trước nạp + Số tiền nạp
             const prevBalance = Number(currentUser.balance) || 0;
@@ -39642,9 +39697,9 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           }
         }
 
-        // [THÔNG BÁO CHUẨN XÁC GHI ĐẦY ĐỦ SỐ TIỀN NẠP v6.2.2]:
+        // [THÔNG BÁO CHUẨN XÁC GHI ĐẦY ĐỦ SỐ TIỀN NẠP v6.2.3]:
         if (isFirstTimeCredited) {
-          const finalNoticeAmt = Math.max(Number(detectedAmount) || 0, Number(currentDepositAmount) || 0, 20000);
+          const finalNoticeAmt = actualCreditAmt;
           const noticeText = " +" + formatVND(finalNoticeAmt);
           showToast("🎉 Nạp tiền tự động thành công! Đã cộng" + noticeText + " vào ví.", "success");
           if (typeof addUserNotification === "function") {
