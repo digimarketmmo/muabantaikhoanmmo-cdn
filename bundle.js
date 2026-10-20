@@ -18,13 +18,31 @@ window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
     }
     // Tự động dọn dẹp các cache cũ chứa ảnh phôi lỗi thời để nạp ngay poster mới chuẩn 100% từ Turso DB
     const pRaw = localStorage.getItem("mmo_products") || "";
-    if (pRaw.includes("tiktok_brazil.png") || pRaw.includes("gmail_24h.png") || pRaw.includes("outlook_trusted") || pRaw.includes("blog_gmail") || pRaw.length > 3000000) {
+    if (pRaw.includes("tiktok_brazil.png") || pRaw.includes("gmail_24h.png") || pRaw.includes("outlook_trusted") || pRaw.includes("blog_gmail") || pRaw.includes("PROD_MU2OAG3IO2_Rom_androi_10_mod_adb_j7_prime.jpg") || pRaw.length > 3000000) {
       localStorage.removeItem("mmo_products");
       localStorage.removeItem("mmo_admin_products");
       localStorage.removeItem("mmo_products_list");
       localStorage.removeItem("mmo_shop_products");
     }
-    // Dọn sạch các custom_img cũ nếu trỏ tới phôi cũ
+    // Dọn sạch các custom_img cũ nếu trỏ tới phôi cũ hoặc bị gán nhầm j7_prime/s10 cho các máy khác
+    const romCorruptedMap = {
+      "PROD_MU2O4MW4DQ": ["j7_prime", "j7_pro"],
+      "PROD_MU2NX4CYEW": ["j7_prime", "j7_pro"],
+      "PROD_MU2NUXL1Q4": ["j7_prime", "j7_pro"],
+      "PROD_MU2NSFQCMT": ["j7_prime", "j7_pro"],
+      "PROD_MU2NKET1OG": ["j7_prime", "j7_pro", "rom_s10"],
+      "PROD_MUBKH47T2U": ["j7_prime", "j7_pro", "rom_s10"],
+      "PROD_MU2N2TVDIJ": ["j7_prime", "j7_pro", "rom_s10"],
+      "PROD_MUBJQ6JP7O": ["j7_prime", "j7_pro", "rom_s10"],
+      "PROD_MU2MOON7L6": ["j7_prime", "j7_pro"],
+      "PROD_MU2MY8WCOE": ["j7_prime", "j7_pro"]
+    };
+    for (const pid in romCorruptedMap) {
+      const val = localStorage.getItem("mmo_custom_img_" + pid) || "";
+      if (val && romCorruptedMap[pid].some(bad => val.includes(bad))) {
+        localStorage.removeItem("mmo_custom_img_" + pid);
+      }
+    }
     for (let i = localStorage.length - 1; i >= 0; i--) {
       const k = localStorage.key(i);
       if (k && k.startsWith("mmo_custom_img_")) {
@@ -436,12 +454,35 @@ function healStorageQuota(forceEmergency) {
               }
             });
 
-            // [BẢO VỆ TOÀN DIỆN ẢNH PHONE FARM]: Tự động thay ảnh demo J7 Pro về ảnh CDN thật
-            const j7ProProd = prods.find(p => p && p.id === 'PROD_MU2LYZY5C7');
-            if (j7ProProd && j7ProProd.image && (j7ProProd.image.startsWith("data:") || j7ProProd.image.includes("sample"))) {
-              j7ProProd.image = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png";
-              cacheModified = true;
-            }
+            // [BẢO VỆ TOÀN DIỆN ẢNH PHONE FARM]: Đồng bộ chuẩn xác 100% từng máy về đúng poster của dòng máy đó
+            const pfImageMap = {
+              "PROD_MU2OAG3IO2": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_prime.png",
+              "PROD_MU2OGW71GZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_plus.png",
+              "PROD_MU2LYZY5C7": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png",
+              "PROD_MU2O4MW4DQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s7_android10.png",
+              "PROD_MU2NX4CYEW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s8_android10.png",
+              "PROD_MU2NUXL1Q4": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s9_android10.png",
+              "PROD_MU2NSFQCMT": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s10_android12.png",
+              "PROD_MU2NKET1OG": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.jpg",
+              "PROD_MUBKH47T2U": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.jpg",
+              "PROD_MU2N2TVDIJ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+              "PROD_MUBJQ6JP7O": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+              "PROD_MU2MOON7L6": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png",
+              "PROD_MU2MY8WCOE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png"
+            };
+            prods.forEach(p => {
+              if (p && p.id && pfImageMap[p.id]) {
+                const curImg = p.image || p.image_url || "";
+                if (!curImg || curImg.includes("j7_prime") || curImg.includes("j7_pro") || curImg.includes("default_product.png") || curImg.includes("placeholder") || curImg.includes("rom_not8_android10.png") || curImg.includes("rom_not9_android10.jpg")) {
+                  if (curImg !== pfImageMap[p.id]) {
+                    p.image = pfImageMap[p.id];
+                    p.image_url = pfImageMap[p.id];
+                    p.imageUrl = pfImageMap[p.id];
+                    cacheModified = true;
+                  }
+                }
+              }
+            });
             if (cacheModified) {
               localStorage.setItem(key, JSON.stringify(prods));
             }
@@ -12505,10 +12546,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   "PROD_MU2CZL38PH": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2CZL38PH_TIKTOK_PH%C3%81P_Mail_Live_Trust_%C4%90%E1%BB%8Dc_Code_Qua.png",
   "PROD_MU2IXVFLMW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2IXVFLMW_Tiktok_Vi%E1%BB%87t_m%E1%BB%9F_gi%E1%BB%8F___1KFL_-_Tiktok_vi%E1%BB%87t_.png",
   "PROD_MU2JIBBRH8": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2JIBBRH8_Tiktok_vi%E1%BB%87t_reg_tr%C3%AAn_4_th%C3%A1ng.png",
-  "PROD_MU2LYZY5C7": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2LYZY5C7_Rom_androi_12_-_j7_pro_mod_adb.jpg",
-  "PROD_MU2NSFQCMT": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2OAG3IO2_Rom_androi_10_mod_adb_j7_prime.jpg",
-  "PROD_MU2OAG3IO2": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2OAG3IO2_Rom_androi_10_mod_adb_j7_prime.jpg",
-  "PROD_MU2OGW71GZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2OGW71GZ_rom_g%E1%BB%91c_mod_adb_j7_plush.jpg",
+  "PROD_MU2LYZY5C7": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png",
+  "PROD_MU2NSFQCMT": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s10_android12.png",
+  "PROD_MU2OAG3IO2": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_prime.png",
+  "PROD_MU2OGW71GZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_plus.png",
   "PROD_MU2OXBZC6K": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2OXBZC6K_ChatGPT_Free_%C4%91%C3%A3_ver_phone_Codex.jpg",
   "PROD_MU2PA8VNDP": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2PA8VNDP_INSTAGRAM_%C4%90%C3%83_QUA_S%E1%BB%AC_D%E1%BB%A4NG_-_RANDOM_IP.png",
   "PROD_MU2YQ1J3PY": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2YQ1J3PY_Outlook_Hotmail_Trusted_-_OAuth2_Live_6-.png",
@@ -12557,15 +12598,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   "PROD_MV5SHIF0DU": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5SHIF0DU_Clone_Facebook_Da_ngam_Lau_CO_2FA.png",
   "PROD_MTPG0PUD": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTPIJ9XV_T%C3%80I_KHO%E1%BA%A2N_TIKTOK_BRAZIL_%C4%90%C3%83_NG%C3%82M_L%C3%82U_-_C%E1%BB%B0.png",
   "PROD_MVDQYLNMKF": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTU9F5HN_Paypal_2025_-_2016_%C4%90%C3%A3_ng%C3%A2m_l%C3%A2u_c%E1%BB%B1c_k%E1%BB%B3_Tr%C3%A2u.jpg",
-  "PROD_MUBKH47T2U": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png",
-  "PROD_MUBJQ6JP7O": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.jpg",
-  "PROD_MU2O4MW4DQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2OAG3IO2_Rom_androi_10_mod_adb_j7_prime.jpg",
-  "PROD_MU2NUXL1Q4": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2OAG3IO2_Rom_androi_10_mod_adb_j7_prime.jpg",
-  "PROD_MU2NKET1OG": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png",
-  "PROD_MU2N2TVDIJ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.jpg",
-  "PROD_MU2MY8WCOE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2LYZY5C7_Rom_androi_12_-_j7_pro_mod_adb.jpg",
-  "PROD_MU2MOON7L6": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2LYZY5C7_Rom_androi_12_-_j7_pro_mod_adb.jpg",
-  "PROD_MU2NX4CYEW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2OAG3IO2_Rom_androi_10_mod_adb_j7_prime.jpg",
+  "PROD_MUBKH47T2U": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.jpg",
+  "PROD_MUBJQ6JP7O": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+  "PROD_MU2O4MW4DQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s7_android10.png",
+  "PROD_MU2NUXL1Q4": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s9_android10.png",
+  "PROD_MU2NKET1OG": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.jpg",
+  "PROD_MU2N2TVDIJ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+  "PROD_MU2MY8WCOE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png",
+  "PROD_MU2MOON7L6": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png",
+  "PROD_MU2NX4CYEW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s8_android10.png",
   "PROD_MV1GO2PD8A": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png"
 };
     window.KNOWN_PROD_IMAGE_MAP = KNOWN_PROD_IMAGE_MAP;
@@ -12660,6 +12701,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       }
 
       if (textToScan.includes("rom") || textToScan.includes("phone farm") || textToScan.includes("phonefarm") || textToScan.includes("adb")) {
+        if (textToScan.includes("s8")) return cdnBase + "rom_s8_android10.png";
+        if (textToScan.includes("s9")) return cdnBase + "rom_s9_android10.png";
+        if (textToScan.includes("s10")) return cdnBase + "rom_s10_android12.png";
+        if (textToScan.includes("s7")) return cdnBase + "rom_s7_android10.png";
+        if (textToScan.includes("s22")) return cdnBase + "rom_s22_android12.png";
+        if (textToScan.includes("not 8") || textToScan.includes("not8") || textToScan.includes("note 8") || textToScan.includes("note8") || textToScan.includes("n950")) return cdnBase + "rom_not8_android10.jpg";
+        if (textToScan.includes("not 9") || textToScan.includes("not9") || textToScan.includes("note 9") || textToScan.includes("note9") || textToScan.includes("n960")) return cdnBase + "rom_not9_android10.png";
+        if (textToScan.includes("not 10") || textToScan.includes("not10") || textToScan.includes("note 10") || textToScan.includes("note10") || textToScan.includes("g975")) return cdnBase + "rom_not10_android12.png";
+        if (textToScan.includes("prime")) return cdnBase + "rom_j7_prime.png";
+        if (textToScan.includes("plush") || textToScan.includes("plus")) return cdnBase + "rom_j7_plus.png";
         return cdnBase + "rom_j7_pro.png";
       }
 
@@ -15294,11 +15345,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               let resolvedWorkerImg = "";
               if (typeof img === "string" && img.trim() !== "") {
                 const tImg = img.trim();
-                if (tImg.startsWith("data:image/") || tImg.startsWith("data:")) {
-                  const mapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[cur.id] || KNOWN_PROD_IMAGE_MAP[cur.id.toUpperCase()]) : "";
-                  resolvedWorkerImg = mapped || ("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/" + encodeURIComponent(cur.id) + "/image");
-                } else if ((tImg.startsWith("http://") || tImg.startsWith("https://")) && !tImg.includes("khotaikhoanso")) {
-                  resolvedWorkerImg = tImg;
+                if (tImg.startsWith("data:image/") || tImg.startsWith("data:") || tImg.startsWith("http://") || tImg.startsWith("https://")) {
+                  if (!tImg.includes("khotaikhoanso") && !tImg.includes("placeholder")) {
+                    resolvedWorkerImg = tImg;
+                  }
                 }
               }
 
