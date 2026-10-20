@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "6.0.2";
+var MMO_CURRENT_CODE_VERSION = "6.0.3";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
@@ -12662,21 +12662,21 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: Ảnh do người dùng vừa sửa hoặc lưu (localStorage)
       if (p.id && typeof localStorage !== "undefined") {
         const cust = localStorage.getItem("mmo_custom_img_" + p.id);
-        if (cust && cust.trim().length > 10 && cust !== "__NO_IMAGE__" && !cust.includes("placeholder")) {
+        if (cust && cust.trim().length > 10 && cust !== "__NO_IMAGE__" && !cust.includes("placeholder") && !cust.includes("default_product.png")) {
           return cust.trim();
         }
       }
 
       // 2. [ƯU TIÊN #2]: Ảnh trực tiếp của đối tượng sản phẩm (từ Database Turso / Mock data)
       const direct = p.image || p.image_url || p.imageUrl;
-      if (direct && typeof direct === "string" && direct.trim().length > 10 && direct !== "__NO_IMAGE__" && direct !== "none" && !direct.includes("placeholder")) {
+      if (direct && typeof direct === "string" && direct.trim().length > 10 && direct !== "__NO_IMAGE__" && direct !== "none" && !direct.includes("placeholder") && !direct.includes("default_product.png")) {
         return direct.trim();
       }
 
       // 3. [ƯU TIÊN #3]: Bảng poster KNOWN_PROD_IMAGE_MAP
       if (p.id && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
         const known = KNOWN_PROD_IMAGE_MAP[p.id] || KNOWN_PROD_IMAGE_MAP[p.id.toUpperCase()];
-        if (known && typeof known === "string" && known.trim().length > 10) {
+        if (known && typeof known === "string" && known.trim().length > 10 && !known.includes("default_product.png")) {
           return known.trim();
         }
       }
