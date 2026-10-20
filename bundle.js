@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "6.0.9";
+var MMO_CURRENT_CODE_VERSION = "6.1.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
@@ -16,14 +16,7 @@ window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
         localStorage.removeItem(k);
       }
     }
-    // Tự động dọn dẹp các cache cũ chứa ảnh phôi lỗi thời để nạp ngay poster mới chuẩn 100% từ Turso DB
-    const pRaw = localStorage.getItem("mmo_products") || "";
-    if (pRaw.includes("tiktok_brazil.png") || pRaw.includes("gmail_24h.png") || pRaw.includes("outlook_trusted") || pRaw.includes("blog_gmail") || pRaw.includes("PROD_MU2OAG3IO2_Rom_androi_10_mod_adb_j7_prime.jpg") || pRaw.includes("PROD_MUOSDN0FCU_gmail_new_ng%C3%A2m_1-_10_ng%C3%A0y_ch%E1%BB%89_log_phone_.png") || pRaw.length > 3000000) {
-      localStorage.removeItem("mmo_products");
-      localStorage.removeItem("mmo_admin_products");
-      localStorage.removeItem("mmo_products_list");
-      localStorage.removeItem("mmo_shop_products");
-    }
+    // [BẢO TỒN TUYỆT ĐỐI SẢN PHẨM]: Tuyệt đối KHÔNG xóa mmo_products/mmo_admin_products
     // Dọn sạch các custom_img cũ nếu trỏ tới phôi cũ hoặc bị gán nhầm j7_prime/s10/7_ngày cho các sản phẩm khác
     const corruptedMap = {
       "PROD_MUOSDN0FCU": ["7_Ng", "7_ngày", "7_Ng%C3%A0y"],
@@ -1471,7 +1464,3299 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "content": "<p>&nbsp;<span style=\"background-color: white; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; font-weight: bolder; text-align: justify;\">Ngày nay, trào lưu kiếm tiền trên Tiktok đã mang lại siêu lợi nhuận cho rất nhiều shop, nhà bán hàng và cá nhân sáng tạo. Với hơn một tỷ người dùng, TikTok đã trở thành một vùng đất màu mỡ cho mọi người muốn kiếm tiền bất kỳ đâu tại nhà. Trong bài viết này, Sforum sẽ hướng dẫn các cách bật kiếm tiền trên TikTok Shop, TikTok cá nhân bằng tiếp thị liên kết Affiliate nhé!</span></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"15 Cách kiếm tiền trên TikTok hiệu quả nhanh chóng nhất \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-1.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"15 Cách kiếm tiền trên TikTok hiệu quả nhanh chóng nhất \" width=\"960\" /></p><h2 id=\"ban-hang-truc-tiep-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Bán hàng trực tiếp trên TikTok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bán hàng trực tiếp là một cách kiếm tiền trên Tiktok Shop tuyệt vời nhất để tận dụng sức mạnh của nền tảng này và kết nối trực tiếp với khách hàng tiềm năng. TikTok không chỉ là nơi để chia sẻ video vui nhộn, mà còn là một thị trường trực tiếp cho các doanh nhân và nhà kinh doanh.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Bán hàng là cách kiếm tiền trên TikTok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-2.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Bán hàng là cách kiếm tiền trên TikTok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Để thành công trong việc bán hàng trên TikTok, bạn cần xây dựng một chiến lược, tạo nội dung hấp dẫn, và tận dụng tính năng livestream để tương tác trực tiếp với khách hàng của mình. Nói chung, TikTok không chỉ là nơi để giới thiệu sản phẩm, mà còn là cơ hội để xây dựng mối quan hệ với khách hàng và thúc đẩy doanh số bán hàng.</p><h2 id=\"lam-kol-pr-san-pham---cach-kiem-tien-tren-tiktok-hieu-qua-nhat\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Làm KOL PR sản phẩm - Cách kiếm tiền trên Tiktok hiệu quả nhất</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Trở thành KOL để quảng bá sản phẩm là một trong các cách bật kiếm tiền trên TikTok hấp dẫn nhất. Khi các thương hiệu sẵn sàng chi trả số tiền đáng kể để hợp tác với bạn. Mức thù lao này có thể lên đến hàng chục triệu đồng, phụ thuộc vào số lượng người theo dõi của bạn và khả năng tiếp cận khách hàng thông qua các video quảng cáo trên TikTok của bạn.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Hướng dẫn cách kiếm tiền trên TikTok - Bằng việc trở thành KOLs\" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-3.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Hướng dẫn cách kiếm tiền trên TikTok - Bằng việc trở thành KOLs\" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Đây là cơ hội tuyệt vời để tận dụng sự nổi tiếng của mình và kiếm tiền từ vi���c quảng cáo sản phẩm cho các thương hiệu lớn.</p><h2 id=\"nhan-donate-tu-livestream-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Nhận Donate từ livestream trên TikTok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Thu nhận Donate từ các buổi livestream trên TikTok là một cách kiếm tiền trên TikTok tiềm năng để kiếm tiền trên nền tảng này. Trong suốt quá trình livestream, bạn có thể tạo sự hài lòng cho khán giả và họ có thể tặng cho bạn các vật phẩm ảo mua từ TikTok thông qua việc nạp tiền.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Nhận Donate từ livestream - Cách kiếm tiền trên TikTok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-4.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Nhận Donate từ livestream - Cách kiếm tiền trên TikTok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Sau đó, bạn có thể quy đổi các vật phẩm này thành tiền và chuyển chúng vào tài khoản ngân hàng của mình. Điều này đã trở thành một cách bật kiếm tiền phổ biến trên TikTok, đặc biệt là trong các quốc gia ngoài kia. Thậm chí, một số TikToker có thể thu về hàng ngàn đô la mỗi tháng từ việc này.</p><h2 id=\"cach-kiem-tien-tren-tiktok-bang-tiep-thi-lien-ket-affiliate\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách kiếm tiền trên TikTok bằng tiếp thị liên kết Affiliate</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Cách bật kiếm tiền trên TikTok bằng tiếp thị liên kết Affiliate là một cách tuyệt vời để tận dụng sức mạnh của nền tảng này. Đơn giản, bạn có thể đặt các liên kết sản phẩm trên trang cá nhân của mình trên TikTok.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok bằng tiếp thị liên kết (Affiliate)\" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-5.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok bằng tiếp thị liên kết (Affiliate)\" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Mỗi lần người xem nhấp vào liên kết và thực hiện giao dịch mua hàng, bạn sẽ nhận được tiền hoa hồng tương ứng. Điều này biến sự sáng tạo của bạn trên TikTok thành một nguồn thu nhập tiềm năng đáng kể, phụ thuộc vào khả năng tiếp cận và thú hút của bạn đối với khán giả.</p><h2 id=\"cach-bat-kiem-tien-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách bật kiếm tiền trên TikTok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Để có thể thực hiện cách bật kiếm tiền trên Tiktok, các nhà sáng tạo nội dung cần tuân thủ những yêu cầu cụ thể sau đây:</p><ul style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; list-style: outside disc; margin: 10px 0px; padding: 0px 0px 0px 40px; text-align: justify;\"><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Địa chỉ IP của tài khoản TikTok: Phải thuộc về các quốc gia như Anh, Đức, Mỹ, Pháp, Tây Ban Nha hoặc Ý.</li><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Độ tuổi người dùng tài khoản TikTok: Phải từ 18 tuổi trở lên.</li><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Số lượng Follower trên kênh TikTok: Cần ít nhất 10.000 người theo dõi.</li><li style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; position: relative;\">Số lượt xem video: Phải có ít nhất 100.000 lượt xem video trong vòng 30 ngày gần đây.</li></ul><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Bật cách kiếm tiền trên TikTok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-6.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Bật cách kiếm tiền trên TikTok \" width=\"960\" /></p><h2 id=\"lien-ket-tai-khoan-tiktok-toi-cac-mang-xa-hoi-khac\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Liên kết tài khoản TikTok tới các mạng xã hội khác</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Kết nối tài khoản TikTok với các mạng xã hội khác là một cách kiếm tiền trên TikTok thông minh để tận dụng sự nổi tiếng của bạn. Dù việc chèn quảng cáo vào video trên TikTok khó khăn do giới hạn thời gian, có nhiều cách khác để kiếm tiền từ sự phát triển của mình trên nền tảng này.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Chẳng hạn, bạn có thể sử dụng mạng xã hội khác như <a href=\"https://cellphones.com.vn/sforum/tag/thu-thuat-youtube\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; color: #3b82f6; text-decoration: none;\" target=\"_blank\">YouTube</a> để tạo ra nội dung dài hơn và kiếm tiền từ quảng cáo. Nếu bạn đã có một lượng người hâm mộ trung thành trên TikTok, đây có thể trở thành một nguồn thu nhập ấn tượng.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok bằng việc liên kết tài khoản với các mạng xã hội khác \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-7.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok bằng việc liên kết tài khoản với các mạng xã hội khác \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Hơn nữa, bạn cũng có thể tham gia vào các nền tảng livestream, nơi bạn có thể chơi <a href=\"https://cellphones.com.vn/sforum/s-games\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; color: #3b82f6; text-decoration: none;\" target=\"_blank\">game</a>, biểu diễn ca hát, tương tác với người hâm mộ và kiếm tiền thông qua các khoản donate ủng hộ từ khán giả. Điều này không chỉ tăng tương tác mà còn gia tăng thu nhập của bạn.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Dù bạn chọn con đường nào, việc liên kết tài khoản TikTok với các mạng xã hội khác sẽ mở ra nhiều cơ hội kiếm tiền và tương tác hơn với cộng đồng của bạn.</p><h2 id=\"review-nhan-tien-tu-cac-san-pham-so\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Review nhận tiền từ các sản phẩm số</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Kiếm tiền từ các sản phẩm số trên TikTok có thể thực hiện theo mô hình tương tự như cách kiếm tiền trên TikTok bằng tiếp thị liên kết (Affiliate Marketing). Thông qua các video đánh giá và review, bạn có thể chia sẻ các liên kết đến các sản phẩm số. Các đối tác sẽ thanh toán cho bạn dựa trên số lượt nhấp vào liên kết hoặc số người đăng ký tùy thuộc vào yêu cầu của họ.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok từ việc nhận tiền từ các sản phẩm số \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-8.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok từ việc nhận tiền từ các sản phẩm số \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Các sản phẩm số mà bạn có thể giới thiệu có thể bao gồm game, <a href=\"https://cellphones.com.vn/sforum/thu-thuat/ung-dung\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; color: #3b82f6; text-decoration: none;\" target=\"_blank\">ứng dụng</a>, trang web tìm kiếm, sàn giao dịch, khóa học trực tuyến, và nhiều lựa chọn khác. Đây là một cách tuyệt vời để biến nội dung sáng tạo của bạn trên TikTok thành nguồn thu nhập bằng cách hợp tác với các đối tác có sản phẩm số phù hợp.</p><h2 id=\"quang-cao-cho-thuong-hieu-cua-ban\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Quảng cáo cho thương hiệu của bạn</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Tận dụng TikTok để quảng cáo thương hiệu của bạn là một trong các cách kiếm tiền trên TikTok hiệu quả để tiếp cận một lượng lớn người dùng trẻ. Cách này có thể tạo ra nguồn thu chính từ việc bán sản phẩm trực tiếp.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Có hai cách để bạn có thể thực hiện quảng cáo trên TikTok. Thứ nhất, bạn có thể tự giới thiệu sản phẩm của mình qua video sáng tạo và tự nhiên, thu hút sự chú ý của khán giả. Tuy nhiên, việc đạt được đúng khách hàng mục tiêu có thể gặp khó khăn.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Quảng cáo cho thương hiệu của bạn cũng là cách kiếm tiền trên Tiktok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-9.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Quảng cáo cho thương hiệu của bạn cũng là cách kiếm tiền trên Tiktok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Thứ hai, bạn có thể trở thành đối tác của TikTok Ads. Khi bạn là đối tác, sản phẩm của bạn sẽ xuất hiện tại đúng nơi và thời điểm phù hợp hơn nhờ vào hệ thống phân tích của TikTok. Tuy nhiên, việc này có thể tốn kém, và bạn cần cân nhắc giữa đầu tư công sức và nguồn tài chính vào chiến dịch quảng cáo của mình.</p><h2 id=\"huong-dan-cach-kiem-tien-tren-tiktok-voi-dropshipping\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Hướng dẫn cách kiếm tiền trên TikTok với Dropshipping</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bán hàng qua mô hình Dropshipping trên TikTok là một trong những cách kiếm tiền trên Tiktok Shop phổ biến và hiệu quả hiện nay. Điểm đặc biệt của nó là bạn không cần phải sở hữu hoặc lưu trữ sản phẩm trong kho của mình. Thay vào đó, bạn tìm nguồn cung cấp đáng tin cậy và sản phẩm chất lượng với giá thấp.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Hướng dẫn cách kiếm tiền trên TikTok với Dropshipping \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-11.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Hướng dẫn cách kiếm tiền trên TikTok với Dropshipping \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Sau khi đã thiết lập mối quan hệ với nhà cung cấp, bạn có thể tạo các video trên TikTok để quảng cáo và bán sản phẩm. Khi có đơn hàng từ khách hàng, bạn chỉ cần đặt hàng từ nhà cung cấp và yêu cầu họ giao trực tiếp đến địa chỉ của khách hàng. Trong quá trình này, bạn có thể thu lợi nhuận từ sự chênh lệch giá mua và giá bán mà không cần thực sự nắm giữ sản phẩm. Đây là một cách linh hoạt và tiết kiệm thời gian để kinh doanh trực tuyến trên TikTok.</p><h2 id=\"cung-cap-dich-vu-tang-follow-view-va-tim-video\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cung cấp dịch vụ tăng Follow, View và Tim video</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Cách kiếm tiền trên Tiktok bằng việc cung cấp dịch vụ tăng số lượng người theo dõi, lượt xem và tim (like) cho video trên TikTok đòi hỏi bạn phải có một chút am hiểu công nghệ. Đây là một trong các cách thu hút sự quan tâm của những người dùng quan trọng trên nền tảng này, đặc biệt là những người muốn nâng cao sức ảnh hưởng của họ.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cung cấp dịch vụ tăng Follow, View và Tim video để thực hiện cách kiếm tiền trên Tiktok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-12.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cung cấp dịch vụ tăng Follow, View và Tim video để thực hiện cách kiếm tiền trên Tiktok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bằng việc cung cấp dịch vụ này với mức giá hợp lý, bạn có thể kiếm được một lượng tiền ổn định hàng tháng. Tuy nhiên, điều quan trọng là người cung cấp dịch vụ phải có kiến thức và kỹ năng chuyên môn để đảm bảo hiệu suất và chất lượng.</p><h2 id=\"cach-kiem-tien-tren-tiktok-ads\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách kiếm tiền trên TikTok Ads</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Kiếm tiền từ TikTok Ads là một cách kiếm tiền trên Tiktok Shop khá lợi nhuận, và TikTok là nền tảng cho phép các nhà quảng cáo chạy các chiến dịch quảng cáo.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Điều này đồng nghĩa bạn có thể tận dụng TikTok để kiếm tiền thông qua việc quảng cáo cho các thương hiệu đang tìm kiếm sự tiếp cận đối tượng mục tiêu.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok Ads\" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-14.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok Ads\" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><h2 id=\"dang-video-sang-tao---lam-freelancer-kiem-tien-tren-tiktok\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Đăng video sáng tạo - Làm freelancer kiếm tiền trên Tiktok</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Trở thành freelancer cho vị trí làm Video Creator trên Tik Tok không chỉ đem lại cơ hội sáng tạo mà còn mở ra cánh cửa cho nguồn khách hàng đa dạng. TikTok không chỉ là nền tảng mạng xã hội video mà còn là một trường chơi cho những người đam mê và có kỹ năng trong việc quay và tạo video sáng tạo.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Làm Freelancer cho vị trí Video Creator - Cách kiếm tiền trên Tiktok \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-13.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Làm Freelancer cho vị trí Video Creator - Cách kiếm tiền trên Tiktok \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Nhu cầu về video trên TikTok ngày càng gia tăng, điều này đồng nghĩa với việc làm freelancer cho vị trí Video Creator trở nên hấp dẫn và tiềm năng. Thu nhập của TikTok Video Creator có thể khá cao và phụ thuộc vào khả năng, kỹ năng và sự hài lòng của khách hàng. Điều này tạo cơ hội cho mối hợp tác lâu dài và sự phát triển sáng tạo không giới hạn trên nền tảng này.</p><h2 id=\"timebucks---cach-kiem-tien-tren-tiktok-don-gian\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">TimeBucks - </span><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Cách kiếm tiền trên TikTok đơn giản</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Hướng dẫn cách kiếm tiền trên Tik Tok với TimeBucks là một cách ẩn mình khá hấp dẫn và ít được biết đến. TimeBucks, dù ít người biết đến, là một nền tảng phát triển trong lĩnh vực MMO (Make Money Online). Đặc biệt, TimeBucks cung cấp cơ hội cho bạn kiếm tiền trực tuyến bằng cách thực hiện các nhiệm vụ nhằm hỗ trợ quảng cáo của các doanh nghiệp.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên TikTok với TimeBucks \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-15.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên TikTok với TimeBucks \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Nền tảng này cung cấp nhiều hình thức kiếm tiền trực tuyến khác nhau, trong đó có một phương thức độc đáo là kiếm tiền thông qua ứng dụng TikTok. Điều này có nghĩa là bạn có thể tạo các video theo yêu cầu từ nhà quảng cáo và đăng chúng lên TikTok để nhận phí. Đây là một cơ hội tiềm năng cho những người có tài khoản TikTok có lượng người theo dõi lớn.</p><h2 id=\"tro-thanh-nhan-vien-sang-tao-tiktok-cua-1-cong-ty\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 18pt !important; line-height: 22pt; margin: 25px 0px 15px !important; scroll-margin-top: 125px; text-align: justify;\"><span style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; font-size: 18pt; line-height: 22pt;\">Trở thành nhân viên sáng tạo Tiktok của 1 công ty</span></h2><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Bằng cách kết hợp sự sáng tạo nội dung video và kiến thức về TikTok, bạn hoàn toàn có thể trở thành một nhân viên của một công ty hoạt động trực tuyến hoặc có liên quan đến TikTok. Nền tảng TikTok không chỉ giúp bạn tìm kiếm cơ hội việc làm thông qua các bài đăng tuyển dụng, mà còn mở ra các cơ hội nghề nghiệp liên quan đến ứng dụng này, chẳng hạn như viết kịch bản cho các video TikTok hoặc trở thành Video Creator như đã được giới thiệu. Điều đặc biệt là bạn có thể thực hiện các công việc này từ xa, tại nhà, đặc biệt hữu ích trong bối cảnh dịch bệnh hiện tại.</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\"><img alt=\"Cách kiếm tiền trên Tiktok bằng việc Trở thành nhân viên của 1 công ty online \" src=\"https://cellphones.com.vn/sforum/wp-content/uploads/2023/09/cach-kiem-tien-tren-tiktok-16.jpg\" style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; border: 0px solid; box-sizing: border-box; display: block; height: auto; margin: 15px 0px 10px; max-width: 100%; object-fit: contain; vertical-align: middle; width: 841px;\" title=\"Cách kiếm tiền trên Tiktok bằng việc Trở thành nhân viên của 1 công ty online \" width=\"960\" /></p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">&nbsp;</p><p style=\"--tw-border-spacing-x: 0; --tw-border-spacing-y: 0; --tw-ring-color: rgba(59,130,246,.5); --tw-ring-offset-color: #fff; --tw-ring-offset-shadow: 0 0 #0000; --tw-ring-offset-width: 0px; --tw-ring-shadow: 0 0 #0000; --tw-rotate: 0; --tw-scale-x: 1; --tw-scale-y: 1; --tw-scroll-snap-strictness: proximity; --tw-shadow-colored: 0 0 #0000; --tw-shadow: 0 0 #0000; --tw-skew-x: 0; --tw-skew-y: 0; --tw-translate-x: 0; --tw-translate-y: 0; background-color: white; border: 0px solid; box-sizing: border-box; color: #212b36; font-family: __Inter_84faf7, __Inter_Fallback_84faf7; font-size: 15.4px; margin: 12px 0px; text-align: justify;\">Qua bài viết các cách kiếm tiền trên TikTok hiệu quả và nhanh chóng ở trên, bạn sẽ có nhiều cơ hội kiếm tiền để bạn khám phá và tận dụng sự phổ biến của nền tảng này. Hãy nhớ rằng thành công trên TikTok đòi hỏi sự sáng tạo, kiên nhẫn và khả năng tạo nội dung hấp dẫn. Bất kỳ ai cũng có thể bắt đầu và thử nghiệm các phương pháp kiếm tiền này. Hãy chắc chắn làm theo đam mê của bạn và luôn duy trì sự sáng tạo để thu được lợi ích tối đa từ nền tảng này. Chúc bạn thành công trong thực hiện cách bật kiếm tiền trên Tiktok qua những hướng dẫn trên nhé!</p>"
   }
 ],
-      products: []
+      products: [
+  {
+    "id": "PROD_MTQZT2Y1",
+    "name": "HOTMAIL - OUTLOOK ĐỘ TRUST CAO LIVE TRÂU",
+    "slug": "prod-mtqzt2y1",
+    "category": "Hotmail / Outlook",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQZT2Y1_HOTMAIL_-_OUTLOOK_%C4%90%E1%BB%98_TRUST_CAO_LIVE_TR%C3%82U.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQZT2Y1_HOTMAIL_-_OUTLOOK_%C4%90%E1%BB%98_TRUST_CAO_LIVE_TR%C3%82U.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQZT2Y1_HOTMAIL_-_OUTLOOK_%C4%90%E1%BB%98_TRUST_CAO_LIVE_TR%C3%82U.png",
+    "price": 141,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Mặc định",
+        "price": 141,
+        "stock": 4707,
+        "available": true,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "26955",
+          "sourcePrice": 117,
+          "sourceStock": 4707,
+          "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "26955",
+      "sourcePrice": 117,
+      "sourceStock": 4707,
+      "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 4707,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MTRB6000",
+    "name": "OUTLOOK TRUSTED - LIVE 6-12 Tháng",
+    "slug": "prod-mtrb6000",
+    "category": "Hotmail / Outlook",
+    "description": "<div class=\"mmo-seo-article\" style=\"line-height: 1.8; color: #cbd5e1; font-size: 15px;\">\n  <p>Bạn đang tìm kiếm địa chỉ mua <strong>Mua Mail Outlook, Hotmail Cổ Uy Tín Giá Rẻ</strong> uy tín, chất lượng cao với giá thành cạnh tranh nhất thị trường? Bạn cần nguồn cung cấp ổn định, tài khoản có độ <em>trust</em> cao, kháng quét mạnh mẽ để phục vụ cho các chiến dịch kinh doanh, chạy quảng cáo, nuôi nick tự động hóa hoặc mở rộng quy mô kiếm tiền online (MMO)?</p>\n\n  <p>Chào mừng bạn đến với <strong>Muabantaikhoanmmo.com</strong> – Hệ sinh thái cung ứng tài nguyên số và tài khoản MMO hàng đầu Việt Nam. Với dịch vụ cung cấp <strong>Mua Mail Outlook, Hotmail Cổ Uy Tín Giá Rẻ</strong>, chúng tôi tự tin mang đến cho bạn giải pháp an toàn, hiệu quả vượt trội giúp tối ưu hóa 100% hiệu suất công việc của bạn.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    1.&nbsp; Mail Outlook, Hotmail Cổ Uy Tín Giá Rẻ\n  </h2>\n  <p>Trong kỷ nguyên marketing số và tự động hóa ngày nay, việc sở hữu những tài khoản chất lượng, được nuôi dưỡng trên môi trường sạch là yếu tố quyết định tới hơn 80% sự thành công của bất kỳ chiến dịch MMO nào. Sản phẩm <strong>Mua Mail Outlook, Hotmail Cổ Uy Tín Giá Rẻ</strong> tại shop chúng tôi được tuyển chọn và sàng lọc qua quy trình kỹ thuật nghiêm ngặt nhằm mang lại trải nghiệm mượt mà nhất cho người dùng.</p>\n\n  <p>Khác biệt hoàn toàn so với các loại tài khoản giá rẻ trôi nổi, kém chất lượng trên mạng vốn thường bị khóa ngay sau vài giờ đăng nhập, <strong>Mua Mail Outlook, Hotmail Cổ Uy Tín Giá Rẻ</strong> tại shop sở hữu những đặc điểm kỹ thuật ưu việt:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    \n      <li><strong>Giao thức OAuth2 / Graph API:</strong> Hỗ trợ kết nối mượt mà với các tool automation, tool gửi mail, bot marketing và phần mềm quản lý tài khoản tự động.</li>\n      <li><strong>Tuổi đời (Live Time) siêu bền:</strong> Tài khoản đã qua thời gian ngâm lâu, độ uy tín cao, chịu tải tốt, không bị khóa hàng lo��t như các loại mail reg công nghiệp giá rẻ.</li>\n      <li><strong>Đã xác thực &amp; Kháng Spam:</strong> Hộp thư sạch, có thể nhận mã xác nhận (OTP) từ TikTok, Facebook, Discord, Twitter, Google, Steam nhanh chóng trong 1-3 giây.</li>\n      <li><strong>Định dạng xuất chuẩn:</strong> Cung cấp định dạng tiêu chuẩn (Email | Password | Mail khôi phục | Refresh Token) dễ dàng import hàng loạt vào các phần mềm.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    2. Tại Sao Nên Mua mua mail outlook Tại Muabantaikhoanmmo.com?\n  </h2>\n  <p>Với nhiều năm kinh nghiệm phục vụ hàng chục ngàn khách hàng cá nhân và doanh nghiệp trong cộng đồng MMO, chúng tôi hiểu rõ những rủi ro mà bạn thường gặp phải. Khi lựa chọn dịch vụ của chúng tôi, bạn sẽ nhận được những giá trị cam kết vững chắc:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Hệ thống giao hàng tức thì (Instant Delivery):</strong> Mọi đơn hàng đều được API xử lý tự động trong 03 giây, nhận thông tin ngay trên website và qua email.</li>\n    <li><strong>Nguồn hàng sạch 100%:</strong> Tài nguyên được tạo và nuôi dưỡng bằng địa chỉ IP chuẩn, không bị dính blacklist của các nền tảng lớn.</li>\n    <li><strong>Giá sỉ tận gốc:</strong> Cung cấp bảng giá ưu đãi đặc biệt cho anh em làm dịch vụ, chạy số lượng lớn, đội ngũ agency hoặc mua định kỳ.</li>\n    <li><strong>Bảo mật thông tin khách hàng:</strong> Toàn bộ dữ liệu giao dịch và thông tin cá nhân đều được mã hóa theo chuẩn an ninh cấp cao.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    3. Ứng Dụng Thực Tế &amp; Đối Tượng Khuyên Dùng\n  </h2>\n  <p>Sản phẩm <strong>Mua Mail Outlook, Hotmail Cổ Uy Tín Giá Rẻ</strong> là trợ thủ đắc lực đáp ứng đa dạng mục đích sử dụng trong thực tế:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Anh em chạy quảng cáo (Ads Runner):</strong> Dùng làm tài khoản chạy Ads, cắn tiền mượt mà, hạn chế tối đa tình trạng vô hiệu hóa tài khoản bất thường.</li>\n    <li><strong>Nuôi dàn tài khoản số lượng lớn (Phone Farm / Antidetect):</strong> Tương thích hoàn hảo với các phần mềm nuôi nick, seeding bài viết, kéo tương tác tự động.</li>\n    <li><strong>Làm Affiliate Marketing &amp; Xây Kênh:</strong> Tiếp cận tệp khách hàng tiềm năng, đăng tải nội dung sáng tạo và thúc đẩy doanh số bán hàng vượt bậc.</li>\n    <li><strong>Đăng ký dịch vụ trực tuyến:</strong> Nhận mã xác minh OTP, liên kết tài khoản ngân hàng, ví điện tử hoặc các cổng thanh toán quốc tế một cách thuận tiện.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    4. Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn Chuẩn MMO\n  </h2>\n  <p>Để đảm bảo tài khoản đạt độ bền cao nhất và tránh bị hệ thống an ninh quét checkpoint thiết bị lạ, quý khách vui lòng tuân thủ quy trình khuyến nghị dưới đây:</p>\n  <div style=\"background: rgba(15,23,42,0.6); border-left: 4px solid #38bdf8; padding: 12px 16px; border-radius: 4px; margin-bottom: 15px;\">\n    \n      <ol>\n        <li><strong>Sử dụng trình duyệt chống phát hiện (Antidetect Browser):</strong> Mỗi tài khoản nên mở trên một profile riêng biệt kèm proxy cố định để bảo vệ cookie.</li>\n        <li><strong>Không login dồn dập trên một địa chỉ IP:</strong> Tránh đăng nhập cùng lúc hàng chục tài khoản trên cùng 1 mạng internet cáp quang để tránh bị kích hoạt cơ chế bảo vệ của nhà cung cấp.</li>\n        <li><strong>Lưu trữ thông tin cẩn thận:</strong> Tải và sao lưu file tài khoản về máy tính cá nhân ngay sau khi hệ thống giao hàng tự động.</li>\n      </ol>\n  </div>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    5. Chính Sách Bảo Hành &amp; Hỗ Trợ Kỹ Thuật 24/7\n  </h2>\n  <p>Sự hài lòng của khách hàng là kim chỉ nam cho sự phát triển của chúng tôi. Chúng tôi cam kết chính sách bảo hành minh bạch và rõ ràng:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Bảo hành 1 đổi 1:</strong> Đổi mới ngay lập tức cho các trường hợp tài khoản bị sai mật khẩu, dính checkpoint trước khi mua, hoặc lỗi kỹ thuật từ hệ thống.</li>\n    <li><strong>Hỗ trợ kỹ thuật tận tâm:</strong> Đội ngũ admin trực chiến 24/7 qua Zalo, Telegram, sẵn sàng hỗ trợ giải đáp và xử lý mọi vấn đề phát sinh trong suốt quá trình sử dụng.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    6. Câu Hỏi Thường Gặp (FAQ)\n  </h2>\n  \n      <h3>Hộp thư này có nhận được code OTP từ các nền tảng mạng xã hội không?</h3>\n      <p>Có, tài khoản hoạt động ổn định và nhận mã OTP xác nhận từ TikTok, Facebook, Telegram, Google, Discord một cách nhanh chóng và chính xác.</p>\n      <h3>Thời hạn bảo hành của tài khoản là bao lâu?</h3>\n      <p>Shop áp dụng chính sách bảo hành đăng nhập lần đầu và bảo hành live theo đúng cam kết trong bảng giá sản phẩm (từ 24h đến 30 ngày tùy gói dịch vụ).</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    7. Kết Luận\n  </h2>\n  <p>Sở hữu <strong>Mua Mail Outlook, Hotmail Cổ Uy Tín Giá Rẻ</strong> chất lượng cao chính là chìa khóa giúp bạn tiết kiệm hàng chục giờ công sức, giảm thiểu rủi ro bị khóa tài khoản và bứt phá doanh thu trong công việc MMO của mình. Đừng để những tài khoản kém chất lượng làm gián đoạn kế hoạch kinh doanh của bạn!</p>\n  <p style=\"text-align: center; margin-top: 20px;\">\n    <strong style=\"color: #38bdf8; font-size: 1.1rem;\">👉 ĐẶT MUA NGAY HÔM NAY ĐỂ NHẬN ƯU ĐÃI VÀ DỊCH VỤ BẢO HÀNH TỐT NHẤT TẠI MUABANTAIKHOANMMO.COM! 👈</strong>\n  </p>\n</div>",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTRB6000_OUTLOOK_TRUSTED_-_LIVE_6-12_Th%C3%A1ng.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTRB6000_OUTLOOK_TRUSTED_-_LIVE_6-12_Th%C3%A1ng.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTRB6000_OUTLOOK_TRUSTED_-_LIVE_6-12_Th%C3%A1ng.png",
+    "price": 141,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Mặc định",
+        "price": 141,
+        "stock": 4707,
+        "available": true,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "26955",
+          "sourcePrice": 117,
+          "sourceStock": 16087,
+          "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "26955",
+      "sourcePrice": 117,
+      "sourceStock": 16087,
+      "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 4707,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MTPG0PUD",
+    "name": "Tài Khoản TikTok Brazil",
+    "slug": "prod-mtpg0pud",
+    "category": "TikTok",
+    "description": "<div class=\"mmo-seo-article\" style=\"line-height: 1.8; color: #cbd5e1; font-size: 15px;\">\n  <p>Bạn đang tìm kiếm địa chỉ mua <strong>Tài Khoản TikTok Brazil</strong> uy tín, chất lượng cao với giá thành cạnh tranh nhất thị trường? Bạn cần nguồn cung cấp ổn định, tài khoản có độ <em>trust</em> cao, kháng quét mạnh mẽ để phục vụ cho các chiến dịch kinh doanh, chạy quảng cáo, nuôi nick tự động hóa hoặc mở rộng quy mô kiếm tiền online (MMO)?</p>\n\n  <p>Chào mừng bạn đến với <strong>Muabantaikhoanmmo.com</strong> – Hệ sinh thái cung ứng tài nguyên số và tài khoản MMO hàng đầu Việt Nam. Với dịch vụ cung cấp <strong>Tài Khoản TikTok Brazil</strong>, chúng tôi tự tin mang đến cho bạn giải pháp an toàn, hiệu quả vượt trội giúp tối ưu hóa 100% hiệu suất công việc của bạn.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    1. Giới Thiệu Chi Tiết Về Tài Khoản TikTok Brazil\n  </h2>\n  <p>Trong kỷ nguyên marketing số và tự động hóa ngày nay, việc sở hữu những tài khoản chất lượng, được nuôi dưỡng trên môi trường sạch là yếu tố quyết định tới hơn 80% sự thành công của bất kỳ chiến dịch MMO nào. Sản phẩm <strong>Tài Khoản TikTok Brazil</strong> tại shop chúng tôi được tuyển chọn và sàng lọc qua quy trình kỹ thuật nghiêm ngặt nhằm mang lại trải nghiệm mượt mà nhất cho người dùng.</p>\n\n  <p>Khác biệt hoàn toàn so với các loại tài khoản giá rẻ trôi nổi, kém chất lượng trên mạng vốn thường bị khóa ngay sau vài giờ đăng nhập, <strong>Tài Khoản TikTok Brazil</strong> tại shop sở hữu những đặc điểm kỹ thuật ưu việt:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    \n      <li><strong>Độ ngâm tài khoản (Age/Trust):</strong> Đã được ngâm kỹ lưỡng trên thiết bị thật và địa chỉ IP chuẩn quốc gia, kháng thuật toán quét và hạn chế tối đa checkpoint.</li>\n      <li><strong>Hỗ trợ kiếm tiền &amp; Chạy Ads:</strong> Phù hợp hoàn hảo cho các chiến dịch chạy TikTok Ads, TikTok Shop, làm Affiliate TikTok, Reup video và làm nội dung viral.</li>\n      <li><strong>Tương thích đa thiết bị:</strong> Hoạt động mượt mà trên điện thoại thật (iOS/Android), trình giả lập và các phần mềm quản lý đa tài khoản (Genlogin, Hidemyacc, MoreLogin, Gologin).</li>\n      <li><strong>Đầy đủ thông tin đăng nhập:</strong> Bàn giao kèm email khôi phục hoặc mật khẩu gốc, bảo đảm khách hàng làm chủ 100% tài khoản ngay sau khi mua.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    2. Tại Sao Nên Mua tài khoản tiktok brazil Tại Muabantaikhoanmmo.com?\n  </h2>\n  <p>Với nhiều năm kinh nghiệm phục vụ hàng chục ngàn khách hàng cá nhân và doanh nghiệp trong cộng đồng MMO, chúng tôi hiểu rõ những rủi ro mà bạn thường gặp phải. Khi lựa chọn dịch vụ của chúng tôi, bạn sẽ nhận được những giá trị cam kết vững chắc:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Hệ thống giao hàng tức thì (Instant Delivery):</strong> Mọi đơn hàng đều được API xử lý tự động trong 03 giây, nhận thông tin ngay trên website và qua email.</li>\n    <li><strong>Nguồn hàng sạch 100%:</strong> Tài nguyên được tạo và nuôi dưỡng bằng địa chỉ IP chuẩn, không bị dính blacklist của các nền tảng lớn.</li>\n    <li><strong>Giá sỉ tận gốc:</strong> Cung cấp bảng giá ưu đãi đặc biệt cho anh em làm dịch vụ, chạy số lượng lớn, đội ngũ agency hoặc mua định kỳ.</li>\n    <li><strong>Bảo mật thông tin khách hàng:</strong> Toàn bộ dữ liệu giao dịch và thông tin cá nhân đều được mã hóa theo chuẩn an ninh cấp cao.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    3. Ứng Dụng Thực Tế &amp; Đối Tượng Khuyên Dùng\n  </h2>\n  <p>Sản phẩm <strong>Tài Khoản TikTok Brazil</strong> là trợ thủ đắc lực đáp ứng đa dạng mục đích sử dụng trong thực tế:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Anh em chạy quảng cáo (Ads Runner):</strong> Dùng làm tài khoản chạy Ads, cắn tiền mượt mà, hạn chế tối đa tình trạng vô hiệu hóa tài khoản bất thường.</li>\n    <li><strong>Nuôi dàn tài khoản số lượng lớn (Phone Farm / Antidetect):</strong> Tương thích hoàn hảo với các phần mềm nuôi nick, seeding bài viết, kéo tương tác tự động.</li>\n    <li><strong>Làm Affiliate Marketing &amp; Xây Kênh:</strong> Tiếp cận tệp khách hàng tiềm năng, đăng tải nội dung sáng tạo và thúc đẩy doanh số bán hàng vượt bậc.</li>\n    <li><strong>Đăng ký dịch vụ trực tuyến:</strong> Nhận mã xác minh OTP, liên kết tài khoản ngân hàng, ví điện tử hoặc các cổng thanh toán quốc tế một cách thuận tiện.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    4. Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn Chuẩn MMO\n  </h2>\n  <p>Để đảm bảo tài khoản đạt độ bền cao nhất và tránh bị hệ thống an ninh quét checkpoint thiết bị lạ, quý khách vui lòng tuân thủ quy trình khuyến nghị dưới đây:</p>\n  <div style=\"background: rgba(15,23,42,0.6); border-left: 4px solid #38bdf8; padding: 12px 16px; border-radius: 4px; margin-bottom: 15px;\">\n    \n      <ol>\n        <li><strong>Đăng nhập qua Proxy/IP sạch:</strong> Trước khi đăng nh��p, hãy chuẩn bị Proxy chuẩn quốc gia của tài khoản hoặc mạng 4G/Wifi sạch, không dùng chung với các tài khoản vừa bị quét.</li>\n        <li><strong>Ngâm thiết bị từ 2 - 4 tiếng:</strong> Sau khi đăng nhập thành công, nên lướt xem video tương tác tự nhiên (like, comment, follow 1-2 kênh) như người dùng thật.</li>\n        <li><strong>Đổi thông tin an toàn:</strong> Không nên đổi mật khẩu hoặc email liên kết dồn dập ngay lập tức. Hãy đợi tài khoản quen thiết bị sau 24h - 48h rồi mới tiến hành cập nhật mật khẩu mới.</li>\n      </ol>\n  </div>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    5. Chính Sách Bảo Hành &amp; Hỗ Trợ Kỹ Thuật 24/7\n  </h2>\n  <p>Sự hài lòng của khách hàng là kim chỉ nam cho sự phát triển của chúng tôi. Chúng tôi cam kết chính sách bảo hành minh bạch và rõ ràng:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Bảo hành 1 đổi 1:</strong> Đổi mới ngay lập tức cho các trường hợp tài khoản bị sai mật khẩu, dính checkpoint trước khi mua, hoặc lỗi kỹ thuật từ hệ thống.</li>\n    <li><strong>Hỗ trợ kỹ thuật tận tâm:</strong> Đội ngũ admin trực chiến 24/7 qua Zalo, Telegram, sẵn sàng hỗ trợ giải đáp và xử lý mọi vấn đề phát sinh trong suốt quá trình sử dụng.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    6. Câu Hỏi Thường Gặp (FAQ)\n  </h2>\n  \n      <h3>Tài khoản TikTok này có thể chạy Ads hoặc làm TikTok Shop được không?</h3>\n      <p>Hoàn toàn được! Tài khoản có độ trust cao, đã ngâm sẵn nên tỷ lệ phê duyệt quảng cáo và liên kết TikTok Shop đạt hiệu quả rất tốt so với tài khoản reg mới.</p>\n      <h3>Nếu bị checkpoint đăng nhập lần đầu thì xử lý thế nào?</h3>\n      <p>Shop cam kết <strong>Bảo Hành 1 Đổi 1</strong> ngay lập tức nếu gặp lỗi sai pass hoặc checkpoint xác minh danh tính ngay trong lần đầu đăng nhập theo đúng chính sách bảo hành.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    7. Kết Luận\n  </h2>\n  <p>Sở hữu <strong>Tài Khoản TikTok Brazil</strong> chất lượng cao chính là chìa khóa giúp bạn tiết kiệm hàng chục giờ công sức, giảm thiểu rủi ro bị khóa tài khoản và bứt phá doanh thu trong công việc MMO của mình. Đừng để những tài khoản kém chất lượng làm gián đoạn kế hoạch kinh doanh của bạn!</p>\n  <p style=\"text-align: center; margin-top: 20px;\">\n    <strong style=\"color: #38bdf8; font-size: 1.1rem;\">👉 ĐẶT MUA NGAY HÔM NAY ĐỂ NHẬN ƯU ĐÃI VÀ DỊCH VỤ BẢO HÀNH TỐT NHẤT TẠI MUABANTAIKHOANMMO.COM! 👈</strong>\n  </p>\n</div>",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MTPIJ9XV/image?v=1792467905611",
+    "image_url": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MTPIJ9XV/image?v=1792467905611",
+    "imageUrl": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MTPIJ9XV/image?v=1792467905611",
+    "price": 6000,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "tiktok blazil",
+        "price": 6000,
+        "stock": 75,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 75,
+    "buffSold": 875,
+    "sold": 875,
+    "available": true
+  },
+  {
+    "id": "PROD_MVDQYLNMKF",
+    "name": "Tài khoản Paypal Đã Ngâm Lâu",
+    "slug": "prod-mvdqylnmkf",
+    "category": "Khác",
+    "description": "<p data-path-to-node=\"1\">Trong thế giới kiếm tiền online (MMO), dropshipping, affiliate marketing hay thương mại điện tử xuyên biên giới, <b data-path-to-node=\"1\" data-index-in-node=\"113\">PayPal</b> luôn là cổng thanh toán quốc tế quen thuộc nhưng cũng đầy \"trắc trở\". Đã bao giờ bạn vừa lập một tài khoản mới, nhận khoản tiền đầu tiên và ngay lập tức đối mặt với thông báo <i data-path-to-node=\"1\" data-index-in-node=\"295\">Account Limited</i> (Tài khoản bị hạn chế) cay đắng chưa?</p><p data-path-to-node=\"2\">Đó chính là lý do vì sao ngày càng nhiều chuyên gia và anh em làm MMO săn lùng <b data-path-to-node=\"2\" data-index-in-node=\"79\">Tài khoản PayPal đã ngâm lâu</b>. Bài viết này sẽ phân tích chi tiết lý do vì sao loại tài khoản này là \"vũ khí tối thượng\" cho dòng tiền của bạn, kèm theo các câu hỏi thường gặp (FAQ) giúp bạn sử dụng an toàn tuyệt đối.</p><h2 data-path-to-node=\"4\">1. Tài Khoản PayPal Cổ Đã Ngâm Lâu Là Gì?</h2><p data-path-to-node=\"5\"><b data-path-to-node=\"5\" data-index-in-node=\"0\">Tài khoản PayPal cổ</b> là những tài khoản được đăng ký từ nhiều năm trước, đã trải qua quá trình \"ngâm\" (không hoạt động ho���c hoạt động ngắt quãng trong thời gian dài) hoặc đã có lịch sử phát sinh giao dịch tự nhiên. Khác với tài khoản \"trắng thông tin\" vừa tạo hôm qua, tài khoản cổ đã vượt qua các bộ lọc kiểm duyệt ban đầu và sở hữu độ tín nhiệm (<b data-path-to-node=\"5\" data-index-in-node=\"347\">Trust Score</b>) cực cao trong hệ thống của PayPal.</p><h2 data-path-to-node=\"7\">2. Vì Sao Dân MMO Nhất Định Phải Dùng PayPal Cổ Trust Cao?</h2><ul data-path-to-node=\"8\"><li><p data-path-to-node=\"8,0,0\"><b data-path-to-node=\"8,0,0\" data-index-in-node=\"0\">Vượt qua \"bão\" quét Limit tự động:</b> PayPal sử dụng các thuật toán AI cực kỳ khắt khe để quét tài khoản mới tạo. Tài khoản cổ giống như một chiếc xe đã chạy roda kỹ càng, ít bị hệ thống săm soi hơn.</p></li><li><p data-path-to-node=\"8,1,0\"><b data-path-to-node=\"8,1,0\" data-index-in-node=\"0\">Tỷ lệ giữ tiền (Hold Money) cực thấp:</b> Các tài khoản mới thường xuyên bị giam tiền từ 14 đến 21 ngày. Với tài khoản ngâm lâu, dòng tiền của bạn thường được giải phóng nhanh chóng và mượt mà hơn.</p></li><li><p data-path-to-node=\"8,2,0\"><b data-path-to-node=\"8,2,0\" data-index-in-node=\"0\">Độ bền bỉ và ổn định cao:</b> Sẵn sàng kết nối với các network lớn, nhận thanh toán từ nước ngoài, checkout mua sắm hoặc chạy các chiến dịch tài chính lớn mà không lo sập nguồn đột ngột.</p></li><li><p data-path-to-node=\"8,3,0\"><b data-path-to-node=\"8,3,0\" data-index-in-node=\"0\">Bàn giao toàn quyền, bảo mật tốt:</b> Tài khoản đi kèm đầy đủ thông tin gốc, giúp bạn dễ dàng chuyển đổi quyền sở hữu và thiết lập lớp bảo mật cá nhân.</p></li></ul><h2 data-path-to-node=\"10\">3. Mẹo Sử Dụng Tài Khoản PayPal Cổ An Toàn, Bền Bỉ Trọn Đời</h2><p data-path-to-node=\"11\">Sở hữu tài khoản chất lượng là một chuyện, biết cách \"nuôi\" và sử dụng đúng cách mới là chìa khóa giữ tiền an toàn:</p><ol start=\"1\" data-path-to-node=\"12\"><li><p data-path-to-node=\"12,0,0\"><b data-path-to-node=\"12,0,0\" data-index-in-node=\"0\">Luôn dùng Proxy/VPN sạch:</b> Đăng nhập tài khoản trên cùng một quốc gia (ví dụ: US, UK, VN...) trùng khớp với thông tin đăng ký ban đầu thông qua trình duyệt ẩn danh (Antidetect Browser).</p></li><li><p data-path-to-node=\"12,1,0\"><b data-path-to-node=\"12,1,0\" data-index-in-node=\"0\">\"Làm ấm\" tài khoản (Warm-up):</b> Đừng nhận hoặc chuyển ngay hàng ngàn USD trong ngày đầu tiên. Hãy bắt đầu bằng các giao dịch nhỏ, nuôi dần độ tương tác tự nhiên trong 1-2 tuần đầu.</p></li><li><p data-path-to-node=\"12,2,0\"><b data-path-to-node=\"12,2,0\" data-index-in-node=\"0\">Bảo mật 2 lớp (2FA):</b> Luôn bật xác thực hai yếu tố và không chia sẻ thông tin đăng nhập cho bên thứ ba.</p></li></ol><h2 data-path-to-node=\"14\">4. FAQ – Các Câu Hỏi Thường Gặp Về PayPal Cổ Ngâm Lâu</h2><h3 data-path-to-node=\"15\">Q1: Mua tài khoản PayPal cổ về có bị lấy lại hay tranh chấp không?</h3><p data-path-to-node=\"16\"><b data-path-to-node=\"16\" data-index-in-node=\"0\">Trả lời:</b> Không. Tại shop, tài khoản sau khi bàn giao sẽ được cung cấp toàn quyền sở hữu bao gồm cả email gốc (mail reg). Bạn có thể đổi toàn bộ mật khẩu, thêm số điện thoại cá nhân và các lớp bảo mật của riêng bạn để độc quyền kiểm soát.</p><h3 data-path-to-node=\"17\">Q2: Tài khoản đã được geo-ip hoặc định danh (Verify) chưa?</h3><p data-path-to-node=\"18\"><b data-path-to-node=\"18\" data-index-in-node=\"0\">Trả lời:</b> Tùy thuộc vào phân loại cụ thể mà tài khoản sẽ ở trạng thái Reg chuẩn quốc gia tương ứng hoặc đã qua các bước xác minh danh tính cơ bản. Vui lòng liên hệ trực tiếp với shop để được tư vấn chính xác loại tài khoản phù hợp với mục đích sử dụng (nhận tiền Network, mua sắm hay checkout).</p><h3 data-path-to-node=\"19\">Q3: Shop có chính sách bảo hành gì khi mua tài khoản không?</h3><p data-path-to-node=\"20\"><b data-path-to-node=\"20\" data-index-in-node=\"0\">Trả lời:</b> Shop áp dụng chính sách <b data-path-to-node=\"20\" data-index-in-node=\"33\">bảo hành lỗi đăng nhập 1 đổi 1</b> ngay trong lần đầu tiên nhận tài khoản, đồng thời hỗ trợ hướng dẫn quy trình nuôi tài khoản an toàn từ A-Z cho khách hàng.</p><h3 data-path-to-node=\"22\">🛒 SỞ HỮU NGAY TÀI KHOẢN PAYPAL CỔ – BẢO VỆ DÒNG TIỀN CỦA BẠN!</h3><p data-path-to-node=\"23\">Bạn cần tư vấn chi tiết về các dòng PayPal cổ US, VN hay các thị trường khác?</p><ul data-path-to-node=\"24\"><li><p data-path-to-node=\"24,0,0\">💬 <b data-path-to-node=\"24,0,0\" data-index-in-node=\"3\">Inbox trực tiếp</b> cho shop hoặc để lại dấu chấm <code data-path-to-node=\"24,0,0\" data-index-in-node=\"49\">[ . ]</code> ngay bên dưới để nhận báo giá và chốt đơn siêu tốc!</p></li></ul>",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTU9F5HN_Paypal_2025_-_2016_%C4%90%C3%A3_ng%C3%A2m_l%C3%A2u_c%E1%BB%B1c_k%E1%BB%B3_Tr%C3%A2u.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTU9F5HN_Paypal_2025_-_2016_%C4%90%C3%A3_ng%C3%A2m_l%C3%A2u_c%E1%BB%B1c_k%E1%BB%B3_Tr%C3%A2u.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTU9F5HN_Paypal_2025_-_2016_%C4%90%C3%A3_ng%C3%A2m_l%C3%A2u_c%E1%BB%B1c_k%E1%BB%B3_Tr%C3%A2u.jpg",
+    "price": 50000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Paypal chưa nhận tiền",
+        "price": 50000,
+        "stock": 7,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "Paypal Đã Nhận tiền",
+        "price": 80000,
+        "stock": 13,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 20,
+    "buffSold": 555,
+    "sold": 555,
+    "available": true
+  },
+  {
+    "id": "PROD_MTPIJ9XV",
+    "name": "Tài Khoản TikTok Brazil",
+    "slug": "prod-mtpij9xv",
+    "category": "TikTok",
+    "description": "<div class=\"mmo-seo-article\" style=\"line-height: 1.8; color: #cbd5e1; font-size: 15px;\">\n  <p>Bạn đang tìm kiếm địa chỉ mua <strong>Tài Khoản TikTok Brazil</strong> uy tín, chất lượng cao với giá thành cạnh tranh nhất thị trường? Bạn cần nguồn cung cấp ổn định, tài khoản có độ <em>trust</em> cao, kháng quét mạnh mẽ để phục vụ cho các chiến dịch kinh doanh, chạy quảng cáo, nuôi nick tự động hóa hoặc mở rộng quy mô kiếm tiền online (MMO)?</p>\n\n  <p>Chào mừng bạn đến với <strong>Muabantaikhoanmmo.com</strong> – Hệ sinh thái cung ứng tài nguyên số và tài khoản MMO hàng đầu Việt Nam. Với dịch vụ cung cấp <strong>Tài Khoản TikTok Brazil</strong>, chúng tôi tự tin mang đến cho bạn giải pháp an toàn, hiệu quả vượt trội giúp tối ưu hóa 100% hiệu suất công việc của bạn.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    1. Giới Thiệu Chi Tiết Về Tài Khoản TikTok Brazil\n  </h2>\n  <p>Trong kỷ nguyên marketing số và tự động hóa ngày nay, việc sở hữu những tài khoản chất lượng, được nuôi dưỡng trên môi trường sạch là yếu tố quyết định tới hơn 80% sự thành công của bất kỳ chiến dịch MMO nào. Sản phẩm <strong>Tài Khoản TikTok Brazil</strong> tại shop chúng tôi được tuyển chọn và sàng lọc qua quy trình kỹ thuật nghiêm ng��t nhằm mang lại trải nghiệm mượt mà nhất cho người dùng.</p>\n\n  <p>Khác biệt hoàn toàn so với các loại tài khoản giá rẻ trôi nổi, kém chất lượng trên mạng vốn thường bị khóa ngay sau vài giờ đăng nhập, <strong>Tài Khoản TikTok Brazil</strong> tại shop sở hữu những đặc điểm kỹ thuật ưu việt:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    \n      <li><strong>Độ ngâm tài khoản (Age/Trust):</strong> Đã được ngâm kỹ lưỡng trên thiết bị thật và địa chỉ IP chuẩn quốc gia, kháng thuật toán quét và hạn chế tối đa checkpoint.</li>\n      <li><strong>Hỗ trợ kiếm tiền &amp; Chạy Ads:</strong> Phù hợp hoàn hảo cho các chiến dịch chạy TikTok Ads, TikTok Shop, làm Affiliate TikTok, Reup video và làm nội dung viral.</li>\n      <li><strong>Tương thích đa thiết bị:</strong> Hoạt động mượt mà trên điện thoại thật (iOS/Android), trình giả lập và các phần mềm quản lý đa tài khoản (Genlogin, Hidemyacc, MoreLogin, Gologin).</li>\n      <li><strong>Đầy đủ thông tin đăng nhập:</strong> Bàn giao kèm email khôi phục hoặc mật khẩu gốc, bảo đảm khách hàng làm chủ 100% tài khoản ngay sau khi mua.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    2. Tại Sao Nên Mua tài khoản tiktok brazil Tại Muabantaikhoanmmo.com?\n  </h2>\n  <p>Với nhiều năm kinh nghiệm phục vụ hàng chục ngàn khách hàng cá nhân và doanh nghiệp trong cộng đồng MMO, chúng tôi hiểu rõ những rủi ro mà bạn thường gặp phải. Khi lựa chọn dịch vụ của chúng tôi, bạn sẽ nhận được những giá trị cam kết vững chắc:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Hệ thống giao hàng tức thì (Instant Delivery):</strong> Mọi đơn hàng đều được API xử lý tự động trong 03 giây, nhận thông tin ngay trên website và qua email.</li>\n    <li><strong>Nguồn hàng sạch 100%:</strong> Tài nguyên được tạo và nuôi dưỡng bằng địa chỉ IP chuẩn, không bị dính blacklist của các nền tảng lớn.</li>\n    <li><strong>Giá sỉ tận gốc:</strong> Cung cấp bảng giá ưu đãi đặc biệt cho anh em làm dịch vụ, chạy số lượng lớn, đội ngũ agency hoặc mua định kỳ.</li>\n    <li><strong>Bảo mật thông tin khách hàng:</strong> Toàn bộ dữ liệu giao dịch và thông tin cá nhân đều được mã hóa theo chuẩn an ninh cấp cao.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    3. Ứng Dụng Thực Tế &amp; Đối Tượng Khuyên Dùng\n  </h2>\n  <p>Sản phẩm <strong>Tài Khoản TikTok Brazil</strong> là trợ thủ đắc lực đáp ứng đa dạng mục đích sử dụng trong thực tế:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Anh em chạy quảng cáo (Ads Runner):</strong> Dùng làm tài khoản chạy Ads, cắn tiền mượt mà, hạn chế tối đa tình trạng vô hiệu hóa tài khoản bất thường.</li>\n    <li><strong>Nuôi dàn tài khoản số lượng lớn (Phone Farm / Antidetect):</strong> Tương thích hoàn hảo với các phần mềm nuôi nick, seeding bài viết, kéo tương tác tự động.</li>\n    <li><strong>Làm Affiliate Marketing &amp; Xây Kênh:</strong> Tiếp cận tệp khách hàng tiềm năng, đăng tải nội dung sáng tạo và thúc đẩy doanh số bán hàng vượt bậc.</li>\n    <li><strong>Đăng ký dịch vụ trực tuyến:</strong> Nhận mã xác minh OTP, liên kết tài khoản ngân hàng, ví điện tử hoặc các cổng thanh toán quốc tế một cách thuận tiện.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    4. Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn Chuẩn MMO\n  </h2>\n  <p>Để đảm bảo tài khoản đạt độ bền cao nhất và tránh bị hệ thống an ninh quét checkpoint thiết bị lạ, quý khách vui lòng tuân thủ quy trình khuyến nghị dưới đây:</p>\n  <div style=\"background: rgba(15,23,42,0.6); border-left: 4px solid #38bdf8; padding: 12px 16px; border-radius: 4px; margin-bottom: 15px;\">\n    \n      <ol>\n        <li><strong>Đăng nhập qua Proxy/IP sạch:</strong> Trước khi đăng nhập, hãy chuẩn bị Proxy chuẩn quốc gia của tài khoản hoặc mạng 4G/Wifi sạch, không dùng chung với các tài khoản vừa bị quét.</li>\n        <li><strong>Ngâm thiết bị từ 2 - 4 tiếng:</strong> Sau khi đăng nhập thành công, nên lướt xem video tương tác tự nhiên (like, comment, follow 1-2 kênh) như người dùng thật.</li>\n        <li><strong>Đổi thông tin an toàn:</strong> Không nên đổi mật khẩu hoặc email liên kết dồn dập ngay lập tức. Hãy đợi tài khoản quen thiết bị sau 24h - 48h rồi mới tiến hành cập nhật mật khẩu mới.</li>\n      </ol>\n  </div>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    5. Chính Sách Bảo Hành &amp; Hỗ Trợ Kỹ Thuật 24/7\n  </h2>\n  <p>Sự hài lòng của khách hàng là kim chỉ nam cho sự phát triển của chúng tôi. Chúng tôi cam kết chính sách bảo hành minh bạch và rõ ràng:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Bảo hành 1 đổi 1:</strong> Đổi mới ngay lập tức cho các trường hợp tài khoản bị sai mật khẩu, dính checkpoint trước khi mua, hoặc lỗi kỹ thuật từ hệ thống.</li>\n    <li><strong>Hỗ trợ kỹ thuật tận tâm:</strong> Đội ngũ admin trực chiến 24/7 qua Zalo, Telegram, sẵn sàng hỗ trợ giải đáp và xử lý mọi vấn đề phát sinh trong suốt quá trình sử dụng.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    6. Câu Hỏi Thường Gặp (FAQ)\n  </h2>\n  \n      <h3>Tài khoản TikTok này có thể chạy Ads hoặc làm TikTok Shop được không?</h3>\n      <p>Hoàn toàn được! Tài khoản có độ trust cao, đã ngâm sẵn nên tỷ lệ phê duyệt quảng cáo và liên kết TikTok Shop đạt hiệu quả rất tốt so với tài khoản reg mới.</p>\n      <h3>Nếu bị checkpoint đăng nhập lần đầu thì xử lý thế nào?</h3>\n      <p>Shop cam kết <strong>Bảo Hành 1 Đổi 1</strong> ngay lập tức nếu gặp lỗi sai pass hoặc checkpoint xác minh danh tính ngay trong lần đầu đăng nhập theo đúng chính sách bảo hành.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    7. Kết Luận\n  </h2>\n  <p>Sở hữu <strong>Tài Khoản TikTok Brazil</strong> chất lượng cao chính là chìa khóa giúp bạn tiết kiệm hàng chục giờ công sức, giảm thiểu rủi ro bị khóa tài khoản và bứt phá doanh thu trong công việc MMO của mình. Đừng để những tài khoản kém chất lượng làm gián đoạn kế hoạch kinh doanh của bạn!</p>\n  <p style=\"text-align: center; margin-top: 20px;\">\n    <strong style=\"color: #38bdf8; font-size: 1.1rem;\">👉 ĐẶT MUA NGAY HÔM NAY ĐỂ NHẬN ƯU ĐÃI VÀ DỊCH VỤ BẢO HÀNH TỐT NHẤT TẠI MUABANTAIKHOANMMO.COM! 👈</strong>\n  </p>\n</div>",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png",
+    "price": 6000,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "tiktok blazil",
+        "price": 6000,
+        "stock": 75,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 75,
+    "buffSold": 875,
+    "sold": 875,
+    "available": true
+  },
+  {
+    "id": "PROD_MU5T3T47AE",
+    "name": "NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 Tháng +5T +VEO3",
+    "slug": "prod-mu5t3t47ae",
+    "category": "AI & Video",
+    "description": "🔥 NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 THÁNG + GOOGLE ONE 5TB + VEO 3\n- Kèm nhiều AI cao cấp có cả Google VEO 3 tạo video đỉnh cao\n- Dùng riêng tài khoản chính chủ của bạn (Dán link ra trình duyệt là xong, không cần add family, không cần thẻ)\n- Bảo hành 1 đổi 1 suốt thời gian sử dụng 24/7 uy tín.",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5T3T47AE_N%C3%82NG_C%E1%BA%A4P_GEMINI_PRO_18_TH%C3%81NG_CH%C3%8DNH_CH%E1%BB%A6____GG_5TB__.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5T3T47AE_N%C3%82NG_C%E1%BA%A4P_GEMINI_PRO_18_TH%C3%81NG_CH%C3%8DNH_CH%E1%BB%A6____GG_5TB__.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5T3T47AE_N%C3%82NG_C%E1%BA%A4P_GEMINI_PRO_18_TH%C3%81NG_CH%C3%8DNH_CH%E1%BB%A6____GG_5TB__.jpg",
+    "price": 89000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "GEMINI PRO CHÍNH CHỦ 18 Tháng+ veo 3",
+        "price": 89000,
+        "stock": 1705,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "selltainguyenmmo",
+          "sourceProdId": "32428",
+          "sourcePrice": 51000,
+          "sourceStock": 1705,
+          "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 51.000 đ (Tồn: 1.705)",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "32428",
+      "sourcePrice": 51000,
+      "sourceStock": 1705,
+      "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 51.000 đ (Tồn: 1.705)",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 1705,
+    "buffSold": 1238,
+    "sold": 1238,
+    "available": true
+  },
+  {
+    "id": "PROD_MUR4EA44RE",
+    "name": "TikTok Canada Reg 2025 Mail Lock",
+    "slug": "prod-mur4ea44re",
+    "category": "TikTok",
+    "description": "Tài khoản TikTok Canada Reg 2025 Mail Lock chất lượng cao, độ trust mạnh, thích hợp cho chiến dịch MMO, Reup, Live, Ads.",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR4SPH1IU_TikTok_Cambodia_-_Reg_2025_Mail_Lock.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR4SPH1IU_TikTok_Cambodia_-_Reg_2025_Mail_Lock.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR4SPH1IU_TikTok_Cambodia_-_Reg_2025_Mail_Lock.jpg",
+    "price": 15000,
+    "warranty": "Bảo hành đăng nhập lần đầu 24h",
+    "variants": [
+      {
+        "name": "TikTok Canada mail look",
+        "price": 15000,
+        "stock": 9476,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "nguyenlieummo",
+          "sourceProdId": "122569",
+          "sourcePrice": 7590,
+          "sourceStock": 9476,
+          "sourceProdName": "TikTok Canada - CA Reg 2024 Mail Lock",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "nguyenlieummo",
+      "sourceProdId": "122569",
+      "sourcePrice": 7590,
+      "sourceStock": 9476,
+      "sourceProdName": "TikTok Canada - CA Reg 2024 Mail Lock",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 9476,
+    "buffSold": 1588,
+    "sold": 1588,
+    "available": true
+  },
+  {
+    "id": "PROD_MV5SHIF0DU",
+    "name": "Clone Facebook Đã ngâm Lâu CÓ 2FA",
+    "slug": "prod-mv5shif0du",
+    "category": "Facebook",
+    "description": "Bạn đang cần nguồn tài khoản Clone Facebook có tuổi đời ngâm lâu năm, được tích hợp sẵn bảo mật 2FA (Two-Factor Authentication) giúp chống checkpoint cực tốt, tài khoản cứng cáp và sẵn sàng phục vụ cho các chiến dịch seeding lớn, chạy tool automation nặng hoặc xây dựng hệ thống bền vững?\n\nDòng sản phẩm Clone Facebook Đã Ngâm Lâu + 2FA tại shop chính là lựa chọn \"vàng mười\" cho anh em làm MMO chuyên nghiệp!\n\n💎 Điểm mạnh vượt trội của dòng Clone Ngâm Lâu + 2FA:\n⏳ Tuổi đời ngâm lâu: Tài khoản đã trải qua thời gian dài ổn định, vượt qua các mốc quét gắt gao của nền tảng, sở hữu độ tín nhiệm (Trust) cao hơn hẳn các loại clone mới tạo.\n\n🔒 Bảo mật 2FA chặt chẽ: Được bảo vệ an toàn tuyệt đối bằng mã xác thực 2 lớp, hạn chế tối đa tình trạng khóa ngầm, checkpoint hay tranh chấp quyền sở hữu.\n\n🚀 Độ bền bỉ cao, chiến mượt mọi tool: Tương thích hoàn hảo với các phần mềm nuôi via, tool automation, seeding số lượng lớn hoặc quản lý trên trình duyệt ẩn danh.\n\n📦 Định dạng chuẩn xác: Bàn giao đầy đủ thông tin (User / Pass / 2FA), dễ dàng import hàng loạt vào các phần mềm quản lý tài khoản.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần nhận tài khoản đầu tiên.\n\n⚡ Bàn giao siêu tốc đúng định dạng chuẩn xác ngay sau khi thanh toán.\n\n🔒 Bảo mật tuyệt đối, sạch sẽ, không qua sử dụng cá nhân trước đó.\n\n💡 Mẹo sử dụng bền lâu: Nên kết hợp sử dụng trình duyệt ẩn danh chuyên dụng (Antidetect Browser) cùng Proxy chất lượng sạch để đăng nhập và duy trì sự ổn định tối đa cho dàn clone ngâm!",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5SHIF0DU_Clone_Facebook_Da_ngam_Lau_CO_2FA.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5SHIF0DU_Clone_Facebook_Da_ngam_Lau_CO_2FA.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5SHIF0DU_Clone_Facebook_Da_ngam_Lau_CO_2FA.png",
+    "price": 15000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Clone Facebook ngâm",
+        "price": 15000,
+        "stock": 833,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "nguyenlieummo",
+          "sourceProdId": "130660",
+          "sourcePrice": 11849,
+          "sourceStock": 833,
+          "sourceProdName": "ON2 - CLONE FACEBOOK NGOẠI CÓ 2FA - VERI GMAIL",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "nguyenlieummo",
+      "sourceProdId": "130660",
+      "sourcePrice": 11849,
+      "sourceStock": 833,
+      "sourceProdName": "ON2 - CLONE FACEBOOK NGOẠI CÓ 2FA - VERI GMAIL",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 833,
+    "buffSold": 1298,
+    "sold": 1298,
+    "available": true
+  },
+  {
+    "id": "PROD_MV5RZ46QPB",
+    "name": "Tài khoản clone Facebook  chất lượng cao",
+    "slug": "prod-mv5rz46qpb",
+    "category": "Facebook",
+    "description": "Bạn đang tìm kiếm nguồn Clone Facebook chất lượng cao, đã được ngâm kỹ, hạn chế tối đa tình trạng checkpoint khi đăng nhập, hoạt động ổn định để phục vụ cho các chiến dịch seeding, tương tác bài viết, chạy tool automation hoặc xây dựng hệ thống tài khoản số lượng lớn?\n\nDòng sản phẩm Clone Facebook Chất Lượng Cao tại shop chính là giải pháp tối ưu, tiết kiệm và hiệu quả nhất dành cho bạn!\n\n💎 Điểm mạnh vượt trội của dàn Clone:\n🚀 Độ Trust ổn định: Tài khoản qua chọn lọc kỹ càng, tương thích hoàn hảo với các phần mềm nuôi via, tool automation hoặc thao tác thủ công.\n\n🔒 Độ bền cao, hạn chế quét: Giảm thiểu tối đa tình trạng khóa ngầm, checkpoint ngay lần đăng nhập đầu tiên khi dùng đúng trình duyệt sạch.\n\n📦 Đa dạng định dạng & Tiện ích: Hỗ trợ đầy đủ thông tin (User/Pass/2FA/Cookie tùy chọn), dễ dàng import vào các trình duyệt ẩn danh (Antidetect Browser) để quản lý hàng loạt.\n\n💰 Chi phí cực kỳ tối ưu: Lựa chọn hoàn hảo cho anh em làm hệ thống số lượng lớn (Mass) với mức giá siêu hạt dẻ để tối ưu hóa lợi nhuận.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần nhận tài khoản đầu tiên.\n\n⚡ Bàn giao siêu tốc đúng định dạng chuẩn xác ngay sau khi thanh toán.\n\n🔒 Bảo mật tuyệt đối, sạch sẽ, không qua sử dụng cá nhân trước đó.\n\n💡 Mẹo sử dụng bền lâu: Nên kết hợp sử dụng trình duyệt ẩn danh (Antidetect Browser) kết hợp cùng Proxy sạch để đăng nhập và nuôi dưỡng tài khoản, giúp duy trì độ trâu bò và tuổi thọ tối đa!",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5RZ46QPB_Tai_khoan_clone_Facebook.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5RZ46QPB_Tai_khoan_clone_Facebook.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5RZ46QPB_Tai_khoan_clone_Facebook.png",
+    "price": 15000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Tài khoản clone Facebook",
+        "price": 15000,
+        "stock": 7525,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "nguyenlieummo",
+          "sourceProdId": "125445",
+          "sourcePrice": 11638,
+          "sourceStock": 7525,
+          "sourceProdName": "CLONE FACEBOOK NGOẠI CÓ 2FA - VERI HOTMAIL - NAME RANDOM",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "nguyenlieummo",
+      "sourceProdId": "125445",
+      "sourcePrice": 11638,
+      "sourceStock": 7525,
+      "sourceProdName": "CLONE FACEBOOK NGOẠI CÓ 2FA - VERI HOTMAIL - NAME RANDOM",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 7525,
+    "buffSold": 1255,
+    "sold": 1255,
+    "available": true
+  },
+  {
+    "id": "PROD_MV5RNGVO93",
+    "name": "Facebook US Thuê Tick Xanh - Có Avatar",
+    "slug": "prod-mv5rngvo93",
+    "category": "Facebook",
+    "description": "Bạn đang cần nguồn tài khoản Facebook VIA/Clone thị trường Mỹ đã được xác minh Tick Xanh (Verified Badge) kèm theo hình đại diện (Avatar) đầy đủ, sở hữu độ uy tín tuyệt đối để chạy quảng cáo (Ads), làm thương hiệu, seeding hoặc triển khai các chiến dịch lớn tại thị trường US mà không sợ bị quét hay hạn chế tính năng?\n\nDịch vụ Cho thuê Facebook Mỹ Tick Xanh tại shop chính là \"vũ khí hạng nặng\" giúp bạn nâng tầm uy tín và bứt phá mọi chỉ số!\n\n💎 Điểm mạnh vượt trội của tài khoản Facebook Mỹ Tick Xanh:\n🇺🇸 IP & Quốc gia US chuẩn chỉnh: Tài khoản gốc Mỹ, tương thích hoàn hảo với các hệ thống phân phối quảng cáo và thuật toán kiểm duyệt tại thị trường Bắc Mỹ.\n\n✔️ Đã có Tick Xanh Verified: Tạo dựng sự uy tín tối đa với khách hàng, đối tác hoặc nền tảng, giúp các chiến dịch chạy ads, seeding hay tương tác đạt hiệu quả chuyển đổi cao nhất.\n\n👤 Có sẵn Avatar & Profile hoàn thiện: Hồ sơ sạch sẽ, giống hệt người dùng thật, giúp giảm thiểu tối đa tỷ lệ checkpoint hay quét bất thường từ hệ thống Facebook.\n\n🚀 Sẵn sàng chiến mọi tác vụ nặng: Phù hợp hoàn hảo để chạy quảng cáo ngân sách lớn, làm via cầm via, quản lý BM (Business Manager) hoặc phát triển hệ thống thương hiệu cá nhân.",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5RNGVO93_Facebook_US_Thue_Tick_Xanh_Co_Avatar.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5RNGVO93_Facebook_US_Thue_Tick_Xanh_Co_Avatar.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5RNGVO93_Facebook_US_Thue_Tick_Xanh_Co_Avatar.png",
+    "price": 200000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Facebook us Thuê Tick Xanh - Có Avatar",
+        "price": 200000,
+        "stock": 307,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "vuavia",
+          "sourceProdId": "2006",
+          "sourcePrice": 150000,
+          "sourceStock": 307,
+          "sourceProdName": "[Via] #2006 Acc Facebook Mỹ Thuê Tick Xanh - Có Avatar - Xác Thực Hotmail Live - 150.000 đ (Tồn: 307)",
+          "baseUrl": "https://api.vuavia.io",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "vuavia",
+      "sourceProdId": "2006",
+      "sourcePrice": 150000,
+      "sourceStock": 307,
+      "sourceProdName": "[Via] #2006 Acc Facebook Mỹ Thuê Tick Xanh - Có Avatar - Xác Thực Hotmail Live - 150.000 đ (Tồn: 307)",
+      "baseUrl": "https://api.vuavia.io",
+      "isSourceDeleted": false
+    },
+    "stock": 307,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MV5QIZNFCZ",
+    "name": "Google Gemini AI Pro Veo3 - 1 NĂM Chính Chủ",
+    "slug": "prod-mv5qiznfcz",
+    "category": "AI & Video",
+    "description": "Google Gemini AI Pro Veo3 - 1 NĂM Chính Chủ",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "price": 120000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Gemini AI Pro Veo3 - 1 NĂM",
+        "price": 120000,
+        "stock": 554,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "selltainguyenmmo",
+          "sourceProdId": "32428",
+          "sourcePrice": 52600,
+          "sourceStock": 554,
+          "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "32428",
+      "sourcePrice": 52600,
+      "sourceStock": 554,
+      "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 554,
+    "buffSold": 1865,
+    "sold": 1865,
+    "available": true
+  },
+  {
+    "id": "PROD_MUBKH47T2U",
+    "name": "Rom Androi 10 Not8 N950 mod ADB",
+    "slug": "prod-mubkh47t2u",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.jpg",
+    "price": 300000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom Androi 10 Not8 N950 cài =TW",
+        "price": 300000,
+        "stock": 30,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 30,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUBJQ6JP7O",
+    "name": "Rom Androi 10 Not 9  N960 F/DS mod adb",
+    "slug": "prod-mubjq6jp7o",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+    "price": 300000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Not 9  N960 F/DS Cài bằng TW",
+        "price": 300000,
+        "stock": 46,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 46,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2OGW71GZ",
+    "name": "rom gốc mod adb j7 plush",
+    "slug": "prod-mu2ogw71gz",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_plus.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_plus.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_plus.png",
+    "price": 300000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "rom gốc mod adb j7 plush",
+        "price": 300000,
+        "stock": 40,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "rot j7 plush",
+        "price": 100000,
+        "stock": 36,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 76,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2OAG3IO2",
+    "name": "Rom androi 10 mod adb j7 prime",
+    "slug": "prod-mu2oag3io2",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_prime.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_prime.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_prime.png",
+    "price": 300000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 10 mod adb j7 prime",
+        "price": 300000,
+        "stock": 33,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 33,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2O4MW4DQ",
+    "name": "Rom androi 10 s7  s7 edge mod adb",
+    "slug": "prod-mu2o4mw4dq",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s7_android10.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s7_android10.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s7_android10.png",
+    "price": 300000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 10 s7 G930FDS",
+        "price": 300000,
+        "stock": 43,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "Rom androi  s7 edge G935",
+        "price": 300000,
+        "stock": 1,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 44,
+    "buffSold": 1600,
+    "sold": 1600,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2NSFQCMT",
+    "name": "Rom androi 12 s10 mod adb",
+    "slug": "prod-mu2nsfqcmt",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s10_android12.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s10_android12.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s10_android12.png",
+    "price": 500000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "rom s10 G973F DS",
+        "price": 500000,
+        "stock": 62,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "rom s10 G977N s10 5g",
+        "price": 500000,
+        "stock": 63,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "Rom S 10 5g G977N bản Hàn",
+        "price": 500000,
+        "stock": 62,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 187,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2NUXL1Q4",
+    "name": "Rom androi 10 s9 mod adb",
+    "slug": "prod-mu2nuxl1q4",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s9_android10.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s9_android10.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s9_android10.png",
+    "price": 300000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 10 s9",
+        "price": 300000,
+        "stock": 22,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 22,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2NKET1OG",
+    "name": "Rom Not8 androi 10 mod adb",
+    "slug": "prod-mu2nket1og",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.jpg",
+    "price": 300000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom Not8 androi 10",
+        "price": 300000,
+        "stock": 30,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "Rom  gốc not8 mod adb",
+        "price": 300000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 30,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2N2TVDIJ",
+    "name": "Rom androi 10 mod adb galaxy not 9",
+    "slug": "prod-mu2n2tvdij",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.png",
+    "price": 500000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 10  not 9",
+        "price": 500000,
+        "stock": 46,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "Rom Gốc mod adb",
+        "price": 300000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 46,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2MY8WCOE",
+    "name": "Rom Androi 12 galaxy s22 mod adb",
+    "slug": "prod-mu2my8wcoe",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png",
+    "price": 500000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "rom androi 12 mod adb",
+        "price": 500000,
+        "stock": 35,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 35,
+    "buffSold": 2940,
+    "sold": 2940,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2MOON7L6",
+    "name": "Rom androi 12 mod adb galaxy not 10 G975FDS",
+    "slug": "prod-mu2moon7l6",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png",
+    "price": 500000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Not 10 G975 FDS cài qua odin",
+        "price": 500000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 0,
+    "buffSold": 3368,
+    "sold": 3368,
+    "available": false
+  },
+  {
+    "id": "PROD_MU2LYZY5C7",
+    "name": "Rom androi 12 - j7 pro mod adb Cài Bằng Tools",
+    "slug": "prod-mu2lyzy5c7",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_pro.png",
+    "price": 300000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 12 mod adb",
+        "price": 300000,
+        "stock": 60,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "Rom Gốc  mod adb",
+        "price": 300000,
+        "stock": 60,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 120,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2NX4CYEW",
+    "name": "Rom Androi 10 S8 G950N G950F mod adb",
+    "slug": "prod-mu2nx4cyew",
+    "category": "Phone Farm",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s8_android10.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s8_android10.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s8_android10.png",
+    "price": 300000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Rom androi 10 s8 mod adb",
+        "price": 300000,
+        "stock": 43,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "Rom androi 10 s8 plush G955",
+        "price": 300000,
+        "stock": 40,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "rom gốc s8 g95f mod adb",
+        "price": 300000,
+        "stock": 60,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "rom gốc s8 g950N  mod adb",
+        "price": 300000,
+        "stock": 56,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 199,
+    "buffSold": 1758,
+    "sold": 1758,
+    "available": true
+  },
+  {
+    "id": "PROD_MUKAXC4Q9T",
+    "name": "Tài Khoản Surfshark VPN Chính Hãng",
+    "slug": "prod-mukaxc4q9t",
+    "category": "VPN Proxy",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUKAXC4Q9T_Surfshark_VPN__Ch%C3%ADnh_H%C3%A3ng.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUKAXC4Q9T_Surfshark_VPN__Ch%C3%ADnh_H%C3%A3ng.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUKAXC4Q9T_Surfshark_VPN__Ch%C3%ADnh_H%C3%A3ng.jpg",
+    "price": 30000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Surfshark 7 ngày",
+        "price": 30000,
+        "stock": 43,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "selltainguyenmmo",
+          "sourceProdId": "33030",
+          "sourcePrice": 15600,
+          "sourceStock": 43,
+          "sourceProdName": "[KEY HMA - VPN] #33030 SurfShark VPN 5-7 Ngày - 15.600 đ (Tồn: 43)",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "33030",
+      "sourcePrice": 15600,
+      "sourceStock": 43,
+      "sourceProdName": "[KEY HMA - VPN] #33030 SurfShark VPN 5-7 Ngày - 15.600 đ (Tồn: 43)",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 43,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MTQWQFZD",
+    "name": "Gmail cho thuê 30 Ngày",
+    "slug": "prod-mtqwqfzd",
+    "category": "Gmail",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWQFZD_Gmail_cho_thu%C3%AA_30_Ng%C3%A0y.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWQFZD_Gmail_cho_thu%C3%AA_30_Ng%C3%A0y.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWQFZD_Gmail_cho_thu%C3%AA_30_Ng%C3%A0y.png",
+    "price": 33000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "GMAIL  30 NGÀY",
+        "price": 33000,
+        "stock": 6786,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "selltainguyenmmo",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+          "sourceProdId": "31976",
+          "sourceProdName": "Gmail domain Live 30 Days  Domain .ORG No gmail",
+          "sourcePrice": 13400,
+          "sourceStock": 7173,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MTQWQFZD",
+          "targetProdName": "Gmail cho thuê 30 Ngày"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "31976",
+      "sourcePrice": 13400,
+      "sourceStock": 7173,
+      "sourceProdName": "Gmail domain Live 30 Days  Domain .ORG No gmail",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 6786,
+    "buffSold": 480,
+    "sold": 480,
+    "available": true
+  },
+  {
+    "id": "PROD_MU29RGEBH0",
+    "name": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
+    "slug": "prod-mu29rgebh0",
+    "category": "Facebook",
+    "description": "Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_c%E1%BB%95_2019_-_ch%E1%BA%A1y_ADS_-_B%E1%BA%ADt_k.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_c%E1%BB%95_2019_-_ch%E1%BA%A1y_ADS_-_B%E1%BA%ADt_k.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_c%E1%BB%95_2019_-_ch%E1%BA%A1y_ADS_-_B%E1%BA%ADt_k.png",
+    "price": 99000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Page 2019 0 Folow",
+        "price": 99000,
+        "stock": 11,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 11,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MTQWMPL5",
+    "name": "Gmail cho thuê 7 Ngày",
+    "slug": "prod-mtqwmpl5",
+    "category": "Gmail",
+    "description": "<div class=\"mmo-seo-article\" style=\"line-height: 1.8; color: #cbd5e1; font-size: 15px;\">\n  <p>Bạn đang tìm kiếm địa chỉ mua <strong>Gmail cho thuê 7 Ngày</strong> uy tín, chất lượng cao với giá thành cạnh tranh nhất thị trường? Bạn cần nguồn cung cấp ổn định, tài khoản có độ <em>trust</em> cao, kháng quét mạnh mẽ để phục vụ cho các chiến dịch kinh doanh, chạy quảng cáo, nuôi nick tự động hóa hoặc mở rộng quy mô kiếm tiền online (MMO)?</p>\n\n  <p>Chào mừng bạn đến với <strong>Muabantaikhoanmmo.com</strong> – Hệ sinh thái cung ứng tài nguyên số và tài khoản MMO hàng đầu Việt Nam. Với dịch vụ cung cấp <strong>Gmail cho thuê 7 Ngày</strong>, chúng tôi tự tin mang đến cho bạn giải pháp an toàn, hiệu quả vượt trội giúp tối ưu hóa 100% hiệu suất công việc của bạn.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    1. Giới Thiệu Chi Tiết Về Gmail cho thuê 7 Ngày\n  </h2>\n  <p>Trong kỷ nguyên marketing số và tự động hóa ngày nay, việc sở hữu những tài khoản chất lượng, được nuôi dưỡng trên môi trường sạch là yếu tố quyết định tới hơn 80% sự thành công của bất kỳ chiến dịch MMO nào. Sản phẩm <strong>Gmail cho thuê 7 Ngày</strong> tại shop chúng tôi được tuyển chọn và sàng lọc qua quy trình kỹ thuật nghiêm ngặt nhằm mang lại trải nghiệm mượt mà nhất cho người dùng.</p>\n\n  <p>Khác biệt hoàn toàn so với các loại tài khoản giá rẻ trôi nổi, kém chất lượng trên mạng vốn thường bị khóa ngay sau vài giờ đăng nhập, <strong>Gmail cho thuê 7 Ngày</strong> tại shop sở hữu những đặc điểm kỹ thuật ưu việt:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    \n      <li><strong>Giao thức OAuth2 / Graph API:</strong> Hỗ trợ kết nối mượt mà với các tool automation, tool gửi mail, bot marketing và phần mềm quản lý tài khoản tự động.</li>\n      <li><strong>Tuổi đời (Live Time) siêu bền:</strong> Tài khoản đã qua thời gian ngâm lâu, độ uy tín cao, chịu tải tốt, không bị khóa hàng loạt như các loại mail reg công nghiệp giá rẻ.</li>\n      <li><strong>Đã xác thực &amp; Kháng Spam:</strong> Hộp thư sạch, có thể nhận mã xác nhận (OTP) từ TikTok, Facebook, Discord, Twitter, Google, Steam nhanh chóng trong 1-3 giây.</li>\n      <li><strong>Định dạng xuất chuẩn:</strong> Cung cấp định dạng tiêu chuẩn (Email | Password | Mail khôi phục | Refresh Token) dễ dàng import hàng loạt vào các phần mềm.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    2. Tại Sao Nên Mua gmail cho thuê 7 ngày Tại Muabantaikhoanmmo.com?\n  </h2>\n  <p>Với nhiều năm kinh nghiệm phục vụ hàng chục ngàn khách hàng cá nhân và doanh nghiệp trong cộng đồng MMO, chúng tôi hiểu rõ những rủi ro mà bạn thường gặp phải. Khi lựa chọn dịch vụ của chúng tôi, bạn sẽ nhận được những giá trị cam kết vững chắc:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Hệ thống giao hàng tức thì (Instant Delivery):</strong> Mọi đơn hàng đều được API xử lý tự động trong 03 giây, nhận thông tin ngay trên website và qua email.</li>\n    <li><strong>Nguồn hàng sạch 100%:</strong> Tài nguyên được tạo và nuôi dưỡng bằng địa chỉ IP chuẩn, không bị dính blacklist của các nền tảng lớn.</li>\n    <li><strong>Giá sỉ tận gốc:</strong> Cung cấp bảng giá ưu đãi đặc biệt cho anh em làm dịch vụ, chạy số lượng lớn, đội ngũ agency hoặc mua định kỳ.</li>\n    <li><strong>Bảo mật thông tin khách hàng:</strong> Toàn bộ dữ liệu giao dịch và thông tin cá nhân đều được mã hóa theo chuẩn an ninh cấp cao.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    3. Ứng Dụng Thực Tế &amp; Đối Tượng Khuyên Dùng\n  </h2>\n  <p>Sản phẩm <strong>Gmail cho thuê 7 Ngày</strong> là trợ thủ đắc lực đáp ứng đa dạng mục đích sử dụng trong thực tế:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Anh em chạy quảng cáo (Ads Runner):</strong> Dùng làm tài khoản chạy Ads, cắn tiền mượt mà, hạn chế tối đa tình trạng vô hiệu hóa tài khoản bất thường.</li>\n    <li><strong>Nuôi dàn tài khoản số lượng lớn (Phone Farm / Antidetect):</strong> Tương thích hoàn hảo với các phần mềm nuôi nick, seeding bài viết, kéo tương tác tự động.</li>\n    <li><strong>Làm Affiliate Marketing &amp; Xây Kênh:</strong> Tiếp cận tệp khách hàng tiềm năng, đăng tải nội dung sáng tạo và thúc đẩy doanh số bán hàng vượt bậc.</li>\n    <li><strong>Đăng ký dịch vụ trực tuyến:</strong> Nhận mã xác minh OTP, liên kết tài khoản ngân hàng, ví điện tử hoặc các cổng thanh toán quốc tế một cách thuận tiện.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    4. Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn Chuẩn MMO\n  </h2>\n  <p>Để đảm bảo tài khoản đạt độ bền cao nhất và tránh bị hệ thống an ninh quét checkpoint thiết bị lạ, quý khách vui lòng tuân thủ quy trình khuyến nghị dưới đây:</p>\n  <div style=\"background: rgba(15,23,42,0.6); border-left: 4px solid #38bdf8; padding: 12px 16px; border-radius: 4px; margin-bottom: 15px;\">\n    \n      <ol>\n        <li><strong>Sử dụng trình duyệt chống phát hiện (Antidetect Browser):</strong> Mỗi tài khoản nên mở trên một profile riêng biệt kèm proxy cố định để bảo vệ cookie.</li>\n        <li><strong>Không login dồn dập trên một địa chỉ IP:</strong> Tránh đăng nhập cùng lúc hàng chục tài khoản trên cùng 1 mạng internet cáp quang để tránh bị kích hoạt cơ chế bảo vệ của nhà cung cấp.</li>\n        <li><strong>Lưu trữ thông tin cẩn thận:</strong> Tải và sao lưu file tài khoản về máy tính cá nhân ngay sau khi hệ thống giao hàng tự động.</li>\n      </ol>\n  </div>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    5. Chính Sách Bảo Hành &amp; Hỗ Trợ Kỹ Thuật 24/7\n  </h2>\n  <p>Sự hài lòng của khách hàng là kim chỉ nam cho sự phát triển của chúng tôi. Chúng tôi cam kết chính sách bảo hành minh bạch và rõ ràng:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Bảo hành 1 đổi 1:</strong> Đổi mới ngay lập tức cho các trường hợp tài khoản bị sai mật khẩu, dính checkpoint trước khi mua, hoặc lỗi kỹ thuật từ hệ thống.</li>\n    <li><strong>Hỗ trợ kỹ thuật tận tâm:</strong> Đội ngũ admin trực chiến 24/7 qua Zalo, Telegram, sẵn sàng hỗ trợ giải đáp và xử lý mọi vấn đề phát sinh trong suốt quá trình sử dụng.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    6. Câu Hỏi Thường Gặp (FAQ)\n  </h2>\n  \n      <h3>Hộp thư này có nhận được code OTP từ các nền tảng mạng xã hội không?</h3>\n      <p>Có, tài khoản hoạt động ổn định và nhận mã OTP xác nhận từ TikTok, Facebook, Telegram, Google, Discord một cách nhanh chóng và chính xác.</p>\n      <h3>Thời hạn bảo hành của tài khoản là bao lâu?</h3>\n      <p>Shop áp dụng chính sách bảo hành đăng nhập lần đầu và bảo hành live theo đúng cam kết trong bảng giá sản phẩm (từ 24h đến 30 ngày tùy gói dịch vụ).</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    7. Kết Luận\n  </h2>\n  <p>Sở hữu <strong>Gmail cho thuê 7 Ngày</strong> chất lượng cao chính là chìa khóa giúp bạn tiết kiệm hàng chục giờ công sức, giảm thiểu rủi ro bị khóa tài khoản và bứt phá doanh thu trong công việc MMO của mình. Đừng để những tài khoản kém chất lượng làm gián đoạn kế hoạch kinh doanh của bạn!</p>\n  <p style=\"text-align: center; margin-top: 20px;\">\n    <strong style=\"color: #38bdf8; font-size: 1.1rem;\">👉 ĐẶT MUA NGAY HÔM NAY ĐỂ NHẬN ƯU ĐÃI VÀ DỊCH VỤ BẢO HÀNH TỐT NHẤT TẠI MUABANTAIKHOANMMO.COM! 👈</strong>\n  </p>\n</div>",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWMPL5_Gmail_cho_thu%C3%AA_7_Ng%C3%A0y.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWMPL5_Gmail_cho_thu%C3%AA_7_Ng%C3%A0y.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWMPL5_Gmail_cho_thu%C3%AA_7_Ng%C3%A0y.png",
+    "price": 7000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Mail 7 ngày",
+        "price": 7000,
+        "stock": 18157,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "nguyenlieummo",
+          "sourceProdId": "131037",
+          "sourcePrice": 5093,
+          "sourceStock": 18157,
+          "sourceProdName": "[Gmail] #131037 Gmail Domain 7 Ngày Đuôi . ORG Có Gmail - 5.093 đ (Tồn: 2.202)",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "nguyenlieummo",
+      "sourceProdId": "131037",
+      "sourcePrice": 5093,
+      "sourceStock": 18157,
+      "sourceProdName": "[Gmail] #131037 Gmail Domain 7 Ngày Đuôi . ORG Có Gmail - 5.093 đ (Tồn: 2.202)",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 18157,
+    "buffSold": 1678,
+    "sold": 1678,
+    "available": true
+  },
+  {
+    "id": "PROD_MU5SPLMSEC",
+    "name": "ChatGPT New Gmail Trial",
+    "slug": "prod-mu5splmsec",
+    "category": "Chatgpt",
+    "description": "<div class=\"mmo-seo-article\" style=\"line-height: 1.8; color: #cbd5e1; font-size: 15px;\">\n  <p>Bạn đang tìm kiếm địa chỉ mua <strong>ChatGPT New Gmail Trial</strong> uy tín, chất lượng cao với giá thành cạnh tranh nhất thị trường? Bạn cần nguồn cung cấp ổn định, tài khoản có độ <em>trust</em> cao, kháng quét mạnh mẽ để phục vụ cho các chiến dịch kinh doanh, chạy quảng cáo, nuôi nick tự động hóa hoặc mở rộng quy mô kiếm tiền online (MMO)?</p>\n\n  <p>Chào mừng bạn đến với <strong>Muabantaikhoanmmo.com</strong> – Hệ sinh thái cung ứng tài nguyên số và tài khoản MMO hàng đầu Việt Nam. Với dịch vụ cung cấp <strong>ChatGPT New Gmail Trial</strong>, chúng tôi tự tin mang đến cho bạn giải pháp an toàn, hiệu quả vượt trội giúp tối ưu hóa 100% hiệu suất công việc của bạn.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    1. Giới Thiệu Chi Tiết Về ChatGPT New Gmail Trial\n  </h2>\n  <p>Trong kỷ nguyên marketing số và tự động hóa ngày nay, việc sở hữu những tài khoản chất lượng, được nuôi dưỡng trên môi trường sạch là yếu tố quyết định tới hơn 80% sự thành công của bất kỳ chiến dịch MMO nào. Sản phẩm <strong>ChatGPT New Gmail Trial</strong> tại shop chúng tôi được tuyển chọn và sàng lọc qua quy trình kỹ thuật nghiêm ngặt nhằm mang lại trải nghiệm mượt mà nhất cho người dùng.</p>\n\n  <p>Khác biệt hoàn toàn so với các loại tài khoản giá rẻ trôi nổi, kém chất lượng trên mạng vốn thường bị khóa ngay sau vài giờ đăng nhập, <strong>ChatGPT New Gmail Trial</strong> tại shop sở hữu những đặc điểm kỹ thuật ưu việt:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    \n      <li><strong>Giao thức OAuth2 / Graph API:</strong> Hỗ trợ kết nối mượt mà với các tool automation, tool gửi mail, bot marketing và phần mềm quản lý tài khoản tự động.</li>\n      <li><strong>Tuổi đời (Live Time) siêu bền:</strong> Tài khoản đã qua thời gian ngâm lâu, độ uy tín cao, chịu tải tốt, không bị khóa hàng loạt như các loại mail reg công nghiệp giá rẻ.</li>\n      <li><strong>Đã xác thực &amp; Kháng Spam:</strong> Hộp thư sạch, có thể nhận mã xác nhận (OTP) từ TikTok, Facebook, Discord, Twitter, Google, Steam nhanh chóng trong 1-3 giây.</li>\n      <li><strong>Định dạng xuất chuẩn:</strong> Cung cấp định dạng tiêu chuẩn (Email | Password | Mail khôi phục | Refresh Token) dễ dàng import hàng loạt vào các phần mềm.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    2. Tại Sao Nên Mua chatgpt new gmail trial Tại Muabantaikhoanmmo.com?\n  </h2>\n  <p>Với nhiều năm kinh nghiệm phục vụ hàng chục ngàn khách hàng cá nhân và doanh nghiệp trong cộng đồng MMO, chúng tôi hiểu rõ những rủi ro mà bạn thường gặp phải. Khi lựa chọn dịch vụ của chúng tôi, bạn sẽ nhận được những giá trị cam kết vững chắc:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Hệ thống giao hàng tức thì (Instant Delivery):</strong> Mọi đơn hàng đều được API xử lý tự động trong 03 giây, nhận thông tin ngay trên website và qua email.</li>\n    <li><strong>Nguồn hàng sạch 100%:</strong> Tài nguyên được tạo và nuôi dưỡng bằng địa chỉ IP chuẩn, không bị dính blacklist của các nền tảng lớn.</li>\n    <li><strong>Giá sỉ tận gốc:</strong> Cung cấp bảng giá ưu đãi đặc biệt cho anh em làm dịch vụ, chạy số lượng lớn, đội ngũ agency hoặc mua định kỳ.</li>\n    <li><strong>Bảo mật thông tin khách hàng:</strong> Toàn bộ dữ liệu giao dịch và thông tin cá nhân đều được mã hóa theo chuẩn an ninh cấp cao.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    3. Ứng Dụng Thực Tế &amp; Đối Tượng Khuyên Dùng\n  </h2>\n  <p>Sản phẩm <strong>ChatGPT New Gmail Trial</strong> là trợ thủ đắc lực đáp ứng đa dạng mục đích sử dụng trong thực tế:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Anh em chạy quảng cáo (Ads Runner):</strong> Dùng làm tài khoản chạy Ads, cắn tiền mượt mà, hạn chế tối đa tình trạng vô hiệu hóa tài khoản bất thường.</li>\n    <li><strong>Nuôi dàn tài khoản số lượng lớn (Phone Farm / Antidetect):</strong> Tương thích hoàn hảo với các phần mềm nuôi nick, seeding bài viết, kéo tương tác tự động.</li>\n    <li><strong>Làm Affiliate Marketing &amp; Xây Kênh:</strong> Tiếp cận tệp khách hàng tiềm năng, đăng tải nội dung sáng tạo và thúc đẩy doanh số bán hàng vượt bậc.</li>\n    <li><strong>Đăng ký dịch vụ trực tuyến:</strong> Nhận mã xác minh OTP, liên kết tài khoản ngân hàng, ví điện tử hoặc các cổng thanh toán quốc tế một cách thuận tiện.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    4. Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn Chuẩn MMO\n  </h2>\n  <p>Để đảm bảo tài khoản đạt độ bền cao nhất và tránh bị hệ thống an ninh quét checkpoint thiết bị lạ, quý khách vui lòng tuân thủ quy trình khuyến nghị dưới đây:</p>\n  <div style=\"background: rgba(15,23,42,0.6); border-left: 4px solid #38bdf8; padding: 12px 16px; border-radius: 4px; margin-bottom: 15px;\">\n    \n      <ol>\n        <li><strong>Sử dụng trình duyệt chống phát hiện (Antidetect Browser):</strong> Mỗi tài khoản nên mở trên một profile riêng biệt kèm proxy cố định để bảo vệ cookie.</li>\n        <li><strong>Không login dồn dập trên một địa chỉ IP:</strong> Tránh đăng nhập cùng lúc hàng chục tài khoản trên cùng 1 mạng internet cáp quang để tránh bị kích hoạt cơ chế bảo vệ của nhà cung cấp.</li>\n        <li><strong>Lưu trữ thông tin cẩn thận:</strong> Tải và sao lưu file tài khoản về máy tính cá nhân ngay sau khi hệ thống giao hàng tự động.</li>\n      </ol>\n  </div>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    5. Chính Sách Bảo Hành &amp; Hỗ Trợ Kỹ Thuật 24/7\n  </h2>\n  <p>Sự hài lòng của khách hàng là kim chỉ nam cho sự phát triển của chúng tôi. Chúng tôi cam kết chính sách bảo hành minh bạch và rõ ràng:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Bảo hành 1 đổi 1:</strong> Đổi mới ngay lập tức cho các trường hợp tài khoản bị sai mật khẩu, dính checkpoint trước khi mua, hoặc lỗi kỹ thuật từ hệ thống.</li>\n    <li><strong>Hỗ trợ kỹ thuật tận tâm:</strong> Đội ngũ admin trực chiến 24/7 qua Zalo, Telegram, sẵn sàng hỗ trợ giải đáp và xử lý mọi vấn đề phát sinh trong suốt quá trình sử dụng.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    6. Câu Hỏi Thường Gặp (FAQ)\n  </h2>\n  \n      <h3>Hộp thư này có nhận được code OTP từ các nền tảng mạng xã hội không?</h3>\n      <p>Có, tài khoản hoạt động ổn định và nhận mã OTP xác nhận từ TikTok, Facebook, Telegram, Google, Discord một cách nhanh chóng và chính xác.</p>\n      <h3>Thời hạn bảo hành của tài khoản là bao lâu?</h3>\n      <p>Shop áp dụng chính sách bảo hành đăng nhập lần đầu và bảo hành live theo đúng cam kết trong bảng giá s��n phẩm (từ 24h đến 30 ngày tùy gói dịch vụ).</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    7. Kết Luận\n  </h2>\n  <p>Sở hữu <strong>ChatGPT New Gmail Trial</strong> chất lượng cao chính là chìa khóa giúp bạn tiết kiệm hàng chục giờ công sức, giảm thiểu rủi ro bị khóa tài khoản và bứt phá doanh thu trong công việc MMO của mình. Đừng để những tài khoản kém chất lượng làm gián đoạn kế hoạch kinh doanh của bạn!</p>\n  <p style=\"text-align: center; margin-top: 20px;\">\n    <strong style=\"color: #38bdf8; font-size: 1.1rem;\">👉 ĐẶT MUA NGAY HÔM NAY ĐỂ NHẬN ƯU ĐÃI VÀ DỊCH VỤ BẢO HÀNH TỐT NHẤT TẠI MUABANTAIKHOANMMO.COM! 👈</strong>\n  </p>\n</div>",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU5SPLMSEC/image?v=1792464883499",
+    "image_url": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU5SPLMSEC/image?v=1792464883499",
+    "imageUrl": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU5SPLMSEC/image?v=1792464883499",
+    "price": 30000,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "Chat GPT đã very phone",
+        "price": 30000,
+        "stock": 48,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "selltainguyenmmo",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+          "sourceProdId": "31699",
+          "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
+          "sourcePrice": 16000,
+          "sourceStock": 48,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MU5SPLMSEC",
+          "targetProdName": "ChatGPT New Gmail Trial"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "selltainguyenmmo",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+      "sourceProdId": "31699",
+      "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
+      "sourcePrice": 16000,
+      "sourceStock": 48,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MU5SPLMSEC",
+      "targetProdName": "ChatGPT New Gmail Trial"
+    },
+    "stock": 48,
+    "buffSold": 689,
+    "sold": 689,
+    "available": true
+  },
+  {
+    "id": "PROD_MV1GO2PD8A",
+    "name": "Clone Ngoại  Name Random - 2FA",
+    "slug": "prod-mv1go2pd8a",
+    "category": "Facebook",
+    "description": "Bạn đang cần nguồn tài khoản Clone ngoại (Tên ngẫu nhiên chuẩn quốc tế) đã được tích hợp sẵn bảo mật 2FA (Two-Factor Authentication) để tăng độ bền, chống checkpoint và phục vụ cho các chiến dịch seeding, nuôi hệ thống, chạy tool automation hoặc làm tài nguyên dự án số lượng lớn một cách an toàn nhất?\n\nDòng sản phẩm Clone Ngoại Tên Random + 2FA tại shop chính là giải pháp tối ưu, tiết kiệm và hiệu quả dành cho bạn!\n\n💎 Điểm mạnh vượt trội của dòng Clone Ngoại:\n🌍 Tên ngẫu nhiên chuẩn quốc tế (Random Name): Hồ sơ tài khoản mang danh tính tự nhiên, đa dạng quốc tịch, tối ưu hóa hành vi như người dùng thật.\n\n🔒 Bảo mật 2FA tích hợp sẵn: Tài khoản được bảo vệ chặt chẽ bằng mã xác thực 2 lớp, hạn chế tối đa tình trạng đăng nhập bị checkpoint hoặc tranh chấp quyền sở hữu.\n\n🚀 Độ tương thích cao: Phù hợp hoàn hảo để chạy các tool nuôi via, seeding bài viết, tương tác tự động hoặc làm hệ thống tài khoản vệ tinh cho các chiến dịch ngắn và dài hạn.\n\n💰 Chi phí cực kỳ tối ưu: Lựa chọn hoàn hảo cho anh em cần số lượng lớn (Mass) với mức giá siêu hạt dẻ để tối ưu hóa lợi nhuận.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần nhận tài khoản đầu tiên.\n\n⚡ Bàn giao siêu tốc đúng định dạng chuẩn xác (User/Pass + Code 2FA) ngay sau khi thanh toán.\n\n🔒 Bảo mật tuyệt đối, sạch sẽ, sẵn sàng chiến mọi tác vụ.\n\n💡 Mẹo sử dụng bền lâu: Nên kết hợp sử dụng trình duyệt ẩn danh (Antidetect Browser) cùng Proxy chất lượng phù hợp với quốc gia của clone để đạt hiệu suất và độ bền tối đa khi đăng nhập!",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png",
+    "price": 9000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Clone Ngoại",
+        "price": 9000,
+        "stock": 8255,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "vuavia",
+          "sourceProdId": "1993",
+          "sourcePrice": 6000,
+          "sourceStock": 8255,
+          "sourceProdName": "[vuavia.io] #1993 Clone Ngoại Reg New Name Random - 2FA - Mail Domain - Dùng Luôn - 6.000 đ (Tồn: 8.255)",
+          "baseUrl": "https://api.vuavia.io",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "vuavia",
+      "sourceProdId": "1993",
+      "sourcePrice": 6000,
+      "sourceStock": 8255,
+      "sourceProdName": "[vuavia.io] #1993 Clone Ngoại Reg New Name Random - 2FA - Mail Domain - Dùng Luôn - 6.000 đ (Tồn: 8.255)",
+      "baseUrl": "https://api.vuavia.io",
+      "isSourceDeleted": false
+    },
+    "stock": 8255,
+    "buffSold": 1567,
+    "sold": 1567,
+    "available": true
+  },
+  {
+    "id": "PROD_MUR4SPH1IU",
+    "name": "TikTok Cambodia – Reg 2025 Mail Lock",
+    "slug": "prod-mur4sph1iu",
+    "category": "TikTok",
+    "description": "TikTok Cambodia – Reg 2025 Mail Lock",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR4SPH1IU_TikTok_Cambodia_-_Reg_2025_Mail_Lock.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR4SPH1IU_TikTok_Cambodia_-_Reg_2025_Mail_Lock.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR4SPH1IU_TikTok_Cambodia_-_Reg_2025_Mail_Lock.jpg",
+    "price": 4500,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "TikTok Cambodia - Reg 2025",
+        "price": 4500,
+        "stock": 1544,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "4116",
+          "sourcePrice": 1400,
+          "sourceStock": 1544,
+          "sourceProdName": "[Tiktok ngoại] #4116 TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25 - 1.400 đ (Tồn: 1.544)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "4116",
+      "sourcePrice": 1400,
+      "sourceStock": 1544,
+      "sourceProdName": "[Tiktok ngoại] #4116 TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25 - 1.400 đ (Tồn: 1.544)",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 1544,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUR52EZ6H1",
+    "name": "TÀI KHOẢN TIKTOK KOREA (HÀN QUỐC) - BAO ĐỔI TÊN ĐỔI MAIL",
+    "slug": "prod-mur52ez6h1",
+    "category": "tiktok",
+    "description": "Tài khoản TikTok South Korea (Hàn Quốc) live có Oauth2, Cookie, tạo tháng 7/2025.",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR52EZ6H1_Tiktok_Korea_reg_gg_%C4%91%C3%A3_%C4%91%C3%A1_mail_b%E1%BA%ADt_2FA_C%C3%B3_Oauth2__.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR52EZ6H1_Tiktok_Korea_reg_gg_%C4%91%C3%A3_%C4%91%C3%A1_mail_b%E1%BA%ADt_2FA_C%C3%B3_Oauth2__.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR52EZ6H1_Tiktok_Korea_reg_gg_%C4%91%C3%A3_%C4%91%C3%A1_mail_b%E1%BA%ADt_2FA_C%C3%B3_Oauth2__.jpg",
+    "price": 8000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Tiktok Korea bật 2FA",
+        "price": 8000,
+        "stock": 9490,
+        "available": true,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "selltainguyenmmo",
+          "sourceProdId": "32393",
+          "sourcePrice": 4400,
+          "sourceStock": 9490,
+          "sourceProdName": "Tài Khoản Tiktok South Korea ( KR ) Tạo Tháng 7/2025 Mail Live Có Oauth2 , Cookie",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
+        },
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "32393",
+      "sourcePrice": 4400,
+      "sourceStock": 9490,
+      "sourceProdName": "Tài Khoản Tiktok South Korea ( KR ) Tạo Tháng 7/2025 Mail Live Có Oauth2 , Cookie",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 9490,
+    "buffSold": 1278,
+    "sold": 1278,
+    "available": true
+  },
+  {
+    "id": "PROD_MUP5LB7VAB",
+    "name": "GMAIL CỔ KÈM KÊNH YOUTUBE CỔ RANDOM 200x-2018",
+    "slug": "prod-mup5lb7vab",
+    "category": "Gmail",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUP5LB7VAB_GMAIL_C%E1%BB%94_K%C3%88M_K%C3%8ANH_C%E1%BB%94_RANDOM_200x-2018___.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUP5LB7VAB_GMAIL_C%E1%BB%94_K%C3%88M_K%C3%8ANH_C%E1%BB%94_RANDOM_200x-2018___.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUP5LB7VAB_GMAIL_C%E1%BB%94_K%C3%88M_K%C3%8ANH_C%E1%BB%94_RANDOM_200x-2018___.png",
+    "price": 120000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "GMAIL CỔ KÈM KÊNH CỔ 200x-2018",
+        "price": 120000,
+        "stock": 39,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "26853",
+          "sourcePrice": 86000,
+          "sourceStock": 39,
+          "sourceProdName": "YTB cổ không video - 🔥 YOUTUBE CỔ CÓ VIDEO 2006–2020 🔥",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "26853",
+      "sourcePrice": 86000,
+      "sourceStock": 39,
+      "sourceProdName": "YTB cổ không video - 🔥 YOUTUBE CỔ CÓ VIDEO 2006–2020 🔥",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 39,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUOSDN0FCU",
+    "name": "gmail new ngâm 1- 10 ngày chỉ log phone- no 2fa",
+    "slug": "prod-muosdn0fcu",
+    "category": "Gmail",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOSDN0FCU_gmail_new_ng%C3%A2m_1-_10_ng%C3%A0y_ch%E1%BB%89_log_phone_.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOSDN0FCU_gmail_new_ng%C3%A2m_1-_10_ng%C3%A0y_ch%E1%BB%89_log_phone_.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOSDN0FCU_gmail_new_ng%C3%A2m_1-_10_ng%C3%A0y_ch%E1%BB%89_log_phone_.png",
+    "price": 20000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "gmail new ngâm 1- 10 ngày LIVE",
+        "price": 20000,
+        "stock": 7,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "baseUrl": "https://ultrammo.com",
+          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "sourceProdId": "26784",
+          "sourceProdName": "[Gmail Việt-Ngoại] #26784 gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa - 13.000 đ (Tồn: 7)",
+          "sourcePrice": 13000,
+          "sourceStock": 7,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MUOSDN0FCU",
+          "targetProdName": "gmail new ngâm 1- 10 ngày chỉ log phone- no 2fa"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "sellmmo",
+      "sourceProdId": "17773",
+      "sourcePrice": 20400,
+      "sourceStock": 291,
+      "sourceProdName": "[GMAIL.COM] #17773 Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h) - 20.400 đ (Tồn: 291)",
+      "baseUrl": "https://sellmmo.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 7,
+    "buffSold": 218,
+    "sold": 218,
+    "available": true
+  },
+  {
+    "id": "PROD_MUORGNEQOE",
+    "name": "Youtube Premium: 3 Tháng",
+    "slug": "prod-muorgneqoe",
+    "category": "YOUTUBE",
+    "description": "Dưới đây là mẫu bài viết bán YouTube Premium Gói 3 Tháng, thiết kế chuyên nghiệp, nổi bật các đặc quyền giải trí đỉnh cao và chi phí siêu tiết kiệm cho anh em thích xem video không quảng cáo:\n\n🎵 YOUTUBE PREMIUM 3 THÁNG – TRẢI NGHIỆM GIẢI TRÍ ĐỈNH CAO, KHÔNG QUẢNG CÁO!\nBạn đã quá mệt mỏi vì những video quảng cáo dài dằng dặc làm gián đoạn phút giây thư giãn, hay muốn nghe nhạc ẩn ứng dụng và tải video ngoại tuyến thoải mái mà không tốn quá nhiều chi phí cho gói năm?\n\nGói YouTube Premium 3 Tháng tại shop chính là giải pháp hoàn hảo giúp bạn tận hưởng trọn vẹn không gian giải trí trọn vẹn trong một quý!\n\n✨ Trọn bộ đặc quyền đỉnh cao khi lên Premium:\n🚫 Xem video hoàn toàn KHÔNG QUẢNG CÁO: Tạm biệt mọi quảng cáo chen ngang khó chịu trước, trong và sau video, tận hưởng trọn vẹn mạch cảm xúc.\n\n🎵 Tích hợp YouTube Music miễn phí: Nghe nhạc chất lượng cao, thỏa sức thưởng thức hàng triệu bài hát và playlist độc quyền không lo quảng cáo.\n\n📱 Phát trong nền (Background Play): Thoải mái tắt màn hình điện thoại hoặc chuyển sang ứng dụng khác mà nhạc và video vẫn tiếp tục phát mượt mà.\n\n📥 Tải xuống ngoại tuyến (Download): Lưu trữ video và bài hát yêu thích để xem lại ngay cả khi không có kết nối Internet (khi đi máy bay, ra ngoài...).\n\n🔒 Tại sao nên chọn mua tại shop?\n🛡️ Bảo hành Full thời gian (3 tháng) sử dụng ổn định đến phút cuối cùng.\n\n⚡ Nâng cấp/Cấp phát siêu tốc chỉ trong vài phút sau khi nhận thông tin.\n\n💬 Hỗ trợ nhiệt tình 24/7, uy tín và tận tâm đặt lên hàng đầu.\n\n💡 Phù hợp cho: Học sinh, sinh viên, nhân viên văn phòng hoặc bất kỳ ai muốn trải nghiệm trọn vẹn YouTube không quảng cáo trong 3 tháng với mức chi phí tiết kiệm nhất!",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUORGNEQOE_Youtube_Premium__3_Th%C3%A1ng.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUORGNEQOE_Youtube_Premium__3_Th%C3%A1ng.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUORGNEQOE_Youtube_Premium__3_Th%C3%A1ng.jpg",
+    "price": 120000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Youtube Premium: 3 Tháng",
+        "price": 120000,
+        "stock": 99999,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "26774",
+          "sourcePrice": 80000,
+          "sourceStock": 99999,
+          "sourceProdName": "Youtube Premium: 3 Tháng",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "26774",
+      "sourcePrice": 80000,
+      "sourceStock": 99999,
+      "sourceProdName": "Youtube Premium: 3 Tháng",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 99999,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUOQS3DOIU",
+    "name": "TIKTOK VIỆT  ĐÃ TẠO 1-3 NĂM  ĐẶT ĐƠN HÀNG BẤT TỬ",
+    "slug": "prod-muoqs3doiu",
+    "category": "TikTok",
+    "description": "Bạn đang tìm kiếm nguồn tài khoản TikTok Việt cổ có tuổi đời từ 1 đến 3 năm, đi kèm Hotmail Live gốc và đã có lịch sử hoạt động (Random đặt đơn/tương tác tự nhiên), sở hữu độ tín nhiệm (Trust) cực đỉnh để làm nền tảng vững chắc cho mọi chiến dịch lớn mà không lo bị quét hay die vặt?\n\nSiêu phẩm TikTok Việt Cổ Live Kèm Hotmail (Hàng bất tử) tại shop chính là giải pháp tối thượng dành cho bạn!\n\n💎 Điểm mạnh vượt trội của dòng tài khoản \"Bất tử\":\n⏳ Tuổi đời siêu sâu (1 - 3 năm): Tài khoản được ngâm qua nhiều năm, đã vượt qua mọi thuật toán quét gắt gao nhất của nền tảng, độ Trust cao ngất ngưởng.\n\n📦 Đã qua lịch sử đặt đơn (Random): Tài khoản đã có sẵn các hoạt động mua sắm, đặt đơn hoặc tương tác tự nhiên trước đó, mang lại hành vi như một người dùng thật sự (Real User).\n\n📧 Đi kèm Hotmail Live gốc: Quản lý an toàn tuyệt đối, dễ dàng thay đổi thông tin, bảo mật hoặc nhận mã xác thực mượt mà.\n\n🛡️ Sức đề kháng cực mạnh: Hạn chế tối đa tình trạng khóa ngầm, checkpoint hay quét thiết bị, tối ưu tuyệt đối cho các hệ thống automation, nuôi via hoặc chạy chiến dịch dài hạn.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần nhận tài khoản đầu tiên.\n\n⚡ Bàn giao siêu tốc đúng định dạng chuẩn xác (User/Pass TikTok + Hotmail Live) ngay sau khi thanh toán.\n\n🔒 Bảo mật tuyệt đối, sạch sẽ, sẵn sàng chiến mọi tác vụ nặng.\n\n💡 Mẹo sử dụng bền lâu: Nên kết hợp sử dụng trình duyệt ẩn danh (Antidetect Browser) cùng Proxy chất lượng để đăng nhập và duy trì sự ổn định tuyệt đối cho dàn tài khoản cổ!",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOQS3DOIU_TIKTOK_VI%E1%BB%86T__%C4%90%C3%83_T%E1%BA%A0O_1-3_N%C4%82M__%C4%90%E1%BA%B6T_%C4%90%C6%A0N_H%C3%80NG_B%E1%BA%A4T_T%E1%BB%AC.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOQS3DOIU_TIKTOK_VI%E1%BB%86T__%C4%90%C3%83_T%E1%BA%A0O_1-3_N%C4%82M__%C4%90%E1%BA%B6T_%C4%90%C6%A0N_H%C3%80NG_B%E1%BA%A4T_T%E1%BB%AC.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOQS3DOIU_TIKTOK_VI%E1%BB%86T__%C4%90%C3%83_T%E1%BA%A0O_1-3_N%C4%82M__%C4%90%E1%BA%B6T_%C4%90%C6%A0N_H%C3%80NG_B%E1%BA%A4T_T%E1%BB%AC.jpg",
+    "price": 6000,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "TIKTOK VIỆT  ĐÃ TẠO 1-3 NĂM",
+        "price": 6000,
+        "stock": 4266,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "33131",
+          "sourcePrice": 2400,
+          "sourceStock": 4266,
+          "sourceProdName": "TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "33131",
+      "sourcePrice": 2400,
+      "sourceStock": 4266,
+      "sourceProdName": "TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 4266,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUOQDRL4F0",
+    "name": "TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )",
+    "slug": "prod-muoqdrl4f0",
+    "category": "TikTok",
+    "description": "Tài khoản TikTok Việt Nam Reg tháng 1/2026 kèm Mail Live (Có OAuth2), được thiết kế chuyên nghiệp, cực kỳ sắc bén và tối ưu hóa cho anh em làm MMO, chạy chiến dịch, seeding hoặc nuôi hệ thống tài khoản số lượng lớn:\n\n🔥 TIKTOK VIỆT NAM REG THÁNG 1/2026 + MAIL LIVE (CÓ OAUTH2) – SẠCH, TRUST CAO, CHIẾN MƯỢT MỌI CHIẾN DỊCH!\nBạn đang tìm kiếm nguồn tài khoản TikTok Via/Reg nội địa Việt Nam cứng cáp, ngâm đủ độ (Reg từ tháng 1/2026) đi kèm với Mail Live gốc hỗ trợ chuẩn OAuth2 cực kỳ an toàn để phục vụ cho các chiến dịch seeding, chạy ads, làm affiliate hoặc nuôi hệ thống tài khoản số lượng lớn mà không sợ bị quét hay die vặt?\n\nSiêu phẩm TikTok VN Reg T1/2026 + Mail Live (OAuth2) tại shop chính là giải pháp \"vũ khí tối thượng\" giúp bạn bứt phá mọi chỉ số!\n\n💎 Điểm mạnh tuyệt đối của dàn tài khoản:\n📅 Tuổi đời chuẩn (Reg tháng 1/2026): Tài khoản đã có thời gian ngâm ổn định, vượt qua các mốc quét ban đầu của nền tảng, tạo độ tín nhiệm (Trust) cực cao khi đăng nhập và hoạt động.\n\n🇻🇳 IP & Quốc gia Việt Nam chuẩn chỉnh: Tối ưu hóa 100% cho các hoạt động tại thị trường nội địa, tương thích hoàn hảo với các bước xác thực và hành vi người dùng Việt.\n\n📧 Đi kèm Mail Live sạch + Hỗ trợ OAuth2: Tài khoản mail đi kèm sống trâu, hỗ trợ kết nối bảo mật hiện đại (OAuth2), giúp việc quản lý, đổi pass hay nhận mã OTP cực kỳ an toàn, không sợ bị khóa mail giữa chừng.\n\n🚀 Sẵn sàng chiến mọi tác vụ: Phù hợp hoàn hảo để làm profile cá nhân, kéo traffic, livestream, làm nội dung ngắn hoặc chạy các hệ thống automation.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần nhận tài khoản đầu tiên.\n\n⚡ Bàn giao siêu tốc đúng định dạng chuẩn xác (User/Pass TikTok + Thông tin Mail Live) ngay sau khi thanh toán.\n\n🔒 Bảo mật tuyệt đối, tài khoản sạch, chưa qua tương tác rác hay vi phạm chính sách.\n\n💡 Mẹo sử dụng bền lâu: Nên sử dụng trình duyệt sạch (Antidetect Browser) kết hợp cùng Proxy/Dcom sạch để đăng nhập và nuôi dưỡng tài khoản, giúp duy trì độ trâu bò và tuổi thọ tối đa!",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOQDRL4F0_TikTok_VN_Reg_T1-2026___Mail_Live___C%C3%B3_Oauth2__.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOQDRL4F0_TikTok_VN_Reg_T1-2026___Mail_Live___C%C3%B3_Oauth2__.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOQDRL4F0_TikTok_VN_Reg_T1-2026___Mail_Live___C%C3%B3_Oauth2__.jpg",
+    "price": 3500,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "TikTok VN Reg T1-2026",
+        "price": 3500,
+        "stock": 486,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "5759",
+          "sourcePrice": 2200,
+          "sourceStock": 486,
+          "sourceProdName": "TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "5759",
+      "sourcePrice": 2200,
+      "sourceStock": 486,
+      "sourceProdName": "TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 486,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUOIH8CW59",
+    "name": "NordVPN (7 Days) - 1 Năm",
+    "slug": "prod-muoih8cw59",
+    "category": "VPN Proxy",
+    "description": "Bạn đang cần gấp nguồn VPN cao cấp, uy tín hàng đầu thế giới như NordVPN để bảo mật thông tin, fake IP sang các quốc gia lớn, vượt rào kiểm duyệt hay chạy các chiến dịch, test tool trong thời gian ngắn (7 ngày) mà không muốn mua gói tháng đắt đỏ?\n\nGói NordVPN 7 ngày tại shop chính là giải pháp nhanh gọn, an toàn và tối ưu chi phí nhất dành cho bạn!\n\n💎 Những ưu điểm vượt trội của NordVPN:\n🚀 Tốc độ kết nối cực nhanh: Sở hữu hàng nghìn server tối ưu hóa tốc độ cao trên toàn cầu, không lo giật lag khi lướt web, chơi game hay chạy tool MMO.\n\n🌍 Mạng lưới server rộng khắp: Dễ dàng đổi IP sang Mỹ, Anh, Nhật, Singapore và hàng chục quốc gia khác với độ ổn định tuyệt đối, không sợ bị lộ IP thực.\n\n🔒 Bảo mật chuẩn quân sự: Công nghệ mã hóa tiên tiến kết hợp tính năng chặn mã độc, quảng cáo và bảo vệ quyền riêng tư toàn diện trên không gian mạng.\n\n⏱️ Linh hoạt ngắn hạn (7 ngày): Lựa chọn hoàn hảo cho anh em cần dùng trong 1 tuần để xử lý công việc phát sinh, test hệ thống hoặc chạy dự án thời vụ.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành Full thời gian sử dụng trong suốt 7 ngày, mượt mà đến phút cuối cùng.\n\n⚡ Cấp phát siêu tốc ngay sau khi thanh toán, nhận tài khoản đăng nhập dùng ngay trong một nốt nhạc.\n\n💬 Hỗ trợ nhiệt tình 24/7, hướng dẫn cài đặt và kết nối chi tiết trên mọi thiết bị.\n\n💡 Phù hợp cho: Dân MMO cần ẩn danh IP ngắn hạn, anh em test tool automation, làm việc với đối tác quốc tế hoặc muốn trải nghiệm chất lượng của NordVPN với chi phí tiết kiệm nhất!",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOIH8CW59_NordVPN__7_Days__-_1_N%C4%83m.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOIH8CW59_NordVPN__7_Days__-_1_N%C4%83m.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOIH8CW59_NordVPN__7_Days__-_1_N%C4%83m.jpg",
+    "price": 15000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "NordVPN 7 Ngày",
+        "price": 15000,
+        "stock": 959,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "25412",
+          "sourcePrice": 6500,
+          "sourceStock": 959,
+          "sourceProdName": "NordVPN (7 Days)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "25412",
+      "sourcePrice": 6500,
+      "sourceStock": 959,
+      "sourceProdName": "NordVPN (7 Days)",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 959,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUNUEKI3NM",
+    "name": "Nâng Cấp ChatGPT Plus Giá Rẻ",
+    "slug": "prod-munueki3nm",
+    "category": "Chatgpt",
+    "description": "<div class=\"mmo-seo-article\" style=\"line-height: 1.8; color: #cbd5e1; font-size: 15px;\">\n  <p>Bạn đang tìm kiếm địa chỉ mua <strong>Nâng Cấp ChatGPT Plus Giá Rẻ</strong> uy tín, chất lượng cao với giá thành cạnh tranh nhất thị trường? Bạn cần nguồn cung cấp ổn định, tài khoản có độ <em>trust</em> cao, kháng quét mạnh mẽ để phục vụ cho các chiến dịch kinh doanh, chạy quảng cáo, nuôi nick tự động hóa hoặc mở rộng quy mô kiếm tiền online (MMO)?</p>\n\n  <p>Chào mừng bạn đến với <strong>Muabantaikhoanmmo.com</strong> – Hệ sinh thái cung ứng tài nguyên số và tài khoản MMO hàng đầu Việt Nam. Với dịch vụ cung cấp <strong>Nâng Cấp ChatGPT Plus Giá Rẻ</strong>, chúng tôi tự tin mang đến cho bạn giải pháp an toàn, hiệu quả vượt trội giúp tối ưu hóa 100% hiệu suất công việc của bạn.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    1. Giới Thiệu Chi Tiết Về Nâng Cấp ChatGPT Plus Giá Rẻ\n  </h2>\n  <p>Trong kỷ nguyên marketing số và tự động hóa ngày nay, việc sở hữu những tài khoản chất lượng, được nuôi dưỡng trên môi trường sạch là yếu tố quyết định tới hơn 80% sự thành công của bất kỳ chiến dịch MMO nào. Sản phẩm <strong>Nâng Cấp ChatGPT Plus Giá Rẻ</strong> tại shop chúng tôi được tuyển chọn và sàng lọc qua quy trình kỹ thuật nghiêm ngặt nhằm mang lại trải nghiệm mượt mà nhất cho người dùng.</p>\n\n  <p>Khác biệt hoàn toàn so với các loại tài khoản giá rẻ trôi nổi, kém chất lượng trên mạng vốn thường bị khóa ngay sau vài giờ đăng nhập, <strong>Nâng Cấp ChatGPT Plus Giá Rẻ</strong> tại shop sở hữu những đặc điểm kỹ thuật ưu việt:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    \n      <li><strong>Chất lượng kiểm định nghiêm ngặt:</strong> 100% tài khoản và dịch vụ được kiểm tra tính khả dụng trước khi xuất kho cho khách hàng.</li>\n      <li><strong>Tự động hóa giao hàng 24/7:</strong> Hệ thống xử lý đơn hàng tức thì trong 3 giây ngay sau khi thanh toán thành công, không cần chờ đợi thủ công.</li>\n      <li><strong>Bảo mật &amp; Độc quyền:</strong> Thông tin bàn giao là duy nhất, không bán trùng lặp cho bên thứ ba, bảo đảm quyền riêng tư tuyệt đối cho khách hàng.</li>\n      <li><strong>Tiết kiệm chi phí tối đa:</strong> Mức giá cạnh tranh hàng đầu thị trường, tối ưu hóa ngân sách vận hành cho cá nhân và đội ngũ MMO chuyên nghiệp.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    2. Tại Sao Nên Mua nâng cấp chatgpt plus giá rẻ Tại Muabantaikhoanmmo.com?\n  </h2>\n  <p>Với nhiều năm kinh nghiệm phục vụ hàng chục ngàn khách hàng cá nhân và doanh nghiệp trong cộng đồng MMO, chúng tôi hiểu rõ những rủi ro mà bạn thường gặp phải. Khi lựa chọn dịch vụ của chúng tôi, bạn sẽ nhận được những giá trị cam kết vững chắc:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Hệ thống giao hàng tức thì (Instant Delivery):</strong> Mọi đơn hàng đều được API xử lý tự động trong 03 giây, nhận thông tin ngay trên website và qua email.</li>\n    <li><strong>Nguồn hàng sạch 100%:</strong> Tài nguyên được tạo và nuôi dưỡng bằng địa chỉ IP chuẩn, không bị dính blacklist của các nền tảng lớn.</li>\n    <li><strong>Giá sỉ tận gốc:</strong> Cung cấp bảng giá ưu đãi đặc biệt cho anh em làm dịch vụ, chạy số lượng lớn, đội ngũ agency hoặc mua định kỳ.</li>\n    <li><strong>Bảo mật thông tin khách hàng:</strong> Toàn bộ dữ liệu giao dịch và thông tin cá nhân đều được mã hóa theo chuẩn an ninh cấp cao.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    3. Ứng Dụng Thực Tế &amp; Đối Tượng Khuyên Dùng\n  </h2>\n  <p>Sản phẩm <strong>Nâng Cấp ChatGPT Plus Giá Rẻ</strong> là trợ thủ đắc lực đáp ứng đa dạng mục đích sử dụng trong thực tế:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Anh em chạy quảng cáo (Ads Runner):</strong> Dùng làm tài khoản chạy Ads, cắn tiền mượt mà, hạn chế tối đa tình trạng vô hiệu hóa tài khoản bất thường.</li>\n    <li><strong>Nuôi dàn tài khoản số lượng lớn (Phone Farm / Antidetect):</strong> Tương thích hoàn hảo với các phần mềm nuôi nick, seeding bài viết, kéo tương tác tự động.</li>\n    <li><strong>Làm Affiliate Marketing &amp; Xây Kênh:</strong> Tiếp cận tệp khách hàng tiềm năng, đăng tải nội dung sáng tạo và thúc đẩy doanh số bán hàng vượt bậc.</li>\n    <li><strong>Đăng ký dịch vụ trực tuyến:</strong> Nhận mã xác minh OTP, liên kết tài khoản ngân hàng, ví điện tử hoặc các cổng thanh toán quốc tế một cách thuận tiện.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    4. Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn Chuẩn MMO\n  </h2>\n  <p>Để đảm bảo tài khoản đạt độ bền cao nhất và tránh bị hệ thống an ninh quét checkpoint thiết bị lạ, quý khách vui lòng tuân thủ quy trình khuyến nghị dưới đây:</p>\n  <div style=\"background: rgba(15,23,42,0.6); border-left: 4px solid #38bdf8; padding: 12px 16px; border-radius: 4px; margin-bottom: 15px;\">\n    \n      <ol>\n        <li><strong>Kiểm tra tài khoản ngay sau khi nhận:</strong> Đăng nhập và đối soát thông tin tài khoản theo hướng dẫn đính kèm đơn hàng.</li>\n        <li><strong>Bảo mật thông tin:</strong> Tiến hành đổi mật khẩu và kích hoạt các lớp bảo vệ sau khi hoàn thành thời gian ngâm thiết bị ban đầu.</li>\n        <li><strong>Liên hệ hỗ trợ khi cần:</strong> Nếu gặp bất kỳ sự cố nào, gửi tin nhắn ngay cho bộ phận CSKH để được giải quyết nhanh nhất.</li>\n      </ol>\n  </div>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    5. Chính Sách Bảo Hành &amp; Hỗ Trợ Kỹ Thuật 24/7\n  </h2>\n  <p>Sự hài lòng của khách hàng là kim chỉ nam cho sự phát triển của chúng tôi. Chúng tôi cam kết chính sách bảo hành minh bạch và rõ ràng:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Bảo hành 1 đổi 1:</strong> Đổi mới ngay lập tức cho các trường hợp tài khoản bị sai mật khẩu, dính checkpoint trước khi mua, hoặc lỗi kỹ thuật từ hệ thống.</li>\n    <li><strong>Hỗ trợ kỹ thuật tận tâm:</strong> Đội ngũ admin trực chiến 24/7 qua Zalo, Telegram, sẵn sàng hỗ trợ giải đáp và xử lý mọi vấn đề phát sinh trong suốt quá trình sử dụng.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    6. Câu Hỏi Thường Gặp (FAQ)\n  </h2>\n  \n      <h3>Hệ thống giao hàng bằng cách nào và mất bao lâu?</h3>\n      <p>Sau khi bạn hoàn tất thanh toán, hệ thống sẽ tự động hiển thị thông tin sản phẩm trên màn hình và gửi một bản sao chi tiết vào địa chỉ email của bạn trong vòng 3 giây.</p>\n      <h3>Chính sách hoàn tiền hoặc đổi trả được áp dụng ra sao?</h3>\n      <p>Shop cam kết 1 đổi 1 ngay lập tức hoặc hoàn tiền nếu sản phẩm phát sinh lỗi từ phía nhà cung cấp trong thời gian bảo hành quy định.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    7. Kết Luận\n  </h2>\n  <p>Sở hữu <strong>Nâng Cấp ChatGPT Plus Giá Rẻ</strong> chất lượng cao chính là chìa khóa giúp bạn tiết kiệm hàng chục giờ công sức, giảm thiểu rủi ro bị khóa tài khoản và bứt phá doanh thu trong công việc MMO của mình. Đừng để những tài khoản kém chất lượng làm gián đoạn kế hoạch kinh doanh của bạn!</p>\n  <p style=\"text-align: center; margin-top: 20px;\">\n    <strong style=\"color: #38bdf8; font-size: 1.1rem;\">👉 ĐẶT MUA NGAY HÔM NAY ĐỂ NHẬN ƯU ĐÃI VÀ DỊCH VỤ BẢO HÀNH TỐT NHẤT TẠI MUABANTAIKHOANMMO.COM! 👈</strong>\n  </p>\n</div>",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUNUEKI3NM/image?v=1792465242100",
+    "image_url": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUNUEKI3NM/image?v=1792465242100",
+    "imageUrl": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MUNUEKI3NM/image?v=1792465242100",
+    "price": 456000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "chat Gpt Plush 1 tháng",
+        "price": 456000,
+        "stock": 6,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "baseUrl": "https://ultrammo.com",
+          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "sourceProdId": "19204",
+          "sourceProdName": "[Chat gpt] #19204 CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG ) BẢO HÀNH FULL - 380.000 đ (Tồn: 6)",
+          "sourcePrice": 380000,
+          "sourceStock": 6,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MUNUEKI3NM",
+          "targetProdName": "Nâng Cấp ChatGPT Plus Giá Rẻ"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "baseUrl": "https://ultrammo.com",
+      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "sourceProdId": "19204",
+      "sourceProdName": "[Chat gpt] #19204 CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG ) BẢO HÀNH FULL - 380.000 đ (Tồn: 6)",
+      "sourcePrice": 380000,
+      "sourceStock": 6,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MUNUEKI3NM",
+      "targetProdName": "Nâng Cấp ChatGPT Plus Giá Rẻ"
+    },
+    "stock": 6,
+    "buffSold": 299,
+    "sold": 299,
+    "available": true
+  },
+  {
+    "id": "PROD_MUKAMO9XPD",
+    "name": "API CODEX - CLAUDE 50M TOKEN1 DAY",
+    "slug": "prod-mukamo9xpd",
+    "category": "AI & Video",
+    "description": "Model dùng được: kimi-k3, qwen3.8-max, hy3, deepseek-v4-pro, deepseek-v4-flash, glm-5.3-flash\nBase URL: https://api.miraiapi.com/v1\nHướng Dẫn : https://miraiapi.com/usage\nBạn là Developer, Automation Engineer hay dân MMO đang tìm kiếm nguồn API Claude (Anthropic) hoặc API Codex (OpenAI) chất lượng cao để tích hợp vào ứng dụng, tool code, trợ lý ảo AI hoặc các hệ thống tự động hóa với chi phí tối ưu nhất?Shop chuyên cung cấp tài khoản và key API chuẩn, hoạt động mượt mà, sẵn sàng phục vụ mọi nhu cầu từ cá nhân đến doanh nghiệp!   🚀 Ưu điểm tuyệt đối của kho API tại shop:   🔑 Key chính hãng, hoạt động ổn định: Tốc độ phản hồi (Response time) cực nhanh, hạn chế tối đa tình trạng gián đoạn hay quá tải (Rate limit).🧠 Đa dạng các mô hình thông minh:Dòng Claude: Trợ thủ đắc lực về reasoning, phân tích code phức tạp, context window lớn.Dòng Codex / OpenAI: Tốc độ xử lý siêu việt, tối ưu tuyệt đối cho các tác vụ lập trình, sinh code và gọi hàm tự động.   💰 Tiết kiệm chi phí tối đa: Phù hợp cho cả anh em cần test dự án ngắn hạn lẫn các hệ thống chạy production dài lâu.   🔌 Dễ dàng tích hợp: Tương thích hoàn hảo với các IDE (VS Code, Cursor), Claude Code, các framework agent, tool bên thứ 3 hoặc code custom riêng.🛠️ Cam kết dịch vụ từ shop:🛡️ Bảo hành uy tín: Hỗ trợ 1 đổi 1 hoặc xử lý ngay lập tức nếu key gặp lỗi kích hoạt ban đầu.🚀 Cấp phát siêu tốc: Nhận ngay API Key định dạng chuẩn xác ngay sau khi thanh toán thành công.   💬 Hỗ trợ kỹ thuật tận tình: Hướng dẫn cấu hình kết nối chi tiết từ A-Z cho người mới bắt đầu.💡 Phù hợp cho: Lập trình viên, đội ngũ phát triển phần mềm, người làm tool automation, nghiên cứu AI hoặc các hệ thống cần gọi API số lượng lớn mỗi ngày!🛒 MUA API UY TÍN – KẾT NỐI MƯỢT MÀ NGAY HÔM NAY!💬 Inbox trực tiếp ngay cho shop ho���c để lại dấu chấm [ . ] bên dưới (kèm theo loại API bạn cần: Claude hay Codex) để được tư vấn gói phù hợp và chốt đơn nhanh chóng!📞 Hotline / Zalo / Telegram",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUKAMO9XPD_API_CODEX_-_CLAUDE_50M_TOKEN1_DAY.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUKAMO9XPD_API_CODEX_-_CLAUDE_50M_TOKEN1_DAY.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUKAMO9XPD_API_CODEX_-_CLAUDE_50M_TOKEN1_DAY.jpg",
+    "price": 70000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "API - CLAUDE 50M tokens 1 NGÀY",
+        "price": 70000,
+        "stock": 10000,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "nguyenlieummo",
+          "sourceProdId": "125564",
+          "sourcePrice": 54338,
+          "sourceStock": 10000,
+          "sourceProdName": "API CODEX 10M Tokens - 1 DAYS",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "nguyenlieummo",
+      "sourceProdId": "125564",
+      "sourcePrice": 54338,
+      "sourceStock": 10000,
+      "sourceProdName": "API CODEX 10M Tokens - 1 DAYS",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 10000,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUK7P74YNT",
+    "name": "Nâng Cấp Youtube Premium Chính Chủ 1 Tháng",
+    "slug": "prod-muk7p74ynt",
+    "category": "YOUTUBE",
+    "description": "Bạn đã quá mệt mỏi với những đoạn quảng cáo dài lê thê làm gián đoạn cảm xúc khi đang xem phim, nghe nhạc hoặc học tập trên YouTube? Gói Nâng cấp YouTube Premium chính chủ 1 tháng tại shop chính là giải pháp hoàn hảo giúp bạn tận hưởng không gian giải trí trọn vẹn nhất!\n\n✨ Đặc quyền đỉnh cao khi lên YouTube Premium:\n🚫 Xem video hoàn toàn KHÔNG QUẢNG CÁO: Không còn bị làm phiền bởi các quảng cáo giữa chừng hay banner rườm rà.\n\n🎵 YouTube Music Premium miễn phí: Nghe nhạc chất lượng cao, thoải mái thưởng thức hàng triệu bài hát không gián đoạn.\n\n📥 Tải xuống ngoại tuyến (Offline): Tải video và nhạc về máy để xem lại mọi lúc mọi nơi ngay cả khi không có kết nối Internet.\n\n▶️ Phát trong nền (Background Play): Tiếp tục phát video hoặc nhạc ngay cả khi bạn tắt màn hình điện thoại hoặc chuyển sang ứng dụng khác.\n\n🔒 Tại sao nên chọn gói Chính Chủ tại shop?\n👤 Nâng cấp trực tiếp trên Email cá nhân: Giữ nguyên tài khoản, lịch sử xem, danh sách phát (playlist) và các kênh đã đăng ký của riêng bạn. Bảo mật tuyệt đối 100%.\n\n⏱️ Thời hạn 1 tháng linh hoạt: Phù hợp để trải nghiệm trọn vẹn các tính năng cao cấp với chi phí siêu tiết kiệm.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành Full 1 đổi 1 trong suốt thời gian 1 tháng sử dụng.\n\n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin.\n\n💬 Hỗ trợ nhiệt tình 24/7, uy tín đặt lên hàng đầu.\n\n💡 Phù hợp cho: Bất kỳ ai muốn nâng cấp chất lượng trải nghiệm giải trí hằng ngày trên điện thoại, máy tính bảng hay Smart TV một cách mượt mà và an toàn nhất!\n\n🛒 NÂNG CẤP NGAY HÔM NAY – TẬN HƯỞNG KHÔNG GIAN SẠCH QUẢNG CÁO!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để được hướng dẫn nâng cấp tài khoản chính chủ nhanh nhất!\n\n📞 Hotline / Zalo / Telegram",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK7P74YNT_N%C3%A2ng_C%E1%BA%A5p_Youtube_Premium_Ch%C3%ADnh_Ch%E1%BB%A7_1_Th%C3%A1ng.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK7P74YNT_N%C3%A2ng_C%E1%BA%A5p_Youtube_Premium_Ch%C3%ADnh_Ch%E1%BB%A7_1_Th%C3%A1ng.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK7P74YNT_N%C3%A2ng_C%E1%BA%A5p_Youtube_Premium_Ch%C3%ADnh_Ch%E1%BB%A7_1_Th%C3%A1ng.jpg",
+    "price": 150000,
+    "warranty": "Bảo Hành 7 Ngày",
+    "variants": [
+      {
+        "name": "Lâng cấp Youtube Premium  1 Tháng",
+        "price": 150000,
+        "stock": 99999,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "baseUrl": "https://ultrammo.com",
+          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "sourceProdId": "26777",
+          "sourceProdName": "Youtube Premium: 1 Tháng",
+          "sourcePrice": 30000,
+          "sourceStock": 99999,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MUK7P74YNT",
+          "targetProdName": "Nâng Cấp Youtube Premium Chính Chủ 1 Tháng"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "baseUrl": "https://ultrammo.com",
+      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "sourceProdId": "26777",
+      "sourceProdName": "Youtube Premium: 1 Tháng",
+      "sourcePrice": 30000,
+      "sourceStock": 99999,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MUK7P74YNT",
+      "targetProdName": "Nâng Cấp Youtube Premium Chính Chủ 1 Tháng"
+    },
+    "stock": 99999,
+    "buffSold": 319,
+    "sold": 319,
+    "available": true
+  },
+  {
+    "id": "PROD_MUK7DQMKAM",
+    "name": "Threads Random Veri Phone",
+    "slug": "prod-muk7dqmkam",
+    "category": "Intagram",
+    "description": "Bạn đang cần nguồn tài khoản Threads chất lượng để bắt kịp xu hướng, kéo traffic về website, làm seeding, chạy chiến dịch marketing hay phát triển hệ thống mạng xã hội nhưng các tài khoản tự tạo trắng tinh rất dễ bị khóa hoặc hạn chế tương tác?\n\nSiêu phẩm Threads Random (Đã Verify Phone) tại shop chính là lựa chọn tối ưu giúp bạn chiến mượt mọi chiến dịch!\n\n💎 Tại sao nên chọn tài khoản Threads tại shop?\nĐã Verify Phone (Xác thực số điện thoại): Tài khoản đã qua bước xác minh danh tính cơ bản bằng SĐT, giúp tăng độ uy tín và hạn chế tối đa tình trạng quét tài khoản mới.\n\nĐộ Trust tốt, sẵn sàng sử dụng: Tài khoản dạng random có lịch sử hoặc độ phủ nhất định, thích hợp để đăng bài, tương tác, seeding hoặc phát triển ngách nội dung.\n\nTiếp cận khách hàng tiềm năng cực nhanh: Threads hiện là mảnh đất màu mỡ để kéo tương tác tự nhiên (organic reach) cực khủng từ nền tảng Meta.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành lỗi đăng nhập 1 đổi 1 ngay lập tức trong lần đầu nhận tài khoản.\n\n🚀 Bàn giao siêu tốc ngay sau khi thanh toán với định dạng rõ ràng, sạch sẽ.\n\n🔒 Hỗ trợ tư vấn tận tình cách đăng nhập an toàn để duy trì độ bền cho tài khoản.\n\n💡 Mẹo sử dụng bền lâu: Nên đăng nhập trên thiết bị hoặc trình duyệt sạch (Antidetect Browser) kết hợp cùng Proxy chất lượng, thao tác từ tốn trong những ngày đầu để tài khoản thích nghi hoàn toàn với môi trường mới!\n\n🛒 SỐ LƯỢNG CÓ HẠN – CHỐT ĐƠN NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá chi tiết và sở hữu dàn nick Threads chất lượng!\n\n📞 Hotline / Zalo / Telegram",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK7DQMKAM_Threads_Random_Veri_Phone.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK7DQMKAM_Threads_Random_Veri_Phone.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK7DQMKAM_Threads_Random_Veri_Phone.jpg",
+    "price": 70000,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "Threads canada",
+        "price": 70000,
+        "stock": 116,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "nguyenlieummo",
+          "sourceProdId": "129179",
+          "sourcePrice": 62560,
+          "sourceStock": 116,
+          "sourceProdName": "[Threads] #129179 Threads Canada Veri Phone - 62.560 đ (Tồn: 116)",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "nguyenlieummo",
+      "sourceProdId": "129179",
+      "sourcePrice": 62560,
+      "sourceStock": 116,
+      "sourceProdName": "[Threads] #129179 Threads Canada Veri Phone - 62.560 đ (Tồn: 116)",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 116,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUK6EFVE8X",
+    "name": "INSTAGRAM ĐÃ LUÔI CỰC KỲ TRÂU",
+    "slug": "prod-muk6efve8x",
+    "category": "Intagram",
+    "description": "vui lòng mở khoá mail để lấy mã hoặc đăng nhập băng cokey Instagram cực kỳ trâu, mạnh mẽ, cực kỳ uy tín dành cho dân MMO, chạy chiến dịch, làm marketing hoặc phát triển hệ thống tài khoản số lượng lớn:\n\n🔥 INSTAGRAM ĐÃ NUÔI CỰC KỲ TRÂU – ĐỘ TRUST TUYỆT ĐỐI, KHÁNG QUÉT CỰC TỐT CHO DÂN MMO!\nBạn đang đau đầu vì tình trạng mua tài khoản Instagram mới tạo hoặc nuôi qua loa, cứ đăng nhập, đổi IP, đăng bài hoặc tương tác là dính checkpoint, khóa vách hay bay màu ngay lập tức?\n\nGiải pháp Instagram đã nuôi cực kỳ trâu tại shop chính là \"vũ khí tối thượng\" giúp bạn quét sạch mọi nỗi lo, chiến mượt mà mọi chiến dịch!\n\n💎 Điểm vượt trội của dòng Instagram \"Cực kỳ trâu\":\nĐộ Trust max cấp: Tài khoản đã trải qua quá trình nuôi bài bản, thời gian ngâm lâu, có lịch sử hoạt động và tương tác tự nhiên như người dùng thật.\n\nVượt rào kiểm duyệt thông minh: Thích ứng cực tốt với các thuật toán quét gắt gao của Meta, hạn chế tối đa tình trạng verphone, checkpoint ngớ ngẩn hay khóa tài khoản khi đổi thiết bị/IP.\n\nSẵn sàng cho mọi tác vụ nặng: Phục vụ hoàn hảo cho anh em làm MMO, chạy seeding, kéo traffic, làm marketing, xây dựng hệ thống mạng xã hội lớn hoặc chạy các chiến dịch dài hạn.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành 1 đổi 1 ngay lập tức cho tài khoản lỗi đăng nhập lần đầu.\n\n🚀 Bàn giao siêu tốc ngay sau khi thanh toán, đúng định dạng, sạch sẽ.\n\n🔒 Hỗ trợ tư vấn tận tình cách đăng nhập và ngâm thêm trên thiết bị sạch để duy trì độ trâu bò lâu dài nhất.\n\n💡 Mẹo giữ tài khoản bền bỉ: Nên kết hợp sử dụng Antidetect Browser (trình duyệt sạch) cùng Proxy chất lượng cao, thao tác từ tốn trong những ngày đầu để tài khoản ổn định hoàn toàn trên môi trường mới!\n\n🛒 SỐ LƯỢNG CÓ HẠN – CHỐT ĐƠN NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá chi tiết và sở hữu ngay dàn nick chất lượng!\n\n📞 Hotline / Zalo / Telegram",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK6EFVE8X_INSTAGRAM_%C4%90%C3%83_LU%C3%94I_C%E1%BB%B0C_K%E1%BB%B2_TR%C3%82U.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK6EFVE8X_INSTAGRAM_%C4%90%C3%83_LU%C3%94I_C%E1%BB%B0C_K%E1%BB%B2_TR%C3%82U.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK6EFVE8X_INSTAGRAM_%C4%90%C3%83_LU%C3%94I_C%E1%BB%B0C_K%E1%BB%B2_TR%C3%82U.png",
+    "price": 12000,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "INTAGRAM",
+        "price": 12000,
+        "stock": 185,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "nguyenlieummo",
+          "sourceProdId": "119471",
+          "sourcePrice": 3968,
+          "sourceStock": 185,
+          "sourceProdName": "[IG] #119471 INSTAGRAM IP NGOẠI - NAME RANDOM - 2FA - ZIN ALL - 3.968 đ (Tồn: 185)",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "nguyenlieummo",
+      "sourceProdId": "119471",
+      "sourcePrice": 3968,
+      "sourceStock": 185,
+      "sourceProdName": "[IG] #119471 INSTAGRAM IP NGOẠI - NAME RANDOM - 2FA - ZIN ALL - 3.968 đ (Tồn: 185)",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 185,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUK5IKCQLN",
+    "name": "Proxy US ipv4 - 1 ngày",
+    "slug": "prod-muk5ikcqln",
+    "category": "VPN Proxy",
+    "description": "Proxy US (Mỹ) - Gói 1 ngày, thiết kế ngắn gọn, tập trung vào sự tiện lợi, tốc độ cao và chi phí tối ưu cho các tác vụ ngắn hạn:\n\n⚡ PROXY US (MỸ) – GÓI 1 NGÀY | IP SẠCH, TỐC ĐỘ CAO CHO MỌI TÁC VỤ NGẮN HẠN!\nBạn đang cần gấp nguồn Proxy US (Mỹ) tốc độ cao, độ ổn định tốt để làm các tác vụ nhanh trong ngày như check site, đăng ký tài khoản, test tool, verify dịch vụ hay chạy chiến dịch ngắn hạn mà không muốn mua gói tháng tốn kém?\n\nGói Proxy US 1 ngày tại shop chính là giải pháp nhanh gọn và tiết kiệm nhất dành cho bạn!\n\n🚀 Ưu điểm nổi bật của Proxy US 1 ngày:\nIP US chất lượng cao: Đường truyền ổn định, kết nối mượt mà, giúp xử lý các công việc liên quan đến thị trường Mỹ một cách trơn tru.\n\nLinh hoạt ngân sách (Gói 1 ngày): Cần bao nhiêu dùng bấy nhiêu, tối ưu hóa chi phí tuyệt đối cho các công việc phát sinh hoặc chạy thử nghiệm hệ thống (test tool, test via).\n\nĐa định dạng, dễ tích hợp: Hỗ trợ đầy đủ chuẩn thông tin (IP:Port:User:Pass), tương thích hoàn hảo với mọi Antidetect Browser, phần mềm MMO hay tool automation.\n\n🛠️ Cam kết dịch vụ từ shop:\n⚡ Cấp phát siêu tốc: Nhận thông tin proxy ngay lập tức sau khi thanh toán, dùng được ngay không chờ đợi.\n\n🔄 Hỗ trợ đổi IP nhanh chóng nếu gặp sự cố kết nối ngay từ lần đầu sử dụng.\n\n💬 Tư vấn nhiệt tình, hỗ trợ cấu hình chi tiết từ A-Z.\n\n💡 Phù hợp cho: Anh em làm MMO cần IP Mỹ để check giá, verify dịch vụ, test tool, chạy chiến dịch marketing ngắn hạn hoặc cần ẩn danh gấp trong ngày!\n\n🛒 MUA NHANH – DÙNG NGAY TRONG 1 NỐT NHẠC!",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK5IKCQLN_Proxy_US_ipv4_-_1_ng%C3%A0y.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK5IKCQLN_Proxy_US_ipv4_-_1_ng%C3%A0y.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK5IKCQLN_Proxy_US_ipv4_-_1_ng%C3%A0y.jpg",
+    "price": 2500,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Proxy US ipv4 - 1 ngày",
+        "price": 2500,
+        "stock": 9999,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "selltainguyenmmo",
+          "sourceProdId": "31918",
+          "sourcePrice": 1400,
+          "sourceStock": 9999,
+          "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "31918",
+      "sourcePrice": 1400,
+      "sourceStock": 9999,
+      "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 9999,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUJZGSUPDI",
+    "name": "Intagram IG khỏe đã ngâm lâu Random",
+    "slug": "prod-mujzgsupdi",
+    "category": "Intagram",
+    "description": "Bạn đang cần nguồn tài khoản Instagram chất lượng cao để làm seeding, chạy chiến dịch, phát triển hệ thống mạng xã hội hoặc làm các tác vụ MMO nhưng tài khoản mới tạo rất dễ bị checkpoint, khóa vách hay giảm reach?\n\nSiêu phẩm IG khỏe đã ngâm lâu (Random) tại shop chính là giải pháp tối ưu giúp bạn giải quyết triệt để vấn đề này!\n\n💎 Tại sao nên chọn IG ngâm lâu tại shop?\nĐộ Trust cực cao: Tài khoản đã được nuôi và \"ngâm\" qua thời gian, có lịch sử hoạt động tự nhiên, giúp vượt qua các bộ lọc quét tự động của Instagram tốt hơn rất nhiều so với acc clone trắng mới tạo.\n\nTỷ lệ sống sót cao: Hạn chế tối đa tình trạng khóa tài khoản ngay lần đăng nhập đầu tiên hoặc khi bắt đầu thao tác (like, follow, đăng bài...).\n\nĐa năng, tối ưu công việc: Phù hợp hoàn hảo cho anh em làm marketing, seeding bài viết, kéo traffic, chạy chiến dịch ngắn/dài hạn hoặc quản lý hệ thống mạng xã hội lớn.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành 1 đổi 1 ngay lập tức đối với tài khoản lỗi đăng nhập lần đầu.\n\n🚀 Bàn giao siêu tốc ngay sau khi thanh toán với định dạng sạch sẽ, chuẩn xác.\n\n🔒 Thông tin rõ ràng, hỗ trợ tư vấn cách đăng nhập an toàn để giữ tài khoản bền bỉ nhất.\n\n💡 Mẹo sử dụng bền lâu: Nên đăng nhập trên thiết bị hoặc trình duyệt sạch (Antidetect Browser), nuôi IP ổn định và hạn chế thao tác quá dồn dập ngay khi vừa nhận acc để đạt độ \"trâu bò\" tối đa!\n\n🛒 SỐ LƯỢNG CÓ HẠN – CHỐT ĐƠN NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá và mua tài khoản nhanh chóng!\n\n📞 Hotline / Zalo / Telegram",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJZGSUPDI_Intagram_IG_kh%E1%BB%8Fe_%C4%91%C3%A3_ng%C3%A2m_l%C3%A2u_Random.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJZGSUPDI_Intagram_IG_kh%E1%BB%8Fe_%C4%91%C3%A3_ng%C3%A2m_l%C3%A2u_Random.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJZGSUPDI_Intagram_IG_kh%E1%BB%8Fe_%C4%91%C3%A3_ng%C3%A2m_l%C3%A2u_Random.jpg",
+    "price": 15000,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "IG đã ngâm lâu trên 6 tháng",
+        "price": 15000,
+        "stock": 185,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "nguyenlieummo",
+          "sourceProdId": "119471",
+          "sourcePrice": 3968,
+          "sourceStock": 185,
+          "sourceProdName": "[IG] #119471 [IG] #119471 INSTAGRAM IP NGOẠI - NAME RANDOM - 2FA - ZIN ALL - 3.968 đ (Tồn: 185) - 3.968 đ (Tồn: 185)",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "nguyenlieummo",
+      "sourceProdId": "119471",
+      "sourcePrice": 3968,
+      "sourceStock": 185,
+      "sourceProdName": "[IG] #119471 [IG] #119471 INSTAGRAM IP NGOẠI - NAME RANDOM - 2FA - ZIN ALL - 3.968 đ (Tồn: 185) - 3.968 đ (Tồn: 185)",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 185,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUJVJCV286",
+    "name": "Proxy 4Gvinaphone - 1 ngày",
+    "slug": "prod-mujvjcv286",
+    "category": "VPN Proxy",
+    "description": "Bạn đang cần gấp nguồn Proxy mạng di động VinaPhone để chạy tool, nuôi via, đăng ký tài khoản, seeding hoặc xử lý các chiến dịch ngắn hạn trong ngày mà không muốn tốn kém mua gói tháng?\n\nGói Proxy 4G VinaPhone 1 ngày tại shop chính là giải pháp \"cứu cánh\" nhanh chóng, tiết kiệm và hiệu quả nhất dành cho bạn!\n\n🚀 Ưu điểm vượt trội của Proxy 4G VinaPhone 1 ngày:\nIP Mobile siêu sạch (Trust cực cao): Sử dụng dải IP thật từ nhà mạng VinaPhone, được các nền tảng lớn đánh giá độ uy tín cao, giúp hạn chế tối đa checkpoint hay khóa tài khoản.\n\nTốc độ mượt mà, ổn định: Băng thông cao, kết nối trơn tru, tối ưu hóa tuyệt đối cho các tác vụ automation hoặc công việc cần phản hồi nhanh.\n\nLinh hoạt ngân sách: Chỉ mua dùng trong 1 ngày, cực kỳ tiết kiệm chi phí cho các công việc phát sinh hoặc chạy thử nghiệm (test hệ thống, test tool).\n\nĐa định dạng, dễ tích hợp: Hỗ trợ chuẩn thông tin đầy đủ, tương thích hoàn hảo với mọi Antidetect Browser và phần mềm MMO phổ biến.\n\n🛠️ Cam kết dịch vụ từ shop:\n⚡ Cấp phát siêu tốc: Nhận thông tin proxy ngay lập tức sau khi thanh toán.\n\n🔄 Hỗ trợ đổi IP nhanh chóng nếu gặp sự cố kết nối ngay từ lần đầu sử dụng.\n\n💬 Tư vấn nhiệt tình, hỗ trợ cấu hình từ A-Z.\n\n💡 Phù hợp cho: Anh em làm MMO cần test tool, chạy chiến dịch marketing/seeding ngắn hạn trong ngày, verify tài khoản hoặc cần ẩn danh với IP di động VinaPhone gấp!\n\n🛒 MUA NHANH – DÙNG NGAY TRONG 1 NỐT NHẠC!\n💬 Inbox trực tiếp ngay cho shop hoặc bình luận [ . ] bên dưới để nhận thông tin proxy và test tốc độ ngay lập tức!\n\n📞 Hotline / Zalo / Telegram",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJVJCV286_Proxy_4Gvinaphone_-_1_ng%C3%A0y.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJVJCV286_Proxy_4Gvinaphone_-_1_ng%C3%A0y.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJVJCV286_Proxy_4Gvinaphone_-_1_ng%C3%A0y.jpg",
+    "price": 20000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Proxy 4Gvinaphone - 1 ngày",
+        "price": 20000,
+        "stock": 9999,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "baseUrl": "https://ultrammo.com",
+          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "sourceProdId": "34234",
+          "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
+          "sourcePrice": 13500,
+          "sourceStock": 9999,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MUJVJCV286",
+          "targetProdName": "Proxy 4Gvinaphone - 1 ngày"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "baseUrl": "https://ultrammo.com",
+      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "sourceProdId": "34234",
+      "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
+      "sourcePrice": 13500,
+      "sourceStock": 9999,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MUJVJCV286",
+      "targetProdName": "Proxy 4Gvinaphone - 1 ngày"
+    },
+    "stock": 9999,
+    "buffSold": 632,
+    "sold": 632,
+    "available": true
+  },
+  {
+    "id": "PROD_MUJVFEFFNP",
+    "name": "Proxy Viettel - 1 ngày",
+    "slug": "prod-mujvfeffnp",
+    "category": "VPN Proxy",
+    "description": "Hàng share tiết kiệm chi phí\nGiao Thức HTTP\nĐịnh Dạng IP:PORT:USER:PASS\nGia Hạn Linh Hoạt\nBạn đang cần gấp nguồn Proxy mạng Viettel tốc độ cao, độ ổn định tuyệt đối để chạy tool, nuôi via, đăng ký tài khoản, cày view hoặc xử lý các công việc ngắn hạn trong ngày mà không muốn mua gói dài hạn?\n\nGói Proxy Viettel 1 ngày tại shop chính là lựa chọn nhanh chóng và tiết kiệm nhất dành cho bạn!\n\n🚀 Ưu điểm vượt trội của Proxy Viettel:\nIP Mobile siêu sạch: Sử dụng dải IP thật từ nhà mạng Viettel, giúp vượt qua các bộ lọc kiểm duyệt dễ dàng, hạn chế tối đa checkpoint hay khóa tài khoản.\n\nTốc độ mạng cực khủng: Hạ tầng mạng Viettel nổi tiếng ổn định, ping thấp, băng thông cao, đảm bảo các phần mềm automation hay tác vụ nặng chạy mượt mà, không giật lag.\n\nLinh hoạt thời gian (Gói 1 ngày): Cần bao nhiêu dùng bấy nhiêu, tối ưu chi phí tuyệt đối cho các chiến dịch ngắn hạn hoặc chạy thử nghiệm hệ thống.\n\nĐa định dạng dễ tích hợp: Hỗ trợ đầy đủ chuẩn thông tin (IP:Port:User:Pass), tương thích hoàn hảo với mọi loại Antidetect Browser, tool MMO hay phần mềm bên thứ 3.\n\n🛠️ Cam kết dịch vụ từ shop:\n⚡ Cấp phát siêu tốc ngay sau khi thanh toán, dùng được ngay lập tức.\n\n🔄 Hỗ trợ đổi IP nhanh chóng nếu gặp sự cố kết nối ngay từ lần đầu sử dụng.\n\n💬 Tư vấn nhiệt tình, hỗ trợ cấu hình chi tiết từ A-Z.\n\n💡 Phù hợp cho: Anh em làm MMO, chạy tool nuôi nick số lượng lớn, check giá, verify dịch vụ hoặc cần ẩn danh với IP Viettel gấp trong ngày!\n\n🛒 MUA NHANH – DÙNG NGAY TRONG 1 NỐT NHẠC!\n💬 Inbox trực tiếp ngay cho shop hoặc bình luận [ . ] bên dưới để nhận thông tin proxy và test tốc độ ngay lập tức!\n\n📞 Hotline / Zalo / Telegram",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJVFEFFNP_Proxy_Viettel_-_1_ng%C3%A0y.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJVFEFFNP_Proxy_Viettel_-_1_ng%C3%A0y.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJVFEFFNP_Proxy_Viettel_-_1_ng%C3%A0y.jpg",
+    "price": 4500,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Proxy Viettel - 1 ngày",
+        "price": 4500,
+        "stock": 9999,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "baseUrl": "https://ultrammo.com",
+          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "sourceProdId": "34028",
+          "sourceProdName": "Proxy Viettel - 1 ngày",
+          "sourcePrice": 2200,
+          "sourceStock": 9999,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MUJVFEFFNP",
+          "targetProdName": "Proxy Viettel - 1 ngày"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "baseUrl": "https://ultrammo.com",
+      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "sourceProdId": "34028",
+      "sourceProdName": "Proxy Viettel - 1 ngày",
+      "sourcePrice": 2200,
+      "sourceStock": 9999,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MUJVFEFFNP",
+      "targetProdName": "Proxy Viettel - 1 ngày"
+    },
+    "stock": 9999,
+    "buffSold": 1798,
+    "sold": 1798,
+    "available": true
+  },
+  {
+    "id": "PROD_MUJV1YHQ6N",
+    "name": "NÂNG CẤP CANVA EDU 1 NĂM - RIÊNG TƯ CHÍNH CHỦ",
+    "slug": "prod-mujv1yhq6n",
+    "category": "Canva",
+    "description": "Bạn đang tìm kiếm một công cụ thiết kế đồ họa đỉnh cao, đầy đủ mọi tính năng cao cấp nhưng lại muốn tiết kiệm tối đa chi phí? Gói Nâng cấp Canva Edu 1 năm trên chính email cá nhân (Chính chủ) tại shop chính là giải pháp hoàn hảo dành cho bạn!\n\n✨ Tại sao nên chọn Canva Edu Chính Chủ tại shop?\n🔒 Dùng trên Email Chính Chủ (Riêng tư 100%): Nâng cấp trực tiếp vào tài khoản Canva cá nhân của bạn. Không dùng chung tài khoản với ai, dữ liệu thiết kế và các bản mẫu được bảo mật hoàn toàn riêng tư.\n\n🔓 Mở khóa toàn bộ kho tài nguyên Pro/Edu:\n\nHàng triệu mẫu thiết kế (Templates) độc quyền, Font chữ cao cấp, hình ảnh, video, đồ họa và âm thanh không giới hạn.\n\nSử dụng trọn vẹn các công cụ AI thông minh (Xóa nền tự động, Magic Resize, Biến văn bản thành ảnh...).\n\n⏳ Thời hạn sử dụng dài lâu (1 Năm): An tâm sáng tạo nội dung, làm slide thuyết trình, thiết kế banner, poster, video suốt 365 ngày không lo gián đoạn.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành Full 1 đổi 1 trong suốt thời gian 1 năm sử dụng.\n\n⚡ Nâng cấp siêu tốc chỉ trong vài phút sau khi nhận thông tin.\n\n💬 Hỗ trợ nhiệt tình 24/7, uy tín đặt lên hàng đầu.\n\n💡 Phù hợp cho: Học sinh, sinh viên, giáo viên, nhà sáng tạo nội dung, Marketer hoặc bất kỳ ai cần một công cụ thiết kế chuyên nghiệp với chi phí siêu tiết kiệm!\n\n🛒 NÂNG CẤP NGAY HÔM NAY – NHẬN ƯU ĐÃI LIỀN TAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để được hướng dẫn nâng cấp tài khoản chính chủ nhanh nhất!\n\n📞 Hotline / Zalo / Telegram",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJV1YHQ6N_N%C3%82NG_C%E1%BA%A4P_CANVA_EDU_1_N%C4%82M_-_RI%C3%8ANG_T%C6%AF_CH%C3%8DNH_CH%E1%BB%A6.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJV1YHQ6N_N%C3%82NG_C%E1%BA%A4P_CANVA_EDU_1_N%C4%82M_-_RI%C3%8ANG_T%C6%AF_CH%C3%8DNH_CH%E1%BB%A6.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJV1YHQ6N_N%C3%82NG_C%E1%BA%A4P_CANVA_EDU_1_N%C4%82M_-_RI%C3%8ANG_T%C6%AF_CH%C3%8DNH_CH%E1%BB%A6.jpg",
+    "price": 30000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "canva edu",
+        "price": 30000,
+        "stock": 99999,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "26818",
+          "sourcePrice": 13000,
+          "sourceStock": 99999,
+          "sourceProdName": "Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "26818",
+      "sourcePrice": 13000,
+      "sourceStock": 99999,
+      "sourceProdName": "Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 99999,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUJUGVQXET",
+    "name": "Capcut Pro Team 1 THÁNG",
+    "slug": "prod-mujugvqxet",
+    "category": "Capcut",
+    "description": "Bạn là TikToker, Editor, nhà sáng tạo nội dung hay Marketer đang cần kho hiệu ứng Pro, công cụ AI đỉnh cao và bộ lọc màu độc quyền của Capcut Pro để thỏa sức sáng tạo cả tháng nhưng muốn tối ưu chi phí tối đa? Gói Capcut Pro Team 1 Tháng tại shop chính là lựa chọn hoàn hảo nhất dành cho bạn!\n\n✨ Ưu điểm vượt trội của gói Capcut Pro Team:\n\n🔓 Mở khóa trọn vẹn toàn bộ tính năng Pro: Thỏa sức sử dụng kho hiệu ứng chuyển cảnh độc quyền, công cụ AI thông minh, tách nền mượt mà, keyframe nâng cao và bộ lọc màu điện ảnh.\n\n💰 Tiết kiệm siêu hời: Trải nghiệm đầy đủ tính năng cao cấp suốt 30 ngày với mức giá rẻ hơn rất nhiều so với mua lẻ cá nhân chính hãng.\n\n💻 Sử dụng đa nền tảng: Dùng mượt mà trên cả Điện thoại (iOS/Android) lẫn Máy tính (PC/Laptop).\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành Full 1 đổi 1 trong suốt thời gian 1 tháng sử dụng. An tâm tuyệt đối không lo mất quyền lợi giữa chừng.\n\n🚀 Bàn giao tài khoản siêu tốc ngay sau khi thanh toán, hướng dẫn sử dụng chi tiết từ A-Z.\n\n🤝 Hỗ trợ tận tình 24/7 nếu gặp bất kỳ vấn đề gì trong quá trình thao tác.\n\n💡 Phù hợp cho: Anh em làm content dài hạn trong tháng, làm video ngắn đăng TikTok, Reels, YouTube Shorts với tần suất cao mà vẫn muốn tiết kiệm ngân sách tối đa!\n\n🛒 SỞ HỮU NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc bình luận [ . ] bên dưới để chốt đơn và nhận tài khoản dùng ngay trong 1 nốt nhạc!\n\n📞 Hotline / Zalo / Telegram",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJUGVQXET_Capcut_Pro_Team_1_TH%C3%81NG.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJUGVQXET_Capcut_Pro_Team_1_TH%C3%81NG.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJUGVQXET_Capcut_Pro_Team_1_TH%C3%81NG.jpg",
+    "price": 70000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Capcut Pro team 1 THÁNG",
+        "price": 70000,
+        "stock": 227,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "baseUrl": "https://ultrammo.com",
+          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "sourceProdId": "19388",
+          "sourceProdName": "[Capcut Pro] #19388 🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL ) - 54.000 đ (Tồn: 227)",
+          "sourcePrice": 54000,
+          "sourceStock": 227,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MUJUGVQXET",
+          "targetProdName": "Capcut Pro Team 1 THÁNG"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "baseUrl": "https://ultrammo.com",
+      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "sourceProdId": "19388",
+      "sourceProdName": "[Capcut Pro] #19388 🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL ) - 54.000 đ (Tồn: 227)",
+      "sourcePrice": 54000,
+      "sourceStock": 227,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MUJUGVQXET",
+      "targetProdName": "Capcut Pro Team 1 THÁNG"
+    },
+    "stock": 227,
+    "buffSold": 1250,
+    "sold": 1250,
+    "available": true
+  },
+  {
+    "id": "PROD_MUJTYWFTQ7",
+    "name": "Proxy Xoay Mobile 4G VinaPhone 5 Phút 1 IP",
+    "slug": "prod-mujtywftq7",
+    "category": "VPN Proxy",
+    "description": "IP Mobile 4G từ nhà mạng VinaPhone\nProxy tạo từ thiết bị Phone thực\nBăng thông không giới hạn, đa dạng dải IP\nThời gian giữ IP: tối đa 30 phút\nKhông giới hạn số lần đổi IP\nGiao thức: HTTP/HTTPS\nHỗ trợ API đổi IP\nMua gói thời hạn dài hơn sẽ có giá tốt hơn\n\nSiêu phẩm Proxy Xoay Mobile 4G VinaPhone với cơ chế tự động đổi IP mỗi 5 phút tại shop chính là chìa khóa vàng giúp bạn tối ưu hóa hiệu suất công việc!\n\n🌟 Tại sao nên chọn Proxy Mobile 4G VinaPhone?\nIP Mobile siêu sạch (Trust cực cao): Sử dụng dải IP mạng di động thật từ nhà mạng VinaPhone, được các nền tảng lớn (Facebook, Google, TikTok, Shopee...) đánh giá độ uy tín cao gấp nhiều lần so với Proxy Datacenter hay Residential thông thường.\n\nCơ chế tự động xoay thông minh: Cứ sau 5 phút, hệ thống sẽ tự động cấp một IP mới hoàn toàn sạch sẽ, giúp bạn né trọn mọi bẫy quét, chống checkpoint và hạn chế tối đa tình trạng block thiết bị/tài khoản.\n\nTốc độ mượt mà, ổn định: Băng thông cao, ping thấp, không giật lag, đảm bảo các tác vụ chạy tool, lướt web hoặc tương tác diễn ra trơn tru.\n\nHỗ trợ đa định dạng: Cung cấp đầy đủ thông tin chuẩn (IP:Port hoặc User:Pass) dễ dàng tích hợp vào mọi loại Antidetect Browser, phần mềm nuôi nick hay tool MMO phổ biến hiện nay.\n\n🛠️ Cam kết dịch vụ từ shop:\n🚀 Bàn giao nhanh chóng ngay sau khi thanh toán, hoạt động ổn định 24/7.\n\n🔄 Hỗ trợ kỹ thuật tận tình, hướng dẫn cách cấu hình chi tiết nếu bạn mới bắt đầu sử dụng.\n\n🛡️ Uy tín - Chất lượng, cam kết đúng nhà mạng VinaPhone như cam kết.\n\n💡 Gợi ý ứng dụng: Cực kỳ hoàn hảo cho anh em làm MMO chuyên nghiệp, chạy tool nuôi hệ thống tài khoản số lượng lớn, đăng ký tài khoản hàng loạt, seeding hoặc thực hiện các tác vụ cần thay đổi IP liên tục!\n\n🛒 SỐ LƯỢNG CÓ HẠN – ĐẶT NGAY KẺO LỠ!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá chi tiết và test thử tốc độ!\n\n📞 Hotline / Zalo / Telegram",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJTYWFTQ7_Proxy_Xoay_Mobile_4G_VinaPhone_5_Ph%C3%BAt_1_IP.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJTYWFTQ7_Proxy_Xoay_Mobile_4G_VinaPhone_5_Ph%C3%BAt_1_IP.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJTYWFTQ7_Proxy_Xoay_Mobile_4G_VinaPhone_5_Ph%C3%BAt_1_IP.jpg",
+    "price": 25000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Proxy Xoay 1 ngày   4G VinaPhone 5 Phút 1 IP",
+        "price": 25000,
+        "stock": 9999,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "34234",
+          "sourcePrice": 13500,
+          "sourceStock": 9999,
+          "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "34234",
+      "sourcePrice": 13500,
+      "sourceStock": 9999,
+      "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 9999,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUJQDTNIH9",
+    "name": "Proxy datacenter us - 1 ngày",
+    "slug": "prod-mujqdtnih9",
+    "category": "VPN Proxy",
+    "description": "Proxy datacenter us\nGiao Thức HTTP\nĐịnh Dạng IP:PORT:USER:PASS\nBạn đang cần gấp nguồn Proxy US (Mỹ) tốc độ cao để chạy tool, nuôi via, đăng ký tài khoản, cày view, check site hoặc làm các chiến dịch ngắn hạn trong ngày mà không muốn tốn kém mua gói tháng?\n\nGói Proxy Datacenter US 1 ngày tại shop chính là \"cứu cánh\" hoàn hảo dành cho bạn!\n\n🚀 Ưu điểm vượt trội của Proxy Datacenter US:\nTốc độ cực khủng: Băng thông cao, đường truyền ổn định, không giật lag, tối ưu hóa tuyệt đối cho các tác vụ tự động hóa (Automation).\n\nIP US sạch sẽ: Lọc kỹ lưỡng, hạn chế tối đa tình trạng bị blacklist hay chặn ở các nền tảng phổ biến.\n\nLinh hoạt ngân sách (Gói 1 ngày): Cần bao nhiêu dùng bấy nhiêu, tiết kiệm chi phí tối đa cho các công việc diễn ra trong thời gian ngắn.\n\nĐa giao thức: Hỗ trợ đầy đủ định dạng phổ biến (HTTP/HTTPS/SOCKS5), dễ dàng tích hợp vào mọi loại tool, antidetect browser hay phần mềm bên thứ 3.\n\n🛠️ Cam kết dịch vụ từ shop:\n⚡ Cấp phát siêu tốc: Nhận thông tin proxy (IP:Port:User:Pass) ngay lập tức sau khi thanh toán.\n\n🔄 Hỗ trợ đổi IP trong trường hợp lỗi kết nối ngay từ lần đầu sử dụng.\n\n💬 Tư vấn nhiệt tình: Hỗ trợ cấu hình, test trực tiếp trước khi bàn giao.\n\n💡 Phù hợp cho: Anh em làm MMO, chạy tool nuôi tài khoản số lượng lớn, check giá, verify dịch vụ hoặc cần ẩn danh IP US gấp trong ngày!\n\n🛒 MUA NHANH – DÙNG NGAY!\n💬 Inbox trực tiếp ngay cho shop hoặc bình luận [ . ] để chốt đơn và nhận thông tin proxy trong 1 nốt nhạc!\n\n📞 Hotline / Zalo / Telegram:",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJQDTNIH9_Proxy_datacenter_us_-_1_ng%C3%A0y.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJQDTNIH9_Proxy_datacenter_us_-_1_ng%C3%A0y.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJQDTNIH9_Proxy_datacenter_us_-_1_ng%C3%A0y.jpg",
+    "price": 4000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Proxy US - 1 ngày",
+        "price": 4000,
+        "stock": 9999,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "selltainguyenmmo",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+          "sourceProdId": "31918",
+          "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
+          "sourcePrice": 1400,
+          "sourceStock": 9999,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MUJQDTNIH9",
+          "targetProdName": "Proxy datacenter us - 1 ngày"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "selltainguyenmmo",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+      "sourceProdId": "31918",
+      "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
+      "sourcePrice": 1400,
+      "sourceStock": 9999,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MUJQDTNIH9",
+      "targetProdName": "Proxy datacenter us - 1 ngày"
+    },
+    "stock": 9999,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MUJGUY19DD",
+    "name": "Gmail New Random đã ngâm 3 - 7 ngày live",
+    "slug": "prod-mujguy19dd",
+    "category": "Gmail",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJGUY19DD_Gmail_New_Random_%C4%91%C3%A3_ng%C3%A2m_3_-_7_ng%C3%A0y.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJGUY19DD_Gmail_New_Random_%C4%91%C3%A3_ng%C3%A2m_3_-_7_ng%C3%A0y.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJGUY19DD_Gmail_New_Random_%C4%91%C3%A3_ng%C3%A2m_3_-_7_ng%C3%A0y.jpg",
+    "price": 20000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Gmail New  đã ngâm 3 - 7 ngày live",
+        "price": 20000,
+        "stock": 23,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "26784",
+          "sourcePrice": 13000,
+          "sourceStock": 23,
+          "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "26784",
+      "sourcePrice": 13000,
+      "sourceStock": 23,
+      "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 23,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU9YH8D9FK",
+    "name": "NÂNG CẤP CANVA EDU 1 NĂM",
+    "slug": "prod-mu9yh8d9fk",
+    "category": "Canva",
+    "description": "<div class=\"mmo-seo-article\" style=\"line-height: 1.8; color: #cbd5e1; font-size: 15px;\">\n  <p>Bạn đang tìm kiếm địa chỉ mua <strong>NÂNG CẤP CANVA EDU 1 NĂM</strong> uy tín, chất lượng cao với giá thành cạnh tranh nhất thị trường? Bạn cần nguồn cung cấp ổn định, tài khoản có độ <em>trust</em> cao, kháng quét mạnh mẽ để phục vụ cho các chiến dịch kinh doanh, chạy quảng cáo, nuôi nick tự động hóa hoặc mở rộng quy mô kiếm tiền online (MMO)?</p>\n\n  <p>Chào mừng bạn đến với <strong>Muabantaikhoanmmo.com</strong> – Hệ sinh thái cung ứng tài nguyên số và tài khoản MMO hàng đầu Việt Nam. Với dịch vụ cung cấp <strong>NÂNG CẤP CANVA EDU 1 NĂM</strong>, chúng tôi tự tin mang đến cho bạn giải pháp an toàn, hiệu quả vượt trội giúp tối ưu hóa 100% hiệu suất công việc của bạn.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    1. Giới Thiệu Chi Tiết Về NÂNG CẤP CANVA EDU 1 NĂM\n  </h2>\n  <p>Trong kỷ nguyên marketing số và tự động hóa ngày nay, việc sở hữu những tài khoản chất lượng, được nuôi dưỡng trên môi trường sạch là yếu tố quyết định tới hơn 80% sự thành công của bất kỳ chiến dịch MMO nào. Sản phẩm <strong>NÂNG CẤP CANVA EDU 1 NĂM</strong> tại shop chúng tôi được tuyển chọn và sàng lọc qua quy trình kỹ thuật nghiêm ngặt nhằm mang lại trải nghiệm mượt mà nhất cho người dùng.</p>\n\n  <p>Khác biệt hoàn toàn so với các loại tài khoản giá rẻ trôi nổi, kém chất lượng trên mạng vốn thường bị khóa ngay sau vài giờ đăng nhập, <strong>NÂNG CẤP CANVA EDU 1 NĂM</strong> tại shop sở hữu những đặc điểm kỹ thuật ưu việt:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    \n      <li><strong>Chất lượng kiểm định nghiêm ngặt:</strong> 100% tài khoản và dịch vụ được kiểm tra tính khả dụng trước khi xuất kho cho khách hàng.</li>\n      <li><strong>Tự động hóa giao hàng 24/7:</strong> Hệ thống xử lý đơn hàng tức thì trong 3 giây ngay sau khi thanh toán thành công, không cần chờ đợi thủ công.</li>\n      <li><strong>Bảo mật &amp; Độc quyền:</strong> Thông tin bàn giao là duy nhất, không bán trùng lặp cho bên thứ ba, bảo đảm quyền riêng tư tuyệt đối cho khách hàng.</li>\n      <li><strong>Tiết kiệm chi phí tối đa:</strong> Mức giá cạnh tranh hàng đầu thị trường, tối ưu hóa ngân sách vận hành cho cá nhân và đội ngũ MMO chuyên nghiệp.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    2. Tại Sao Nên Mua nâng cấp canva edu 1 năm Tại Muabantaikhoanmmo.com?\n  </h2>\n  <p>Với nhiều năm kinh nghiệm phục vụ hàng chục ngàn khách hàng cá nhân và doanh nghiệp trong cộng đồng MMO, chúng tôi hiểu rõ những rủi ro mà bạn thường gặp phải. Khi lựa chọn dịch vụ của chúng tôi, bạn sẽ nhận được những giá trị cam kết vững chắc:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Hệ thống giao hàng tức thì (Instant Delivery):</strong> Mọi đơn hàng đều được API xử lý tự động trong 03 giây, nhận thông tin ngay trên website và qua email.</li>\n    <li><strong>Nguồn hàng sạch 100%:</strong> Tài nguyên được tạo và nuôi dưỡng bằng địa chỉ IP chuẩn, không bị dính blacklist của các nền tảng lớn.</li>\n    <li><strong>Giá sỉ tận gốc:</strong> Cung cấp bảng giá ưu đãi đặc biệt cho anh em làm dịch vụ, chạy số lượng lớn, đội ngũ agency hoặc mua định kỳ.</li>\n    <li><strong>Bảo mật thông tin khách hàng:</strong> Toàn bộ dữ liệu giao dịch và thông tin cá nhân đều được mã hóa theo chuẩn an ninh cấp cao.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    3. Ứng Dụng Thực Tế &amp; Đối Tượng Khuyên Dùng\n  </h2>\n  <p>Sản phẩm <strong>NÂNG CẤP CANVA EDU 1 NĂM</strong> là trợ thủ đắc lực đáp ứng đa dạng mục đích sử dụng trong thực tế:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Anh em chạy quảng cáo (Ads Runner):</strong> Dùng làm tài khoản chạy Ads, cắn tiền mượt mà, hạn chế tối đa tình trạng vô hiệu hóa tài khoản bất thường.</li>\n    <li><strong>Nuôi dàn tài khoản số lượng lớn (Phone Farm / Antidetect):</strong> Tương thích hoàn hảo với các phần mềm nuôi nick, seeding bài viết, kéo tương tác tự động.</li>\n    <li><strong>Làm Affiliate Marketing &amp; Xây Kênh:</strong> Tiếp cận tệp khách hàng tiềm năng, đăng tải nội dung sáng tạo và thúc đẩy doanh số bán hàng vượt bậc.</li>\n    <li><strong>Đăng ký dịch vụ trực tuyến:</strong> Nhận mã xác minh OTP, liên kết tài khoản ngân hàng, ví điện tử hoặc các cổng thanh toán quốc tế một cách thuận tiện.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    4. Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn Chuẩn MMO\n  </h2>\n  <p>Để đảm bảo tài khoản đạt độ bền cao nhất và tránh bị hệ thống an ninh quét checkpoint thiết bị lạ, quý khách vui lòng tuân thủ quy trình khuyến nghị dưới đây:</p>\n  <div style=\"background: rgba(15,23,42,0.6); border-left: 4px solid #38bdf8; padding: 12px 16px; border-radius: 4px; margin-bottom: 15px;\">\n    \n      <ol>\n        <li><strong>Kiểm tra tài khoản ngay sau khi nhận:</strong> Đăng nhập và đối soát thông tin tài khoản theo hướng dẫn đính kèm đơn hàng.</li>\n        <li><strong>Bảo mật thông tin:</strong> Tiến hành đổi mật khẩu và kích hoạt các lớp bảo vệ sau khi hoàn thành thời gian ngâm thiết bị ban đầu.</li>\n        <li><strong>Liên hệ hỗ trợ khi cần:</strong> Nếu gặp bất kỳ sự cố nào, gửi tin nhắn ngay cho bộ phận CSKH để được giải quyết nhanh nhất.</li>\n      </ol>\n  </div>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    5. Chính Sách Bảo Hành &amp; Hỗ Trợ Kỹ Thuật 24/7\n  </h2>\n  <p>Sự hài lòng của khách hàng là kim chỉ nam cho sự phát triển của chúng tôi. Chúng tôi cam kết chính sách bảo hành minh bạch và rõ ràng:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Bảo hành 1 đổi 1:</strong> Đổi mới ngay lập tức cho các trường hợp tài khoản bị sai mật khẩu, dính checkpoint trước khi mua, hoặc lỗi kỹ thuật từ hệ thống.</li>\n    <li><strong>Hỗ trợ kỹ thuật tận tâm:</strong> Đội ngũ admin trực chiến 24/7 qua Zalo, Telegram, sẵn sàng hỗ trợ giải đáp và xử lý mọi vấn đề phát sinh trong suốt quá trình sử dụng.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    6. Câu Hỏi Thường Gặp (FAQ)\n  </h2>\n  \n      <h3>Hệ thống giao hàng bằng cách nào và mất bao lâu?</h3>\n      <p>Sau khi bạn hoàn tất thanh toán, hệ thống sẽ tự động hiển thị thông tin sản phẩm trên màn hình và gửi một bản sao chi tiết vào địa chỉ email của bạn trong vòng 3 giây.</p>\n      <h3>Chính sách hoàn tiền hoặc đổi trả được áp dụng ra sao?</h3>\n      <p>Shop cam kết 1 đổi 1 ngay lập tức hoặc hoàn tiền nếu sản phẩm phát sinh lỗi từ phía nhà cung cấp trong thời gian bảo hành quy định.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    7. Kết Luận\n  </h2>\n  <p>Sở hữu <strong>NÂNG CẤP CANVA EDU 1 NĂM</strong> chất lượng cao chính là chìa khóa giúp bạn tiết kiệm hàng chục giờ công sức, giảm thiểu rủi ro bị khóa tài khoản và bứt phá doanh thu trong công việc MMO của mình. Đừng để những tài khoản kém chất lượng làm gián đoạn kế hoạch kinh doanh của bạn!</p>\n  <p style=\"text-align: center; margin-top: 20px;\">\n    <strong style=\"color: #38bdf8; font-size: 1.1rem;\">👉 ĐẶT MUA NGAY HÔM NAY ĐỂ NHẬN ƯU ĐÃI VÀ DỊCH VỤ BẢO HÀNH TỐT NHẤT TẠI MUABANTAIKHOANMMO.COM! 👈</strong>\n  </p>\n</div>",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU9YH8D9FK/image?v=1792464459622",
+    "image_url": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU9YH8D9FK/image?v=1792464459622",
+    "imageUrl": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU9YH8D9FK/image?v=1792464459622",
+    "price": 40000,
+    "warranty": "30 Ngày",
+    "variants": [
+      {
+        "name": "CANVA EDU 1 NĂM",
+        "price": 40000,
+        "stock": 99999,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "baseUrl": "https://ultrammo.com",
+          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "sourceProdId": "26818",
+          "sourceProdName": "[Cavana] #26818 Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ - 13.000 đ (Tồn: 99.999)",
+          "sourcePrice": 13000,
+          "sourceStock": 99999,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MU9YH8D9FK",
+          "targetProdName": "NÂNG CẤP CANVA EDU 1 NĂM"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "baseUrl": "https://ultrammo.com",
+      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "sourceProdId": "26818",
+      "sourceProdName": "[Cavana] #26818 Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ - 13.000 đ (Tồn: 99.999)",
+      "sourcePrice": 13000,
+      "sourceStock": 99999,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MU9YH8D9FK",
+      "targetProdName": "NÂNG CẤP CANVA EDU 1 NĂM"
+    },
+    "stock": 99999,
+    "buffSold": 513,
+    "sold": 513,
+    "available": true
+  },
+  {
+    "id": "PROD_MU5PWT7PP7",
+    "name": "TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ",
+    "slug": "prod-mu5pwt7pp7",
+    "category": "AI & Video",
+    "description": "❌ Không bảo hành lỗi busy\n✔️ Bảo hành thiếu credit trong 6h kể từ lúc mua hàng\n🚫 Lưu ý quan trọng: Mua đủ dùng, không dự trữ, 🚫 Tài khoản có thể sẽ mất credit sau vài tiếng \nTẠO VIDEO AI ĐỈNH CAO VỚI TÀI KHOẢN KLING AI 65 CREDIT GIÁ SIÊU HỜI!\nBạn đang tìm kiếm một công cụ tạo video AI chân thực, uy tín và vượt trội để phục vụ cho công việc sáng tạo nội dung, làm phim ngắn, TikTok hay Youtube Shorts? Đừng bỏ lỡ siêu phẩm Kling AI – trợ thủ đắc lực đang làm mưa làm gió trong cộng đồng AI Creator!\n\n✨ Tại sao nên chọn Kling AI?\nChuyển đổi Text-to-Video đỉnh cao: Biến mọi câu lệnh văn bản (Prompt) của bạn thành những thước phim sống động, chuyển động mượt mà và chi tiết đến kinh ngạc.\n\nImage-to-Video siêu thực: Biến các bức ảnh tĩnh thành video chuyển động 3D, nghệ thuật hoặc điện ảnh chỉ trong một nốt nhạc.\n\nĐộ phân giải và chất lư���ng cao: Khung hình sắc nét, ánh sáng và vật lý chân thực không thua kém các studio chuyên nghiệp.\n\n🎁 Ưu đãi gói 65 Credit tại shop:\n💰 Giá cực kỳ tiết kiệm: Phù hợp cho cả người mới bắt đầu trải nghiệm hoặc làm các dự án nhỏ.\n\n🔄 Tài khoản ổn định, bảo hành uy tín: Đăng nhập và sử dụng ngay, hỗ trợ tận tình trong suốt quá trình dùng.\n\n🚀 Bàn giao nhanh chóng: Nhận tài khoản ngay sau khi thanh toán.\n\n💡 Mẹo nhỏ: Với 65 Credit, bạn có thể thoải mái thử nghiệm hàng loạt câu lệnh sáng tạo ra những video độc quyền cho riêng mình mà không lo tốn nhiều chi phí đầu tư ban đầu!\n\n🛒 Mua ngay kẻo lỡ!\nSố lượng tài khoản ưu đãi có hạn. Inbox ngay cho shop để sở hữu chìa khóa sáng tạo nội dung triệu view ngay hôm nay!",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5PWT7PP7_T%C3%80I_KHO%E1%BA%A2N_KLING_AI_65_CREDIT.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5PWT7PP7_T%C3%80I_KHO%E1%BA%A2N_KLING_AI_65_CREDIT.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5PWT7PP7_T%C3%80I_KHO%E1%BA%A2N_KLING_AI_65_CREDIT.png",
+    "price": 2500,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "KLING - AI 65 CREDIT",
+        "price": 2500,
+        "stock": 108,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "baseUrl": "https://ultrammo.com",
+          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "sourceProdId": "13629",
+          "sourceProdName": "[Kling AI] #13629 TÀI KHOẢN KLING AI 65 CREDIT - 1.200 đ (Tồn: 108)",
+          "sourcePrice": 1200,
+          "sourceStock": 108,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MU5PWT7PP7",
+          "targetProdName": "TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "baseUrl": "https://ultrammo.com",
+      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "sourceProdId": "13629",
+      "sourceProdName": "[Kling AI] #13629 TÀI KHOẢN KLING AI 65 CREDIT - 1.200 đ (Tồn: 108)",
+      "sourcePrice": 1200,
+      "sourceStock": 108,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MU5PWT7PP7",
+      "targetProdName": "TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ"
+    },
+    "stock": 108,
+    "buffSold": 1989,
+    "sold": 1989,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2YQ1J3PY",
+    "name": "Outlook Hotmail Trusted - OAuth2 Live 6-",
+    "slug": "prod-mu2yq1j3py",
+    "category": "Hotmail / Outlook",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2YQ1J3PY_Outlook_Hotmail_Trusted_-_OAuth2_Live_6-.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2YQ1J3PY_Outlook_Hotmail_Trusted_-_OAuth2_Live_6-.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2YQ1J3PY_Outlook_Hotmail_Trusted_-_OAuth2_Live_6-.png",
+    "price": 500,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Outlook Hotmail Trusted",
+        "price": 500,
+        "stock": 16126,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "baseUrl": "https://ultrammo.com",
+          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "sourceProdId": "26955",
+          "sourceProdName": "[Hotmail new - Trust] #26955 Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API) - 117 đ (Tồn: 16.126)",
+          "sourcePrice": 117,
+          "sourceStock": 16126,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MU2YQ1J3PY",
+          "targetProdName": "Outlook Hotmail Trusted - OAuth2 Live 6-12 tháng"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "26955",
+      "sourcePrice": 117,
+      "sourceStock": 16089,
+      "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 16126,
+    "buffSold": 2609,
+    "sold": 2609,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2PA8VNDP",
+    "name": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP",
+    "slug": "prod-mu2pa8vndp",
+    "category": "Intagram",
+    "description": "INSTAGRAM ĐÃ QUA S�� DỤNG - RANDOM IP - NAME RANDOM",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2PA8VNDP_INSTAGRAM_%C4%90%C3%83_QUA_S%E1%BB%AC_D%E1%BB%A4NG_-_RANDOM_IP.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2PA8VNDP_INSTAGRAM_%C4%90%C3%83_QUA_S%E1%BB%AC_D%E1%BB%A4NG_-_RANDOM_IP.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2PA8VNDP_INSTAGRAM_%C4%90%C3%83_QUA_S%E1%BB%AC_D%E1%BB%A4NG_-_RANDOM_IP.png",
+    "price": 6000,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "IG ĐÃ QUA SỬ DỤNG",
+        "price": 6000,
+        "stock": 2857,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "nguyenlieummo",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+          "sourceProdId": "128981",
+          "sourceProdName": "[ID #128981] ig qua sử dụng nofa",
+          "sourcePrice": 2846,
+          "sourceStock": 2857,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MU2PA8VNDP",
+          "targetProdName": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "nguyenlieummo",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+      "sourceProdId": "128981",
+      "sourceProdName": "[ID #128981] ig qua sử dụng nofa",
+      "sourcePrice": 2846,
+      "sourceStock": 2857,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MU2PA8VNDP",
+      "targetProdName": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP"
+    },
+    "stock": 2857,
+    "buffSold": 928,
+    "sold": 928,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2OXBZC6K",
+    "name": "ChatGPT Free đã ver phone Code",
+    "slug": "prod-mu2oxbzc6k",
+    "category": "Chatgpt",
+    "description": "<div class=\"mmo-seo-article\" style=\"line-height: 1.8; color: #cbd5e1; font-size: 15px;\">\n  <p>Bạn đang tìm kiếm địa chỉ mua <strong>ChatGPT Free đã ver phone Code</strong> uy tín, chất lượng cao với giá thành cạnh tranh nhất thị trường? Bạn cần nguồn cung cấp ổn định, tài khoản có độ <em>trust</em> cao, kháng quét mạnh mẽ để phục vụ cho các chiến dịch kinh doanh, chạy quảng cáo, nuôi nick tự động hóa hoặc mở rộng quy mô kiếm tiền online (MMO)?</p>\n\n  <p>Chào mừng bạn đến với <strong>Muabantaikhoanmmo.com</strong> – Hệ sinh thái cung ứng tài nguyên số và tài khoản MMO hàng đầu Việt Nam. Với dịch vụ cung cấp <strong>ChatGPT Free đã ver phone Code</strong>, chúng tôi tự tin mang đến cho bạn giải pháp an toàn, hiệu quả vượt trội giúp tối ưu hóa 100% hiệu suất công việc của bạn.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    1. Giới Thiệu Chi Tiết Về ChatGPT Free đã ver phone Code\n  </h2>\n  <p>Trong kỷ nguyên marketing số và tự động hóa ngày nay, việc sở hữu những tài khoản chất lượng, được nuôi dưỡng trên môi trường sạch là yếu tố quyết định tới hơn 80% sự thành công của bất kỳ chiến dịch MMO nào. Sản phẩm <strong>ChatGPT Free đã ver phone Code</strong> tại shop chúng tôi được tuyển chọn và sàng lọc qua quy trình kỹ thuật nghiêm ngặt nhằm mang lại trải nghiệm mượt mà nhất cho người dùng.</p>\n\n  <p>Khác biệt hoàn toàn so với các loại tài khoản giá rẻ trôi nổi, kém chất lượng trên mạng vốn thường bị khóa ngay sau vài giờ đăng nhập, <strong>ChatGPT Free đã ver phone Code</strong> tại shop sở hữu những đặc điểm kỹ thuật ưu việt:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    \n      <li><strong>Chất lượng kiểm định nghiêm ngặt:</strong> 100% tài khoản và dịch vụ được kiểm tra tính khả dụng trước khi xuất kho cho khách hàng.</li>\n      <li><strong>Tự động hóa giao hàng 24/7:</strong> Hệ thống xử lý đơn hàng tức thì trong 3 giây ngay sau khi thanh toán thành công, không cần chờ đợi thủ công.</li>\n      <li><strong>Bảo mật &amp; Độc quyền:</strong> Thông tin bàn giao là duy nhất, không bán trùng lặp cho bên thứ ba, bảo đảm quyền riêng tư tuyệt đối cho khách hàng.</li>\n      <li><strong>Tiết kiệm chi phí tối đa:</strong> Mức giá cạnh tranh hàng đầu thị trường, tối ưu hóa ngân sách vận hành cho cá nhân và đội ngũ MMO chuyên nghiệp.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    2. Tại Sao Nên Mua chatgpt free đã ver phone codex Tại Muabantaikhoanmmo.com?\n  </h2>\n  <p>Với nhiều năm kinh nghiệm phục vụ hàng chục ngàn khách hàng cá nhân và doanh nghiệp trong cộng đồng MMO, chúng tôi hiểu rõ những rủi ro mà bạn thường gặp phải. Khi lựa chọn dịch vụ của chúng tôi, bạn sẽ nhận được những giá trị cam kết vững chắc:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Hệ thống giao hàng tức thì (Instant Delivery):</strong> Mọi đơn hàng đều được API xử lý tự động trong 03 giây, nhận thông tin ngay trên website và qua email.</li>\n    <li><strong>Nguồn hàng sạch 100%:</strong> Tài nguyên được tạo và nuôi dưỡng bằng địa chỉ IP chuẩn, không bị dính blacklist của các nền tảng lớn.</li>\n    <li><strong>Giá sỉ tận gốc:</strong> Cung cấp bảng giá ưu đãi đặc biệt cho anh em làm dịch vụ, chạy số lượng lớn, đội ngũ agency hoặc mua định kỳ.</li>\n    <li><strong>Bảo mật thông tin khách hàng:</strong> Toàn bộ dữ liệu giao dịch và thông tin cá nhân đều được mã hóa theo chuẩn an ninh cấp cao.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    3. Ứng Dụng Thực Tế &amp; Đối Tượng Khuyên Dùng\n  </h2>\n  <p>Sản phẩm <strong>ChatGPT Free đã ver phone Code</strong> là trợ thủ đắc lực đáp ứng đa dạng mục đích sử dụng trong thực tế:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Anh em chạy quảng cáo (Ads Runner):</strong> Dùng làm tài khoản chạy Ads, cắn tiền mượt mà, hạn chế tối đa tình trạng vô hiệu hóa tài khoản bất thường.</li>\n    <li><strong>Nuôi dàn tài khoản số lượng lớn (Phone Farm / Antidetect):</strong> Tương thích hoàn hảo với các phần mềm nuôi nick, seeding bài viết, kéo tương tác tự động.</li>\n    <li><strong>Làm Affiliate Marketing &amp; Xây Kênh:</strong> Tiếp cận tệp khách hàng tiềm năng, đăng tải nội dung sáng tạo và thúc đẩy doanh số bán hàng vượt bậc.</li>\n    <li><strong>Đăng ký dịch vụ trực tuyến:</strong> Nhận mã xác minh OTP, liên kết tài khoản ngân hàng, ví điện tử hoặc các cổng thanh toán quốc tế một cách thuận tiện.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    4. Hướng Dẫn Sử Dụng &amp; Đăng Nhập An Toàn Chuẩn MMO\n  </h2>\n  <p>Để đảm bảo tài khoản đạt độ bền cao nhất và tránh bị hệ thống an ninh quét checkpoint thiết bị lạ, quý khách vui lòng tuân thủ quy trình khuyến nghị dưới đây:</p>\n  <div style=\"background: rgba(15,23,42,0.6); border-left: 4px solid #38bdf8; padding: 12px 16px; border-radius: 4px; margin-bottom: 15px;\">\n    \n      <ol>\n        <li><strong>Kiểm tra tài khoản ngay sau khi nhận:</strong> Đăng nhập và đối soát thông tin tài khoản theo hướng dẫn đính kèm đơn hàng.</li>\n        <li><strong>Bảo mật thông tin:</strong> Tiến hành đổi mật khẩu và kích hoạt các lớp bảo vệ sau khi hoàn thành thời gian ngâm thiết bị ban đầu.</li>\n        <li><strong>Liên hệ hỗ trợ khi cần:</strong> Nếu gặp bất kỳ sự cố nào, gửi tin nhắn ngay cho bộ phận CSKH để được giải quyết nhanh nhất.</li>\n      </ol>\n  </div>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    5. Chính Sách Bảo Hành &amp; Hỗ Trợ Kỹ Thuật 24/7\n  </h2>\n  <p>Sự hài lòng của khách hàng là kim chỉ nam cho sự phát triển của chúng tôi. Chúng tôi cam kết chính sách bảo hành minh bạch và rõ ràng:</p>\n  <ul style=\"padding-left: 20px; margin-bottom: 15px;\">\n    <li><strong>Bảo hành 1 đổi 1:</strong> Đổi mới ngay lập tức cho các trường hợp tài khoản bị sai mật khẩu, dính checkpoint trước khi mua, hoặc lỗi kỹ thuật từ hệ thống.</li>\n    <li><strong>Hỗ trợ kỹ thuật tận tâm:</strong> Đội ngũ admin trực chiến 24/7 qua Zalo, Telegram, sẵn sàng hỗ trợ giải đáp và xử lý mọi vấn đề phát sinh trong suốt quá trình sử dụng.</li>\n  </ul>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    6. Câu Hỏi Thường Gặp (FAQ)\n  </h2>\n  \n      <h3>Hệ thống giao hàng bằng cách nào và mất bao lâu?</h3>\n      <p>Sau khi bạn hoàn tất thanh toán, hệ thống sẽ tự động hiển thị thông tin sản phẩm trên màn hình và gửi một bản sao chi tiết vào địa chỉ email của bạn trong vòng 3 giây.</p>\n      <h3>Chính sách hoàn tiền hoặc đổi trả được áp dụng ra sao?</h3>\n      <p>Shop cam kết 1 đổi 1 ngay lập tức hoặc hoàn tiền nếu sản phẩm phát sinh lỗi từ phía nhà cung cấp trong thời gian bảo hành quy định.</p>\n\n  <h2 style=\"color: #38bdf8; font-size: 1.35rem; margin-top: 25px; margin-bottom: 12px; border-bottom: 1px solid rgba(56,189,248,0.25); padding-bottom: 6px;\">\n    7. Kết Luận\n  </h2>\n  <p>Sở hữu <strong>ChatGPT Free đã ver phone Code</strong> chất lượng cao chính là chìa khóa giúp bạn tiết kiệm hàng chục giờ công sức, giảm thiểu rủi ro bị khóa tài khoản và bứt phá doanh thu trong công việc MMO của mình. Đừng để những tài khoản kém chất lượng làm gián đoạn kế hoạch kinh doanh của bạn!</p>\n  <p style=\"text-align: center; margin-top: 20px;\">\n    <strong style=\"color: #38bdf8; font-size: 1.1rem;\">👉 ĐẶT MUA NGAY HÔM NAY ĐỂ NHẬN ƯU ĐÃI VÀ DỊCH VỤ BẢO HÀNH TỐT NHẤT TẠI MUABANTAIKHOANMMO.COM! 👈</strong>\n  </p>\n</div>",
+    "image": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2OXBZC6K/image?v=1792465019925",
+    "image_url": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2OXBZC6K/image?v=1792465019925",
+    "imageUrl": "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/products/PROD_MU2OXBZC6K/image?v=1792465019925",
+    "price": 25000,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "chat GPT  free trial",
+        "price": 25000,
+        "stock": 48,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "selltainguyenmmo",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+          "sourceProdId": "31699",
+          "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
+          "sourcePrice": 16000,
+          "sourceStock": 48,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MU2OXBZC6K",
+          "targetProdName": "ChatGPT Free đã ver phone Code"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "selltainguyenmmo",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+      "sourceProdId": "31699",
+      "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
+      "sourcePrice": 16000,
+      "sourceStock": 48,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MU2OXBZC6K",
+      "targetProdName": "ChatGPT Free đã ver phone Code"
+    },
+    "stock": 48,
+    "buffSold": 326,
+    "sold": 326,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2JIBBRH8",
+    "name": "Tiktok việt reg trên 4 tháng",
+    "slug": "prod-mu2jibbrh8",
+    "category": "TikTok",
+    "description": "Tiktok việt reg trên 4 tháng",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2JIBBRH8_Tiktok_vi%E1%BB%87t_reg_tr%C3%AAn_4_th%C3%A1ng.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2JIBBRH8_Tiktok_vi%E1%BB%87t_reg_tr%C3%AAn_4_th%C3%A1ng.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2JIBBRH8_Tiktok_vi%E1%BB%87t_reg_tr%C3%AAn_4_th%C3%A1ng.png",
+    "price": 5000,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "tiktok việt reg trên 4 tháng",
+        "price": 5000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "Tik Tok việt trên 1 năm",
+        "price": 8000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 0,
+    "buffSold": 0,
+    "sold": 0,
+    "available": false
+  },
+  {
+    "id": "PROD_MU2IXVFLMW",
+    "name": "Tiktok Việt mở giỏ < 1KFL - Tiktok việt - làm affiliate",
+    "slug": "prod-mu2ixvflmw",
+    "category": "TikTok",
+    "description": "Tiktok Việt mở giỏ < 1KFL - Tiktok việt làm affiliate",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2IXVFLMW_Tiktok_Vi%E1%BB%87t_m%E1%BB%9F_gi%E1%BB%8F___1KFL_-_Tiktok_vi%E1%BB%87t_.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2IXVFLMW_Tiktok_Vi%E1%BB%87t_m%E1%BB%9F_gi%E1%BB%8F___1KFL_-_Tiktok_vi%E1%BB%87t_.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2IXVFLMW_Tiktok_Vi%E1%BB%87t_m%E1%BB%9F_gi%E1%BB%8F___1KFL_-_Tiktok_vi%E1%BB%87t_.png",
+    "price": 300000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "tiktok trên 1k folow",
+        "price": 300000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "tiktok trên 3 k folow",
+        "price": 350000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "tiktok trên 5k folow",
+        "price": 400000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "tiktok trên 10k folow",
+        "price": 800000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 0,
+    "buffSold": 0,
+    "sold": 0,
+    "available": false
+  },
+  {
+    "id": "PROD_MU2CZL38PH",
+    "name": "TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2",
+    "slug": "prod-mu2czl38ph",
+    "category": "TikTok",
+    "description": "vui lòng mở lại mail để lấy code đăng nhập Định dạng username|passtiktok|email|password|refresh_token|",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2CZL38PH_TIKTOK_PH%C3%81P_Mail_Live_Trust_%C4%90%E1%BB%8Dc_Code_Qua.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2CZL38PH_TIKTOK_PH%C3%81P_Mail_Live_Trust_%C4%90%E1%BB%8Dc_Code_Qua.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2CZL38PH_TIKTOK_PH%C3%81P_Mail_Live_Trust_%C4%90%E1%BB%8Dc_Code_Qua.png",
+    "price": 8000,
+    "warranty": "BH Đăng Nhập",
+    "variants": [
+      {
+        "name": "Tiktok Pháp live",
+        "price": 8000,
+        "stock": 7,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "selltainguyenmmo",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+          "sourceProdId": "22454",
+          "sourceProdName": "[TIKTOK NGOẠI (BETA)] #22454 TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1 - 3.000 đ (Tồn: 7)",
+          "sourcePrice": 3000,
+          "sourceStock": 7,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MU2CZL38PH",
+          "targetProdName": "TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "selltainguyenmmo",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+      "sourceProdId": "22454",
+      "sourceProdName": "[TIKTOK NGOẠI (BETA)] #22454 TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1 - 3.000 đ (Tồn: 7)",
+      "sourcePrice": 3000,
+      "sourceStock": 7,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MU2CZL38PH",
+      "targetProdName": "TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2"
+    },
+    "stock": 7,
+    "buffSold": 1234,
+    "sold": 1234,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2BIFBBNE",
+    "name": "Key HMA Androi/pc Hạn 20 -30 Ngày, 5 Thiết Bị",
+    "slug": "prod-mu2bifbbne",
+    "category": "VPN Proxy",
+    "description": "Bạn đang cần nguồn VPN chất lượng cao, tốc độ ổn định để đổi IP sang hàng trăm quốc gia, vượt rào kiểm duyệt, bảo mật toàn diện hoặc chạy các tác vụ MMO trên cả máy tính và điện thoại nhưng không muốn mua gói năm đắt đỏ?\n\nKey HMA (HideMyAss) VPN gói 20 - 30 ngày (Dùng cùng lúc 5 thiết bị) tại shop chính là giải pháp tiết kiệm và hiệu quả tối ưu dành cho bạn!\n\n💎 Điểm vượt trội của Key HMA VPN:\n🌐 Kho server khủng toàn cầu: Kết nối mượt mà tới hàng nghìn máy chủ tại hơn 200 quốc gia và vùng lãnh thổ trên thế giới, dễ dàng fake IP sang bất kỳ quốc gia nào bạn muốn.\n\n💻📱 Dùng cùng lúc 5 thiết bị: 1 Key có thể đăng nhập và bảo vệ đồng thời trên 5 thiết bị (PC, Laptop, Android, iOS...), cực kỳ tiện lợi cho anh em làm việc nhiều máy hoặc chia sẻ cùng bạn bè.\n\n🚀 Tốc độ cao, ổn định: Tối ưu hóa cho việc xem phim 4K, chơi game quốc tế, tải file nặng hoặc chạy các tool MMO không lo giật lag hay rớt kết nối.\n\n🔒 Ẩn danh tuyệt đối: Mã hóa toàn bộ lưu lượng truy cập, ẩn địa chỉ IP thực, bảo vệ thông tin cá nhân an toàn trước mọi mối đe dọa mạng.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành Full thời gian sử dụng key trong suốt hạn 20 - 30 ngày.\n\n⚡ Cấp phát siêu tốc ngay sau khi thanh toán, nhận key kích hoạt dùng ngay lập tức.\n\n💬 Hỗ trợ kỹ thuật 24/7, hướng dẫn cài đặt chi tiết trên cả PC và điện thoại.\n\n💡 Phù hợp cho: Dân MMO cần đổi IP sạch liên tục, anh em làm việc với hệ thống quốc tế, game thủ hoặc bất kỳ ai cần giải pháp VPN uy tín, ngắn hạn với chi phí siêu hời!",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2BIFBBNE_Key_HMA_Androi_pc_H%E1%BA%A1n_20_-30_Ng%C3%A0y__5_Thi.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2BIFBBNE_Key_HMA_Androi_pc_H%E1%BA%A1n_20_-30_Ng%C3%A0y__5_Thi.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2BIFBBNE_Key_HMA_Androi_pc_H%E1%BA%A1n_20_-30_Ng%C3%A0y__5_Thi.png",
+    "price": 25000,
+    "warranty": "Bảo Hành Login Lần Đầu",
+    "variants": [
+      {
+        "name": "Key HMA 25- 30 ngày",
+        "price": 25000,
+        "stock": 50,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "sourceProdId": "16159",
+          "sourcePrice": 8500,
+          "sourceStock": 50,
+          "sourceProdName": "[Key HMA VPN] #16159 Key HMA Android/PC 20-30 Ngày ( Bảo Hành Full ) - 8.500 đ (Tồn: 50)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "sourceProdId": "16159",
+      "sourcePrice": 8500,
+      "sourceStock": 50,
+      "sourceProdName": "[Key HMA VPN] #16159 Key HMA Android/PC 20-30 Ngày ( Bảo Hành Full ) - 8.500 đ (Tồn: 50)",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
+    },
+    "stock": 50,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2B32VLQY",
+    "name": "Capcut pro Cá Nhân 7 ngày - Dùng Riêng",
+    "slug": "prod-mu2b32vlqy",
+    "category": "Capcut",
+    "description": "Bạn đang cần gấp các hiệu ứng Pro, bộ lọc màu điện ảnh hay công cụ AI thông minh để hoàn thành video ngắn (TikTok, Reels, YouTube Shorts) nhưng chưa muốn mua gói dài hạn đắt đỏ? Gói Capcut Pro Cá Nhân 7 Ngày tại shop chính là lựa chọn nhanh - gọn - tiết kiệm nhất cho bạn!\n\n✨ Điểm nổi bật của gói:\n👤 Tài khoản cá nhân riêng biệt: Sử dụng độc lập, bảo mật tuyệt đối, không lo bị tranh chấp hay gián đoạn giữa chừng.\n\n🔓 Mở khóa toàn bộ tính năng Pro: Trải nghiệm trọn vẹn kho hiệu ứng chuyển cảnh, công cụ tự động, tách nền mượt mà và các công cụ AI cao cấp.\n\n⏱️ Tiết kiệm chi phí tối đa: Phù hợp cho anh em có nhu cầu làm video gấp trong tuần hoặc muốn trải nghiệm thử trước khi nâng cấp dài hạn.\n\n🛠️ Cam kết dịch vụ:\n🛡️ Bảo hành Full 1 đổi 1 trong suốt 7 ngày sử dụng.\n\n🚀 Bàn giao siêu tốc ngay sau khi thanh toán, đăng nhập và dùng ngay trên cả Điện thoại lẫn PC.",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2B32VLQY_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y_-_D%C3%B9ng_Ri%C3%AAng.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2B32VLQY_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y_-_D%C3%B9ng_Ri%C3%AAng.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2B32VLQY_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y_-_D%C3%B9ng_Ri%C3%AAng.jpg",
+    "price": 828000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "capcut pro 7 ngày",
+        "price": 828000,
+        "stock": 4,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "baseUrl": "https://ultrammo.com",
+          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "sourceProdId": "32026",
+          "sourceProdName": "Capcut Pro 7Day | Riêng Tư [ BHF ]",
+          "sourcePrice": 18000,
+          "sourceStock": 36,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MU2B32VLQY",
+          "targetProdName": "Capcut pro Cá Nhân 7 ngày - Dùng Riêng"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "ultrammo",
+      "baseUrl": "https://ultrammo.com",
+      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+      "sourceProdId": "32026",
+      "sourceProdName": "Capcut Pro 7Day | Riêng Tư [ BHF ]",
+      "sourcePrice": 18000,
+      "sourceStock": 36,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MU2B32VLQY",
+      "targetProdName": "Capcut pro Cá Nhân 7 ngày - Dùng Riêng"
+    },
+    "stock": 4,
+    "buffSold": 225,
+    "sold": 225,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2ASBNSJT",
+    "name": "Facebook Via Việt  ACC SPAM - SEEDING - ĐÃ NGÂM LÂU",
+    "slug": "prod-mu2asbnsjt",
+    "category": "Facebook",
+    "description": "Via Việt 2014 - 2019  ACC CỔ - ACC SPAM - SEEDING",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png",
+    "price": 25000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "facebook",
+        "price": 25000,
+        "stock": 17509,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "vuavia",
+          "baseUrl": "https://api.vuavia.io",
+          "apiKey": "",
+          "sourceProdId": "1977",
+          "sourceProdName": "[Clone] #1977 Clone Facebook Đăng Ký Ngẫu Nhiên - Đổi Số Điện Thoại - Gmail Không 2FA - 15.000 đ (Tồn: 17.509)",
+          "sourcePrice": 15000,
+          "sourceStock": 17509,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MU2ASBNSJT",
+          "targetProdName": "Facebook Via Việt  ACC SPAM - SEEDING - ĐÃ NGÂM LÂU"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "vuavia",
+      "baseUrl": "https://api.vuavia.io",
+      "apiKey": "",
+      "sourceProdId": "1977",
+      "sourceProdName": "[Clone] #1977 Clone Facebook Đăng Ký Ngẫu Nhiên - Đổi Số Điện Thoại - Gmail Không 2FA - 15.000 đ (Tồn: 17.509)",
+      "sourcePrice": 15000,
+      "sourceStock": 17509,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MU2ASBNSJT",
+      "targetProdName": "Facebook Via Việt  ACC SPAM - SEEDING - ĐÃ NGÂM LÂU"
+    },
+    "stock": 17509,
+    "buffSold": 1256,
+    "sold": 1256,
+    "available": true
+  },
+  {
+    "id": "PROD_MU2A2S732Y",
+    "name": "Express VPN 2-3 ngày giá rẻ",
+    "slug": "prod-mu2a2s732y",
+    "category": "VPN Proxy",
+    "description": "ExpressVPN gói 2-3 ngày giá rẻ, thiết kế ngắn gọn, tập trung vào tốc độ đỉnh cao và chi phí siêu hạt dẻ cho anh em cần dùng gấp trong thời gian ngắn:\n\n⚡ EXPRESSVPN Gói 2-3 Ngày (Giá Rẻ) – Tốc Độ Thần Sốc, Đổi IP Cực Mạnh Cho Mọi Tác Vụ Gấp!\nBạn đang cần gấp nguồn VPN cao cấp nhất thị trường (ExpressVPN) để chạy các tác vụ ngắn hạn, test tool, verify dịch vụ, vượt rào kiểm duyệt hay đổi IP sang các quốc gia lớn với tốc độ mượt mà nhất mà không muốn tốn tiền mua gói tháng đắt đỏ?\n\nGói ExpressVPN 2-3 ngày giá rẻ tại shop chính là giải pháp \"chữaáy\" nhanh gọn, tiết kiệm và hiệu quả tối đa dành cho bạn!\n\n🚀 Điểm vượt trội của ExpressVPN:\n⚡ Tốc độ đỉnh cao số 1: Tốc độ kết nối và truyền tải dữ liệu cực nhanh, không lo giật lag, tối ưu hoàn hảo cho việc xem video 4K, chơi game quốc tế hay chạy các tool MMO nặng.\n\n🌍 Server toàn cầu siêu rộng: Dễ dàng fake IP sang hàng nghìn máy chủ tại hơn 90 quốc gia với độ ổn định tuyệt đối, không bị quét hay lộ IP thực.\n\n⏱️ Linh hoạt thời gian (2-3 ngày): Phù hợp hoàn hảo cho anh em cần dùng gấp trong vài ngày để xử lý công việc phát sinh, test hệ thống hoặc chạy chiến dịch ngắn hạn.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành toàn bộ thời gian sử dụng (2-3 ngày), dùng mượt mà đến phút cuối cùng.\n\n⚡ Cấp phát siêu tốc ngay sau khi thanh toán, nhận tài khoản đăng nhập dùng ngay trong 1 nốt nhạc.\n\n💬 Hỗ trợ nhiệt tình 24/7, hướng dẫn chi tiết cách kết nối nhanh chóng.\n\n💡 Phù hợp cho: Dân MMO cần ẩn danh gấp, anh em test tool, làm việc với server nước ngoài hoặc cần một dịch vụ VPN cao cấp trong thời gian ngắn với chi phí cực kỳ hời!",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2A2S732Y_Express_VPN_2-3_ng%C3%A0y_gi%C3%A1_r%E1%BA%BB.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2A2S732Y_Express_VPN_2-3_ng%C3%A0y_gi%C3%A1_r%E1%BA%BB.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2A2S732Y_Express_VPN_2-3_ng%C3%A0y_gi%C3%A1_r%E1%BA%BB.png",
+    "price": 20000,
+    "warranty": "Bảo Hành Login",
+    "variants": [
+      {
+        "name": "Express VPN 2 - 3 ngày",
+        "price": 20000,
+        "stock": 39,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "sellmmo",
+          "sourceProdId": "21882",
+          "sourcePrice": 15500,
+          "sourceStock": 39,
+          "sourceProdName": "[VPN Premium] #21882 Express VPN 2-3 ngày 8 thiết bị - 15.500 đ (Tồn: 39)",
+          "baseUrl": "https://sellmmo.vn",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "sellmmo",
+      "sourceProdId": "21882",
+      "sourcePrice": 15500,
+      "sourceStock": 39,
+      "sourceProdName": "[VPN Premium] #21882 Express VPN 2-3 ngày 8 thiết bị - 15.500 đ (Tồn: 39)",
+      "baseUrl": "https://sellmmo.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 39,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU29WM90LZ",
+    "name": "Canva pro 1 tháng -3 tháng -6 tháng",
+    "slug": "prod-mu29wm90lz",
+    "category": "Canva",
+    "description": "Bạn đang tìm kiếm công cụ thiết kế đồ họa chuyên nghiệp để làm slide thuyết trình, thiết kế poster, banner, video ngắn hay hình ảnh quảng cáo nhưng muốn chọn gói thời gian ngắn hạn vừa vặn với nhu cầu?\n\nShop cung cấp đầy đủ các gói Canva Pro linh hoạt (1 Tháng, 3 Tháng, 6 Tháng), đáp ứng trọn vẹn mọi nhu cầu của bạn với chi phí tiết kiệm nhất!\n\n✨ Kho tính năng đỉnh cao mở khóa trọn gói:\n🔓 Kho tài nguyên khổng lồ: Truy cập hàng triệu mẫu thiết kế (Templates) độc quyền, Font chữ cao cấp, hình ảnh, video và hiệu ứng đồ họa không giới hạn.\n\n🤖 Bộ công cụ AI thông minh: Tự động xóa nền, Magic Resize (đổi kích thước ma thuật), biến văn bản thành hình ảnh chỉ trong một nốt nhạc.\n\n💻 Đa nền tảng: Sử dụng mượt mà trên cả Điện thoại (iOS/Android) và Máy tính (Trình duyệt/App).\n\n📊 Bảng giá và lựa chọn gói linh hoạt:\n⏱️ Gói 1 Tháng: Phù hợp để làm project ngắn hạn, chạy chiến dịch gấp hoặc trải nghiệm tính năng Pro.\n\n⏱️ Gói 3 Tháng: Tiết kiệm hơn, vừa đủ cho một học kỳ hoặc quý kinh doanh hiệu quả.\n\n⏱️ Gói 6 Tháng: Lựa chọn tối ưu chi phí nhất cho anh em làm content, Marketer hoặc Designer cần ổn định nửa năm.\n\n🛠️ Cam kết dịch vụ từ shop:\n🛡️ Bảo hành Full 1 đổi 1 trong suốt thời gian sử dụng của gói.\n\n⚡ Nâng cấp siêu tốc chỉ mất vài phút sau khi nhận thông tin.\n\n💬 Hỗ trợ nhiệt tình 24/7, uy tín đặt lên hàng đầu.\n\n💡 Phù hợp cho: Học sinh, sinh viên, giáo viên, nhân viên văn phòng, nhà sáng tạo nội dung hoặc bất kỳ ai cần thiết kế chuyên nghiệp mà không phải mua gói 1 năm dài đắt đỏ!\n\n🛒 CHỌN GÓI NGAY – NÂNG CẤP LIỀN TAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] kèm theo gói bạn muốn chọn (1, 3 hay 6 tháng) để được chốt đơn nhanh nhất!\n\n📞 Hotline / Zalo / Telegram",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29WM90LZ_Canva_pro_1_th%C3%A1ng_-3_th%C3%A1ng_-6_th%C3%A1ng.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29WM90LZ_Canva_pro_1_th%C3%A1ng_-3_th%C3%A1ng_-6_th%C3%A1ng.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29WM90LZ_Canva_pro_1_th%C3%A1ng_-3_th%C3%A1ng_-6_th%C3%A1ng.png",
+    "price": 150000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Canva pro 1 tháng gói cao cấp nhất",
+        "price": 150000,
+        "stock": 79,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "nguyenlieummo",
+          "sourceProdId": "119416",
+          "sourcePrice": 106720,
+          "sourceStock": 79,
+          "sourceProdName": "[Làm Việc] #119416 Canva Pro - CANVA PRO NON - PROFITS GÓI CAO CẤP NHẤT CỦA CANVA 1 THÁNG FULL TÍNH NĂNG AI - 106.720 đ (Tồn: 79)",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "nguyenlieummo",
+      "sourceProdId": "119416",
+      "sourcePrice": 106720,
+      "sourceStock": 79,
+      "sourceProdName": "[Làm Việc] #119416 Canva Pro - CANVA PRO NON - PROFITS GÓI CAO CẤP NHẤT CỦA CANVA 1 THÁNG FULL TÍNH NĂNG AI - 106.720 đ (Tồn: 79)",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 79,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU29IZBLAK",
+    "name": "TikTok - US Chuẩn Bật Kiếm Tiền - Beta",
+    "slug": "prod-mu29izblak",
+    "category": "TikTok",
+    "description": "TK TikTok US Chuẩn Bật Kiếm Tiền Beta 2024-2025 live",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29IZBLAK_TikTok_US_Chu%E1%BA%A9n_B%E1%BA%ADt_Ki%E1%BA%BFm_Ti%E1%BB%81n_Beta.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29IZBLAK_TikTok_US_Chu%E1%BA%A9n_B%E1%BA%ADt_Ki%E1%BA%BFm_Ti%E1%BB%81n_Beta.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29IZBLAK_TikTok_US_Chu%E1%BA%A9n_B%E1%BA%ADt_Ki%E1%BA%BFm_Ti%E1%BB%81n_Beta.png",
+    "price": 5000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "tiktok us",
+        "price": 5000,
+        "stock": 20,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "tiktok us 2024-2025",
+        "price": 15000,
+        "stock": 20,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 40,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU1LSSJ7AZ",
+    "name": "Tiktok nhật 2024-2026  tiktok like  - tiktok thường",
+    "slug": "prod-mu1lssj7az",
+    "category": "TikTok",
+    "description": "Tiktok nhật 2024-2026  tiktok like  - tiktok thường",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU1LSSJ7AZ_Tiktok_nh%E1%BA%ADt_2024-2026__tiktok_like__-_tiktok_th%C6%B0%E1%BB%9Dn.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU1LSSJ7AZ_Tiktok_nh%E1%BA%ADt_2024-2026__tiktok_like__-_tiktok_th%C6%B0%E1%BB%9Dn.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU1LSSJ7AZ_Tiktok_nh%E1%BA%ADt_2024-2026__tiktok_like__-_tiktok_th%C6%B0%E1%BB%9Dn.jpg",
+    "price": 5000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "tiktok nhật acc new",
+        "price": 5000,
+        "stock": 76,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "tiktok nhật 2024-2025 ramdom",
+        "price": 15000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "tiktok nhật 2024-2025 có video",
+        "price": 20000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 76,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MU1G6LJX",
+    "name": "Capcut pro Cá Nhân 7 ngày",
+    "slug": "prod-mu1g6ljx",
+    "category": "Capcut",
+    "description": "Bạn đang cần gấp các hiệu ứng Pro, bộ lọc màu điện ảnh hay công cụ AI thông minh để hoàn thành video ngắn (TikTok, Reels, YouTube Shorts) nhưng chưa muốn mua gói dài hạn đắt đỏ? Gói Capcut Pro Cá Nhân 7 Ngày tại shop chính là lựa chọn nhanh - gọn - tiết kiệm nhất cho bạn!\n\n✨ Điểm nổi bật của gói:\n👤 Tài khoản cá nhân riêng biệt: Sử dụng độc lập, bảo mật tuyệt đối, không lo bị tranh chấp hay gián đoạn giữa chừng.\n\n🔓 Mở khóa toàn bộ tính năng Pro: Trải nghiệm trọn vẹn kho hiệu ứng chuyển cảnh, công cụ tự động, tách nền mượt mà và các công cụ AI cao cấp.\n\n⏱️ Tiết kiệm chi phí tối đa: Phù hợp cho anh em có nhu cầu làm video gấp trong tuần hoặc muốn trải nghiệm thử trước khi nâng cấp dài hạn.\n\n🛠️ Cam kết dịch vụ:\n🛡️ Bảo hành Full 1 đổi 1 trong suốt 7 ngày sử dụng.\n\n🚀 Bàn giao siêu tốc ngay sau khi thanh toán, đăng nhập và dùng ngay trên cả Điện thoại lẫn PC.",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU1G6LJX_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU1G6LJX_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU1G6LJX_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y.jpg",
+    "price": 15000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "capcut  - pro 7 ngày",
+        "price": 15000,
+        "stock": 132,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "selltainguyenmmo",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+          "sourceProdId": "25644",
+          "sourceProdName": "[CAPCUT PRO] #25644 Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO - 9.000 đ (Tồn: 132)",
+          "sourcePrice": 9000,
+          "sourceStock": 132,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MU1G6LJX",
+          "targetProdName": "Capcut pro Cá Nhân 7 ngày"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "selltainguyenmmo",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+      "sourceProdId": "25644",
+      "sourceProdName": "[CAPCUT PRO] #25644 Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO - 9.000 đ (Tồn: 132)",
+      "sourcePrice": 9000,
+      "sourceStock": 132,
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MU1G6LJX",
+      "targetProdName": "Capcut pro Cá Nhân 7 ngày"
+    },
+    "stock": 132,
+    "buffSold": 293,
+    "sold": 293,
+    "available": true
+  },
+  {
+    "id": "PROD_MTTPLODQ",
+    "name": "GMAIL CỔ 2019-2020 RAMDOM ACC CỔ  LIVE",
+    "slug": "prod-mttplodq",
+    "category": "Gmail",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTTPLODQ_GMAIL_C%E1%BB%94_2019-2020_RAMDOM_ACC_C%E1%BB%94.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTTPLODQ_GMAIL_C%E1%BB%94_2019-2020_RAMDOM_ACC_C%E1%BB%94.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTTPLODQ_GMAIL_C%E1%BB%94_2019-2020_RAMDOM_ACC_C%E1%BB%94.png",
+    "price": 15000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "gmail 2019-2020 live",
+        "price": 15000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 0,
+    "buffSold": 0,
+    "sold": 0,
+    "available": false
+  },
+  {
+    "id": "PROD_MTVI44UK",
+    "name": "Tiktok Việt Đã Ngâm Lâu Cực Kỳ -  Trâu",
+    "slug": "prod-mtvi44uk",
+    "category": "TikTok",
+    "description": "Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTVI44UK_Tiktok_Vi%E1%BB%87t_%C4%90%C3%A3_Ng%C3%A2m_L%C3%A2u_C%E1%BB%B1c_K%E1%BB%B3_Tr%C3%A2u.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTVI44UK_Tiktok_Vi%E1%BB%87t_%C4%90%C3%A3_Ng%C3%A2m_L%C3%A2u_C%E1%BB%B1c_K%E1%BB%B3_Tr%C3%A2u.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTVI44UK_Tiktok_Vi%E1%BB%87t_%C4%90%C3%A3_Ng%C3%A2m_L%C3%A2u_C%E1%BB%B1c_K%E1%BB%B3_Tr%C3%A2u.png",
+    "price": 2000,
+    "warranty": "Bảo hành 24h",
+    "variants": [
+      {
+        "name": "Tiktok 2026",
+        "price": 2000,
+        "stock": 15,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "Tiktok 2024-2025",
+        "price": 5000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "acc cổ ramdom có video",
+        "price": 15000,
+        "stock": 15,
+        "available": true,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 30,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MTQQXO2E",
+    "name": "BÁN GMAIL CHO THUÊ 24H",
+    "slug": "prod-mtqqxo2e",
+    "category": "Gmail",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQQXO2E_Gmail_cho_Thu%C3%AA_24h.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQQXO2E_Gmail_cho_Thu%C3%AA_24h.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQQXO2E_Gmail_cho_Thu%C3%AA_24h.png",
+    "price": 600,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Mail - Cho thuê - 24h",
+        "price": 600,
+        "stock": 31,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "nguyenlieummo",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+          "sourceProdId": "39341",
+          "sourceProdName": "[ID #39341] Gmail Domain 12h - ramdom trùng dv",
+          "sourcePrice": 294,
+          "sourceStock": 31,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MTQQXO2E",
+          "targetProdName": "BÁN GMAIL CHO THUÊ 24H"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "sellmmo",
+      "sourceProdId": "39341",
+      "sourcePrice": 303,
+      "sourceStock": 274,
+      "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
+      "baseUrl": "https://sellmmo.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 31,
+    "buffSold": 2180,
+    "sold": 2180,
+    "available": true
+  },
+  {
+    "id": "PROD_MTQX1C7X",
+    "name": "Gmail cho thuê 2 - 4  giờ live",
+    "slug": "prod-mtqx1c7x",
+    "category": "Gmail",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX1C7X_Gmail_cho_thu%C3%AA_1_gi%E1%BB%9D_live_60_ph%C3%BAt.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX1C7X_Gmail_cho_thu%C3%AA_1_gi%E1%BB%9D_live_60_ph%C3%BAt.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX1C7X_Gmail_cho_thu%C3%AA_1_gi%E1%BB%9D_live_60_ph%C3%BAt.png",
+    "price": 479,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "mail 4h live",
+        "price": 479,
+        "stock": 92571,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "mail72h",
+          "sourceProdId": "712",
+          "sourcePrice": 259,
+          "sourceStock": 92550,
+          "sourceProdName": "24h [ ID 712 ]",
+          "baseUrl": "https://mail72h.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "sellmmo",
+      "sourceProdId": "39341",
+      "sourcePrice": 303,
+      "sourceStock": 274,
+      "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
+      "baseUrl": "https://sellmmo.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 92571,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MTQX465U",
+    "name": "Gmail cho Thuế - 10 phút - live 10 phút",
+    "slug": "prod-mtqx465u",
+    "category": "Gmail",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX465U_Gmail_cho_Thu%E1%BA%BF_10_ph%C3%BAt_live_10_ph%C3%BAt.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX465U_Gmail_cho_Thu%E1%BA%BF_10_ph%C3%BAt_live_10_ph%C3%BAt.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX465U_Gmail_cho_Thu%E1%BA%BF_10_ph%C3%BAt_live_10_ph%C3%BAt.png",
+    "price": 400,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "mail 10 phut",
+        "price": 400,
+        "stock": 1242,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "ultrammo",
+          "baseUrl": "https://ultrammo.com",
+          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+          "sourceProdId": "39178",
+          "sourceProdName": "[Gmail Edu] #39178 10 phút - 1h ramdom trùng - 89 đ (Tồn: 1.242)",
+          "sourcePrice": 89,
+          "sourceStock": 1242,
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MTQX465U",
+          "targetProdName": "Gmail cho Thuế - 10 phút - live 10 phút"
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "sellmmo",
+      "sourceProdId": "39073",
+      "sourcePrice": 181,
+      "sourceStock": 259,
+      "sourceProdName": "Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️",
+      "baseUrl": "https://sellmmo.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 1242,
+    "buffSold": 3458,
+    "sold": 3458,
+    "available": true
+  },
+  {
+    "id": "PROD_MTQX7SIK",
+    "name": "Gmail Cho Thue 12h-24h",
+    "slug": "prod-mtqx7sik",
+    "category": "Gmail",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.jpg",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.jpg",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.jpg",
+    "price": 600,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "Mail 12h - 24h",
+        "price": 600,
+        "stock": 38095,
+        "apiMapping": {
+          "enabled": true,
+          "provider": "mail72h",
+          "sourceProdId": "712",
+          "sourcePrice": 279,
+          "sourceStock": 38095,
+          "sourceProdName": "[mail] #712 24h [ ID 712 ] - 279 đ (Tồn: 38.095)",
+          "baseUrl": "https://mail72h.com",
+          "isSourceDeleted": false
+        },
+        "available": true,
+        "accounts": []
+      }
+    ],
+    "delivery_type": "api",
+    "apiMapping": {
+      "enabled": true,
+      "provider": "sellmmo",
+      "sourceProdId": "39341",
+      "sourcePrice": 303,
+      "sourceStock": 274,
+      "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
+      "baseUrl": "https://sellmmo.vn",
+      "isSourceDeleted": false
+    },
+    "stock": 38095,
+    "buffSold": 0,
+    "sold": 0,
+    "available": true
+  },
+  {
+    "id": "PROD_MTYN7UJG",
+    "name": "Gmail cổ kèm Kênh youtube",
+    "slug": "prod-mtyn7ujg",
+    "category": "YOUTUBE",
+    "description": "",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTYN7UJG_Gmail_c%E1%BB%95_k%C3%A8m_K%C3%AAnh_youtube.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTYN7UJG_Gmail_c%E1%BB%95_k%C3%A8m_K%C3%AAnh_youtube.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTYN7UJG_Gmail_c%E1%BB%95_k%C3%A8m_K%C3%AAnh_youtube.png",
+    "price": 10000,
+    "warranty": "Bảo Hành 1 Đổi 1",
+    "variants": [
+      {
+        "name": "GMAIL NEW 2026 KÈM KÊNH",
+        "price": 10000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      },
+      {
+        "name": "GMAIL CỔ RAMDOM KÈM KÊNH",
+        "price": 200000,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
+        "accounts": []
+      }
+    ],
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 0,
+    "buffSold": 0,
+    "sold": 0,
+    "available": false
+  }
+]
     };
 
     // CHUẨN HÓA VĂN BẢN VÀ DANH SÁCH SẢN PHẨM MẪU DUMMY / ĐÃ XÓA VĨNH VIỄN
@@ -15642,20 +18927,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             _viewDirty["viewAllProducts"] = true;
             _viewDirty["viewAdmin"] = true;
           }
-          const curActiveView = (typeof localStorage !== "undefined" && localStorage.getItem("mmo_current_view")) || "viewStore";
-          if (curActiveView === "viewStore") {
-            if (typeof renderCategories === "function") renderCategories();
-            if (typeof renderProductGrid === "function") renderProductGrid();
-            if (typeof renderBestSellers === "function") renderBestSellers();
-            if (typeof renderRecommended === "function") renderRecommended();
-            if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
-            if (typeof renderAllProductsPage === "function") renderAllProductsPage();
-          } else if (curActiveView === "viewAllProducts") {
-            if (typeof renderAllProductsPage === "function") renderAllProductsPage();
-          } else if (curActiveView === "viewAdmin") {
-            if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-            else if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
-          } else if (curActiveView === "viewProductDetail") {
+          // [RENDER TOÀN DIỆN 0MS]: Luôn vẽ lại toàn bộ View Admin và Cửa Hàng
+          if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+          if (typeof renderCategories === "function") renderCategories();
+          if (typeof renderProductGrid === "function") renderProductGrid();
+          if (typeof renderBestSellers === "function") renderBestSellers();
+          if (typeof renderRecommended === "function") renderRecommended();
+          if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
+          if (typeof renderAllProductsPage === "function") renderAllProductsPage(); else if (curActiveView === "viewProductDetail") {
             const dtlView = document.getElementById("viewProductDetail");
             const isDtlVisible = dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden");
             if (isDtlVisible && typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
