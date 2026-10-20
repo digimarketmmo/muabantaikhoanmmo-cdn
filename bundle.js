@@ -564,6 +564,60 @@ function healStorageQuota(forceEmergency) {
               localStorage.setItem(key, JSON.stringify(prods));
             }
 
+            // [SELF-HEALING v6.2.1]: Tự động sửa Capcut pro (PROD_MU2B32VLQY) về giá chuẩn 25.000đ và xóa sạch log/baseline sai lệch
+            try {
+              const capItem = prods.find(p => p && p.id === 'PROD_MU2B32VLQY');
+              if (capItem && (Number(capItem.price) > 50000 || Number(capItem.price) === 1035000 || Number(capItem.price) === 828000)) {
+                capItem.price = 25000;
+                if (Array.isArray(capItem.variants)) {
+                  capItem.variants.forEach(v => { if (v) v.price = 25000; });
+                }
+                if (capItem.apiMapping) {
+                  capItem.apiMapping.sourcePrice = 18000;
+                  capItem.apiMapping.sourceProdName = "Capcut Pro 7Day | Riêng Tư [ BHF ]";
+                  capItem.apiMapping.isSourceDeleted = false;
+                }
+                cacheModified = true;
+              }
+              // Dọn dẹp baseline sai lệch trong mmo_api_source_baselines
+              try {
+                const bRaw = localStorage.getItem("mmo_api_source_baselines");
+                if (bRaw) {
+                  const bObj = JSON.parse(bRaw);
+                  if (bObj && (bObj["PROD_MU2B32VLQY"] === 690000 || bObj["PROD_MU2B32VLQY"] > 50000)) {
+                    bObj["PROD_MU2B32VLQY"] = 18000;
+                    localStorage.setItem("mmo_api_source_baselines", JSON.stringify(bObj));
+                  }
+                }
+              } catch(eB) {}
+              // Dọn dẹp log tăng giá sai lệch
+              ["mmo_auto_price_adjust_logs", "mmo_auto_price_history"].forEach(lKey => {
+                try {
+                  const lRaw = localStorage.getItem(lKey);
+                  if (lRaw) {
+                    let lArr = JSON.parse(lRaw);
+                    if (Array.isArray(lArr)) {
+                      lArr = lArr.filter(item => !(item && (item.prodId === "PROD_MU2B32VLQY" || (item.prodName && item.prodName.includes("Capcut pro Cá Nhân 7"))) && (item.cost === 690000 || item.newPrice === 1035000 || item.newPrice === 828000)));
+                      localStorage.setItem(lKey, JSON.stringify(lArr));
+                    }
+                  }
+                } catch(eL) {}
+              });
+              // Dọn dẹp mmo_api_product_mappings
+              try {
+                const mRaw = localStorage.getItem("mmo_api_product_mappings");
+                if (mRaw) {
+                  const mObj = JSON.parse(mRaw);
+                  if (mObj && mObj["PROD_MU2B32VLQY"] && (mObj["PROD_MU2B32VLQY"].sourcePrice === 690000 || mObj["PROD_MU2B32VLQY"].sourcePrice > 50000)) {
+                    mObj["PROD_MU2B32VLQY"].sourcePrice = 18000;
+                    mObj["PROD_MU2B32VLQY"].sourceProdName = "Capcut Pro 7Day | Riêng Tư [ BHF ]";
+                    mObj["PROD_MU2B32VLQY"].isSourceDeleted = false;
+                    localStorage.setItem("mmo_api_product_mappings", JSON.stringify(mObj));
+                  }
+                }
+              } catch(eM) {}
+            } catch(eCapFix) {}
+
             // [BẢO VỆ CHỐNG BÁN LỖ TỰ ĐỘNG]: Tự động nâng giá PROD_MU5SPLMSEC nếu cache đang lưu giá cũ < 16.000đ
             const chatGptTrial = prods.find(p => p && p.id === 'PROD_MU5SPLMSEC');
             if (chatGptTrial && Number(chatGptTrial.price) < 16000) {
@@ -1398,8 +1452,8 @@ if (typeof window !== "undefined") {
                 || _sourceProductsFastMap.get(normKey + ":" + idStr) 
                 || _sourceProductsFastMap.get(normKey + ":" + cleanId);
         if (item) return item;
-        var anyItem = _sourceProductsFastMap.get("any:" + idStr) || _sourceProductsFastMap.get("any:" + cleanId);
-        if (anyItem) return anyItem;
+        // [CÁCH LY TUYỆT ĐỐI NHÀ CUNG CẤP]: Tuyệt đối CẤM fallback sang any: khi đã chỉ định provider!
+        // Chống triệt để lỗi va chạm trùng ID giữa các nhà cung cấp khác nhau (ví dụ ID 32026 của ultrammo và selltainguyenmmo)!
         return null;
       }
       return _sourceProductsFastMap.get("any:" + idStr) || _sourceProductsFastMap.get("any:" + cleanId) || null;
@@ -4166,12 +4220,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2B32VLQY_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y_-_D%C3%B9ng_Ri%C3%AAng.jpg",
     "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2B32VLQY_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y_-_D%C3%B9ng_Ri%C3%AAng.jpg",
     "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2B32VLQY_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y_-_D%C3%B9ng_Ri%C3%AAng.jpg",
-    "price": 828000,
+    "price": 25000,
     "warranty": "Bảo Hành 1 Đổi 1",
     "variants": [
       {
         "name": "capcut pro 7 ngày",
-        "price": 828000,
+        "price": 25000,
         "stock": 4,
         "apiMapping": {
           "enabled": true,
@@ -22772,10 +22826,6 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         if (item.sourceProdId) {
           const cleanSrcId = String(item.sourceProdId || "").trim().replace(/^#/, "");
           let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(item.provider, cleanSrcId) : null;
-          // [ZERO-FREEZE]: Tra cứu O(1) qua _sourceProductsFastMap, không duyệt mảng 4.280 phần tử
-          if (!inSrc && typeof getFastSourceProduct === "function") {
-            inSrc = getFastSourceProduct(null, cleanSrcId);
-          }
           const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(item.provider) : false;
           if (inSrc && typeof inSrc.amount === "number") {
             item.sourceStock = inSrc.amount;
@@ -22884,10 +22934,6 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         const cleanSrcId = String(res.sourceProdId || "").trim().replace(/^#/, "");
         let stock = (res.sourceStock !== undefined && res.sourceStock !== null) ? Number(res.sourceStock) : 0;
         let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(res.provider, cleanSrcId) : null;
-        // [ZERO-FREEZE]: Tra cứu O(1) qua _sourceProductsFastMap
-        if (!inSrc && typeof getFastSourceProduct === "function") {
-          inSrc = getFastSourceProduct(null, cleanSrcId);
-        }
         if (inSrc && typeof inSrc.amount === "number") {
           stock = inSrc.amount;
           res.sourceStock = stock;
@@ -26217,6 +26263,31 @@ function executeCompareSourcesSearch() {
             : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
           inSrc = allCached.find(sp => sp && (String(sp.id).replace(/^#/, "").trim() === cleanSrcId || String(sp.id) === String(apiMap.sourceProdId)) && (!apiMap.provider || (typeof isSameProvider === "function" ? isSameProvider(sp.provider, apiMap.provider) : sp.provider === apiMap.provider)));
         }
+
+        // [CHỐNG VA CHẠM ID VÀ BẢO VỆ TƯƠNG ĐỒNG SẢN PHẨM v6.2.1]:
+        // 1. Kiểm tra nghiêm ngặt nhà cung cấp: inSrc bắt buộc phải cùng nhà cung cấp
+        if (inSrc && apiMap.provider && typeof isSameProvider === "function" && !isSameProvider(inSrc.provider, apiMap.provider)) {
+          inSrc = null;
+        }
+
+        // 2. Bảo vệ chống tăng giá vô lý do trùng ID giữa 2 sản phẩm hoàn toàn khác nhau:
+        if (inSrc && p.name && inSrc.name) {
+          const rawLivePrice = Number(inSrc.price) || 0;
+          const nominalShopPrice = Number(p.price) || 0;
+          const configuredCost = Number(apiMap.sourcePrice) || 0;
+          // Nếu giá live nguồn nhảy vọt gấp hơn 3 lần giá bán shop hoặc hơn 3 lần giá vốn chuẩn
+          if ((nominalShopPrice > 0 && rawLivePrice > nominalShopPrice * 3) || (configuredCost > 0 && rawLivePrice > configuredCost * 3)) {
+            const pNorm = (p.name || "").toLowerCase().replace(/[^a-z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/g, " ");
+            const sNorm = (inSrc.name || "").toLowerCase().replace(/[^a-z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/g, " ");
+            const stopWords = new Set(["cho", "cac", "acc", "ban", "tai", "khoan", "dung", "rieng", "ngay", "thang", "pro", "vip", "nam", "tuan"]);
+            const pKeywords = pNorm.split(/\s+/).filter(w => w.length >= 3 && !stopWords.has(w));
+            const hasCommonKw = pKeywords.some(w => sNorm.includes(w));
+            if (!hasCommonKw) {
+              console.warn("[ANTI-CORRUPTION GUARD] Phát hiện va chạm trùng ID khác sản phẩm:", p.name, "(Shop:", nominalShopPrice, ") vs", inSrc.name, "(Nguồn:", rawLivePrice, "). Từ chối giá vốn sai lệch!");
+              inSrc = null;
+            }
+          }
+        }
         const existingStockFallback = (typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0) ? apiMap.sourceStock : (Number(p.stock) || 0);
         const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
         // [CHỐNG BÁO XÓA OAN KHI VẪN CÒN HÀNG]: Chỉ coi là đã xóa khi đã load xong nguồn VÀ không tìm thấy SP VÀ không hề có tồn kho hợp lệ (> 0)
@@ -27474,6 +27545,22 @@ function executeCompareSourcesSearch() {
       const oldPrice = Number(prod.price) || 0;
       const liveCost = Number(cost) > 0 ? Number(cost) : (prod.originalPrice || oldPrice);
       
+      // [SANITY GUARD v6.2.1]: Cấm tăng giá vô lý nếu giá vốn live tăng vọt > 3 lần giá bán mà không cùng từ khóa sản phẩm
+      if (oldPrice > 0 && liveCost > oldPrice * 3) {
+        const curMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(prod.id) : (prod.apiMapping || null);
+        const srcName = (curMap && curMap.sourceProdName) ? curMap.sourceProdName.toLowerCase() : "";
+        const pName = (prod.name || "").toLowerCase();
+        if (srcName && pName) {
+          const stopW = new Set(["cho", "cac", "acc", "ban", "tai", "khoan", "dung", "rieng", "ngay", "thang", "pro", "vip"]);
+          const pWords = pName.replace(/[^a-z0-9àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđ]/g, " ").split(/\s+/).filter(w => w.length >= 3 && !stopW.has(w));
+          const matchKw = pWords.some(w => srcName.includes(w));
+          if (!matchKw) {
+            console.error("[AUTO PRICE BLOCKED] Từ chối tự động tăng giá vô lý cho:", prod.name, "từ", oldPrice, "với vốn lạ:", liveCost, "(" + srcName + ")");
+            return null;
+          }
+        }
+      }
+
       // Nếu giá bán hiện tại ĐÃ LỚN HƠN giá vốn thật (không hề bị bán lỗ) hoặc sản phẩm vừa được Admin chỉnh sửa thủ công, không tự động tăng giá
       if (oldPrice > liveCost || (prod._lastEditedAt && Date.now() < prod._lastEditedAt)) {
         return null;
