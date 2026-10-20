@@ -539,10 +539,9 @@ function healStorageQuota(forceEmergency) {
 
     // DỌN SẠCH TẬN GỐC CÁC KHÓA ẢNH DEMO nFV4Rln, KHOTAIKHOANSO VÀ ẢNH CŨ SAI LỆCH TRONG LOCALSTORAGE
     try {
-      // Xóa bỏ ảnh cũ sai lệch đã được người dùng yêu cầu thay mới
-      localStorage.removeItem("mmo_custom_img_PROD_MTQX7SIK");
+      // Chỉ dọn dẹp ảnh rác nếu chứa placeholder hoặc link gán nhầm
       const staleCustomRaw = localStorage.getItem("mmo_custom_img_PROD_MTQX7SIK");
-      if (staleCustomRaw && (staleCustomRaw.includes("14day") || staleCustomRaw.includes("placeholder"))) {
+      if (staleCustomRaw && (staleCustomRaw.includes("14day") || staleCustomRaw.includes("placeholder") || staleCustomRaw.includes("default_product.png"))) {
         localStorage.removeItem("mmo_custom_img_PROD_MTQX7SIK");
       }
       // Thanh tẩy ảnh NordVPN rác gán nhầm cho Surfshark VPN (PROD_MUKAXC4Q9T)
@@ -4634,25 +4633,27 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "slug": "prod-mtqx7sik",
     "category": "Gmail",
     "description": "",
-    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.jpg",
-    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.jpg",
-    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.jpg",
-    "price": 600,
-    "warranty": "Bảo Hành 1 Đổi 1",
+    "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.png",
+    "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.png",
+    "imageUrl": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.png",
+    "price": 400,
+    "warranty": "Bảo hành 24h",
     "variants": [
       {
-        "name": "Mail 12h - 24h",
-        "price": 600,
-        "stock": 38095,
+        "name": "Gmail Cho Thue 12h-24h",
+        "price": 400,
+        "stock": 493,
         "apiMapping": {
           "enabled": true,
-          "provider": "mail72h",
-          "sourceProdId": "712",
-          "sourcePrice": 279,
-          "sourceStock": 38095,
-          "sourceProdName": "[mail] #712 24h [ ID 712 ] - 279 đ (Tồn: 38.095)",
-          "baseUrl": "https://mail72h.com",
-          "isSourceDeleted": false
+          "provider": "nguyenlieummo",
+          "sourceProdId": "39341",
+          "sourcePrice": 294,
+          "sourceStock": 493,
+          "sourceProdName": "[ID #39341] Gmail Domain 12h - ramdom trùng dv",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false,
+          "targetProdId": "PROD_MTQX7SIK",
+          "targetProdName": "Gmail Cho Thue 12h-24h"
         },
         "available": true,
         "accounts": []
@@ -4661,17 +4662,19 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "sellmmo",
+      "provider": "nguyenlieummo",
       "sourceProdId": "39341",
-      "sourcePrice": 303,
-      "sourceStock": 274,
-      "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
-      "baseUrl": "https://sellmmo.vn",
-      "isSourceDeleted": false
+      "sourcePrice": 294,
+      "sourceStock": 493,
+      "sourceProdName": "[ID #39341] Gmail Domain 12h - ramdom trùng dv",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false,
+      "targetProdId": "PROD_MTQX7SIK",
+      "targetProdName": "Gmail Cho Thue 12h-24h"
     },
-    "stock": 38095,
-    "buffSold": 0,
-    "sold": 0,
+    "stock": 493,
+    "buffSold": 640,
+    "sold": 640,
     "available": true
   },
   {
@@ -15773,7 +15776,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   "PROD_MTQWQFZD": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWQFZD_Gmail_cho_thu%C3%AA_30_Ng%C3%A0y.png",
   "PROD_MTQX1C7X": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX1C7X_Gmail_cho_thu%C3%AA_1_gi%E1%BB%9D_live_60_ph%C3%BAt.png",
   "PROD_MTQX465U": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX465U_Gmail_cho_Thu%E1%BA%BF_10_ph%C3%BAt_live_10_ph%C3%BAt.png",
-  "PROD_MTQX7SIK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.jpg",
+  "PROD_MTQX7SIK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.png",
   "PROD_MTQZT2Y1": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQZT2Y1_HOTMAIL_-_OUTLOOK_%C4%90%E1%BB%98_TRUST_CAO_LIVE_TR%C3%82U.png",
   "PROD_MTRB6000": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTRB6000_OUTLOOK_TRUSTED_-_LIVE_6-12_Th%C3%A1ng.png",
   "PROD_MTTPLODQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTTPLODQ_GMAIL_C%E1%BB%94_2019-2020_RAMDOM_ACC_C%E1%BB%94.png",
@@ -42184,32 +42187,43 @@ function changeAdmUsersPage(p) {
             const updId = ev.data.prodId;
             const updVariants = ev.data.variants;
             const updData = ev.data.prodData;
+            const updImg = ev.data.imageUrl || (updData && (updData.image || updData.imageUrl || updData.image_url));
+            const aliasIds = Array.isArray(ev.data.aliasIds) ? ev.data.aliasIds : [updId];
+
+            if (updImg && !updImg.includes("default_product.png") && updImg !== "__NO_IMAGE__") {
+              aliasIds.forEach(aid => {
+                try { localStorage.setItem("mmo_custom_img_" + aid, updImg); } catch(e) {}
+                if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+                  KNOWN_PROD_IMAGE_MAP[aid] = updImg;
+                  KNOWN_PROD_IMAGE_MAP[aid.toUpperCase()] = updImg;
+                }
+              });
+            }
+
             if (typeof loadPersistedProducts === "function") loadPersistedProducts();
             if (typeof MOCK_DATA !== "undefined" && MOCK_DATA.products) {
-              const target = MOCK_DATA.products.find(p => p.id === updId || (p.name && updData && p.name.trim().toLowerCase() === updData.name.trim().toLowerCase()));
+              const target = MOCK_DATA.products.find(p => p && (String(p.id) === String(updId) || aliasIds.includes(String(p.id)) || (p.name && updData && p.name.trim().toLowerCase() === updData.name.trim().toLowerCase())));
               if (target && updData) {
                 Object.assign(target, updData);
                 if (updVariants) target.variants = updVariants;
                 if (ev.data.stock !== undefined) target.stock = ev.data.stock;
+                if (updImg) { target.image = updImg; target.image_url = updImg; target.imageUrl = updImg; }
               }
             }
-            if (typeof currentSelectedProduct !== "undefined" && currentSelectedProduct) {
-              if (String(currentSelectedProduct.id) === String(updId) || (currentSelectedProduct.name && updData && currentSelectedProduct.name.trim().toLowerCase() === updData.name.trim().toLowerCase())) {
-                if (updData) Object.assign(currentSelectedProduct, updData);
-                if (updVariants) currentSelectedProduct.variants = updVariants;
-                if (ev.data.stock !== undefined) currentSelectedProduct.stock = ev.data.stock;
-                if (currentSelectedVariantIndex >= (currentSelectedProduct.variants ? currentSelectedProduct.variants.length : 1)) {
-                  currentSelectedVariantIndex = 0;
-                }
-              }
+
+            // Đồng bộ tức thì tới toàn bộ DOM bằng updateProductRealtimeEverywhere
+            if (typeof updateProductRealtimeEverywhere === "function" && updData) {
+              updateProductRealtimeEverywhere(updId, aliasIds, updData, updVariants, updImg);
             }
+
             if (typeof syncAllOpenViewsStock === "function") syncAllOpenViewsStock(updId, ev.data.stock, null, true);
             const dtlViewEl = document.getElementById("viewProductDetail");
             if (dtlViewEl && dtlViewEl.style.display !== "none" && !dtlViewEl.classList.contains("hidden")) {
-              if (currentSelectedProduct && (String(currentSelectedProduct.id) === String(updId) || (currentSelectedProduct.name && updData && currentSelectedProduct.name.trim().toLowerCase() === updData.name.trim().toLowerCase()))) {
-                if (typeof openProductDetailById === "function") openProductDetailById(updId);
-              } else {
-                if (typeof renderDetailRelatedProducts === "function" && currentSelectedProduct) renderDetailRelatedProducts(currentSelectedProduct);
+              const curProdUrl = new URL(window.location.href).searchParams.get("prod");
+              const isCurDetail = (currentSelectedProduct && (String(currentSelectedProduct.id) === String(updId) || aliasIds.includes(String(currentSelectedProduct.id)))) ||
+                                  (curProdUrl && (curProdUrl === updId || aliasIds.includes(curProdUrl)));
+              if (isCurDetail && typeof openProductDetailById === "function") {
+                openProductDetailById(updId, true);
               }
             }
             if (typeof renderProductGrid === "function") renderProductGrid();
