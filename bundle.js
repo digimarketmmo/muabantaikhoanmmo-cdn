@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "6.0.5";
+var MMO_CURRENT_CODE_VERSION = "6.0.6";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
@@ -9044,9 +9044,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             if (finalImg) { p.image = finalImg; p.image_url = finalImg; p.imageUrl = finalImg; }
             if (prodData) {
               if (prodData.name) p.name = prodData.name;
-              if (effectivePrice) p.price = effectivePrice;
-              if (effectiveStock !== undefined) p.stock = effectiveStock;
+              if (effectivePrice !== undefined && effectivePrice !== null) p.price = effectivePrice;
+              if (effectiveStock !== undefined && effectiveStock !== null) p.stock = effectiveStock;
               if (Array.isArray(variants)) p.variants = variants;
+              if (prodData.category) p.category = prodData.category;
+              if (prodData.description !== undefined) p.description = prodData.description;
+              if (prodData.warranty) p.warranty = prodData.warranty;
+              if (prodData.buffSold !== undefined) p.buffSold = prodData.buffSold;
+              if (prodData.sold !== undefined) p.sold = prodData.sold;
+              if (prodData.rating !== undefined) p.rating = prodData.rating;
+              if (prodData.commission) p.commission = prodData.commission;
               if (prodData.apiMapping) p.apiMapping = prodData.apiMapping;
               if (prodData.deliveryType) p.deliveryType = prodData.deliveryType;
               if (prodData.delivery_type) p.delivery_type = prodData.delivery_type;
@@ -9124,6 +9131,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           const soldVal = (typeof getRealisticProductSold === "function" && prodData) ? getRealisticProductSold(prodData) : (effectiveBuffSold || effectiveStock || 0);
           dtlSoldEl.innerText = "• Đã bán: " + Number(soldVal).toLocaleString("vi-VN");
         }
+        const dtlCatEl = document.getElementById("dtlCategory");
+        if (dtlCatEl && prodData && prodData.category) dtlCatEl.innerText = prodData.category;
+        const dtlWarrEl = document.getElementById("dtlWarranty");
+        if (dtlWarrEl && prodData && prodData.warranty) dtlWarrEl.innerText = "🛡 " + prodData.warranty;
+        const dtlWarrNoticeEl = document.getElementById("dtlWarrantyNotice");
+        if (dtlWarrNoticeEl && prodData && prodData.warranty) dtlWarrNoticeEl.innerText = "Chính sách bảo hành: " + prodData.warranty + ". Vui lòng kiểm tra kỹ thông tin trước khi mua.";
+        const dtlFullDescEl = document.getElementById("dtlFullDesc");
+        if (dtlFullDescEl && prodData && prodData.description !== undefined) {
+          dtlFullDescEl.innerHTML = (typeof renderRichDescriptionHtml === "function") ? renderRichDescriptionHtml(prodData.description) : prodData.description;
+        }
         const pillsContainer = document.getElementById("dtlVariantPills");
         if (pillsContainer && Array.isArray(variants) && variants.length > 0) {
           pillsContainer.innerHTML = variants.map((v, idx) => {
@@ -9136,6 +9153,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               '<span style="font-weight:700;">' + ((typeof formatVND === "function") ? formatVND(v.price || 0) : ((v.price || 0) + " đ")) + '</span>' +
             '</div>';
           }).join("");
+        }
+        if (typeof refreshDtlAdminSourceBanner === "function" && prodData) {
+          try { refreshDtlAdminSourceBanner(prodData); } catch(eBan) {}
         }
       }
 
@@ -9189,17 +9209,19 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         }
       } catch(eCart) {}
 
-      // 7. Re-render đồng bộ tất cả các trang và view người dùng
-      try {
-        if (typeof renderProductGrid === "function") renderProductGrid();
-        if (typeof renderAllProductsPage === "function") renderAllProductsPage();
-        if (typeof renderRecommended === "function") renderRecommended();
-        if (typeof renderBestSellers === "function") renderBestSellers();
-        if (typeof renderDetailRelatedProducts === "function") renderDetailRelatedProducts(window.currentSelectedProduct || prodData);
-        if (typeof renderProductDetailSidebars === "function") renderProductDetailSidebars(window.currentSelectedProduct || prodData);
-        if (typeof renderAdminDashboard === "function") renderAdminDashboard();
-        else if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
-      } catch(eR) {}
+      // 7. Re-render đồng bộ tất cả các trang và view người dùng (cách ly độc lập từng khối)
+      if (typeof invalidateVisibleProductsCache === "function") invalidateVisibleProductsCache();
+      try { if (typeof renderProductGrid === "function") renderProductGrid(); } catch(eR1) {}
+      try { if (typeof renderAllProductsPage === "function") renderAllProductsPage(); } catch(eR2) {}
+      try { if (typeof renderRecommended === "function") renderRecommended(); } catch(eR3) {}
+      try { if (typeof renderBestSellers === "function") renderBestSellers(); } catch(eR4) {}
+      try { if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts(); } catch(eR4b) {}
+      try { if (typeof renderDetailRelatedProducts === "function") renderDetailRelatedProducts(window.currentSelectedProduct || prodData); } catch(eR5) {}
+      try { if (typeof renderProductDetailSidebars === "function") renderProductDetailSidebars(window.currentSelectedProduct || prodData); } catch(eR6) {}
+      try { if (typeof renderAdminDashboard === "function") renderAdminDashboard(); } catch(eR7) {}
+      try { if (typeof renderAdminProductsTable === "function") renderAdminProductsTable(); } catch(eR8) {}
+      try { if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI(); } catch(eR9) {}
+      try { if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable(); } catch(eR10) {}
     }
     window.updateProductRealtimeEverywhere = updateProductRealtimeEverywhere;
 
@@ -9572,7 +9594,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           }
         } catch(eUnblock) {}
 
-        // 1. CHỈ LƯU DUY NHẤT 1 SẢN PHẨM CHÍNH (CANONICAL) VÀO MOCK_DATA.products
+        // 1. CẬP NHẬT ĐỒNG BỘ TOÀN DIỆN MOCK_DATA.products CHO CẢ CANONICAL VÀ TẤT CẢ ALIAS
         const finalProdToStore = Object.assign({}, prodData, {
           id: canonicalTargetId,
           apiMapping: prodData.apiMapping ? Object.assign({}, prodData.apiMapping, { targetProdId: canonicalTargetId }) : prodData.apiMapping,
@@ -9581,17 +9603,25 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           }))
         });
 
-        const cIdx = MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === canonicalTargetId.toLowerCase());
-        if (cIdx !== -1) {
-          MOCK_DATA.products[cIdx] = Object.assign({}, MOCK_DATA.products[cIdx], finalProdToStore);
-        } else {
-          MOCK_DATA.products.unshift(finalProdToStore);
-        }
+        const allIdsToUpdate = new Set([actualTargetId, canonicalTargetId, ...allSyncIds].filter(Boolean).map(x => String(x).toLowerCase().trim()));
+        let matchedCount = 0;
+        MOCK_DATA.products.forEach(p => {
+          if (!p || !p.id) return;
+          const pid = String(p.id).toLowerCase().trim();
+          if (allIdsToUpdate.has(pid)) {
+            Object.assign(p, prodData);
+            p.variants = variants;
+            matchedCount++;
+          }
+        });
 
-        // 2. DỌN SẠCH TRIỆT ĐỂ MỌI ALIAS CỦA CANONICAL NÀY KHỎI MOCK_DATA.products ĐỂ TRÁNH NHÂN BẢN RÁC
-        if (allSyncIds.length > 1) {
-          const aliasSetToRemove = new Set(allSyncIds.filter(id => id.toLowerCase() !== canonicalTargetId.toLowerCase()).map(id => id.toLowerCase()));
-          MOCK_DATA.products = MOCK_DATA.products.filter(p => !p || !p.id || !aliasSetToRemove.has(String(p.id).trim().toLowerCase()));
+        if (matchedCount === 0) {
+          MOCK_DATA.products.unshift(finalProdToStore);
+        } else {
+          const cIdx = MOCK_DATA.products.findIndex(p => p && String(p.id).trim().toLowerCase() === canonicalTargetId.toLowerCase());
+          if (cIdx !== -1) {
+            MOCK_DATA.products[cIdx] = Object.assign({}, MOCK_DATA.products[cIdx], finalProdToStore);
+          }
         }
 
         if (typeof window !== "undefined" && window.MOCK_DATA) {
@@ -9766,6 +9796,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         // [ZERO-HANG & INSTANT SAVE]: Đóng modal ngay lập tức và khôi phục nút bấm
         closeModal("adminProductModal");
         resetBtnState();
+        if (typeof invalidateVisibleProductsCache === "function") invalidateVisibleProductsCache();
         saveProductsToStorage();
         if (typeof markAdminTabDirty === "function") {
           markAdminTabDirty("tabAdmProducts");
@@ -9776,6 +9807,32 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         // [REALTIME INSTANT SYNC 0MS]: Cập nhật tức thì ảnh & dữ liệu trên trang người dùng và trang xem chi tiết sản phẩm
         if (typeof updateProductRealtimeEverywhere === "function") {
           updateProductRealtimeEverywhere(actualTargetId, allSyncIds, prodData, variants, image);
+        }
+
+        // [INSTANT RE-RENDER 0MS]: Bắt buộc vẽ lại ngay lập tức giao diện người dùng & quản trị viên
+        try {
+          // 1. Nếu đang mở trang chi tiết sản phẩm, tải lại toàn bộ chi tiết sản phẩm
+          const dtlView = document.getElementById("viewProductDetail");
+          if (dtlView && dtlView.style.display !== "none" && !dtlView.classList.contains("hidden")) {
+            if (typeof openProductDetailById === "function") {
+              openProductDetailById(actualTargetId, true);
+            }
+          }
+
+          // 2. Vẽ lại bảng sản phẩm Admin và các bảng liên quan ngay lập tức
+          if (typeof renderAdminDashboard === "function") renderAdminDashboard();
+          if (typeof renderAdminProductsTable === "function") renderAdminProductsTable();
+          if (typeof renderAdminApiSourcesAlertsUI === "function") renderAdminApiSourcesAlertsUI();
+          if (typeof renderApiProductMappingsTable === "function") renderApiProductMappingsTable();
+
+          // 3. Vẽ lại lưới sản phẩm Cửa Hàng, Bán Chạy, Đề Xuất ngay lập tức
+          if (typeof renderProductGrid === "function") renderProductGrid();
+          if (typeof renderBestSellers === "function") renderBestSellers();
+          if (typeof renderRecommended === "function") renderRecommended();
+          if (typeof renderAllProductsPage === "function") renderAllProductsPage();
+          if (typeof renderDynamicFlankingProducts === "function") renderDynamicFlankingProducts();
+        } catch(eRerenderNow) {
+          console.warn("Instant rerender after save error:", eRerenderNow);
         }
 
         // Làm mới tức thì bảng Cảnh báo Nguồn Hàng API nếu đang mở
@@ -15041,7 +15098,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
         let hasNewOrUpdated = false;
 
-        const purgedRedundantIds = new Set(['PROD_MTPG0PUD', 'PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ', 'PROD_MTU9F5HN', 'PROD_MV9NXBULDO']);
+        const purgedRedundantIds = new Set(['PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ', 'PROD_MTU9F5HN', 'PROD_MV9NXBULDO']);
 
         res.products.forEach(function(tp) {
           if (!tp || !tp.id || tp.id === 'zalo-new-2016') return;
