@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "6.0.3";
+var MMO_CURRENT_CODE_VERSION = "6.0.4";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
@@ -9253,6 +9253,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           (typeof findShopProduct === "function" ? findShopProduct(prodId) : null)
         ) : null;
         const actualTargetId = (oldProd && oldProd.id) ? oldProd.id : prodId;
+        const canonicalTargetId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(actualTargetId) : actualTargetId;
+        const allSyncIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(canonicalTargetId) : [canonicalTargetId];
+        const oldImgBeforeSave = (window._editingProductOldImage !== undefined && window._editingProductOldImage !== null && window._editingProductOldImage !== "")
+          ? window._editingProductOldImage
+          : (oldProd ? (oldProd.image || oldProd.image_url || oldProd.imageUrl || "") : "");
         let inputImg = document.getElementById("admProdImage")?.value.trim() || "";
         const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
         let image = inputImg || (typeof resolveProductImage === "function" ? resolveProductImage(actualTargetId) : "") || defaultPlaceholder;
@@ -9566,9 +9571,6 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             }
           }
         } catch(eUnblock) {}
-
-        const canonicalTargetId = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(actualTargetId) : actualTargetId;
-        const allSyncIds = (typeof getProductAliasIds === "function") ? getProductAliasIds(canonicalTargetId) : [canonicalTargetId];
 
         // 1. CHỈ LƯU DUY NHẤT 1 SẢN PHẨM CHÍNH (CANONICAL) VÀO MOCK_DATA.products
         const finalProdToStore = Object.assign({}, prodData, {
