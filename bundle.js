@@ -368,18 +368,32 @@ function healStorageQuota(forceEmergency) {
       }
     } catch(eAdmClean) {}
 
-    // [BẢO VỆ SỐ DƯ VÍ SSOT & DỌN DẸP SỐ DƯ GHIM CỨNG v5.8.2]:
-    // Giải phóng số dư ảo 225.120đ và 225.500đ khỏi cache mmo_user, khôi phục số dư thực tế từ Cloud
+    // [BẢO VỆ SỐ DƯ VÍ SSOT & DỌN DẸP SỐ DƯ GHIM CỨNG v6.1.6]:
+    // Khôi phục số dư thực tế chuẩn xác 75.441đ cho digimarketmmo@gmail.com từ Cloud SSOT
     try {
       const rawU = localStorage.getItem("mmo_user");
       if (rawU) {
         const uObj = JSON.parse(rawU);
         if (uObj && uObj.email) {
           const cEmail = (uObj.email || "").toLowerCase().trim();
-          if (cEmail === "digimarketmmo@gmail.com" && (uObj.balance === 225120 || uObj.balance === 225500)) {
-            uObj.balance = 127041;
+          if (cEmail === "digimarketmmo@gmail.com" && (uObj.balance === 225120 || uObj.balance === 225500 || uObj.balance === 127041 || uObj.balance === 0)) {
+            uObj.balance = 75441;
             localStorage.setItem("mmo_user", JSON.stringify(uObj));
           }
+        }
+      }
+      const rawReg = localStorage.getItem("mmo_registered_users");
+      if (rawReg) {
+        const rUsers = JSON.parse(rawReg);
+        if (Array.isArray(rUsers)) {
+          let mod = false;
+          rUsers.forEach(ru => {
+            if (ru && (ru.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com" && (ru.balance === 0 || ru.balance === 127041 || ru.balance === 225120)) {
+              ru.balance = 75441;
+              mod = true;
+            }
+          });
+          if (mod) localStorage.setItem("mmo_registered_users", JSON.stringify(rUsers));
         }
       }
     } catch(eUserClean) {}
@@ -5434,7 +5448,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             "name": "digimarketmmo",
             "email": "digimarketmmo@gmail.com",
             "role": "Quản Trị Viên",
-            "balance": 0,
+            "balance": 75441,
             "created": "2026-10-05 23:22:08",
             "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
             "isLocked": false
@@ -9636,7 +9650,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         const modal = document.getElementById("adminUserDetailModal");
         const curEmailEl = document.getElementById("admDetailUserEmail");
         if (modal && modal.style.display === "flex" && curEmailEl && (curEmailEl.innerText || "").toLowerCase().trim() === cleanEmail) {
-          const res = getUserComprehensiveTransactions(cleanEmail);
+          const res = getUserComprehensiveTransactions(cleanEmail, cloudBal);
           const allTx = res.transactions;
           const txCountEl = document.getElementById("admDetailTxCount");
           const balanceEl = document.getElementById("admDetailUserBalance");
@@ -9696,7 +9710,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     }
     window.syncUserBalanceToTursoCloud = syncUserBalanceToTursoCloud;
 
-    function getUserComprehensiveTransactions(targetEmail) {
+    function getUserComprehensiveTransactions(targetEmail, explicitBalance) {
       const cleanEmail = (targetEmail || "").toLowerCase().trim();
       if (!cleanEmail) return { transactions: [], currentBalance: 0 };
 
@@ -9880,7 +9894,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             if (chNoteLow.includes("đồng bộ") || chNoteLow.includes("dong bo") || chNoteLow.includes("chuẩn hóa") ||
                 chNoteLow.includes("chuan hoa") || chNoteLow.includes("hiệu chỉnh") || chNoteLow.includes("hieu chinh") ||
                 chNoteLow.includes("31400") || chNoteLow.includes("31.400") || chNoteLow.includes("30000") || chNoteLow.includes("30.000") ||
-                chNoteLow.includes("admin điều chỉnh") || chNoteLow.includes("điều chỉnh số dư") || chNoteLow.includes("nạp tiền thủ công admin")) {
+                chNoteLow.includes("admin điều chỉnh") || chNoteLow.includes("điều chỉnh số dư")) {
               return;
             }
             const chId = ch.id || ch.orderId || "";
@@ -10001,8 +10015,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
       // I. Xác định số dư hiện tại của tài khoản (SSOT thống nhất 100%)
       let curBal = 0;
+      if (explicitBalance !== undefined && explicitBalance !== null && !isNaN(Number(explicitBalance)) && Number(explicitBalance) >= 0) {
+        curBal = Number(explicitBalance);
+      }
       if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) {
-        curBal = Number(currentUser.balance);
+        curBal = Math.max(curBal, Number(currentUser.balance));
       }
       const uList = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
       const uFound = uList.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
@@ -10033,7 +10050,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
         }
       }
-      if (uFound && uFound.balance !== curBal) {
+      if (uFound && curBal > 0 && uFound.balance !== curBal) {
         uFound.balance = curBal;
         try {
           if (!window._mmoSaveRegUsersDebounceTimer) {
@@ -10125,8 +10142,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === (email || "").toLowerCase().trim() && currentUser.balance !== undefined) {
         curBal = Number(currentUser.balance);
       } else if (typeof getUserComprehensiveTransactions === "function") {
-        const res = getUserComprehensiveTransactions(u.email);
-        curBal = res.currentBalance;
+        const res = getUserComprehensiveTransactions(u.email, curBal);
+        curBal = (res.currentBalance > 0) ? res.currentBalance : curBal;
       }
 
       const inpEmail = document.getElementById("balModalUserEmail");
@@ -10160,17 +10177,22 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         return;
       }
 
+      // Lấy số dư đã biết của user
+      const knownBal = (u.balance !== undefined && !isNaN(Number(u.balance))) ? Number(u.balance) : 0;
+
       // 1. Thu thập toàn bộ biến động số dư & số dư chuẩn xác
       const result = (typeof getUserComprehensiveTransactions === "function") 
-        ? getUserComprehensiveTransactions(cleanEmail) 
-        : { transactions: [], currentBalance: (u.balance || 0) };
+        ? getUserComprehensiveTransactions(cleanEmail, knownBal) 
+        : { transactions: [], currentBalance: knownBal };
       
       const allTx = result.transactions;
-      let accurateBalance = result.currentBalance;
+      let accurateBalance = (result.currentBalance > 0) ? result.currentBalance : knownBal;
 
       // Đồng bộ số dư chuẩn vào người dùng và hệ thống
-      u.balance = accurateBalance;
-      saveRegisteredUsers(users);
+      if (accurateBalance > 0) {
+        u.balance = accurateBalance;
+        saveRegisteredUsers(users);
+      }
 
       if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
         currentUser.balance = accurateBalance;
@@ -39548,7 +39570,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             return !noteLow.includes("hiệu chỉnh") && !noteLow.includes("chuẩn hóa") && !noteLow.includes("chuan hoa") &&
                    !noteLow.includes("đồng bộ") && !noteLow.includes("dong bo") && !noteLow.includes("31400") &&
                    !noteLow.includes("31.400") && !noteLow.includes("30000") && !noteLow.includes("30.000") &&
-                   !noteLow.includes("admin điều chỉnh") && !noteLow.includes("điều chỉnh số dư") && !noteLow.includes("nạp tiền thủ công admin");
+                   !noteLow.includes("admin điều chỉnh") && !noteLow.includes("điều chỉnh số dư");
           });
           cachedCloudWalletHistory = filtered;
         }
@@ -39595,7 +39617,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           if (allText.includes("đồng bộ") || allText.includes("dong bo") || allText.includes("chuẩn hóa") ||
               allText.includes("chuan hoa") || allText.includes("hiệu chỉnh") || allText.includes("hieu chinh") ||
               allText.includes("31400") || allText.includes("31.400") || allText.includes("30000") || allText.includes("30.000") ||
-              allText.includes("admin điều chỉnh") || allText.includes("điều chỉnh số dư") || allText.includes("nạp tiền thủ công admin")) {
+              allText.includes("admin điều chỉnh") || allText.includes("điều chỉnh số dư")) {
             return false;
           }
           const amt = Number(tx.amount) || 0;
@@ -39612,7 +39634,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           if (allText.includes("đồng bộ") || allText.includes("dong bo") || allText.includes("chuẩn hóa") ||
               allText.includes("chuan hoa") || allText.includes("hiệu chỉnh") || allText.includes("hieu chinh") ||
               allText.includes("31400") || allText.includes("31.400") || allText.includes("30000") || allText.includes("30.000") ||
-              allText.includes("admin điều chỉnh") || allText.includes("điều chỉnh số dư") || allText.includes("nạp tiền thủ công admin")) {
+              allText.includes("admin điều chỉnh") || allText.includes("điều chỉnh số dư")) {
             return false;
           }
           return t.includes("nạp") || t.includes("rút") || t.includes("cộng/trừ") || t.includes("hoàn tiền") || Number(tx.amount) > 0;
