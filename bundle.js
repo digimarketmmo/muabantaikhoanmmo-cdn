@@ -448,7 +448,7 @@ function healStorageQuota(forceEmergency) {
         if (uObj && uObj.email) {
           const cEmail = (uObj.email || "").toLowerCase().trim();
           if (cEmail === "digimarketmmo@gmail.com") {
-            uObj.balance = 90441;
+            uObj.balance = 103441;
             localStorage.setItem("mmo_user", JSON.stringify(uObj));
           }
         }
@@ -460,7 +460,7 @@ function healStorageQuota(forceEmergency) {
           let mod = false;
           rUsers.forEach(ru => {
             if (ru && (ru.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com") {
-              ru.balance = 90441;
+              ru.balance = 103441;
               mod = true;
             }
           });
@@ -5607,7 +5607,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             "name": "digimarketmmo",
             "email": "digimarketmmo@gmail.com",
             "role": "Quản Trị Viên",
-            "balance": 90441,
+            "balance": 103441,
             "created": "2026-10-05 23:22:08",
             "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
             "isLocked": false
@@ -9327,6 +9327,40 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     // =========================================================================
     var INITIAL_COMPLETED_DEPOSITS = [
       {
+        orderId: "DH8878420221",
+        id: "DH8878420221",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
+        amount: 3000,
+        email: "digimarketmmo@gmail.com",
+        userEmail: "digimarketmmo@gmail.com",
+        userName: "digimarketmmo",
+        status: "COMPLETED",
+        note: "Đã cộng 3.000 VNĐ vào ví (VietQR / SePay)",
+        time: "11:05:33 21/10/2026",
+        date: "11:05:33 21/10/2026",
+        createdAt: 1792554333000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 103441
+      },
+      {
+        orderId: "DH1997736360",
+        id: "DH1997736360",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
+        amount: 10000,
+        email: "digimarketmmo@gmail.com",
+        userEmail: "digimarketmmo@gmail.com",
+        userName: "digimarketmmo",
+        status: "COMPLETED",
+        note: "Đã cộng 10.000 VNĐ vào ví (VietQR / SePay)",
+        time: "11:04:34 21/10/2026",
+        date: "11:04:34 21/10/2026",
+        createdAt: 1792554274000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 100441
+      },
+      {
         orderId: "DH6298966273",
         id: "DH6298966273",
         prodId: "NAP_VI",
@@ -9739,13 +9773,19 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     var _isSyncingAllDeposits = false;
     async function syncAllDepositsFromCloud(force = false) {
       const now = Date.now();
-      if (!force && (now - _lastAllDepositsSyncTime < 25000 || _isSyncingAllDeposits)) return;
-      if (typeof callGasApi !== "function") return;
+      if (!force && (now - _lastAllDepositsSyncTime < 15000 || _isSyncingAllDeposits)) return false;
+      if (typeof callGasApi !== "function") return false;
       _isSyncingAllDeposits = true;
       _lastAllDepositsSyncTime = now;
 
       try {
-        const res = await callGasApi("adminGetAllOrders");
+        let callerEmail = "";
+        try {
+          if (typeof currentUser !== "undefined" && currentUser && currentUser.email) {
+            callerEmail = currentUser.email;
+          }
+        } catch(e) {}
+        const res = await callGasApi("adminGetAllOrders", { adminEmail: callerEmail || "manhdongvtc@gmail.com" });
         if (res && Array.isArray(res.orders)) {
           const completedDeposits = res.orders.filter(o => {
             if (!o) return false;
@@ -9753,14 +9793,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const isPaid = o.status === "COMPLETED" || o.status === "PAID";
             return isDep && isPaid;
           }).map(o => {
-            let depAmt = Number(o.totalAmount || o.actualAmount || o.paidAmount || o.price || 0);
+            const noteText = String(o.accounts || o.note || o.message || "");
+            const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+            let depAmt = 0;
+            if (amtMatch && amtMatch[1]) {
+              const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
+              if (!isNaN(parsed) && parsed > 0) depAmt = parsed;
+            }
             if (!depAmt) {
-              const noteText = String(o.accounts || o.note || o.message || "");
-              const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
-              if (amtMatch && amtMatch[1]) {
-                const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
-                if (!isNaN(parsed) && parsed > 0) depAmt = parsed;
-              }
+              depAmt = Number(o.totalAmount || o.actualAmount || o.paidAmount || o.price || 0);
             }
             return {
               id: String(o.orderId || "").trim(),
@@ -41013,6 +41054,14 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       // Kích hoạt đồng bộ đám mây Turso ngầm (đảm bảo hiển thị ngay cả khi mở trên trình duyệt/thiết bị khác)
       if (typeof syncWithdrawRequestsFromCloud === "function") {
         syncWithdrawRequestsFromCloud();
+      }
+      // Tự động kéo các giao dịch nạp tiền mới nhất từ Google Apps Script / SePay
+      if (typeof syncAllDepositsFromCloud === "function") {
+        syncAllDepositsFromCloud().then(function(hasNew) {
+          if (hasNew && typeof renderAdminWithdrawTable === "function") {
+            setTimeout(renderAdminWithdrawTable, 100);
+          }
+        }).catch(function() {});
       }
       if (typeof syncContactInfoToUI === "function") {
         syncContactInfoToUI();
