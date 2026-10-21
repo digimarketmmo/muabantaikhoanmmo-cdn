@@ -35062,8 +35062,8 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       // [SMART ALIAS CHO GMAIL THUÊ / LIVE TRÊN SELLMMO]: Khắc phục triệt để lỗi "Mất kết nối đến kho hàng"
       const curPId = p ? (p.id || "") : "";
       const curSId = apiMap ? String(apiMap.sourceProdId || "").replace(/[^\d]/g, "") : "";
-      // Nhóm 1: Gmail cho thuê 2 - 4h / 12h live -> sellmmo 39341
-      if (["PROD_MTQX1C7X", "PROD_MTQQXO2E", "PROD_MTQX7SIK"].includes(curPId) || ["712", "19957", "34752", "39182"].includes(curSId)) {
+      // Nhóm 1: Gmail cho thuê 2 - 4h / 12h live -> sellmmo 39341 (ngoại trừ mail72h hoạt động độc lập)
+      if ((["PROD_MTQX1C7X", "PROD_MTQX7SIK"].includes(curPId) && (!apiMap || apiMap.provider !== "mail72h")) || ["19957", "34752"].includes(curSId)) {
         if (!apiMap) apiMap = {};
         apiMap.enabled = true;
         apiMap.provider = "sellmmo";
