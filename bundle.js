@@ -44868,17 +44868,26 @@ function initMMOApplication() {
     }
     window.uploadChatImageToCdn = uploadChatImageToCdn;
 
-    // Helper: Trích xuất link ảnh từ tin nhắn (hỗ trợ cả m.imageUrl, URL trong text, và base64)
+    // Helper: Trích xuất link ảnh từ tin nhắn (hỗ trợ cả m.imageUrl, URL trong text, và base64) - Đã khử độc phòng chống XSS
     function extractChatImageUrl(m) {
       if (!m) return "";
+      var url = "";
       if (m.imageUrl && typeof m.imageUrl === "string" && m.imageUrl.trim()) {
-        return m.imageUrl.trim();
-      }
-      if (m.text && typeof m.text === "string") {
+        url = m.imageUrl.trim();
+      } else if (m.text && typeof m.text === "string") {
         const match = m.text.match(/(https?:\/\/[^\s"'<>]+\/(?:api\/images\/|images\/)[^\s"'<>]+|https?:\/\/[^\s"'<>]+\.(?:png|jpe?g|webp|gif)(?:\?[^\s"'<>]*)?|data:image\/[a-zA-Z0-9+]+;base64,[^\s"'<>]+)/i);
-        if (match) return match[1];
+        if (match) url = match[1];
       }
-      return "";
+      if (!url) return "";
+      // Strict XSS check: allow only http/https or data:image/
+      if (!/^(https?:\/\/|data:image\/(?:png|jpe?g|webp|gif);base64,)/i.test(url)) {
+        return "";
+      }
+      // Ensure no quotes or control characters
+      if (/[<>"'\s]/.test(url)) {
+        return "";
+      }
+      return url;
     }
     window.extractChatImageUrl = extractChatImageUrl;
 
@@ -45027,13 +45036,16 @@ function initMMOApplication() {
     window.cancelChatImageUpload = cancelChatImageUpload;
 
     function openChatImageLightbox(src) {
-      if (!src) return;
+      if (!src || typeof src !== "string") return;
+      var cleanSrc = src.trim();
+      if (!/^(https?:\/\/|data:image\/(?:png|jpe?g|webp|gif);base64,)/i.test(cleanSrc)) return;
+      if (/[<>"'\s]/.test(cleanSrc)) return;
       const modal = document.getElementById("chatImageLightbox");
       const img = document.getElementById("chatImageLightboxImg");
       const dl = document.getElementById("chatImageLightboxDownload");
       if (modal && img) {
-        img.src = src;
-        if (dl) dl.href = src;
+        img.src = cleanSrc;
+        if (dl) dl.href = cleanSrc;
         modal.style.display = "flex";
       }
     }
@@ -45395,7 +45407,8 @@ function initMMOApplication() {
         const imgUrl = extractChatImageUrl(m);
         const cleanText = extractChatCleanText(m, imgUrl);
         const hasImg = !!imgUrl;
-        const imgBlock = hasImg ? "<div style='margin-top:6px; cursor:pointer;' onclick='openChatImageLightbox(\"" + imgUrl.replace(/'/g, "\\'") + "\")'><img src='" + imgUrl + "' alt='Ảnh đính kèm' style='max-width:100%; max-height:220px; border-radius:8px; border:1px solid rgba(255,255,255,0.18); object-fit:cover; display:block; transition:transform 0.2s;' onmouseover='this.style.transform=\"scale(1.02)\"' onmouseout='this.style.transform=\"scale(1)\"' /></div>" : "";
+        const safeImgUrl = hasImg ? encodeURI(imgUrl).replace(/'/g, "%27").replace(/"/g, "%22") : "";
+        const imgBlock = hasImg ? "<div style='margin-top:6px; cursor:pointer;' onclick='openChatImageLightbox(\"" + safeImgUrl + "\")'><img src='" + safeImgUrl + "' alt='Ảnh đính kèm' style='max-width:100%; max-height:220px; border-radius:8px; border:1px solid rgba(255,255,255,0.18); object-fit:cover; display:block; transition:transform 0.2s;' onmouseover='this.style.transform=\"scale(1.02)\"' onmouseout='this.style.transform=\"scale(1)\"' /></div>" : "";
         const textBlock = cleanText ? ("<div>" + (function(t) {
           let s = escapeHtml(t).replace(/\n/g, "<br/>");
           return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}))/gi, function(match, fullCode, cleanCode) {
@@ -45696,7 +45709,8 @@ function initMMOApplication() {
           const imgUrl = extractChatImageUrl(m);
           const cleanText = extractChatCleanText(m, imgUrl);
           const hasImg = !!imgUrl;
-          const imgBlock = hasImg ? "<div style='margin-top:6px; cursor:pointer;' onclick='openChatImageLightbox(\"" + imgUrl.replace(/'/g, "\\'") + "\")'><img src='" + imgUrl + "' alt='Ảnh đính kèm' style='max-width:100%; max-height:240px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); object-fit:cover; display:block; transition:transform 0.2s;' onmouseover='this.style.transform=\"scale(1.02)\"' onmouseout='this.style.transform=\"scale(1)\"' /></div>" : "";
+          const safeImgUrl = hasImg ? encodeURI(imgUrl).replace(/'/g, "%27").replace(/"/g, "%22") : "";
+          const imgBlock = hasImg ? "<div style='margin-top:6px; cursor:pointer;' onclick='openChatImageLightbox(\"" + safeImgUrl + "\")'><img src='" + safeImgUrl + "' alt='Ảnh đính kèm' style='max-width:100%; max-height:240px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); object-fit:cover; display:block; transition:transform 0.2s;' onmouseover='this.style.transform=\"scale(1.02)\"' onmouseout='this.style.transform=\"scale(1)\"' /></div>" : "";
           const textBlock = cleanText ? ("<div>" + (function(t) {
             let s = escapeHtml(t).replace(/\n/g, "<br/>");
             return s.replace(/(#?(DH\d{6,15}|MMO\d{6,15}|PRE\d{6,15}))/gi, function(match, fullCode, cleanCode) {
