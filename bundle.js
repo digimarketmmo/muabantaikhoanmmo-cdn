@@ -12041,7 +12041,23 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                 if (dtlPrice && curVar) dtlPrice.innerText = formatVND(curVar.price !== undefined ? curVar.price : curP.price);
 
                 const dtlTitle = document.getElementById("dtlTitle");
-                if (dtlTitle && curP.name) dtlTitle.innerText = curP.name;
+                if (dtlTitle && curP.name) {
+                  dtlTitle.innerText = curP.name;
+                  try { document.title = curP.name; } catch(e) {}
+                }
+                try {
+                  if (typeof getProductSchemaReviews === "function") {
+                    const rData = getProductSchemaReviews(curP, 0);
+                    if (rData && rData.aggregateRating) {
+                      const dtlRatingTag = document.getElementById("dtlRatingTag");
+                      if (dtlRatingTag) dtlRatingTag.innerHTML = "<i class='fa-solid fa-star' style='color:#fbbf24;'></i> " + rData.aggregateRating.ratingValue;
+                      const dtlRatingVal = document.getElementById("dtlRatingVal");
+                      if (dtlRatingVal) dtlRatingVal.innerText = rData.aggregateRating.ratingValue + "/5";
+                      const dtlReviewCount = document.getElementById("dtlReviewCount");
+                      if (dtlReviewCount) dtlReviewCount.innerText = "(" + rData.aggregateRating.reviewCount + " đánh giá uy tín)";
+                    }
+                  }
+                } catch(e) {}
                 const dtlImg = document.getElementById("dtlImage");
                 const curImg = (typeof resolveProductImage === "function") ? resolveProductImage(curP) : (curP.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
                 if (dtlImg && curImg && dtlImg.src !== curImg) dtlImg.src = curImg;
@@ -36454,7 +36470,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
         window.history.replaceState(null, "", window.location.origin + cleanShortPath);
         if (b.title) {
-          try { const bP = (typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile() : { brandName: "MUABANTAIKHOANMMO.COM" }; document.title = b.title + " | " + bP.brandName; } catch(e) {}
+          try { document.title = b.title; } catch(e) {}
         }
       } catch(e) {}
 
@@ -43697,7 +43713,16 @@ function initMMOApplication() {
               detailScriptEl.type = "application/ld+json";
               document.head.appendChild(detailScriptEl);
             }
-            const prodUrl = window.location.href.split('?')[0].split('#')[0];
+            const prodUrl = (curP && curP.id && !isItemPage)
+              ? (siteUrl + "?prod=" + encodeURIComponent(curP.id) + "&view=viewProductDetail")
+              : window.location.href.split('#')[0];
+            try {
+              let canLink = document.querySelector("link[rel='canonical']");
+              if (canLink && curP && curP.id) canLink.href = prodUrl;
+            } catch(e) {}
+            if (curP && curP.name) {
+              try { document.title = curP.name; } catch(e) {}
+            }
             const price = (curP.variants && curP.variants[0] && curP.variants[0].price) ? curP.variants[0].price : (curP.price || 20000);
             const imgUrl = (typeof resolveProductSeoSchemaImage === "function") ? resolveProductSeoSchemaImage(curP) : ((curP.image && !curP.image.startsWith("data:") && !curP.image.includes("nFV4Rln")) ? curP.image : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
             const ratingData = getProductSchemaReviews(curP, 0);
@@ -43711,6 +43736,18 @@ function initMMOApplication() {
               const rCountEl = document.getElementById("articleReviewCount");
               if (rCountEl && ratingData && ratingData.aggregateRating) {
                 rCountEl.innerText = "(" + ratingData.aggregateRating.reviewCount + " đánh giá hữu ích)";
+              }
+              const dtlRatingVal = document.getElementById("dtlRatingVal");
+              if (dtlRatingVal && ratingData && ratingData.aggregateRating) {
+                dtlRatingVal.innerText = ratingData.aggregateRating.ratingValue + "/5";
+              }
+              const dtlReviewCount = document.getElementById("dtlReviewCount");
+              if (dtlReviewCount && ratingData && ratingData.aggregateRating) {
+                dtlReviewCount.innerText = "(" + ratingData.aggregateRating.reviewCount + " đánh giá uy tín)";
+              }
+              const dtlRatingTag = document.getElementById("dtlRatingTag");
+              if (dtlRatingTag && ratingData && ratingData.aggregateRating) {
+                dtlRatingTag.innerHTML = "<i class='fa-solid fa-star' style='color:#fbbf24;'></i> " + ratingData.aggregateRating.ratingValue;
               }
             } catch(e) {}
 
@@ -43812,7 +43849,7 @@ function initMMOApplication() {
               "name": "Danh Sach San Pham Tai Khoan MMO - " + ((typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile().brandName : "MUABANTAIKHOANMMO.COM"),
               "numberOfItems": visibleProds.length,
               "itemListElement": visibleProds.map((p, idx) => {
-                const prodUrl = baseUrl + "/?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
+                const prodUrl = siteUrl + "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
                 const price = (p.variants && p.variants[0] && p.variants[0].price) ? p.variants[0].price : (p.price || 0);
                 const imgUrl = (typeof resolveProductSeoSchemaImage === "function") ? resolveProductSeoSchemaImage(p) : ((p.image && !p.image.startsWith("data:") && !p.image.includes("nFV4Rln")) ? p.image : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
                 const ratingData = getProductSchemaReviews(p, idx);
