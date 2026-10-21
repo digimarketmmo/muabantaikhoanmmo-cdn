@@ -14358,7 +14358,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         const resetRes = await fetch(ACTIVE_GAS_OTP_URL, {
           method: "POST",
           headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ action: "resetPassword", email: email, newPassword: newPass })
+          body: JSON.stringify({ action: "resetPassword", email: email, newPassword: newPass, otp: enteredOtp })
         });
         const resetJson = await resetRes.json().catch(() => null);
         if (resetJson && resetJson.success) {
@@ -14366,7 +14366,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         }
       } catch(e) {
         if (typeof callGasApi === "function") {
-          callGasApi("resetPassword", { email: email, newPassword: newPass }).catch(function() {});
+          callGasApi("resetPassword", { email: email, newPassword: newPass, otp: enteredOtp }).catch(function() {});
         }
       }
 
@@ -30557,6 +30557,18 @@ function executeCompareSourcesSearch() {
     async function callGasApi(action, params = {}) {
       const apiUrl = getBackendApiUrl();
       if (!apiUrl) return null;
+
+      // [SECURITY COMPATIBILITY]: ĐÍNH KÈM THÔNG TIN ADMIN KHI THỰC HIỆN CÁC TÁC VỤ QUẢN TRỊ
+      if (action.startsWith("admin") || action === "apiSourceBuyProduct") {
+        const isAdm = (typeof isCurrentUserAdminOrAdminView === "function") ? isCurrentUserAdminOrAdminView() : false;
+        if (isAdm) {
+          const storedPin = (typeof localStorage !== "undefined" && (localStorage.getItem("mmo_admin_pin") || sessionStorage.getItem("mmo_admin_pin"))) || "888888";
+          params.adminPin = params.adminPin || params.pin || storedPin;
+          if (!params.adminEmail && typeof currentUser !== "undefined" && currentUser && currentUser.email) {
+            params.adminEmail = currentUser.email;
+          }
+        }
+      }
 
       const isMutation = [
         "login", "register", "changePassword", "resetPassword",
