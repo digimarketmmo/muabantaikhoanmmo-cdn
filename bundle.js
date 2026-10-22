@@ -4753,17 +4753,17 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "variants": [
       {
         "name": "mail 10 phut",
-        "price": 400,
-        "stock": 1242,
+        "price": 217,
+        "stock": 17000,
         "apiMapping": {
           "enabled": true,
-          "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-          "sourceProdId": "39178",
-          "sourceProdName": "[Gmail Edu] #39178 10 phút - 1h ramdom trùng - 89 đ (Tồn: 1.242)",
-          "sourcePrice": 89,
-          "sourceStock": 1242,
+          "provider": "sellmmo",
+          "baseUrl": "https://sellmmo.vn",
+          "apiKey": "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
+          "sourceProdId": "39073",
+          "sourceProdName": "Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️",
+          "sourcePrice": 175.23,
+          "sourceStock": 17000,
           "isSourceDeleted": false,
           "targetProdId": "PROD_MTQX465U",
           "targetProdName": "Gmail cho Thuế - 10 phút - live 10 phút"
@@ -21366,7 +21366,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
             }
             const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), {
               headers: reqHeaders,
-              signal: createFastSignal(3500)
+              signal: createFastSignal(7500)
             });
             if (resp.ok) {
               const rawText = await resp.text();
@@ -21477,7 +21477,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
             }
             const resp = await fetch(workerProxy + "?url=" + encodeURIComponent(target), {
               headers: reqHeaders,
-              signal: createFastSignal(3500)
+              signal: createFastSignal(7500)
             });
             if (resp.ok) {
               const rawText = await resp.text();
@@ -21762,9 +21762,9 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       mail72h: 14842,
       sellmmo: 11406,
       nguyenlieummo: 30441,
-      selltainguyenmmo: 127416,
+      selltainguyenmmo: 121159,
       shop1989nd: 39798,
-      ultrammo: 57318
+      ultrammo: 47
     };
 
     if (typeof window.cachedSourceBalances === "undefined" || !window.cachedSourceBalances) {
@@ -35077,8 +35077,9 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       // [SMART ALIAS CHO GMAIL THUÊ / LIVE TRÊN SELLMMO]: Khắc phục triệt để lỗi "Mất kết nối đến kho hàng"
       const curPId = p ? (p.id || "") : "";
       const curSId = apiMap ? String(apiMap.sourceProdId || "").replace(/[^\d]/g, "") : "";
+      const normCurPId = curPId.replace(/_[0-9]+$/, "").toUpperCase();
       // Nhóm 1: Gmail cho thuê 2 - 4h / 12h live -> sellmmo 39341 (ngoại trừ mail72h hoạt động độc lập)
-      if ((["PROD_MTQX1C7X", "PROD_MTQX7SIK"].includes(curPId) && (!apiMap || apiMap.provider !== "mail72h")) || ["19957", "34752"].includes(curSId)) {
+      if ((["PROD_MTQX1C7X", "PROD_MTQX7SIK", "PROD_MTQQXO2E"].includes(normCurPId) && (!apiMap || apiMap.provider !== "mail72h")) || ["19957", "34752", "39182"].includes(curSId)) {
         if (!apiMap) apiMap = {};
         apiMap.enabled = true;
         apiMap.provider = "sellmmo";
@@ -35089,7 +35090,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         apiMap.apiKey = apiMap.apiKey || "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO";
       }
       // Nhóm 2: Gmail cho thuê 10 phút - 1h live -> sellmmo 39073
-      else if (curPId === "PROD_MTQX465U" || ["19773", "19768", "19745", "19524", "23463", "25255", "30878", "31953", "35097", "33097"].includes(curSId)) {
+      else if (normCurPId === "PROD_MTQX465U" || ["19773", "19768", "19745", "19524", "23463", "25255", "25395", "30878", "31953", "35097", "33097", "39178"].includes(curSId)) {
         if (!apiMap) apiMap = {};
         apiMap.enabled = true;
         apiMap.provider = "sellmmo";

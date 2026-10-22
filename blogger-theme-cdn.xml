@@ -347,7 +347,7 @@
     }
   </style>
   <link rel='preconnect' href='https://cdn.jsdelivr.net' crossorigin='anonymous'/>
-  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.3.6/bundle.min.js?v=6.3.5' as='script'/>
+  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.3.7/bundle.min.js?v=6.3.7' as='script'/>
   <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v5.4.4/theme.min.css?v=5.4.4' as='style'/>
   <script>
     /* BẢO TỒN DỮ LIỆU KHO HÀNG ĐÃ XÓA (0MS) */
@@ -1527,7 +1527,7 @@
 /* ==========================================================================
    MUABANTAIKHOANMMO.COM - CDN THEME ENGINE
    CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.3.6/theme.min.css?v=6.3.3
-   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.3.6/bundle.min.js?v=6.3.5
+   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.3.7/bundle.min.js?v=6.3.7
    ========================================================================== */
 body { margin: 0; padding: 0; background: #070a12; color: #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif; }
 
@@ -8870,8 +8870,9 @@ header.header {
                 <span style='font-size:0.7rem; color:#10b981;'><i class='fa-solid fa-circle-check'></i> Đang kết nối</span>
               </div>
               <div style='font-size:0.78rem; color:#94a3b8;'>
-                Ví: <strong id='apiSourceMoneyDisplay_ultrammo' style='color:#ec4899; font-weight:800; font-size:1.05rem;'>57.318 đ</strong>
+                Ví: <strong id='apiSourceMoneyDisplay_ultrammo' style='color:#ec4899; font-weight:800; font-size:1.05rem;'>47 đ</strong>
                 <span style='color:#64748b;'> (manhdong)</span>
+                <span style='font-size:0.7rem; color:#10b981; margin-left:6px; font-weight:600;' title='Tự động chuyển tiếp thông suốt sang SellMMO / SellTaiNguyenMMO'><i class='fa-solid fa-shield-halved'></i> Tự động chuyển nguồn</span>
               </div>
             </div>
             <div style='display:flex; gap:6px;'>
@@ -12762,7 +12763,7 @@ print(res.json())</pre>
   <!-- ==========================================================================
        OFFLOADED CDN JAVASCRIPT BUNDLE (ALL FUNCTIONS AND MODULES)
        ========================================================================== -->
-  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.3.6/bundle.min.js?v=6.3.5' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
+  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.3.7/bundle.min.js?v=6.3.7' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
   <script type='text/javascript'>
     //<![CDATA[
     (function() {
@@ -13196,7 +13197,7 @@ print(res.json())</pre>
         console.warn("CDN primary slow or failed, falling back to Fastly mirror...");
         var fb = document.createElement("script");
         fb.defer = true;
-        fb.src = "https://fastly.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.3.6/bundle.min.js?v=6.3.5";
+        fb.src = "https://fastly.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.3.7/bundle.min.js?v=6.3.7";
         fb.onload = bootMMOCdnApp;
         document.body.appendChild(fb);
       }
