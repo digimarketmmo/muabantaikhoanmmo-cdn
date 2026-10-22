@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "6.1.8";
+var MMO_CURRENT_CODE_VERSION = "6.3.9";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
@@ -15093,40 +15093,49 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         if (authArea) {
           const avatarUrl = currentUser.avatar || ("https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(currentUser.email));
           const displayName = currentUser.name || currentUser.email.split("@")[0];
-          authArea.innerHTML = `
-            <div style="display:flex; align-items:center; gap:8px;">
-              
-              <div class="header-notif-wrap" id="headerNotifWrap" style="position:relative;">
-                <button type="button" class="btn-header-notif" onclick="event.stopPropagation(); toggleHeaderNotifDropdown();" title="Thông báo hệ thống" style="position:relative; width:34px; height:34px; border-radius:50%; background:rgba(30,41,59,0.85); border:1px solid #334155; color:#cbd5e1; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.color='#38bdf8'; this.style.borderColor='#38bdf8'; this.style.background='#1e293b';" onmouseout="this.style.color='#cbd5e1'; this.style.borderColor='#334155'; this.style.background='rgba(30,41,59,0.85)';">
-                  <i class="fa-solid fa-bell" style="font-size:0.95rem;"></i>
-                  <span id="headerNotifBadge" style="display:none; position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:0.65rem; font-weight:800; padding:1px 5px; border-radius:10px; min-width:14px; text-align:center; border:1px solid #0f172a; box-shadow:0 2px 5px rgba(239,68,68,0.5);">0</span>
-                </button>
-
+          
+          const existingNotifWrap = authArea.querySelector(".header-notif-wrap");
+          if (!existingNotifWrap) {
+            authArea.innerHTML = `
+              <div style="display:flex; align-items:center; gap:8px;">
                 
-                <div id="headerNotifDropdown" style="display:none; position:absolute; right:0; top:42px; width:330px; max-width:90vw; background:#0b1320; border:1px solid #1e293b; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.7); z-index:9999; overflow:hidden;">
-                  <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#0f172a; border-bottom:1px solid #1e293b;">
-                    <div style="font-weight:700; font-size:0.85rem; color:#fff; display:flex; align-items:center; gap:6px;">
-                      <i class="fa-solid fa-bell" style="color:#38bdf8;"></i> Thông Báo
+                <div class="header-notif-wrap" id="headerNotifWrap" style="position:relative;">
+                  <button type="button" class="btn-header-notif" onclick="event.stopPropagation(); toggleHeaderNotifDropdown();" title="Thông báo hệ thống" style="position:relative; width:34px; height:34px; border-radius:50%; background:rgba(30,41,59,0.85); border:1px solid #334155; color:#cbd5e1; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.color='#38bdf8'; this.style.borderColor='#38bdf8'; this.style.background='#1e293b';" onmouseout="this.style.color='#cbd5e1'; this.style.borderColor='#334155'; this.style.background='rgba(30,41,59,0.85)';">
+                    <i class="fa-solid fa-bell" style="font-size:0.95rem;"></i>
+                    <span id="headerNotifBadge" style="display:none; position:absolute; top:-4px; right:-4px; background:#ef4444; color:#fff; font-size:0.65rem; font-weight:800; padding:1px 5px; border-radius:10px; min-width:14px; text-align:center; border:1px solid #0f172a; box-shadow:0 2px 5px rgba(239,68,68,0.5);">0</span>
+                  </button>
+
+                  
+                  <div id="headerNotifDropdown" style="display:none; position:absolute; right:0; top:42px; width:330px; max-width:90vw; background:#0b1320; border:1px solid #1e293b; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.7); z-index:999999; overflow:hidden;">
+                    <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:#0f172a; border-bottom:1px solid #1e293b;">
+                      <div style="font-weight:700; font-size:0.85rem; color:#fff; display:flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-bell" style="color:#38bdf8;"></i> Thông Báo
+                      </div>
+                      <button type="button" onclick="markAllNotificationsAsRead()" style="background:none; border:none; color:#38bdf8; font-size:0.72rem; cursor:pointer; font-weight:600;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Đã đọc tất cả</button>
                     </div>
-                    <button type="button" onclick="markAllNotificationsAsRead()" style="background:none; border:none; color:#38bdf8; font-size:0.72rem; cursor:pointer; font-weight:600;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">Đã đọc tất cả</button>
-                  </div>
-                  <div id="headerNotifList" style="max-height:350px; overflow-y:auto;">
-                    
+                    <div id="headerNotifList" style="max-height:350px; overflow-y:auto;">
+                      
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              
-              <div class="user-header-pill" style="display:flex; align-items:center; gap:6px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); padding:3px 8px; border-radius:20px; cursor:pointer;" onclick="switchView('viewProfile')">
-                <img src="${avatarUrl}" alt="Avatar ${escapeHtml(displayName)}" style="width:26px; height:26px; border-radius:50%; object-fit:cover; border:1px solid #10b981;" />
-                <span class="header-user-name" style="font-size:0.82rem; font-weight:700; color:#fff; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(displayName)}</span>
-                <button onclick="event.stopPropagation(); logoutUser();" title="Đăng xuất" style="background:none; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer; padding:0 2px; margin-left:2px;">
-                  <i class="fa-solid fa-right-from-bracket"></i>
-                </button>
+                
+                <div class="user-header-pill" style="display:flex; align-items:center; gap:6px; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); padding:3px 8px; border-radius:20px; cursor:pointer;" onclick="switchView('viewProfile')">
+                  <img src="${avatarUrl}" alt="Avatar ${escapeHtml(displayName)}" style="width:26px; height:26px; border-radius:50%; object-fit:cover; border:1px solid #10b981;" />
+                  <span class="header-user-name" style="font-size:0.82rem; font-weight:700; color:#fff; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(displayName)}</span>
+                  <button onclick="event.stopPropagation(); logoutUser();" title="Đăng xuất" style="background:none; border:none; color:#ef4444; font-size:0.85rem; cursor:pointer; padding:0 2px; margin-left:2px;">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                  </button>
+                </div>
               </div>
-            </div>
-          `;
-          setTimeout(function() { if (typeof renderHeaderNotifications === "function") renderHeaderNotifications(); }, 50);
+            `;
+          } else {
+            const uName = authArea.querySelector(".header-user-name");
+            if (uName && uName.innerText !== displayName) uName.innerText = displayName;
+            const uImg = authArea.querySelector(".user-header-pill img");
+            if (uImg && uImg.src !== avatarUrl) uImg.src = avatarUrl;
+          }
+          if (typeof renderHeaderNotifications === "function") renderHeaderNotifications();
         }
 
         // Profile View DOM elements
@@ -30591,7 +30600,8 @@ function executeCompareSourcesSearch() {
         "adminUpdateUserRole", "adminDeleteStockItem", "adminImportStock", "createOrder",
         "authGoogle", "authEmail", "verifyAdminPin", "payOrderByWallet",
         "apiSourceBuyProduct", "apiSourceGetProfile", "apiSourceGetProducts", "sendChatMessage", "markChatRead",
-        "adminUpdateBalance", "adminUpdateOrderStatus"
+        "adminUpdateBalance", "adminUpdateOrderStatus",
+        "checkOrder", "createDepositOrder", "getUserWallet", "checkDeposit", "getWallet", "getTransactions", "getPlatformTransactions"
       ].includes(action) || !!(params && (params.password || params.pass || params.pin || params.token));
 
       // Timeout an toàn: Đọc dữ liệu lớn (adminGetUsers, adminGetTransactions) 25s, auth 8s, ghi dữ liệu 8s
@@ -39669,7 +39679,24 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         let detectedAmount = Number(currentDepositAmount) > 0 ? Number(currentDepositAmount) : 0;
         let actualCreditAmt = 0;
 
-        // 0. Quét kiểm tra trước từ mmo_balance_logs cục bộ để lấy số tiền thực nạp chính xác
+        // 0. Quét kiểm tra tức thì 100ms từ Cloudflare Worker API
+        try {
+          const workerUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
+            ? MMO_WORKER_API.getApiUrl()
+            : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          const cwRes = await fetch(workerUrl + "/api/deposit/check?orderId=" + encodeURIComponent(currentCode), {
+            signal: AbortSignal.timeout(4000)
+          });
+          if (cwRes.ok) {
+            const cwJson = await cwRes.json();
+            if (cwJson && cwJson.success && (cwJson.status === "COMPLETED" || cwJson.status === "PAID")) {
+              paymentDetected = true;
+              if (Number(cwJson.amount) > 0) detectedAmount = Number(cwJson.amount);
+            }
+          }
+        } catch(eWorkerCheck) {}
+
+        // 0b. Quét kiểm tra trước từ mmo_balance_logs cục bộ để lấy số tiền thực nạp chính xác
         try {
           const rawLogs = localStorage.getItem("mmo_balance_logs");
           if (rawLogs) {
