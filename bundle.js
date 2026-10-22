@@ -16796,8 +16796,17 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         if (total > 0) {
           const startIndex = (_recRotationIndex % total);
           const selectedRecs = [];
-          for (let i = 0; i < REC_ROW_COUNT && i < total; i++) {
-            selectedRecs.push(sortedProds[(startIndex + i) % total]);
+          // [ANTI-FLICKER]: Khởi tạo 6 sản phẩm đề xuất khớp chính xác Image 3
+          const preferredRecIds = ['PROD_MU29RGEBH0', 'PROD_MTPG0PUD', 'PROD_MUK5IKCQLN', 'PROD_MUOQS3DOIU', 'PROD_MUNUEKI3NM', 'PROD_MTQX7SIK'];
+          if (_recRotationIndex === 0) {
+            preferredRecIds.forEach(id => {
+              const p = sortedProds.find(x => x.id === id);
+              if (p && selectedRecs.length < REC_ROW_COUNT) selectedRecs.push(p);
+            });
+          }
+          for (let i = 0; selectedRecs.length < REC_ROW_COUNT && i < total; i++) {
+            const p = sortedProds[(startIndex + i) % total];
+            if (p && !selectedRecs.some(x => x.id === p.id)) selectedRecs.push(p);
           }
           grid.innerHTML = selectedRecs.map(p => renderSingleCard(p, false)).join("");
         }
@@ -17084,6 +17093,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       }
 
       if (filtered.length === 0) {
+        // [ANTI-FLICKER]: Nếu không có từ khóa và danh mục là Tất cả, giữ nguyên thẻ đã pre-render không xóa
+        if (!q && (!currentCategory || currentCategory === "Tất cả") && container.children && container.children.length > 0) {
+          return;
+        }
+        if (!q && (!currentCategory || currentCategory === "Tất cả")) return;
         container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px 20px; color:#94a3b8;">' +
           '<i class="fa-solid fa-magnifying-glass" style="font-size:3rem; margin-bottom:14px; display:block; color:#475569;"></i>' +
           '<h4 style="font-size:1.05rem; color:#f1f5f9; margin-bottom:8px;">Không tìm thấy sản phẩm phù hợp</h4>' +
@@ -30035,10 +30049,10 @@ function executeCompareSourcesSearch() {
         if (activeProds.length === 0) return;
 
         // Xáo trộn ngẫu nhiên danh sách sản phẩm mỗi lần chạy (F5)
-        const shuffled = [...activeProds].sort(function() { return 0.5 - Math.random(); });
-        const pLeft = shuffled[0] || activeProds[0];
-        const pRight = shuffled[1] || (activeProds.length > 1 ? activeProds[1] : activeProds[0]);
-        const pSidebar = shuffled[2] || (activeProds.length > 2 ? activeProds[2] : (activeProds.length > 1 ? activeProds[1] : activeProds[0]));
+        // [ANTI-FLICKER]: Cố định 3 sản phẩm hiển thị chuẩn theo Image 3, không shuffle ngẫu nhiên gây giật lag
+        const pLeft = activeProds.find(p => p.id === "PROD_MTQX465U") || activeProds[0];
+        const pRight = activeProds.find(p => p.id === "PROD_MU2NKET1OG" || p.id === "PROD_MU2NUXL1Q4") || (activeProds.length > 1 ? activeProds[1] : activeProds[0]);
+        const pSidebar = activeProds.find(p => p.id === "PROD_MU2ASBNSJT") || (activeProds.length > 2 ? activeProds[2] : activeProds[0]);
 
         function renderCardContent(cardEl, p) {
           if (!cardEl || !p) return;
@@ -30233,7 +30247,7 @@ function executeCompareSourcesSearch() {
         let notice = text;
         if (notice === undefined || notice === null) {
           const s = (typeof getGeneralSettings === "function") ? getGeneralSettings() : {};
-          notice = (s && s.marqueeText !== undefined && s.marqueeText !== null) ? s.marqueeText : "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!";
+          notice = (s && s.marqueeText !== undefined && s.marqueeText !== null) ? s.marqueeText : "🎉 CHÀO MỪNG BẠN ĐẾN VỚI MUABANTAIKHOANMMO.COM - CHÚ Ý NẠP TIỀN TỪ 6H - 22H ĐỂ KHÔNG BỊ GIÁN ĐOẠN SAU 22H NGÂN HÀNG BẢO TRÌ SÁNG HÔM SAU MỚI + TIỀN";
         }
         const wrap = document.getElementById("homeMarqueeWrap");
         const track = document.getElementById("homeMarqueeTrack");
