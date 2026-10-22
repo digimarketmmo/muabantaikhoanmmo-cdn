@@ -15221,7 +15221,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const uImg = authArea.querySelector(".user-header-pill img");
             if (uImg && uImg.src !== avatarUrl) uImg.src = avatarUrl;
           }
-          if (typeof renderHeaderNotifications === "function") renderHeaderNotifications();
+          const notifDdEl = document.getElementById("headerNotifDropdown");
+          const isNotifOpen = notifDdEl && (notifDdEl.style.display === "block");
+          if (!isNotifOpen && typeof renderHeaderNotifications === "function") {
+            renderHeaderNotifications();
+          }
         }
 
         // Profile View DOM elements
@@ -15335,84 +15339,73 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         let email = userEmail || (currentUser && currentUser.email ? currentUser.email : "guest");
         const key = getUserNotificationsStorageKey(email);
         const raw = localStorage.getItem(key);
-        if (!raw) return [];
-        let parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return [];
-        let sanitized = [];
-        let lastDepTs = 0;
-        let actualDepositsMap = { "DH9742533234": 2000 };
-        try {
-          let bLogsRaw = localStorage.getItem("mmo_balance_logs");
-          if (bLogsRaw) {
-            let bLogs = JSON.parse(bLogsRaw);
-            if (Array.isArray(bLogs)) {
-              bLogs.forEach(bl => {
-                let blAmt = Number(bl.amount || bl.diff || 0);
-                if (blAmt > 0) {
-                  let r = String(bl.reason || bl.description || bl.note || "").toUpperCase();
-                  let codeM = r.match(/(DH\d+|NAP\d+|MMO\d+)/);
-                  if (codeM && codeM[1]) actualDepositsMap[codeM[1]] = blAmt;
-                }
-              });
-            }
-          }
-        } catch(eBMap) {}
+        let parsed = [];
+        if (raw) {
+          try {
+            const p = JSON.parse(raw);
+            if (Array.isArray(p)) parsed = p;
+          } catch(eParse) {}
+        }
 
-        let needSave = false;
+        const seenIds = new Set();
+        const seenOrderCodes = new Set();
+        const sanitized = [];
+
+        // 1. Giữ lại các thông báo hiện có, loại bỏ hoàn toàn trùng lặp
         parsed.forEach(n => {
-          if (!n) return;
-          if (n.type === "DEPOSIT" || (n.title && n.title.includes("Nạp tiền thành công"))) {
-            let thisTs = n.timestamp || 0;
-            if (lastDepTs && thisTs && Math.abs(lastDepTs - thisTs) < 120000) {
-              needSave = true;
-              return;
-            }
-            if (thisTs) lastDepTs = thisTs;
-
-            let targetAmt = null;
-            if (n.orderId && actualDepositsMap[n.orderId]) {
-              targetAmt = actualDepositsMap[n.orderId];
-            } else if (actualDepositsMap["DH9742533234"] && n.title && (n.title.includes("20.000") || n.title.includes("20,000"))) {
-              targetAmt = actualDepositsMap["DH9742533234"];
-            }
-
-            if (targetAmt !== null && targetAmt > 0) {
-              let fmt = (typeof formatVND === "function") ? formatVND(targetAmt) : (targetAmt.toLocaleString("vi-VN") + " đ");
-              n.title = "💰 Nạp tiền thành công +" + fmt;
-              n.message = "Hệ thống đã tự động cộng +" + fmt + " vào số dư ví của bạn.";
-              needSave = true;
-            }
+          if (!n || !n.id) return;
+          let oCode = (n.orderId || "").toUpperCase().trim();
+          if (!oCode && n.message) {
+            const mMatch = n.message.match(/#(DH\d+)/i);
+            if (mMatch) oCode = mMatch[1].toUpperCase();
           }
+          if (seenIds.has(n.id) || (oCode && seenOrderCodes.has(oCode))) return;
+          seenIds.add(n.id);
+          if (oCode) seenOrderCodes.add(oCode);
           sanitized.push(n);
         });
-        // TỰ ĐỘNG BỔ SUNG THÔNG BÁO NẠP TIỀN TỪ SỔ CÁI GIAO DỊCH THỰC TẾ NẾU CHƯA CÓ TRONG CHUÔNG
+
+        // 2. Tự động đồng bộ các giao dịch nạp tiền thực tế của user vào chuông
         try {
           const userDeps = (typeof getPlatformDepositsLocal === "function" ? getPlatformDepositsLocal() : [])
             .filter(d => (d.email || d.userEmail || "").toLowerCase().trim() === String(email).toLowerCase().trim());
+          const now = Date.now();
+          const TWO_DAYS_MS = 48 * 3600 * 1000;
+
           userDeps.forEach(d => {
-            const depOrderId = d.orderId || d.id;
+            const depOrderId = String(d.orderId || d.id || "").toUpperCase().trim();
+            if (!depOrderId) return;
             const notifId = "NOTIF_DEP_" + depOrderId;
-            const exists = sanitized.some(n => n.id === notifId || n.orderId === depOrderId);
-            if (!exists) {
-              const dAmt = Number(d.amount) || 0;
-              const fmt = (typeof formatVND === "function") ? formatVND(dAmt) : (dAmt.toLocaleString("vi-VN") + " đ");
-              sanitized.unshift({
-                id: notifId,
-                orderId: depOrderId,
-                title: "💰 Nạp tiền thành công +" + fmt,
-                message: "Hệ thống đã tự động cộng +" + fmt + " vào số dư ví của bạn (Mã giao dịch: #" + depOrderId + ").",
-                type: "DEPOSIT",
-                read: false,
-                time: d.time || d.date || new Date().toLocaleString("vi-VN"),
-                timestamp: d.createdAt || Date.now()
-              });
-              needSave = true;
-            }
+            if (seenIds.has(notifId) || seenOrderCodes.has(depOrderId)) return;
+            seenIds.add(notifId);
+            seenOrderCodes.add(depOrderId);
+
+            const dAmt = Number(d.amount) || 0;
+            const fmt = (typeof formatVND === "function") ? formatVND(dAmt) : (dAmt.toLocaleString("vi-VN") + " đ");
+            const depTs = d.createdAt || (d.time ? (Date.parse(d.time) || now) : now);
+            // Các đơn nạp quá 48h trước tự động đánh dấu đã đọc để chuông luôn gọn gàng
+            const isOld = (now - depTs > TWO_DAYS_MS);
+
+            sanitized.push({
+              id: notifId,
+              orderId: depOrderId,
+              title: "💰 Nạp tiền thành công +" + fmt,
+              message: "Hệ thống đã tự động cộng +" + fmt + " vào số dư ví của bạn (Mã giao dịch: #" + depOrderId + ").",
+              type: "DEPOSIT",
+              read: isOld,
+              time: d.time || d.date || new Date(depTs).toLocaleString("vi-VN"),
+              timestamp: depTs
+            });
           });
         } catch(eDepMerge) {}
 
-        if (needSave) {
-          try { localStorage.setItem(key, JSON.stringify(sanitized.slice(0, 50))); } catch(eS) {}
+        // 3. Luôn sắp xếp theo thời gian mới nhất lên đầu tiên (Newest First)
+        sanitized.sort((a, b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0));
+
+        // 4. Chỉ lưu vào localStorage nếu nội dung THỰC SỰ THAY ĐỔI (CHỐNG TRIỆT ĐỂ VÒNG LẶP RERENDER NHẤP NHÁY)
+        const newJson = JSON.stringify(sanitized.slice(0, 50));
+        if (newJson !== raw) {
+          try { localStorage.setItem(key, newJson); } catch(eS) {}
         }
         return sanitized;
       } catch(e) {
@@ -15532,11 +15525,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
         const badge = document.getElementById("headerNotifBadge");
         if (badge) {
+          const targetText = unreadCount > 99 ? "99+" : String(unreadCount);
           if (unreadCount > 0) {
-            badge.innerText = unreadCount > 99 ? "99+" : unreadCount;
-            badge.style.display = "inline-flex";
+            if (badge.innerText !== targetText) badge.innerText = targetText;
+            if (badge.style.display !== "inline-flex") badge.style.display = "inline-flex";
           } else {
-            badge.style.display = "none";
+            if (badge.style.display !== "none") badge.style.display = "none";
           }
         }
 
@@ -15544,15 +15538,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         if (!listContainer) return;
 
         if (notifs.length === 0) {
-          listContainer.innerHTML = '<div style="padding:28px 16px; text-align:center; color:#64748b;">' +
+          const emptyHtml = '<div style="padding:28px 16px; text-align:center; color:#64748b;">' +
             '<i class="fa-regular fa-bell-slash" style="font-size:1.8rem; display:block; margin-bottom:8px; opacity:0.4;"></i>' +
             '<div style="font-size:0.85rem; font-weight:600;">Bạn chưa có thông báo nào</div>' +
             '<div style="font-size:0.75rem; color:#475569; margin-top:2px;">Các cập nhật đơn hàng, đặt trước và biến động số dư sẽ hiển thị ở đây.</div>' +
           '</div>';
+          if (listContainer.innerHTML !== emptyHtml) listContainer.innerHTML = emptyHtml;
           return;
         }
 
-        listContainer.innerHTML = notifs.map(function(n) {
+        const newHtml = notifs.map(function(n) {
           let icon = '<i class="fa-solid fa-bell" style="color:#38bdf8;"></i>';
           let iconBg = 'rgba(56,189,248,0.12)';
           if (n.type === 'PRE_ORDER') {
@@ -15584,6 +15579,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             '</div>' +
           '</div>';
         }).join("");
+
+        if (listContainer.innerHTML !== newHtml) {
+          listContainer.innerHTML = newHtml;
+        }
       } catch(e) {}
     }
     window.renderHeaderNotifications = renderHeaderNotifications;
