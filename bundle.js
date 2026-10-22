@@ -2800,7 +2800,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "id": "PROD_MUR52EZ6H1",
     "name": "TÀI KHOẢN TIKTOK KOREA (HÀN QUỐC) - BAO ĐỔI TÊN ĐỔI MAIL",
     "slug": "prod-mur52ez6h1",
-    "category": "tiktok",
+    "category": "TikTok",
     "description": "Tài khoản TikTok South Korea (Hàn Quốc) live có Oauth2, Cookie, tạo tháng 7/2025.",
     "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR52EZ6H1_Tiktok_Korea_reg_gg_%C4%91%C3%A3_%C4%91%C3%A1_mail_b%E1%BA%ADt_2FA_C%C3%B3_Oauth2__.jpg",
     "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR52EZ6H1_Tiktok_Korea_reg_gg_%C4%91%C3%A3_%C4%91%C3%A1_mail_b%E1%BA%ADt_2FA_C%C3%B3_Oauth2__.jpg",
@@ -5512,12 +5512,31 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const savedCats = localStorage.getItem("mmo_categories");
       if (savedCats) {
         const parsedCats = JSON.parse(savedCats);
-        if (Array.isArray(parsedCats) && parsedCats.length > 0) MOCK_DATA.categories = parsedCats;
+        if (Array.isArray(parsedCats) && parsedCats.length > 0) {
+          const normCats = [];
+          const seen = new Set();
+          parsedCats.forEach(function(c) {
+            const norm = (String(c).toLowerCase() === 'tiktok') ? 'TikTok' : String(c).trim();
+            const lower = norm.toLowerCase();
+            if (!seen.has(lower)) {
+              seen.add(lower);
+              normCats.push(norm);
+            }
+          });
+          MOCK_DATA.categories = normCats;
+        }
       }
     } catch(e) {}
 
     // APP STATE
     window.MOCK_DATA = MOCK_DATA;
+    if (MOCK_DATA && Array.isArray(MOCK_DATA.products)) {
+      MOCK_DATA.products.forEach(function(p) {
+        if (p && p.category && String(p.category).toLowerCase() === 'tiktok') {
+          p.category = 'TikTok';
+        }
+      });
+    }
     var currentCategory = "Tất cả";
     var currentBlogCategory = "Tất cả";
     var currentUser = null;
@@ -7155,6 +7174,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     }
     window.setAdmProductFilter = setAdmProductFilter;
 
+    function canonicalizeCategoryName(c) {
+      if (!c) return "";
+      let s = String(c).replace(/&amp;/g, '&').trim();
+      if (/^tiktok$/i.test(s)) return "TikTok";
+      if (/^instagram$|^intagram$/i.test(s)) return "Intagram";
+      return s;
+    }
+    window.canonicalizeCategoryName = canonicalizeCategoryName;
+
     var admProductCategoryFilter = "ALL";
     function setAdmProductCategoryFilter(cat) {
       admProductCategoryFilter = cat || "ALL";
@@ -7233,19 +7261,27 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             prods.push(p);
           }
 
-          // Tự động nạp danh sách danh mục vào bộ lọc danh mục Admin
+          // Tự động nạp danh sách danh mục vào bộ lọc danh mục Admin (Đã deduplicate & canonicalize 100%)
           const catFilterSel = document.getElementById("admProductCategoryFilterSelect");
           if (catFilterSel) {
             const currentCatVal = catFilterSel.value || admProductCategoryFilter || "ALL";
             const knownCats = new Set();
+            const lowerCats = new Set();
+            function addCatToFilter(c) {
+              if (!c || c === "Tất cả") return;
+              const norm = canonicalizeCategoryName(c);
+              const lower = norm.toLowerCase();
+              if (!lowerCats.has(lower)) {
+                lowerCats.add(lower);
+                knownCats.add(norm);
+              }
+            }
             if (MOCK_DATA && Array.isArray(MOCK_DATA.categories)) {
-              MOCK_DATA.categories.forEach(function(c) {
-                if (c && c !== "Tất cả") knownCats.add(String(c).replace(/&amp;/g, '&'));
-              });
+              MOCK_DATA.categories.forEach(addCatToFilter);
             }
             if (Array.isArray(rawProds)) {
               rawProds.forEach(function(p) {
-                if (p && p.category && p.category !== "Tất cả") knownCats.add(String(p.category).replace(/&amp;/g, '&'));
+                if (p && p.category) addCatToFilter(p.category);
               });
             }
             const sortedCats = Array.from(knownCats).sort(function(a, b) {
@@ -8098,20 +8134,29 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const select = document.getElementById("admProdCategory");
       if (!select) return;
       const cats = (MOCK_DATA && MOCK_DATA.categories) ? MOCK_DATA.categories : ["Gmail", "TikTok", "Facebook", "Rom & Tools", "Telegram", "Proxy", "AI & Video"];
-      const validCats = cats.filter(c => c !== "Tất cả").map(c => c.replace(/&amp;/g, '&'));
-      const normSelected = selectedCat ? String(selectedCat).replace(/&amp;/g, '&').toLowerCase() : "";
+      const validCats = [];
+      const seenLower = new Set();
+      cats.filter(c => c !== "Tất cả").forEach(c => {
+        const norm = (typeof canonicalizeCategoryName === "function") ? canonicalizeCategoryName(c) : (String(c).toLowerCase() === 'tiktok' ? 'TikTok' : String(c).replace(/&amp;/g, '&'));
+        const l = norm.toLowerCase();
+        if (!seenLower.has(l)) {
+          seenLower.add(l);
+          validCats.push(norm);
+        }
+      });
+      const canonicalSelected = selectedCat ? ((typeof canonicalizeCategoryName === "function") ? canonicalizeCategoryName(selectedCat) : String(selectedCat).replace(/&amp;/g, '&')) : "";
+      const normSelected = canonicalSelected.toLowerCase();
       
       let html = "";
       validCats.forEach(c => {
         const isSel = (normSelected && normSelected === c.toLowerCase()) ? "selected" : "";
         html += '<option value="' + escapeHtml(c).replace(/&amp;/g, '&') + '" ' + isSel + '>' + escapeHtml(c) + '</option>';
       });
-      if (selectedCat && selectedCat !== "Tất cả" && !validCats.some(c => c.toLowerCase() === normSelected)) {
-        const cleanSel = String(selectedCat).replace(/&amp;/g, '&');
-        html += '<option value="' + escapeHtml(cleanSel).replace(/&amp;/g, '&') + '" selected>' + escapeHtml(cleanSel) + '</option>';
+      if (canonicalSelected && canonicalSelected !== "Tất cả" && !seenLower.has(normSelected)) {
+        html += '<option value="' + escapeHtml(canonicalSelected).replace(/&amp;/g, '&') + '" selected>' + escapeHtml(canonicalSelected) + '</option>';
       }
       select.innerHTML = html;
-      if (selectedCat) select.value = String(selectedCat).replace(/&amp;/g, '&');
+      if (canonicalSelected) select.value = canonicalSelected;
     }
     window.populateCategorySelects = populateCategorySelects;
 
@@ -12843,7 +12888,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         const isEditing = !!id;
         const prodId = id || ("PROD_" + Date.now().toString(36).toUpperCase() + Math.floor(100 + Math.random() * 900).toString(36).toUpperCase());
         const name = document.getElementById("admProdName")?.value.trim();
-        let category = (document.getElementById("admProdCategory")?.value || "Tài Khoản Khác").replace(/&amp;/g, '&');
+        let category = (document.getElementById("admProdCategory")?.value || "Tài Khoản Khác").replace(/&amp;/g, '&').trim();
+        if (typeof canonicalizeCategoryName === "function") {
+          category = canonicalizeCategoryName(category);
+        } else if (/^tiktok$/i.test(category)) {
+          category = "TikTok";
+        }
         if (name && name.toUpperCase().includes("TIKTOK") && !category.toUpperCase().includes("TIKTOK")) {
           category = "TikTok";
         }
@@ -19131,7 +19181,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
               MOCK_DATA.products[existingIdx] = Object.assign({}, cur, {
                 name: tp.name || cur.name,
-                category: tp.category || cur.category,
+                category: (typeof canonicalizeCategoryName === "function") ? canonicalizeCategoryName(tp.category || cur.category) : (tp.category || cur.category),
                 price: updatedPrice,
                 stock: updatedStock,
                 buffSold: finalBuffSold,
@@ -19214,7 +19264,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             MOCK_DATA.products.push({
               id: tp.id,
               name: tp.name,
-              category: tp.category || "Tài Khoản Khác",
+              category: (typeof canonicalizeCategoryName === "function") ? canonicalizeCategoryName(tp.category || "Tài Khoản Khác") : (tp.category || "Tài Khoản Khác"),
               price: Number(tp.price) || 0,
               stock: newStock,
               sold: Number(tp.sold) || Number(tp.buffSold) || Number(tp.buff_sold) || 0,
