@@ -16428,23 +16428,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const originalSrc = imgEl.dataset.originalSrc || imgEl.src;
       imgEl.dataset.originalSrc = originalSrc;
 
-      // Tầng 1: Nếu ảnh lưu từ Cloudflare Worker DB (/api/images/ hoặc workers.dev) bị mạng chặn -> Vượt rào tải qua proxy CDN toàn cầu weserv (tải mượt 100% không bao giờ lỗi)
-      if (retryCount === 0 && (originalSrc.includes("workers.dev") || originalSrc.includes("/api/images/"))) {
-        imgEl.dataset.retryCount = "1";
-        const cleanUrl = originalSrc.replace(/^https?:\/\//i, "");
-        imgEl.src = "https://images.weserv.nl/?url=" + encodeURIComponent(cleanUrl);
-        return;
-      }
-
-      // Tầng 2: Tra cứu ảnh chuẩn chính gốc trong KNOWN_PROD_IMAGE_MAP theo ID hoặc các mã Alias liên kết
+      // Tầng 1: Tra cứu ảnh chuẩn chính gốc trong KNOWN_PROD_IMAGE_MAP theo ID hoặc các mã Alias liên kết (Ưu tiên #1 khôi phục ngay lập tức 0ms)
       if (!pId) pId = null;
       if (prod && typeof prod === "object" && prod.id) pId = prod.id;
       else if (prod && typeof prod === "string") pId = prod;
       else if (imgEl.closest && imgEl.closest("[data-prod-id]")) pId = imgEl.closest("[data-prod-id]").getAttribute("data-prod-id");
       else if (window._currentActiveDetailProduct && window._currentActiveDetailProduct.id) pId = window._currentActiveDetailProduct.id;
 
-      if (retryCount <= 1 && pId && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
-        imgEl.dataset.retryCount = "2";
+      if (retryCount === 0 && pId && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+        imgEl.dataset.retryCount = "1";
         const cleanId = String(pId).trim();
         let mapped = KNOWN_PROD_IMAGE_MAP[cleanId] || KNOWN_PROD_IMAGE_MAP[cleanId.toUpperCase()];
         if (!mapped && typeof getProductAliasIds === "function") {
@@ -16453,10 +16445,18 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             if (KNOWN_PROD_IMAGE_MAP[aliases[i]]) { mapped = KNOWN_PROD_IMAGE_MAP[aliases[i]]; break; }
           }
         }
-        if (mapped && mapped !== imgEl.src) {
+        if (mapped && mapped !== imgEl.src && !mapped.includes("default_product.png")) {
           imgEl.src = mapped;
           return;
         }
+      }
+
+      // Tầng 2: Nếu ảnh lưu từ Cloudflare Worker DB (/api/images/ hoặc workers.dev) bị mạng chặn -> Vượt rào tải qua proxy CDN toàn cầu weserv (tải mượt 100% không bao giờ lỗi)
+      if (retryCount <= 1 && (originalSrc.includes("workers.dev") || originalSrc.includes("/api/images/"))) {
+        imgEl.dataset.retryCount = "2";
+        const cleanUrl = originalSrc.replace(/^https?:\/\//i, "");
+        imgEl.src = "https://images.weserv.nl/?url=" + encodeURIComponent(cleanUrl);
+        return;
       }
 
       // Tầng 3: Tự động đối chiếu ảnh theo danh mục & từ khóa sản phẩm (resolveCategoryFallbackImage)
