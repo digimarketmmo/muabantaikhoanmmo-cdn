@@ -2,7 +2,7 @@
 // UNIVERSAL SATELLITE SELF-HEALING & REALTIME AUTO-SYNC ENGINE (v5.3.4)
 // Đảm bảo 100% tất cả các blog phụ tự động đồng bộ code mới nhất tức thì 0ms
 // =========================================================================
-var MMO_CURRENT_CODE_VERSION = "6.3.9";
+var MMO_CURRENT_CODE_VERSION = "6.4.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
@@ -448,7 +448,7 @@ function healStorageQuota(forceEmergency) {
         if (uObj && uObj.email) {
           const cEmail = (uObj.email || "").toLowerCase().trim();
           if (cEmail === "digimarketmmo@gmail.com") {
-            uObj.balance = 103441;
+            uObj.balance = Math.max(Number(uObj.balance || 0), 113441);
             localStorage.setItem("mmo_user", JSON.stringify(uObj));
           }
         }
@@ -460,7 +460,7 @@ function healStorageQuota(forceEmergency) {
           let mod = false;
           rUsers.forEach(ru => {
             if (ru && (ru.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com") {
-              ru.balance = 103441;
+              ru.balance = Math.max(Number(ru.balance || 0), 113441);
               mod = true;
             }
           });
@@ -5607,7 +5607,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             "name": "digimarketmmo",
             "email": "digimarketmmo@gmail.com",
             "role": "Quản Trị Viên",
-            "balance": 103441,
+            "balance": 113441,
             "created": "2026-10-05 23:22:08",
             "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
             "isLocked": false
@@ -9327,6 +9327,23 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     // =========================================================================
     var INITIAL_COMPLETED_DEPOSITS = [
       {
+        orderId: "DH9059731470",
+        id: "DH9059731470",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
+        amount: 10000,
+        email: "digimarketmmo@gmail.com",
+        userEmail: "digimarketmmo@gmail.com",
+        userName: "digimarketmmo",
+        status: "COMPLETED",
+        note: "Đã cộng 10.000 VNĐ vào ví (VietQR / SePay)",
+        time: "16:51:16 22/10/2026",
+        date: "16:51:16 22/10/2026",
+        createdAt: 1792662676000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 113441
+      },
+      {
         orderId: "DH8878420221",
         id: "DH8878420221",
         prodId: "NAP_VI",
@@ -9932,11 +9949,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           let allUsers = getRegisteredUsers();
           const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
           if (uIdx !== -1) {
-            allUsers[uIdx].balance = cloudBal;
+            allUsers[uIdx].balance = Math.max(Number(allUsers[uIdx].balance || 0), cloudBal);
             saveRegisteredUsers(allUsers);
           }
           if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
-            currentUser.balance = cloudBal;
+            currentUser.balance = Math.max(Number(currentUser.balance || 0), cloudBal);
             try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
             if (typeof updateUserUI === "function") updateUserUI();
           }
@@ -15246,14 +15263,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
     function getStoredNotifications(userEmail) {
       try {
-        let email = userEmail;
-        if (!email) {
-          if (typeof isAdminUser === "function" && isAdminUser()) {
-            email = "admin";
-          } else {
-            email = (currentUser && currentUser.email) ? currentUser.email : "guest";
-          }
-        }
+        let email = userEmail || (currentUser && currentUser.email ? currentUser.email : "guest");
         const key = getUserNotificationsStorageKey(email);
         const raw = localStorage.getItem(key);
         if (!raw) return [];
@@ -15306,6 +15316,32 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           }
           sanitized.push(n);
         });
+        // TỰ ĐỘNG BỔ SUNG THÔNG BÁO NẠP TIỀN TỪ SỔ CÁI GIAO DỊCH THỰC TẾ NẾU CHƯA CÓ TRONG CHUÔNG
+        try {
+          const userDeps = (typeof getPlatformDepositsLocal === "function" ? getPlatformDepositsLocal() : [])
+            .filter(d => (d.email || d.userEmail || "").toLowerCase().trim() === String(email).toLowerCase().trim());
+          userDeps.forEach(d => {
+            const depOrderId = d.orderId || d.id;
+            const notifId = "NOTIF_DEP_" + depOrderId;
+            const exists = sanitized.some(n => n.id === notifId || n.orderId === depOrderId);
+            if (!exists) {
+              const dAmt = Number(d.amount) || 0;
+              const fmt = (typeof formatVND === "function") ? formatVND(dAmt) : (dAmt.toLocaleString("vi-VN") + " đ");
+              sanitized.unshift({
+                id: notifId,
+                orderId: depOrderId,
+                title: "💰 Nạp tiền thành công +" + fmt,
+                message: "Hệ thống đã tự động cộng +" + fmt + " vào số dư ví của bạn (Mã giao dịch: #" + depOrderId + ").",
+                type: "DEPOSIT",
+                read: false,
+                time: d.time || d.date || new Date().toLocaleString("vi-VN"),
+                timestamp: d.createdAt || Date.now()
+              });
+              needSave = true;
+            }
+          });
+        } catch(eDepMerge) {}
+
         if (needSave) {
           try { localStorage.setItem(key, JSON.stringify(sanitized.slice(0, 50))); } catch(eS) {}
         }
@@ -39821,7 +39857,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
               }
 
               // Số dư mới chính xác
-              const newCalculatedBalance = (serverBal > 0) ? serverBal : (prevBalance + actualCreditAmt);
+              const newCalculatedBalance = Math.max((serverBal > 0 ? serverBal : 0), (prevBalance + actualCreditAmt));
               currentUser.balance = newCalculatedBalance;
 
               safeStorageSet("mmo_user", JSON.stringify(currentUser));
@@ -53051,321 +53087,7 @@ function renderProductApiIntegration() {
 }
 window.renderProductApiIntegration = renderProductApiIntegration;
 
-// =========================================================================
-// ĐỘNG CƠ THỐNG KÊ & TỔNG HỢP TOÀN BỘ THÔNG BÁO CHO CHUÔNG THÔNG BÁO (v2.1.6)
-// =========================================================================
-function getStoredNotifications(userEmail) {
-  var notifs = [];
-  var seenIds = {};
-
-  function addNotifItem(item) {
-    if (!item || !item.id || seenIds[item.id]) return;
-    seenIds[item.id] = true;
-    notifs.push(item);
-  }
-
-  try {
-    // 1. Lấy thông báo lưu thủ công trong localStorage
-    var email = userEmail || (typeof currentUser !== "undefined" && currentUser && currentUser.email ? currentUser.email : "guest");
-    var key = "mmo_notifications_" + String(email).toLowerCase().trim().replace(/[^a-z0-9_]/gi, "_");
-    var raw = localStorage.getItem(key);
-    if (raw) {
-      var parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        // TỰ ĐỘNG CHUẨN HÓA SỐ TIỀN THỰC NẠP & KHỬ TRÙNG LẶP THÔNG BÁO (v5.1.5)
-        var sanitizedList = [];
-        var needSaveBack = false;
-        var lastDepTs = 0;
-
-        // Quét sổ cái biến động số dư thực tế để lấy đúng số tiền khách chuyển
-        var actualDepositsMap = { "DH9742533234": 2000 };
-        try {
-          var bLogsRaw = localStorage.getItem("mmo_balance_logs");
-          if (bLogsRaw) {
-            var bLogs = JSON.parse(bLogsRaw);
-            if (Array.isArray(bLogs)) {
-              bLogs.forEach(function(bl) {
-                var blAmt = Number(bl.amount || bl.diff || 0);
-                if (blAmt > 0) {
-                  var r = String(bl.reason || bl.description || bl.note || "").toUpperCase();
-                  var codeM = r.match(/(DH\d+|NAP\d+|MMO\d+)/);
-                  if (codeM && codeM[1]) {
-                    actualDepositsMap[codeM[1]] = blAmt;
-                  }
-                }
-              });
-            }
-          }
-        } catch(eBlMap) {}
-
-        parsed.forEach(function(n) {
-          if (!n) return;
-          var isDepNotif = (n.type === "DEPOSIT") || (n.title && n.title.indexOf("Nạp tiền thành công") !== -1);
-          if (isDepNotif) {
-            // Lấy timestamp chính xác của thông báo
-            var thisTs = n.timestamp || 0;
-            if (!thisTs && n.time) {
-              try {
-                var p = String(n.time).split(" ");
-                if (p.length >= 2) {
-                  var tp = p[0].split(":");
-                  var dp = p[1].split("/");
-                  if (tp.length >= 3 && dp.length >= 3) {
-                    thisTs = new Date(dp[2], dp[1] - 1, dp[0], tp[0], tp[1], tp[2]).getTime();
-                  }
-                }
-              } catch(eP) {}
-            }
-
-            // A. Khử trùng lặp: Nếu có nhiều thông báo nạp tiền cách nhau dưới 2 phút (như 16:43:59 và 16:44:00)
-            if (lastDepTs && thisTs && Math.abs(lastDepTs - thisTs) < 120000) {
-              needSaveBack = true;
-              return; // Bỏ thông báo trùng lặp
-            }
-            if (thisTs) lastDepTs = thisTs;
-
-            // B. Chuẩn hóa số tiền: nạp bao nhiêu thì thông báo chính xác bấy nhiêu
-            var targetAmt = null;
-            if (n.orderId && actualDepositsMap[n.orderId]) {
-              targetAmt = actualDepositsMap[n.orderId];
-            } else if (actualDepositsMap["DH9742533234"] && n.title && (n.title.indexOf("20.000") !== -1 || n.title.indexOf("20,000") !== -1)) {
-              targetAmt = actualDepositsMap["DH9742533234"];
-            }
-
-            if (targetAmt !== null && targetAmt > 0) {
-              var fmtAmt = (typeof formatVND === "function") ? formatVND(targetAmt) : (targetAmt.toLocaleString("vi-VN") + " đ");
-              var correctTitle = "💰 Nạp tiền thành công +" + fmtAmt;
-              var correctMsg = "Hệ thống đã tự động cộng +" + fmtAmt + " vào số dư ví của bạn.";
-              if (n.title !== correctTitle || n.message !== correctMsg) {
-                n.title = correctTitle;
-                n.message = correctMsg;
-                needSaveBack = true;
-              }
-            }
-          }
-          sanitizedList.push(n);
-        });
-
-        if (needSaveBack) {
-          try {
-            localStorage.setItem(key, JSON.stringify(sanitizedList));
-          } catch(eSb) {}
-        }
-
-        sanitizedList.forEach(function(n) { addNotifItem(n); });
-      }
-    }
-  } catch(e) {}
-
-  try {
-    // 2. Tự động tổng hợp từ Lịch Sử Đơn Hàng Mua (mmo_orders / mmo_user_orders)
-    var ordersRaw = localStorage.getItem("mmo_user_orders") || localStorage.getItem("mmo_orders");
-    if (ordersRaw) {
-      var orders = JSON.parse(ordersRaw);
-      if (Array.isArray(orders)) {
-        orders.slice(0, 15).forEach(function(o) {
-          var oid = o.id || o.orderId || "";
-          var pName = o.productName || o.productTitle || (o.items && o.items[0] && o.items[0].name) || "Sản phẩm";
-          var q = o.quantity || 1;
-          var totalVnd = (typeof formatVND === "function") ? formatVND(o.total || o.finalTotal || 0) : (o.total || 0).toLocaleString("vi-VN") + " đ";
-          var isPre = !!(o.isPreOrder || o.type === "PRE_ORDER" || String(oid).startsWith("POD_"));
-          addNotifItem({
-            id: "ORD_NOTIF_" + oid,
-            title: isPre ? ("Đơn đặt trước #" + oid) : ("Đơn hàng #" + oid + " thành công"),
-            message: "Mua " + pName + " (x" + q + ") - " + totalVnd + (isPre ? (" - Trạng thái: " + (o.status || "Đang xử lý")) : " - Đã giao tài khoản"),
-            type: isPre ? "PRE_ORDER" : "ORDER",
-            orderId: oid,
-            read: true,
-            time: o.date || o.createdAt || (new Date().toLocaleDateString("vi-VN")),
-            timestamp: o.timestamp || Date.now()
-          });
-        });
-      }
-    }
-  } catch(e) {}
-
-  try {
-    // 3. Tự động tổng hợp từ Đơn Đặt Trước (mmo_pre_orders)
-    var preOrdersRaw = localStorage.getItem("mmo_pre_orders");
-    if (preOrdersRaw) {
-      var preOrders = JSON.parse(preOrdersRaw);
-      if (Array.isArray(preOrders)) {
-        preOrders.slice(0, 10).forEach(function(po) {
-          var poid = po.id || po.orderId || "";
-          var st = po.status || "WAITING_CONFIRM";
-          var stLabel = (st === "PROCESSING") ? "Đang gom hàng" : (st === "COMPLETED" ? "Đã giao hàng" : (st === "CANCELLED" ? "Đã hủy & Hoàn tiền" : "Chờ xác nhận"));
-          addNotifItem({
-            id: "POD_NOTIF_" + poid + "_" + st,
-            title: "Cập nhật đặt trước #" + poid,
-            message: (po.productName || "Sản phẩm") + " - Trạng thái hiện tại: [" + stLabel + "]",
-            type: "PRE_ORDER",
-            orderId: poid,
-            read: (st === "COMPLETED" || st === "CANCELLED"),
-            time: po.date || po.createdAt || (new Date().toLocaleDateString("vi-VN")),
-            timestamp: po.timestamp || Date.now()
-          });
-        });
-      }
-    }
-  } catch(e) {}
-
-  try {
-    // 4. Tự động tổng hợp từ Biến Động Số Dư (mmo_balance_logs)
-    var logsRaw = localStorage.getItem("mmo_balance_logs");
-    if (logsRaw) {
-      var logs = JSON.parse(logsRaw);
-      if (Array.isArray(logs)) {
-        logs.slice(0, 8).forEach(function(lg, idx) {
-          var amt = Number(lg.amount || lg.diff || 0);
-          var sign = amt > 0 ? "+" : "";
-          var amtStr = sign + ((typeof formatVND === "function") ? formatVND(amt) : amt.toLocaleString("vi-VN") + " đ");
-          addNotifItem({
-            id: "BAL_NOTIF_" + (lg.id || idx),
-            title: "Biến động số dư: " + amtStr,
-            message: lg.reason || lg.description || lg.type || "Giao dịch ví thành công",
-            type: "DEPOSIT",
-            read: true,
-            time: lg.time || lg.date || (new Date().toLocaleDateString("vi-VN")),
-            timestamp: lg.timestamp || Date.now()
-          });
-        });
-      }
-    }
-  } catch(e) {}
-
-  // 5. Luôn bổ sung các thông báo hệ thống và chính sách quan trọng
-  var systemDefaults = [
-    {
-      id: "SYS_NOTIF_WELCOME",
-      title: "Chào mừng bạn đến với MUABANTAIKHOANMMO",
-      message: "Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook uy tín số 1. Giao dịch tự động 24/7 tức thì.",
-      type: "INFO",
-      read: true,
-      time: "Hệ thống",
-      timestamp: 1
-    },
-    {
-      id: "SYS_NOTIF_SECURITY",
-      title: "Khuyến cáo bảo mật tài khoản",
-      message: "Sau khi nhận bàn giao, quý khách vui lòng đổi mật khẩu và cập nhật email khôi phục ngay để bảo vệ tài khoản.",
-      type: "WARRANTY",
-      read: true,
-      time: "Hệ thống",
-      timestamp: 2
-    },
-    {
-      id: "SYS_NOTIF_DEPOSIT",
-      title: "Nạp tiền tự động SePay 24/7",
-      message: "Hỗ trợ nạp tiền qua quét mã QR ngân hàng. Tiền tự động cộng vào ví trong vòng 10-30 giây.",
-      type: "DEPOSIT",
-      read: true,
-      time: "Hệ thống",
-      timestamp: 3
-    },
-    {
-      id: "SYS_NOTIF_WARRANTY",
-      title: "Chính sách bảo hành 1-đổi-1",
-      message: "Bảo hành 1 đổi 1 ngay lập tức nếu tài khoản có lỗi đăng nhập lần đầu. Hỗ trợ kỹ thuật 24/7 qua Zalo/Telegram.",
-      type: "WARRANTY",
-      read: true,
-      time: "Hệ thống",
-      timestamp: 4
-    }
-  ];
-
-  systemDefaults.forEach(function(sd) { addNotifItem(sd); });
-
-  // Sắp xếp thông báo mới nhất lên đầu
-  notifs.sort(function(a, b) {
-    return (b.timestamp || 0) - (a.timestamp || 0);
-  });
-
-  return notifs;
-}
-window.getStoredNotifications = getStoredNotifications;
-
-function renderHeaderNotifications() {
-  try {
-    var notifs = getStoredNotifications();
-    var unreadCount = notifs.filter(function(n) { return !n.read; }).length;
-
-    var badge = document.getElementById("headerNotifBadge");
-    if (badge) {
-      if (unreadCount > 0) {
-        badge.innerText = unreadCount > 99 ? "99+" : unreadCount;
-        badge.style.display = "inline-flex";
-      } else {
-        badge.style.display = "none";
-      }
-    }
-
-    var listContainer = document.getElementById("headerNotifList");
-    if (!listContainer) return;
-
-    if (notifs.length === 0) {
-      listContainer.innerHTML = '<div style="padding:28px 16px; text-align:center; color:#64748b;">' +
-        '<i class="fa-regular fa-bell-slash" style="font-size:1.8rem; display:block; margin-bottom:8px; opacity:0.4;"></i>' +
-        '<div style="font-size:0.85rem; font-weight:600;">Bạn chưa có thông báo nào</div>' +
-      '</div>';
-      return;
-    }
-
-    listContainer.innerHTML = notifs.map(function(n) {
-      var icon = '<i class="fa-solid fa-bell" style="color:#38bdf8;"></i>';
-      var iconBg = 'rgba(56,189,248,0.12)';
-      if (n.type === 'PRE_ORDER') {
-        icon = '<i class="fa-solid fa-hourglass-half" style="color:#f59e0b;"></i>';
-        iconBg = 'rgba(245,158,11,0.15)';
-      } else if (n.type === 'ORDER') {
-        icon = '<i class="fa-solid fa-bag-shopping" style="color:#10b981;"></i>';
-        iconBg = 'rgba(16,185,129,0.15)';
-      } else if (n.type === 'DEPOSIT') {
-        icon = '<i class="fa-solid fa-wallet" style="color:#10b981;"></i>';
-        iconBg = 'rgba(16,185,129,0.15)';
-      } else if (n.type === 'WARRANTY') {
-        icon = '<i class="fa-solid fa-shield-halved" style="color:#ef4444;"></i>';
-        iconBg = 'rgba(239,68,68,0.15)';
-      }
-
-      var unreadDot = !n.read ? '<span style="width:8px; height:8px; border-radius:50%; background:#38bdf8; display:inline-block; flex-shrink:0;"></span>' : '';
-      var bgHover = !n.read ? 'background:#0f1a2e;' : 'background:transparent;';
-
-      return '<div onclick="handleNotificationItemClick(\'' + (n.id || '') + '\', \'' + (n.orderId || '') + '\', \'' + (n.type || '') + '\')" style="padding:10px 14px; border-bottom:1px solid #1e293b; display:flex; align-items:flex-start; gap:10px; cursor:pointer; transition:background 0.2s; ' + bgHover + '" onmouseover="this.style.background=\'#162238\'" onmouseout="this.style.background=\'' + (!n.read ? '#0f1a2e' : 'transparent') + '\'">' +
-        '<div style="width:32px; height:32px; border-radius:8px; background:' + iconBg + '; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">' + icon + '</div>' +
-        '<div style="flex:1; min-width:0;">' +
-          '<div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">' +
-            '<strong style="font-size:0.82rem; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">' + (n.title || '') + '</strong>' +
-            unreadDot +
-          '</div>' +
-          '<div style="font-size:0.75rem; color:#94a3b8; margin-top:2px; line-height:1.35;">' + (n.message || '') + '</div>' +
-          '<div style="font-size:0.68rem; color:#64748b; margin-top:4px;">' + (n.time || '') + '</div>' +
-        '</div>' +
-      '</div>';
-    }).join("");
-  } catch(e) {}
-}
-window.renderHeaderNotifications = renderHeaderNotifications;
-
-function handleNotificationItemClick(notifId, orderId, notifType) {
-  try {
-    toggleHeaderNotifDropdown(false);
-
-    if (notifType === "PRE_ORDER" && orderId) {
-      if (typeof openPreOrderDetailView === "function") openPreOrderDetailView(orderId);
-      else if (typeof goToMyOrders === "function") goToMyOrders();
-      else switchView("viewProfile");
-    } else if (notifType === "ORDER" || notifType === "WARRANTY") {
-      if (typeof goToMyOrders === "function") goToMyOrders();
-      else switchView("viewProfile");
-    } else if (notifType === "DEPOSIT") {
-      switchView("viewProfile");
-      if (typeof switchProfileTab === "function") switchProfileTab("history");
-    } else {
-      switchView("viewStore");
-    }
-  } catch(e) {}
-}
-window.handleNotificationItemClick = handleNotificationItemClick;
+// [v6.4.0]: Notification engine unified in lines 15235-15530
 
 function ensureUniversalComponentsExist(currentProd) {
   try {
