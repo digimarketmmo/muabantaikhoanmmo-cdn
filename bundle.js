@@ -16021,6 +16021,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         localStorage.setItem("mmo_current_view", viewId);
         if (typeof window !== "undefined" && window.location && window.history && window.history.replaceState) {
           if (viewId === "viewStore") {
+            // Đặt lại tiêu đề trang chủ chuẩn thương hiệu (ngăn ngừa bị đè bởi bài viết)
+            try {
+              const bProf = (typeof getCurrentBrandProfile === "function") ? getCurrentBrandProfile() : null;
+              const hTitle = (bProf && bProf.homeTitle && bProf.homeTitle.length <= 60) ? bProf.homeTitle : "Mua Bán Tài Khoản MMO | Sàn Dịch Vụ MMO Uy Tín";
+              document.title = hTitle;
+            } catch(eTitle) {}
+
             // Khi về Trang Chủ: Giữ lại ?category= hoặc ?s= nếu người dùng đang lọc/tìm kiếm!
             try { localStorage.removeItem("mmo_last_viewed_prod"); } catch(e) {}
             const url = new URL(window.location.href);
@@ -43664,9 +43671,10 @@ function initMMOApplication() {
         const urlParams = new URLSearchParams(window.location.search);
         let targetProdId = urlParams.get("prod") || urlParams.get("product") || (window.location.hash && window.location.hash.startsWith("#product_") ? window.location.hash.replace("#product_", "") : null);
 
-        const isItemPage = (window.location.pathname.includes(".html") && !window.location.pathname.includes("index.html")) || 
-                           document.getElementById("articleHeadline") !== null || 
-                           document.getElementById("mmoSsrBody") !== null;
+        const isPathHtml = window.location.pathname.length > 5 && 
+                           window.location.pathname.includes(".html") && 
+                           !window.location.pathname.includes("index.html");
+        const isItemPage = isPathHtml;
 
         if (!targetProdId && isItemPage) {
           const pageTitle = (document.getElementById("articleHeadline")?.innerText || document.title || "").toLowerCase();
@@ -43694,7 +43702,10 @@ function initMMOApplication() {
           if (!curP && isItemPage) {
             // Nếu là trang bài viết nhưng không tìm thấy trong mock: tự tạo đối tượng Product từ DOM
             const pageTitleEl = document.getElementById("articleHeadline") || document.querySelector("h1");
-            const pageTitle = pageTitleEl ? pageTitleEl.innerText.trim() : document.title.replace(/[-|].*$/, '').trim();
+            const rawTitle = pageTitleEl ? pageTitleEl.innerText.trim() : document.title.replace(/[-|].*$/, '').trim();
+            const isInvalidTitle = !rawTitle || rawTitle === "Tiêu đề bài báo" || rawTitle === "Tiêu đề bài viết";
+            const pageTitle = isInvalidTitle ? "" : rawTitle;
+            if (!pageTitle) return;
             const pageImgEl = document.getElementById("articleFeaturedImg") || document.querySelector(".article-featured-img");
             const pageImg = pageImgEl ? pageImgEl.src : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
             
