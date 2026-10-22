@@ -16401,6 +16401,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         }
       }
 
+      // 4. [ƯU TIÊN #4]: Tự động đối chiếu ảnh theo danh mục & từ khóa sản phẩm (resolveCategoryFallbackImage)
+      if (typeof resolveCategoryFallbackImage === "function") {
+        const catFb = resolveCategoryFallbackImage(p);
+        if (catFb && typeof catFb === "string" && catFb.trim().length > 10 && !catFb.includes("default_product.png")) {
+          return catFb.trim();
+        }
+      }
+
       return defaultPlaceholder;
     }
     window.resolveProductImage = resolveProductImage;
