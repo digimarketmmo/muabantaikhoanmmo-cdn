@@ -29176,7 +29176,7 @@ function executeCompareSourcesSearch() {
           telegramChannel: 'https://t.me/muabantaikhoanmmo',
           brandLogo: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
           brandFavicon: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
-          brandOgImage: 'https://iili.io/nFV4Rln.png'
+          brandOgImage: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'
         };
       }
       return {
@@ -29199,7 +29199,7 @@ function executeCompareSourcesSearch() {
         telegramChannel: 'https://t.me/muabantaikhoanmmo',
         brandLogo: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
         brandFavicon: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
-        brandOgImage: 'https://iili.io/nFV4Rln.png'
+        brandOgImage: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'
       };
     }
     window.getCurrentBrandProfile = getCurrentBrandProfile;
@@ -29213,7 +29213,7 @@ function executeCompareSourcesSearch() {
       var defaultName = isTapHoa ? 'TAPHOAMMO.INK' : 'MUABANTAIKHOANMMO';
       var defaultLogo = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png';
       var defaultFavicon = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png';
-      var defaultOg = 'https://iili.io/nFV4Rln.png';
+      var defaultOg = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';
 
       var result = {
         siteName: defaultName,
@@ -29314,7 +29314,7 @@ function executeCompareSourcesSearch() {
 
       var ogEl = document.getElementById('setSiteOgImageUrl');
       if (ogEl) {
-        ogEl.value = bData.brandOgImage || 'https://iili.io/nFV4Rln.png';
+        ogEl.value = bData.brandOgImage || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';
         previewBrandUrl(ogEl.value, 'setSiteOgImagePreview', 'setSiteOgImageHint', 'btnResetOgImage');
       }
 
@@ -29449,6 +29449,8 @@ function executeCompareSourcesSearch() {
             this.src = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png';
           } else if (previewId && previewId.includes('Favicon')) {
             this.src = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png';
+          } else if (previewId && (previewId.includes('Og') || previewId.includes('og'))) {
+            this.src = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';
           }
         };
         if (cleanUrl) {
@@ -29657,7 +29659,7 @@ function executeCompareSourcesSearch() {
         saveBrandSpecificSettings(targetKey, { brandFavicon: defFav });
       } else if (type === 'ogImage') {
         const inp = document.getElementById('setSiteOgImageUrl');
-        const defOg = 'https://iili.io/nFV4Rln.png';
+        const defOg = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';
         if (inp) inp.value = defOg;
         previewBrandUrl(defOg, 'setSiteOgImagePreview', 'setSiteOgImageHint', 'btnResetOgImage');
         saveBrandSpecificSettings(targetKey, { brandOgImage: defOg });
@@ -29700,7 +29702,7 @@ function executeCompareSourcesSearch() {
         document.title = (bProf && bProf.homeTitle && bProf.homeTitle.length <= 60) ? bProf.homeTitle : 'Mua Bán Tài Khoản MMO | Sàn Dịch Vụ MMO Uy Tín';
 
         // 2. Logo Header, Footer, Drawer & Toàn Bộ Trang (Đúng Logo riêng của Website)
-        const activeLogoUrl = (brandAssets.brandLogo && brandAssets.brandLogo.trim() && !brandAssets.brandLogo.includes('img_1790888969056_z00fh5.png') && brandAssets.brandLogo.trim() !== 'https://iili.io/nFV4Rln.png')
+        const activeLogoUrl = (brandAssets.brandLogo && brandAssets.brandLogo.trim() && !brandAssets.brandLogo.includes('img_1790888969056_z00fh5.png') && brandAssets.brandLogo.trim() !== 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png')
           ? brandAssets.brandLogo.trim()
           : (bProf && bProf.brandLogo ? bProf.brandLogo : 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png');
 
@@ -29728,7 +29730,7 @@ function executeCompareSourcesSearch() {
         });
 
         // 3. Favicon Website riêng biệt
-        const activeFaviconUrl = (brandAssets.brandFavicon && brandAssets.brandFavicon.trim() && !brandAssets.brandFavicon.includes('img_1790888988353_677lyw.png') && brandAssets.brandFavicon.trim() !== 'https://iili.io/nFV4Rln.png')
+        const activeFaviconUrl = (brandAssets.brandFavicon && brandAssets.brandFavicon.trim() && !brandAssets.brandFavicon.includes('img_1790888988353_677lyw.png') && brandAssets.brandFavicon.trim() !== 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png')
           ? brandAssets.brandFavicon.trim()
           : (bProf && bProf.brandFavicon ? bProf.brandFavicon : 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png');
 
@@ -29739,13 +29741,16 @@ function executeCompareSourcesSearch() {
         favLink.href = activeFaviconUrl;
         document.head.appendChild(favLink);
 
-        // 4. Ảnh OG Image riêng biệt
+        // 4. Ảnh OG Image riêng biệt & Đồng bộ toàn bộ thẻ Meta mạng xã hội
         const activeOgUrl = (brandAssets.brandOgImage && brandAssets.brandOgImage.trim())
           ? brandAssets.brandOgImage.trim()
-          : (bProf && bProf.brandOgImage ? bProf.brandOgImage : 'https://iili.io/nFV4Rln.png');
+          : 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/og-image';
 
-        let ogMeta = document.querySelector("meta[property='og:image']");
-        if (ogMeta) ogMeta.setAttribute('content', activeOgUrl);
+        const metaOgSelectors = ["meta[property='og:image']", "meta[property='og:image:secure_url']", "meta[name='twitter:image']"];
+        metaOgSelectors.forEach(function(sel) {
+          const el = document.querySelector(sel);
+          if (el) el.setAttribute('content', activeOgUrl);
+        });
 
         // 5. Đồng bộ Hotline / Zalo toàn trang
         if (typeof syncZaloLinks === 'function') {
@@ -29786,7 +29791,7 @@ function executeCompareSourcesSearch() {
             siteName: cs.taphoammo_siteName || 'TAPHOAMMO.INK',
             brandLogo: cs.taphoammo_brandLogo || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
             brandFavicon: cs.taphoammo_brandFavicon || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
-            brandOgImage: cs.taphoammo_brandOgImage || 'https://iili.io/nFV4Rln.png'
+            brandOgImage: cs.taphoammo_brandOgImage || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'
           };
           saveBrandSpecificSettings('taphoammo', tapHoaData);
 
@@ -29794,7 +29799,7 @@ function executeCompareSourcesSearch() {
             siteName: cs.muabantaikhoanmmo_siteName || cs.siteName || 'MUABANTAIKHOANMMO',
             brandLogo: cs.muabantaikhoanmmo_brandLogo || cs.brandLogo || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
             brandFavicon: cs.muabantaikhoanmmo_brandFavicon || cs.brandFavicon || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
-            brandOgImage: cs.muabantaikhoanmmo_brandOgImage || cs.brandOgImage || 'https://iili.io/nFV4Rln.png'
+            brandOgImage: cs.muabantaikhoanmmo_brandOgImage || cs.brandOgImage || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'
           };
           saveBrandSpecificSettings('muabantaikhoanmmo', muaBanData);
 
@@ -29974,20 +29979,20 @@ function executeCompareSourcesSearch() {
         // 2. Lấy dữ liệu trên Form hiện tại
         const siteName = document.getElementById('setSiteName') ? document.getElementById('setSiteName').value.trim() : (activeEditingKey === 'taphoammo' ? 'TAPHOAMMO.INK' : 'MUABANTAIKHOANMMO');
         let brandLogo = document.getElementById('setSiteLogoUrl') ? document.getElementById('setSiteLogoUrl').value.trim() : '';
-        if (!brandLogo || brandLogo === 'https://iili.io/nFV4Rln.png' || brandLogo.includes('img_1790888969056_z00fh5')) {
+        if (!brandLogo || brandLogo === 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png' || brandLogo.includes('img_1790888969056_z00fh5')) {
           brandLogo = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png';
           if (document.getElementById('setSiteLogoUrl')) document.getElementById('setSiteLogoUrl').value = brandLogo;
         }
 
         let brandFavicon = document.getElementById('setSiteFaviconUrl') ? document.getElementById('setSiteFaviconUrl').value.trim() : '';
-        if (!brandFavicon || brandFavicon === 'https://iili.io/nFV4Rln.png' || brandFavicon.includes('img_1790888988353_677lyw')) {
+        if (!brandFavicon || brandFavicon === 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png' || brandFavicon.includes('img_1790888988353_677lyw')) {
           brandFavicon = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png';
           if (document.getElementById('setSiteFaviconUrl')) document.getElementById('setSiteFaviconUrl').value = brandFavicon;
         }
 
         let brandOgImage = document.getElementById('setSiteOgImageUrl') ? document.getElementById('setSiteOgImageUrl').value.trim() : '';
         if (!brandOgImage) {
-          brandOgImage = 'https://iili.io/nFV4Rln.png';
+          brandOgImage = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';
           if (document.getElementById('setSiteOgImageUrl')) document.getElementById('setSiteOgImageUrl').value = brandOgImage;
         }
 
