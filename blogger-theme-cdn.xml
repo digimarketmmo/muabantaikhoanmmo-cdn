@@ -169,39 +169,77 @@
       #recommendedGrid, .recommended-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; width: 100% !important; }
     }
 
-    /* 3. Trang chi tiết sản phẩm trên máy tính bảng (650px - 1280px): Lấp đầy khoảng đen, dồn chữ/biến thể sang phải */
-    @media (min-width: 650px) and (max-width: 1280px) {
-      #viewProductDetail {
-        width: 100% !important;
-        max-width: 100% !important;
-        padding: 0 10px !important;
-        margin: 0 !important;
-        box-sizing: border-box !important;
-      }
+    /* 3. Trang chi tiết sản phẩm chuẩn hóa Responsive và Anti-Flicker: Không bao giờ tràn ngang */
+    .variant-pill-option {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 10px !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+    }
+    .variant-pill-option span:first-child {
+      flex: 1 1 auto !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      display: block !important;
+    }
+    .variant-pill-option span:first-child small {
+      display: inline !important;
+      white-space: nowrap !important;
+    }
+    .variant-pill-option span:last-child {
+      flex: 0 0 auto !important;
+      white-space: nowrap !important;
+      font-weight: 700 !important;
+      margin-left: auto !important;
+      text-align: right !important;
+      padding-left: 8px !important;
+    }
+    html, body {
+      overflow-x: hidden !important;
+      max-width: 100vw !important;
+    }
+    #viewProductDetail {
+      width: 100% !important;
+      max-width: 100% !important;
+      padding: 0 10px !important;
+      margin: 0 auto !important;
+      box-sizing: border-box !important;
+      overflow-x: hidden !important;
+    }
+    .detail-container-3col {
+      display: grid !important;
+      grid-template-columns: 260px minmax(0, 1fr) 260px !important;
+      gap: 16px !important;
+      width: 100% !important;
+      max-width: 1400px !important;
+      margin: 16px auto 40px auto !important;
+      box-sizing: border-box !important;
+      align-items: start !important;
+    }
+    .detail-col-left, .detail-col-right {
+      display: block !important;
+      width: 100% !important;
+      position: sticky !important;
+      top: 80px !important;
+    }
+
+    @media (min-width: 768px) and (max-width: 1149px) {
       .detail-container-3col {
-        display: grid !important;
-        grid-template-columns: minmax(260px, 280px) minmax(0, 1fr) !important;
+        grid-template-columns: minmax(0, 1fr) 280px !important;
         gap: 16px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        align-items: start !important;
       }
       .detail-col-left {
-        display: block !important;
-        width: 100% !important;
-        position: sticky !important;
-        top: 80px !important;
-      }
-      .detail-col-right {
         display: none !important;
       }
-      .detail-col-center {
+      .detail-col-right {
         display: block !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        min-width: 0 !important;
       }
       .detail-card-center {
         display: grid !important;
@@ -237,6 +275,7 @@
         object-fit: contain !important;
         border-radius: 8px !important;
       }
+    }
       .detail-info-col {
         width: 100% !important;
         max-width: 100% !important;
@@ -347,7 +386,7 @@
     }
   </style>
   <link rel='preconnect' href='https://cdn.jsdelivr.net' crossorigin='anonymous'/>
-  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.0/bundle.min.js?v=6.4.0' as='script'/>
+  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.8/bundle.min.js?v=6.4.7' as='script'/>
   <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v5.4.4/theme.min.css?v=5.4.4' as='style'/>
   <script>
     /* BẢO TỒN DỮ LIỆU KHO HÀNG ĐÃ XÓA (0MS) */
@@ -858,9 +897,9 @@
       <meta expr:content='data:blog.postImageUrl' name='twitter:image'/>
       <link rel='image_src' expr:href='data:blog.postImageUrl'/>
     <b:else/>
-      <meta content='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png' property='og:image'/>
-      <meta content='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png' property='og:image:secure_url'/>
-      <meta content='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png' name='twitter:image'/>
+      <meta content='https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/og-image' property='og:image'/>
+      <meta content='https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/og-image' property='og:image:secure_url'/>
+      <meta content='https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/og-image' name='twitter:image'/>
       <link rel='image_src' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'/>
     </b:if>
     <meta property='og:image:type' content='image/jpeg'/>
@@ -900,9 +939,9 @@
       <meta expr:content='data:blog.postImageUrl' property='og:image:secure_url'/>
       <meta expr:content='data:blog.postImageUrl' name='twitter:image'/>
     <b:else/>
-      <meta content='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png' property='og:image'/>
-      <meta content='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png' property='og:image:secure_url'/>
-      <meta content='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png' name='twitter:image'/>
+      <meta content='https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/og-image' property='og:image'/>
+      <meta content='https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/og-image' property='og:image:secure_url'/>
+      <meta content='https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/og-image' name='twitter:image'/>
     </b:if>
     <meta property='og:image:type' content='image/jpeg'/>
     <meta property='og:image:width' content='1200'/>
@@ -1526,8 +1565,8 @@
   <b:skin><![CDATA[
 /* ==========================================================================
    MUABANTAIKHOANMMO.COM - CDN THEME ENGINE
-   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.3.6/theme.min.css?v=6.3.3
-   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.0/bundle.min.js?v=6.4.0
+   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.8/theme.min.css?v=6.4.7
+   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.8/bundle.min.js?v=6.4.7
    ========================================================================== */
 body { margin: 0; padding: 0; background: #070a12; color: #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif; }
 
@@ -1925,8 +1964,8 @@ a, button, [onclick], .nav-link, .product-card, .blog-item, .category-card, .sid
   }
 }
 
-/* Tablet (650px - 1280px): VẪN ĐỂ THANH BÊN TRÁI NHƯ HÌNH 2, ẩn thanh bên phải, lấp đầy 100% khoảng trống đen, dồn chữ/biến thể sang phải */
-@media (min-width: 650px) and (max-width: 1280px) {
+/* Tablet & Split Screen (768px - 1149px): Hiển thị 2 cột chuẩn mực (Chi tiết sản phẩm + 1 cột Đề Xuất bên phải) */
+@media (min-width: 768px) and (max-width: 1149px) {
   #viewProductDetail {
     width: 100% !important;
     max-width: 100% !important;
@@ -1936,7 +1975,7 @@ a, button, [onclick], .nav-link, .product-card, .blog-item, .category-card, .sid
   }
   .detail-container-3col {
     display: grid !important;
-    grid-template-columns: minmax(260px, 280px) minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr) 280px !important;
     gap: 16px !important;
     width: 100% !important;
     max-width: 100% !important;
@@ -1944,13 +1983,10 @@ a, button, [onclick], .nav-link, .product-card, .blog-item, .category-card, .sid
     align-items: start !important;
   }
   .detail-col-left {
-    display: block !important;
-    width: 100% !important;
-    position: sticky !important;
-    top: 80px !important;
+    display: none !important;
   }
   .detail-col-right {
-    display: none !important;
+    display: block !important;
   }
   .detail-col-center {
     display: block !important;
@@ -3386,7 +3422,7 @@ header.header {
       #recommendedGrid &gt; *:nth-child(n+5) { display: none !important; }
     }
 
-    @media (min-width: 650px) and (max-width: 1280px) {
+    @media (min-width: 768px) and (max-width: 1149px) {
       #viewProductDetail {
         width: 100% !important;
         max-width: 100% !important;
@@ -3396,7 +3432,7 @@ header.header {
       }
       .detail-container-3col {
         display: grid !important;
-        grid-template-columns: minmax(260px, 280px) minmax(0, 1fr) !important;
+        grid-template-columns: minmax(0, 1fr) 280px !important;
         gap: 16px !important;
         width: 100% !important;
         max-width: 100% !important;
@@ -3404,13 +3440,10 @@ header.header {
         align-items: start !important;
       }
       .detail-col-left {
-        display: block !important;
-        width: 100% !important;
-        position: sticky !important;
-        top: 80px !important;
+        display: none !important;
       }
       .detail-col-right {
-        display: none !important;
+        display: block !important;
       }
       .detail-col-center {
         display: block !important;
@@ -3913,19 +3946,8 @@ header.header {
       </div>
       <div class='marquee-track-container'>
         <div class='marquee-track' id='homeMarqueeTrack'>
-          <div class='marquee-group'>
-            <span class='marquee-item'><i class='fa-solid fa-bullhorn' style='color:#38bdf8; margin-right:8px; font-size:0.8rem;'></i>🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom &amp; Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!</span>
-            <span class='marquee-bullet'>✦</span>
-            <span class='marquee-item'><i class='fa-solid fa-star' style='color:#f59e0b; margin-right:8px; font-size:0.8rem;'></i>🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom &amp; Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!</span>
-            <span class='marquee-bullet'>✦</span>
-          </div>
-          <div class='marquee-group' aria-hidden='true'>
-            <span class='marquee-item'><i class='fa-solid fa-bullhorn' style='color:#38bdf8; margin-right:8px; font-size:0.8rem;'></i>🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom &amp; Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!</span>
-            <span class='marquee-bullet'>✦</span>
-            <span class='marquee-item'><i class='fa-solid fa-star' style='color:#f59e0b; margin-right:8px; font-size:0.8rem;'></i>🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom &amp; Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!</span>
-            <span class='marquee-bullet'>✦</span>
-          </div>
-        </div>
+<div class="marquee-group"><span class="marquee-item"><i class="fa-solid fa-bullhorn" style="color:#38bdf8; margin-right:8px; font-size:0.8rem;"></i>🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom &amp; Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!</span><span class="marquee-bullet">✦</span><span class="marquee-item"><i class="fa-solid fa-star" style="color:#f59e0b; margin-right:8px; font-size:0.8rem;"></i>🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom &amp; Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!</span><span class="marquee-bullet">✦</span></div><div class="marquee-group" aria-hidden="true"><span class="marquee-item"><i class="fa-solid fa-bullhorn" style="color:#38bdf8; margin-right:8px; font-size:0.8rem;"></i>🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom &amp; Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!</span><span class="marquee-bullet">✦</span><span class="marquee-item"><i class="fa-solid fa-star" style="color:#f59e0b; margin-right:8px; font-size:0.8rem;"></i>🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom &amp; Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!</span><span class="marquee-bullet">✦</span></div>
+</div>
       </div>
     </div>
 
@@ -3934,17 +3956,9 @@ header.header {
     <!-- TOP HERO SECTION (3-COLUMN CARDS) -->
     <section class='hero-container'>
       <!-- Hero Left Sponsor Card -->
-      <div class='hero-sponsor-card' id='heroLeftSponsorCard' onclick='openProductDetailById("PROD_MU29RGEBH0")'>
-        <div class='sponsor-img-wrap'>
-          <img alt='Fanpage Facebook Cổ' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_co_2019.webp' onerror='handleProductImageError(this, {id:"PROD_MU29RGEBH0", name:"Fanpage Facebook Cổ", category:"Facebook"})'/>
-        </div>
-        <h4 class='sponsor-title'><a href='/?prod=PROD_MU29RGEBH0&amp;view=viewProductDetail' target='_blank' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU29RGEBH0"); }' style='color:inherit; text-decoration:none;'>CHUYÊN CUNG CẤP FANPAGE FACEBOOK CỔ 2019-2020</a></h4>
-        <span class='sponsor-commission'><i class='fa-solid fa-dollar-sign'></i> HOA HỒNG: 10% (~9.900 Đ)</span>
-        <div class='sponsor-footer'>
-          <span class='sponsor-price'>99.000 đ</span>
-          <span class='sponsor-rating'><i class='fa-solid fa-star'></i> 5.0</span>
-        </div>
-      </div>
+      <div class='hero-sponsor-card' id='heroLeftSponsorCard' onclick='openProductDetailById("PROD_MTQX465U")'>
+<div class="sponsor-img-wrap"><img alt="Gmail cho Thuế - 10 phút - live 10 phút" src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX465U_Gmail_cho_Thu%E1%BA%BF_10_ph%C3%BAt_live_10_ph%C3%BAt.png" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';" /></div><h4 class="sponsor-title"><a href="/?prod=PROD_MTQX465U&amp;view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MTQX465U'); }" style="color:inherit; text-decoration:none;">Gmail cho Thuế - 10 phút - live 10 phút</a></h4><span class="sponsor-commission"><i class="fa-solid fa-dollar-sign"></i> HOA HỒNG: 10% (~40 đ)</span><div class="sponsor-footer"><span class="sponsor-price">400 đ</span><span class="sponsor-rating"><i class="fa-solid fa-star"></i> 5.0</span></div>
+</div>
 
       <!-- Hero Center Banner -->
       <div class='hero-center-banner'>
@@ -3966,17 +3980,9 @@ header.header {
       </div>
 
       <!-- Hero Right Sponsor Card -->
-      <div class='hero-sponsor-card' id='heroRightSponsorCard' onclick='openProductDetailById("PROD_MU29IZBLAK")'>
-        <div class='sponsor-img-wrap'>
-          <img alt='TikTok US Beta' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29IZBLAK_TikTok_US_Chu%E1%BA%A9n_B%E1%BA%ADt_Ki%E1%BA%BFm_Ti%E1%BB%81n_Beta.png'/>
-        </div>
-        <h4 class='sponsor-title'><a href='/?prod=PROD_MU29IZBLAK&amp;view=viewProductDetail' target='_blank' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU29IZBLAK"); }' style='color:inherit; text-decoration:none;'>TK TikTok US Chuẩn Bật Kiếm Tiền Beta 2024-2025</a></h4>
-        <span class='sponsor-commission'><i class='fa-solid fa-dollar-sign'></i> HOA HỒNG: 10% (~800 Đ)</span>
-        <div class='sponsor-footer'>
-          <span class='sponsor-price'>8.000 đ</span>
-          <span class='sponsor-rating'><i class='fa-solid fa-star'></i> 5.0</span>
-        </div>
-      </div>
+      <div class='hero-sponsor-card' id='heroRightSponsorCard' onclick='openProductDetailById("PROD_MU2NUXL1Q4")'>
+<div class="sponsor-img-wrap"><img alt="Rom androi 10 s9 mod adb" src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s9_android10.png" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';" /></div><h4 class="sponsor-title"><a href="/?prod=PROD_MU2NUXL1Q4&amp;view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU2NUXL1Q4'); }" style="color:inherit; text-decoration:none;">Rom androi 10 s9 mod adb</a></h4><span class="sponsor-commission"><i class="fa-solid fa-dollar-sign"></i> HOA HỒNG: 10% (~30.000 đ)</span><div class="sponsor-footer"><span class="sponsor-price">300.000 đ</span><span class="sponsor-rating"><i class="fa-solid fa-star"></i> 5.0</span></div>
+</div>
     </section>
 
     <!-- 3-COLUMN MAIN BODY (FULL WIDTH WITH STICKY SIDES) -->
@@ -3989,97 +3995,8 @@ header.header {
             <a class='panel-more-link' href='javascript:void(0)' onclick='switchView("viewAllProducts")'>Xem tất cả &amp;rarr;</a>
           </div>
           <div class='compact-product-list' id='bestSellerList'>
-            <div class='compact-product-item' onclick='openProductDetailById("PROD_MTQX465U")'>
-              <div class='compact-thumb'><img alt='Gmail cho Thuế 10 phút live 10 phút' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX465U_Gmail_cho_Thu%E1%BA%BF_10_ph%C3%BAt_live_10_ph%C3%BAt.png' onerror='handleProductImageError(this, {id:"PROD_MTQX465U", name:"Gmail cho Thuế 10 phút live 10 phút", category:"Gmail"})'/></div>
-              <div class='compact-info'>
-                <a class='compact-title' href='/?prod=PROD_MTQX465U&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MTQX465U"); }' style='text-decoration:none; color:inherit; display:block;' title='Gmail cho Thuế 10 phút live 10 phút'>Gmail cho Thuế 10 phút live 10 phút</a>
-                <div class='compact-meta'>
-                  <span class='compact-price'>100 đ</span>
-                  <span class='compact-sold'>Đã bán: 3.420</span>
-                </div>
-              </div>
-            </div>
-            <div class='compact-product-item' onclick='openProductDetailById("PROD_MU2YQ1J3PY")'>
-              <div class='compact-thumb'><img alt='Hotmail Trusted - OAuth2 [Graph] Live' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2YQ1J3PY_Outlook_Hotmail_Trusted_-_OAuth2_Live_6-.png' onerror='handleProductImageError(this, {id:"PROD_MU2YQ1J3PY", name:"Hotmail Trusted", category:"Hotmail / Outlook"})'/></div>
-              <div class='compact-info'>
-                <a class='compact-title' href='/?prod=PROD_MU2YQ1J3PY&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU2YQ1J3PY"); }' style='text-decoration:none; color:inherit; display:block;' title='Hotmail Trusted - OAuth2 [Graph] Live'>Hotmail Trusted - OAuth2 [Graph] Live</a>
-                <div class='compact-meta'>
-                  <span class='compact-price'>1.000 đ</span>
-                  <span class='compact-sold'>Đã bán: 2.850</span>
-                </div>
-              </div>
-            </div>
-            <div class='compact-product-item' onclick='openProductDetailById("PROD_MTQQXO2E")'>
-              <div class='compact-thumb'><img alt='Gmail cho Thuê 24h' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQQXO2E_Gmail_cho_Thu%C3%AA_24h.png' onerror='handleProductImageError(this, {id:"PROD_MTQQXO2E", name:"Gmail cho Thuê 24h", category:"Gmail"})'/></div>
-              <div class='compact-info'>
-                <a class='compact-title' href='/?prod=PROD_MTQQXO2E&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MTQQXO2E"); }' style='text-decoration:none; color:inherit; display:block;' title='Gmail cho Thuê 24h'>Gmail cho Thuê 24h</a>
-                <div class='compact-meta'>
-                  <span class='compact-price'>360 đ</span>
-                  <span class='compact-sold'>Đã bán: 2.180</span>
-                </div>
-              </div>
-            </div>
-            <div class='compact-product-item' onclick='openProductDetailById("PROD_MTRB6000")'>
-              <div class='compact-thumb'><img alt='OUTLOOK TRUSTED - LIVE 6-12 Tháng' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTRB6000_OUTLOOK_TRUSTED_-_LIVE_6-12_Th%C3%A1ng.png' onerror='handleProductImageError(this, {id:"PROD_MTRB6000", name:"OUTLOOK TRUSTED", category:"Hotmail / Outlook"})'/></div>
-              <div class='compact-info'>
-                <a class='compact-title' href='/?prod=PROD_MTRB6000&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MTRB6000"); }' style='text-decoration:none; color:inherit; display:block;' title='OUTLOOK TRUSTED - LIVE 6-12 Tháng'>OUTLOOK TRUSTED - LIVE 6-12 Tháng</a>
-                <div class='compact-meta'>
-                  <span class='compact-price'>1.000 đ</span>
-                  <span class='compact-sold'>Đã bán: 1.920</span>
-                </div>
-              </div>
-            </div>
-            <div class='compact-product-item' onclick='openProductDetailById("PROD_MTQX1C7X")'>
-              <div class='compact-thumb'><img alt='Gmail cho thuê 1 giờ live 60 phút' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX1C7X_Gmail_cho_thu%C3%AA_1_gi%E1%BB%9D_live_60_ph%C3%BAt.png' onerror='handleProductImageError(this, {id:"PROD_MTQX1C7X", name:"Gmail cho thuê 1 giờ live 60 phút", category:"Gmail"})'/></div>
-              <div class='compact-info'>
-                <a class='compact-title' href='/?prod=PROD_MTQX1C7X&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MTQX1C7X"); }' style='text-decoration:none; color:inherit; display:block;' title='Gmail cho thuê 1 giờ live 60 phút'>Gmail cho thuê 1 giờ live 60 phút</a>
-                <div class='compact-meta'>
-                  <span class='compact-price'>150 đ</span>
-                  <span class='compact-sold'>Đã bán: 1.650</span>
-                </div>
-              </div>
-            </div>
-            <div class='compact-product-item' onclick='openProductDetailById("PROD_MTVI44UK")'>
-              <div class='compact-thumb'><img alt='Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTVI44UK_Tiktok_Vi%E1%BB%87t_%C4%90%C3%A3_Ng%C3%A2m_L%C3%A2u_C%E1%BB%B1c_K%E1%BB%B3_Tr%C3%A2u.png'/></div>
-              <div class='compact-info'>
-                <a class='compact-title' href='/?prod=PROD_MTVI44UK&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MTVI44UK"); }' style='text-decoration:none; color:inherit; display:block;' title='Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu'>Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu</a>
-                <div class='compact-meta'>
-                  <span class='compact-price'>2.000 đ</span>
-                  <span class='compact-sold'>Đã bán: 1.270</span>
-                </div>
-              </div>
-            </div>
-            <div class='compact-product-item' onclick='openProductDetailById("PROD_MTPG0PUD")'>
-              <div class='compact-thumb'><img alt='TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTPIJ9XV_T%C3%80I_KHO%E1%BA%A2N_TIKTOK_BRAZIL_%C4%90%C3%83_NG%C3%82M_L%C3%82U_-_C%E1%BB%B0.png'/></div>
-              <div class='compact-info'>
-                <a class='compact-title' href='/?prod=PROD_MTPG0PUD&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MTPG0PUD"); }' style='text-decoration:none; color:inherit; display:block;' title='TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU'>TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU</a>
-                <div class='compact-meta'>
-                  <span class='compact-price'>6.000 đ</span>
-                  <span class='compact-sold'>Đã bán: 1.270</span>
-                </div>
-              </div>
-            </div>
-            <div class='compact-product-item' onclick='openProductDetailById("PROD_MU5PWT7PP7")'>
-              <div class='compact-thumb'><img alt='TÀI KHOẢN KLING AI 65 CREDIT' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5PWT7PP7_T%C3%80I_KHO%E1%BA%A2N_KLING_AI_65_CREDIT.png' onerror='handleProductImageError(this, {id:"PROD_MU5PWT7PP7", name:"TÀI KHOẢN KLING AI 65 CREDIT", category:"KLING"})'/></div>
-              <div class='compact-info'>
-                <a class='compact-title' href='/?prod=PROD_MU5PWT7PP7&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU5PWT7PP7"); }' style='text-decoration:none; color:inherit; display:block;' title='TÀI KHOẢN KLING AI 65 CREDIT'>TÀI KHOẢN KLING AI 65 CREDIT</a>
-                <div class='compact-meta'>
-                  <span class='compact-price'>8.000 đ</span>
-                  <span class='compact-sold'>Đã bán: 966</span>
-                </div>
-              </div>
-            </div>
-            <div class='compact-product-item' onclick='openProductDetailById("PROD_MU2PA8VNDP")'>
-              <div class='compact-thumb'><img alt='INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2PA8VNDP_INSTAGRAM_%C4%90%C3%83_QUA_S%E1%BB%AC_D%E1%BB%A4NG_-_RANDOM_IP.png'/></div>
-              <div class='compact-info'>
-                <a class='compact-title' href='/?prod=PROD_MU2PA8VNDP&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU2PA8VNDP"); }' style='text-decoration:none; color:inherit; display:block;' title='INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP'>INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP</a>
-                <div class='compact-meta'>
-                  <span class='compact-price'>6.000 đ</span>
-                  <span class='compact-sold'>Đã bán: 928</span>
-                </div>
-              </div>
-            </div>
-          </div>
+<div class="compact-product-item" onclick="openProductDetailById('PROD_MTQX465U')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX465U_Gmail_cho_Thu%E1%BA%BF_10_ph%C3%BAt_live_10_ph%C3%BAt.png" alt="Gmail cho Thuế - 10 phút - live 10 phút" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MTQX465U&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MTQX465U'); }" style="text-decoration:none; color:inherit; display:block;">Gmail cho Thuế - 10 phút - live 10 phút</a><div class="compact-meta"><span class="compact-price">400 đ</span><span class="compact-sold">Đã bán: 3.458</span></div></div></div><div class="compact-product-item" onclick="openProductDetailById('PROD_MU2MOON7L6')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png" alt="Rom androi 12 mod adb galaxy not 10 G975FDS" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MU2MOON7L6&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU2MOON7L6'); }" style="text-decoration:none; color:inherit; display:block;">Rom androi 12 mod adb galaxy not 10 G975FDS</a><div class="compact-meta"><span class="compact-price">500.000 đ</span><span class="compact-sold">Đã bán: 3.368</span></div></div></div><div class="compact-product-item" onclick="openProductDetailById('PROD_MU2MY8WCOE')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png" alt="Rom Androi 12 galaxy s22 mod adb" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MU2MY8WCOE&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU2MY8WCOE'); }" style="text-decoration:none; color:inherit; display:block;">Rom Androi 12 galaxy s22 mod adb</a><div class="compact-meta"><span class="compact-price">500.000 đ</span><span class="compact-sold">Đã bán: 2.940</span></div></div></div><div class="compact-product-item" onclick="openProductDetailById('PROD_MU2YQ1J3PY')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2YQ1J3PY_Outlook_Hotmail_Trusted_-_OAuth2_Live_6-.png" alt="Outlook Hotmail Trusted - OAuth2 Live 6-" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MU2YQ1J3PY&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU2YQ1J3PY'); }" style="text-decoration:none; color:inherit; display:block;">Outlook Hotmail Trusted - OAuth2 Live 6-</a><div class="compact-meta"><span class="compact-price">500 đ</span><span class="compact-sold">Đã bán: 2.609</span></div></div></div><div class="compact-product-item" onclick="openProductDetailById('PROD_MTQQXO2E')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQQXO2E_Gmail_cho_Thu%C3%AA_24h.png" alt="BÁN GMAIL CHO THUÊ 24H" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MTQQXO2E&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MTQQXO2E'); }" style="text-decoration:none; color:inherit; display:block;">BÁN GMAIL CHO THUÊ 24H</a><div class="compact-meta"><span class="compact-price">600 đ</span><span class="compact-sold">Đã bán: 2.180</span></div></div></div><div class="compact-product-item" onclick="openProductDetailById('PROD_MU5PWT7PP7')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5PWT7PP7_T%C3%80I_KHO%E1%BA%A2N_KLING_AI_65_CREDIT.png" alt="TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MU5PWT7PP7&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU5PWT7PP7'); }" style="text-decoration:none; color:inherit; display:block;">TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ</a><div class="compact-meta"><span class="compact-price">2.500 đ</span><span class="compact-sold">Đã bán: 1.989</span></div></div></div><div class="compact-product-item" onclick="openProductDetailById('PROD_MUR4SPH1IU')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR4SPH1IU_TikTok_Cambodia_-_Reg_2025_Mail_Lock.jpg" alt="TikTok Cambodia – Reg 2025 Mail Lock" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MUR4SPH1IU&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MUR4SPH1IU'); }" style="text-decoration:none; color:inherit; display:block;">TikTok Cambodia – Reg 2025 Mail Lock</a><div class="compact-meta"><span class="compact-price">4.500 đ</span><span class="compact-sold">Đã bán: 1.980</span></div></div></div><div class="compact-product-item" onclick="openProductDetailById('PROD_MTRB6000')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTRB6000_OUTLOOK_TRUSTED_-_LIVE_6-12_Th%C3%A1ng.png" alt="OUTLOOK TRUSTED - LIVE 6-12 Tháng" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MTRB6000&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MTRB6000'); }" style="text-decoration:none; color:inherit; display:block;">OUTLOOK TRUSTED - LIVE 6-12 Tháng</a><div class="compact-meta"><span class="compact-price">141 đ</span><span class="compact-sold">Đã bán: 1.920</span></div></div></div><div class="compact-product-item" onclick="openProductDetailById('PROD_MV5QIZNFCZ')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg" alt="Google Gemini AI Pro Veo3 - 1 NĂM Chính Chủ" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MV5QIZNFCZ&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MV5QIZNFCZ'); }" style="text-decoration:none; color:inherit; display:block;">Google Gemini AI Pro Veo3 - 1 NĂM Chính Chủ</a><div class="compact-meta"><span class="compact-price">120.000 đ</span><span class="compact-sold">Đã bán: 1.865</span></div></div></div><div class="compact-product-item" onclick="openProductDetailById('PROD_MUJVFEFFNP')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJVFEFFNP_Proxy_Viettel_-_1_ng%C3%A0y.jpg" alt="Proxy Viettel - 1 ngày" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MUJVFEFFNP&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MUJVFEFFNP'); }" style="text-decoration:none; color:inherit; display:block;">Proxy Viettel - 1 ngày</a><div class="compact-meta"><span class="compact-price">4.500 đ</span><span class="compact-sold">Đã bán: 1.798</span></div></div></div><div class="compact-product-item" onclick="openProductDetailById('PROD_MU2NX4CYEW')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s8_android10.png" alt="Rom Androi 10 S8 G950N G950F mod adb" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MU2NX4CYEW&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU2NX4CYEW'); }" style="text-decoration:none; color:inherit; display:block;">Rom Androi 10 S8 G950N G950F mod adb</a><div class="compact-meta"><span class="compact-price">300.000 đ</span><span class="compact-sold">Đã bán: 1.758</span></div></div></div><div class="compact-product-item" onclick="openProductDetailById('PROD_MTQWMPL5')"><div class="compact-thumb"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWMPL5_Gmail_cho_thu%C3%AA_7_Ng%C3%A0y.png" alt="Gmail cho thuê 7 Ngày" loading="lazy" /></div><div class="compact-info"><a href="/?prod=PROD_MTQWMPL5&amp;view=viewProductDetail" target="_blank" class="compact-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MTQWMPL5'); }" style="text-decoration:none; color:inherit; display:block;">Gmail cho thuê 7 Ngày</a><div class="compact-meta"><span class="compact-price">7.000 đ</span><span class="compact-sold">Đã bán: 1.678</span></div></div></div>
+</div>
         </div>
       </aside>
 
@@ -4092,109 +4009,8 @@ header.header {
             <span class='center-section-title'><i class='fa-solid fa-bolt yellow'></i> ĐỀ XUẤT CHO BẠN</span>
           </div>
           <div class='recommended-grid' id='recommendedGrid'>
-            <div class='product-card' onclick='openProductDetailById("PROD_MTVI44UK")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTVI44UK_Tiktok_Vi%E1%BB%87t_%C4%90%C3%A3_Ng%C3%A2m_L%C3%A2u_C%E1%BB%B1c_K%E1%BB%B3_Tr%C3%A2u.png'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MTVI44UK&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MTVI44UK"); }' style='text-decoration:none; color:inherit; display:block;' title='Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu'>Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~200 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>2.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 4.9</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 1.270</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-            <div class='product-card' onclick='openProductDetailById("PROD_MTPG0PUD")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTPIJ9XV_T%C3%80I_KHO%E1%BA%A2N_TIKTOK_BRAZIL_%C4%90%C3%83_NG%C3%82M_L%C3%82U_-_C%E1%BB%B0.png'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MTPG0PUD&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MTPG0PUD"); }' style='text-decoration:none; color:inherit; display:block;' title='TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU'>TÀI KHOẢN TIKTOK BRAZIL ĐÃ NGÂM LÂU - CỰ KỲ TRÂU</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~600 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>6.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 4.9</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 1.270</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-            <div class='product-card' onclick='openProductDetailById("PROD_MU29IZBLAK")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='TikTok US Chuẩn Bật Kiếm Tiền Beta' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29IZBLAK_TikTok_US_Chu%E1%BA%A9n_B%E1%BA%ADt_Ki%E1%BA%BFm_Ti%E1%BB%81n_Beta.png'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MU29IZBLAK&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU29IZBLAK"); }' style='text-decoration:none; color:inherit; display:block;' title='TikTok US Chuẩn Bật Kiếm Tiền Beta'>TikTok US Chuẩn Bật Kiếm Tiền Beta</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~500 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>5.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 4.9</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 928</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-            <div class='product-card' onclick='openProductDetailById("PROD_MU1LSSJ7AZ")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Tiktok nhật 2024-2026  tiktok like  - tiktok thường' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU1LSSJ7AZ_Tiktok_nh%E1%BA%ADt_2024-2026__tiktok_like__-_tiktok_th%C6%B0%E1%BB%9Dn.jpg'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MU1LSSJ7AZ&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU1LSSJ7AZ"); }' style='text-decoration:none; color:inherit; display:block;' title='Tiktok nhật 2024-2026  tiktok like  - tiktok thường'>Tiktok nhật 2024-2026  tiktok like  - tiktok thường</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~500 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>5.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 4.9</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 520</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-            <div class='product-card' onclick='openProductDetailById("PROD_MUBJQ6JP7O")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Rom Androi 10 Not 9  N960 F/DS mod adb' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not9_android10.jpg'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MUBJQ6JP7O&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MUBJQ6JP7O"); }' style='text-decoration:none; color:inherit; display:block;' title='Rom Androi 10 Not 9  N960 F/DS mod adb'>Rom Androi 10 Not 9  N960 F/DS mod adb</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~30.000 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>300.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 4.9</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 300</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-            <div class='product-card' onclick='openProductDetailById("PROD_MU2B32VLQY")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Tài khoản Chatgpt Plus' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2B32VLQY_T%C3%A0i_Kho%E1%BA%A3n_Chatgpt_Plus.png' onerror='handleProductImageError(this, {id:"PROD_MU2B32VLQY", name:"Tài khoản Chatgpt Plus", category:"ChatGPT"})'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MU2B32VLQY&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU2B32VLQY"); }' style='text-decoration:none; color:inherit; display:block;' title='Tài khoản Chatgpt Plus'>Tài khoản Chatgpt Plus</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~10.000 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>100.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 5.0</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 2.150</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-          </div>
+<div class="product-card" onclick="openProductDetailById('PROD_MU29RGEBH0')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_co_2019.webp" alt="Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MU29RGEBH0');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MU29RGEBH0&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU29RGEBH0'); }" style="text-decoration:none; color:inherit; display:block;" title="Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate">Page Facebook cổ 2019 - chạy ADS - Bật kiếm tiền - làm Affiliate</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~9.900 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">99.000 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 431</span><span style="color:#94a3b8;">Kho: 11</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MUK5IKCQLN')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUK5IKCQLN_Proxy_US_ipv4_-_1_ng%C3%A0y.jpg" alt="Proxy US ipv4 - 1 ngày" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MUK5IKCQLN');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MUK5IKCQLN&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MUK5IKCQLN'); }" style="text-decoration:none; color:inherit; display:block;" title="Proxy US ipv4 - 1 ngày">Proxy US ipv4 - 1 ngày</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~250 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">2.500 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 1.219</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MUOQS3DOIU')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUOQS3DOIU_TIKTOK_VI%E1%BB%86T__%C4%90%C3%83_T%E1%BA%A0O_1-3_N%C4%82M__%C4%90%E1%BA%B6T_%C4%90%C6%A0N_H%C3%80NG_B%E1%BA%A4T_T%E1%BB%AC.jpg" alt="TIKTOK VIỆT  ĐÃ TẠO 1-3 NĂM  ĐẶT ĐƠN HÀNG BẤT TỬ" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MUOQS3DOIU');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MUOQS3DOIU&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MUOQS3DOIU'); }" style="text-decoration:none; color:inherit; display:block;" title="TIKTOK VIỆT  ĐÃ TẠO 1-3 NĂM  ĐẶT ĐƠN HÀNG BẤT TỬ">TIKTOK VIỆT  ĐÃ TẠO 1-3 NĂM  ĐẶT ĐƠN HÀNG BẤT TỬ</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~600 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">6.000 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 693</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MUNUEKI3NM')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUNUEKI3NM_N%C3%A2ng_C%E1%BA%A5p_ChatGPT_Plus_Gi%C3%A1_R%E1%BA%BB.jpg" alt="Nâng Cấp ChatGPT Plus Giá Rẻ" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MUNUEKI3NM');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MUNUEKI3NM&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MUNUEKI3NM'); }" style="text-decoration:none; color:inherit; display:block;" title="Nâng Cấp ChatGPT Plus Giá Rẻ">Nâng Cấp ChatGPT Plus Giá Rẻ</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~45.600 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">456.000 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 299</span><span style="color:#94a3b8;">Kho: 6</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MTQX7SIK')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX7SIK_Gmail_Cho_Thu%C3%AA_12h_T%C3%AAn_Ti%E1%BA%BFng_Anh.png" alt="Gmail Cho Thue 12h-24h" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MTQX7SIK');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MTQX7SIK&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MTQX7SIK'); }" style="text-decoration:none; color:inherit; display:block;" title="Gmail Cho Thue 12h-24h">Gmail Cho Thue 12h-24h</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~40 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">400 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 640</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MTQX465U')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX465U_Gmail_cho_Thu%E1%BA%BF_10_ph%C3%BAt_live_10_ph%C3%BAt.png" alt="Gmail cho Thuế - 10 phút - live 10 phút" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MTQX465U');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MTQX465U&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MTQX465U'); }" style="text-decoration:none; color:inherit; display:block;" title="Gmail cho Thuế - 10 phút - live 10 phút">Gmail cho Thuế - 10 phút - live 10 phút</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~40 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">400 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 3.458</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div>
+</div>
         </div>
 
         <!-- SECTION 2: SẢN PHẨM NỔI BẬT (3 HÀNG X 7 CỘT) -->
@@ -4204,7 +4020,7 @@ header.header {
             <div class='pagination-controls'>
               <a class='panel-more-link' href='javascript:void(0)' onclick='switchView("viewAllProducts")'>Xem tất cả &amp;rarr;</a>
               <div class='pagination-btn' onclick='changeStoreProdPage((paginationState.storeProd || 1) - 1)'><i class='fa-solid fa-chevron-left'></i></div>
-              <span class='pagination-info' id='storeProdHeaderPaginationInfo'>1/1</span>
+              <span class='pagination-info' id='storeProdHeaderPaginationInfo'>1/7</span>
               <div class='pagination-btn' onclick='changeStoreProdPage((paginationState.storeProd || 1) + 1)'><i class='fa-solid fa-chevron-right'></i></div>
             </div>
           </div>
@@ -4228,222 +4044,8 @@ header.header {
 
           <!-- Main Product Grid (Pre-rendered for Googlebot &amp; SEO Indexation) -->
           <div class='recommended-grid' id='productGrid'>
-            <div class='product-card' onclick='openProductDetailById("PROD_MU2B32VLQY")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Tài khoản Capcut Pro chính chủ' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU1G6LJX_Capcut_pro_C%C3%A1_Nh%C3%A2n_7_ng%C3%A0y.jpg'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MU2B32VLQY&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU2B32VLQY"); }' style='text-decoration:none; color:inherit; display:block;' title='Tài khoản Capcut Pro chính chủ'>Tài khoản Capcut Pro chính chủ</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~2.000 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>20.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 5.0</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 890</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-
-            <div class='product-card' onclick='openProductDetailById("PROD_MU2IXVFLMW")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Tiktok Việt mở giỏ Affiliate' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2IXVFLMW_Tiktok_Vi%E1%BB%87t_m%E1%BB%9F_gi%E1%BB%8F___1KFL_-_Tiktok_vi%E1%BB%87t_.png'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MU2IXVFLMW&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU2IXVFLMW"); }' style='text-decoration:none; color:inherit; display:block;' title='Tiktok Việt mở giỏ &lt; 1KFL - Làm affiliate'>Tiktok Việt mở giỏ &lt; 1KFL - Làm affiliate</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~9.900 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>99.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 4.9</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 654</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-
-            <div class='product-card' onclick='openProductDetailById("PROD_MU29IZBLAK")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='TK TikTok US Chuẩn Bật Kiếm Tiền Beta' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29IZBLAK_TikTok_US_Chu%E1%BA%A9n_B%E1%BA%ADt_Ki%E1%BA%BFm_Ti%E1%BB%81n_Beta.png'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MU29IZBLAK&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU29IZBLAK"); }' style='text-decoration:none; color:inherit; display:block;' title='TK TikTok US Chuẩn Bật Kiếm Tiền Beta 2024-2025'>TK TikTok US Chuẩn Bật Kiếm Tiền Beta 2024-2025</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~800 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>8.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 5.0</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 1.250</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-
-            <div class='product-card' onclick='openProductDetailById("PROD_MU5SPLMSEC")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Tài khoản Chat GPT Plus' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5SPLMSEC_ChatGPT_New_Gmail_Trial.jpg'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MU5SPLMSEC&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU5SPLMSEC"); }' style='text-decoration:none; color:inherit; display:block;' title='Tài khoản Chat GPT Plus không giới hạn'>Tài khoản Chat GPT Plus không giới hạn</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~5.000 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>50.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 4.9</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 432</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-
-            <div class='product-card' onclick='openProductDetailById("PROD_MU5PWT7PP7")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Tài khoản Kling AI 65 Credit' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5PWT7PP7_T%C3%80I_KHO%E1%BA%A2N_KLING_AI_65_CREDIT.png' onerror='handleProductImageError(this, {id:"PROD_MU5PWT7PP7", name:"Tài khoản Kling AI 65 Credit", category:"KLING"})'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MU5PWT7PP7&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU5PWT7PP7"); }' style='text-decoration:none; color:inherit; display:block;' title='TÀI KHOẢN KLING AI 65 CREDIT'>TÀI KHOẢN KLING AI 65 CREDIT</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~1.500 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>15.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 5.0</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 320</span>
-                  <span style='color:#94a3b8;'>Kho: 299 acc</span>
-                </div>
-              </div>
-            </div>
-
-            <div class='product-card' onclick='openProductDetailById("PROD_MU9YH8D9FK")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Nâng cấp Canva Edu Pro' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU9YH8D9FK_N%C3%82NG_C%E1%BA%A4P_CANVA_EDU_1_N%C4%82M.jpg'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MU9YH8D9FK&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU9YH8D9FK"); }' style='text-decoration:none; color:inherit; display:block;' title='NÂNG CẤP CANVA EDU 1 NĂM BẢN QUYỀN'>NÂNG CẤP CANVA EDU 1 NĂM BẢN QUYỀN</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~5.000 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>50.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 4.9</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 512</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-
-            <div class='product-card' onclick='openProductDetailById("PROD_MV5PA8KZDW")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Google Gemini Pro Advanced' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MV5PA8KZDW_NANG_CAP_GEMINI_PRO_CHINH_CHU_18_Thang.png' onerror='handleProductImageError(this, {id:"PROD_MV5PA8KZDW", name:"Google Gemini Pro Advanced", category:"GEMINI"})'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MV5PA8KZDW&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MV5PA8KZDW"); }' style='text-decoration:none; color:inherit; display:block;' title='Nâng cấp Google Gemini Pro Advanced'>Nâng cấp Google Gemini Pro Advanced</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~8.900 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>89.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 5.0</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 280</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-
-            <div class='product-card' onclick='openProductDetailById("PROD_MUBKH47T2U")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Rom Android 10 Note 8 N950 mod ADB' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not8_android10.png'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MUBKH47T2U&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MUBKH47T2U"); }' style='text-decoration:none; color:inherit; display:block;' title='Rom Androi 10 Not8 N950 mod ADB'>Rom Androi 10 Not8 N950 mod ADB</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~10.000 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>100.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 4.8</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 180</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-
-            <div class='product-card' onclick='openProductDetailById("PROD_MTTPLODQ")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Gmail Cổ 2019-2020 Random IP' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTTPLODQ_GMAIL_C%E1%BB%94_2019-2020_RAMDOM_ACC_C%E1%BB%94.png' onerror='handleProductImageError(this, {id:"PROD_MTTPLODQ", name:"GMAIL CỔ 2019-2020", category:"Gmail"})'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MTTPLODQ&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MTTPLODQ"); }' style='text-decoration:none; color:inherit; display:block;' title='GMAIL CỔ 2019-2020 RAMDOM ACC CỔ'>GMAIL CỔ 2019-2020 RAMDOM ACC CỔ</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~800 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>8.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 4.9</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 2.450</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-
-            <div class='product-card' onclick='openProductDetailById("PROD_MTQQXO2E")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Gmail Cho Thuê 24h' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQQXO2E_Gmail_cho_Thu%C3%AA_24h.png' onerror='handleProductImageError(this, {id:"PROD_MTQQXO2E", name:"Gmail Cho Thuê 24h", category:"Gmail"})'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MTQQXO2E&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MTQQXO2E"); }' style='text-decoration:none; color:inherit; display:block;' title='Gmail Cho Thuê 24h Tên Việt Giá Rẻ'>Gmail Cho Thuê 24h Tên Việt Giá Rẻ</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~100 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>1.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 5.0</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 2.180</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-
-            <div class='product-card' onclick='openProductDetailById("PROD_MU2YQ1J3PY")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Hotmail Trusted Live Trâu' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2YQ1J3PY_Outlook_Hotmail_Trusted_-_OAuth2_Live_6-.png' onerror='handleProductImageError(this, {id:"PROD_MU2YQ1J3PY", name:"HOTMAIL VIỆT NAM", category:"Hotmail / Outlook"})'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MU2YQ1J3PY&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU2YQ1J3PY"); }' style='text-decoration:none; color:inherit; display:block;' title='HOTMAIL VIỆT NAM ĐÃ NGÂM CỰC LÂU'>HOTMAIL VIỆT NAM ĐÃ NGÂM CỰC LÂU</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~300 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>3.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 4.9</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 980</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-
-            <div class='product-card' onclick='openProductDetailById("PROD_MU29RGEBH0")'>
-              <div class='product-img-wrap' style='position:relative;'>
-                <img alt='Fanpage Facebook Cổ 2019-2020' loading='lazy' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU29RGEBH0_Page_Facebook_co_2019.webp' onerror='handleProductImageError(this, {id:"PROD_MU29RGEBH0", name:"Fanpage Facebook Cổ 2019-2020", category:"Facebook"})'/>
-              </div>
-              <div class='product-body'>
-                <a class='product-title' href='/?prod=PROD_MU29RGEBH0&amp;view=viewProductDetail' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU29RGEBH0"); }' style='text-decoration:none; color:inherit; display:block;' title='Fanpage Facebook Cổ 2019-2020 Kháng 282'>Fanpage Facebook Cổ 2019-2020 Kháng 282</a>
-                <div class='product-commission-tag'><i class='fa-solid fa-dollar-sign'></i> <span class='comm-text-full'>HOA HỒNG: 10% (~9.900 đ)</span><span class='comm-text-short'>HH 10%</span></div>
-                <div class='product-footer-row'>
-                  <span class='product-price'>99.000 đ</span>
-                  <span class='product-rating-pill'><i class='fa-solid fa-star'></i> 5.0</span>
-                </div>
-                <div class='product-stock-line'>
-                  <span>Đã bán: 450</span>
-                  <span style='color:#94a3b8;'>Kho: 99+</span>
-                </div>
-              </div>
-            </div>
-          </div>
+<div class="product-card" onclick="openProductDetailById('PROD_MTQX465U')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQX465U_Gmail_cho_Thu%E1%BA%BF_10_ph%C3%BAt_live_10_ph%C3%BAt.png" alt="Gmail cho Thuế - 10 phút - live 10 phút" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MTQX465U');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MTQX465U&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MTQX465U'); }" style="text-decoration:none; color:inherit; display:block;" title="Gmail cho Thuế - 10 phút - live 10 phút">Gmail cho Thuế - 10 phút - live 10 phút</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~40 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">400 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 3.458</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MU2MOON7L6')"><div class="product-img-wrap" style="position:relative;"><span style="position:absolute; top:8px; left:8px; background:linear-gradient(135deg,#f59e0b,#ea580c); color:#fff; font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:4px; box-shadow:0 2px 6px rgba(0,0,0,0.5); z-index:2;"><i class="fa-solid fa-clock"></i> Đặt trước</span><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_not10_android12.png" alt="Rom androi 12 mod adb galaxy not 10 G975FDS" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MU2MOON7L6');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MU2MOON7L6&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU2MOON7L6'); }" style="text-decoration:none; color:inherit; display:block;" title="Rom androi 12 mod adb galaxy not 10 G975FDS">Rom androi 12 mod adb galaxy not 10 G975FDS</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~50.000 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">500.000 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 3.368</span><span style="color:#f59e0b; font-weight:700;"><i class="fa-solid fa-clock"></i> Đặt trước</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MU2MY8WCOE')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s22_android12.png" alt="Rom Androi 12 galaxy s22 mod adb" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MU2MY8WCOE');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MU2MY8WCOE&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU2MY8WCOE'); }" style="text-decoration:none; color:inherit; display:block;" title="Rom Androi 12 galaxy s22 mod adb">Rom Androi 12 galaxy s22 mod adb</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~50.000 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">500.000 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 2.940</span><span style="color:#94a3b8;">Kho: 35</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MU2YQ1J3PY')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2YQ1J3PY_Outlook_Hotmail_Trusted_-_OAuth2_Live_6-.png" alt="Outlook Hotmail Trusted - OAuth2 Live 6-" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MU2YQ1J3PY');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MU2YQ1J3PY&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU2YQ1J3PY'); }" style="text-decoration:none; color:inherit; display:block;" title="Outlook Hotmail Trusted - OAuth2 Live 6-">Outlook Hotmail Trusted - OAuth2 Live 6-</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~50 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">500 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 2.609</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MTQQXO2E')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQQXO2E_Gmail_cho_Thu%C3%AA_24h.png" alt="BÁN GMAIL CHO THUÊ 24H" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MTQQXO2E');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MTQQXO2E&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MTQQXO2E'); }" style="text-decoration:none; color:inherit; display:block;" title="BÁN GMAIL CHO THUÊ 24H">BÁN GMAIL CHO THUÊ 24H</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~60 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">600 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 2.180</span><span style="color:#94a3b8;">Kho: 31</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MU5PWT7PP7')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5PWT7PP7_T%C3%80I_KHO%E1%BA%A2N_KLING_AI_65_CREDIT.png" alt="TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MU5PWT7PP7');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MU5PWT7PP7&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU5PWT7PP7'); }" style="text-decoration:none; color:inherit; display:block;" title="TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ">TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~250 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">2.500 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 1.989</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MUR4SPH1IU')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR4SPH1IU_TikTok_Cambodia_-_Reg_2025_Mail_Lock.jpg" alt="TikTok Cambodia – Reg 2025 Mail Lock" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MUR4SPH1IU');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MUR4SPH1IU&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MUR4SPH1IU'); }" style="text-decoration:none; color:inherit; display:block;" title="TikTok Cambodia – Reg 2025 Mail Lock">TikTok Cambodia – Reg 2025 Mail Lock</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~450 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">4.500 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 1.980</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MTRB6000')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTRB6000_OUTLOOK_TRUSTED_-_LIVE_6-12_Th%C3%A1ng.png" alt="OUTLOOK TRUSTED - LIVE 6-12 Tháng" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MTRB6000');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MTRB6000&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MTRB6000'); }" style="text-decoration:none; color:inherit; display:block;" title="OUTLOOK TRUSTED - LIVE 6-12 Tháng">OUTLOOK TRUSTED - LIVE 6-12 Tháng</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~14 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">141 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 1.920</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MV5QIZNFCZ')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg" alt="Google Gemini AI Pro Veo3 - 1 NĂM Chính Chủ" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MV5QIZNFCZ');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MV5QIZNFCZ&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MV5QIZNFCZ'); }" style="text-decoration:none; color:inherit; display:block;" title="Google Gemini AI Pro Veo3 - 1 NĂM Chính Chủ">Google Gemini AI Pro Veo3 - 1 NĂM Chính Chủ</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~12.000 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">120.000 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 1.865</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MUJVFEFFNP')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJVFEFFNP_Proxy_Viettel_-_1_ng%C3%A0y.jpg" alt="Proxy Viettel - 1 ngày" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MUJVFEFFNP');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MUJVFEFFNP&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MUJVFEFFNP'); }" style="text-decoration:none; color:inherit; display:block;" title="Proxy Viettel - 1 ngày">Proxy Viettel - 1 ngày</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~450 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">4.500 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 1.798</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MU2NX4CYEW')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_s8_android10.png" alt="Rom Androi 10 S8 G950N G950F mod adb" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MU2NX4CYEW');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MU2NX4CYEW&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU2NX4CYEW'); }" style="text-decoration:none; color:inherit; display:block;" title="Rom Androi 10 S8 G950N G950F mod adb">Rom Androi 10 S8 G950N G950F mod adb</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~30.000 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">300.000 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 1.758</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div><div class="product-card" onclick="openProductDetailById('PROD_MTQWMPL5')"><div class="product-img-wrap" style="position:relative;"><img src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MTQWMPL5_Gmail_cho_thu%C3%AA_7_Ng%C3%A0y.png" alt="Gmail cho thuê 7 Ngày" loading="lazy" onerror="if(typeof handleProductImageError==='function'){handleProductImageError(this,'PROD_MTQWMPL5');}else{this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';}" /></div><div class="product-body"><a href="/?prod=PROD_MTQWMPL5&amp;view=viewProductDetail" target="_blank" class="product-title" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MTQWMPL5'); }" style="text-decoration:none; color:inherit; display:block;" title="Gmail cho thuê 7 Ngày">Gmail cho thuê 7 Ngày</a><div class="product-commission-tag"><i class="fa-solid fa-dollar-sign"></i> <span class="comm-text-full">HOA HỒNG: 10% (~700 đ)</span><span class="comm-text-short">HH 10%</span></div><div class="product-footer-row"><span class="product-price">7.000 đ</span><span class="product-rating-pill"><i class="fa-solid fa-star"></i> 4.8</span></div><div class="product-stock-line"><span>Đã bán: 1.678</span><span style="color:#94a3b8;">Kho: 99+</span></div></div></div>
+</div>
           <div id='storeProductPagination'></div>
         </div>
 
@@ -4452,17 +4054,9 @@ header.header {
       <!-- RIGHT SIDEBAR: SPONSOR &amp; BLOG (STICKY CỐ ĐỊNH) -->
       <aside class='home-sidebar-right'>
         <!-- Sponsor Card: Samsung J7 -->
-        <div class='hero-sponsor-card' id='homeSidebarRightCard' onclick='openProductDetailById("PROD_MU2OAG3IO2")' style='margin-bottom: 16px;'>
-          <div class='sponsor-img-wrap'>
-            <img alt='Rom androi 10 mod adb j7 prime' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/rom_j7_prime.png'/>
-          </div>
-          <h4 class='sponsor-title'><a href='/?prod=PROD_MU2OAG3IO2&amp;view=viewProductDetail' target='_blank' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById("PROD_MU2OAG3IO2"); }' style='color:inherit; text-decoration:none;'>Rom androi 10 mod adb j7 prime</a></h4>
-          <span class='sponsor-commission'><i class='fa-solid fa-dollar-sign'></i> HOA HỒNG: 10% (~30.000 Đ)</span>
-          <div class='sponsor-footer'>
-            <span class='sponsor-price'>300.000 đ</span>
-            <span class='sponsor-rating'><i class='fa-solid fa-star'></i> 5.0</span>
-          </div>
-        </div>
+        <div class='hero-sponsor-card' id='homeSidebarRightCard' onclick='openProductDetailById("PROD_MU2ASBNSJT")' style='margin-bottom: 16px;'>
+<div class="sponsor-img-wrap"><img alt="Facebook Via Việt  ACC SPAM - SEEDING - ĐÃ NGÂM LÂU" src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Facebook_Via_Viet_Acc_Spam.webp" onerror="this.onerror=null; this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';" /></div><h4 class="sponsor-title"><a href="/?prod=PROD_MU2ASBNSJT&amp;view=viewProductDetail" target="_blank" onclick="if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); event.stopPropagation(); openProductDetailById('PROD_MU2ASBNSJT'); }" style="color:inherit; text-decoration:none;">Facebook Via Việt  ACC SPAM - SEEDING - ĐÃ NGÂM LÂU</a></h4><span class="sponsor-commission"><i class="fa-solid fa-dollar-sign"></i> HOA HỒNG: 10% (~2.500 đ)</span><div class="sponsor-footer"><span class="sponsor-price">25.000 đ</span><span class="sponsor-rating"><i class="fa-solid fa-star"></i> 5.0</span></div>
+</div>
 
         <!-- Blog Section -->
         <div class='sidebar-panel'>
@@ -4915,7 +4509,7 @@ header.header {
                 <i class='fa-solid fa-bolt' style='font-size:1.05rem;'></i> <span style='font-weight:700; letter-spacing:0.5px;'>MUA NGAY</span>
               </button>
             </div>
-            <!-- Admin Direct Action Bar & Source Compare Box (Chỉ hiển thị cho Quản trị viên) -->
+            <!-- Admin Direct Action Bar và Source Compare Box (Chỉ hiển thị cho Quản trị viên) -->
             <div id='dtlAdminQuickStockWrap' style='display:none !important; margin:10px 0;'>
               <button id='btnDtlAdminStock' style='width:100%; height:36px; background:rgba(6,182,212,0.15); color:#06b6d4; border:1px solid rgba(6,182,212,0.4); border-radius:6px; font-size:0.82rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;' type='button'>
                 <i class='fa-solid fa-cloud-arrow-down'></i> <span>[Quản trị viên] Đổi Kho API / Sửa Nguồn Hàng</span>
@@ -6648,11 +6242,11 @@ header.header {
     </div>
   </section>
 
-  <!-- ==================== VIEW: CÂU HỎI THƯỜNG GẶP (FAQ & KNOWLEDGE BASE) ==================== -->
+  <!-- ==================== VIEW: CÂU HỎI THƯỜNG GẶP (FAQ VÀ KNOWLEDGE BASE) ==================== -->
   <section class='container policy-view-wrapper' id='viewFaq' style='display:none; max-width:1440px; margin-top:20px; margin-bottom:50px;'>
     <div style='background:#0d131f; border:1px solid #1e293b; border-radius:14px; padding:28px; margin-bottom:24px;'>
       
-      <!-- Top Breadcrumb & Actions -->
+      <!-- Top Breadcrumb và Actions -->
       <div style='display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; border-bottom:1px solid #1e293b; padding-bottom:18px; margin-bottom:24px;'>
         <div>
           <div style='font-size:0.8rem; color:#64748b; margin-bottom:6px; display:flex; align-items:center; gap:6px;'>
@@ -6694,7 +6288,7 @@ header.header {
         </a>
       </div>
 
-      <!-- Search FAQ & Filter Pills Box -->
+      <!-- Search FAQ và Filter Pills Box -->
       <div style='background:#090e17; border:1px solid #1e293b; border-radius:12px; padding:20px; margin-bottom:28px;'>
         <div style='position:relative; margin-bottom:14px;'>
           <i class='fa-solid fa-magnifying-glass' style='position:absolute; left:16px; top:50%; transform:translateY(-50%); color:#64748b;'></i>
@@ -9266,7 +8860,7 @@ header.header {
             </span>
           </div>
 
-          <!-- BỘ CHUYỂN ĐỔI TAB THƯƠNG HIỆU THEO TỪNG WEBSITE (TÁCH RIÊNG LOGO & ASSETS) -->
+          <!-- BỘ CHUYỂN ĐỔI TAB THƯƠNG HIỆU THEO TỪNG WEBSITE (TÁCH RIÊNG LOGO VÀ ASSETS) -->
           <div style='display:flex; gap:8px; margin-bottom:16px; background:#060a12; padding:6px; border-radius:8px; border:1px solid #1e293b;'>
             <button type='button' id='btnBrandTabTapHoa' onclick='switchBrandConfigTab("taphoammo")' style='flex:1; padding:8px 12px; font-size:0.78rem; font-weight:700; border-radius:6px; border:1px solid #38bdf8; background:#0284c7; color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s;'>
               <i class='fa-solid fa-globe'></i> TAPHOAMMO.INK
@@ -10293,7 +9887,7 @@ header.header {
           </div>
         </div>
 
-        <!-- Column 3: Danh Mục & Tiện Ích và Hỗ Trợ & Chính Sách (Chuẩn SEO Danh Mục & FAQ) -->
+        <!-- Column 3: Danh Mục và Tiện Ích và Hỗ Trợ và Chính Sách (Chuẩn SEO Danh Mục và FAQ) -->
         <div class='footer-col-3'>
           <div class='footer-nav-2sub'>
             <div>
@@ -12763,7 +12357,7 @@ print(res.json())</pre>
   <!-- ==========================================================================
        OFFLOADED CDN JAVASCRIPT BUNDLE (ALL FUNCTIONS AND MODULES)
        ========================================================================== -->
-  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.0/bundle.min.js?v=6.4.0' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
+  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.8/bundle.min.js?v=6.4.7' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
   <script type='text/javascript'>
     //<![CDATA[
     (function() {
@@ -12821,7 +12415,7 @@ print(res.json())</pre>
 
               // Tự động cập nhật CSS
               var cssEl = document.getElementById("mmoCdnThemeCss");
-              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.3.6/theme.min.css?v=6.3.3");
+              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.8/theme.min.css?v=6.4.7");
               if (cssEl) cssEl.href = newCssUrl;
 
               // Mã nguồn chính thức đã được tải an toàn từ CDN v5.7.9
@@ -13197,7 +12791,7 @@ print(res.json())</pre>
         console.warn("CDN primary slow or failed, falling back to Fastly mirror...");
         var fb = document.createElement("script");
         fb.defer = true;
-        fb.src = "https://fastly.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.0/bundle.min.js?v=6.4.0";
+        fb.src = "https://fastly.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.8/bundle.min.js?v=6.4.7";
         fb.onload = bootMMOCdnApp;
         document.body.appendChild(fb);
       }

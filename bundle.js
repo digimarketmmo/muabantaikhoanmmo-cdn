@@ -5137,6 +5137,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     }
     window.getVisibleProducts = getVisibleProducts;
 
+    // [DỌN DẸP LỖI MMO_NO_IMAGE]: Tự động gỡ bỏ cờ xóa ảnh nhầm lẫn cho Gemini và các sản phẩm đã có ảnh thật
+    try {
+      if (typeof localStorage !== "undefined") {
+        ["PROD_MV5QIZNFCZ", "PROD_MU6R34FZ4Z", "PROD_MU5T3T47AE", "PROD_MV5PA8KZDW", "PROD_MV5OYRDJCA", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"].forEach(function(gid) {
+          localStorage.removeItem("mmo_no_image_" + gid);
+        });
+      }
+    } catch(eCleanNoImg) {}
+
     // [BẢO VỆ TOÀN DIỆN DANH SÁCH SẢN PHẨM ĐÃ XÓA CỦA ADMIN]:
     try {
       // Giữ nguyên mmo_manually_cleared_products để ghi nhớ trạng thái xóa kho
@@ -9283,6 +9292,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       // [CƠ CHẾ MỚI ĐƠN GIẢN]: Nạp trực tiếp ảnh của sản phẩm vào ô nhập & khung xem trước
       const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
       let effectiveImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || p.image_url || "");
+      if (!effectiveImg || effectiveImg.includes("default_product.png") || effectiveImg === "__NO_IMAGE__") {
+        const pIdClean = String(p.id || '').trim();
+        const canonIdClean = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(pIdClean) : pIdClean;
+        effectiveImg = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[pIdClean] || KNOWN_PROD_IMAGE_MAP[canonIdClean] || "") : "";
+      }
       if (effectiveImg.includes("default_product.png") || effectiveImg === "__NO_IMAGE__") {
         effectiveImg = "";
       }
@@ -12922,16 +12936,24 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
         let image = "";
         let isImageDeleted = false;
-        if (window._imageExplicitlyDeleted || (inputImg === "" && (!window._editingProductOldImage || window._editingProductOldImage === "__NO_IMAGE__")) || inputImg === "__NO_IMAGE__" || inputImg.includes("default_product.png")) {
+        if (window._imageExplicitlyDeleted || inputImg === "__NO_IMAGE__") {
           image = "__NO_IMAGE__";
           isImageDeleted = true;
         } else {
-          image = inputImg || window._editingProductOldImage || "";
-          if (!image || image === "__NO_IMAGE__" || image.includes("default_product.png")) {
-            image = "__NO_IMAGE__";
-            isImageDeleted = true;
+          isImageDeleted = false;
+          // [BẢO LƯU ẢNH TUYỆT ĐỐI 100%]: Ưu tiên input mới -> ảnh cũ đang sửa -> ảnh trong đối tượng sản phẩm -> KNOWN_PROD_IMAGE_MAP -> ảnh danh mục
+          if (inputImg && !inputImg.includes("default_product.png") && inputImg !== "__NO_IMAGE__") {
+            image = inputImg;
+          } else if (oldImgBeforeSave && !oldImgBeforeSave.includes("default_product.png") && oldImgBeforeSave !== "__NO_IMAGE__") {
+            image = oldImgBeforeSave;
+          } else if (oldProd && (oldProd.image || oldProd.image_url || oldProd.imageUrl) && (oldProd.image !== "__NO_IMAGE__" && oldProd.image_url !== "__NO_IMAGE__" && !String(oldProd.image || oldProd.image_url).includes("default_product.png"))) {
+            image = oldProd.image || oldProd.image_url || oldProd.imageUrl;
+          } else if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && (KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[canonicalTargetId])) {
+            image = KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[canonicalTargetId];
+          } else if (typeof resolveCategoryFallbackImage === "function") {
+            image = resolveCategoryFallbackImage(oldProd || { id: actualTargetId, name: name, category: category });
           } else {
-            isImageDeleted = false;
+            image = defaultPlaceholder;
           }
         }
 
@@ -12947,7 +12969,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               localStorage.setItem("mmo_custom_img_" + sid, image);
               localStorage.removeItem("mmo_no_image_" + sid);
             } catch(e) {}
-          } else {
+          } else if (isImageDeleted) {
             if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
               delete KNOWN_PROD_IMAGE_MAP[sid];
               delete KNOWN_PROD_IMAGE_MAP[sid.toUpperCase()];
@@ -13296,7 +13318,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               KNOWN_PROD_IMAGE_MAP[sid] = image;
               KNOWN_PROD_IMAGE_MAP[sid.toUpperCase()] = image;
             }
-          } else {
+          } else if (isImageDeleted) {
             try { localStorage.removeItem("mmo_custom_img_" + sid); } catch(eImgLS) {}
             try { localStorage.setItem("mmo_no_image_" + sid, "true"); } catch(eNo) {}
             if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
@@ -16220,6 +16242,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   "PROD_MU5SPLMSEC": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5SPLMSEC_ChatGPT_New_Gmail_Trial.jpg",
   "PROD_MU5T3T47AE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5T3T47AE_N%C3%82NG_C%E1%BA%A4P_GEMINI_PRO_18_TH%C3%81NG_CH%C3%8DNH_CH%E1%BB%A6____GG_5TB__.jpg",
   "PROD_MU6R34FZ4Z": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "PROD_MV5QIZNFCZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "PROD_MU5T3T47AE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "PROD_MV5PA8KZDW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "PROD_MV5OYRDJCA": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
   "PROD_MU9YH8D9FK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU9YH8D9FK_N%C3%82NG_C%E1%BA%A4P_CANVA_EDU_1_N%C4%82M.jpg",
   "PROD_MUH57035HQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUH57035HQ_T%C3%80I_KHO%E1%BA%A2N_KLING_AI_65_CREDIT_GI%C3%81_R%E1%BA%BA.png",
   "PROD_MUJGUY19DD": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJGUY19DD_Gmail_New_Random_%C4%91%C3%A3_ng%C3%A2m_3_-_7_ng%C3%A0y.jpg",
@@ -16494,7 +16520,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           if (localStorage.getItem("mmo_no_image_" + aid0) === "true") {
             const custCheck = localStorage.getItem("mmo_custom_img_" + aid0);
             if (!custCheck || custCheck === "__NO_IMAGE__" || custCheck.includes("default_product.png")) {
-              return defaultPlaceholder;
+              const hasRealPoster = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && (KNOWN_PROD_IMAGE_MAP[aid0] || KNOWN_PROD_IMAGE_MAP[p.id])) ||
+                (p.image && p.image !== "__NO_IMAGE__" && !p.image.includes("default_product.png")) ||
+                (p.image_url && p.image_url !== "__NO_IMAGE__" && !p.image_url.includes("default_product.png"));
+              if (!hasRealPoster) {
+                return defaultPlaceholder;
+              } else {
+                try { localStorage.removeItem("mmo_no_image_" + aid0); } catch(eR0) {}
+              }
             }
           }
         }
@@ -17056,11 +17089,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         return pCat === "vpn proxy" || pCat === "vpn" || pCat === "proxy" || pCat.includes("proxy") || pCat.includes("vpn");
       }
       if (target === "chatgpt" || target.includes("chatgpt")) {
-        return pCat === "chatgpt" || pCat.includes("chatgpt");
+        return pCat === "chatgpt" || pCat.includes("chatgpt") || String(p.name || '').toLowerCase().includes("chatgpt");
       }
       if (target === "ai & video" || target === "ai" || target.includes("ai & video") || target.includes("kling")) {
-        if (pCat === "chatgpt" || pCat.includes("chatgpt")) return false;
-        return pCat === "ai & video" || pCat === "ai" || pCat.includes("ai & video") || pCat.includes("kling");
+        const pNameLower = String(p.name || '').toLowerCase();
+        return pCat === "ai & video" || pCat === "ai" || pCat === "chatgpt" || pCat.includes("ai & video") || pCat.includes("chatgpt") || pCat.includes("kling") || pNameLower.includes("chatgpt") || pNameLower.includes("gemini") || pNameLower.includes("claude") || pNameLower.includes("kling") || pNameLower.includes("veo");
       }
       if (target.includes("hot mail") || target.includes("hotmail") || target.includes("outlook")) {
         return pCat === "hot mail" || pCat === "hotmail" || pCat === "outlook" || pCat.includes("hot mail") || pCat.includes("hotmail") || pCat.includes("outlook");
@@ -20276,7 +20309,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (s === "PROD_MU5PWT7PP7" || s === "PROD_MUH57035HQ") {
         return "PROD_MU5PWT7PP7";
       }
-      if (s === "PROD_MU5T3T47AE" || s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3") {
+      if (s === "PROD_MU5T3T47AE" || s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3" || s === "PROD_MV5QIZNFCZ") {
         return "PROD_MU5T3T47AE";
       }
       return s;
@@ -20292,8 +20325,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (s === "PROD_MU5PWT7PP7" || s === "PROD_MUH57035HQ") {
         return ["PROD_MU5PWT7PP7", "PROD_MUH57035HQ"];
       }
-      if (s === "PROD_MU5T3T47AE" || s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3") {
-        return ["PROD_MU5T3T47AE", "PROD_MV5PA8KZDW", "PROD_MV5OYRDJCA", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"];
+      if (s === "PROD_MU5T3T47AE" || s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3" || s === "PROD_MV5QIZNFCZ") {
+        return ["PROD_MU5T3T47AE", "PROD_MV5PA8KZDW", "PROD_MV5OYRDJCA", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0", "PROD_MV5QIZNFCZ"];
       }
       return [s];
     }
@@ -20317,8 +20350,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (k1 && k2) return true;
 
       // Gemini Pro 18 Tháng
-      const g1 = s1 === "PROD_MV5PA8KZDW" || s1 === "PROD_MV5OYRDJCA" || s1 === "PROD_MU6R34FZ4Z" || s1 === "PROD_MU2AB1XEGI" || s1 === "PROD_MUQIMRJYG0" || s1 === "SP_GEMINI_VEO3" || s1 === "PROD_MU5T3T47AE";
-      const g2 = s2 === "PROD_MV5PA8KZDW" || s2 === "PROD_MV5OYRDJCA" || s2 === "PROD_MU6R34FZ4Z" || s2 === "PROD_MU2AB1XEGI" || s2 === "PROD_MUQIMRJYG0" || s2 === "SP_GEMINI_VEO3" || s2 === "PROD_MU5T3T47AE";
+      const g1 = s1 === "PROD_MV5PA8KZDW" || s1 === "PROD_MV5OYRDJCA" || s1 === "PROD_MU6R34FZ4Z" || s1 === "PROD_MU2AB1XEGI" || s1 === "PROD_MUQIMRJYG0" || s1 === "SP_GEMINI_VEO3" || s1 === "PROD_MU5T3T47AE" || s1 === "PROD_MV5QIZNFCZ";
+      const g2 = s2 === "PROD_MV5PA8KZDW" || s2 === "PROD_MV5OYRDJCA" || s2 === "PROD_MU6R34FZ4Z" || s2 === "PROD_MU2AB1XEGI" || s2 === "PROD_MUQIMRJYG0" || s2 === "SP_GEMINI_VEO3" || s2 === "PROD_MU5T3T47AE" || s2 === "PROD_MV5QIZNFCZ";
       if (g1 && g2) return true;
 
       // [KHÓA BẢO VỆ TUYỆT ĐỐI - KHÔNG BAO GIỜ GỘP NHẦM 2 SẢN PHẨM KHÁC NHAU]:
