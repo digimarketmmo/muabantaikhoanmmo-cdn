@@ -3319,7 +3319,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "id": "PROD_MUK6EFVE8X",
-    "name": "INSTAGRAM ĐÃ LUÔI CỰC KỲ TRÂU",
+    "name": "INSTAGRAM ĐÃ LUÔI LÂU CỰC KỲ TRÂU",
     "slug": "prod-muk6efve8x",
     "category": "Intagram",
     "description": "vui lòng mở khoá mail để lấy mã hoặc đăng nhập băng cokey Instagram cực kỳ trâu, mạnh mẽ, cực kỳ uy tín dành cho dân MMO, chạy chiến dịch, làm marketing hoặc phát triển hệ thống tài khoản số lượng lớn:\n\n🔥 INSTAGRAM ĐÃ NUÔI CỰC KỲ TRÂU – ĐỘ TRUST TUYỆT ĐỐI, KHÁNG QUÉT CỰC TỐT CHO DÂN MMO!\nBạn đang đau đầu vì tình trạng mua tài khoản Instagram mới tạo hoặc nuôi qua loa, cứ đăng nhập, đổi IP, đăng bài hoặc tương tác là dính checkpoint, khóa vách hay bay màu ngay lập tức?\n\nGiải pháp Instagram đã nuôi cực kỳ trâu tại shop chính là \"vũ khí tối thượng\" giúp bạn quét sạch mọi nỗi lo, chiến mượt mà mọi chiến dịch!\n\n💎 Điểm vượt trội của dòng Instagram \"Cực kỳ trâu\":\nĐộ Trust max cấp: Tài khoản đã trải qua quá trình nuôi bài bản, thời gian ngâm lâu, có lịch sử hoạt động và tương tác tự nhiên như người dùng thật.\n\nVượt rào kiểm duyệt thông minh: Thích ứng cực tốt với các thuật toán quét gắt gao của Meta, hạn chế tối đa tình trạng verphone, checkpoint ngớ ngẩn hay khóa tài khoản khi đổi thiết bị/IP.\n\nSẵn sàng cho mọi tác vụ nặng: Phục vụ hoàn hảo cho anh em làm MMO, chạy seeding, kéo traffic, làm marketing, xây dựng hệ thống mạng xã hội lớn hoặc chạy các chiến dịch dài hạn.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành 1 đổi 1 ngay lập tức cho tài khoản lỗi đăng nhập lần đầu.\n\n🚀 Bàn giao siêu tốc ngay sau khi thanh toán, đúng định dạng, sạch sẽ.\n\n🔒 Hỗ trợ tư vấn tận tình cách đăng nhập và ngâm thêm trên thiết bị sạch để duy trì độ trâu bò lâu dài nhất.\n\n💡 Mẹo giữ tài khoản bền bỉ: Nên kết hợp sử dụng Antidetect Browser (trình duyệt sạch) cùng Proxy chất lượng cao, thao tác từ tốn trong những ngày đầu để tài khoản ổn định hoàn toàn trên môi trường mới!\n\n🛒 SỐ LƯỢNG CÓ HẠN – CHỐT ĐƠN NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá chi tiết và sở hữu ngay dàn nick chất lượng!\n\n📞 Hotline / Zalo / Telegram",
@@ -12142,7 +12142,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                 } catch(e) {}
                 const dtlImg = document.getElementById("dtlImage");
                 const curImg = (typeof resolveProductImage === "function") ? resolveProductImage(curP) : (curP.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
-                if (dtlImg && curImg && dtlImg.src !== curImg) dtlImg.src = curImg;
+                if (dtlImg && curImg && dtlImg.src !== curImg && !dtlImg.src.endsWith(curImg)) {
+                  if (!curImg.includes("default_product.png") || (!dtlImg.src || dtlImg.src.includes("default_product.png") || dtlImg.src.startsWith("data:image/svg+xml"))) {
+                    dtlImg.src = curImg;
+                  }
+                }
                 if (typeof renderProductDetailArticle === "function") {
                   renderProductDetailArticle(curP, curP.description);
                 } else {
@@ -33576,7 +33580,8 @@ function executeCompareSourcesSearch() {
         if (preDtlImg) {
           const preCanon = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(cleanId) : cleanId;
           const preMapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && (KNOWN_PROD_IMAGE_MAP[cleanId] || KNOWN_PROD_IMAGE_MAP[cleanId.toUpperCase()] || KNOWN_PROD_IMAGE_MAP[preCanon] || KNOWN_PROD_IMAGE_MAP[preCanon.toUpperCase()])) ? (KNOWN_PROD_IMAGE_MAP[cleanId] || KNOWN_PROD_IMAGE_MAP[cleanId.toUpperCase()] || KNOWN_PROD_IMAGE_MAP[preCanon] || KNOWN_PROD_IMAGE_MAP[preCanon.toUpperCase()]) : "";
-          if (preMapped) {
+          const curPreSrc = preDtlImg.src || "";
+          if (preMapped && (!curPreSrc || curPreSrc.includes("default_product.png") || curPreSrc.startsWith("data:image/svg+xml")) && curPreSrc !== preMapped) {
             preDtlImg.src = preMapped;
           }
         }
@@ -33708,7 +33713,12 @@ function executeCompareSourcesSearch() {
             this.src = (typeof resolveCategoryFallbackImage === "function") ? resolveCategoryFallbackImage(p) : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
           }
         };
-        dtlImg.src = exactImgUrl;
+        const curDtlSrc = dtlImg.src || "";
+        if (exactImgUrl && curDtlSrc !== exactImgUrl && !curDtlSrc.endsWith(exactImgUrl)) {
+          if (!exactImgUrl.includes("default_product.png") || (!curDtlSrc || curDtlSrc.includes("default_product.png") || curDtlSrc.startsWith("data:image/svg+xml"))) {
+            dtlImg.src = exactImgUrl;
+          }
+        }
       }
       try {
         let ogImg = document.querySelector("meta[property='og:image']");
@@ -33999,7 +34009,7 @@ function executeCompareSourcesSearch() {
         if (typeof injectAllProductsSchema === "function") injectAllProductsSchema();
 
         // Nạp đầy đủ thông tin sản phẩm mới nhất & ảnh mới ngầm từ Turso Cloud Worker
-        if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
+        if (!isSilentRefresh && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
           MMO_WORKER_API.fetchProduct(p.id, { nocache: true }).then(res => {
             if (res && res.success && res.product) {
               const wp = res.product;
@@ -34131,8 +34141,10 @@ function executeCompareSourcesSearch() {
                 p.imageUrl = finalImg;
                 isUpdated = true;
               }
-              if (dtlImgEl && finalImg && (!finalImg.includes("default_product.png") || !currentDisplayedSrc || currentDisplayedSrc.includes("default_product.png")) && dtlImgEl.src !== finalImg) {
-                dtlImgEl.src = finalImg;
+              if (dtlImgEl && finalImg && dtlImgEl.src !== finalImg && !dtlImgEl.src.endsWith(finalImg)) {
+                if (!finalImg.includes("default_product.png") || (!currentDisplayedSrc || currentDisplayedSrc.includes("default_product.png") || currentDisplayedSrc.startsWith("data:image/svg+xml"))) {
+                  dtlImgEl.src = finalImg;
+                }
               }
 
               // 10. Đồng bộ vào MOCK_DATA.products và localStorage
