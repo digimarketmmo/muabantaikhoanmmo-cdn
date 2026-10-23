@@ -7228,3 +7228,883 @@ body.is-admin #profAdminShortcutBtn {
 .sms-otp-request-box:hover {
   background: rgba(16, 185, 129, 0.12);
 }
+
+
+/* ==========================================================================
+   VIOTP SMS OTP INTEGRATION (v6.6.1)
+   Matching Images 1, 2, 3, 4 with Left Sidebar, Clean Responsive Layout
+   ========================================================================== */
+
+#viewSmsOtp {
+  color: #cbd5e1;
+  font-family: inherit;
+}
+
+.sms-otp-wrapper {
+  display: flex !important;
+  gap: 24px !important;
+  align-items: flex-start !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* SIDEBAR (LEFT COLUMN) */
+.sms-otp-sidebar {
+  width: 250px !important;
+  min-width: 250px !important;
+  flex-shrink: 0 !important;
+  background: linear-gradient(180deg, #071711 0%, #04100c 100%) !important;
+  border: 1px solid #133a29 !important;
+  border-radius: 16px !important;
+  padding: 20px 16px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  box-sizing: border-box !important;
+}
+
+.sms-side-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 4px 8px 12px 8px !important;
+  border-bottom: 1px solid #133a29 !important;
+}
+.sms-side-brand-icon {
+  width: 32px !important;
+  height: 32px !important;
+  background: #00b87c !important;
+  border-radius: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffffff !important;
+  font-size: 1.05rem !important;
+}
+.sms-side-brand-name {
+  font-size: 1.15rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  letter-spacing: 0.5px !important;
+}
+
+/* WALLET BALANCE CARD */
+.sms-side-balance-card {
+  background: #0b251a !important;
+  border: 1px solid #184e36 !important;
+  border-radius: 12px !important;
+  padding: 16px 14px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  box-sizing: border-box !important;
+}
+.sms-side-balance-label {
+  font-size: 0.75rem !important;
+  font-weight: 800 !important;
+  color: #6ee7b7 !important;
+  letter-spacing: 1px !important;
+}
+.sms-side-balance {
+  font-size: 1.45rem !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+  letter-spacing: 0.5px !important;
+}
+.btn-sms-side-deposit {
+  background: #00b87c !important;
+  color: #04140e !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 9px 12px !important;
+  font-size: 0.88rem !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition: all 0.2s ease !important;
+}
+.btn-sms-side-deposit:hover {
+  background: #05d691 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 15px rgba(0, 184, 124, 0.4) !important;
+}
+
+/* NAV BUTTONS */
+.sms-side-nav-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+}
+.sms-side-nav-title {
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  color: #4b6357 !important;
+  letter-spacing: 1.2px !important;
+  padding: 6px 10px !important;
+}
+.sms-side-nav-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 10px 14px !important;
+  border-radius: 10px !important;
+  background: transparent !important;
+  color: #94a3b8 !important;
+  font-size: 0.92rem !important;
+  font-weight: 600 !important;
+  border: none !important;
+  cursor: pointer !important;
+  transition: all 0.18s ease !important;
+  text-align: left !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+.sms-side-nav-btn:hover {
+  background: rgba(0, 184, 124, 0.08) !important;
+  color: #ffffff !important;
+}
+.sms-side-nav-btn.active {
+  background: #0e3323 !important;
+  color: #00b87c !important;
+  font-weight: 700 !important;
+  border: 1px solid #165339 !important;
+}
+
+/* TELEGRAM BUTTON */
+.sms-side-telegram-btn {
+  margin-top: auto !important;
+  background: #08261b !important;
+  border: 1px solid #144732 !important;
+  color: #6ee7b7 !important;
+  border-radius: 10px !important;
+  padding: 11px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+.sms-side-telegram-btn:hover {
+  background: #0d3827 !important;
+  color: #ffffff !important;
+  border-color: #00b87c !important;
+}
+
+/* MAIN CONTENT AREA */
+.sms-otp-main-content {
+  flex: 1 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+}
+
+/* ALERT BANNER */
+.sms-otp-alert {
+  background: #0d1a16 !important;
+  border: 1px solid #144b36 !important;
+  border-radius: 12px !important;
+  padding: 12px 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  color: #a7f3d0 !important;
+  font-size: 0.9rem !important;
+}
+.sms-otp-alert-content {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+.sms-otp-alert-close {
+  background: transparent !important;
+  border: none !important;
+  color: #6ee7b7 !important;
+  cursor: pointer !important;
+  font-size: 1.1rem !important;
+  line-height: 1 !important;
+}
+
+/* HEADER ROW */
+.sms-otp-header-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-bottom: 4px !important;
+}
+.sms-otp-title-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+.sms-otp-dash {
+  color: #00b87c !important;
+  font-weight: 800 !important;
+  font-size: 1.3rem !important;
+}
+.sms-otp-title {
+  font-size: 1.55rem !important;
+  font-weight: 900 !important;
+  color: #ffffff !important;
+  letter-spacing: 0.5px !important;
+  margin: 0 !important;
+}
+.sms-otp-price-btn {
+  background: rgba(0, 184, 124, 0.1) !important;
+  border: 1px solid rgba(0, 184, 124, 0.35) !important;
+  color: #00b87c !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: all 0.2s ease !important;
+}
+.sms-otp-price-btn:hover {
+  background: #00b87c !important;
+  color: #04140e !important;
+}
+
+/* TWO-COLUMN GRID */
+.sms-otp-main-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 340px !important;
+  gap: 20px !important;
+  align-items: flex-start !important;
+}
+
+.sms-otp-left-col {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  min-width: 0 !important;
+}
+.sms-otp-right-col {
+  min-width: 0 !important;
+}
+
+/* CARD CONTAINER */
+.sms-otp-card {
+  background: #0c1424 !important;
+  border: 1px solid #1e293b !important;
+  border-radius: 14px !important;
+  padding: 22px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+/* STEP ROW */
+.sms-otp-step-row {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+}
+.sms-otp-step-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+.sms-otp-badge-num {
+  width: 24px !important;
+  height: 24px !important;
+  background: #00b87c !important;
+  color: #04140e !important;
+  border-radius: 6px !important;
+  font-size: 0.8rem !important;
+  font-weight: 800 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+.sms-otp-step-text {
+  font-size: 1.05rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+}
+.sms-otp-badge-count {
+  margin-left: auto !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+  padding: 3px 10px !important;
+  border-radius: 20px !important;
+}
+
+/* SEARCHABLE DROPDOWN */
+.sms-otp-dropdown-wrap {
+  position: relative !important;
+}
+.sms-otp-dropdown-trigger {
+  background: #111b2e !important;
+  border: 1px solid #233554 !important;
+  border-radius: 10px !important;
+  padding: 13px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+.sms-otp-dropdown-trigger:hover {
+  border-color: #00b87c !important;
+  background: #142138 !important;
+}
+.sms-otp-selected-view {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+}
+.sms-otp-dropdown-menu {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: #0c1424 !important;
+  border: 1px solid #233554 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important;
+  z-index: 99 !important;
+  overflow: hidden !important;
+}
+.sms-otp-search-wrap {
+  padding: 12px !important;
+  border-bottom: 1px solid #1e293b !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  background: #0f1a2e !important;
+}
+.sms-otp-search-wrap input {
+  flex: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  outline: none !important;
+  color: #ffffff !important;
+  font-size: 0.92rem !important;
+}
+.sms-otp-services-list {
+  max-height: 280px !important;
+  overflow-y: auto !important;
+}
+.sms-otp-service-item,
+.sms-service-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 11px 16px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease !important;
+}
+.sms-otp-service-item:hover,
+.sms-service-item:hover,
+.sms-otp-service-item.active,
+.sms-service-item.active {
+  background: rgba(16, 185, 129, 0.12) !important;
+}
+.sms-service-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  font-size: 0.92rem !important;
+}
+.sms-service-price {
+  font-weight: 800 !important;
+  color: #10b981 !important;
+  font-size: 0.95rem !important;
+}
+
+/* MODE PILLS */
+.sms-otp-mode-pills {
+  display: flex !important;
+  gap: 10px !important;
+}
+.sms-otp-mode-pill {
+  flex: 1 !important;
+  background: #111b2e !important;
+  border: 1px solid #233554 !important;
+  color: #94a3b8 !important;
+  border-radius: 8px !important;
+  padding: 11px 16px !important;
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition: all 0.2s ease !important;
+}
+.sms-otp-mode-pill.active {
+  background: #00b87c !important;
+  color: #04140e !important;
+  border-color: #00b87c !important;
+  box-shadow: 0 4px 15px rgba(0, 184, 124, 0.3) !important;
+}
+.sms-otp-mode-desc {
+  font-size: 0.85rem !important;
+  color: #64748b !important;
+  margin-top: 10px !important;
+  line-height: 1.5 !important;
+}
+
+/* CARRIER PILLS */
+.sms-carrier-pill {
+  background: #111b2e !important;
+  border: 1px solid #233554 !important;
+  color: #94a3b8 !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+.sms-carrier-pill.active {
+  background: #00b87c !important;
+  color: #04140e !important;
+  border-color: #00b87c !important;
+}
+
+/* TIPS TOGGLE BUTTON & BOX (IMAGE 3) */
+.sms-otp-tips-header-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-top: 24px !important;
+  padding-bottom: 6px !important;
+}
+.sms-btn-tips-toggle {
+  background: rgba(245, 158, 11, 0.12) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  color: #f59e0b !important;
+  border-radius: 8px !important;
+  padding: 7px 14px !important;
+  font-size: 0.85rem !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  transition: all 0.2s ease !important;
+}
+.sms-btn-tips-toggle:hover {
+  background: rgba(245, 158, 11, 0.2) !important;
+  color: #fbbf24 !important;
+}
+.sms-otp-tips-box-styled {
+  background: #fffdf5 !important;
+  border: 1px solid #fed7aa !important;
+  border-radius: 12px !important;
+  padding: 16px 18px !important;
+  margin-top: 12px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+.sms-tip-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 10px !important;
+}
+.sms-tip-num {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  background: #f97316 !important;
+  color: #ffffff !important;
+  border-radius: 50% !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 2px !important;
+}
+.sms-tip-text {
+  font-size: 0.88rem !important;
+  color: #451a03 !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
+.sms-tip-text strong {
+  color: #7c2d12 !important;
+  font-weight: 800 !important;
+}
+
+/* WAITING DESC TEXT */
+.sms-otp-waiting-desc {
+  font-size: 0.84rem !important;
+  color: #64748b !important;
+  margin: 10px 0 0 0 !important;
+  line-height: 1.5 !important;
+}
+.sms-otp-waiting-desc strong {
+  color: #00b87c !important;
+}
+
+/* EMPTY STATE (IMAGE 4) */
+.sms-otp-empty-state {
+  background: #0c1424 !important;
+  border: 2px dashed rgba(16, 185, 129, 0.25) !important;
+  border-radius: 14px !important;
+  padding: 48px 24px !important;
+  text-align: center !important;
+  margin-top: 14px !important;
+  box-sizing: border-box !important;
+}
+.sms-otp-empty-icon {
+  width: 56px !important;
+  height: 56px !important;
+  background: rgba(16, 185, 129, 0.1) !important;
+  color: #10b981 !important;
+  border-radius: 12px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.8rem !important;
+  margin: 0 auto 16px !important;
+}
+.sms-otp-empty-title {
+  font-size: 1.25rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  margin: 0 0 6px 0 !important;
+}
+.sms-otp-empty-sub {
+  font-size: 0.92rem !important;
+  color: #64748b !important;
+  margin: 0 !important;
+}
+
+/* RENTAL CARDS (IMAGE 1) */
+.sms-rental-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+  gap: 16px !important;
+  margin-top: 14px !important;
+}
+.sms-card-v1 {
+  background: #0c1424 !important;
+  border: 1px solid #1e2e45 !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
+  box-sizing: border-box !important;
+}
+.sms-card-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.sms-card-service-meta {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.sms-card-service-name {
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  font-size: 0.95rem !important;
+}
+.sms-card-service-price {
+  font-size: 0.82rem !important;
+  color: #64748b !important;
+}
+.sms-badge-status {
+  padding: 3px 10px !important;
+  border-radius: 6px !important;
+  font-size: 0.78rem !important;
+  font-weight: 800 !important;
+}
+.sms-badge-status.success {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+}
+.sms-badge-status.waiting {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+}
+.sms-badge-status.expired {
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+}
+.sms-card-phone-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 4px 0 !important;
+}
+.sms-flag-vn {
+  font-size: 1.2rem !important;
+}
+.sms-phone-number-big {
+  font-size: 1.35rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 1.5px !important;
+  color: #ffffff !important;
+  cursor: pointer !important;
+}
+.sms-phone-number-big:hover {
+  color: #00b87c !important;
+}
+.sms-btn-copy-mini {
+  background: transparent !important;
+  border: none !important;
+  color: #64748b !important;
+  cursor: pointer !important;
+  padding: 4px !important;
+}
+.sms-btn-copy-mini:hover {
+  color: #00b87c !important;
+}
+.sms-code-box-v1 {
+  background: #f0fdf4 !important;
+  border: 1px dashed #86efac !important;
+  border-radius: 10px !important;
+  padding: 12px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.sms-code-val {
+  font-size: 1.75rem !important;
+  font-weight: 900 !important;
+  color: #16a34a !important;
+  letter-spacing: 3px !important;
+}
+.sms-btn-copy-code {
+  background: #10b981 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 7px 12px !important;
+  font-size: 0.82rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+.sms-expired-box-v1 {
+  background: #fef2f2 !important;
+  border: 1px solid #fecaca !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  color: #b91c1c !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+}
+.sms-waiting-box-v1 {
+  background: #fffbeb !important;
+  border: 1px dashed #fde68a !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  color: #b45309 !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+}
+.sms-full-text-v1 {
+  background: #070d17 !important;
+  border-radius: 8px !important;
+  padding: 10px 12px !important;
+  font-size: 0.8rem !important;
+  color: #94a3b8 !important;
+  line-height: 1.45 !important;
+  border: 1px solid #152238 !important;
+}
+.sms-card-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-top: 8px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+  font-size: 0.78rem !important;
+  color: #64748b !important;
+}
+.sms-btn-rerent {
+  background: rgba(0, 184, 124, 0.1) !important;
+  border: 1px solid rgba(0, 184, 124, 0.3) !important;
+  color: #00b87c !important;
+  border-radius: 6px !important;
+  padding: 5px 12px !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+/* ORDER SUMMARY CARD (RIGHT) */
+.sms-otp-summary-card {
+  background: #0c1424 !important;
+  border: 1px solid #1e293b !important;
+  border-radius: 14px !important;
+  padding: 22px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 16px !important;
+  position: sticky !important;
+  top: 90px !important;
+}
+.sms-otp-summary-title {
+  font-size: 1rem !important;
+  font-weight: 800 !important;
+  color: #ffffff !important;
+  letter-spacing: 1px !important;
+  margin: 0 !important;
+}
+.sms-otp-summary-service {
+  background: #111b2e !important;
+  border: 1px solid #233554 !important;
+  border-radius: 10px !important;
+  padding: 14px 16px !important;
+}
+.sms-otp-summary-divider {
+  height: 1px !important;
+  background: #1e293b !important;
+  margin: 4px 0 !important;
+}
+.sms-otp-summary-details {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+.sms-summary-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  font-size: 0.88rem !important;
+}
+.sms-summary-key {
+  color: #64748b !important;
+}
+.sms-summary-val {
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+.sms-otp-price-checkout {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 12px !important;
+  margin-top: 4px !important;
+}
+.sms-price-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+.sms-price-key {
+  font-size: 0.95rem !important;
+  font-weight: 700 !important;
+  color: #94a3b8 !important;
+}
+.sms-price-val {
+  font-size: 1.55rem !important;
+  font-weight: 900 !important;
+  color: #00b87c !important;
+}
+.sms-otp-rent-btn {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 10px !important;
+  padding: 14px 20px !important;
+  font-size: 1.05rem !important;
+  font-weight: 800 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.4) !important;
+}
+.sms-otp-rent-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 25px rgba(234, 88, 12, 0.5) !important;
+}
+.sms-otp-rent-btn:disabled {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+}
+.sms-otp-rent-note {
+  font-size: 0.78rem !important;
+  color: #64748b !important;
+  text-align: center !important;
+  line-height: 1.4 !important;
+}
+.sms-otp-request-box {
+  background: #111b2e !important;
+  border: 1px dashed #233554 !important;
+  border-radius: 10px !important;
+  padding: 12px 14px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #94a3b8 !important;
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  text-align: center !important;
+}
+.sms-otp-request-box:hover {
+  border-color: #00b87c !important;
+  color: #00b87c !important;
+  background: #142138 !important;
+}
+
+/* RESPONSIVE LAYOUT */
+@media (max-width: 1024px) {
+  .sms-otp-main-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 768px) {
+  .sms-otp-wrapper {
+    flex-direction: column !important;
+  }
+  .sms-otp-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+  .sms-side-nav-group {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+  }
+  .sms-side-nav-btn {
+    width: auto !important;
+    flex: 1 !important;
+    min-width: 120px !important;
+  }
+}
+
