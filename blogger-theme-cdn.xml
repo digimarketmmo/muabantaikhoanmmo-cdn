@@ -3,8 +3,8 @@
 <html b:css='false' lang='vi' xml:lang='vi' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
 <head>
   <!-- ==========================================================================
-     MUABANTAIKHOANMMO.COM - CDN THEME MASTER SSOT (v6.4.0)
-     Released: 2026-10-20 | Tag: v6.4.0 | CDN: jsDelivr Universal
+     MUABANTAIKHOANMMO.COM - CDN THEME MASTER SSOT (v6.6.0)
+     Released: 2026-10-20 | Tag: v6.6.0 | CDN: jsDelivr Universal
      Eliminate 1s viewStore flash, 0ms early router, instant header auth hydration
      ========================================================================== -->
 
@@ -94,10 +94,12 @@
         var sp = new URLSearchParams(window.location.search);
         var v = sp.get('view') || '';
         var p = (window.location.pathname || '').toLowerCase();
-        var validViews = ['viewStore', 'viewProductDetail', 'viewPreOrderDetail', 'viewBlog', 'viewBlogDetail', 'viewTools', 'viewProfile', 'viewDeposit', 'viewAdmin', 'viewThankYou', 'viewAllProducts', 'viewSitemap', 'viewTerms', 'viewPrivacy', 'viewWarranty', 'viewFaq'];
+        var validViews = ['viewStore', 'viewProductDetail', 'viewPreOrderDetail', 'viewBlog', 'viewBlogDetail', 'viewTools', 'viewProfile', 'viewDeposit', 'viewAdmin', 'viewThankYou', 'viewAllProducts', 'viewSitemap', 'viewTerms', 'viewPrivacy', 'viewWarranty', 'viewFaq', 'viewSmsOtp'];
         
         var targetView = 'viewStore';
-        if (v && validViews.indexOf(v) !== -1) {
+        if (v === 'sms-otp' || v === 'smsotp') {
+          targetView = 'viewSmsOtp';
+        } else if (v && validViews.indexOf(v) !== -1) {
           targetView = v;
         } else if (h && validViews.indexOf(h) !== -1) {
           targetView = h;
@@ -122,8 +124,28 @@
         }
         var earlyProd = sp.get('prod') || sp.get('product');
         if (earlyProd) {
-          var earlyCan = document.getElementById('canonicalLink');
-          if (earlyCan) earlyCan.href = 'https://www.muabantaikhoanmmo.com/?prod=' + encodeURIComponent(earlyProd) + '&view=viewProductDetail';
+          try {
+            var earlyCan = document.getElementById('canonicalLink');
+            if (earlyCan) earlyCan.href = 'https://www.muabantaikhoanmmo.com/?prod=' + encodeURIComponent(earlyProd) + '&view=viewProductDetail';
+
+            var cEarly = String(earlyProd).trim();
+            var preImg = localStorage.getItem('mmo_custom_img_' + cEarly);
+            if (!preImg || preImg.indexOf('default_product.png') !== -1) {
+              var mmoRaw = localStorage.getItem('mmo_products') || localStorage.getItem('mmo_admin_products');
+              if (mmoRaw) {
+                var mList = JSON.parse(mmoRaw);
+                if (Array.isArray(mList)) {
+                  var fItem = mList.find(function(it) { return it && (String(it.id).trim() === cEarly || (it.slug && it.slug === cEarly)); });
+                  if (fItem && (fItem.image || fItem.image_url)) {
+                    preImg = fItem.image || fItem.image_url;
+                  }
+                }
+              }
+            }
+            if (preImg && preImg.indexOf('default_product.png') === -1 && preImg.length > 10) {
+              window._earlyAuthoritativeProductImage = preImg;
+            }
+          } catch(eEarly) {}
         }
       } catch(e) {}
     })();
@@ -386,7 +408,7 @@
     }
   </style>
   <link rel='preconnect' href='https://cdn.jsdelivr.net' crossorigin='anonymous'/>
-  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.9/bundle.min.js?v=6.4.7' as='script'/>
+  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.0/bundle.min.js?v=6.6.0' as='script'/>
   <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v5.4.4/theme.min.css?v=5.4.4' as='style'/>
   <script>
     /* BẢO TỒN DỮ LIỆU KHO HÀNG ĐÃ XÓA (0MS) */
@@ -1565,8 +1587,8 @@
   <b:skin><![CDATA[
 /* ==========================================================================
    MUABANTAIKHOANMMO.COM - CDN THEME ENGINE
-   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.9/theme.min.css?v=6.4.7
-   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.9/bundle.min.js?v=6.4.7
+   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.0/theme.min.css?v=6.6.0
+   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.0/bundle.min.js?v=6.6.0
    ========================================================================== */
 body { margin: 0; padding: 0; background: #070a12; color: #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif; }
 
@@ -3860,6 +3882,9 @@ header.header {
         <a class='nav-link' id='navTools' href='/?view=viewTools' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); switchView("viewTools"); }'>
           <i class='fa-solid fa-screwdriver-wrench'></i> Công Cụ MMO
         </a>
+        <a class='nav-link' id='navSmsOtp' href='/?view=viewSmsOtp' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); switchView("viewSmsOtp"); }'>
+          <i class='fa-solid fa-sim-card'></i> SMS OTP
+        </a>
         <a class='nav-link' id='navProfile' href='/?view=viewProfile' onclick='if(!event.ctrlKey &amp;&amp; !event.metaKey &amp;&amp; event.button === 0){ event.preventDefault(); switchView("viewProfile"); }'>
           <i class='fa-solid fa-user'></i> Tài Khoản
         </a>
@@ -4418,7 +4443,17 @@ header.header {
         <div class='detail-card-center'>
           <!-- Left 500x500 Square Image -->
           <div class='detail-img-box'>
-            <img alt='Product Image' id='dtlImage' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png' onerror='if(typeof handleProductImageError==="function"){handleProductImageError(this, window._currentActiveDetailProduct||window.currentSelectedProduct);}else{this.onerror=null;this.src="https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";}'/>
+            <img alt='Product Image' id='dtlImage' src='data:image/svg+xml,%3Csvg xmlns=&quot;http://www.w3.org/2000/svg&quot; viewBox=&quot;0 0 500 500&quot;%3E%3Crect width=&quot;500&quot; height=&quot;500&quot; fill=&quot;%23131c2e&quot;/%3E%3C/svg%3E' onerror='if(typeof handleProductImageError===&quot;function&quot;){handleProductImageError(this, window._currentActiveDetailProduct||window.currentSelectedProduct);}else{this.onerror=null;this.src=&quot;https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png&quot;;}'/>
+            <script type='text/javascript'>
+              //<![CDATA[
+              try {
+                if (window._earlyAuthoritativeProductImage) {
+                  var _di = document.getElementById('dtlImage');
+                  if (_di) _di.src = window._earlyAuthoritativeProductImage;
+                }
+              } catch(eDi) {}
+              //]]>
+            </script>
           </div>
 
           <!-- Right Info vàamp; Actions -->
@@ -5103,6 +5138,332 @@ header.header {
   </section>
 
   <!-- ==================== VIEW: TRANG CÔNG CỤ MMO (DEDICATED TOOLS PAGE) ==================== -->
+
+  <!-- ==================== VIEW SMS OTP: THUÊ SỐ NHẬN MÃ OTP (VIOTP) ==================== -->
+    <section class='container sms-otp-container' id='viewSmsOtp' style='display:none !important; max-width:1440px; margin:0 auto; padding:15px 15px 40px;'>
+    <div class='sms-otp-wrapper'>
+      
+      <!-- CỘT TRÁI: THANH BÊN (SIDEBAR VIOTP) CHUẨN HÌNH 1, 2, 4 -->
+      <aside class='sms-otp-sidebar'>
+        <div class='sms-side-brand'>
+          <div class='sms-side-brand-icon'><i class='fa-solid fa-sim-card'></i></div>
+          <div class='sms-side-brand-name'>ViOTP</div>
+        </div>
+
+        <!-- THẺ SỐ DƯ TÀI KHOẢN -->
+        <div class='sms-side-balance-card'>
+          <span class='sms-side-balance-label'>SỐ DƯ</span>
+          <div class='sms-side-balance' id='smsSidebarBalance'>0 đ</div>
+          <button type='button' class='btn-sms-side-deposit' onclick='if(typeof openDepositModal === &quot;function&quot;) openDepositModal(); else switchView(&quot;viewDeposit&quot;);'>
+            <i class='fa-solid fa-money-bill-transfer'></i> Nạp tiền
+          </button>
+        </div>
+
+        <!-- NHÓM DỊCH VỤ -->
+        <div class='sms-side-nav-group'>
+          <div class='sms-side-nav-title'>DỊCH VỤ</div>
+          <button type='button' class='sms-side-nav-btn active' onclick='switchView(&quot;viewSmsOtp&quot;)'>
+            <i class='fa-solid fa-sim-card'></i>
+            <span>Thuê số</span>
+          </button>
+          <!-- BỎ +12% CHỈ Ở PHẦN NÀY THEO LỆNH NGƯỜI DÙNG -->
+          <button type='button' class='sms-side-nav-btn' onclick='if(typeof openDepositModal === &quot;function&quot;) openDepositModal(); else switchView(&quot;viewDeposit&quot;);'>
+            <i class='fa-solid fa-wallet'></i>
+            <span>Nạp tiền</span>
+          </button>
+          <button type='button' class='sms-side-nav-btn' onclick='scrollToSmsRentals()'>
+            <i class='fa-solid fa-clock-rotate-left'></i>
+            <span>Lịch sử</span>
+          </button>
+          <button type='button' class='sms-side-nav-btn' onclick='openSmsOtpPriceModal()'>
+            <i class='fa-solid fa-cart-shopping'></i>
+            <span>Bảng giá</span>
+          </button>
+        </div>
+
+        <!-- NHÓM TÀI KHOẢN (BỎ TÀI LIỆU API THEO LỆNH NGƯỜI DÙNG) -->
+        <div class='sms-side-nav-group'>
+          <div class='sms-side-nav-title'>TÀI KHOẢN</div>
+          <button type='button' class='sms-side-nav-btn' onclick='if(typeof openProfileModal === &quot;function&quot;) openProfileModal(); else switchView(&quot;viewProfile&quot;);'>
+            <i class='fa-solid fa-circle-user'></i>
+            <span>Tài khoản của tôi</span>
+          </button>
+        </div>
+
+        <!-- HỖ TRỢ TELEGRAM -->
+        <a href='https://t.me/manhdongvtc' target='_blank' class='sms-side-telegram-btn'>
+          <i class='fa-brands fa-telegram'></i>
+          <span>Hỗ trợ qua Telegram</span>
+        </a>
+      </aside>
+
+      <!-- KHU VỰC NỘI DUNG CHÍNH (MAIN CONTENT) -->
+      <div class='sms-otp-main-content'>
+        <!-- TOP BAR NỘI DUNG CHUẨN HÌNH 1, 4 -->
+        <div class='sms-top-bar'>
+          <div class='sms-top-title'>
+            <i class='fa-solid fa-sim-card'></i>
+            <span>Thuê số</span>
+          </div>
+          <div class='sms-top-actions'>
+            <button type='button' class='sms-top-notif-btn' onclick='if(typeof toggleNotificationDropdown === &quot;function&quot;) toggleNotificationDropdown();' title='Thông báo hệ thống'>
+              <i class='fa-solid fa-bell'></i>
+            </button>
+            <div class='sms-top-user-pill'>
+              <img src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png' class='sms-top-avatar' alt='Avatar' />
+              <span class='sms-top-username' id='smsTopUsername'>Khách</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Announcement Alert -->
+        <div class='sms-otp-alert' id='smsOtpAlert'>
+          <div class='sms-otp-alert-content'>
+            <i class='fa-solid fa-bullhorn' style='color:#10b981; font-size:1.1rem; margin-right:8px;'></i>
+            <span>Cập nhật thêm sim quốc gia Lào, chúc một ngày vui vẻ !!</span>
+          </div>
+          <button type='button' class='sms-otp-alert-close' onclick='document.getElementById(&quot;smsOtpAlert&quot;).style.display=&quot;none&quot;'>✕</button>
+        </div>
+
+        <!-- Section Header Row -->
+        <div class='sms-otp-header-row'>
+          <div class='sms-otp-title-wrap'>
+            <span class='sms-otp-dash'>—</span>
+            <h1 class='sms-otp-title'>THUÊ SỐ NHẬN OTP</h1>
+          </div>
+          <button type='button' class='sms-otp-price-btn' onclick='openSmsOtpPriceModal()'>
+            Xem bảng giá <i class='fa-solid fa-arrow-right'></i>
+          </button>
+        </div>
+
+        <!-- Main Two-Column Layout -->
+        <div class='sms-otp-main-grid'>
+          <!-- Left Column: Selection &amp; Numbers List -->
+          <div class='sms-otp-left-col'>
+            <!-- Step Selection Card -->
+            <div class='sms-otp-card'>
+              <!-- Step 1: Dịch vụ -->
+              <div class='sms-otp-step-row'>
+                <div class='sms-otp-step-label'>
+                  <span class='sms-otp-badge-num'>1</span>
+                  <span class='sms-otp-step-text'>Dịch vụ</span>
+                  <span class='sms-otp-badge-count' id='smsOtpServiceCount'>984 dịch vụ</span>
+                </div>
+                <div class='sms-otp-dropdown-wrap'>
+                  <div class='sms-otp-dropdown-trigger' id='smsOtpServiceTrigger' onclick='toggleSmsOtpDropdown()'>
+                    <div class='sms-otp-selected-view' id='smsOtpSelectedView'>
+                      <i class='fa-solid fa-magnifying-glass' style='color:#64748b; margin-right:8px;'></i>
+                      <span id='smsOtpSelectedName' style='color:#94a3b8;'>Chọn dịch vụ</span>
+                    </div>
+                    <i class='fa-solid fa-chevron-down' id='smsOtpChevron'></i>
+                  </div>
+
+                  <!-- Searchable Dropdown Popup -->
+                  <div class='sms-otp-dropdown-menu' id='smsOtpDropdownMenu' style='display:none;'>
+                    <div class='sms-otp-search-wrap'>
+                      <i class='fa-solid fa-magnifying-glass'></i>
+                      <input type='text' id='smsOtpSearchInput' placeholder='Tìm dịch vụ: Facebook, Zalo, Gmail...' oninput='filterSmsOtpServices(this.value)' autocomplete='off'/>
+                    </div>
+                    <div class='sms-otp-services-list' id='smsOtpServicesList'>
+                      <div class='sms-otp-loading-box' style='padding:20px; text-align:center; color:#94a3b8;'><i class='fa-solid fa-spinner fa-spin'></i> Đang nạp danh sách dịch vụ...</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 2: Cách chọn số -->
+              <div class='sms-otp-step-row' style='margin-top:24px;'>
+                <div class='sms-otp-step-label'>
+                  <span class='sms-otp-badge-num'>2</span>
+                  <span class='sms-otp-step-text'>Cách chọn số</span>
+                </div>
+                <div class='sms-otp-mode-pills'>
+                  <button type='button' class='sms-otp-mode-pill active' id='smsModeQuick' onclick='setSmsOtpMode(&quot;quick&quot;)'>
+                    <i class='fa-solid fa-bolt' style='color:#fbbf24; margin-right:6px;'></i> Thuê nhanh
+                  </button>
+                  <button type='button' class='sms-otp-mode-pill' id='smsModeCustom' onclick='setSmsOtpMode(&quot;custom&quot;)'>
+                    <i class='fa-solid fa-sliders' style='color:#38bdf8; margin-right:6px;'></i> Tùy chọn nhà mạng
+                  </button>
+                </div>
+              </div>
+
+              <!-- Quick Mode Note -->
+              <div class='sms-otp-mode-desc' id='smsOtpQuickDesc'>
+                Hệ thống chọn ngẫu nhiên một số khả dụng thuộc mọi nhà mạng — nhanh nhất để nhận mã.
+              </div>
+
+              <!-- Custom Mode Options -->
+              <div class='sms-otp-custom-options' id='smsOtpCustomOptions' style='display:none;'>
+                <!-- Row: Nhà Mạng -->
+                <div class='sms-otp-filter-row'>
+                  <span class='sms-otp-filter-label'>NHÀ MẠNG</span>
+                  <div class='sms-otp-carrier-pills' id='smsOtpCarrierPills'>
+                    <button type='button' class='sms-carrier-pill active' data-carrier='ALL' onclick='selectSmsCarrier(&quot;ALL&quot;)'>Tất cả</button>
+                    <button type='button' class='sms-carrier-pill' data-carrier='MOBIFONE' onclick='selectSmsCarrier(&quot;MOBIFONE&quot;)'>MOBIFONE</button>
+                    <button type='button' class='sms-carrier-pill' data-carrier='VINAPHONE' onclick='selectSmsCarrier(&quot;VINAPHONE&quot;)'>VINAPHONE</button>
+                    <button type='button' class='sms-carrier-pill' data-carrier='VIETTEL' onclick='selectSmsCarrier(&quot;VIETTEL&quot;)'>VIETTEL</button>
+                    <button type='button' class='sms-carrier-pill' data-carrier='VIETNAMOBILE' onclick='selectSmsCarrier(&quot;VIETNAMOBILE&quot;)'>VIETNAMOBILE</button>
+                    <button type='button' class='sms-carrier-pill' data-carrier='ITELECOM' onclick='selectSmsCarrier(&quot;ITELECOM&quot;)'>ITELECOM</button>
+                    <button type='button' class='sms-carrier-pill' data-carrier='WINTEL' onclick='selectSmsCarrier(&quot;WINTEL&quot;)'>WINTEL</button>
+                    <button type='button' class='sms-carrier-pill' data-carrier='GTEL' onclick='selectSmsCarrier(&quot;GTEL&quot;)'>GTEL</button>
+                  </div>
+                </div>
+
+                <!-- Row: Đầu Số -->
+                <div class='sms-otp-filter-row' style='margin-top:14px;'>
+                  <span class='sms-otp-filter-label'>ĐẦU SỐ</span>
+                  <div class='sms-otp-prefix-wrap'>
+                    <select id='smsOtpPrefixSelect' class='sms-otp-prefix-select' onchange='updateSmsOrderSummary()'>
+                      <option value='ALL'>Tất cả đầu số</option>
+                      <optgroup label='Viettel'>
+                        <option value='098'>098</option><option value='097'>097</option><option value='096'>096</option>
+                        <option value='086'>086</option><option value='039'>039</option><option value='038'>038</option>
+                        <option value='037'>037</option><option value='036'>036</option><option value='035'>035</option>
+                        <option value='034'>034</option><option value='033'>033</option><option value='032'>032</option>
+                      </optgroup>
+                      <optgroup label='Vinaphone'>
+                        <option value='091'>091</option><option value='094'>094</option><option value='088'>088</option>
+                        <option value='083'>083</option><option value='084'>084</option><option value='085'>085</option>
+                        <option value='081'>081</option><option value='082'>082</option>
+                      </optgroup>
+                      <optgroup label='Mobifone'>
+                        <option value='090'>090</option><option value='093'>093</option><option value='089'>089</option>
+                        <option value='070'>070</option><option value='079'>079</option><option value='077'>077</option>
+                        <option value='076'>076</option><option value='078'>078</option>
+                      </optgroup>
+                      <optgroup label='Vietnamobile / Khác'>
+                        <option value='092'>092</option><option value='056'>056</option><option value='058'>058</option>
+                        <option value='087'>087 (Itelecom)</option><option value='055'>055 (Wintel)</option><option value='099'>099 (Gtel)</option>
+                      </optgroup>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: Numbers Waiting / Active List -->
+            <div class='sms-otp-waiting-section' id='smsOtpWaitingSection' style='margin-top:24px;'>
+              <div class='sms-otp-waiting-header'>
+                <div class='sms-otp-title-wrap'>
+                  <span class='sms-otp-dash'>—</span>
+                  <h2 class='sms-otp-sub-title'>SỐ ĐANG CHỜ TIN NHẮN</h2>
+                </div>
+                <div class='sms-otp-waiting-actions'>
+                  <div class='sms-otp-view-toggles'>
+                    <button type='button' class='sms-view-toggle active' title='Dạng thẻ' id='smsViewGridBtn' onclick='setSmsListView(&quot;grid&quot;)'><i class='fa-solid fa-border-all'></i></button>
+                    <button type='button' class='sms-view-toggle' title='Dạng danh sách' id='smsViewListBtn' onclick='setSmsListView(&quot;list&quot;)'><i class='fa-solid fa-list-ul'></i></button>
+                  </div>
+                  <button type='button' class='sms-otp-tips-btn' onclick='toggleSmsTips()'>
+                    <i class='fa-solid fa-triangle-exclamation' style='color:#f59e0b; margin-right:4px;'></i> Lưu ý khi thuê số <i class='fa-solid fa-chevron-down' id='smsTipsChevron' style='font-size:0.75rem; margin-left:4px;'></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tips Dropdown Content (Chuẩn Hình 3: 5 mục lưu ý) -->
+              <div class='sms-otp-tips-box-styled' id='smsOtpTipsBox' style='display:none;'>
+                <div class='sms-tip-item'>
+                  <span class='sms-tip-num'>1</span>
+                  <p class='sms-tip-text'>Cần thuê lại sim (chỉ lấy được trong 15–30 phút và khi sim còn khả dụng)? Bấm <strong>Thuê lại</strong> trên thẻ số ở trang Thuê số hoặc Lịch sử.</p>
+                </div>
+                <div class='sms-tip-item'>
+                  <span class='sms-tip-num'>2</span>
+                  <p class='sms-tip-text'>Số không nhận được code sẽ tự động hoàn số dư khi hết hạn, sau 4–7 phút (đồng hồ trên thẻ số đếm đúng tới lúc hoàn).</p>
+                </div>
+                <div class='sms-tip-item'>
+                  <span class='sms-tip-num'>3</span>
+                  <p class='sms-tip-text'>Gmail, Facebook, Zalo... sau 2–3 tài khoản sẽ kiểm tra IP và không gửi mã. Hãy reset IP Internet (không phải IP máy tính).</p>
+                </div>
+                <div class='sms-tip-item'>
+                  <span class='sms-tip-num'>4</span>
+                  <p class='sms-tip-text'>Shopee: kiểm tra số đã đăng ký tài khoản chưa trước khi lấy code. Hiện Shopee rất khó, cân nhắc khi sử dụng.</p>
+                </div>
+                <div class='sms-tip-item'>
+                  <span class='sms-tip-num'>5</span>
+                  <p class='sms-tip-text'>Telegram: vào Contact &gt; Add contact với số vừa thuê. Nếu thêm không thành công là số đó chưa được sử dụng.</p>
+                </div>
+              </div>
+
+              <p class='sms-otp-waiting-desc'>
+                Chạm vào số điện thoại hoặc mã để sao chép nhanh · bấm <strong>Thuê lại</strong> để thuê lại đúng số đó (trong 15–30 phút).
+              </p>
+
+              <!-- Numbers Container (Empty state hoặc danh sách thẻ số chuẩn Hình 1 &amp; Hình 4) -->
+              <div class='sms-otp-numbers-container' id='smsOtpNumbersContainer'>
+                <div class='sms-otp-empty-state'>
+                  <div class='sms-otp-empty-icon'>
+                    <i class='fa-solid fa-sim-card'></i>
+                  </div>
+                  <h3 class='sms-otp-empty-title'>Chưa có số nào</h3>
+                  <p class='sms-otp-empty-sub'>Chọn dịch vụ ở trên và bấm Thuê số ngay.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Order Summary Card (ĐƠN THUÊ CỦA BẠN) -->
+          <div class='sms-otp-right-col'>
+            <div class='sms-otp-summary-card'>
+              <h3 class='sms-otp-summary-title'>ĐƠN THUÊ CỦA BẠN</h3>
+
+              <!-- Selected Service Overview -->
+              <div class='sms-otp-summary-service' id='smsOtpSummaryServiceBox'>
+                <span style='color:#94a3b8; font-size:0.9rem;'>Chưa chọn dịch vụ — chọn một dịch vụ ở bước 1.</span>
+              </div>
+
+              <div class='sms-otp-summary-divider'></div>
+
+              <!-- Key Value Breakdown -->
+              <div class='sms-otp-summary-details'>
+                <div class='sms-summary-row'>
+                  <span class='sms-summary-key'>Cách chọn số</span>
+                  <span class='sms-summary-val' id='smsSumMode'>Thuê nhanh</span>
+                </div>
+                <div class='sms-summary-row' id='smsSumCarrierRow' style='display:none;'>
+                  <span class='sms-summary-key'>Nhà mạng</span>
+                  <span class='sms-summary-val' id='smsSumCarrier'>Tất cả</span>
+                </div>
+                <div class='sms-summary-row' id='smsSumPrefixRow' style='display:none;'>
+                  <span class='sms-summary-key'>Đầu số lấy</span>
+                  <span class='sms-summary-val' id='smsSumPrefix'>Tất cả</span>
+                </div>
+                <div class='sms-summary-row' id='smsSumExcludeRow' style='display:none;'>
+                  <span class='sms-summary-key'>Đầu số loại</span>
+                  <span class='sms-summary-val'>Không</span>
+                </div>
+                <div class='sms-summary-row'>
+                  <span class='sms-summary-key'>Số dư sau khi thuê</span>
+                  <span class='sms-summary-val' id='smsSumBalAfter' style='font-weight:700;'>0 đ</span>
+                </div>
+              </div>
+
+              <div class='sms-otp-summary-divider'></div>
+
+              <!-- Big Price Tag &amp; Rent Button -->
+              <div class='sms-otp-price-checkout'>
+                <div class='sms-price-row'>
+                  <span class='sms-price-key'>Giá mỗi lượt</span>
+                  <span class='sms-price-val' id='smsSumPrice'>0 đ</span>
+                </div>
+                <button type='button' class='sms-otp-rent-btn' id='smsOtpRentBtn' onclick='executeRentSmsOtp()' disabled='disabled'>
+                  Thuê số ngay <i class='fa-solid fa-arrow-right'></i>
+                </button>
+                <div class='sms-otp-rent-note'>
+                  Không nhận được mã: tự hoàn tiền khi số hết hạn, sau 4–7 phút.
+                </div>
+              </div>
+
+              <!-- Box Yêu Cầu Dịch Vụ Mới -->
+              <div class='sms-otp-request-box' onclick='openRequestServiceModal()'>
+                <i class='fa-solid fa-circle-question' style='font-size:1.1rem; margin-right:8px;'></i>
+                <span>Không thấy dịch vụ bạn cần? Yêu cầu thêm dịch vụ mới</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class='container tools-page-container' id='viewTools' style='display:none;'>
     <div class='blog-page-header' style='margin-bottom:24px;'>
       <h2 class='blog-page-title'><i class='fa-solid fa-screwdriver-wrench' style='color:#10b981;'></i> Bộ Công Cụ MMO Đa Năng Miễn Phí</h2>
@@ -7904,6 +8265,49 @@ header.header {
         <button type='button' class='adm-subtab-btn' id='subTabBtnAutoPrice2' onclick='openAutoPriceAdjustModal()' style='background:transparent; color:#10b981; border:1px solid rgba(16,185,129,0.4); padding:8px 18px; border-radius:8px; font-size:0.85rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px;'>
           <i class='fa-solid fa-shield-halved'></i> Điều Chỉnh Giá Tự Động
           <span id='admAutoPriceSubtabBadge' style='background:rgba(16,185,129,0.2); color:#10b981; font-size:0.7rem; font-weight:800; padding:2px 6px; border-radius:10px;'>+20%</span>
+        </button>
+      </div>
+
+      <!-- CẤU HÌNH TĂNG GIÁ SMS OTP (VIOTP) -->
+      <div class='adm-sms-config-card'>
+        <div class='adm-sms-config-title'>
+          <i class='fa-solid fa-sim-card' style='color:#10b981;'></i>
+          <span>Cài Đặt Tự Động Tăng Giá SMS OTP (Web Nguồn ViOTP)</span>
+        </div>
+        <div class='adm-sms-config-desc'>
+          Tự động cộng thêm tỷ lệ % lợi nhuận vào giá thuê sim từ hệ thống gốc ViOTP cho toàn bộ 983+ dịch vụ (Lưu trên Cloudflare Worker &amp; Turso DB).
+        </div>
+        
+        <div style='display:flex; align-items:center; gap:20px; flex-wrap:wrap; margin-bottom:16px;'>
+          <label style='display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:700; color:#f1f5f9;'>
+            <input type='checkbox' id='chkAdmSmsMarginEnabled' checked='checked' style='width:18px; height:18px; accent-color:#10b981;' />
+            Bật chế độ tự động tăng giá
+          </label>
+          <div style='display:flex; align-items:center; gap:10px;'>
+            <span style='font-weight:700; color:#cbd5e1;'>Tỷ lệ tăng giá:</span>
+            <input type='number' id='inpAdmSmsMarginPercent' value='20' min='0' max='500' oninput='updateSmsOtpAdminPreview()' style='width:90px; padding:7px 10px; background:#0b121e; border:1px solid #334155; border-radius:6px; color:#10b981; font-weight:800; font-size:1rem; outline:none; text-align:center;' />
+            <span style='font-weight:800; color:#10b981;'>%</span>
+          </div>
+        </div>
+
+        <div style='margin-bottom:14px;'>
+          <span style='font-size:0.82rem; color:#94a3b8; font-weight:600;'>Chọn nhanh mức tăng:</span>
+          <div class='adm-sms-pct-pills'>
+            <button type='button' class='adm-sms-pct-pill' onclick='setSmsOtpAdminPreset(10)'>+10%</button>
+            <button type='button' class='adm-sms-pct-pill' onclick='setSmsOtpAdminPreset(15)'>+15%</button>
+            <button type='button' class='adm-sms-pct-pill active' onclick='setSmsOtpAdminPreset(20)'>+20% (Khuyên dùng)</button>
+            <button type='button' class='adm-sms-pct-pill' onclick='setSmsOtpAdminPreset(30)'>+30%</button>
+            <button type='button' class='adm-sms-pct-pill' onclick='setSmsOtpAdminPreset(50)'>+50%</button>
+          </div>
+        </div>
+
+        <div id='admSmsFormulaPreview' style='background:#070d17; border:1px solid #1e293b; border-radius:8px; padding:12px 16px; font-size:0.85rem; color:#cbd5e1; line-height:1.6; margin-bottom:18px;'>
+          <b>💡 Công thức áp dụng:</b> Giá bán trên web = Giá vốn ViOTP + <span style='color:#10b981; font-weight:800;'>+20%</span>.<br/>
+          <b>Ví dụ minh họa:</b> Giá gốc ViOTP là <span style='color:#f59e0b; font-weight:700;'>2.000 đ</span> &#8594; Giá bán tự động nhảy lên <span style='color:#10b981; font-weight:800;'>2.400 đ</span> (Lợi nhuận shop: <b style='color:#38bdf8;'>+400 đ</b>/số).
+        </div>
+
+        <button type='button' onclick='saveSmsOtpAdminSettings()' style='background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:11px 22px; border-radius:8px; font-weight:800; font-size:0.95rem; cursor:pointer; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 15px rgba(16,185,129,0.35);'>
+          <i class='fa-solid fa-floppy-disk'></i> LƯU CẤU HÌNH TĂNG GIÁ SMS OTP
         </button>
       </div>
 
@@ -12307,6 +12711,9 @@ print(res.json())</pre>
       <a class='mobile-drawer-link' onclick='switchView("viewTools"); toggleMobileDrawer(false);'>
         <i class='fa-solid fa-screwdriver-wrench' style='color:#a855f7;'></i> 6 Công Cụ MMO Miễn Phí
       </a>
+      <a class='mobile-drawer-link' onclick='switchView("viewSmsOtp"); toggleMobileDrawer(false);'>
+        <i class='fa-solid fa-sim-card' style='color:#10b981;'></i> Thuê Sim SMS OTP
+      </a>
       <a class='mobile-drawer-link' onclick='switchView("viewDeposit"); toggleMobileDrawer(false);'>
         <i class='fa-solid fa-credit-card' style='color:#06b6d4;'></i> Nạp Tiền &amp; Rút Hoa Hồng
       </a>
@@ -12357,7 +12764,7 @@ print(res.json())</pre>
   <!-- ==========================================================================
        OFFLOADED CDN JAVASCRIPT BUNDLE (ALL FUNCTIONS AND MODULES)
        ========================================================================== -->
-  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.9/bundle.min.js?v=6.4.7' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
+  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.0/bundle.min.js?v=6.6.0' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
   <script type='text/javascript'>
     //<![CDATA[
     (function() {
@@ -12415,7 +12822,7 @@ print(res.json())</pre>
 
               // Tự động cập nhật CSS
               var cssEl = document.getElementById("mmoCdnThemeCss");
-              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.9/theme.min.css?v=6.4.7");
+              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.0/theme.min.css?v=6.6.0");
               if (cssEl) cssEl.href = newCssUrl;
 
               // Mã nguồn chính thức đã được tải an toàn từ CDN v5.7.9
@@ -12791,7 +13198,7 @@ print(res.json())</pre>
         console.warn("CDN primary slow or failed, falling back to Fastly mirror...");
         var fb = document.createElement("script");
         fb.defer = true;
-        fb.src = "https://fastly.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.4.9/bundle.min.js?v=6.4.7";
+        fb.src = "https://fastly.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.0/bundle.min.js?v=6.6.0";
         fb.onload = bootMMOCdnApp;
         document.body.appendChild(fb);
       }
