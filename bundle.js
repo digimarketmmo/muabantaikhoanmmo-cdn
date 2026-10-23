@@ -12146,9 +12146,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                     const stockBadge = vStock > 0 
                       ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>' 
                       : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-                    return '<div class="variant-pill-option ' + (idx === activeVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                      '<span>' + escapeHtml(v.name || ("Gói " + (idx + 1))) + stockBadge + '</span>' +
-                      '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+                    return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === activeVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                      '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + escapeHtml(v.name || ("Gói " + (idx + 1))) + stockBadge + '</span>' +
+                      '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + formatVND(v.price || 0) + '</span>' +
                     '</div>';
                   }).join("");
                 }
@@ -12781,9 +12781,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const stockBadge = vStock > 0
               ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
               : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-            return '<div class="variant-pill-option ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-              '<span>' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
-              '<span style="font-weight:700;">' + ((typeof formatVND === "function") ? formatVND(v.price || 0) : ((v.price || 0) + " đ")) + '</span>' +
+            return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+              '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
+              '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + ((typeof formatVND === "function") ? formatVND(v.price || 0) : ((v.price || 0) + " đ")) + '</span>' +
             '</div>';
           }).join("");
         }
@@ -18189,9 +18189,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const badge = vs > 0 
               ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
               : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-            return '<div class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-              '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
-              '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+            return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+              '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
+              '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + formatVND(v.price || 0) + '</span>' +
             '</div>';
           }).join("");
           pillsContainer.innerHTML = newPillsHtml;
@@ -20157,9 +20157,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               const badge = vs > 0
                 ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>'
                 : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-              return '<div class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
-                '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+              return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
+                '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + formatVND(v.price || 0) + '</span>' +
               '</div>';
             }).join("");
           }
@@ -20378,9 +20378,9 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
               const badge = vs > 0 
                 ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
                 : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-              return '<div class="variant-pill-option ' + (idx === curVIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                '<span>' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)))) + badge + '</span>' +
-                '<span style="font-weight:700;">' + (typeof formatVND === "function" ? formatVND(v.price || 0) : ((v.price || 0) + ' đ')) + '</span>' +
+              return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === curVIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)))) + badge + '</span>' +
+                '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + (typeof formatVND === "function" ? formatVND(v.price || 0) : ((v.price || 0) + ' đ')) + '</span>' +
               '</div>';
             }).join("");
           }
@@ -20555,9 +20555,9 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
                   const badge = vs > 0 
                     ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
                     : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-                  return '<div class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                    '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
-                    '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+                  return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                    '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
+                    '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + formatVND(v.price || 0) + '</span>' +
                   '</div>';
                 }).join("");
               }
@@ -22439,9 +22439,9 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
                     const stockBadge = activeTargetStock > 0
                       ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(activeTargetStock).toLocaleString("vi-VN") + ' acc)</small>'
                       : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-                    return '<div class="variant-pill-option ' + (idx === cIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                      '<span>' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
-                      '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
+                    return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === cIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                      '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
+                      '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
                     '</div>';
                   }).join("");
                 }
@@ -28683,9 +28683,9 @@ function executeCompareSourcesSearch() {
             const badge = vs > 0 
               ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
               : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-            return '<div class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-              '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
-              '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+            return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+              '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
+              '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + formatVND(v.price || 0) + '</span>' +
             '</div>';
           }).join("");
         }
@@ -33283,9 +33283,9 @@ function executeCompareSourcesSearch() {
             const stockBadge = vStock > 0
               ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
               : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-            return '<div class="variant-pill-option ' + (idx === curVIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-              '<span>' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
-              '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
+            return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === curVIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+              '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
+              '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
             '</div>';
           }).join("");
         }
@@ -33829,9 +33829,9 @@ function executeCompareSourcesSearch() {
             : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
           const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)));
           const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
-          return '<div class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-            '<span>' + safeName + stockBadge + '</span>' +
-            '<span style="font-weight:700;">' + safePrice + '</span>' +
+          return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+            '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + safeName + stockBadge + '</span>' +
+            '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + safePrice + '</span>' +
           '</div>';
         }).join("");
       } else {
@@ -34053,9 +34053,9 @@ function executeCompareSourcesSearch() {
                     : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                   const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)));
                   const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
-                  return '<div class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                    '<span>' + safeName + stockBadge + '</span>' +
-                    '<span style="font-weight:700;">' + safePrice + '</span>' +
+                  return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                    '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + safeName + stockBadge + '</span>' +
+                    '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + safePrice + '</span>' +
                   '</div>';
                 }).join("");
               } else {
@@ -42436,9 +42436,9 @@ function changeAdmUsersPage(p) {
                       : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                     const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)));
                     const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
-                    return '<div class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                      '<span>' + safeName + badge + '</span>' +
-                      '<span style="font-weight:700;">' + safePrice + '</span>' +
+                    return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                      '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + safeName + badge + '</span>' +
+                      '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + safePrice + '</span>' +
                     '</div>';
                   }).join("");
                 } else if (pillsContainer) {
@@ -42829,9 +42829,9 @@ function changeAdmUsersPage(p) {
                     : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                   const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)));
                   const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
-                  return '<div class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                    '<span>' + safeName + badge + '</span>' +
-                    '<span style="font-weight:700;">' + safePrice + '</span>' +
+                  return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                    '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + safeName + badge + '</span>' +
+                    '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + safePrice + '</span>' +
                   '</div>';
                 }).join("");
               } else if (pillsContainer) {
