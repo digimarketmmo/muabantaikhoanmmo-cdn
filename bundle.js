@@ -15996,7 +15996,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             viewSitemap: "/?view=sitemap",
             viewTerms: "/?view=terms",
             viewPrivacy: "/?view=privacy",
-            viewWarranty: "/?view=warranty"
+            viewWarranty: "/?view=warranty",
+            viewSmsOtp: "/?view=sms-otp"
           };
           const targetUrl = origin + (pathMap[viewId] || "/");
           if (window.location.search && (window.location.search.includes("prod=") || window.location.search.includes("product="))) {
@@ -16015,7 +16016,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       // 1. TỨC THÌ 0MS: Chuyển đổi hiển thị view độc lập 100% (chống kẹt view với !important)
       var evs = document.getElementById("earlyViewRoutingStyle");
       if (evs) evs.remove();
-      const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewFaq"];
+      const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewFaq", "viewSmsOtp"];
       views.forEach(function(v) {
         const el = document.getElementById(v);
         if (el) {
@@ -16037,6 +16038,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (typeof updateMobileBottomNav === "function") updateMobileBottomNav(viewId);
 
       // 3. Render thông minh theo nhu cầu (Sử dụng setTimeout 0ms không block luồng UI chính)
+      if (viewId === "viewSmsOtp") {
+        document.getElementById("navSmsOtp")?.classList.add("active");
+        if (typeof initSmsOtpView === "function") {
+          initSmsOtpView();
+        }
+      }
       if (viewId === "viewStore") {
         document.getElementById("navStore")?.classList.add("active");
         const bList = document.getElementById("bestSellerList");
@@ -53452,3 +53459,775 @@ if (typeof window !== "undefined") {
     }
   }
 }
+
+
+
+
+// ==========================================================================
+// SMS OTP CLIENT MODULE (VIOTP.NET INTEGRATION) - PRODUCTION GRADE
+// ==========================================================================
+(function() {
+  window._smsOtpServices = [];
+  window._smsOtpCarriers = [];
+  window._smsOtpSelectedService = null;
+  window._smsOtpMode = 'quick';
+  window._smsOtpSelectedCarrier = 'ALL';
+  window._smsOtpSelectedPrefix = 'ALL';
+  window._smsOtpRentals = [];
+  window._smsOtpPollers = {};
+  window._smsOtpCountdowns = {};
+  window._smsOtpInitialized = false;
+
+  // Icon Helper for 984+ Services
+  function getSmsServiceIcon(name) {
+    var n = String(name || '').toLowerCase();
+    if (n.includes('google') || n.includes('gmail')) return '<i class="fa-brands fa-google" style="color:#ea4335;"></i>';
+    if (n.includes('facebook') || n.includes('fb')) return '<i class="fa-brands fa-facebook" style="color:#1877f2;"></i>';
+    if (n.includes('shopee')) return '<i class="fa-solid fa-bag-shopping" style="color:#ee4d2d;"></i>';
+    if (n.includes('lazada')) return '<i class="fa-solid fa-cart-shopping" style="color:#f43f5e;"></i>';
+    if (n.includes('hotmail') || n.includes('outlook') || n.includes('microsoft') || n.includes('azure')) return '<i class="fa-brands fa-microsoft" style="color:#00a4ef;"></i>';
+    if (n.includes('yahoo')) return '<i class="fa-brands fa-yahoo" style="color:#6001d2;"></i>';
+    if (n.includes('telegram')) return '<i class="fa-brands fa-telegram" style="color:#229ed9;"></i>';
+    if (n.includes('tiktok')) return '<i class="fa-brands fa-tiktok" style="color:#ff0050;"></i>';
+    if (n.includes('zalo')) return '<i class="fa-solid fa-comment-dots" style="color:#0068ff;"></i>';
+    if (n.includes('viber')) return '<i class="fa-brands fa-viber" style="color:#7360f2;"></i>';
+    if (n.includes('whatsapp')) return '<i class="fa-brands fa-whatsapp" style="color:#25d366;"></i>';
+    if (n.includes('instagram')) return '<i class="fa-brands fa-instagram" style="color:#e1306c;"></i>';
+    if (n.includes('twitter') || n.includes(' x ')) return '<i class="fa-brands fa-x-twitter" style="color:#e2e8f0;"></i>';
+    if (n.includes('netflix')) return '<i class="fa-solid fa-film" style="color:#e50914;"></i>';
+    if (n.includes('momo')) return '<i class="fa-solid fa-wallet" style="color:#d82d8b;"></i>';
+    return '<i class="fa-regular fa-circle-dot" style="color:#94a3b8;"></i>';
+  }
+  window.getSmsServiceIcon = getSmsServiceIcon;
+
+  // Initialize SMS OTP View
+  async function initSmsOtpView() {
+    try {
+      var saved = localStorage.getItem('mmo_sms_rentals');
+      if (saved) {
+        window._smsOtpRentals = JSON.parse(saved);
+        renderSmsRentals();
+      }
+    } catch(e) {}
+
+    updateSmsUserBalanceDisplay();
+
+    if (!window._smsOtpServices || window._smsOtpServices.length === 0) {
+      await loadSmsOtpServices();
+    }
+    if (!window._smsOtpCarriers || window._smsOtpCarriers.length === 0) {
+      loadSmsOtpCarriers();
+    }
+
+    var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
+    if (u && u.email) {
+      loadServerRentalHistory(u.email);
+    }
+
+    window._smsOtpInitialized = true;
+  }
+  window.initSmsOtpView = initSmsOtpView;
+
+  function updateSmsUserBalanceDisplay() {
+    var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
+    if (!u) {
+      try {
+        var raw = localStorage.getItem('mmo_user');
+        if (raw) u = JSON.parse(raw);
+      } catch(e) {}
+    }
+    var bal = (u && u.balance !== undefined && !isNaN(Number(u.balance))) ? Number(u.balance) : 0;
+    var el = document.getElementById('smsSumBalAfter');
+    if (el) {
+      var p = window._smsOtpSelectedService ? Number(window._smsOtpSelectedService.price || 0) : 0;
+      var remain = bal - p;
+      el.innerText = (remain < 0 ? 0 : remain).toLocaleString('vi-VN') + ' đ';
+      el.style.color = (remain < 0) ? '#ef4444' : '#10b981';
+    }
+  }
+  window.updateSmsUserBalanceDisplay = updateSmsUserBalanceDisplay;
+
+  async function loadSmsOtpServices() {
+    var listEl = document.getElementById('smsOtpServicesList');
+    if (listEl) {
+      listEl.innerHTML = '<div class="sms-otp-loading-box" style="padding:20px; text-align:center; color:#94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang nạp 984+ dịch vụ ViOTP...</div>';
+    }
+
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var res = await fetch(workerUrl + '/api/viotp/services');
+      var data = await res.json();
+      if (data && data.success && Array.isArray(data.services)) {
+        window._smsOtpServices = data.services;
+        var countEl = document.getElementById('smsOtpServiceCount');
+        if (countEl) countEl.innerText = data.services.length + ' dịch vụ';
+        renderSmsOtpServicesList('');
+      } else {
+        if (listEl) listEl.innerHTML = '<div style="padding:20px; text-align:center; color:#ef4444;">Không thể nạp danh sách dịch vụ. Vui lòng bấm thử lại.</div>';
+      }
+    } catch(err) {
+      console.error('Lỗi loadSmsOtpServices:', err);
+      if (listEl) listEl.innerHTML = '<div style="padding:20px; text-align:center; color:#ef4444;">Lỗi kết nối máy chủ ViOTP.</div>';
+    }
+  }
+  window.loadSmsOtpServices = loadSmsOtpServices;
+
+  async function loadSmsOtpCarriers() {
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var res = await fetch(workerUrl + '/api/viotp/carriers');
+      var data = await res.json();
+      if (data && data.success && Array.isArray(data.carriers)) {
+        window._smsOtpCarriers = data.carriers;
+      }
+    } catch(e) {}
+  }
+
+  async function loadServerRentalHistory(email) {
+    if (!email) return;
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var res = await fetch(workerUrl + '/api/viotp/history?email=' + encodeURIComponent(email));
+      var data = await res.json();
+      if (data && data.success && Array.isArray(data.history) && data.history.length > 0) {
+        var merged = (window._smsOtpRentals || []).slice();
+        data.history.forEach(function(sh) {
+          var rid = sh.rental_id || sh.id;
+          var ex = merged.find(function(m) { return (m.id == rid || m.rental_id == rid); });
+          if (!ex) {
+            merged.push({
+              id: rid,
+              serviceId: sh.service_id,
+              serviceName: sh.service_name,
+              price: sh.price,
+              phone: sh.phone,
+              phoneLocal: sh.phone_local,
+              carrier: sh.carrier,
+              status: sh.status,
+              code: sh.code,
+              smsContent: sh.sms_content,
+              createdAt: sh.created_at
+            });
+          } else {
+            ex.status = sh.status;
+            if (sh.code) ex.code = sh.code;
+            if (sh.sms_content) ex.smsContent = sh.sms_content;
+          }
+        });
+        window._smsOtpRentals = merged;
+        try { localStorage.setItem('mmo_sms_rentals', JSON.stringify(merged)); } catch(eS) {}
+        renderSmsRentals();
+      }
+    } catch(eH) {}
+  }
+
+  function renderSmsOtpServicesList(query) {
+    var listEl = document.getElementById('smsOtpServicesList');
+    if (!listEl) return;
+
+    var services = window._smsOtpServices || [];
+    var q = String(query || '').trim().toLowerCase();
+
+    var filtered = services.filter(function(s) {
+      if (!s) return false;
+      if (!q) return true;
+      var name = String(s.name || '').toLowerCase();
+      var id = String(s.id || '');
+      return name.includes(q) || id.includes(q);
+    });
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div style="padding:24px; text-align:center; color:#64748b; font-size:0.9rem;">Không tìm thấy dịch vụ phù hợp</div>';
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(function(s) {
+      var isAct = (window._smsOtpSelectedService && window._smsOtpSelectedService.id === s.id);
+      var safeName = (typeof escapeHtml === 'function') ? escapeHtml(s.name) : s.name;
+      var icon = getSmsServiceIcon(s.name);
+      var priceVnd = (s.price !== undefined ? Number(s.price) : 0).toLocaleString('vi-VN') + ' đ';
+
+      return '<div class="sms-otp-service-item ' + (isAct ? 'active' : '') + '" data-sid="' + s.id + '" onclick="selectSmsOtpService(' + s.id + ')">' +
+        '<div class="sms-service-left">' +
+          '<span style="font-size:1.15rem; width:24px; display:inline-flex; align-items:center; justify-content:center;">' + icon + '</span>' +
+          '<span>' + safeName + '</span>' +
+        '</div>' +
+        '<div class="sms-service-price">' + priceVnd + '</div>' +
+      '</div>';
+    }).join('');
+  }
+  window.renderSmsOtpServicesList = renderSmsOtpServicesList;
+
+  function toggleSmsOtpDropdown(forceState) {
+    var menu = document.getElementById('smsOtpDropdownMenu');
+    var chevron = document.getElementById('smsOtpChevron');
+    if (!menu) return;
+
+    var isShow = (forceState !== undefined) ? forceState : (menu.style.display === 'none' || menu.style.display === '');
+    menu.style.display = isShow ? 'block' : 'none';
+    if (chevron) {
+      chevron.style.transform = isShow ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+    if (isShow) {
+      var inp = document.getElementById('smsOtpSearchInput');
+      if (inp) {
+        inp.value = '';
+        setTimeout(function() { inp.focus(); }, 50);
+      }
+      renderSmsOtpServicesList('');
+    }
+  }
+  window.toggleSmsOtpDropdown = toggleSmsOtpDropdown;
+
+  function filterSmsOtpServices(val) {
+    renderSmsOtpServicesList(val);
+  }
+  window.filterSmsOtpServices = filterSmsOtpServices;
+
+  function selectSmsOtpService(serviceId) {
+    var s = (window._smsOtpServices || []).find(function(it) { return it && it.id === serviceId; });
+    if (!s) return;
+
+    window._smsOtpSelectedService = s;
+    toggleSmsOtpDropdown(false);
+
+    var icon = getSmsServiceIcon(s.name);
+    var nameEl = document.getElementById('smsOtpSelectedName');
+    if (nameEl) {
+      nameEl.innerHTML = '<span style="font-size:1.1rem; margin-right:8px;">' + icon + '</span>' +
+        '<span style="color:#ffffff; font-weight:700;">' + s.name + '</span>' +
+        '<span style="color:#10b981; font-weight:800; margin-left:10px;">(' + Number(s.price).toLocaleString('vi-VN') + ' đ)</span>';
+    }
+
+    var sumBox = document.getElementById('smsOtpSummaryServiceBox');
+    if (sumBox) {
+      sumBox.innerHTML = '<div style="display:flex; align-items:center; justify-content:space-between; width:100%;">' +
+        '<div style="display:flex; align-items:center; gap:10px;">' +
+          '<span style="font-size:1.3rem;">' + icon + '</span>' +
+          '<div>' +
+            '<div style="font-weight:700; color:#ffffff; font-size:0.95rem;">' + s.name + '</div>' +
+            '<div style="font-size:0.78rem; color:#64748b;">Mã DV: #' + s.id + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="color:#10b981; font-weight:800; font-size:1.05rem;">' + Number(s.price).toLocaleString('vi-VN') + ' đ</div>' +
+      '</div>';
+    }
+
+    var priceEl = document.getElementById('smsSumPrice');
+    if (priceEl) priceEl.innerText = Number(s.price).toLocaleString('vi-VN') + ' đ';
+
+    var rentBtn = document.getElementById('smsOtpRentBtn');
+    if (rentBtn) {
+      rentBtn.disabled = false;
+    }
+
+    updateSmsUserBalanceDisplay();
+  }
+  window.selectSmsOtpService = selectSmsOtpService;
+
+  function setSmsOtpMode(mode) {
+    window._smsOtpMode = mode;
+    var quickBtn = document.getElementById('smsModeQuick');
+    var customBtn = document.getElementById('smsModeCustom');
+    var quickDesc = document.getElementById('smsOtpQuickDesc');
+    var customOpts = document.getElementById('smsOtpCustomOptions');
+    var sumMode = document.getElementById('smsSumMode');
+    var carrierRow = document.getElementById('smsSumCarrierRow');
+    var prefixRow = document.getElementById('smsSumPrefixRow');
+    var excludeRow = document.getElementById('smsSumExcludeRow');
+
+    if (mode === 'quick') {
+      if (quickBtn) quickBtn.classList.add('active');
+      if (customBtn) customBtn.classList.remove('active');
+      if (quickDesc) quickDesc.style.display = 'block';
+      if (customOpts) customOpts.style.display = 'none';
+      if (sumMode) sumMode.innerText = 'Thuê nhanh';
+      if (carrierRow) carrierRow.style.display = 'none';
+      if (prefixRow) prefixRow.style.display = 'none';
+      if (excludeRow) excludeRow.style.display = 'none';
+      window._smsOtpSelectedCarrier = 'ALL';
+      window._smsOtpSelectedPrefix = 'ALL';
+    } else {
+      if (quickBtn) quickBtn.classList.remove('active');
+      if (customBtn) customBtn.classList.add('active');
+      if (quickDesc) quickDesc.style.display = 'none';
+      if (customOpts) customOpts.style.display = 'block';
+      if (sumMode) sumMode.innerText = 'Tùy chọn nhà mạng';
+      if (carrierRow) carrierRow.style.display = 'flex';
+      if (prefixRow) prefixRow.style.display = 'flex';
+      if (excludeRow) excludeRow.style.display = 'flex';
+    }
+  }
+  window.setSmsOtpMode = setSmsOtpMode;
+
+  function selectSmsCarrier(carrier) {
+    window._smsOtpSelectedCarrier = carrier;
+    document.querySelectorAll('.sms-carrier-pill').forEach(function(btn) {
+      if (btn.getAttribute('data-carrier') === carrier) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+    var sumCarrier = document.getElementById('smsSumCarrier');
+    if (sumCarrier) sumCarrier.innerText = (carrier === 'ALL') ? 'Tất cả' : carrier;
+  }
+  window.selectSmsCarrier = selectSmsCarrier;
+
+  function updateSmsOrderSummary() {
+    var sel = document.getElementById('smsOtpPrefixSelect');
+    var val = sel ? sel.value : 'ALL';
+    window._smsOtpSelectedPrefix = val;
+    var sumPrefix = document.getElementById('smsSumPrefix');
+    if (sumPrefix) sumPrefix.innerText = (val === 'ALL') ? 'Tất cả' : val;
+  }
+  window.updateSmsOrderSummary = updateSmsOrderSummary;
+
+  function toggleSmsTips() {
+    var tips = document.getElementById('smsOtpTipsBox');
+    if (tips) {
+      tips.style.display = (tips.style.display === 'none' || tips.style.display === '') ? 'block' : 'none';
+    }
+  }
+  window.toggleSmsTips = toggleSmsTips;
+
+  function setSmsListView(viewType) {
+    var gridBtn = document.getElementById('smsViewGridBtn');
+    var listBtn = document.getElementById('smsViewListBtn');
+    if (viewType === 'grid') {
+      if (gridBtn) gridBtn.classList.add('active');
+      if (listBtn) listBtn.classList.remove('active');
+    } else {
+      if (gridBtn) gridBtn.classList.remove('active');
+      if (listBtn) listBtn.classList.add('active');
+    }
+  }
+  window.setSmsListView = setSmsListView;
+
+  async function executeRentSmsOtp() {
+    var s = window._smsOtpSelectedService;
+    if (!s) {
+      if (typeof showToast === 'function') showToast('Vui lòng chọn dịch vụ cần thuê số!', 'warning');
+      return;
+    }
+
+    var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
+    if (!u || !u.email) {
+      if (typeof showToast === 'function') showToast('🔒 Vui lòng đăng nhập tài khoản để thuê số nhận OTP!', 'info');
+      if (typeof openAuthModal === 'function') openAuthModal('login');
+      return;
+    }
+
+    var userBal = (u.balance !== undefined && !isNaN(Number(u.balance))) ? Number(u.balance) : 0;
+    var price = Number(s.price || 0);
+
+    if (userBal < price) {
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Số dư không đủ (' + userBal.toLocaleString('vi-VN') + ' đ). Cần ' + price.toLocaleString('vi-VN') + ' đ. Vui lòng nạp thêm tiền!', 'warning');
+      }
+      setTimeout(function() {
+        if (typeof switchView === 'function') switchView('viewDeposit');
+      }, 1000);
+      return;
+    }
+
+    var rentBtn = document.getElementById('smsOtpRentBtn');
+    if (rentBtn) {
+      rentBtn.disabled = true;
+      rentBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang kết nối ViOTP...';
+    }
+
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var payload = {
+        userEmail: u.email,
+        serviceId: s.id,
+        serviceName: s.name,
+        price: price
+      };
+
+      if (window._smsOtpMode === 'custom') {
+        if (window._smsOtpSelectedCarrier && window._smsOtpSelectedCarrier !== 'ALL') {
+          payload.carriers = [window._smsOtpSelectedCarrier];
+        }
+        if (window._smsOtpSelectedPrefix && window._smsOtpSelectedPrefix !== 'ALL') {
+          payload.includePrefixes = [window._smsOtpSelectedPrefix];
+        }
+      }
+
+      var res = await fetch(workerUrl + '/api/viotp/rent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      var data = await res.json();
+
+      if (!res.ok || !data.success || !data.rental) {
+        var errMsg = data.error || data.message || 'Không thể thuê số. Vui lòng thử lại sau ít phút!';
+        if (typeof showToast === 'function') showToast('❌ ' + errMsg, 'error');
+        if (rentBtn) {
+          rentBtn.disabled = false;
+          rentBtn.innerHTML = 'Thuê số ngay <i class="fa-solid fa-arrow-right"></i>';
+        }
+        return;
+      }
+
+      if (data.newBalance !== undefined) {
+        u.balance = Number(data.newBalance);
+        if (typeof saveUserToStorage === 'function') saveUserToStorage(u);
+        else {
+          try { localStorage.setItem('mmo_user', JSON.stringify(u)); } catch(eU) {}
+        }
+        if (typeof updateUserUI === 'function') updateUserUI(u);
+        var hBal = document.getElementById('headerWalletBalance');
+        if (hBal) hBal.innerText = u.balance.toLocaleString('vi-VN') + ' đ';
+        updateSmsUserBalanceDisplay();
+      }
+
+      if (typeof showToast === 'function') {
+        showToast('🎉 Thuê số thành công! Số: ' + (data.rental.phoneLocal || data.rental.phone), 'success');
+      }
+
+      var rObj = {
+        id: data.rental.id,
+        serviceId: s.id,
+        serviceName: s.name,
+        price: price,
+        phone: data.rental.phone,
+        phoneLocal: data.rental.phoneLocal,
+        carrier: data.rental.carrier || window._smsOtpSelectedCarrier,
+        status: 0,
+        code: null,
+        smsContent: null,
+        createdAt: new Date().toISOString()
+      };
+
+      window._smsOtpRentals.unshift(rObj);
+      try { localStorage.setItem('mmo_sms_rentals', JSON.stringify(window._smsOtpRentals)); } catch(eS) {}
+
+      renderSmsRentals();
+      startPollingRental(rObj.id);
+
+      if (rentBtn) {
+        rentBtn.disabled = false;
+        rentBtn.innerHTML = 'Thuê số ngay <i class="fa-solid fa-arrow-right"></i>';
+      }
+
+    } catch(err) {
+      console.error('Lỗi executeRentSmsOtp:', err);
+      if (typeof showToast === 'function') showToast('Lỗi kết nối máy chủ: ' + err.message, 'error');
+      if (rentBtn) {
+        rentBtn.disabled = false;
+        rentBtn.innerHTML = 'Thuê số ngay <i class="fa-solid fa-arrow-right"></i>';
+      }
+    }
+  }
+  window.executeRentSmsOtp = executeRentSmsOtp;
+
+  function startPollingRental(rentalId) {
+    if (window._smsOtpPollers[rentalId]) return;
+
+    window._smsOtpPollers[rentalId] = setInterval(async function() {
+      try {
+        var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
+        var emailParam = u && u.email ? ('?email=' + encodeURIComponent(u.email)) : '';
+        var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+        var res = await fetch(workerUrl + '/api/viotp/rental/' + rentalId + emailParam);
+        var json = await res.json();
+
+        if (json && json.success && json.data) {
+          var d = json.data;
+          var target = window._smsOtpRentals.find(function(r) { return r.id === rentalId; });
+          if (!target) return;
+
+          if (d.status === 1) {
+            target.status = 1;
+            target.code = d.code;
+            target.smsContent = d.smsContent || d.content;
+            clearInterval(window._smsOtpPollers[rentalId]);
+            delete window._smsOtpPollers[rentalId];
+
+            try { localStorage.setItem('mmo_sms_rentals', JSON.stringify(window._smsOtpRentals)); } catch(e) {}
+            renderSmsRentals();
+
+            if (typeof showToast === 'function') {
+              showToast('🎉 MÃ OTP ĐÃ VỀ: ' + d.code + ' (' + target.serviceName + ')', 'success');
+            }
+            try {
+              var audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+              audio.play().catch(function() {});
+            } catch(eA) {}
+          } else if (d.status === 2) {
+            target.status = 2;
+            clearInterval(window._smsOtpPollers[rentalId]);
+            delete window._smsOtpPollers[rentalId];
+
+            try { localStorage.setItem('mmo_sms_rentals', JSON.stringify(window._smsOtpRentals)); } catch(e) {}
+            renderSmsRentals();
+
+            if (u && target.price) {
+              u.balance = Number(u.balance || 0) + Number(target.price);
+              try { localStorage.setItem('mmo_user', JSON.stringify(u)); } catch(eU) {}
+              if (typeof updateUserUI === 'function') updateUserUI(u);
+              var hBal = document.getElementById('headerWalletBalance');
+              if (hBal) hBal.innerText = u.balance.toLocaleString('vi-VN') + ' đ';
+              updateSmsUserBalanceDisplay();
+            }
+
+            if (typeof showToast === 'function') {
+              showToast('⏱ Số ' + (target.phoneLocal || target.phone) + ' đã hết hạn. Đã hoàn tiền +' + Number(target.price).toLocaleString('vi-VN') + ' đ!', 'info');
+            }
+          }
+        }
+      } catch(ePoll) {
+        console.error('Polling error:', ePoll);
+      }
+    }, 5000);
+  }
+
+  async function rerentSmsOtp(serviceId, phone, price, serviceName) {
+    var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
+    if (!u || !u.email) {
+      if (typeof showToast === 'function') showToast('Vui lòng đăng nhập để thuê lại!', 'info');
+      return;
+    }
+
+    if (confirm('Bạn có chắc chắn muốn thuê lại số ' + phone + ' (' + serviceName + ' - ' + Number(price).toLocaleString('vi-VN') + ' đ)?')) {
+      try {
+        var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+        var res = await fetch(workerUrl + '/api/viotp/rerent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userEmail: u.email,
+            serviceId: parseInt(serviceId, 10),
+            phone: phone,
+            price: parseInt(price, 10),
+            serviceName: serviceName
+          })
+        });
+        var data = await res.json();
+        if (!res.ok || !data.success || !data.rental) {
+          if (typeof showToast === 'function') showToast('❌ ' + (data.error || data.message || 'Không thể thuê lại số này'), 'error');
+          return;
+        }
+
+        if (data.newBalance !== undefined) {
+          u.balance = Number(data.newBalance);
+          try { localStorage.setItem('mmo_user', JSON.stringify(u)); } catch(eU) {}
+          if (typeof updateUserUI === 'function') updateUserUI(u);
+          var hBal = document.getElementById('headerWalletBalance');
+          if (hBal) hBal.innerText = u.balance.toLocaleString('vi-VN') + ' đ';
+          updateSmsUserBalanceDisplay();
+        }
+
+        if (typeof showToast === 'function') showToast('🎉 Thuê lại thành công số ' + phone + '!', 'success');
+
+        var rObj = {
+          id: data.rental.id,
+          serviceId: parseInt(serviceId, 10),
+          serviceName: serviceName,
+          price: parseInt(price, 10),
+          phone: data.rental.phone || phone,
+          phoneLocal: data.rental.phoneLocal,
+          carrier: 'Thuê lại',
+          status: 0,
+          code: null,
+          smsContent: null,
+          createdAt: new Date().toISOString()
+        };
+
+        window._smsOtpRentals.unshift(rObj);
+        try { localStorage.setItem('mmo_sms_rentals', JSON.stringify(window._smsOtpRentals)); } catch(eS) {}
+        renderSmsRentals();
+        startPollingRental(rObj.id);
+
+      } catch(e) {
+        if (typeof showToast === 'function') showToast('Lỗi: ' + e.message, 'error');
+      }
+    }
+  }
+  window.rerentSmsOtp = rerentSmsOtp;
+
+  function copySmsText(text, label) {
+    if (!text) return;
+    try {
+      navigator.clipboard.writeText(text).then(function() {
+        if (typeof showToast === 'function') showToast('📋 Đã sao chép ' + (label || 'văn bản') + ': ' + text, 'success');
+      }).catch(function() {
+        fallbackCopyText(text, label);
+      });
+    } catch(e) {
+      fallbackCopyText(text, label);
+    }
+  }
+  window.copySmsText = copySmsText;
+
+  function fallbackCopyText(text, label) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    if (typeof showToast === 'function') showToast('📋 Đã sao chép ' + (label || 'văn bản') + ': ' + text, 'success');
+  }
+
+  function renderSmsRentals() {
+    var c = document.getElementById('smsOtpNumbersContainer');
+    if (!c) return;
+
+    var list = window._smsOtpRentals || [];
+    if (list.length === 0) {
+      c.innerHTML = '<div class="sms-otp-empty-state">' +
+        '<div class="sms-otp-empty-icon"><i class="fa-solid fa-sim-card"></i></div>' +
+        '<h3 class="sms-otp-empty-title">Chưa có số nào</h3>' +
+        '<p class="sms-otp-empty-sub">Chọn dịch vụ ở trên và bấm Thuê số ngay.</p>' +
+      '</div>';
+      return;
+    }
+
+    c.innerHTML = list.map(function(r) {
+      var phoneDisplay = r.phoneLocal || r.phone || 'Đang lấy số...';
+      var isDone = (r.status === 1);
+      var isExpired = (r.status === 2);
+      var statusBadge = '';
+      var cardClass = 'sms-rental-card';
+
+      if (isDone) {
+        cardClass += ' completed';
+        statusBadge = '<span style="color:#10b981; font-weight:800; font-size:0.85rem;"><i class="fa-solid fa-circle-check"></i> Đã nhận mã</span>';
+      } else if (isExpired) {
+        cardClass += ' expired';
+        statusBadge = '<span style="color:#94a3b8; font-weight:700; font-size:0.85rem;"><i class="fa-solid fa-clock-rotate-left"></i> Hết hạn - Đã hoàn tiền</span>';
+      } else {
+        statusBadge = '<span style="color:#fbbf24; font-weight:700; font-size:0.85rem; display:inline-flex; align-items:center; gap:6px;"><i class="fa-solid fa-spinner fa-spin"></i> Đang chờ SMS...</span>';
+      }
+
+      var codeBox = '';
+      if (isDone && r.code) {
+        codeBox = '<div class="sms-otp-code-box">' +
+          '<div>' +
+            '<div style="font-size:0.75rem; color:#94a3b8; text-transform:uppercase; font-weight:700;">MÃ XÁC MINH OTP:</div>' +
+            '<div class="sms-otp-code-num">' + r.code + '</div>' +
+          '</div>' +
+          '<button type="button" class="btn-copy-otp" data-code="' + r.code + '" onclick="copySmsText(this.getAttribute(\'data-code\'), \'Mã OTP\')" style="background:#10b981; color:#fff; border:none; padding:8px 14px; border-radius:6px; font-weight:700; cursor:pointer;">' +
+            '<i class="fa-solid fa-copy"></i> Sao chép mã' +
+          '</button>' +
+        '</div>';
+      }
+
+      var smsTextBox = '';
+      if (r.smsContent) {
+        smsTextBox = '<div class="sms-otp-sms-text"><i class="fa-solid fa-envelope" style="color:#38bdf8; margin-right:6px;"></i><strong>SMS:</strong> ' + r.smsContent + '</div>';
+      }
+
+      var rerentBtn = '';
+      if (r.phone && r.serviceId) {
+        var cleanPh = (r.phone || r.phoneLocal || '').replace(/'/g, '');
+        var cleanNm = (r.serviceName || '').replace(/'/g, '');
+        rerentBtn = '<button type="button" data-sid="' + r.serviceId + '" data-phone="' + cleanPh + '" data-price="' + (r.price || 0) + '" data-name="' + cleanNm + '" onclick="rerentSmsOtp(this.getAttribute(\'data-sid\'), this.getAttribute(\'data-phone\'), this.getAttribute(\'data-price\'), this.getAttribute(\'data-name\'))" style="background:#0284c7; color:#fff; border:none; padding:5px 12px; border-radius:6px; font-size:0.8rem; font-weight:700; cursor:pointer;">' +
+          '<i class="fa-solid fa-arrows-rotate"></i> Thuê lại' +
+        '</button>';
+      }
+
+      return '<div class="' + cardClass + '">' +
+        '<div class="sms-rental-top">' +
+          '<div class="sms-rental-phone-wrap">' +
+            '<span class="sms-rental-phone" data-phone="' + phoneDisplay + '" onclick="copySmsText(this.getAttribute(\'data-phone\'), \'Số điện thoại\')" title="Bấm để sao chép số">' +
+              phoneDisplay + ' <i class="fa-regular fa-copy" style="font-size:0.85rem; color:#64748b;"></i>' +
+            '</span>' +
+            '<span class="sms-rental-badge-carrier">' + (r.carrier || 'VIETNAM') + '</span>' +
+          '</div>' +
+          '<div>' + statusBadge + '</div>' +
+        '</div>' +
+        '<div class="sms-rental-mid">' +
+          '<div style="color:#cbd5e1; font-weight:600;"><i class="fa-solid fa-tag" style="color:#38bdf8; margin-right:6px;"></i>' + (r.serviceName || 'Dịch vụ') + '</div>' +
+          '<div style="display:flex; align-items:center; gap:12px;">' +
+            '<span style="color:#10b981; font-weight:700;">' + (r.price !== undefined ? Number(r.price).toLocaleString('vi-VN') + ' đ' : '') + '</span>' +
+            rerentBtn +
+          '</div>' +
+        '</div>' +
+        codeBox +
+        smsTextBox +
+      '</div>';
+    }).join('');
+  }
+  window.renderSmsRentals = renderSmsRentals;
+
+  function openSmsOtpPriceModal() {
+    var modal = document.getElementById('smsPriceModal');
+    if (!modal) {
+      var div = document.createElement('div');
+      div.id = 'smsPriceModal';
+      div.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);';
+      div.innerHTML = '<div style="background:#0c1322; border:1px solid #1e293b; border-radius:14px; width:92%; max-width:800px; max-height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.6);">' +
+        '<div style="padding:16px 20px; border-bottom:1px solid #1e293b; display:flex; align-items:center; justify-content:space-between; background:#090e17;">' +
+          '<h3 style="margin:0; font-size:1.15rem; color:#ffffff; font-weight:800;"><i class="fa-solid fa-table-list" style="color:#10b981; margin-right:8px;"></i> BẢNG GIÁ DỊCH VỤ THUÊ SIM OTP</h3>' +
+          '<button type="button" onclick="closeSmsPriceModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">✕</button>' +
+        '</div>' +
+        '<div style="padding:14px 20px; border-bottom:1px solid #1e293b; background:#0c1322;">' +
+          '<input type="text" placeholder="Tìm dịch vụ trong bảng giá..." oninput="filterPriceModal(this.value)" style="width:100%; padding:10px 14px; background:#090e17; border:1px solid #334155; border-radius:8px; color:#ffffff; outline:none;" />' +
+        '</div>' +
+        '<div id="smsPriceModalBody" style="padding:10px 20px; overflow-y:auto; flex:1;"></div>' +
+      '</div>';
+      document.body.appendChild(div);
+      modal = div;
+    }
+
+    modal.style.display = 'flex';
+    renderPriceModalTable('');
+  }
+  window.openSmsOtpPriceModal = openSmsOtpPriceModal;
+
+  function closeSmsPriceModal() {
+    var modal = document.getElementById('smsPriceModal');
+    if (modal) modal.style.display = 'none';
+  }
+  window.closeSmsPriceModal = closeSmsPriceModal;
+
+  function renderPriceModalTable(q) {
+    var body = document.getElementById('smsPriceModalBody');
+    if (!body) return;
+    var list = window._smsOtpServices || [];
+    var filter = list.filter(function(s) {
+      if (!q) return true;
+      return String(s.name || '').toLowerCase().includes(q.toLowerCase());
+    });
+
+    body.innerHTML = '<table style="width:100%; border-collapse:collapse; font-size:0.9rem; text-align:left;">' +
+      '<thead><tr style="border-bottom:1px solid #334155; color:#94a3b8;"><th style="padding:10px;">MÃ ID</th><th style="padding:10px;">DỊCH VỤ</th><th style="padding:10px; text-align:right;">GIÁ THUÊ</th><th style="padding:10px; text-align:center;">THAO TÁC</th></tr></thead>' +
+      '<tbody>' + filter.map(function(s) {
+        return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">' +
+          '<td style="padding:10px; color:#64748b;">#' + s.id + '</td>' +
+          '<td style="padding:10px; font-weight:600; color:#f1f5f9;">' + getSmsServiceIcon(s.name) + ' <span style="margin-left:6px;">' + s.name + '</span></td>' +
+          '<td style="padding:10px; text-align:right; color:#10b981; font-weight:700;">' + Number(s.price).toLocaleString('vi-VN') + ' đ</td>' +
+          '<td style="padding:10px; text-align:center;"><button type="button" data-id="' + s.id + '" onclick="selectSmsOtpServiceFromModal(this.getAttribute(\'data-id\'))" style="background:#10b981; color:#fff; border:none; padding:4px 10px; border-radius:4px; font-size:0.8rem; font-weight:700; cursor:pointer;">Chọn</button></td>' +
+        '</tr>';
+      }).join('') + '</tbody></table>';
+  }
+  window.filterPriceModal = function(q) { renderPriceModalTable(q); };
+
+  function selectSmsOtpServiceFromModal(id) {
+    closeSmsPriceModal();
+    selectSmsOtpService(parseInt(id, 10));
+  }
+  window.selectSmsOtpServiceFromModal = selectSmsOtpServiceFromModal;
+
+  function openRequestServiceModal() {
+    alert('📞 Quý khách có nhu cầu thuê OTP cho dịch vụ chuyên biệt chưa có trong danh sách, vui lòng liên hệ trực tiếp Admin qua Zalo / Telegram để được hỗ trợ mở cổng ưu tiên!');
+  }
+  window.openRequestServiceModal = openRequestServiceModal;
+
+  document.addEventListener('click', function(e) {
+    var wrap = document.getElementById('smsOtpServiceTrigger');
+    var menu = document.getElementById('smsOtpDropdownMenu');
+    if (menu && menu.style.display !== 'none') {
+      if (wrap && !wrap.contains(e.target) && !menu.contains(e.target)) {
+        toggleSmsOtpDropdown(false);
+      }
+    }
+  });
+
+})();
+
