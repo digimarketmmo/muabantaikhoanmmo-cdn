@@ -5140,7 +5140,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     // [DỌN DẸP LỖI MMO_NO_IMAGE]: Tự động gỡ bỏ cờ xóa ảnh nhầm lẫn cho Gemini và các sản phẩm đã có ảnh thật
     try {
       if (typeof localStorage !== "undefined") {
-        ["PROD_MV5QIZNFCZ", "PROD_MU6R34FZ4Z", "PROD_MU5T3T47AE", "PROD_MV5PA8KZDW", "PROD_MV5OYRDJCA", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"].forEach(function(gid) {
+        ["PROD_MVKLXCCFRB", "PROD_MV5QIZNFCZ", "PROD_MU6R34FZ4Z", "PROD_MU5T3T47AE", "PROD_MV5PA8KZDW", "PROD_MV5OYRDJCA", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"].forEach(function(gid) {
           localStorage.removeItem("mmo_no_image_" + gid);
         });
       }
@@ -16242,6 +16242,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   "PROD_MU5SPLMSEC": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5SPLMSEC_ChatGPT_New_Gmail_Trial.jpg",
   "PROD_MU5T3T47AE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5T3T47AE_N%C3%82NG_C%E1%BA%A4P_GEMINI_PRO_18_TH%C3%81NG_CH%C3%8DNH_CH%E1%BB%A6____GG_5TB__.jpg",
   "PROD_MU6R34FZ4Z": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "PROD_MVKLXCCFRB": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUQIMRJYG0_N%C3%82NG_C%E1%BA%A5P_GEMINI_PRO_CH%C3%8DNH_CH%E1%BB%A6_1_N%C4%82M_-_365_NG%C3%80Y.jpg",
     "PROD_MV5QIZNFCZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
     "PROD_MU5T3T47AE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
     "PROD_MV5PA8KZDW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
@@ -16364,8 +16365,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         return cdnBase + "capcut_pro.png";
       }
 
-      if (textToScan.includes("gemini") || textToScan.includes("veo") || textToScan.includes("mv5pa8kzdw") || textToScan.includes("mu6r34fz4z") || textToScan.includes("mu5t3t47ae")) {
-        return cdnBase + "PROD_MV5PA8KZDW_NANG_CAP_GEMINI_PRO_CHINH_CHU_18_Thang.png";
+      if (textToScan.includes("gemini") || textToScan.includes("veo") || textToScan.includes("mv5pa8kzdw") || textToScan.includes("mu6r34fz4z") || textToScan.includes("mu5t3t47ae") || textToScan.includes("mvklxccfrb")) {
+        if (textToScan.includes("1 năm") || textToScan.includes("1 nam") || textToScan.includes("365") || textToScan.includes("mvklxccfrb")) {
+          return cdnBase + "PROD_MUQIMRJYG0_N%C3%82NG_C%E1%BA%A5P_GEMINI_PRO_CH%C3%8DNH_CH%E1%BB%A6_1_N%C4%82M_-_365_NG%C3%80Y.jpg";
+        }
+        return cdnBase + "PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg";
       }
 
       if (textToScan.includes("kling") || textToScan.includes("mu5pwt7pp7") || textToScan.includes("muh57035hq")) {
