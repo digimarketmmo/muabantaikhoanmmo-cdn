@@ -3411,14 +3411,54 @@ header.header {
 }
 
 
+
 /* ==========================================================================
-   VIOTP SMS OTP INTEGRATION (v6.6.1)
-   Matching Images 1, 2, 3, 4 with Left Sidebar, Clean Responsive Layout
+   VIOTP SMS OTP INTEGRATION - EXACT MATCH HÌNH 1, 2, 3, 4 (v6.6.2)
    ========================================================================== */
 
+/* 0. FIX HEADER LOGO OVERFLOW: Keep tagline strictly inside 70px navbar */
+.header .logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  height: 70px !important;
+  overflow: visible !important;
+}
+.header .logo-text {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  line-height: 1.1 !important;
+  max-height: 52px !important;
+  overflow: hidden !important;
+}
+.header .logo-text h1,
+#headerSiteName {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 1.15rem !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+.header .logo-text span {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 0.68rem !important;
+  line-height: 1.1 !important;
+  color: var(--accent-light, #34d399) !important;
+  display: block !important;
+}
+
+/* 1. CONTAINER: Proper padding to sit below fixed 70px navbar */
 #viewSmsOtp {
-  color: #cbd5e1;
-  font-family: inherit;
+  padding-top: 86px !important;
+  max-width: 1440px !important;
+  margin: 0 auto !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  padding-bottom: 50px !important;
+  box-sizing: border-box !important;
+  color: #cbd5e1 !important;
 }
 
 .sms-otp-wrapper {
@@ -3429,7 +3469,7 @@ header.header {
   box-sizing: border-box !important;
 }
 
-/* SIDEBAR (LEFT COLUMN) */
+/* 2. SIDEBAR VIOTP (CHUẨN HÌNH 4 & HÌNH 1) */
 .sms-otp-sidebar {
   width: 250px !important;
   min-width: 250px !important;
@@ -3437,7 +3477,7 @@ header.header {
   background: linear-gradient(180deg, #071711 0%, #04100c 100%) !important;
   border: 1px solid #133a29 !important;
   border-radius: 16px !important;
-  padding: 20px 16px !important;
+  padding: 18px 16px !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
   display: flex !important;
   flex-direction: column !important;
@@ -3449,7 +3489,7 @@ header.header {
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
-  padding: 4px 8px 12px 8px !important;
+  padding: 2px 4px 12px 4px !important;
   border-bottom: 1px solid #133a29 !important;
 }
 .sms-side-brand-icon {
@@ -3470,7 +3510,7 @@ header.header {
   letter-spacing: 0.5px !important;
 }
 
-/* WALLET BALANCE CARD */
+/* SỐ DƯ CARD */
 .sms-side-balance-card {
   background: #0b251a !important;
   border: 1px solid #184e36 !important;
@@ -3579,7 +3619,7 @@ header.header {
   border-color: #00b87c !important;
 }
 
-/* MAIN CONTENT AREA */
+/* 3. MAIN CONTENT AREA */
 .sms-otp-main-content {
   flex: 1 !important;
   min-width: 0 !important;
@@ -3614,47 +3654,48 @@ header.header {
   line-height: 1 !important;
 }
 
-/* HEADER ROW */
+/* HEADER ROW: THUÊ SỐ NHẬN OTP */
 .sms-otp-header-row {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding-bottom: 4px !important;
+  padding-bottom: 2px !important;
 }
 .sms-otp-title-wrap {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: 10px !important;
 }
-.sms-otp-dash {
-  color: #00b87c !important;
-  font-weight: 800 !important;
-  font-size: 1.3rem !important;
-}
-.sms-otp-title {
-  font-size: 1.55rem !important;
+.sms-otp-orange-dash {
+  color: #f59e0b !important;
   font-weight: 900 !important;
-  color: #ffffff !important;
-  letter-spacing: 0.5px !important;
+  font-size: 1.4rem !important;
+}
+.sms-otp-main-title {
+  font-size: 1.25rem !important;
+  font-weight: 900 !important;
+  color: #10b981 !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
   margin: 0 !important;
 }
-.sms-otp-price-btn {
-  background: rgba(0, 184, 124, 0.1) !important;
-  border: 1px solid rgba(0, 184, 124, 0.35) !important;
-  color: #00b87c !important;
-  border-radius: 8px !important;
-  padding: 8px 16px !important;
-  font-size: 0.88rem !important;
-  font-weight: 700 !important;
+.sms-otp-price-pill-btn {
+  background: transparent !important;
+  border: 1px solid #334155 !important;
+  color: #cbd5e1 !important;
+  border-radius: 20px !important;
+  padding: 6px 16px !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
   transition: all 0.2s ease !important;
 }
-.sms-otp-price-btn:hover {
-  background: #00b87c !important;
-  color: #04140e !important;
+.sms-otp-price-pill-btn:hover {
+  border-color: #10b981 !important;
+  color: #10b981 !important;
 }
 
 /* TWO-COLUMN GRID */
@@ -3664,7 +3705,6 @@ header.header {
   gap: 20px !important;
   align-items: flex-start !important;
 }
-
 .sms-otp-left-col {
   display: flex !important;
   flex-direction: column !important;
@@ -3675,62 +3715,68 @@ header.header {
   min-width: 0 !important;
 }
 
-/* CARD CONTAINER */
+/* 4. STEP SELECTION CARD (CHUẨN HÌNH 4: HÀNG NGANG GỌN ĐẸP) */
 .sms-otp-card {
   background: #0c1424 !important;
   border: 1px solid #1e293b !important;
   border-radius: 14px !important;
-  padding: 22px !important;
+  padding: 20px 22px !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
 }
 
-/* STEP ROW */
-.sms-otp-step-row {
+.sms-step-flex-row {
   display: flex !important;
-  flex-direction: column !important;
-  gap: 12px !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
 }
-.sms-otp-step-label {
+.sms-step-left-label {
   display: flex !important;
   align-items: center !important;
   gap: 10px !important;
+  flex-shrink: 0 !important;
 }
-.sms-otp-badge-num {
+.sms-step-badge-num {
   width: 24px !important;
   height: 24px !important;
-  background: #00b87c !important;
-  color: #04140e !important;
-  border-radius: 6px !important;
-  font-size: 0.8rem !important;
+  background: #1e293b !important;
+  color: #ffffff !important;
+  border-radius: 50% !important;
+  font-size: 0.82rem !important;
   font-weight: 800 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 }
-.sms-otp-step-text {
-  font-size: 1.05rem !important;
+.sms-step-title {
+  font-size: 1rem !important;
   font-weight: 800 !important;
   color: #ffffff !important;
 }
-.sms-otp-badge-count {
-  margin-left: auto !important;
+.sms-step-count {
   font-size: 0.8rem !important;
-  font-weight: 700 !important;
-  color: #10b981 !important;
-  background: rgba(16, 185, 129, 0.12) !important;
-  padding: 3px 10px !important;
-  border-radius: 20px !important;
+  font-weight: 600 !important;
+  color: #64748b !important;
 }
 
-/* SEARCHABLE DROPDOWN */
-.sms-otp-dropdown-wrap {
+.sms-step-right-action {
+  width: 360px !important;
+  max-width: 100% !important;
   position: relative !important;
 }
+
+.sms-step-divider {
+  height: 1px !important;
+  background: #1e293b !important;
+  margin: 16px 0 !important;
+}
+
+/* DROPDOWN TRIGGER (CHUẨN HÌNH 4) */
 .sms-otp-dropdown-trigger {
   background: #111b2e !important;
   border: 1px solid #233554 !important;
   border-radius: 10px !important;
-  padding: 13px 16px !important;
+  padding: 10px 14px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -3744,9 +3790,12 @@ header.header {
 .sms-otp-selected-view {
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
-  font-size: 0.95rem !important;
+  gap: 8px !important;
+  font-size: 0.92rem !important;
   font-weight: 600 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
 }
 .sms-otp-dropdown-menu {
   position: absolute !important;
@@ -3810,37 +3859,42 @@ header.header {
   font-size: 0.95rem !important;
 }
 
-/* MODE PILLS */
-.sms-otp-mode-pills {
-  display: flex !important;
-  gap: 10px !important;
-}
-.sms-otp-mode-pill {
-  flex: 1 !important;
+/* CAPSULE MODE PILLS (CHUẨN HÌNH 4) */
+.sms-mode-pills-capsule {
   background: #111b2e !important;
   border: 1px solid #233554 !important;
-  color: #94a3b8 !important;
   border-radius: 8px !important;
-  padding: 11px 16px !important;
-  font-size: 0.9rem !important;
+  padding: 3px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+.sms-capsule-btn {
+  flex: 1 !important;
+  background: transparent !important;
+  border: none !important;
+  color: #94a3b8 !important;
+  border-radius: 6px !important;
+  padding: 8px 14px !important;
+  font-size: 0.85rem !important;
   font-weight: 700 !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 8px !important;
+  gap: 6px !important;
   transition: all 0.2s ease !important;
+  white-space: nowrap !important;
 }
-.sms-otp-mode-pill.active {
-  background: #00b87c !important;
-  color: #04140e !important;
-  border-color: #00b87c !important;
-  box-shadow: 0 4px 15px rgba(0, 184, 124, 0.3) !important;
+.sms-capsule-btn.active {
+  background: #1e2e45 !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
 }
-.sms-otp-mode-desc {
-  font-size: 0.85rem !important;
+.sms-mode-desc-text {
+  font-size: 0.82rem !important;
   color: #64748b !important;
-  margin-top: 10px !important;
+  margin-top: 14px !important;
   line-height: 1.5 !important;
 }
 
@@ -3862,74 +3916,121 @@ header.header {
   border-color: #00b87c !important;
 }
 
-/* TIPS TOGGLE BUTTON & BOX (IMAGE 3) */
-.sms-otp-tips-header-row {
+/* 5. WAITING SECTION: SỐ ĐANG CHỜ TIN NHẮN (CHUẨN HÌNH 4 & HÌNH 3) */
+.sms-waiting-header-row {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   margin-top: 24px !important;
-  padding-bottom: 6px !important;
+  padding-bottom: 8px !important;
 }
-.sms-btn-tips-toggle {
-  background: rgba(245, 158, 11, 0.12) !important;
-  border: 1px solid rgba(245, 158, 11, 0.35) !important;
-  color: #f59e0b !important;
+.sms-waiting-title-wrap {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+.sms-waiting-title {
+  font-size: 1.1rem !important;
+  font-weight: 900 !important;
+  color: #10b981 !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
+}
+.sms-waiting-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+.sms-view-toggles {
+  display: flex !important;
+  background: #111b2e !important;
+  border: 1px solid #233554 !important;
   border-radius: 8px !important;
-  padding: 7px 14px !important;
+  overflow: hidden !important;
+}
+.sms-view-toggle-btn {
+  background: transparent !important;
+  border: none !important;
+  color: #64748b !important;
+  padding: 6px 10px !important;
   font-size: 0.85rem !important;
+  cursor: pointer !important;
+}
+.sms-view-toggle-btn.active {
+  background: #1e2e45 !important;
+  color: #ffffff !important;
+}
+
+/* NÚT LƯU Ý KHI THUÊ SỐ (CHUẨN HÌNH 3 & 4) */
+.sms-btn-tips-pill {
+  background: rgba(245, 158, 11, 0.12) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  color: #f59e0b !important;
+  border-radius: 20px !important;
+  padding: 6px 14px !important;
+  font-size: 0.84rem !important;
   font-weight: 800 !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: 6px !important;
   transition: all 0.2s ease !important;
 }
-.sms-btn-tips-toggle:hover {
+.sms-btn-tips-pill:hover {
   background: rgba(245, 158, 11, 0.2) !important;
   color: #fbbf24 !important;
 }
-.sms-otp-tips-box-styled {
+
+/* HỘP LƯU Ý 5 MỤC (CHUẨN HÌNH 3: 2 CỘT NỀN KEM VIỀN CAM) */
+.sms-tips-box-h3 {
   background: #fffdf5 !important;
   border: 1px solid #fed7aa !important;
-  border-radius: 12px !important;
-  padding: 16px 18px !important;
-  margin-top: 12px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 12px !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 14px !important;
+  padding: 18px 20px !important;
+  margin-top: 10px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12) !important;
 }
-.sms-tip-item {
+.sms-tips-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 14px 24px !important;
+}
+@media (max-width: 800px) {
+  .sms-tips-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+.sms-tip-cell {
   display: flex !important;
   align-items: flex-start !important;
   gap: 10px !important;
 }
-.sms-tip-num {
-  width: 20px !important;
-  height: 20px !important;
-  min-width: 20px !important;
+.sms-tip-sq {
+  width: 22px !important;
+  height: 22px !important;
+  min-width: 22px !important;
   background: #f97316 !important;
   color: #ffffff !important;
-  border-radius: 50% !important;
-  font-size: 0.72rem !important;
+  border-radius: 6px !important;
+  font-size: 0.75rem !important;
   font-weight: 800 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  margin-top: 2px !important;
+  margin-top: 1px !important;
 }
-.sms-tip-text {
-  font-size: 0.88rem !important;
+.sms-tip-p {
+  font-size: 0.86rem !important;
   color: #451a03 !important;
   line-height: 1.5 !important;
   margin: 0 !important;
 }
-.sms-tip-text strong {
+.sms-tip-p strong {
   color: #7c2d12 !important;
   font-weight: 800 !important;
 }
 
-/* WAITING DESC TEXT */
+/* CAPTION TEXT */
 .sms-otp-waiting-desc {
   font-size: 0.84rem !important;
   color: #64748b !important;
@@ -3940,41 +4041,41 @@ header.header {
   color: #00b87c !important;
 }
 
-/* EMPTY STATE (IMAGE 4) */
+/* 6. EMPTY STATE (CHUẨN HÌNH 4: VIỀN ĐỨT ICON SIM Ở GIỮA) */
 .sms-otp-empty-state {
   background: #0c1424 !important;
-  border: 2px dashed rgba(16, 185, 129, 0.25) !important;
+  border: 1px dashed rgba(16, 185, 129, 0.25) !important;
   border-radius: 14px !important;
-  padding: 48px 24px !important;
+  padding: 44px 20px !important;
   text-align: center !important;
   margin-top: 14px !important;
   box-sizing: border-box !important;
 }
 .sms-otp-empty-icon {
-  width: 56px !important;
-  height: 56px !important;
+  width: 52px !important;
+  height: 52px !important;
   background: rgba(16, 185, 129, 0.1) !important;
   color: #10b981 !important;
   border-radius: 12px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: 1.8rem !important;
-  margin: 0 auto 16px !important;
+  font-size: 1.6rem !important;
+  margin: 0 auto 14px !important;
 }
 .sms-otp-empty-title {
-  font-size: 1.25rem !important;
+  font-size: 1.2rem !important;
   font-weight: 800 !important;
   color: #ffffff !important;
   margin: 0 0 6px 0 !important;
 }
 .sms-otp-empty-sub {
-  font-size: 0.92rem !important;
+  font-size: 0.9rem !important;
   color: #64748b !important;
   margin: 0 !important;
 }
 
-/* RENTAL CARDS (IMAGE 1) */
+/* 7. RENTAL CARDS (CHUẨN HÌNH 1: THẺ SỐ CỜ VN, CODE TO RÕ) */
 .sms-rental-grid {
   display: grid !important;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
@@ -4142,7 +4243,7 @@ header.header {
   gap: 6px !important;
 }
 
-/* ORDER SUMMARY CARD (RIGHT) */
+/* 8. ORDER SUMMARY CARD (CHUẨN HÌNH 4: COUPON TICKET XANH NGỌC) */
 .sms-otp-summary-card {
   background: #0c1424 !important;
   border: 1px solid #1e293b !important;
@@ -4156,10 +4257,11 @@ header.header {
   top: 90px !important;
 }
 .sms-otp-summary-title {
-  font-size: 1rem !important;
-  font-weight: 800 !important;
-  color: #ffffff !important;
-  letter-spacing: 1px !important;
+  font-size: 0.95rem !important;
+  font-weight: 900 !important;
+  color: #10b981 !important;
+  letter-spacing: 0.8px !important;
+  text-transform: uppercase !important;
   margin: 0 !important;
 }
 .sms-otp-summary-service {
@@ -4171,7 +4273,7 @@ header.header {
 .sms-otp-summary-divider {
   height: 1px !important;
   background: #1e293b !important;
-  margin: 4px 0 !important;
+  margin: 2px 0 !important;
 }
 .sms-otp-summary-details {
   display: flex !important;
@@ -4203,35 +4305,35 @@ header.header {
   justify-content: space-between !important;
 }
 .sms-price-key {
-  font-size: 0.95rem !important;
+  font-size: 0.92rem !important;
   font-weight: 700 !important;
   color: #94a3b8 !important;
 }
 .sms-price-val {
-  font-size: 1.55rem !important;
+  font-size: 1.6rem !important;
   font-weight: 900 !important;
   color: #00b87c !important;
 }
 .sms-otp-rent-btn {
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
-  color: #ffffff !important;
+  background: #00b87c !important;
+  color: #04140e !important;
   border: none !important;
   border-radius: 10px !important;
   padding: 14px 20px !important;
-  font-size: 1.05rem !important;
-  font-weight: 800 !important;
+  font-size: 1rem !important;
+  font-weight: 900 !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 10px !important;
+  gap: 8px !important;
   transition: all 0.2s ease !important;
-  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.4) !important;
+  box-shadow: 0 4px 15px rgba(0, 184, 124, 0.35) !important;
 }
 .sms-otp-rent-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 25px rgba(234, 88, 12, 0.5) !important;
+  background: #05d691 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 20px rgba(0, 184, 124, 0.5) !important;
 }
 .sms-otp-rent-btn:disabled {
   opacity: 0.55 !important;
@@ -4286,6 +4388,13 @@ header.header {
     width: auto !important;
     flex: 1 !important;
     min-width: 120px !important;
+  }
+  .sms-step-flex-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .sms-step-right-action {
+    width: 100% !important;
   }
 }
 
@@ -6019,7 +6128,7 @@ header.header {
   <!-- ==================== VIEW: TRANG CÔNG CỤ MMO (DEDICATED TOOLS PAGE) ==================== -->
 
   <!-- ==================== VIEW SMS OTP: THUÊ SỐ NHẬN MÃ OTP (VIOTP) ==================== -->
-    <section class='container sms-otp-container' id='viewSmsOtp' style='display:none !important; max-width:1440px; margin:0 auto; padding:15px 15px 40px;'>
+      <section class='container sms-otp-container' id='viewSmsOtp' style='display:none !important;'>
     <div class='sms-otp-wrapper'>
       
       <!-- CỘT TRÁI: THANH BÊN (SIDEBAR VIOTP) CHUẨN HÌNH 1, 2, 4 -->
@@ -6034,7 +6143,7 @@ header.header {
           <span class='sms-side-balance-label'>SỐ DƯ</span>
           <div class='sms-side-balance' id='smsSidebarBalance'>0 đ</div>
           <button type='button' class='btn-sms-side-deposit' onclick='if(typeof openDepositModal === &quot;function&quot;) openDepositModal(); else switchView(&quot;viewDeposit&quot;);'>
-            <i class='fa-solid fa-money-bill-transfer'></i> Nạp tiền
+            <i class='fa-solid fa-wallet'></i> Nạp tiền
           </button>
         </div>
 
@@ -6047,7 +6156,7 @@ header.header {
           </button>
           <!-- BỎ CÁI +12% CHỈ Ở PHẦN NÀY THEO LỆNH NGƯỜI DÙNG -->
           <button type='button' class='sms-side-nav-btn' onclick='if(typeof openDepositModal === &quot;function&quot;) openDepositModal(); else switchView(&quot;viewDeposit&quot;);'>
-            <i class='fa-solid fa-wallet'></i>
+            <i class='fa-solid fa-money-bill'></i>
             <span>Nạp tiền</span>
           </button>
           <button type='button' class='sms-side-nav-btn' onclick='scrollToSmsRentals()'>
@@ -6087,13 +6196,13 @@ header.header {
           <button type='button' class='sms-otp-alert-close' onclick='document.getElementById(&quot;smsOtpAlert&quot;).style.display=&quot;none&quot;'>✕</button>
         </div>
 
-        <!-- Section Header Row -->
+        <!-- Section Header Row: THUÊ SỐ NHẬN OTP (CHUẨN HÌNH 4) -->
         <div class='sms-otp-header-row'>
           <div class='sms-otp-title-wrap'>
-            <span class='sms-otp-dash'>—</span>
-            <h1 class='sms-otp-title'>THUÊ SỐ NHẬN OTP</h1>
+            <span class='sms-otp-orange-dash'>—</span>
+            <h1 class='sms-otp-main-title'>THUÊ SỐ NHẬN OTP</h1>
           </div>
-          <button type='button' class='sms-otp-price-btn' onclick='openSmsOtpPriceModal()'>
+          <button type='button' class='sms-otp-price-pill-btn' onclick='openSmsOtpPriceModal()'>
             Xem bảng giá <i class='fa-solid fa-arrow-right'></i>
           </button>
         </div>
@@ -6102,16 +6211,16 @@ header.header {
         <div class='sms-otp-main-grid'>
           <!-- Left Column: Selection &amp; Numbers List -->
           <div class='sms-otp-left-col'>
-            <!-- Step Selection Card -->
+            <!-- Step Selection Card (CHUẨN HÌNH 4: HÀNG NGANG) -->
             <div class='sms-otp-card'>
               <!-- Step 1: Dịch vụ -->
-              <div class='sms-otp-step-row'>
-                <div class='sms-otp-step-label'>
-                  <span class='sms-otp-badge-num'>1</span>
-                  <span class='sms-otp-step-text'>Dịch vụ</span>
-                  <span class='sms-otp-badge-count' id='smsOtpServiceCount'>984 dịch vụ</span>
+              <div class='sms-step-flex-row'>
+                <div class='sms-step-left-label'>
+                  <span class='sms-step-badge-num'>1</span>
+                  <span class='sms-step-title'>Dịch vụ</span>
+                  <span class='sms-step-count' id='smsOtpServiceCount'>984 dịch vụ</span>
                 </div>
-                <div class='sms-otp-dropdown-wrap'>
+                <div class='sms-step-right-action'>
                   <div class='sms-otp-dropdown-trigger' id='smsOtpServiceTrigger' onclick='toggleSmsOtpDropdown()'>
                     <div class='sms-otp-selected-view' id='smsOtpSelectedView'>
                       <i class='fa-solid fa-magnifying-glass' style='color:#64748b; margin-right:8px;'></i>
@@ -6133,29 +6242,33 @@ header.header {
                 </div>
               </div>
 
+              <div class='sms-step-divider'></div>
+
               <!-- Step 2: Cách chọn số -->
-              <div class='sms-otp-step-row' style='margin-top:24px;'>
-                <div class='sms-otp-step-label'>
-                  <span class='sms-otp-badge-num'>2</span>
-                  <span class='sms-otp-step-text'>Cách chọn số</span>
+              <div class='sms-step-flex-row'>
+                <div class='sms-step-left-label'>
+                  <span class='sms-step-badge-num'>2</span>
+                  <span class='sms-step-title'>Cách chọn số</span>
                 </div>
-                <div class='sms-otp-mode-pills'>
-                  <button type='button' class='sms-otp-mode-pill active' id='smsModeQuick' onclick='setSmsOtpMode(&quot;quick&quot;)'>
-                    <i class='fa-solid fa-bolt' style='color:#fbbf24; margin-right:6px;'></i> Thuê nhanh
-                  </button>
-                  <button type='button' class='sms-otp-mode-pill' id='smsModeCustom' onclick='setSmsOtpMode(&quot;custom&quot;)'>
-                    <i class='fa-solid fa-sliders' style='color:#38bdf8; margin-right:6px;'></i> Tùy chọn nhà mạng
-                  </button>
+                <div class='sms-step-right-action'>
+                  <div class='sms-mode-pills-capsule'>
+                    <button type='button' class='sms-capsule-btn active' id='smsModeQuick' onclick='setSmsOtpMode(&quot;quick&quot;)'>
+                      <i class='fa-solid fa-bolt' style='color:#f59e0b;'></i> Thuê nhanh
+                    </button>
+                    <button type='button' class='sms-capsule-btn' id='smsModeCustom' onclick='setSmsOtpMode(&quot;custom&quot;)'>
+                      <i class='fa-solid fa-sliders'></i> Tùy chọn nhà mạng
+                    </button>
+                  </div>
                 </div>
               </div>
 
               <!-- Quick Mode Note -->
-              <div class='sms-otp-mode-desc' id='smsOtpQuickDesc'>
+              <div class='sms-mode-desc-text' id='smsOtpQuickDesc'>
                 Hệ thống chọn ngẫu nhiên một số khả dụng thuộc mọi nhà mạng — nhanh nhất để nhận mã.
               </div>
 
               <!-- Custom Mode Options -->
-              <div class='sms-otp-custom-options' id='smsOtpCustomOptions' style='display:none;'>
+              <div class='sms-otp-custom-options' id='smsOtpCustomOptions' style='display:none; margin-top:14px;'>
                 <!-- Row: Nhà Mạng -->
                 <div class='sms-otp-filter-row'>
                   <span class='sms-otp-filter-label' style='font-size:0.75rem; font-weight:800; color:#64748b; letter-spacing:0.8px; margin-bottom:8px; display:block;'>NHÀ MẠNG</span>
@@ -6202,40 +6315,53 @@ header.header {
               </div>
             </div>
 
-            <!-- Waiting Numbers Section (DANH SÁCH SỐ ĐANG CHỜ &amp; LỊCH SỬ) -->
+            <!-- Waiting Numbers Section: SỐ ĐANG CHỜ TIN NHẮN (CHUẨN HÌNH 4) -->
             <div class='sms-otp-waiting-section' id='smsOtpWaitingSection'>
-              <div class='sms-otp-tips-header-row'>
-                <div style='display:flex; align-items:center; gap:8px;'>
-                  <span style='font-size:1.1rem; font-weight:800; color:#ffffff;'>Danh sách số đang chờ tin nhắn</span>
+              <div class='sms-waiting-header-row'>
+                <div class='sms-waiting-title-wrap'>
+                  <span class='sms-otp-orange-dash'>—</span>
+                  <span class='sms-waiting-title'>SỐ ĐANG CHỜ TIN NHẮN</span>
                 </div>
-                <!-- Tips Toggle Button (Chuẩn Hình 3) -->
-                <button type='button' class='sms-btn-tips-toggle' onclick='toggleSmsTips()'>
-                  <i class='fa-solid fa-triangle-exclamation'></i> Lưu ý khi thuê số
-                  <i class='fa-solid fa-chevron-down' id='smsTipsChevron' style='font-size:0.75rem; margin-left:4px;'></i>
-                </button>
+                <div class='sms-waiting-actions'>
+                  <div class='sms-view-toggles'>
+                    <button type='button' class='sms-view-toggle-btn active' id='smsViewGridBtn' onclick='setSmsListView(&quot;grid&quot;)'>
+                      <i class='fa-solid fa-table-cells-large'></i>
+                    </button>
+                    <button type='button' class='sms-view-toggle-btn' id='smsViewListBtn' onclick='setSmsListView(&quot;list&quot;)'>
+                      <i class='fa-solid fa-list-ul'></i>
+                    </button>
+                  </div>
+                  <!-- Tips Pill Button (Chuẩn Hình 4 &amp; Hình 3) -->
+                  <button type='button' class='sms-btn-tips-pill' onclick='toggleSmsTips()'>
+                    <i class='fa-solid fa-triangle-exclamation'></i> Lưu ý khi thuê số
+                    <i class='fa-solid fa-chevron-down' id='smsTipsChevron' style='font-size:0.75rem; margin-left:3px;'></i>
+                  </button>
+                </div>
               </div>
 
-              <!-- Tips Dropdown Content (Chuẩn Hình 3: 5 mục lưu ý) -->
-              <div class='sms-otp-tips-box-styled' id='smsOtpTipsBox' style='display:none;'>
-                <div class='sms-tip-item'>
-                  <span class='sms-tip-num'>1</span>
-                  <p class='sms-tip-text'>Cần thuê lại sim (chỉ lấy được trong 15–30 phút và khi sim còn khả dụng)? Bấm <strong>Thuê lại</strong> trên thẻ số ở trang Thuê số hoặc Lịch sử.</p>
-                </div>
-                <div class='sms-tip-item'>
-                  <span class='sms-tip-num'>2</span>
-                  <p class='sms-tip-text'>Số không nhận được code sẽ tự động hoàn số dư khi hết hạn, sau 4–7 phút (đồng hồ trên thẻ số đếm đúng tới lúc hoàn).</p>
-                </div>
-                <div class='sms-tip-item'>
-                  <span class='sms-tip-num'>3</span>
-                  <p class='sms-tip-text'>Gmail, Facebook, Zalo... sau 2–3 tài khoản sẽ kiểm tra IP và không gửi mã. Hãy reset IP Internet (không phải IP máy tính).</p>
-                </div>
-                <div class='sms-tip-item'>
-                  <span class='sms-tip-num'>4</span>
-                  <p class='sms-tip-text'>Shopee: kiểm tra số đã đăng ký tài khoản chưa trước khi lấy code. Hiện Shopee rất khó, cân nhắc khi sử dụng.</p>
-                </div>
-                <div class='sms-tip-item'>
-                  <span class='sms-tip-num'>5</span>
-                  <p class='sms-tip-text'>Telegram: vào Contact &gt; Add contact với số vừa thuê. Nếu thêm không thành công là số đó chưa được sử dụng.</p>
+              <!-- Hộp Lưu Ý Khi Thuê Số (Chuẩn Hình 3: 5 mục 2 cột, Mặc định đóng) -->
+              <div class='sms-tips-box-h3' id='smsOtpTipsBox' style='display:none !important;'>
+                <div class='sms-tips-grid'>
+                  <div class='sms-tip-cell'>
+                    <span class='sms-tip-sq'>1</span>
+                    <p class='sms-tip-p'>Cần thuê lại sim (chỉ lấy được trong 15–30 phút và khi sim còn khả dụng)? Bấm <strong>Thuê lại</strong> trên thẻ số ở trang Thuê số hoặc Lịch sử.</p>
+                  </div>
+                  <div class='sms-tip-cell'>
+                    <span class='sms-tip-sq'>2</span>
+                    <p class='sms-tip-p'>Số không nhận được code sẽ tự động hoàn số dư khi hết hạn, sau 4–7 phút (đồng hồ trên thẻ số đếm đúng tới lúc hoàn).</p>
+                  </div>
+                  <div class='sms-tip-cell'>
+                    <span class='sms-tip-sq'>3</span>
+                    <p class='sms-tip-p'>Gmail, Facebook, Zalo... sau 2–3 tài khoản sẽ kiểm tra IP và không gửi mã. Hãy reset IP Internet (không phải IP máy tính).</p>
+                  </div>
+                  <div class='sms-tip-cell'>
+                    <span class='sms-tip-sq'>4</span>
+                    <p class='sms-tip-p'>Shopee: kiểm tra số đã đăng ký tài khoản chưa trước khi lấy code. Hiện Shopee rất khó, cân nhắc khi sử dụng.</p>
+                  </div>
+                  <div class='sms-tip-cell'>
+                    <span class='sms-tip-sq'>5</span>
+                    <p class='sms-tip-p'>Telegram: vào Contact &gt; Add contact với số vừa thuê. Nếu thêm không thành công là số đó chưa được sử dụng.</p>
+                  </div>
                 </div>
               </div>
 
@@ -6256,14 +6382,14 @@ header.header {
             </div>
           </div>
 
-          <!-- Right Column: Order Summary Card (ĐƠN THUÊ CỦA BẠN) -->
+          <!-- Right Column: Order Summary Card (ĐƠN THUÊ CỦA BẠN - CHUẨN HÌNH 4) -->
           <div class='sms-otp-right-col'>
             <div class='sms-otp-summary-card'>
               <h3 class='sms-otp-summary-title'>ĐƠN THUÊ CỦA BẠN</h3>
 
               <!-- Selected Service Overview -->
               <div class='sms-otp-summary-service' id='smsOtpSummaryServiceBox'>
-                <span style='color:#94a3b8; font-size:0.9rem;'>Chưa chọn dịch vụ — chọn một dịch vụ ở bước 1.</span>
+                <span style='color:#94a3b8; font-size:0.88rem;'>Chưa chọn dịch vụ — chọn một dịch vụ ở bước 1.</span>
               </div>
 
               <div class='sms-otp-summary-divider'></div>
@@ -6310,7 +6436,7 @@ header.header {
 
               <!-- Box Yêu Cầu Dịch Vụ Mới -->
               <div class='sms-otp-request-box' onclick='openRequestServiceModal()'>
-                <i class='fa-solid fa-circle-question' style='font-size:1.1rem; margin-right:8px;'></i>
+                <i class='fa-solid fa-circle-question' style='font-size:1.05rem; margin-right:8px;'></i>
                 <span>Không thấy dịch vụ bạn cần? Yêu cầu thêm dịch vụ mới</span>
               </div>
             </div>
