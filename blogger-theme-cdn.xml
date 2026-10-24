@@ -3630,6 +3630,7 @@ header.header {
 
 /* ALERT BANNER */
 .sms-otp-alert {
+  display: none !important;
   background: #0d1a16 !important;
   border: 1px solid #144b36 !important;
   border-radius: 12px !important;
@@ -6135,7 +6136,7 @@ header.header {
       <aside class='sms-otp-sidebar'>
         <div class='sms-side-brand'>
           <div class='sms-side-brand-icon'><i class='fa-solid fa-sim-card'></i></div>
-          <div class='sms-side-brand-name'>ViOTP</div>
+          <div class='sms-side-brand-name'>SMS OTP</div>
         </div>
 
         <!-- THẺ SỐ DƯ TÀI KHOẢN -->
@@ -6188,7 +6189,7 @@ header.header {
       <!-- KHU VỰC NỘI DUNG CHÍNH (MAIN CONTENT) -->
       <div class='sms-otp-main-content'>
         <!-- Top Announcement Alert -->
-        <div class='sms-otp-alert' id='smsOtpAlert'>
+        <div class='sms-otp-alert' id='smsOtpAlert' style='display:none !important;'>
           <div class='sms-otp-alert-content'>
             <i class='fa-solid fa-bullhorn' style='color:#10b981; font-size:1.1rem; margin-right:8px;'></i>
             <span>Cập nhật thêm sim quốc gia Lào, chúc một ngày vui vẻ !!</span>

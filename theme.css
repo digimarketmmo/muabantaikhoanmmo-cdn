@@ -6605,6 +6605,7 @@ body.is-admin #profAdminShortcutBtn {
 
 /* Alert Banner */
 .sms-otp-alert {
+  display: none !important;
   background: rgba(16, 185, 129, 0.08);
   border: 1px solid rgba(16, 185, 129, 0.25);
   border-radius: 10px;
