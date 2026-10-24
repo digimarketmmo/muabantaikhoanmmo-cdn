@@ -7847,10 +7847,14 @@ body.is-admin #profAdminShortcutBtn {
   margin-top: 2px !important;
 }
 .sms-badge-status {
-  padding: 4px 14px !important;
+  padding: 4px 12px !important;
   border-radius: 20px !important;
   font-size: 0.8rem !important;
   font-weight: 700 !important;
+  white-space: nowrap !important;
+  display: inline-block !important;
+  text-align: center !important;
+  line-height: 1.2 !important;
 }
 .sms-badge-status.success {
   background: #d1fae5 !important;

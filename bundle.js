@@ -54834,11 +54834,11 @@ async function initSmsOtpView() {
 
       var statusBadge = '';
       if (isDone) {
-        statusBadge = '<span class="sms-badge-status success">Hoàn thành</span>';
+        statusBadge = '<span class="sms-badge-status success" style="white-space:nowrap !important; display:inline-block !important;">Hoàn thành</span>';
       } else if (isExpired) {
-        statusBadge = '<span class="sms-badge-status expired">Hết hạn</span>';
+        statusBadge = '<span class="sms-badge-status expired" style="white-space:nowrap !important; display:inline-block !important;">Hết hạn</span>';
       } else {
-        statusBadge = '<span class="sms-badge-status waiting"><i class="fa-solid fa-spinner fa-spin"></i> Đang chờ...</span>';
+        statusBadge = '<span class="sms-badge-status waiting" style="white-space:nowrap !important; display:inline-block !important;"><i class="fa-solid fa-spinner fa-spin"></i> Đang chờ...</span>';
       }
 
       var icon = getSmsServiceIcon(r.serviceName || '');
@@ -55067,12 +55067,12 @@ async function initSmsOtpView() {
           '<table class="sms-hist-table">' +
             '<thead>' +
               '<tr>' +
-                '<th style="width:18%;">Dịch vụ</th>' +
-                '<th style="width:22%;">Số điện thoại</th>' +
-                '<th style="width:18%;">Mã OTP</th>' +
-                '<th style="width:22%;">Tin nhắn</th>' +
+                '<th style="width:16%;">Dịch vụ</th>' +
+                '<th style="width:20%;">Số điện thoại</th>' +
+                '<th style="width:16%;">Mã OTP</th>' +
+                '<th style="width:24%;">Tin nhắn</th>' +
                 '<th style="width:12%;">Thời gian</th>' +
-                '<th style="width:8%; text-align:center;">Trạng thái</th>' +
+                '<th style="width:12%; text-align:center; white-space:nowrap;">Trạng thái</th>' +
               '</tr>' +
             '</thead>' +
             '<tbody>';
@@ -55084,8 +55084,8 @@ async function initSmsOtpView() {
         var isExpired = (r.status === 2 || r.refunded === 1);
 
         var stBadge = isDone
-          ? '<span class="sms-badge-status success" style="padding:4px 8px; font-size:11px;">Hoàn thành</span>'
-          : '<span class="sms-badge-status expired" style="padding:4px 8px; font-size:11px;">Hết hạn</span>';
+          ? '<span class="sms-badge-status success" style="padding:4px 10px; font-size:11px; white-space:nowrap !important; display:inline-block !important;">Hoàn thành</span>'
+          : '<span class="sms-badge-status expired" style="padding:4px 10px; font-size:11px; white-space:nowrap !important; display:inline-block !important;">Hết hạn</span>';
 
         var priceDisp = (r.price !== undefined) ? Number(r.price).toLocaleString('vi-VN') + 'đ' : '';
         var icon = getSmsServiceIcon(r.serviceName || '');
@@ -55148,7 +55148,7 @@ smsCol = '<div class="sms-hist-msg-text" title="' + cleanHMsg.replace(/"/g, '&qu
           '<td>' + codeCol + '</td>' +
           '<td>' + smsCol + '</td>' +
           '<td style="font-size:12px; color:#94a3b8;">' + timeCol + '</td>' +
-          '<td style="text-align:center;">' + stBadge + '</td>' +
+          '<td style="text-align:center; white-space:nowrap;">' + stBadge + '</td>' +
         '</tr>';
       });
 
