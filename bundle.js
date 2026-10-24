@@ -38115,148 +38115,222 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     }
 
     // ==========================================
-    // TOOL 4: FAKE NAME (FULL INFO PERSONA, ACCURATE GEO ADDRESS & ZIP CODE)
+    // TOOL 4: FAKE NAME (FULL INFO PERSONA, ACCURATE GEO ADDRESS & ZIP CODE - PHIÊN BẢN 2026 CÓ CCCD)
     // ==========================================
     var fakeDataDictionary = {
       VN: {
-        lastNames: ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Huỳnh", "Phan", "Vũ", "Võ", "Đặng", "Bùi", "Đỗ", "Hồ", "Ngô", "Dương", "Lý"],
-        middleNamesMale: ["Văn", "Đức", "Minh", "Hữu", "Gia", "Đình", "Quốc", "Thành", "Quang", "Tiến", "Ngọc", "Bảo", "Trọng", "Duy", "Anh", "Hoàng"],
-        firstNamesMale: ["Anh", "Tuấn", "Nam", "Duy", "Hải", "Long", "Bảo", "Khánh", "Huy", "Phúc", "Thịnh", "Khoa", "Đạt", "Quân", "Phong", "Kiên", "Hùng", "Thắng", "Toàn", "Sơn", "Tùng", "Lâm", "Dũng", "Hoàng"],
-        middleNamesFemale: ["Thị", "Ngọc", "Thu", "Mai", "Phương", "Kim", "Thanh", "Quỳnh", "Thảo", "Hà", "Ánh", "Linh", "Bích", "Diệu", "Khánh", "Mỹ"],
-        firstNamesFemale: ["Anh", "Linh", "Trang", "Hương", "Lan", "Hà", "Yến", "Thảo", "Nhi", "Vy", "Ngân", "Trâm", "Phương", "Giang", "Hằng", "Châu", "Thư", "Dung", "Mai", "Oanh"],
+        lastNames: ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Huỳnh", "Phan", "Vũ", "Võ", "Đặng", "Bùi", "Đỗ", "Hồ", "Ngô", "Dương", "Lý", "Đinh", "Đào", "Đoàn", "Lâm"],
+        middleNamesMale: ["Văn", "Đức", "Minh", "Hữu", "Gia", "Đình", "Quốc", "Thành", "Quang", "Tiến", "Ngọc", "Bảo", "Trọng", "Duy", "Anh", "Hoàng", "Công", "Khắc", "Hải", "Tuấn"],
+        firstNamesMale: ["Anh", "Tuấn", "Nam", "Duy", "Hải", "Long", "Bảo", "Khánh", "Huy", "Phúc", "Thịnh", "Khoa", "Đạt", "Quân", "Phong", "Kiên", "Hùng", "Thắng", "Toàn", "Sơn", "Tùng", "Lâm", "Dũng", "Hoàng", "Việt", "Bách", "Nghĩa", "Triết"],
+        middleNamesFemale: ["Thị", "Ngọc", "Thu", "Mai", "Phương", "Kim", "Thanh", "Quỳnh", "Thảo", "Hà", "Ánh", "Linh", "Bích", "Diệu", "Khánh", "Mỹ", "Hồng", "Tuyết", "Bảo", "Như"],
+        firstNamesFemale: ["Anh", "Linh", "Trang", "Hương", "Lan", "Hà", "Yến", "Thảo", "Nhi", "Vy", "Ngân", "Trâm", "Phương", "Giang", "Hằng", "Châu", "Thư", "Dung", "Mai", "Oanh", "Ngọc", "Trinh", "Huyền", "Ly", "Quỳnh", "Chi"],
         cities: [
           {
             city: "Hà Nội",
-            province: "Hà Nội",
+            province: "TP. Hà Nội",
+            provinceCode: "001",
             zip: "100000",
             locations: [
-              { street: "Cầu Giấy", ward: "Phường Dịch Vọng", district: "Quận Cầu Giấy" },
               { street: "Xuân Thủy", ward: "Phường Dịch Vọng Hậu", district: "Quận Cầu Giấy" },
+              { street: "Cầu Giấy", ward: "Phường Dịch Vọng", district: "Quận Cầu Giấy" },
               { street: "Trần Duy Hưng", ward: "Phường Trung Hòa", district: "Quận Cầu Giấy" },
+              { street: "Nguyễn Khánh Toàn", ward: "Phường Quan Hoa", district: "Quận Cầu Giấy" },
               { street: "Kim Mã", ward: "Phường Kim Mã", district: "Quận Ba Đình" },
+              { street: "Liễu Giai", ward: "Phường Liễu Giai", district: "Quận Ba Đình" },
               { street: "Đội Cấn", ward: "Phường Đội Cấn", district: "Quận Ba Đình" },
               { street: "Phố Huế", ward: "Phường Hàng Bài", district: "Quận Hoàn Kiếm" },
-              { street: "Tràng Thi", ward: "Phường Hàng Trống", district: "Quận Hoàn Kiếm" },
+              { street: "Tràng Tiền", ward: "Phường Tràng Tiền", district: "Quận Hoàn Kiếm" },
+              { street: "Hai Bà Trưng", ward: "Phường Cửa Nam", district: "Quận Hoàn Kiếm" },
               { street: "Nguyễn Trãi", ward: "Phường Thanh Xuân Bắc", district: "Quận Thanh Xuân" },
+              { street: "Lê Văn Lương", ward: "Phường Nhân Chính", district: "Quận Thanh Xuân" },
+              { street: "Xã Đàn", ward: "Phường Nam Đồng", district: "Quận Đống Đa" },
+              { street: "Ô Chợ Dừa", ward: "Phường Ô Chợ Dừa", district: "Quận Đống Đa" },
+              { street: "Huỳnh Thúc Kháng", ward: "Phường Láng Hạ", district: "Quận Đống Đa" },
               { street: "Giải Phóng", ward: "Phường Đồng Tâm", district: "Quận Hai Bà Trưng" },
-              { street: "Xã Đàn", ward: "Phường Nam Đồng", district: "Quận Đống Đa" }
+              { street: "Lê Đức Thọ", ward: "Phường Mỹ Đình 1", district: "Quận Nam Từ Liêm" },
+              { street: "Phạm Hùng", ward: "Phường Mỹ Đình 2", district: "Quận Nam Từ Liêm" },
+              { street: "Trần Phú", ward: "Phường Mộ Lao", district: "Quận Hà Đông" },
+              { street: "Quang Trung", ward: "Phường Quang Trung", district: "Quận Hà Đông" }
             ]
           },
           {
             city: "TP. Hồ Chí Minh",
             province: "TP. Hồ Chí Minh",
+            provinceCode: "079",
             zip: "700000",
             locations: [
               { street: "Nguyễn Huệ", ward: "Phường Bến Nghé", district: "Quận 1" },
+              { street: "Đồng Khởi", ward: "Phường Bến Nghé", district: "Quận 1" },
               { street: "Lê Lợi", ward: "Phường Bến Thành", district: "Quận 1" },
-              { street: "Cách Mạng Tháng 8", ward: "Phường 11", district: "Quận 3" },
+              { street: "Đinh Tiên Hoàng", ward: "Phường Đa Kao", district: "Quận 1" },
+              { street: "Võ Thị Sáu", ward: "Phường Võ Thị Sáu", district: "Quận 3" },
               { street: "Nam Kỳ Khởi Nghĩa", ward: "Phường Võ Thị Sáu", district: "Quận 3" },
+              { street: "Cách Mạng Tháng 8", ward: "Phường 11", district: "Quận 3" },
               { street: "Nguyễn Trãi", ward: "Phường 2", district: "Quận 5" },
               { street: "Trần Hưng Đạo", ward: "Phường 7", district: "Quận 5" },
+              { street: "Sư Vạn Hạnh", ward: "Phường 12", district: "Quận 10" },
+              { street: "Ba Tháng Hai", ward: "Phường 12", district: "Quận 10" },
               { street: "Nguyễn Thị Thập", ward: "Phường Tân Phú", district: "Quận 7" },
-              { street: "Quang Trung", ward: "Phường 10", district: "Quận Gò Vấp" },
+              { street: "Nguyễn Văn Linh", ward: "Phường Tân Phong", district: "Quận 7" },
               { street: "Cộng Hòa", ward: "Phường 12", district: "Quận Tân Bình" },
-              { street: "Võ Văn Ngân", ward: "Phường Linh Chiểu", district: "TP. Thủ Đức" }
+              { street: "Trường Sơn", ward: "Phường 2", district: "Quận Tân Bình" },
+              { street: "Phan Xích Long", ward: "Phường 1", district: "Quận Phú Nhuận" },
+              { street: "Quang Trung", ward: "Phường 10", district: "Quận Gò Vấp" },
+              { street: "Điện Biên Phủ", ward: "Phường 25", district: "Quận Bình Thạnh" },
+              { street: "Thảo Điền", ward: "Phường Thảo Điền", district: "TP. Thủ Đức" },
+              { street: "Võ Văn Ngân", ward: "Phường Linh Chiểu", district: "TP. Thủ Đức" },
+              { street: "Phạm Văn Đồng", ward: "Phường Hiệp Bình Chánh", district: "TP. Thủ Đức" }
             ]
           },
           {
             city: "Đà Nẵng",
-            province: "Đà Nẵng",
+            province: "TP. Đà Nẵng",
+            provinceCode: "048",
             zip: "550000",
             locations: [
               { street: "Bạch Đằng", ward: "Phường Hải Châu 1", district: "Quận Hải Châu" },
-              { street: "Nguyễn Văn Linh", ward: "Phường Nam Dương", district: "Quận Hải Châu" },
+              { street: "Trần Phú", ward: "Phường Hải Châu 1", district: "Quận Hải Châu" },
               { street: "Lê Duẩn", ward: "Phường Hải Châu 2", district: "Quận Hải Châu" },
+              { street: "Nguyễn Văn Linh", ward: "Phường Nam Dương", district: "Quận Hải Châu" },
+              { street: "Đường 2 Tháng 9", ward: "Phường Hòa Thuận Đông", district: "Quận Hải Châu" },
               { street: "Hùng Vương", ward: "Phường Vĩnh Trung", district: "Quận Thanh Khê" },
               { street: "Điện Biên Phủ", ward: "Phường Chính Gián", district: "Quận Thanh Khê" },
-              { street: "Võ Nguyên Giáp", ward: "Phường Mỹ An", district: "Quận Ngũ Hành Sơn" }
+              { street: "Phạm Văn Đồng", ward: "Phường An Hải Bắc", district: "Quận Sơn Trà" },
+              { street: "Võ Nguyên Giáp", ward: "Phường Phước Mỹ", district: "Quận Sơn Trà" },
+              { street: "Hồ Xuân Hương", ward: "Phường Mỹ An", district: "Quận Ngũ Hành Sơn" }
             ]
           },
           {
             city: "Cần Thơ",
-            province: "Cần Thơ",
+            province: "TP. Cần Thơ",
+            provinceCode: "092",
             zip: "900000",
             locations: [
               { street: "Đại lộ Hòa Bình", ward: "Phường An Cư", district: "Quận Ninh Kiều" },
               { street: "Đường 30 Tháng 4", ward: "Phường Xuân Khánh", district: "Quận Ninh Kiều" },
               { street: "Trần Hưng Đạo", ward: "Phường An Phú", district: "Quận Ninh Kiều" },
               { street: "Nguyễn Trãi", ward: "Phường Thới Bình", district: "Quận Ninh Kiều" },
+              { street: "Nguyễn Văn Cừ", ward: "Phường An Khánh", district: "Quận Ninh Kiều" },
+              { street: "Trần Phú", ward: "Phường Cái Khế", district: "Quận Ninh Kiều" },
               { street: "Cách Mạng Tháng 8", ward: "Phường An Thới", district: "Quận Bình Thủy" },
-              { street: "Lê Hồng Phong", ward: "Phường Trà An", district: "Quận Bình Thủy" }
+              { street: "Lê Hồng Phong", ward: "Phường Bình Thủy", district: "Quận Bình Thủy" },
+              { street: "Phạm Hùng", ward: "Phường Lê Bình", district: "Quận Cái Răng" }
             ]
           },
           {
             city: "Hải Phòng",
-            province: "Hải Phòng",
+            province: "TP. Hải Phòng",
+            provinceCode: "031",
             zip: "180000",
             locations: [
               { street: "Lạch Tray", ward: "Phường Lạch Tray", district: "Quận Ngô Quyền" },
               { street: "Cầu Đất", ward: "Phường Cầu Đất", district: "Quận Ngô Quyền" },
+              { street: "Lê Hồng Phong", ward: "Phường Đông Khê", district: "Quận Ngô Quyền" },
               { street: "Tô Hiệu", ward: "Phường Trại Cau", district: "Quận Lê Chân" },
-              { street: "Trần Phú", ward: "Phường Lương Khánh Thiện", district: "Quận Ngô Quyền" },
-              { street: "Lê Hồng Phong", ward: "Phường Đông Khê", district: "Quận Ngô Quyền" }
-            ]
-          },
-          {
-            city: "Nha Trang",
-            province: "Tỉnh Khánh Hòa",
-            zip: "650000",
-            locations: [
-              { street: "Trần Phú", ward: "Phường Lộc Thọ", district: "TP. Nha Trang" },
-              { street: "Lê Thánh Tôn", ward: "Phường Phước Tiến", district: "TP. Nha Trang" },
-              { street: "Quang Trung", ward: "Phường Vạn Thắng", district: "TP. Nha Trang" },
-              { street: "Yersin", ward: "Phường Phương Sài", district: "TP. Nha Trang" },
-              { street: "Nguyễn Thiện Thuật", ward: "Phường Tân Lập", district: "TP. Nha Trang" }
-            ]
-          },
-          {
-            city: "Biên Hòa",
-            province: "Tỉnh Đồng Nai",
-            zip: "760000",
-            locations: [
-              { street: "Đồng Khởi", ward: "Phường Tân Hiệp", district: "TP. Biên Hòa" },
-              { street: "Phạm Văn Thuận", ward: "Phường Tam Hiệp", district: "TP. Biên Hòa" },
-              { street: "Võ Thị Sáu", ward: "Phường Quyết Thắng", district: "TP. Biên Hòa" },
-              { street: "Nguyễn Ái Quốc", ward: "Phường Tân Tiến", district: "TP. Biên Hòa" },
-              { street: "Bùi Trọng Nghĩa", ward: "Phường Trảng Dài", district: "TP. Biên Hòa" }
-            ]
-          },
-          {
-            city: "Huế",
-            province: "Tỉnh Thừa Thiên Huế",
-            zip: "490000",
-            locations: [
-              { street: "Lê Lợi", ward: "Phường Phú Hội", district: "TP. Huế" },
-              { street: "Hùng Vương", ward: "Phường Phú Nhuận", district: "TP. Huế" },
-              { street: "Đống Đa", ward: "Phường Vĩnh Ninh", district: "TP. Huế" },
-              { street: "Nguyễn Huệ", ward: "Phường Vĩnh Ninh", district: "TP. Huế" },
-              { street: "Bà Triệu", ward: "Phường Phú Hội", district: "TP. Huế" }
-            ]
-          },
-          {
-            city: "Vũng Tàu",
-            province: "Tỉnh Bà Rịa - Vũng Tàu",
-            zip: "780000",
-            locations: [
-              { street: "Thùy Vân", ward: "Phường Thắng Tam", district: "TP. Vũng Tàu" },
-              { street: "Hạ Long", ward: "Phường 2", district: "TP. Vũng Tàu" },
-              { street: "Lê Hồng Phong", ward: "Phường 4", district: "TP. Vũng Tàu" },
-              { street: "Ba Cu", ward: "Phường 1", district: "TP. Vũng Tàu" },
-              { street: "Trương Công Định", ward: "Phường 3", district: "TP. Vũng Tàu" }
+              { street: "Hai Bà Trưng", ward: "Phường An Biên", district: "Quận Lê Chân" },
+              { street: "Trần Hưng Đạo", ward: "Phường Hoàng Văn Thụ", district: "Quận Hồng Bàng" }
             ]
           },
           {
             city: "Bình Dương",
             province: "Tỉnh Bình Dương",
+            provinceCode: "074",
             zip: "750000",
             locations: [
               { street: "Đại Lộ Bình Dương", ward: "Phường Phú Hòa", district: "TP. Thủ Dầu Một" },
               { street: "Yersin", ward: "Phường Hiệp Thành", district: "TP. Thủ Dầu Một" },
+              { street: "Thích Quảng Đức", ward: "Phường Chánh Nghĩa", district: "TP. Thủ Dầu Một" },
               { street: "Cách Mạng Tháng 8", ward: "Phường Lái Thiêu", district: "TP. Thuận An" },
-              { street: "Nguyễn An Ninh", ward: "Phường Dĩ An", district: "TP. Dĩ An" }
+              { street: "Đường DT743", ward: "Phường An Phú", district: "TP. Thuận An" },
+              { street: "Nguyễn An Ninh", ward: "Phường Dĩ An", district: "TP. Dĩ An" },
+              { street: "Quốc Lộ 1K", ward: "Phường Đông Hòa", district: "TP. Dĩ An" }
+            ]
+          },
+          {
+            city: "Đồng Nai",
+            province: "Tỉnh Đồng Nai",
+            provinceCode: "075",
+            zip: "760000",
+            locations: [
+              { street: "Phạm Văn Thuận", ward: "Phường Tam Hiệp", district: "TP. Biên Hòa" },
+              { street: "Đồng Khởi", ward: "Phường Tân Hiệp", district: "TP. Biên Hòa" },
+              { street: "Võ Thị Sáu", ward: "Phường Quyết Thắng", district: "TP. Biên Hòa" },
+              { street: "Nguyễn Ái Quốc", ward: "Phường Tân Tiến", district: "TP. Biên Hòa" },
+              { street: "Đường 30 Tháng 4", ward: "Phường Trung Dũng", district: "TP. Biên Hòa" },
+              { street: "Hùng Vương", ward: "Phường Xuân An", district: "TP. Long Khánh" }
+            ]
+          },
+          {
+            city: "Bà Rịa - Vũng Tàu",
+            province: "Tỉnh Bà Rịa - Vũng Tàu",
+            provinceCode: "077",
+            zip: "780000",
+            locations: [
+              { street: "Thùy Vân", ward: "Phường Thắng Tam", district: "TP. Vũng Tàu" },
+              { street: "Hạ Long", ward: "Phường 2", district: "TP. Vũng Tàu" },
+              { street: "Ba Cu", ward: "Phường 1", district: "TP. Vũng Tàu" },
+              { street: "Lê Hồng Phong", ward: "Phường 7", district: "TP. Vũng Tàu" }
+            ]
+          },
+          {
+            city: "Khánh Hòa",
+            province: "Tỉnh Khánh Hòa",
+            provinceCode: "056",
+            zip: "650000",
+            locations: [
+              { street: "Trần Phú", ward: "Phường Lộc Thọ", district: "TP. Nha Trang" },
+              { street: "Lê Thánh Tôn", ward: "Phường Phước Tiến", district: "TP. Nha Trang" },
+              { street: "Nguyễn Thiện Thuật", ward: "Phường Tân Lập", district: "TP. Nha Trang" },
+              { street: "Đường 2 Tháng 4", ward: "Phường Vĩnh Hải", district: "TP. Nha Trang" }
+            ]
+          },
+          {
+            city: "Quảng Ninh",
+            province: "Tỉnh Quảng Ninh",
+            provinceCode: "022",
+            zip: "200000",
+            locations: [
+              { street: "Hạ Long", ward: "Phường Bãi Cháy", district: "TP. Hạ Long" },
+              { street: "Lê Thánh Tông", ward: "Phường Bạch Đằng", district: "TP. Hạ Long" },
+              { street: "Trần Hưng Đạo", ward: "Phường Trần Hưng Đạo", district: "TP. Hạ Long" }
+            ]
+          },
+          {
+            city: "Huế",
+            province: "Tỉnh Thừa Thiên Huế",
+            provinceCode: "046",
+            zip: "490000",
+            locations: [
+              { street: "Lê Lợi", ward: "Phường Phú Hội", district: "TP. Huế" },
+              { street: "Hùng Vương", ward: "Phường Phú Hội", district: "TP. Huế" },
+              { street: "Nguyễn Huệ", ward: "Phường Vĩnh Ninh", district: "TP. Huế" },
+              { street: "Đống Đa", ward: "Phường Vĩnh Ninh", district: "TP. Huế" }
+            ]
+          },
+          {
+            city: "Nghệ An",
+            province: "Tỉnh Nghệ An",
+            provinceCode: "040",
+            zip: "430000",
+            locations: [
+              { street: "Trần Phú", ward: "Phường Lê Mao", district: "TP. Vinh" },
+              { street: "Trường Thi", ward: "Phường Trường Thi", district: "TP. Vinh" },
+              { street: "Quang Trung", ward: "Phường Quang Trung", district: "TP. Vinh" }
+            ]
+          },
+          {
+            city: "Thanh Hóa",
+            province: "Tỉnh Thanh Hóa",
+            provinceCode: "038",
+            zip: "400000",
+            locations: [
+              { street: "Trần Phú", ward: "Phường Điện Biên", district: "TP. Thanh Hóa" },
+              { street: "Lê Hoàn", ward: "Phường Lam Sơn", district: "TP. Thanh Hóa" },
+              { street: "Đào Duy Từ", ward: "Phường Ba Đình", district: "TP. Thanh Hóa" }
             ]
           }
         ],
+        phonePrefixes: ["+84 98", "+84 97", "+84 96", "+84 91", "+84 94", "+84 90", "+84 93", "+84 86", "+84 88", "+84 89", "+84 79", "+84 77", "+84 38", "+84 39"],
         phonePrefix: "+84 9"
       },
       US: {
@@ -38318,7 +38392,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             locations: [
               { street: "Biscayne Blvd", district: "Downtown" },
               { street: "Ocean Dr", district: "South Beach" },
-              { street: "Brickell Ave", district: "Brickell" }
+              { street: "Brickell Ave", district: "Financial District" }
             ]
           }
         ],
@@ -38326,17 +38400,17 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       },
       UK: {
         lastNames: ["Smith", "Jones", "Taylor", "Brown", "Williams", "Wilson", "Johnson", "Davies", "Robinson", "Wright", "Thompson", "Evans"],
-        firstNamesMale: ["Oliver", "George", "Harry", "Noah", "Jack", "Leo", "Arthur", "Muhammad", "Oscar", "Charlie"],
-        firstNamesFemale: ["Olivia", "Amelia", "Isla", "Ava", "Mia", "Ivy", "Lily", "Freya", "Florence", "Rosie"],
+        firstNamesMale: ["George", "Oliver", "Harry", "Jack", "Jacob", "Noah", "Charlie", "Muhammad", "Thomas", "Oscar", "William", "James"],
+        firstNamesFemale: ["Olivia", "Amelia", "Isla", "Ava", "Emily", "Isabella", "Mia", "Poppy", "Ella", "Lily", "Sophia", "Grace"],
         cities: [
           {
             city: "London",
-            zip: "SW1A 1AA",
+            zip: "EC1A 1BB",
             locations: [
-              { street: "Oxford St", district: "West End" },
+              { street: "Oxford St", district: "Westminster" },
+              { street: "Regent St", district: "Mayfair" },
               { street: "Baker St", district: "Marylebone" },
-              { street: "Regent St", district: "Soho" },
-              { street: "Fleet St", district: "City of London" }
+              { street: "Piccadilly", district: "St James's" }
             ]
           },
           {
@@ -38344,8 +38418,8 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             zip: "M1 1AE",
             locations: [
               { street: "Deansgate", district: "City Centre" },
-              { street: "Market St", district: "City Centre" },
-              { street: "Oxford Rd", district: "University Quarter" }
+              { street: "Market St", district: "Northern Quarter" },
+              { street: "Peter St", district: "City Centre" }
             ]
           },
           {
@@ -38353,93 +38427,65 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             zip: "B1 1AA",
             locations: [
               { street: "New St", district: "City Centre" },
-              { street: "Corporation St", district: "City Centre" },
-              { street: "Colmore Row", district: "Financial District" }
-            ]
-          },
-          {
-            city: "Edinburgh",
-            zip: "EH1 1YZ",
-            locations: [
-              { street: "Princes St", district: "New Town" },
-              { street: "Royal Mile", district: "Old Town" },
-              { street: "George St", district: "New Town" }
+              { street: "Broad St", district: "Westside" }
             ]
           }
         ],
-        phonePrefix: "+44 79"
+        phonePrefix: "+44 7700"
       },
       DE: {
-        lastNames: ["Müller", "Schmidt", "Schneider", "Fischer", "Weber", "Meyer", "Wagner", "Becker", "Schulz", "Hoffmann", "Schäfer", "Koch"],
-        firstNamesMale: ["Lukas", "Leon", "Maximilian", "Paul", "Jonas", "Felix", "Noah", "Elias", "Tim", "Niklas", "David", "Julian"],
-        firstNamesFemale: ["Emma", "Mia", "Hannah", "Sophia", "Anna", "Lea", "Emilia", "Marie", "Lena", "Sarah", "Laura", "Lara"],
+        lastNames: ["Müller", "Schmidt", "Schneider", "Fischer", "Weber", "Meyer", "Wagner", "Becker", "Schulz", "Hoffmann"],
+        firstNamesMale: ["Ben", "Paul", "Leon", "Finn", "Elias", "Jonas", "Luis", "Noah", "Felix", "Lukas"],
+        firstNamesFemale: ["Emma", "Mia", "Hannah", "Sophia", "Emilia", "Lina", "Marie", "Mila", "Lea", "Ella"],
         cities: [
           {
             city: "Berlin",
             zip: "10115",
             locations: [
-              { street: "Unter den Linden", district: "Mitte" },
               { street: "Friedrichstraße", district: "Mitte" },
+              { street: "Unter den Linden", district: "Mitte" },
               { street: "Kurfürstendamm", district: "Charlottenburg" }
             ]
           },
           {
-            city: "München",
+            city: "Munich",
             zip: "80331",
             locations: [
               { street: "Maximilianstraße", district: "Altstadt" },
-              { street: "Leopoldstraße", district: "Schwabing" },
               { street: "Kaufingerstraße", district: "Altstadt" }
             ]
           },
           {
-            city: "Hamburg",
-            zip: "20095",
-            locations: [
-              { street: "Mönckebergstraße", district: "Mitte" },
-              { street: "Jungfernstieg", district: "Neustadt" }
-            ]
-          },
-          {
-            city: "Frankfurt am Main",
+            city: "Frankfurt",
             zip: "60311",
             locations: [
               { street: "Zeil", district: "Innenstadt" },
-              { street: "Kaiserstraße", district: "Bahnhofsviertel" }
+              { street: "Mainzer Landstraße", district: "Westend" }
             ]
           }
         ],
         phonePrefix: "+49 151"
       },
       FR: {
-        lastNames: ["Martin", "Bernard", "Thomas", "Petit", "Robert", "Richard", "Durand", "Dubois", "Moreau", "Laurent", "Simon", "Michel"],
-        firstNamesMale: ["Gabriel", "Léo", "Raphaël", "Arthur", "Louis", "Lucas", "Adam", "Jules", "Hugo", "Liam", "Noah", "Paul"],
-        firstNamesFemale: ["Jade", "Louise", "Emma", "Alice", "Ambre", "Lina", "Rose", "Chloé", "Mia", "Léa", "Julia", "Mila"],
+        lastNames: ["Martin", "Bernard", "Thomas", "Petit", "Robert", "Richard", "Durand", "Dubois", "Moreau", "Laurent"],
+        firstNamesMale: ["Gabriel", "Léo", "Raphaël", "Arthur", "Louis", "Lucas", "Adam", "Jules", "Hugo", "Maël"],
+        firstNamesFemale: ["Jade", "Louise", "Emma", "Alice", "Ambre", "Lina", "Rose", "Chloé", "Mia", "Léa"],
         cities: [
           {
             city: "Paris",
             zip: "75001",
             locations: [
-              { street: "Avenue des Champs-Élysées", district: "8e Arrondissement" },
-              { street: "Boulevard Saint-Germain", district: "6e Arrondissement" },
-              { street: "Rue de Rivoli", district: "1er Arrondissement" },
-              { street: "Rue de la Paix", district: "2e Arrondissement" }
-            ]
-          },
-          {
-            city: "Marseille",
-            zip: "13001",
-            locations: [
-              { street: "La Canebière", district: "1er Arrondissement" },
-              { street: "Rue Paradis", district: "6e Arrondissement" }
+              { street: "Champs-Élysées", district: "8th Arr." },
+              { street: "Rue de Rivoli", district: "1st Arr." },
+              { street: "Boulevard Saint-Germain", district: "6th Arr." }
             ]
           },
           {
             city: "Lyon",
-            zip: "69002",
+            zip: "69001",
             locations: [
-              { street: "Rue de la République", district: "2e Arrondissement" },
-              { street: "Rue Victor Hugo", district: "2e Arrondissement" }
+              { street: "Rue de la République", district: "Presqu'île" },
+              { street: "Cours Lafayette", district: "Part-Dieu" }
             ]
           }
         ],
@@ -38447,33 +38493,25 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       },
       JP: {
         lastNames: ["Sato", "Suzuki", "Takahashi", "Tanaka", "Watanabe", "Ito", "Yamamoto", "Nakamura", "Kobayashi", "Kato"],
-        firstNamesMale: ["Haruto", "Yuto", "Sota", "Yuki", "Hayato", "Ryota", "Kaito", "Daiki", "Ren", "Takumi"],
-        firstNamesFemale: ["Yui", "Rio", "Hina", "Koharu", "Hinata", "Mei", "Mio", "Saki", "Akari", "Aoi"],
+        firstNamesMale: ["Ren", "Hiroto", "Souta", "Yuma", "Haruto", "Minato", "Riku", "Kaito", "Asahi", "Ryusei"],
+        firstNamesFemale: ["Himari", "Hina", "Yua", "Sakura", "Ichika", "Akari", "Sara", "Yui", "Aoi", "Rin"],
         cities: [
           {
             city: "Tokyo",
             zip: "100-0001",
             locations: [
-              { street: "Ginza 4-Chome", district: "Chuo-ku" },
-              { street: "Roppongi 6-Chome", district: "Minato-ku" },
-              { street: "Shinjuku 3-Chome", district: "Shinjuku-ku" },
-              { street: "Shibuya 1-Chome", district: "Shibuya-ku" }
+              { street: "Chiyoda", district: "Chiyoda-ku" },
+              { street: "Ginza", district: "Chuo-ku" },
+              { street: "Shinjuku", district: "Shinjuku-ku" },
+              { street: "Shibuya", district: "Shibuya-ku" }
             ]
           },
           {
             city: "Osaka",
             zip: "530-0001",
             locations: [
-              { street: "Umeda 2-Chome", district: "Kita-ku" },
-              { street: "Dotonbori 1-Chome", district: "Chuo-ku" }
-            ]
-          },
-          {
-            city: "Kyoto",
-            zip: "600-8001",
-            locations: [
-              { street: "Shijo-dori", district: "Shimogyo-ku" },
-              { street: "Kawaramachi-dori", district: "Nakagyo-ku" }
+              { street: "Umeda", district: "Kita-ku" },
+              { street: "Namba", district: "Chuo-ku" }
             ]
           }
         ],
@@ -38481,18 +38519,16 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       },
       KR: {
         lastNames: ["Kim", "Lee", "Park", "Choi", "Jung", "Kang", "Cho", "Yoon", "Jang", "Lim"],
-        firstNamesMale: ["Min-jun", "Seo-jun", "Do-yun", "Ye-jun", "Si-woo", "Ha-jun", "Ju-won", "Ji-ho", "Jun-seo"],
-        firstNamesFemale: ["Seo-yeon", "Seo-yun", "Ji-woo", "Seo-hyeon", "Min-seo", "Ha-eun", "Ha-yoon", "Yun-seo"],
+        firstNamesMale: ["Min-jun", "Seo-jun", "Do-yun", "Ye-jun", "Si-woo", "Ha-joon", "Ji-ho", "Ju-won", "Jun-woo", "Geon-woo"],
+        firstNamesFemale: ["Seo-yeon", "Seo-yun", "Ji-woo", "Seo-hyeon", "Min-seo", "Ha-eun", "Ha-yun", "Yun-seo", "Ji-min", "Chae-won"],
         cities: [
           {
             city: "Seoul",
-            zip: "03050",
+            zip: "04524",
             locations: [
               { street: "Gangnam-daero", district: "Gangnam-gu" },
               { street: "Teheran-ro", district: "Gangnam-gu" },
-              { street: "Myeongdong-gil", district: "Jung-gu" },
-              { street: "Itaewon-ro", district: "Yongsan-gu" },
-              { street: "Jong-ro", district: "Jongno-gu" }
+              { street: "Myeongdong-gil", district: "Jung-gu" }
             ]
           },
           {
@@ -38507,9 +38543,9 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         phonePrefix: "+82 10"
       },
       PH: {
-        lastNames: ["Santos", "Reyes", "Cruz", "Bautista", "Ocampo", "Garcia", "Mendoza", "Torres", "Tomas", "Andrada"],
-        firstNamesMale: ["Jose", "Juan", "Mark", "John", "Angelo", "Gabriel", "Christian", "Paul"],
-        firstNamesFemale: ["Maria", "Angel", "Jasmine", "Princess", "Bea", "Nicole", "Rhea", "Camille"],
+        lastNames: ["Santos", "Reyes", "Cruz", "Bautista", "Del Rosario", "Aquino", "Garcia", "Ramos", "Mendoza", "Flores"],
+        firstNamesMale: ["Joshua", "Angelo", "John Mark", "Christian", "Daniel", "Gabriel", "Mark", "Nathaniel", "Anthony", "Carl"],
+        firstNamesFemale: ["Angel", "Princess", "Mary Joy", "Nicole", "Jasmine", "Bea", "Patricia", "Christine", "Andrea", "Samantha"],
         cities: [
           {
             city: "Manila",
@@ -38523,76 +38559,67 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             city: "Quezon City",
             zip: "1100",
             locations: [
-              { street: "Commonwealth Ave", district: "Diliman" },
-              { street: "EDSA", district: "Cubao" }
-            ]
-          },
-          {
-            city: "Makati",
-            zip: "1200",
-            locations: [
-              { street: "Ayala Ave", district: "Bel-Air" },
-              { street: "Makati Ave", district: "Poblacion" }
+              { street: "EDSA", district: "Diliman" },
+              { street: "Commonwealth Ave", district: "Batasan" }
             ]
           }
         ],
         phonePrefix: "+63 917"
       },
       TH: {
-        lastNames: ["Saetang", "Saelim", "Saelee", "Suksom", "Phromma", "Thongsuk", "Chanthara", "Rattanasiri"],
-        firstNamesMale: ["Somchai", "Somsak", "Arthit", "Kittisak", "Narong", "Prawit", "Wichai", "Chaiwat"],
-        firstNamesFemale: ["Malee", "Siriporn", "Kannika", "Ratree", "Duangkamol", "Sunisa", "Pornthip", "Kanya"],
+        lastNames: ["Saetang", "Saelim", "Sukprasert", "Chaiprasert", "Rattanakorn", "Wongsuwan", "Somboon", "Srichan"],
+        firstNamesMale: ["Somchai", "Somsak", "Arthit", "Kittisak", "Narong", "Prasert", "Thanawat", "Wichai"],
+        firstNamesFemale: ["Malee", "Siriporn", "Kannika", "Supaporn", "Sunisa", "Rattana", "Nattaya", "Pornthip"],
         cities: [
           {
             city: "Bangkok",
-            zip: "10100",
+            zip: "10110",
             locations: [
-              { street: "Sukhumvit Rd", district: "Khlong Toei" },
+              { street: "Sukhumvit Rd", district: "Watthana" },
               { street: "Silom Rd", district: "Bang Rak" },
-              { street: "Sathorn Rd", district: "Sathon" },
-              { street: "Ratchadamnoen Ave", district: "Phra Nakhon" }
+              { street: "Rama I Rd", district: "Pathum Wan" }
             ]
           },
           {
             city: "Chiang Mai",
-            zip: "50000",
+            zip: "50200",
             locations: [
-              { street: "Nimmanahaeminda Rd", district: "Mueang Chiang Mai" },
-              { street: "Chang Khlan Rd", district: "Mueang Chiang Mai" }
+              { street: "Nimmanahaeminda Rd", district: "Mueang" },
+              { street: "Chang Khlan Rd", district: "Mueang" }
             ]
           }
         ],
         phonePrefix: "+66 81"
       },
       ID: {
-        lastNames: ["Wijaya", "Kusuma", "Santoso", "Saputra", "Pratama", "Setiawan", "Hidayat", "Lestari"],
-        firstNamesMale: ["Budi", "Agus", "Eko", "Bambang", "Rizky", "Dian", "Hendra", "Aris"],
-        firstNamesFemale: ["Siti", "Sri", "Nur", "Dewi", "Putri", "Indah", "Rina", "Tri"],
+        lastNames: ["Wijaya", "Kusuma", "Santoso", "Saputra", "Pratama", "Setiawan", "Hidayat", "Lestari", "Nugroho", "Gunawan"],
+        firstNamesMale: ["Budi", "Agus", "Eko", "Bambang", "Rizky", "Bayu", "Fajar", "Hendra", "Dimas", "Aditya"],
+        firstNamesFemale: ["Siti", "Sri", "Dewi", "Nur", "Rini", "Putri", "Tri", "Indah", "Dian", "Ratna"],
         cities: [
           {
             city: "Jakarta",
             zip: "10110",
             locations: [
-              { street: "Jl. Sudirman", district: "Jakarta Selatan" },
-              { street: "Jl. Thamrin", district: "Jakarta Pusat" },
-              { street: "Jl. Gatot Subroto", district: "Jakarta Selatan" }
+              { street: "Jl. MH Thamrin", district: "Menteng" },
+              { street: "Jl. Jend. Sudirman", district: "Setiabudi" },
+              { street: "Jl. Gatot Subroto", district: "Kuningan" }
             ]
           },
           {
-            city: "Bandung",
-            zip: "40111",
+            city: "Surabaya",
+            zip: "60241",
             locations: [
-              { street: "Jl. Asia Afrika", district: "Sumur Bandung" },
-              { street: "Jl. Dago", district: "Coblong" }
+              { street: "Jl. Pemuda", district: "Genteng" },
+              { street: "Jl. Basuki Rahmat", district: "Tegalsari" }
             ]
           }
         ],
         phonePrefix: "+62 812"
       },
       CN: {
-        lastNames: ["Wang", "Li", "Zhang", "Liu", "Chen", "Yang", "Huang", "Zhao", "Wu", "Zhou"],
-        firstNamesMale: ["Wei", "Qiang", "Lei", "Jun", "Yong", "Jie", "Tao", "Chao", "Ming", "Peng"],
-        firstNamesFemale: ["Fang", "Xiuying", "Min", "Jing", "Li", "Na", "Yan", "Ping", "Dan", "Juan"],
+        lastNames: ["Wang", "Li", "Zhang", "Liu", "Chen", "Yang", "Huang", "Zhao", "Wu", "Zhou", "Xu", "Sun", "Ma", "Zhu"],
+        firstNamesMale: ["Wei", "Qiang", "Lei", "Jun", "Yong", "Jie", "Tao", "Chao", "Hao", "Bo", "Ping", "Gang"],
+        firstNamesFemale: ["Fang", "Na", "Min", "Jing", "Li", "Juan", "Yan", "Xiu", "Ling", "Hong", "Dan", "Ping"],
         cities: [
           {
             city: "Beijing",
@@ -38641,6 +38668,74 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
     var currentFakeProfiles = [];
 
+    // ==========================================
+    // HÀM SINH SỐ CĂN CƯỚC (CCCD) / NATIONAL ID / SSN CHUẨN XÁC
+    // ==========================================
+    function generateIdNumber(country, genderCode, birthYear, provinceCode) {
+      if (country === "VN") {
+        // Chuẩn 12 số Bộ Công An Việt Nam
+        // 3 số đầu: Mã tỉnh/thành phố khai sinh
+        const pCode = String(provinceCode || "079").padStart(3, '0');
+        // 1 số tiếp theo: Giới tính & Thế kỷ
+        // Thế kỷ 20 (1900 - 1999): Nam = 0, Nữ = 1
+        // Thế kỷ 21 (2000 - 2099): Nam = 2, Nữ = 3
+        let centuryGender = "0";
+        if (birthYear >= 2000) {
+          centuryGender = (genderCode === "female") ? "3" : "2";
+        } else {
+          centuryGender = (genderCode === "female") ? "1" : "0";
+        }
+        // 2 số tiếp: 2 số cuối năm sinh
+        const yCode = String(birthYear).slice(-2);
+        // 6 số cuối: số ngẫu nhiên từ 100000 đến 999999
+        const rand6 = String(Math.floor(Math.random() * 899999 + 100000));
+        return pCode + centuryGender + yCode + rand6;
+      } else if (country === "US") {
+        // SSN: XXX-XX-XXXX
+        const area = String(Math.floor(Math.random() * 889 + 100));
+        const group = String(Math.floor(Math.random() * 89 + 10));
+        const serial = String(Math.floor(Math.random() * 8999 + 1000));
+        return area + "-" + group + "-" + serial;
+      } else if (country === "UK") {
+        // NINO: XX 12 34 56 X
+        const letters = "ABCEGHJKLMNOPRSTWXYZ";
+        const l1 = letters[Math.floor(Math.random() * letters.length)];
+        const l2 = letters[Math.floor(Math.random() * letters.length)];
+        const num = String(Math.floor(Math.random() * 899999 + 100000)).replace(/(\d{2})(\d{2})(\d{2})/, "$1 $2 $3");
+        const suffix = "ABCD"[Math.floor(Math.random() * 4)];
+        return l1 + l2 + " " + num + " " + suffix;
+      } else if (country === "DE") {
+        return String(Math.floor(Math.random() * 89999999999 + 10000000000));
+      } else if (country === "FR") {
+        const g = genderCode === "female" ? "2" : "1";
+        const y = String(birthYear).slice(-2);
+        const rand12 = String(Math.floor(Math.random() * 899999999999 + 100000000000));
+        return g + y + rand12;
+      } else if (country === "JP") {
+        return String(Math.floor(Math.random() * 899999999999 + 100000000000));
+      } else if (country === "KR") {
+        const y = String(birthYear).slice(-2);
+        const m = String(Math.floor(Math.random() * 12 + 1)).padStart(2, '0');
+        const d = String(Math.floor(Math.random() * 28 + 1)).padStart(2, '0');
+        const gDigit = birthYear >= 2000 ? (genderCode === "female" ? "4" : "3") : (genderCode === "female" ? "2" : "1");
+        return y + m + d + "-" + gDigit + String(Math.floor(Math.random() * 899999 + 100000));
+      } else if (country === "CN") {
+        return String(Math.floor(Math.random() * 899999 + 110000)) + birthYear + "0815" + String(Math.floor(Math.random() * 8999 + 1000));
+      } else if (country === "PH") {
+        return String(Math.floor(Math.random()*8999+1000)) + "-" + String(Math.floor(Math.random()*8999+1000)) + "-" + String(Math.floor(Math.random()*8999+1000)) + "-" + String(Math.floor(Math.random()*8999+1000));
+      } else if (country === "TH") {
+        return String(Math.floor(Math.random() * 8999999999999 + 1000000000000));
+      } else if (country === "ID") {
+        return String(Math.floor(Math.random() * 8999999999999999 + 1000000000000000));
+      } else if (country === "RU") {
+        const n9 = String(Math.floor(Math.random() * 899999999 + 100000000)).replace(/(\d{3})(\d{3})(\d{3})/, "$1-$2-$3");
+        const n2 = String(Math.floor(Math.random() * 89 + 10));
+        return n9 + " " + n2;
+      } else {
+        return String(Math.floor(Math.random() * 899999999999 + 100000000000));
+      }
+    }
+
     function generateRandomProfile(country, gender) {
       const cData = fakeDataDictionary[country] || fakeDataDictionary.VN;
       let isMale = gender === "MALE" || gender === "male";
@@ -38678,6 +38773,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       const cityName = (cityItem && typeof cityItem === "object") ? cityItem.city : cityItem;
       const provinceName = (cityItem && typeof cityItem === "object" && cityItem.province) ? cityItem.province : cityName;
       const zipCode = (cityItem && typeof cityItem === "object") ? cityItem.zip : "100000";
+      const provinceCode = (cityItem && typeof cityItem === "object" && cityItem.provinceCode) ? cityItem.provinceCode : "079";
 
       const streetNum = Math.floor(Math.random() * 888 + 12);
       let address = "";
@@ -38692,17 +38788,25 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         address = streetNum + " Main St, " + cityName;
       }
 
-      const phone = cData.phonePrefix + " " + Math.floor(Math.random() * 8999999 + 1000000);
-      const cleanName = fullName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+      let phone = "";
+      if (country === "VN" && Array.isArray(cData.phonePrefixes)) {
+        const pfx = cData.phonePrefixes[Math.floor(Math.random() * cData.phonePrefixes.length)];
+        phone = pfx + " " + Math.floor(Math.random() * 8999999 + 1000000);
+      } else {
+        phone = cData.phonePrefix + " " + Math.floor(Math.random() * 8999999 + 1000000);
+      }
+
+      const cleanName = fullName.toLowerCase().replace(/đ/g, "d").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
       const email = cleanName + y + "@gmail.com";
       const password = cleanName.charAt(0).toUpperCase() + cleanName.slice(1, 6) + "@" + (Math.floor(Math.random() * 899 + 100)) + "!";
-      const ip = (Math.floor(Math.random() * 200 + 20)) + "." + (Math.floor(Math.random() * 250 + 1)) + "." + (Math.floor(Math.random() * 250 + 1)) + "." + (Math.floor(Math.random() * 250 + 1));
+      const idNumber = generateIdNumber(country, gCode, y, provinceCode);
 
       return {
         fullName,
         gender: gStr,
         genderCode: gCode,
         dob,
+        birthYear: y,
         country,
         address,
         city: cityName,
@@ -38710,11 +38814,11 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         phone,
         email,
         password,
-        ip
+        idNumber
       };
     }
 
-        function generateFakeProfiles() {
+    function generateFakeProfiles() {
       const countryEl = document.getElementById("fakeInfoCountry") || document.getElementById("fakeCountrySelect");
       const genderEl = document.getElementById("fakeInfoGender") || document.getElementById("fakeGenderSelect");
       const countEl = document.getElementById("fakeInfoCount") || document.getElementById("fakeCountSelect");
@@ -38730,11 +38834,13 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         const p = generateRandomProfile(country, gender);
         currentFakeProfiles.push(p);
 
+        const idLabel = p.country === "VN" ? "CCCD" : "ID/SSN";
         fullTextResult += (i + 1) + ". Họ Tên: " + p.fullName + "\n" +
                           "   Giới tính: " + p.gender + " | Ngày sinh: " + p.dob + "\n" +
+                          "   " + idLabel + ": " + p.idNumber + "\n" +
                           "   Địa chỉ: " + p.address + " | Zip Code: " + p.zipCode + "\n" +
                           "   SĐT: " + p.phone + " | Email: " + p.email + "\n" +
-                          "   Mật khẩu: " + p.password + " | IP: " + p.ip + "\n\n";
+                          "   Mật khẩu: " + p.password + "\n\n";
       }
 
       // Update Textarea
@@ -38758,50 +38864,127 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           card.style.border = "1px solid #1e293b";
           card.style.borderRadius = "10px";
           card.style.padding = "14px";
-          card.innerHTML = `
-            <div style="flex:1;">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; gap:8px;">
-                <div>
-                  <h4 style="font-size:1.1rem; font-weight:700; color:#fff; margin:0 0 4px 0;">${escapeHtml(p.fullName)}</h4>
-                  <span style="font-size:0.75rem; color:#60a5fa; font-family:monospace;">${escapeHtml(p.gender)} • ${escapeHtml(p.dob)}</span>
-                </div>
-                <button class="btn-action-copy" onclick="copyFirstProfileName(${idx})" style="padding:4px 10px; font-size:0.75rem;"><i class="fa-regular fa-copy"></i> Copy Tên</button>
-              </div>
+          card.style.display = "flex";
+          card.style.flexDirection = "column";
+          card.style.gap = "8px";
 
-              <div style="font-size:0.8rem; color:#94a3b8; display:flex; flex-direction:column; gap:6px;">
-                <div><i class="fa-solid fa-map-location-dot" style="width:16px; color:#64748b;"></i> ${escapeHtml(p.address)}</div>
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
-                  <div>
-                    <i class="fa-solid fa-barcode" style="width:16px; color:#38bdf8;"></i> <span style="color:#cbd5e1; font-size:0.78rem;">Zip/Postal Code:</span> <strong style="color:#38bdf8; font-family:monospace; font-size:0.88rem; letter-spacing:0.5px;">${escapeHtml(p.zipCode)}</strong>
-                  </div>
-                  <button class="btn-action-copy" onclick="copyProfileZip(${idx})" style="padding:2px 8px; font-size:0.72rem;" title="Copy Zip Code"><i class="fa-regular fa-copy"></i> Copy Zip</button>
+          const idLabel = p.country === "VN" ? "CCCD:" : "SSN/ID:";
+          const idBtnLabel = p.country === "VN" ? "Copy CCCD" : "Copy ID";
+
+          card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:8px;">
+              <div>
+                <h4 style="font-size:1.05rem; font-weight:700; color:#fff; margin:0 0 4px 0;">${escapeHtml(p.fullName)}</h4>
+                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                  <span style="font-size:0.75rem; color:#60a5fa; font-family:monospace;">${escapeHtml(p.gender)} • ${escapeHtml(p.dob)}</span>
+                  <button class="btn-action-copy" onclick="copyProfileField(${idx}, 'dob', this)" style="padding:1px 6px; font-size:0.68rem;" title="Copy Ngày sinh"><i class="fa-regular fa-copy"></i> Copy DOB</button>
                 </div>
-                <div><i class="fa-solid fa-phone" style="width:16px; color:#64748b;"></i> ${escapeHtml(p.phone)}</div>
-                <div><i class="fa-solid fa-envelope" style="width:16px; color:#64748b;"></i> ${escapeHtml(p.email)}</div>
-                <div><i class="fa-solid fa-key" style="width:16px; color:#10b981;"></i> <strong style="color:#10b981;">${escapeHtml(p.password)}</strong></div>
-                <div><i class="fa-solid fa-network-wired" style="width:16px; color:#64748b;"></i> ${escapeHtml(p.ip)}</div>
               </div>
+              <button class="btn-action-copy" onclick="copyProfileField(${idx}, 'fullName', this)" style="padding:4px 10px; font-size:0.75rem;"><i class="fa-regular fa-copy"></i> Copy Tên</button>
+            </div>
+
+            <!-- CCCD / ID Card -->
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #334155;">
+              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+                <i class="fa-solid fa-id-card" style="width:16px; color:#c084fc; flex-shrink:0;"></i>
+                <span style="color:#cbd5e1; font-size:0.78rem; flex-shrink:0;">${idLabel}</span>
+                <strong style="color:#c084fc; font-family:monospace; font-size:0.88rem; letter-spacing:0.8px; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(p.idNumber)}</strong>
+              </div>
+              <button class="btn-action-copy" onclick="copyProfileField(${idx}, 'idNumber', this)" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Số Căn cước"><i class="fa-regular fa-copy"></i> ${idBtnLabel}</button>
+            </div>
+
+            <!-- Address 2026 -->
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
+              <div style="display:flex; align-items:flex-start; gap:6px; flex:1; font-size:0.8rem; line-height:1.4;">
+                <i class="fa-solid fa-map-location-dot" style="width:16px; color:#64748b; margin-top:2px; flex-shrink:0;"></i>
+                <span style="color:#cbd5e1; word-break:break-word;">${escapeHtml(p.address)}</span>
+              </div>
+              <button class="btn-action-copy" onclick="copyProfileField(${idx}, 'address', this)" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0; margin-top:2px;" title="Copy Địa chỉ"><i class="fa-regular fa-copy"></i> Copy Đ/c</button>
+            </div>
+
+            <!-- Zip Code -->
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
+              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+                <i class="fa-solid fa-barcode" style="width:16px; color:#38bdf8; flex-shrink:0;"></i>
+                <span style="color:#cbd5e1; font-size:0.78rem; flex-shrink:0;">Zip/Postal:</span>
+                <strong style="color:#38bdf8; font-family:monospace; font-size:0.88rem; letter-spacing:0.5px;">${escapeHtml(p.zipCode)}</strong>
+              </div>
+              <button class="btn-action-copy" onclick="copyProfileField(${idx}, 'zipCode', this)" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Zip Code"><i class="fa-regular fa-copy"></i> Copy Zip</button>
+            </div>
+
+            <!-- Phone -->
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
+              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+                <i class="fa-solid fa-phone" style="width:16px; color:#64748b; flex-shrink:0;"></i>
+                <span style="color:#cbd5e1; font-size:0.78rem; font-family:monospace;">${escapeHtml(p.phone)}</span>
+              </div>
+              <button class="btn-action-copy" onclick="copyProfileField(${idx}, 'phone', this)" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Số điện thoại"><i class="fa-regular fa-copy"></i> Copy SĐT</button>
+            </div>
+
+            <!-- Email -->
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
+              <div style="display:flex; align-items:center; gap:6px; overflow:hidden; flex:1;">
+                <i class="fa-solid fa-envelope" style="width:16px; color:#64748b; flex-shrink:0;"></i>
+                <span style="color:#cbd5e1; font-size:0.78rem; font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(p.email)}</span>
+              </div>
+              <button class="btn-action-copy" onclick="copyProfileField(${idx}, 'email', this)" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Email"><i class="fa-regular fa-copy"></i> Copy Email</button>
+            </div>
+
+            <!-- Password -->
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
+              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+                <i class="fa-solid fa-key" style="width:16px; color:#10b981; flex-shrink:0;"></i>
+                <strong style="color:#10b981; font-size:0.82rem; font-family:monospace;">${escapeHtml(p.password)}</strong>
+              </div>
+              <button class="btn-action-copy" onclick="copyProfileField(${idx}, 'password', this)" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Mật khẩu"><i class="fa-regular fa-copy"></i> Copy Pass</button>
             </div>
           `;
           previewBox.appendChild(card);
         });
       }
 
-      showToast("Đã tạo thành công " + count + " hồ sơ Fake Name!", "success");
+      showToast("Đã tạo thành công " + count + " hồ sơ Fake Name chuẩn 2026!", "success");
     }
 
     var runGenerateFakePersona = generateFakeProfiles;
 
-    function copyFirstProfileName(idx) {
-      if (currentFakeProfiles && currentFakeProfiles[idx]) {
-        copyToClipboard(currentFakeProfiles[idx].fullName, "Đã sao chép tên: " + currentFakeProfiles[idx].fullName);
+    // ==========================================
+    // CÁC HÀM SAO CHÉP TỪNG MỤC & TOÀN BỘ
+    // ==========================================
+    function copyProfileField(idx, field, btnEl) {
+      if (!currentFakeProfiles || !currentFakeProfiles[idx]) return;
+      const p = currentFakeProfiles[idx];
+      const map = {
+        fullName: { val: p.fullName, label: "Họ và Tên" },
+        idNumber: { val: p.idNumber, label: (p.country === "VN" ? "Số Căn Cước (CCCD)" : "Số Định Danh (SSN/ID)") },
+        dob: { val: p.dob, label: "Ngày sinh" },
+        address: { val: p.address, label: "Địa chỉ" },
+        zipCode: { val: p.zipCode, label: "Mã Zip Code" },
+        phone: { val: p.phone, label: "Số điện thoại" },
+        email: { val: p.email, label: "Email" },
+        password: { val: p.password, label: "Mật khẩu" }
+      };
+      const item = map[field];
+      if (item && item.val) {
+        copyToClipboard(item.val, "Đã sao chép " + item.label + ": " + item.val);
+        if (btnEl) {
+          const origHtml = btnEl.innerHTML;
+          btnEl.innerHTML = '<i class="fa-solid fa-check"></i> Đã chép';
+          btnEl.style.background = "#059669";
+          setTimeout(function() {
+            btnEl.innerHTML = origHtml;
+            btnEl.style.background = "";
+          }, 1200);
+        }
       }
     }
 
+    function copyFirstProfileName(idx) {
+      copyProfileField(idx, 'fullName');
+    }
+
     function copyProfileZip(idx) {
-      if (currentFakeProfiles && currentFakeProfiles[idx]) {
-        copyToClipboard(currentFakeProfiles[idx].zipCode, "Đã sao chép Mã Zip: " + currentFakeProfiles[idx].zipCode);
-      }
+      copyProfileField(idx, 'zipCode');
     }
 
     function copyOnlyNames() {
@@ -38811,6 +38994,16 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       }
       const names = currentFakeProfiles.map(p => p.fullName).join("\n");
       copyToClipboard(names, "Đã sao chép toàn bộ Họ & Tên!");
+    }
+
+    function copyOnlyIds() {
+      if (!currentFakeProfiles || currentFakeProfiles.length === 0) {
+        showToast("Chưa có danh sách để sao chép!", "warning");
+        return;
+      }
+      const ids = currentFakeProfiles.map(p => p.idNumber).join("\n");
+      const label = (currentFakeProfiles[0] && currentFakeProfiles[0].country === "VN") ? "CCCD" : "Số định danh (ID/SSN)";
+      copyToClipboard(ids, "Đã sao chép toàn bộ danh sách " + label + "!");
     }
 
     function copyOnlyZipCodes() {
@@ -38828,13 +39021,15 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         return;
       }
       let text = currentFakeProfiles.map((p, i) => {
+        const idLabel = p.country === "VN" ? "CCCD" : "ID/SSN";
         return (i + 1) + ". Họ Tên: " + p.fullName + "\n" +
                "   Giới tính: " + p.gender + " | Ngày sinh: " + p.dob + "\n" +
+               "   " + idLabel + ": " + p.idNumber + "\n" +
                "   Địa chỉ: " + p.address + " | Zip Code: " + p.zipCode + "\n" +
                "   SĐT: " + p.phone + " | Email: " + p.email + "\n" +
-               "   Mật khẩu: " + p.password + " | IP: " + p.ip;
+               "   Mật khẩu: " + p.password;
       }).join("\n\n");
-      copyToClipboard(text, "Đã sao chép toàn bộ thông tin Fake Name!");
+      copyToClipboard(text, "Đã sao chép toàn bộ thông tin Fake Name (không chứa IP)!");
     }
 
     function downloadFakeInfoTxt() {
@@ -38842,33 +39037,45 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         showToast("Chưa có dữ liệu để xuất file .txt!", "warning");
         return;
       }
-      let content = "=== DANH SÁCH FAKE NAME & PERSONA (MMO TOOLS) ===\n";
+      let content = "=== DANH SÁCH FAKE NAME & PERSONA (MMO TOOLS - CHUẨN 2026) ===\n";
       content += "Thời gian tạo: " + new Date().toLocaleString("vi-VN") + "\n";
       content += "Số lượng: " + currentFakeProfiles.length + " hồ sơ\n\n";
 
       currentFakeProfiles.forEach((p, idx) => {
+        const idLabel = p.country === "VN" ? "Số CCCD:    " : "Số ID/SSN:  ";
         content += "----------------------------------------\n";
         content += "HỒ SƠ #" + (idx + 1) + "\n";
         content += "----------------------------------------\n";
         content += "Họ & Tên:   " + p.fullName + "\n";
         content += "Giới tính:  " + p.gender + "\n";
         content += "Ngày sinh:  " + p.dob + "\n";
+        content += idLabel + p.idNumber + "\n";
         content += "Quốc gia:   " + p.country + "\n";
         content += "Địa chỉ:    " + p.address + "\n";
         content += "Zip Code:   " + p.zipCode + "\n";
         content += "Điện thoại: " + p.phone + "\n";
         content += "Email:      " + p.email + "\n";
-        content += "Mật khẩu:   " + p.password + "\n";
-        content += "IP Vùng:    " + p.ip + "\n\n";
+        content += "Mật khẩu:   " + p.password + "\n\n";
       });
 
       const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = "fake_names_mmo.txt";
+      a.download = "fake_names_mmo_2026.txt";
       a.click();
-      showToast("Đã tải xuống file fake_names_mmo.txt!", "success");
+      showToast("Đã tải xuống file fake_names_mmo_2026.txt!", "success");
     }
+
+    // Gắn vào window để đảm bảo gọi mọi nơi
+    window.generateFakeProfiles = generateFakeProfiles;
+    window.copyProfileField = copyProfileField;
+    window.copyFirstProfileName = copyFirstProfileName;
+    window.copyProfileZip = copyProfileZip;
+    window.copyOnlyNames = copyOnlyNames;
+    window.copyOnlyIds = copyOnlyIds;
+    window.copyOnlyZipCodes = copyOnlyZipCodes;
+    window.copyFakeInfoAsText = copyFakeInfoAsText;
+    window.downloadFakeInfoTxt = downloadFakeInfoTxt;
 
     // ==========================================
     // TOOL 5: CHECK FOLLOWER TIKTOK HÀNG LOẠT (REAL-TIME METRIC ENGINE)
