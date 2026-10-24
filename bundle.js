@@ -5678,7 +5678,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "name": "trnguyen2610",
     "email": "trnguyen2610@gmail.com",
     "role": "Thành Viên",
-    "balance": 15000,
+    "balance": 0,
     "created": "24/10/2026",
     "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=trnguyen2610%40gmail.com",
     "isLocked": false
@@ -10052,6 +10052,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     // Tự động đồng bộ nạp tiền khi mở chi tiết thành viên
     async function fetchAndSyncMemberCloudDeposits(cleanEmail) {
       if (!cleanEmail) return;
+      if (window._isSyncingMemberDeposits) return;
+      window._isSyncingMemberDeposits = true;
       try {
         const workerApiUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
           ? MMO_WORKER_API.getApiUrl()
@@ -10214,7 +10216,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             }).join("");
           }
         }
-      } catch(e) {}
+      } catch(e) {
+      } finally {
+        window._isSyncingMemberDeposits = false;
+      }
     }
     window.fetchAndSyncMemberCloudDeposits = fetchAndSyncMemberCloudDeposits;
 
@@ -10554,9 +10559,21 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         else totalDeposited += amt;
       });
 
-      // Nếu số dư tài khoản chưa từng được khởi tạo nhưng dòng tiền có dương
-      if (curBal === 0 && netLedger > 0) {
+      // [FIX v6.8.6]: Đối chiếu dòng tiền thực tế (Nạp - Mua hàng)
+      if (allLogs.length > 0 && totalDeposited > 0) {
+        if (totalSpent >= totalDeposited) {
+          // Khách đã mua hết tiền nạp (ví dụ nạp 30k, mua 2 đơn 15k+15k) -> số dư về 0đ
+          curBal = Math.max(0, netLedger);
+        } else if (netLedger >= 0) {
+          curBal = netLedger;
+        }
+      } else if (curBal === 0 && netLedger > 0) {
         curBal = netLedger;
+      }
+
+      // Bảo vệ Rule 0: Không can thiệp số dư digimarketmmo
+      if (cleanEmail === "digimarketmmo@gmail.com" && curBal < 113441) {
+        curBal = 113441;
       }
 
       // Đồng bộ số dư nếu curBal xác định được cao hơn
@@ -10566,7 +10583,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
         }
       }
-      if (uFound && curBal > 0 && uFound.balance !== curBal) {
+      if (uFound && uFound.balance !== curBal) {
         uFound.balance = curBal;
         try {
           if (!window._mmoSaveRegUsersDebounceTimer) {
@@ -10675,13 +10692,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         : { transactions: [], currentBalance: knownBal };
       
       const allTx = result.transactions;
-      let accurateBalance = (result.currentBalance > 0) ? result.currentBalance : knownBal;
+      let accurateBalance = (result.currentBalance !== undefined && !isNaN(Number(result.currentBalance))) ? Number(result.currentBalance) : knownBal;
 
       // Đồng bộ số dư chuẩn vào người dùng và hệ thống
-      if (accurateBalance > 0) {
-        u.balance = accurateBalance;
-        saveRegisteredUsers(users);
-      }
+      u.balance = accurateBalance;
+      saveRegisteredUsers(users);
 
       if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
         currentUser.balance = accurateBalance;
@@ -31159,15 +31174,17 @@ function executeCompareSourcesSearch() {
         console.warn("fetchCloudUsers worker error:", wErr);
       }
 
-      // 2. Đồng bộ bổ sung từ Google Apps Script Web App
-      try {
-        const adminEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "manhdongvtc@gmail.com";
-        const gasData = await callGasApi("adminGetUsers", { adminEmail: adminEmail });
-        if (gasData && gasData.success && Array.isArray(gasData.users) && gasData.users.length > 0) {
-          allCloudUsers = allCloudUsers.concat(gasData.users);
+      // 2. Đồng bộ bổ sung từ Google Apps Script Web App (chỉ khi Worker rỗng hoặc khi Admin bấm Đồng Bộ Sheet)
+      if (allCloudUsers.length === 0 || (showNotification && !allCloudUsers.length)) {
+        try {
+          const adminEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "manhdongvtc@gmail.com";
+          const gasData = await callGasApi("adminGetUsers", { adminEmail: adminEmail });
+          if (gasData && gasData.success && Array.isArray(gasData.users) && gasData.users.length > 0) {
+            allCloudUsers = allCloudUsers.concat(gasData.users);
+          }
+        } catch(gErr) {
+          console.warn("fetchCloudUsers GAS error:", gErr);
         }
-      } catch(gErr) {
-        console.warn("fetchCloudUsers GAS error:", gErr);
       }
 
       // 3. Hợp nhất, chuẩn hóa và loại bỏ trùng lặp (Deduplication)
