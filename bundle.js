@@ -55030,6 +55030,18 @@ async function initSmsOtpView() {
       return;
     }
 
+    // Phân trang 10 số / 1 trang theo lệnh người dùng
+    var histPerPage = 10;
+    var histCurPage = window._smsHistCurPage || 1;
+    var histTotal = filtered.length;
+    var histTotalPages = Math.ceil(histTotal / histPerPage);
+    if (histCurPage > histTotalPages && histTotalPages > 0) histCurPage = histTotalPages;
+    if (histCurPage < 1) histCurPage = 1;
+    window._smsHistCurPage = histCurPage;
+
+    var startIdx = (histCurPage - 1) * histPerPage;
+    var pagedFiltered = filtered.slice(startIdx, startIdx + histPerPage);
+
     // Nhóm theo Ngày (Hôm nay, Hôm qua, Ngày DD/MM/YYYY)
     var groups = {};
     var todayStr = new Date().toDateString();
@@ -55037,7 +55049,7 @@ async function initSmsOtpView() {
     yest.setDate(yest.getDate() - 1);
     var yestStr = yest.toDateString();
 
-    filtered.forEach(function(item) {
+    pagedFiltered.forEach(function(item) {
       var d = item.createdAt ? new Date(typeof item.createdAt === 'number' && item.createdAt < 10000000000 ? item.createdAt * 1000 : item.createdAt) : new Date();
       var dStr = d.toDateString();
       var label = '';
@@ -55155,11 +55167,33 @@ smsCol = '<div class="sms-hist-msg-text" title="' + cleanHMsg.replace(/"/g, '&qu
       html += '</tbody></table></div></div>';
     });
 
+    // Thanh phân trang lịch sử (10 số 1 trang theo lệnh người dùng)
+    if (histTotalPages > 1) {
+      html += '<div class="sms-pagination-bar" style="margin-top:22px;">' +
+        '<button type="button" class="sms-page-btn" onclick="changeSmsHistoryPage(' + (histCurPage - 1) + ')" ' + (histCurPage === 1 ? 'disabled' : '') + ' title="Trang trước"><i class="fa-solid fa-chevron-left"></i></button>';
+
+      for (var p = 1; p <= histTotalPages; p++) {
+        html += '<button type="button" class="sms-page-btn' + (p === histCurPage ? ' active' : '') + '" onclick="changeSmsHistoryPage(' + p + ')">' + p + '</button>';
+      }
+
+      html += '<button type="button" class="sms-page-btn" onclick="changeSmsHistoryPage(' + (histCurPage + 1) + ')" ' + (histCurPage === histTotalPages ? 'disabled' : '') + ' title="Trang sau"><i class="fa-solid fa-chevron-right"></i></button>' +
+      '</div>';
+    }
+
     container.innerHTML = html;
   }
   window.renderSmsHistory = renderSmsHistory;
 
+  function changeSmsHistoryPage(page) {
+    window._smsHistCurPage = page;
+    renderSmsHistory();
+    var el = document.getElementById('smsOtpHistoryContainer') || document.getElementById('viewSmsOtp');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  window.changeSmsHistoryPage = changeSmsHistoryPage;
+
   function resetSmsHistFilter() {
+    window._smsHistCurPage = 1;
     if (document.getElementById('smsHistFromDate')) document.getElementById('smsHistFromDate').value = '';
     if (document.getElementById('smsHistToDate')) document.getElementById('smsHistToDate').value = '';
     if (document.getElementById('smsHistPhone')) document.getElementById('smsHistPhone').value = '';
