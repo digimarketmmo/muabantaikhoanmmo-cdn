@@ -6100,9 +6100,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           const emailLower = currentUser.email.toLowerCase().trim();
           const idx = users.findIndex(u => (u.email || "").toLowerCase().trim() === emailLower);
           if (idx !== -1) {
-            const safeBal = Math.max(Number(currentUser.balance || 0), Number(users[idx].balance || 0));
-            currentUser.balance = safeBal;
-            users[idx].balance = safeBal;
+            const curB = (currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) ? Number(currentUser.balance) : Number(users[idx].balance || 0);
+            currentUser.balance = curB;
+            users[idx].balance = curB;
             currentUser.name = users[idx].name || currentUser.name;
             currentUser.role = users[idx].role || currentUser.role;
           }
@@ -6442,13 +6442,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                   if (isLocked) forceLogoutLockedUser(currentUser.email);
                 }).catch(() => {});
               }
-              // Đồng bộ số dư chuẩn từ database thành viên (không để số dư cũ đè lên số dư thật)
-              if (found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
-                const safeBal = Math.max(Number(currentUser.balance || 0), Number(found.balance));
-                currentUser.balance = safeBal;
-                found.balance = safeBal;
+              // Đồng bộ số dư chuẩn từ session người dùng (cho phép trừ tiền khi thuê sim / mua hàng)
+              if (currentUser.balance !== undefined && currentUser.balance !== null && !isNaN(Number(currentUser.balance))) {
+                found.balance = Number(currentUser.balance);
+              } else if (found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
+                currentUser.balance = Number(found.balance);
               } else {
-                found.balance = Number(currentUser.balance) || 0;
+                currentUser.balance = 0;
+                found.balance = 0;
               }
               currentUser.role = found.role || currentUser.role;
               currentUser.name = found.name || currentUser.name;
@@ -10411,12 +10412,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         curBal = Number(explicitBalance);
       }
       if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) {
-        curBal = Math.max(curBal, Number(currentUser.balance));
-      }
-      const uList = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
-      const uFound = uList.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
-      if (uFound && uFound.balance !== undefined && !isNaN(Number(uFound.balance))) {
-        curBal = Math.max(curBal, Number(uFound.balance));
+        curBal = Number(currentUser.balance);
+      } else {
+        const uList = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+        const uFound = uList.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
+        if (uFound && uFound.balance !== undefined && !isNaN(Number(uFound.balance))) {
+          curBal = Number(uFound.balance);
+        }
       }
 
       // Đối chiếu số dư với dòng tiền thực tế từ các giao dịch đã xác nhận (nạp - mua)
@@ -40467,6 +40469,19 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           pHeaders["Authorization"] = "Bearer " + sTok;
         }
 
+        let workerBal = null;
+        try {
+          const uProfRes = await fetch(workerUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail), {
+            headers: pHeaders
+          });
+          if (uProfRes.ok) {
+            const uProfData = await uProfRes.json();
+            if (uProfData && uProfData.success && uProfData.user && !isNaN(Number(uProfData.user.balance))) {
+              workerBal = Number(uProfData.user.balance);
+            }
+          }
+        } catch(eWk) {}
+
         const [walletRes, ordersRes] = await Promise.all([
           (typeof callGasApi === "function") 
             ? callGasApi("getUserWallet", { email: cleanEmail }).catch(() => null) 
@@ -40482,27 +40497,22 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         let localBal = (currentUser && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) ? Number(currentUser.balance) : 0;
         let allUsers = getRegisteredUsers();
         const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
-        if (uIdx !== -1 && allUsers[uIdx].balance !== undefined && !isNaN(Number(allUsers[uIdx].balance))) {
-          localBal = Math.max(localBal, Number(allUsers[uIdx].balance));
-        }
 
         // Dọn dẹp đơn nạp đang chờ nếu có
         try { localStorage.removeItem("mmo_pending_deposit"); } catch(e) {}
 
-        // Lấy số dư từ sổ cái giao dịch toàn diện
-        let calcBal = 0;
-        if (typeof getUserComprehensiveTransactions === "function") {
-          try {
-            const comp = getUserComprehensiveTransactions(cleanEmail);
-            if (comp && !isNaN(Number(comp.currentBalance))) {
-              calcBal = Number(comp.currentBalance);
-            }
-          } catch(e) {}
+        // [SSOT TURSO CLOUD WALLET SYNC v6.7.9]:
+        // Ưu tiên số dư chuẩn xác 100% từ Cloudflare Worker Turso DB (SSOT)
+        let effectiveBal;
+        if (workerBal !== null) {
+          effectiveBal = workerBal;
+        } else {
+          effectiveBal = localBal;
+          if (gasBal !== null && !isNaN(gasBal) && gasBal > localBal) {
+            effectiveBal = gasBal;
+          }
         }
 
-        // [ĐỒNG BỘ SỐ DƯ ĐỒNG NHẤT 100% TRÊN VÀ DƯỚI v6.2.2]:
-        // Lấy số dư an toàn cao nhất giữa Cloud và Local (chống việc Cloud chậm làm hạ số dư vừa nạp)
-        let effectiveBal = Math.max(localBal || 0, (gasBal !== null && !isNaN(gasBal)) ? gasBal : 0, (calcBal || 0));
         currentUser.balance = effectiveBal;
         try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
 
