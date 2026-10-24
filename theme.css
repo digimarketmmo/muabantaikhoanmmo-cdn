@@ -7802,15 +7802,17 @@ body.is-admin #profAdminShortcutBtn {
   margin-top: 14px !important;
 }
 .sms-card-v1 {
-  background: #0c1424 !important;
-  border: 1px solid #1e2e45 !important;
-  border-radius: 12px !important;
-  padding: 16px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  padding: 18px 20px !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 12px !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
   box-sizing: border-box !important;
+  position: relative !important;
+  margin-bottom: 16px !important;
 }
 .sms-card-header {
   display: flex !important;
@@ -7820,50 +7822,78 @@ body.is-admin #profAdminShortcutBtn {
 .sms-card-service-meta {
   display: flex !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: 12px !important;
+}
+.sms-srv-icon {
+  width: 38px !important;
+  height: 38px !important;
+  background: #f1f5f9 !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.15rem !important;
+  color: #0284c7 !important;
 }
 .sms-card-service-name {
   font-weight: 700 !important;
-  color: #ffffff !important;
-  font-size: 0.95rem !important;
+  color: #0f172a !important;
+  font-size: 1.05rem !important;
 }
 .sms-card-service-price {
-  font-size: 0.82rem !important;
+  font-size: 0.85rem !important;
   color: #64748b !important;
+  font-weight: 500 !important;
+  margin-top: 2px !important;
 }
 .sms-badge-status {
-  padding: 3px 10px !important;
-  border-radius: 6px !important;
-  font-size: 0.78rem !important;
-  font-weight: 800 !important;
+  padding: 4px 14px !important;
+  border-radius: 20px !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
 }
 .sms-badge-status.success {
-  background: #dcfce7 !important;
-  color: #15803d !important;
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+}
+.sms-badge-status.expired {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
 }
 .sms-badge-status.waiting {
   background: #fef3c7 !important;
   color: #b45309 !important;
 }
-.sms-badge-status.expired {
-  background: #fee2e2 !important;
-  color: #b91c1c !important;
-}
 .sms-card-phone-row {
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
+  justify-content: space-between !important;
   padding: 4px 0 !important;
 }
-.sms-flag-vn {
-  font-size: 1.2rem !important;
+.sms-phone-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+.sms-flag-vn-circle {
+  width: 22px !important;
+  height: 22px !important;
+  background: #da251d !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffff00 !important;
+  font-size: 11px !important;
+  flex-shrink: 0 !important;
 }
 .sms-phone-number-big {
-  font-size: 1.35rem !important;
-  font-weight: 900 !important;
-  letter-spacing: 1.5px !important;
-  color: #ffffff !important;
+  font-size: 1.55rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 2px !important;
+  color: #0f172a !important;
   cursor: pointer !important;
+  font-family: monospace, system-ui !important;
 }
 .sms-phone-number-big:hover {
   color: #00b87c !important;
@@ -7871,1075 +7901,155 @@ body.is-admin #profAdminShortcutBtn {
 .sms-btn-copy-mini {
   background: transparent !important;
   border: none !important;
-  color: #64748b !important;
+  color: #94a3b8 !important;
   cursor: pointer !important;
-  padding: 4px !important;
+  padding: 6px !important;
+  font-size: 1.15rem !important;
+  transition: color 0.2s !important;
 }
 .sms-btn-copy-mini:hover {
-  color: #00b87c !important;
+  color: #0f172a !important;
+}
+.sms-ticket-divider {
+  position: relative !important;
+  border-top: 1px dashed #cbd5e1 !important;
+  margin: 4px -20px 10px !important;
+}
+.sms-ticket-divider::before,
+.sms-ticket-divider::after {
+  content: '' !important;
+  position: absolute !important;
+  top: -7px !important;
+  width: 14px !important;
+  height: 14px !important;
+  background: #090e17 !important;
+  border-radius: 50% !important;
+}
+.sms-ticket-divider::before {
+  left: -7px !important;
+}
+.sms-ticket-divider::after {
+  right: -7px !important;
 }
 .sms-code-box-v1 {
   background: #f0fdf4 !important;
-  border: 1px dashed #86efac !important;
-  border-radius: 10px !important;
-  padding: 12px 16px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-}
-.sms-code-val {
-  font-size: 1.75rem !important;
-  font-weight: 900 !important;
-  color: #16a34a !important;
-  letter-spacing: 3px !important;
-}
-.sms-btn-copy-code {
-  background: #10b981 !important;
-  color: #ffffff !important;
-  border: none !important;
-  border-radius: 6px !important;
-  padding: 7px 12px !important;
-  font-size: 0.82rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-}
-.sms-expired-box-v1 {
-  background: #fef2f2 !important;
-  border: 1px solid #fecaca !important;
-  border-radius: 10px !important;
-  padding: 12px 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  color: #b91c1c !important;
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
-}
-.sms-waiting-box-v1 {
-  background: #fffbeb !important;
-  border: 1px dashed #fde68a !important;
-  border-radius: 10px !important;
-  padding: 12px 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  color: #b45309 !important;
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
-}
-.sms-full-text-v1 {
-  background: #070d17 !important;
-  border-radius: 8px !important;
-  padding: 10px 12px !important;
-  font-size: 0.8rem !important;
-  color: #94a3b8 !important;
-  line-height: 1.45 !important;
-  border: 1px solid #152238 !important;
-}
-.sms-card-footer {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding-top: 8px !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
-  font-size: 0.78rem !important;
-  color: #64748b !important;
-}
-.sms-btn-rerent {
-  background: rgba(0, 184, 124, 0.1) !important;
-  border: 1px solid rgba(0, 184, 124, 0.3) !important;
-  color: #00b87c !important;
-  border-radius: 6px !important;
-  padding: 5px 12px !important;
-  font-size: 0.8rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-}
-
-/* ORDER SUMMARY CARD (RIGHT) */
-.sms-otp-summary-card {
-  background: #0c1424 !important;
-  border: 1px solid #1e293b !important;
-  border-radius: 14px !important;
-  padding: 22px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 16px !important;
-  position: sticky !important;
-  top: 90px !important;
-}
-.sms-otp-summary-title {
-  font-size: 1rem !important;
-  font-weight: 800 !important;
-  color: #ffffff !important;
-  letter-spacing: 1px !important;
-  margin: 0 !important;
-}
-.sms-otp-summary-service {
-  background: #111b2e !important;
-  border: 1px solid #233554 !important;
-  border-radius: 10px !important;
-  padding: 14px 16px !important;
-}
-.sms-otp-summary-divider {
-  height: 1px !important;
-  background: #1e293b !important;
-  margin: 4px 0 !important;
-}
-.sms-otp-summary-details {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 10px !important;
-}
-.sms-summary-row {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  font-size: 0.88rem !important;
-}
-.sms-summary-key {
-  color: #64748b !important;
-}
-.sms-summary-val {
-  color: #ffffff !important;
-  font-weight: 600 !important;
-}
-.sms-otp-price-checkout {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 12px !important;
-  margin-top: 4px !important;
-}
-.sms-price-row {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-}
-.sms-price-key {
-  font-size: 0.95rem !important;
-  font-weight: 700 !important;
-  color: #94a3b8 !important;
-}
-.sms-price-val {
-  font-size: 1.55rem !important;
-  font-weight: 900 !important;
-  color: #00b87c !important;
-}
-.sms-otp-rent-btn {
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
-  color: #ffffff !important;
-  border: none !important;
-  border-radius: 10px !important;
-  padding: 14px 20px !important;
-  font-size: 1.05rem !important;
-  font-weight: 800 !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  transition: all 0.2s ease !important;
-  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.4) !important;
-}
-.sms-otp-rent-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #fb923c 0%, #f97316 100%) !important;
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 25px rgba(234, 88, 12, 0.5) !important;
-}
-.sms-otp-rent-btn:disabled {
-  opacity: 0.55 !important;
-  cursor: not-allowed !important;
-}
-.sms-otp-rent-note {
-  font-size: 0.78rem !important;
-  color: #64748b !important;
-  text-align: center !important;
-  line-height: 1.4 !important;
-}
-.sms-otp-request-box {
-  background: #111b2e !important;
-  border: 1px dashed #233554 !important;
-  border-radius: 10px !important;
-  padding: 12px 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: #94a3b8 !important;
-  font-size: 0.82rem !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-  text-align: center !important;
-}
-.sms-otp-request-box:hover {
-  border-color: #00b87c !important;
-  color: #00b87c !important;
-  background: #142138 !important;
-}
-
-/* RESPONSIVE LAYOUT */
-@media (max-width: 1024px) {
-  .sms-otp-main-grid {
-    grid-template-columns: 1fr !important;
-  }
-}
-@media (max-width: 768px) {
-  .sms-otp-wrapper {
-    flex-direction: column !important;
-  }
-  .sms-otp-sidebar {
-    width: 100% !important;
-    min-width: 100% !important;
-  }
-  .sms-side-nav-group {
-    flex-direction: row !important;
-    flex-wrap: wrap !important;
-  }
-  .sms-side-nav-btn {
-    width: auto !important;
-    flex: 1 !important;
-    min-width: 120px !important;
-  }
-}
-
-
-
-/* ==========================================================================
-   VIOTP SMS OTP INTEGRATION - EXACT MATCH HÌNH 1, 2, 3, 4 (v6.6.2)
-   ========================================================================== */
-
-/* 0. FIX HEADER LOGO OVERFLOW: Keep tagline strictly inside 70px navbar */
-.header .logo {
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  height: 70px !important;
-  overflow: visible !important;
-}
-.header .logo-text {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  line-height: 1.1 !important;
-  max-height: 52px !important;
-  overflow: hidden !important;
-}
-.header .logo-text h1,
-#headerSiteName {
-  margin: 0 !important;
-  padding: 0 !important;
-  font-size: 1.15rem !important;
-  font-weight: 800 !important;
-  line-height: 1.2 !important;
-}
-.header .logo-text span {
-  margin: 0 !important;
-  padding: 0 !important;
-  font-size: 0.68rem !important;
-  line-height: 1.1 !important;
-  color: var(--accent-light, #34d399) !important;
-  display: block !important;
-}
-
-/* 1. CONTAINER: Proper padding to sit below fixed 70px navbar */
-#viewSmsOtp {
-  padding-top: 86px !important;
-  max-width: 1440px !important;
-  margin: 0 auto !important;
-  padding-left: 20px !important;
-  padding-right: 20px !important;
-  padding-bottom: 50px !important;
-  box-sizing: border-box !important;
-  color: #cbd5e1 !important;
-}
-
-.sms-otp-wrapper {
-  display: flex !important;
-  gap: 24px !important;
-  align-items: flex-start !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-
-/* 2. SIDEBAR VIOTP (CHUẨN HÌNH 4 & HÌNH 1) */
-.sms-otp-sidebar {
-  width: 250px !important;
-  min-width: 250px !important;
-  flex-shrink: 0 !important;
-  background: linear-gradient(180deg, #071711 0%, #04100c 100%) !important;
-  border: 1px solid #133a29 !important;
-  border-radius: 16px !important;
-  padding: 18px 16px !important;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 16px !important;
-  box-sizing: border-box !important;
-}
-
-.sms-side-brand {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  padding: 2px 4px 12px 4px !important;
-  border-bottom: 1px solid #133a29 !important;
-}
-.sms-side-brand-icon {
-  width: 32px !important;
-  height: 32px !important;
-  background: #00b87c !important;
-  border-radius: 8px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  color: #ffffff !important;
-  font-size: 1.05rem !important;
-}
-.sms-side-brand-name {
-  font-size: 1.15rem !important;
-  font-weight: 800 !important;
-  color: #ffffff !important;
-  letter-spacing: 0.5px !important;
-}
-
-/* SỐ DƯ CARD */
-.sms-side-balance-card {
-  background: #0b251a !important;
-  border: 1px solid #184e36 !important;
-  border-radius: 12px !important;
-  padding: 16px 14px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 8px !important;
-  box-sizing: border-box !important;
-}
-.sms-side-balance-label {
-  font-size: 0.75rem !important;
-  font-weight: 800 !important;
-  color: #6ee7b7 !important;
-  letter-spacing: 1px !important;
-}
-.sms-side-balance {
-  font-size: 1.45rem !important;
-  font-weight: 900 !important;
-  color: #ffffff !important;
-  letter-spacing: 0.5px !important;
-}
-.btn-sms-side-deposit {
-  background: #00b87c !important;
-  color: #04140e !important;
-  border: none !important;
-  border-radius: 8px !important;
-  padding: 9px 12px !important;
-  font-size: 0.88rem !important;
-  font-weight: 800 !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  transition: all 0.2s ease !important;
-}
-.btn-sms-side-deposit:hover {
-  background: #05d691 !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 15px rgba(0, 184, 124, 0.4) !important;
-}
-
-/* NAV BUTTONS */
-.sms-side-nav-group {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 4px !important;
-}
-.sms-side-nav-title {
-  font-size: 0.72rem !important;
-  font-weight: 800 !important;
-  color: #4b6357 !important;
-  letter-spacing: 1.2px !important;
-  padding: 6px 10px !important;
-}
-.sms-side-nav-btn {
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  padding: 10px 14px !important;
-  border-radius: 10px !important;
-  background: transparent !important;
-  color: #94a3b8 !important;
-  font-size: 0.92rem !important;
-  font-weight: 600 !important;
-  border: none !important;
-  cursor: pointer !important;
-  transition: all 0.18s ease !important;
-  text-align: left !important;
-  width: 100% !important;
-  box-sizing: border-box !important;
-}
-.sms-side-nav-btn:hover {
-  background: rgba(0, 184, 124, 0.08) !important;
-  color: #ffffff !important;
-}
-.sms-side-nav-btn.active {
-  background: #0e3323 !important;
-  color: #00b87c !important;
-  font-weight: 700 !important;
-  border: 1px solid #165339 !important;
-}
-
-/* TELEGRAM BUTTON */
-.sms-side-telegram-btn {
-  margin-top: auto !important;
-  background: #08261b !important;
-  border: 1px solid #144732 !important;
-  color: #6ee7b7 !important;
-  border-radius: 10px !important;
-  padding: 11px 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 8px !important;
-  font-size: 0.88rem !important;
-  font-weight: 700 !important;
-  text-decoration: none !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-}
-.sms-side-telegram-btn:hover {
-  background: #0d3827 !important;
-  color: #ffffff !important;
-  border-color: #00b87c !important;
-}
-
-/* 3. MAIN CONTENT AREA */
-.sms-otp-main-content {
-  flex: 1 !important;
-  min-width: 0 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 18px !important;
-}
-
-/* ALERT BANNER */
-.sms-otp-alert {
-  background: #0d1a16 !important;
-  border: 1px solid #144b36 !important;
+  border: 1.5px dashed #86efac !important;
   border-radius: 12px !important;
   padding: 12px 18px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  color: #a7f3d0 !important;
-  font-size: 0.9rem !important;
 }
-.sms-otp-alert-content {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
+.sms-code-val {
+  font-size: 1.95rem !important;
+  font-weight: 800 !important;
+  color: #059669 !important;
+  letter-spacing: 8px !important;
+  font-family: monospace !important;
 }
-.sms-otp-alert-close {
+.sms-btn-copy-code {
   background: transparent !important;
+  color: #059669 !important;
   border: none !important;
-  color: #6ee7b7 !important;
-  cursor: pointer !important;
-  font-size: 1.1rem !important;
-  line-height: 1 !important;
-}
-
-/* HEADER ROW: THUÊ SỐ NHẬN OTP */
-.sms-otp-header-row {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding-bottom: 2px !important;
-}
-.sms-otp-title-wrap {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-}
-.sms-otp-orange-dash {
-  color: #f59e0b !important;
-  font-weight: 900 !important;
-  font-size: 1.4rem !important;
-}
-.sms-otp-main-title {
-  font-size: 1.25rem !important;
-  font-weight: 900 !important;
-  color: #10b981 !important;
-  letter-spacing: 0.8px !important;
-  text-transform: uppercase !important;
-  margin: 0 !important;
-}
-.sms-otp-price-pill-btn {
-  background: transparent !important;
-  border: 1px solid #334155 !important;
-  color: #cbd5e1 !important;
-  border-radius: 20px !important;
-  padding: 6px 16px !important;
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  transition: all 0.2s ease !important;
-}
-.sms-otp-price-pill-btn:hover {
-  border-color: #10b981 !important;
-  color: #10b981 !important;
-}
-
-/* TWO-COLUMN GRID */
-.sms-otp-main-grid {
-  display: grid !important;
-  grid-template-columns: 1fr 340px !important;
-  gap: 20px !important;
-  align-items: flex-start !important;
-}
-.sms-otp-left-col {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 20px !important;
-  min-width: 0 !important;
-}
-.sms-otp-right-col {
-  min-width: 0 !important;
-}
-
-/* 4. STEP SELECTION CARD (CHUẨN HÌNH 4: HÀNG NGANG GỌN ĐẸP) */
-.sms-otp-card {
-  background: #0c1424 !important;
-  border: 1px solid #1e293b !important;
-  border-radius: 14px !important;
-  padding: 20px 22px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
-}
-
-.sms-step-flex-row {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 16px !important;
-}
-.sms-step-left-label {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  flex-shrink: 0 !important;
-}
-.sms-step-badge-num {
-  width: 24px !important;
-  height: 24px !important;
-  background: #1e293b !important;
-  color: #ffffff !important;
-  border-radius: 50% !important;
-  font-size: 0.82rem !important;
-  font-weight: 800 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-.sms-step-title {
-  font-size: 1rem !important;
-  font-weight: 800 !important;
-  color: #ffffff !important;
-}
-.sms-step-count {
-  font-size: 0.8rem !important;
-  font-weight: 600 !important;
-  color: #64748b !important;
-}
-
-.sms-step-right-action {
-  width: 360px !important;
-  max-width: 100% !important;
-  position: relative !important;
-}
-
-.sms-step-divider {
-  height: 1px !important;
-  background: #1e293b !important;
-  margin: 16px 0 !important;
-}
-
-/* DROPDOWN TRIGGER (CHUẨN HÌNH 4) */
-.sms-otp-dropdown-trigger {
-  background: #111b2e !important;
-  border: 1px solid #233554 !important;
-  border-radius: 10px !important;
-  padding: 10px 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  cursor: pointer !important;
-  transition: all 0.2s ease !important;
-}
-.sms-otp-dropdown-trigger:hover {
-  border-color: #00b87c !important;
-  background: #142138 !important;
-}
-.sms-otp-selected-view {
-  display: flex !important;
-  align-items: center !important;
-  gap: 8px !important;
-  font-size: 0.92rem !important;
-  font-weight: 600 !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
-.sms-otp-dropdown-menu {
-  position: absolute !important;
-  top: calc(100% + 6px) !important;
-  left: 0 !important;
-  right: 0 !important;
-  background: #0c1424 !important;
-  border: 1px solid #233554 !important;
-  border-radius: 12px !important;
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6) !important;
-  z-index: 99 !important;
-  overflow: hidden !important;
-}
-.sms-otp-search-wrap {
-  padding: 12px !important;
-  border-bottom: 1px solid #1e293b !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  background: #0f1a2e !important;
-}
-.sms-otp-search-wrap input {
-  flex: 1 !important;
-  background: transparent !important;
-  border: none !important;
-  outline: none !important;
-  color: #ffffff !important;
-  font-size: 0.92rem !important;
-}
-.sms-otp-services-list {
-  max-height: 280px !important;
-  overflow-y: auto !important;
-}
-.sms-otp-service-item,
-.sms-service-item {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  padding: 11px 16px !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
-  cursor: pointer !important;
-  transition: background 0.15s ease !important;
-}
-.sms-otp-service-item:hover,
-.sms-service-item:hover,
-.sms-otp-service-item.active,
-.sms-service-item.active {
-  background: rgba(16, 185, 129, 0.12) !important;
-}
-.sms-service-left {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  font-weight: 600 !important;
-  color: #ffffff !important;
-  font-size: 0.92rem !important;
-}
-.sms-service-price {
-  font-weight: 800 !important;
-  color: #10b981 !important;
   font-size: 0.95rem !important;
-}
-
-/* CAPSULE MODE PILLS (CHUẨN HÌNH 4) */
-.sms-mode-pills-capsule {
-  background: #111b2e !important;
-  border: 1px solid #233554 !important;
-  border-radius: 8px !important;
-  padding: 3px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 4px !important;
-}
-.sms-capsule-btn {
-  flex: 1 !important;
-  background: transparent !important;
-  border: none !important;
-  color: #94a3b8 !important;
-  border-radius: 6px !important;
-  padding: 8px 14px !important;
-  font-size: 0.85rem !important;
   font-weight: 700 !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 6px !important;
-  transition: all 0.2s ease !important;
-  white-space: nowrap !important;
-}
-.sms-capsule-btn.active {
-  background: #1e2e45 !important;
-  color: #ffffff !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
-}
-.sms-mode-desc-text {
-  font-size: 0.82rem !important;
-  color: #64748b !important;
-  margin-top: 14px !important;
-  line-height: 1.5 !important;
-}
-
-/* CARRIER PILLS */
-.sms-carrier-pill {
-  background: #111b2e !important;
-  border: 1px solid #233554 !important;
-  color: #94a3b8 !important;
-  border-radius: 6px !important;
-  padding: 6px 12px !important;
-  font-size: 0.8rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
-}
-.sms-carrier-pill.active {
-  background: #00b87c !important;
-  color: #04140e !important;
-  border-color: #00b87c !important;
-}
-
-/* 5. WAITING SECTION: SỐ ĐANG CHỜ TIN NHẮN (CHUẨN HÌNH 4 & HÌNH 3) */
-.sms-waiting-header-row {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  margin-top: 24px !important;
-  padding-bottom: 8px !important;
-}
-.sms-waiting-title-wrap {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-}
-.sms-waiting-title {
-  font-size: 1.1rem !important;
-  font-weight: 900 !important;
-  color: #10b981 !important;
-  letter-spacing: 0.8px !important;
-  text-transform: uppercase !important;
-}
-.sms-waiting-actions {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-}
-.sms-view-toggles {
-  display: flex !important;
-  background: #111b2e !important;
-  border: 1px solid #233554 !important;
-  border-radius: 8px !important;
-  overflow: hidden !important;
-}
-.sms-view-toggle-btn {
-  background: transparent !important;
-  border: none !important;
-  color: #64748b !important;
-  padding: 6px 10px !important;
-  font-size: 0.85rem !important;
-  cursor: pointer !important;
-}
-.sms-view-toggle-btn.active {
-  background: #1e2e45 !important;
-  color: #ffffff !important;
-}
-
-/* NÚT LƯU Ý KHI THUÊ SỐ (CHUẨN HÌNH 3 & 4) */
-.sms-btn-tips-pill {
-  background: rgba(245, 158, 11, 0.12) !important;
-  border: 1px solid rgba(245, 158, 11, 0.4) !important;
-  color: #f59e0b !important;
-  border-radius: 20px !important;
-  padding: 6px 14px !important;
-  font-size: 0.84rem !important;
-  font-weight: 800 !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  transition: all 0.2s ease !important;
 }
-.sms-btn-tips-pill:hover {
-  background: rgba(245, 158, 11, 0.2) !important;
-  color: #fbbf24 !important;
+.sms-btn-copy-code:hover {
+  color: #047857 !important;
 }
-
-/* HỘP LƯU Ý 5 MỤC (CHUẨN HÌNH 3: 2 CỘT NỀN KEM VIỀN CAM) */
-.sms-tips-box-h3 {
+.sms-full-text-v1 {
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 2px 2px !important;
+  font-size: 0.88rem !important;
+  color: #334155 !important;
+  line-height: 1.5 !important;
+  word-break: break-word !important;
+}
+.sms-expired-box-v1 {
+  background: #fef2f2 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 14px 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+.sms-expired-box-v1 .sms-expired-icon {
+  font-size: 1.35rem !important;
+  color: #dc2626 !important;
+}
+.sms-expired-box-v1 .sms-expired-title {
+  font-weight: 800 !important;
+  color: #991b1b !important;
+  font-size: 0.95rem !important;
+}
+.sms-expired-box-v1 .sms-expired-sub {
+  font-size: 0.82rem !important;
+  color: #b91c1c !important;
+  margin-top: 2px !important;
+}
+.sms-waiting-box-v1 {
   background: #fffdf5 !important;
-  border: 1px solid #fed7aa !important;
-  border-radius: 14px !important;
-  padding: 18px 20px !important;
-  margin-top: 10px !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12) !important;
-}
-.sms-tips-grid {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 14px 24px !important;
-}
-@media (max-width: 800px) {
-  .sms-tips-grid {
-    grid-template-columns: 1fr !important;
-  }
-}
-.sms-tip-cell {
-  display: flex !important;
-  align-items: flex-start !important;
-  gap: 10px !important;
-}
-.sms-tip-sq {
-  width: 22px !important;
-  height: 22px !important;
-  min-width: 22px !important;
-  background: #f97316 !important;
-  color: #ffffff !important;
-  border-radius: 6px !important;
-  font-size: 0.75rem !important;
-  font-weight: 800 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  margin-top: 1px !important;
-}
-.sms-tip-p {
-  font-size: 0.86rem !important;
-  color: #451a03 !important;
-  line-height: 1.5 !important;
-  margin: 0 !important;
-}
-.sms-tip-p strong {
-  color: #7c2d12 !important;
-  font-weight: 800 !important;
-}
-
-/* CAPTION TEXT */
-.sms-otp-waiting-desc {
-  font-size: 0.84rem !important;
-  color: #64748b !important;
-  margin: 10px 0 0 0 !important;
-  line-height: 1.5 !important;
-}
-.sms-otp-waiting-desc strong {
-  color: #00b87c !important;
-}
-
-/* 6. EMPTY STATE (CHUẨN HÌNH 4: VIỀN ĐỨT ICON SIM Ở GIỮA) */
-.sms-otp-empty-state {
-  background: #0c1424 !important;
-  border: 1px dashed rgba(16, 185, 129, 0.25) !important;
-  border-radius: 14px !important;
-  padding: 44px 20px !important;
-  text-align: center !important;
-  margin-top: 14px !important;
-  box-sizing: border-box !important;
-}
-.sms-otp-empty-icon {
-  width: 52px !important;
-  height: 52px !important;
-  background: rgba(16, 185, 129, 0.1) !important;
-  color: #10b981 !important;
+  border: 1.5px dashed #fed7aa !important;
   border-radius: 12px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-size: 1.6rem !important;
-  margin: 0 auto 14px !important;
-}
-.sms-otp-empty-title {
-  font-size: 1.2rem !important;
-  font-weight: 800 !important;
-  color: #ffffff !important;
-  margin: 0 0 6px 0 !important;
-}
-.sms-otp-empty-sub {
-  font-size: 0.9rem !important;
-  color: #64748b !important;
-  margin: 0 !important;
-}
-
-/* 7. RENTAL CARDS (CHUẨN HÌNH 1: THẺ SỐ CỜ VN, CODE TO RÕ) */
-.sms-rental-grid {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
-  gap: 16px !important;
-  margin-top: 14px !important;
-}
-.sms-card-v1 {
-  background: #0c1424 !important;
-  border: 1px solid #1e2e45 !important;
-  border-radius: 12px !important;
-  padding: 16px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 12px !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
-  box-sizing: border-box !important;
-}
-.sms-card-header {
+  padding: 14px 18px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
 }
-.sms-card-service-meta {
+.sms-waiting-loader {
+  font-weight: 700 !important;
+  color: #b45309 !important;
+  font-size: 0.95rem !important;
   display: flex !important;
   align-items: center !important;
   gap: 8px !important;
 }
-.sms-card-service-name {
-  font-weight: 700 !important;
-  color: #ffffff !important;
+.sms-countdown-timer {
+  font-family: monospace !important;
+  font-weight: 800 !important;
+  color: #b45309 !important;
+  background: rgba(180, 83, 9, 0.1) !important;
+  border-radius: 6px !important;
+  padding: 3px 8px !important;
   font-size: 0.95rem !important;
 }
-.sms-card-service-price {
-  font-size: 0.82rem !important;
-  color: #64748b !important;
-}
-.sms-badge-status {
-  padding: 3px 10px !important;
-  border-radius: 6px !important;
-  font-size: 0.78rem !important;
-  font-weight: 800 !important;
-}
-.sms-badge-status.success {
-  background: #dcfce7 !important;
-  color: #15803d !important;
-}
-.sms-badge-status.waiting {
-  background: #fef3c7 !important;
-  color: #b45309 !important;
-}
-.sms-badge-status.expired {
-  background: #fee2e2 !important;
-  color: #b91c1c !important;
-}
-.sms-card-phone-row {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  padding: 4px 0 !important;
-}
-.sms-flag-vn {
-  font-size: 1.2rem !important;
-}
-.sms-phone-number-big {
-  font-size: 1.35rem !important;
-  font-weight: 900 !important;
-  letter-spacing: 1.5px !important;
-  color: #ffffff !important;
-  cursor: pointer !important;
-}
-.sms-phone-number-big:hover {
-  color: #00b87c !important;
-}
-.sms-btn-copy-mini {
-  background: transparent !important;
-  border: none !important;
-  color: #64748b !important;
-  cursor: pointer !important;
-  padding: 4px !important;
-}
-.sms-btn-copy-mini:hover {
-  color: #00b87c !important;
-}
-.sms-code-box-v1 {
-  background: #f0fdf4 !important;
-  border: 1px dashed #86efac !important;
-  border-radius: 10px !important;
-  padding: 12px 16px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-}
-.sms-code-val {
-  font-size: 1.75rem !important;
-  font-weight: 900 !important;
-  color: #16a34a !important;
-  letter-spacing: 3px !important;
-}
-.sms-btn-copy-code {
-  background: #10b981 !important;
-  color: #ffffff !important;
-  border: none !important;
-  border-radius: 6px !important;
-  padding: 7px 12px !important;
-  font-size: 0.82rem !important;
-  font-weight: 700 !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-}
-.sms-expired-box-v1 {
-  background: #fef2f2 !important;
-  border: 1px solid #fecaca !important;
-  border-radius: 10px !important;
-  padding: 12px 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  color: #b91c1c !important;
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
-}
-.sms-waiting-box-v1 {
-  background: #fffbeb !important;
-  border: 1px dashed #fde68a !important;
-  border-radius: 10px !important;
-  padding: 12px 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  color: #b45309 !important;
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
-}
-.sms-full-text-v1 {
-  background: #070d17 !important;
-  border-radius: 8px !important;
-  padding: 10px 12px !important;
+.sms-waiting-sub {
   font-size: 0.8rem !important;
-  color: #94a3b8 !important;
-  line-height: 1.45 !important;
-  border: 1px solid #152238 !important;
+  color: #64748b !important;
+  padding: 2px 2px !important;
 }
 .sms-card-footer {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding-top: 8px !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
-  font-size: 0.78rem !important;
+  padding-top: 4px !important;
+  border-top: none !important;
+  font-size: 0.85rem !important;
   color: #64748b !important;
+  font-weight: 500 !important;
 }
 .sms-btn-rerent {
-  background: rgba(0, 184, 124, 0.1) !important;
-  border: 1px solid rgba(0, 184, 124, 0.3) !important;
-  color: #00b87c !important;
-  border-radius: 6px !important;
-  padding: 5px 12px !important;
-  font-size: 0.8rem !important;
+  background: #d1fae5 !important;
+  border: none !important;
+  color: #065f46 !important;
+  border-radius: 20px !important;
+  padding: 6px 16px !important;
+  font-size: 0.85rem !important;
   font-weight: 700 !important;
   cursor: pointer !important;
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
+  transition: background 0.2s !important;
+}
+.sms-btn-rerent:hover {
+  background: #a7f3d0 !important;
 }
 
 /* 8. ORDER SUMMARY CARD (CHUẨN HÌNH 4: COUPON TICKET XANH NGỌC) */
