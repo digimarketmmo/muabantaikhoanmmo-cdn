@@ -53924,12 +53924,102 @@ function cleanupSmsRentalsOnF5() {
   window.cleanupSmsRentalsOnF5 = cleanupSmsRentalsOnF5;
   try { cleanupSmsRentalsOnF5(); } catch(eCl) {}
 
+  async function checkViotpSourceBalance(forceRefresh) {
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var res = await fetch(workerUrl + '/api/viotp/balance');
+      var json = await res.json();
+      if (!json || !json.success) return;
+
+      var bal = typeof json.balance === 'number' ? json.balance : 0;
+      window._viotpSourceBalance = bal;
+      var isOutOfMoney = (bal <= 0) || !!json.isOutOfBalance;
+      var isLowMoney = (bal < 2000) || !!json.isLowBalance;
+      var isAdm = (typeof isAdminUser === 'function') && isAdminUser();
+
+      // 1. Cập nhật thẻ số dư Web nguồn trong Quản Trị Viên (Admin View)
+      var admBalEl = document.getElementById('admViotpSourceBal');
+      if (admBalEl) {
+        admBalEl.innerText = bal.toLocaleString('vi-VN') + ' đ';
+      }
+      var admBadgeEl = document.getElementById('admViotpBalBadge');
+      if (admBadgeEl) {
+        admBadgeEl.style.display = 'inline-block';
+        if (isOutOfMoney) {
+          admBadgeEl.style.background = 'rgba(239, 68, 68, 0.2)';
+          admBadgeEl.style.color = '#ef4444';
+          admBadgeEl.style.border = '1px solid #ef4444';
+          admBadgeEl.innerText = '⚠️ HẾT TIỀN - CẦN NẠP THÊM';
+        } else if (isLowMoney) {
+          admBadgeEl.style.background = 'rgba(245, 158, 11, 0.2)';
+          admBadgeEl.style.color = '#f59e0b';
+          admBadgeEl.style.border = '1px solid #f59e0b';
+          admBadgeEl.innerText = '⚠️ SẮP HẾT TIỀN';
+        } else {
+          admBadgeEl.style.background = 'rgba(16, 185, 129, 0.2)';
+          admBadgeEl.style.color = '#10b981';
+          admBadgeEl.style.border = '1px solid #10b981';
+          admBadgeEl.innerText = '● HOẠT ĐỘNG TỐT';
+        }
+      }
+
+      // 2. Banner cảnh báo Admin trên trang Thuê SIM & Header Admin
+      var admAlertBanner = document.getElementById('smsAdminLowBalanceBanner');
+      var admLiveText = document.getElementById('admViotpLiveBalText');
+      if (admLiveText) admLiveText.innerText = bal.toLocaleString('vi-VN') + ' đ';
+
+      if (isAdm && (isOutOfMoney || isLowMoney)) {
+        if (admAlertBanner) admAlertBanner.style.setProperty('display', 'flex', 'important');
+      } else {
+        if (admAlertBanner) admAlertBanner.style.setProperty('display', 'none', 'important');
+      }
+
+      // 3. Banner thông báo Bảo trì cho Khách hàng trên trang Thuê SIM
+      var maintBanner = document.getElementById('smsMaintenanceBanner');
+      var rentBtn = document.getElementById('smsOtpRentBtn');
+
+      if (isOutOfMoney) {
+        window._viotpInMaintenance = true;
+        if (maintBanner) maintBanner.style.setProperty('display', 'flex', 'important');
+        if (rentBtn) {
+          rentBtn.disabled = true;
+          rentBtn.setAttribute('disabled', 'disabled');
+          rentBtn.innerHTML = '<i class="fa-solid fa-screwdriver-wrench"></i> Dịch vụ đang bảo trì (Quay lại sau)';
+          rentBtn.style.background = '#475569';
+          rentBtn.style.cursor = 'not-allowed';
+        }
+      } else {
+        window._viotpInMaintenance = false;
+        if (maintBanner) maintBanner.style.setProperty('display', 'none', 'important');
+        if (rentBtn && rentBtn.innerHTML.includes('bảo trì')) {
+          rentBtn.disabled = !window._smsOtpSelectedService;
+          if (window._smsOtpSelectedService) rentBtn.removeAttribute('disabled');
+          rentBtn.innerHTML = 'Thuê số ngay <i class="fa-solid fa-arrow-right"></i>';
+          rentBtn.style.background = '';
+          rentBtn.style.cursor = '';
+        }
+      }
+
+      if (forceRefresh && typeof showToast === 'function') {
+        showToast('Đã làm mới số dư ViOTP: ' + bal.toLocaleString('vi-VN') + ' đ', isOutOfMoney ? 'error' : 'success');
+      }
+    } catch(e) {
+      console.warn('Lỗi kiểm tra số dư ViOTP:', e);
+    }
+  }
+  window.checkViotpSourceBalance = checkViotpSourceBalance;
+
 async function initSmsOtpView() {
     cleanupSmsRentalsOnF5();
     renderSmsRentals();
     if (typeof renderSmsHistory === 'function') renderSmsHistory();
 
     updateSmsUserBalanceDisplay();
+
+    // Tự động kiểm tra số dư nguồn ViOTP để cập nhật thông báo bảo trì / cảnh báo Admin
+    if (typeof checkViotpSourceBalance === 'function') {
+      checkViotpSourceBalance(false);
+    }
 
     if (!window._smsOtpServices || window._smsOtpServices.length === 0) {
       await loadSmsOtpServices();
@@ -54277,6 +54367,20 @@ async function initSmsOtpView() {
       return;
     }
 
+    if (window._viotpInMaintenance) {
+      var isAdm = (typeof isAdminUser === 'function') && isAdminUser();
+      if (isAdm) {
+        if (typeof showToast === 'function') {
+          showToast('⚠️ Cảnh báo Admin: Web nguồn thuê SIM ViOTP đã hết tiền, cần nạp thêm!', 'error', 9000);
+        }
+      } else {
+        if (typeof showToast === 'function') {
+          showToast('⚠️ Dịch vụ bảo trì vui lòng quay lại sau!', 'warning', 7000);
+        }
+      }
+      return;
+    }
+
     var rentBtn = document.getElementById('smsOtpRentBtn');
     if (rentBtn) {
       rentBtn.disabled = true;
@@ -54309,6 +54413,40 @@ async function initSmsOtpView() {
       var data = await res.json();
 
       if (!res.ok || !data.success || !data.rental) {
+        var isOutOfBal = data.isSourceOutOfBalance || data.maintenance || false;
+        var rawErr = (data.error || data.message || '').toLowerCase();
+        if (rawErr.includes('không đủ tiền') || rawErr.includes('khong du tien') || rawErr.includes('bảo trì') || rawErr.includes('hết tiền')) {
+          isOutOfBal = true;
+        }
+
+        if (isOutOfBal) {
+          window._viotpInMaintenance = true;
+          var maintBanner = document.getElementById('smsMaintenanceBanner');
+          if (maintBanner) maintBanner.style.setProperty('display', 'flex', 'important');
+
+          var isAdmCheck = (typeof isAdminUser === 'function') && isAdminUser();
+          if (isAdmCheck) {
+            var admAlertBanner = document.getElementById('smsAdminLowBalanceBanner');
+            if (admAlertBanner) admAlertBanner.style.setProperty('display', 'flex', 'important');
+            if (typeof showToast === 'function') {
+              showToast('⚠️ CẢNH BÁO ADMIN: Web nguồn thuê sim ViOTP đã hết tiền, cần nạp thêm!', 'error', 9000);
+            }
+          } else {
+            if (typeof showToast === 'function') {
+              showToast('⚠️ Dịch vụ bảo trì vui lòng quay lại sau!', 'warning', 7000);
+            }
+          }
+          if (rentBtn) {
+            rentBtn.disabled = true;
+            rentBtn.setAttribute('disabled', 'disabled');
+            rentBtn.innerHTML = '<i class="fa-solid fa-screwdriver-wrench"></i> Dịch vụ đang bảo trì (Quay lại sau)';
+            rentBtn.style.background = '#475569';
+            rentBtn.style.cursor = 'not-allowed';
+          }
+          if (typeof checkViotpSourceBalance === 'function') checkViotpSourceBalance(false);
+          return;
+        }
+
         var errMsg = data.error || data.message || 'Không thể thuê số. Vui lòng thử lại sau ít phút!';
         if (typeof showToast === 'function') showToast('❌ ' + errMsg, 'error');
         if (rentBtn) {
@@ -54611,6 +54749,21 @@ async function initSmsOtpView() {
         });
         var data = await res.json();
         if (!res.ok || !data.success || !data.rental) {
+          var isOutOfBal = data.isSourceOutOfBalance || data.maintenance || false;
+          var rawErr = (data.error || data.message || '').toLowerCase();
+          if (rawErr.includes('không đủ tiền') || rawErr.includes('bảo trì') || rawErr.includes('hết tiền')) {
+            isOutOfBal = true;
+          }
+          if (isOutOfBal) {
+            var isAdm = (typeof isAdminUser === 'function') && isAdminUser();
+            if (isAdm) {
+              if (typeof showToast === 'function') showToast('⚠️ Cảnh báo Admin: Web nguồn thuê sim ViOTP đã hết tiền, cần nạp thêm!', 'error', 9000);
+            } else {
+              if (typeof showToast === 'function') showToast('⚠️ Dịch vụ bảo trì vui lòng quay lại sau!', 'warning', 7000);
+            }
+            if (typeof checkViotpSourceBalance === 'function') checkViotpSourceBalance(false);
+            return;
+          }
           if (typeof showToast === 'function') showToast('❌ ' + (data.error || data.message || 'Không thể thuê lại số này'), 'error');
           return;
         }
@@ -55377,6 +55530,9 @@ smsCol = '<div class="sms-hist-msg-text" title="' + cleanHMsg.replace(/"/g, '&qu
         if (chk) chk.checked = s.marginEnabled !== undefined ? s.marginEnabled : s.enabled;
 
         updateSmsOtpAdminPreview();
+      }
+      if (typeof checkViotpSourceBalance === 'function') {
+        checkViotpSourceBalance(false);
       }
     } catch(e) {
       console.warn('Lỗi loadSmsOtpAdminSettings:', e);

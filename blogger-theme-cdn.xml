@@ -408,8 +408,8 @@
     }
   </style>
   <link rel='preconnect' href='https://cdn.jsdelivr.net' crossorigin='anonymous'/>
-  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.4/bundle.min.js?v=6.6.4' as='script'/>
-  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.4/theme.min.css?v=6.6.4' as='style'/>
+  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/bundle.min.js?v=6.8.2' as='script'/>
+  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/theme.min.css?v=6.8.2' as='style'/>
   <script>
     /* BẢO TỒN DỮ LIỆU KHO HÀNG ĐÃ XÓA (0MS) */
     try {
@@ -769,13 +769,39 @@
     /* EARLY CENTRALIZED WALLET BALANCE UI SYNC ENGINE */
     window.syncAllWalletBalanceUI = window.syncAllWalletBalanceUI || function(amount) {
       try {
-        var num = (typeof amount === "number") ? amount : (Number(amount) || 0);
+        var num;
+        if (typeof amount === "number" && !isNaN(amount)) {
+          num = amount;
+        } else if (amount !== undefined && amount !== null && !isNaN(Number(amount))) {
+          num = Number(amount);
+        } else {
+          var cur = (window.currentUser && window.currentUser.balance !== undefined) ? window.currentUser.balance : null;
+          if (cur === null) {
+            try {
+              var raw = localStorage.getItem('mmo_user');
+              if (raw) cur = JSON.parse(raw).balance;
+            } catch(e) {}
+          }
+          if (cur !== null && !isNaN(Number(cur))) {
+            num = Number(cur);
+          } else {
+            return;
+          }
+        }
         var fmt = num.toLocaleString("vi-VN") + " \u0111";
-        var elIds = ["headerWalletBalance", "profDisplayBalance", "profBalanceDisplay", "mobDrawerBalance"];
+        var elIds = ["headerWalletBalance", "profDisplayBalance", "profBalanceDisplay", "mobDrawerBalance", "smsSidebarBalance", "poModalUserBalance"];
         for (var i = 0; i < elIds.length; i++) {
           var el = document.getElementById(elIds[i]);
           if (el) el.innerText = fmt;
         }
+        var sumBal = document.getElementById("smsSumBalAfter");
+        if (sumBal) {
+          var p = window._smsOtpSelectedService ? Number(window._smsOtpSelectedService.price || 0) : 0;
+          var remain = num - p;
+          sumBal.innerText = (remain < 0 ? 0 : remain).toLocaleString("vi-VN") + " \u0111";
+          sumBal.style.color = (remain < 0) ? "#ef4444" : "#10b981";
+        }
+        if (window.currentUser) window.currentUser.balance = num;
       } catch(e) {}
     };
 
@@ -1561,7 +1587,7 @@
       }
     }
   </style>
-<link href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.4/theme.min.css?v=6.6.4' id='mmoCdnThemeCss' rel='stylesheet' onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/theme.min.css';"/>
+<link href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/theme.min.css?v=6.8.2' id='mmoCdnThemeCss' rel='stylesheet' onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/theme.min.css';"/>
 
   <!-- Google Identity Services -->
   <script src='https://accounts.google.com/gsi/client' async='' defer=''></script>
@@ -1587,8 +1613,8 @@
   <b:skin><![CDATA[
 /* ==========================================================================
    MUABANTAIKHOANMMO.COM - CDN THEME ENGINE
-   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.4/theme.min.css?v=6.6.4
-   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.4/bundle.min.js?v=6.6.4
+   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/theme.min.css?v=6.8.2
+   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/bundle.min.js?v=6.8.2
    ========================================================================== */
 body { margin: 0; padding: 0; background: #070a12; color: #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif; }
 
@@ -3413,7 +3439,7 @@ header.header {
 
 
 /* ==========================================================================
-   VIOTP SMS OTP INTEGRATION - EXACT MATCH HÌNH 1, 2, 3, 4 (v6.6.4)
+   VIOTP SMS OTP INTEGRATION - EXACT MATCH HÌNH 1, 2, 3, 4 (v6.6.9)
    ========================================================================== */
 
 /* 0. FIX HEADER LOGO OVERFLOW: Keep tagline strictly inside 70px navbar */
@@ -4084,15 +4110,17 @@ header.header {
   margin-top: 14px !important;
 }
 .sms-card-v1 {
-  background: #0c1424 !important;
-  border: 1px solid #1e2e45 !important;
-  border-radius: 12px !important;
-  padding: 16px !important;
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 16px !important;
+  padding: 18px 20px !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 12px !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04) !important;
   box-sizing: border-box !important;
+  position: relative !important;
+  margin-bottom: 16px !important;
 }
 .sms-card-header {
   display: flex !important;
@@ -4102,50 +4130,82 @@ header.header {
 .sms-card-service-meta {
   display: flex !important;
   align-items: center !important;
-  gap: 8px !important;
+  gap: 12px !important;
+}
+.sms-srv-icon {
+  width: 38px !important;
+  height: 38px !important;
+  background: #f1f5f9 !important;
+  border-radius: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 1.15rem !important;
+  color: #0284c7 !important;
 }
 .sms-card-service-name {
   font-weight: 700 !important;
-  color: #ffffff !important;
-  font-size: 0.95rem !important;
+  color: #0f172a !important;
+  font-size: 1.05rem !important;
 }
 .sms-card-service-price {
-  font-size: 0.82rem !important;
+  font-size: 0.85rem !important;
   color: #64748b !important;
+  font-weight: 500 !important;
+  margin-top: 2px !important;
 }
 .sms-badge-status {
-  padding: 3px 10px !important;
-  border-radius: 6px !important;
-  font-size: 0.78rem !important;
-  font-weight: 800 !important;
+  padding: 4px 12px !important;
+  border-radius: 20px !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  white-space: nowrap !important;
+  display: inline-block !important;
+  text-align: center !important;
+  line-height: 1.2 !important;
 }
 .sms-badge-status.success {
-  background: #dcfce7 !important;
-  color: #15803d !important;
+  background: #d1fae5 !important;
+  color: #065f46 !important;
+}
+.sms-badge-status.expired {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
 }
 .sms-badge-status.waiting {
   background: #fef3c7 !important;
   color: #b45309 !important;
 }
-.sms-badge-status.expired {
-  background: #fee2e2 !important;
-  color: #b91c1c !important;
-}
 .sms-card-phone-row {
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
+  justify-content: space-between !important;
   padding: 4px 0 !important;
 }
-.sms-flag-vn {
-  font-size: 1.2rem !important;
+.sms-phone-left {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+.sms-flag-vn-circle {
+  width: 22px !important;
+  height: 22px !important;
+  background: #da251d !important;
+  border-radius: 50% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #ffff00 !important;
+  font-size: 11px !important;
+  flex-shrink: 0 !important;
 }
 .sms-phone-number-big {
-  font-size: 1.35rem !important;
-  font-weight: 900 !important;
-  letter-spacing: 1.5px !important;
-  color: #ffffff !important;
+  font-size: 1.55rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 2px !important;
+  color: #0f172a !important;
   cursor: pointer !important;
+  font-family: monospace, system-ui !important;
 }
 .sms-phone-number-big:hover {
   color: #00b87c !important;
@@ -4153,95 +4213,204 @@ header.header {
 .sms-btn-copy-mini {
   background: transparent !important;
   border: none !important;
-  color: #64748b !important;
+  color: #94a3b8 !important;
   cursor: pointer !important;
-  padding: 4px !important;
+  padding: 6px !important;
+  font-size: 1.15rem !important;
+  transition: color 0.2s !important;
 }
 .sms-btn-copy-mini:hover {
-  color: #00b87c !important;
+  color: #0f172a !important;
+}
+.sms-ticket-divider {
+  position: relative !important;
+  border-top: 1px dashed #cbd5e1 !important;
+  margin: 4px -20px 10px !important;
+}
+.sms-ticket-divider::before,
+.sms-ticket-divider::after {
+  content: '' !important;
+  position: absolute !important;
+  top: -7px !important;
+  width: 14px !important;
+  height: 14px !important;
+  background: #090e17 !important;
+  border-radius: 50% !important;
+}
+.sms-ticket-divider::before {
+  left: -7px !important;
+}
+.sms-ticket-divider::after {
+  right: -7px !important;
 }
 .sms-code-box-v1 {
   background: #f0fdf4 !important;
-  border: 1px dashed #86efac !important;
-  border-radius: 10px !important;
-  padding: 12px 16px !important;
+  border: 1.5px dashed #86efac !important;
+  border-radius: 12px !important;
+  padding: 10px 16px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  overflow: hidden !important;
+}
+.sms-code-val {
+  font-size: 1.6rem !important;
+  font-weight: 800 !important;
+  color: #059669 !important;
+  letter-spacing: 4px !important;
+  font-family: monospace, system-ui !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+.sms-btn-copy-code {
+  background: transparent !important;
+  color: #059669 !important;
+  border: none !important;
+  font-size: 0.92rem !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+.sms-pagination-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  margin-top: 22px !important;
+  margin-bottom: 10px !important;
+}
+.sms-page-btn {
+  background: #0c1424 !important;
+  border: 1px solid #1e293b !important;
+  color: #94a3b8 !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+.sms-page-btn:hover:not(:disabled) {
+  border-color: #00b87c !important;
+  color: #00b87c !important;
+  background: rgba(0, 184, 124, 0.08) !important;
+}
+.sms-page-btn.active {
+  background: #00b87c !important;
+  border-color: #00b87c !important;
+  color: #ffffff !important;
+}
+.sms-page-btn:disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
+}
+.sms-btn-copy-code:hover {
+  color: #047857 !important;
+}
+.sms-full-text-v1 {
+  background: transparent !important;
+  border: none !important;
+  padding: 4px 2px 2px !important;
+  font-size: 0.88rem !important;
+  color: #334155 !important;
+  line-height: 1.5 !important;
+  word-break: break-word !important;
+}
+.sms-expired-box-v1 {
+  background: #fef2f2 !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 14px 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 14px !important;
+}
+.sms-expired-box-v1 .sms-expired-icon {
+  font-size: 1.35rem !important;
+  color: #dc2626 !important;
+}
+.sms-expired-box-v1 .sms-expired-title {
+  font-weight: 800 !important;
+  color: #991b1b !important;
+  font-size: 0.95rem !important;
+}
+.sms-expired-box-v1 .sms-expired-sub {
+  font-size: 0.82rem !important;
+  color: #b91c1c !important;
+  margin-top: 2px !important;
+}
+.sms-waiting-box-v1 {
+  background: #fffdf5 !important;
+  border: 1.5px dashed #fed7aa !important;
+  border-radius: 12px !important;
+  padding: 14px 18px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
 }
-.sms-code-val {
-  font-size: 1.75rem !important;
-  font-weight: 900 !important;
-  color: #16a34a !important;
-  letter-spacing: 3px !important;
-}
-.sms-btn-copy-code {
-  background: #10b981 !important;
-  color: #ffffff !important;
-  border: none !important;
-  border-radius: 6px !important;
-  padding: 7px 12px !important;
-  font-size: 0.82rem !important;
+.sms-waiting-loader {
   font-weight: 700 !important;
-  cursor: pointer !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-}
-.sms-expired-box-v1 {
-  background: #fef2f2 !important;
-  border: 1px solid #fecaca !important;
-  border-radius: 10px !important;
-  padding: 12px 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  color: #b91c1c !important;
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
-}
-.sms-waiting-box-v1 {
-  background: #fffbeb !important;
-  border: 1px dashed #fde68a !important;
-  border-radius: 10px !important;
-  padding: 12px 14px !important;
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
   color: #b45309 !important;
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
+  font-size: 0.95rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
 }
-.sms-full-text-v1 {
-  background: #070d17 !important;
+.sms-countdown-timer {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+  font-weight: 800 !important;
+  color: #ea580c !important;
+  background: rgba(234, 88, 12, 0.1) !important;
+  border: 1px solid rgba(234, 88, 12, 0.25) !important;
   border-radius: 8px !important;
-  padding: 10px 12px !important;
+  padding: 4px 10px !important;
+  font-size: 1.05rem !important;
+  letter-spacing: 1px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 58px !important;
+}
+.sms-waiting-sub {
   font-size: 0.8rem !important;
-  color: #94a3b8 !important;
-  line-height: 1.45 !important;
-  border: 1px solid #152238 !important;
+  color: #64748b !important;
+  padding: 2px 2px !important;
 }
 .sms-card-footer {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding-top: 8px !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
-  font-size: 0.78rem !important;
+  padding-top: 4px !important;
+  border-top: none !important;
+  font-size: 0.85rem !important;
   color: #64748b !important;
+  font-weight: 500 !important;
 }
 .sms-btn-rerent {
-  background: rgba(0, 184, 124, 0.1) !important;
-  border: 1px solid rgba(0, 184, 124, 0.3) !important;
-  color: #00b87c !important;
-  border-radius: 6px !important;
-  padding: 5px 12px !important;
-  font-size: 0.8rem !important;
+  background: #d1fae5 !important;
+  border: none !important;
+  color: #065f46 !important;
+  border-radius: 20px !important;
+  padding: 6px 16px !important;
+  font-size: 0.85rem !important;
   font-weight: 700 !important;
   cursor: pointer !important;
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
+  transition: background 0.2s !important;
+}
+.sms-btn-rerent:hover {
+  background: #a7f3d0 !important;
 }
 
 /* 8. ORDER SUMMARY CARD (CHUẨN HÌNH 4: COUPON TICKET XANH NGỌC) */
@@ -4400,6 +4569,30 @@ header.header {
 }
 
 
+
+/* SMS OTP SOURCE BALANCE & MAINTENANCE ALERTS */
+.sms-maintenance-banner {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.16), rgba(217, 119, 6, 0.22)) !important;
+  border: 1px solid rgba(245, 158, 11, 0.6) !important;
+  border-radius: 12px !important;
+  padding: 16px 20px !important;
+  margin-bottom: 20px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25) !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+.sms-admin-alert-banner {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.22), rgba(185, 28, 28, 0.28)) !important;
+  border: 1px solid rgba(239, 68, 68, 0.7) !important;
+  border-radius: 12px !important;
+  padding: 16px 20px !important;
+  margin-bottom: 20px !important;
+  box-shadow: 0 4px 18px rgba(239, 68, 68, 0.25) !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  flex-wrap: wrap !important;
+}
 
 /* FAKE PROFILE CARD - INSTANT ZERO-DELAY FULL STRETCH */
 .fake-profile-card {
@@ -4931,6 +5124,8 @@ header.header {
                   var bal = (u.balance !== undefined && !isNaN(Number(u.balance))) ? Number(u.balance) : 0;
                   var bEl = document.getElementById("headerWalletBalance");
                   if (bEl) bEl.innerText = bal.toLocaleString("vi-VN") + " đ";
+                  var sEl = document.getElementById("smsSidebarBalance");
+                  if (sEl) sEl.innerText = bal.toLocaleString("vi-VN") + " đ";
                   var aEl = document.getElementById("authArea");
                   if (aEl) {
                     var name = u.name || u.email.split("@")[0];
@@ -6152,6 +6347,172 @@ header.header {
 
   <!-- ==================== VIEW SMS OTP: THUÊ SỐ NHẬN MÃ OTP (VIOTP) ==================== -->
       <section class='container sms-otp-container' id='viewSmsOtp' style='display:none !important;'>
+    <!-- INLINE ZERO-LATENCY TAB SWITCHER ENGINE -->
+    <script type='text/javascript'>
+      //<![CDATA[
+      function switchSmsTab(tab) {
+        var rentView = document.getElementById('smsRentTabView');
+        var histView = document.getElementById('smsOtpHistorySection');
+        var rentBtn = document.getElementById('smsNavRentBtn');
+        var histBtn = document.getElementById('smsNavHistBtn');
+
+        if (tab === 'history') {
+          if (rentView) rentView.style.setProperty('display', 'none', 'important');
+          if (histView) histView.style.setProperty('display', 'block', 'important');
+          if (rentBtn) rentBtn.classList.remove('active');
+          if (histBtn) histBtn.classList.add('active');
+          if (typeof renderSmsHistory === 'function') renderSmsHistory();
+        } else {
+          if (rentView) rentView.style.setProperty('display', 'block', 'important');
+          if (histView) histView.style.setProperty('display', 'none', 'important');
+          if (rentBtn) rentBtn.classList.add('active');
+          if (histBtn) histBtn.classList.remove('active');
+          if (typeof renderSmsRentals === 'function') renderSmsRentals();
+        }
+      }
+      window.switchSmsTab = switchSmsTab;
+      window.scrollToSmsHistory = function() { switchSmsTab('history'); };
+
+      window._smsRentalsPage = window._smsRentalsPage || 1;
+      function changeSmsRentalsPage(page) {
+        window._smsRentalsPage = page;
+        if (typeof renderSmsRentals === 'function') renderSmsRentals();
+        var sec = document.getElementById('smsOtpWaitingSection');
+        if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      window.changeSmsRentalsPage = changeSmsRentalsPage;
+
+      function cleanupSmsRentalsOnF5() {
+        try {
+          var saved = localStorage.getItem('mmo_sms_rentals');
+          if (!saved) { window._smsOtpRentals = []; return; }
+          var list = JSON.parse(saved);
+          if (!Array.isArray(list)) { window._smsOtpRentals = []; return; }
+          var nowSec = Math.floor(Date.now() / 1000);
+          var cleaned = [];
+          list.forEach(function(r) {
+            if (!r) return;
+            var createdSec = 0;
+            if (r.createdAt) {
+              createdSec = (typeof r.createdAt === 'number') ? (r.createdAt < 10000000000 ? r.createdAt : Math.floor(r.createdAt / 1000)) : Math.floor(new Date(r.createdAt).getTime() / 1000);
+            }
+            var isTimeout = (r.status === 0 && createdSec && (nowSec - createdSec) > 420);
+            var isExpired = (r.status === 2 || r.refunded === 1 || isTimeout);
+            if (isExpired) return; // Không lưu đơn hết hạn
+            if (r.status === 1) {
+              r.inWaitingScreen = false; if (r.smsContent) r.smsContent = cleanSmsVietnameseText(r.smsContent);
+              cleaned.push(r);
+              return;
+            }
+            if (r.status === 0) {
+              r.inWaitingScreen = true;
+              cleaned.push(r);
+            }
+          });
+          window._smsOtpRentals = cleaned;
+          localStorage.setItem('mmo_sms_rentals', JSON.stringify(cleaned));
+        } catch(e) {}
+      }
+      window.cleanupSmsRentalsOnF5 = cleanupSmsRentalsOnF5;
+      function cleanSmsVietnameseText(str) {
+        if (!str || typeof str !== 'string') return str || '';
+        var s = str;
+        if (/PayPal/i.test(s)) {
+          var m = s.match(/(?:<#>s*)?PayPal:?s*.*?(?:l[aà\?]|là|la)?\s*(\d{4,8})\.?\s*(?:.*?[hH][?eê\w\W]*?[hH][?aạ\w\W]*?\s*sau\s*(\d+)\s*ph[uú\w]*\b)?\.?\s*(?:.*?(?:tr[?a\w]*\s*l[?o\w]*|[?]{2,}))?\.?\s*([A-Za-z0-9\/+_-]{8,})?$/i);
+          if (m) {
+            var code = m[1];
+            var mins = m[2] || '10';
+            var hash = m[3] ? (' ' + m[3].trim()) : '';
+            return '<#> PayPal: Mã bảo mật là ' + code + '. Hết hạn sau ' + mins + ' phút. Đừng trả lời.' + hash;
+          }
+        }
+        s = s.replace(/Ma\s+b[\?]+o\s+m[\?\-]+t/gi, 'Mã bảo mật')
+             .replace(/b[\?]+o\s+m[\?\-]+t/gi, 'bảo mật')
+             .replace(/m[\?\-]+t\s+kh[\?]+u/gi, 'mật khẩu')
+             .replace(/x[\?]+c\s+minh/gi, 'xác minh')
+             .replace(/x[\?]+c\s+th[\?]+c/gi, 'xác thực')
+             .replace(/t[\?]+i\s+kho[\?]+n/gi, 'tài khoản')
+             .replace(/H[\?Yy]+t\s+h[\?@a]+n/gi, 'Hết hạn')
+             .replace(/h[\?Yy]+t\s+h[\?@a]+n/gi, 'hết hạn')
+             .replace(/sau\s+(\d+)\s+ph[\?]*ut/gi, 'sau $1 phút')
+             .replace(/[\?]+eng\s+tr[\?]+(?:\s+l[\?Yy]+i)?/gi, 'Đừng trả lời')
+             .replace(/\b(?:Dung|dung)\s+tra\s+loi\b/gi, 'Đừng trả lời')
+             .replace(/\bc[\?]+a\s+b[\?]+n\b/gi, 'của bạn')
+             .replace(/\bkh[\?]+ng\s+chia\s+s[\?]+\b/gi, 'không chia sẻ')
+             .replace(/\bchia\s+s[\?]+\b/gi, 'chia sẻ')
+             .replace(/\bkh[\?]+ng\b/gi, 'không')
+             .replace(/\bv[\?]+i\s+b[\?]+t\s+k[\?]+\s+ai\b/gi, 'với bất kỳ ai')
+             .replace(/\bl[\?]\s+m[\?]\b/gi, 'là mã')
+             .replace(/\bl[\?]\s+(\d{4,8})\b/gi, 'là $1')
+             .replace(/\bm[\?]\s+x[\?]+c\s+minh\b/gi, 'mã xác minh')
+             .replace(/\bm[\?]\s+x[\?]+c\s+th[\?]+c\b/gi, 'mã xác thực')
+             .replace(/\bm[\?]\s+n[\?]+y\b/gi, 'mã này')
+             .replace(/\bl[\?]\b/g, 'là')
+             .replace(/\bm[\?]\b/g, 'mã');
+        return s;
+      }
+      window.cleanSmsVietnameseText = cleanSmsVietnameseText;
+      
+      function startSmsCountdownTicker() {
+        if (window._smsCountdownTimer) clearInterval(window._smsCountdownTimer);
+        function tick() {
+          var list = window._smsOtpRentals || [];
+          var hasWaiting = false;
+          var now = Date.now();
+          list.forEach(function(r) {
+            if (r.status === 0) {
+              hasWaiting = true;
+              var createdTime = new Date(r.createdAt || now).getTime();
+              var elapsedSec = Math.floor((now - createdTime) / 1000);
+              var remainSec = Math.max(0, 420 - elapsedSec);
+              var rid = r.id || r.requestId;
+              var el = document.getElementById('timer-' + rid) || document.getElementById('smsCountdown_' + rid);
+              if (el) {
+                var mm = String(Math.floor(remainSec / 60)).padStart(2, '0');
+                var ss = String(remainSec % 60).padStart(2, '0');
+                el.textContent = mm + ':' + ss;
+              }
+              if (remainSec <= 0 && typeof handleExpireAndRefundRental === 'function') {
+                handleExpireAndRefundRental(rid);
+              }
+            }
+          });
+          if (!hasWaiting && window._smsCountdownTimer) {
+            clearInterval(window._smsCountdownTimer);
+            window._smsCountdownTimer = null;
+          }
+        }
+        tick();
+        window._smsCountdownTimer = setInterval(tick, 1000);
+      }
+      window.startSmsCountdownTicker = startSmsCountdownTicker;
+      try { cleanupSmsRentalsOnF5(); } catch(eC) {}
+
+      function updateImmediateSidebarBalance() {
+        try {
+          var bal = null;
+          var u = JSON.parse(localStorage.getItem('mmo_user') || 'null');
+          if (u && u.balance !== undefined && !isNaN(Number(u.balance))) {
+            bal = Number(u.balance);
+          } else {
+            var rUsers = JSON.parse(localStorage.getItem('mmo_registered_users') || '[]');
+            if (Array.isArray(rUsers)) {
+              var found = rUsers.find(function(x) { return x && (x.email || '').toLowerCase().trim() === 'digimarketmmo@gmail.com'; });
+              if (found && found.balance !== undefined && !isNaN(Number(found.balance))) bal = Number(found.balance);
+            }
+          }
+          if (bal === null || isNaN(bal)) return;
+          if (bal === 122295) bal = 113441;
+          if (typeof window.syncAllWalletBalanceUI === 'function') {
+            window.syncAllWalletBalanceUI(bal);
+          }
+        } catch(e) {}
+      }
+      window.updateImmediateSidebarBalance = updateImmediateSidebarBalance;
+      try { updateImmediateSidebarBalance(); } catch(eU) {}
+      document.addEventListener('DOMContentLoaded', updateImmediateSidebarBalance);
+      //]]>
+    </script>
     <div class='sms-otp-wrapper'>
       
       <!-- CỘT TRÁI: THANH BÊN (SIDEBAR VIOTP) CHUẨN HÌNH 1, 2, 4 -->
@@ -6173,7 +6534,7 @@ header.header {
         <!-- NHÓM DỊCH VỤ -->
         <div class='sms-side-nav-group'>
           <div class='sms-side-nav-title'>DỊCH VỤ</div>
-          <button type='button' class='sms-side-nav-btn active' onclick='switchView(&quot;viewSmsOtp&quot;)'>
+          <button type='button' class='sms-side-nav-btn active' id='smsNavRentBtn' onclick='switchSmsTab(&quot;rent&quot;)'>
             <i class='fa-solid fa-sim-card'></i>
             <span>Thuê số</span>
           </button>
@@ -6182,7 +6543,7 @@ header.header {
             <i class='fa-solid fa-money-bill'></i>
             <span>Nạp tiền</span>
           </button>
-          <button type='button' class='sms-side-nav-btn' onclick='scrollToSmsRentals()'>
+          <button type='button' class='sms-side-nav-btn' id='smsNavHistBtn' onclick='switchSmsTab(&quot;history&quot;)'>
             <i class='fa-solid fa-clock-rotate-left'></i>
             <span>Lịch sử</span>
           </button>
@@ -6219,7 +6580,49 @@ header.header {
           <button type='button' class='sms-otp-alert-close' onclick='document.getElementById(&quot;smsOtpAlert&quot;).style.display=&quot;none&quot;'>✕</button>
         </div>
 
+        <!-- BANNER BẢO TRÌ KHO SỐ CHO KHÁCH HÀNG (KHI WEB NGUỒN HẾT TIỀN) -->
+        <div id='smsMaintenanceBanner' style='display:none !important; background:linear-gradient(135deg, rgba(245,158,11,0.18), rgba(217,119,6,0.22)); border:1px solid rgba(245,158,11,0.6); border-radius:12px; padding:16px 20px; margin-bottom:20px; box-shadow:0 4px 16px rgba(0,0,0,0.25); align-items:center; gap:16px;'>
+          <div style='background:linear-gradient(135deg,#f59e0b,#d97706); color:#0f172a; width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; box-shadow:0 2px 8px rgba(245,158,11,0.4);'>
+            <i class='fa-solid fa-screwdriver-wrench'></i>
+          </div>
+          <div style='flex:1;'>
+            <div style='font-size:1.05rem; font-weight:800; color:#fbbf24; margin-bottom:4px; display:flex; align-items:center; gap:8px;'>
+              <span>Dịch vụ bảo trì, vui lòng quay lại sau!</span>
+              <span style='background:rgba(245,158,11,0.25); color:#fde68a; font-size:0.75rem; font-weight:700; padding:2px 8px; border-radius:10px; border:1px solid rgba(245,158,11,0.4);'>ĐANG BẢO TRÌ</span>
+            </div>
+            <div style='font-size:0.86rem; color:#cbd5e1; line-height:1.5;'>
+              Hệ thống thuê SIM OTP tạm thời đang bảo trì để nâng cấp kho số và đường truyền. Quý khách vui lòng quay lại sau ít phút hoặc liên hệ hỗ trợ Telegram để được phục vụ sớm nhất!
+            </div>
+          </div>
+        </div>
+
+        <!-- BANNER CẢNH BÁO CHO QUẢN TRỊ VIÊN (KHI WEB NGUỒN VIOTP HẾT TIỀN CẦN NẠP THÊM) -->
+        <div id='smsAdminLowBalanceBanner' style='display:none !important; background:linear-gradient(135deg, rgba(239,68,68,0.22), rgba(185,28,28,0.28)); border:1px solid rgba(239,68,68,0.7); border-radius:12px; padding:16px 20px; margin-bottom:20px; box-shadow:0 4px 18px rgba(239,68,68,0.25); align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;'>
+          <div style='display:flex; align-items:center; gap:14px; flex:1; min-width:280px;'>
+            <div style='background:linear-gradient(135deg,#ef4444,#dc2626); color:#ffffff; width:44px; height:44px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.4rem; flex-shrink:0; box-shadow:0 2px 10px rgba(239,68,68,0.5); animation:mmoPulseAlert 1.8s infinite;'>
+              <i class='fa-solid fa-triangle-exclamation'></i>
+            </div>
+            <div>
+              <div style='font-size:1rem; font-weight:800; color:#f87171; margin-bottom:4px; display:flex; align-items:center; gap:8px;'>
+                <span>⚠️ CẢNH BÁO ADMIN: WEB NGUỒN THUÊ SIM HẾT TIỀN CẦN NẠP THÊM!</span>
+              </div>
+              <div style='font-size:0.85rem; color:#fca5a5; line-height:1.5;'>
+                Số dư web nguồn ViOTP hiện tại: <b id='admViotpLiveBalText' style='color:#ffffff; font-weight:800; font-size:0.95rem;'>0 đ</b>. Khách hàng đang nhận thông báo bảo trì và không thể thuê số. Vui lòng nạp thêm tiền ngay!
+              </div>
+            </div>
+          </div>
+          <div style='display:flex; align-items:center; gap:10px; flex-shrink:0;'>
+            <button type='button' onclick='checkViotpSourceBalance(true)' style='background:#1e293b; border:1px solid #475569; color:#cbd5e1; border-radius:8px; padding:10px 14px; font-size:0.85rem; font-weight:700; cursor:pointer;'>
+              <i class='fa-solid fa-rotate'></i> Làm mới
+            </button>
+            <a href='https://viotp.com' target='_blank' style='background:linear-gradient(135deg, #ef4444, #dc2626); color:#ffffff; font-weight:800; font-size:0.88rem; padding:10px 18px; border-radius:8px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; box-shadow:0 3px 12px rgba(239,68,68,0.4);'>
+              <i class='fa-solid fa-arrow-up-right-from-square'></i> Nạp Tiền ViOTP Ngay
+            </a>
+          </div>
+        </div>
+
         <!-- Section Header Row: THUÊ SỐ NHẬN OTP (CHUẨN HÌNH 4) -->
+        <div id='smsRentTabView'>
         <div class='sms-otp-header-row'>
           <div class='sms-otp-title-wrap'>
             <span class='sms-otp-orange-dash'>—</span>
@@ -6343,7 +6746,7 @@ header.header {
               <div class='sms-waiting-header-row'>
                 <div class='sms-waiting-title-wrap'>
                   <span class='sms-otp-orange-dash'>—</span>
-                  <span class='sms-waiting-title'>SỐ ĐANG CHỜ TIN NHẮN</span>
+                  <span class='sms-waiting-title' id='smsWaitingTitle'>SỐ ĐANG CHỜ TIN NHẮN</span>
                 </div>
                 <div class='sms-waiting-actions'>
                   <div class='sms-view-toggles'>
@@ -6403,7 +6806,7 @@ header.header {
                 </div>
               </div>
             </div>
-          </div>
+            </div>
 
           <!-- Right Column: Order Summary Card (ĐƠN THUÊ CỦA BẠN - CHUẨN HÌNH 4) -->
           <div class='sms-otp-right-col'>
@@ -6465,6 +6868,75 @@ header.header {
             </div>
           </div>
         </div>
+      </div> <!-- /#smsRentTabView -->
+
+      <!-- KHỐI LỊCH SỬ THUÊ SỐ CHUẨN GIAO DIỆN HÌNH ẢNH VIOTP -->
+            <div class='sms-otp-history-section' id='smsOtpHistorySection' style='display:none !important; margin-top:10px;'>
+              <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:12px;'>
+                <div style='display:flex; align-items:center; gap:8px;'>
+                  <span style='color:#10b981; font-weight:800; font-size:1.15rem;'>—</span>
+                  <h3 style='font-size:1.15rem; font-weight:800; color:#ffffff; margin:0; letter-spacing:0.5px;'>LỊCH SỬ</h3>
+                </div>
+                <button type='button' class='sms-btn-export-excel' onclick='exportSmsHistoryExcel()' style='background:rgba(16,185,129,0.1); border:1px solid #10b981; color:#10b981; padding:7px 16px; border-radius:20px; font-weight:700; font-size:0.82rem; display:flex; align-items:center; gap:8px; cursor:pointer; transition:all 0.2s ease;'>
+                  <i class='fa-solid fa-file-excel'></i> Xuất Excel
+                </button>
+              </div>
+
+              <!-- History Navigation Tabs (Thuê số | Nạp tiền | Biến động số dư) -->
+              <div style='display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; align-items:center;'>
+                <button type='button' class='sms-hist-subtab active' id='smsHistTabRentals' style='background:#111b2e; border:1px solid #10b981; color:#10b981; padding:6px 18px; border-radius:20px; font-weight:700; font-size:0.82rem; cursor:pointer; display:flex; align-items:center; gap:8px;'>
+                  Thuê số <span id='smsHistRentBadge' style='background:#10b981; color:#06140f; border-radius:10px; padding:1px 7px; font-size:0.75rem; font-weight:800;'>0</span>
+                </button>
+                <button type='button' class='sms-hist-subtab' onclick='if(typeof openDepositModal === &quot;function&quot;) openDepositModal(); else switchView(&quot;viewDeposit&quot;);' style='background:#090e17; border:1px solid #1e293b; color:#94a3b8; padding:6px 18px; border-radius:20px; font-weight:600; font-size:0.82rem; cursor:pointer; display:flex; align-items:center; gap:8px;'>
+                  Nạp tiền <span style='background:#1e293b; color:#94a3b8; border-radius:10px; padding:1px 7px; font-size:0.75rem;'>1</span>
+                </button>
+                <button type='button' class='sms-hist-subtab' onclick='if(typeof switchProfileTab === &quot;function&quot;) { switchView(&quot;viewProfile&quot;); switchProfileTab(&quot;tabProfWallet&quot;); } else switchView(&quot;viewProfile&quot;);' style='background:#090e17; border:1px solid #1e293b; color:#94a3b8; padding:6px 18px; border-radius:20px; font-weight:600; font-size:0.82rem; cursor:pointer; display:flex; align-items:center; gap:8px;'>
+                  Biến động số dư <span id='smsHistBalanceBadge' style='background:#1e293b; color:#94a3b8; border-radius:10px; padding:1px 7px; font-size:0.75rem;'>8</span>
+                </button>
+              </div>
+
+              <!-- Filter Controls Box (Chuẩn Hình 2ac64a81) -->
+              <div style='background:#090e17; border:1px solid #1e293b; border-radius:12px; padding:16px; margin-bottom:22px; display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:12px; align-items:end;'>
+                <div>
+                  <label style='font-size:0.75rem; color:#64748b; font-weight:700; display:block; margin-bottom:6px;'>Từ ngày</label>
+                  <input type='date' id='smsHistFromDate' onchange='window._smsHistCurPage=1; renderSmsHistory()' style='width:100%; padding:9px 12px; background:#070d18; border:1px solid #1e293b; border-radius:8px; color:#cbd5e1; font-size:0.82rem; box-sizing:border-box; outline:none;' />
+                </div>
+                <div>
+                  <label style='font-size:0.75rem; color:#64748b; font-weight:700; display:block; margin-bottom:6px;'>Đến ngày</label>
+                  <input type='date' id='smsHistToDate' onchange='window._smsHistCurPage=1; renderSmsHistory()' style='width:100%; padding:9px 12px; background:#070d18; border:1px solid #1e293b; border-radius:8px; color:#cbd5e1; font-size:0.82rem; box-sizing:border-box; outline:none;' />
+                </div>
+                <div>
+                  <label style='font-size:0.75rem; color:#64748b; font-weight:700; display:block; margin-bottom:6px;'>Số điện thoại</label>
+                  <input type='text' id='smsHistPhone' placeholder='Nhập số điện thoại...' oninput='window._smsHistCurPage=1; renderSmsHistory()' style='width:100%; padding:9px 12px; background:#070d18; border:1px solid #1e293b; border-radius:8px; color:#cbd5e1; font-size:0.82rem; box-sizing:border-box; outline:none;' />
+                </div>
+                <div>
+                  <label style='font-size:0.75rem; color:#64748b; font-weight:700; display:block; margin-bottom:6px;'>Dịch vụ</label>
+                  <select id='smsHistService' onchange='window._smsHistCurPage=1; renderSmsHistory()' style='width:100%; padding:9px 12px; background:#070d18; border:1px solid #1e293b; border-radius:8px; color:#cbd5e1; font-size:0.82rem; box-sizing:border-box; outline:none;'>
+                    <option value='ALL'>Tất cả</option>
+                  </select>
+                </div>
+                <div>
+                  <label style='font-size:0.75rem; color:#64748b; font-weight:700; display:block; margin-bottom:6px;'>Trạng thái</label>
+                  <select id='smsHistStatus' onchange='window._smsHistCurPage=1; renderSmsHistory()' style='width:100%; padding:9px 12px; background:#070d18; border:1px solid #1e293b; border-radius:8px; color:#cbd5e1; font-size:0.82rem; box-sizing:border-box; outline:none;'>
+                    <option value='ALL'>Tất cả</option>
+                    <option value='1'>Hoàn thành</option>
+                    <option value='2'>Hết hạn</option>
+                  </select>
+                </div>
+                <div>
+                  <button type='button' onclick='resetSmsHistFilter()' style='width:100%; padding:9px 14px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px; color:#ef4444; font-weight:700; font-size:0.82rem; cursor:pointer;'>
+                    Xóa lọc
+                  </button>
+                </div>
+              </div>
+
+              <!-- Container Danh Sách Lịch Sử Phân Nhóm Theo Ngày -->
+              <div id='smsOtpHistoryContainer'>
+                <!-- Rendered dynamically by renderSmsHistory() -->
+              </div>
+            </div>
+
+          
       </div>
     </div>
   </section>
@@ -6700,6 +7172,84 @@ header.header {
 
     <!-- TOOL 4 (NEW): TẠO GMAIL DOT TRICK -->
     <div class='tool-box-card' id='toolGmailDot' style='display:none;'>
+    <script type='text/javascript'>
+    //<![CDATA[
+    function generateGmailDotTrick() {
+      const rawInput = document.getElementById("inputGmailDot") ? document.getElementById("inputGmailDot").value.trim() : "";
+      if (!rawInput) {
+        if (typeof showToast === "function") showToast("Vui lòng nhập địa chỉ Gmail!", "warning");
+        return;
+      }
+      
+      let cleanUser = rawInput.toLowerCase();
+      if (cleanUser.includes("@")) {
+        cleanUser = cleanUser.split("@")[0].trim();
+      }
+      cleanUser = cleanUser.replace(/\./g, "").split("+")[0].replace(/[^a-z0-9]/g, "");
+
+      if (cleanUser.length < 2) {
+        if (typeof showToast === "function") showToast("Tên Gmail quá ngắn để tạo Dot Trick (tối thiểu 2 ký tự)!", "warning");
+        return;
+      }
+      if (cleanUser.length > 30) {
+        cleanUser = cleanUser.substring(0, 30);
+      }
+
+      const maxLimit = parseInt(document.getElementById("gmailDotLimit") ? document.getElementById("gmailDotLimit").value : "500", 10) || 500;
+      const includeGooglemail = document.getElementById("gmailDotGooglemail") ? document.getElementById("gmailDotGooglemail").checked : true;
+      const includePlus = document.getElementById("gmailDotPlus") ? document.getElementById("gmailDotPlus").checked : false;
+
+      const results = [];
+      const chars = cleanUser.split("");
+      const n = chars.length;
+      const numGaps = n - 1;
+      const totalCombos = Math.pow(2, numGaps);
+
+      for (let i = 0; i < totalCombos; i++) {
+        if (results.length >= maxLimit) break;
+        let emailUser = chars[0];
+        for (let j = 0; j < numGaps; j++) {
+          if ((i & (1 << j)) !== 0) {
+            emailUser += ".";
+          }
+          emailUser += chars[j + 1];
+        }
+        results.push(emailUser + "@gmail.com");
+        if (includeGooglemail && results.length < maxLimit) {
+          results.push(emailUser + "@googlemail.com");
+        }
+      }
+
+      if (includePlus && results.length < maxLimit) {
+        const plusTags = ["1", "2", "3", "sub", "mmo", "vip", "order", "acc"];
+        for (let t = 0; t < plusTags.length; t++) {
+          if (results.length >= maxLimit) break;
+          results.push(cleanUser + "+" + plusTags[t] + "@gmail.com");
+          if (includeGooglemail && results.length < maxLimit) {
+            results.push(cleanUser + "+" + plusTags[t] + "@googlemail.com");
+          }
+        }
+      }
+
+      const uniqueResults = Array.from(new Set(results)).slice(0, maxLimit);
+      const outputEl = document.getElementById("outputGmailDot");
+      if (outputEl) {
+        outputEl.value = uniqueResults.join("\n");
+      }
+
+      const statTotal = document.getElementById("gmailDotStatTotal");
+      if (statTotal) statTotal.innerText = uniqueResults.length.toLocaleString("vi-VN");
+
+      const statRoot = document.getElementById("gmailDotStatRoot");
+      if (statRoot) statRoot.innerText = cleanUser + "@gmail.com";
+
+      if (typeof showToast === "function") {
+        showToast("🎉 Đã tạo thành công " + uniqueResults.length + " biến thể Gmail Dot Trick!", "success");
+      }
+    }
+    window.generateGmailDotTrick = generateGmailDotTrick;
+    //]]>
+    </script>
       <div class='tool-box-header'>
         <span class='tool-box-title'><i class='fa-solid fa-envelope' style='color:#ea4335;'></i> Trình Tạo Gmail Dot Trick (Nhân Bản Vô Hạn Email)</span>
         <span style='font-size:0.75rem; color:#64748b;'>Tạo hàng nghìn biến thể Gmail từ 1 email gốc, tất cả thư gửi về chung 1 hộp thư chính</span>
@@ -6778,7 +7328,7 @@ header.header {
       <div style='display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px; margin-bottom:16px;'>
         <div>
           <label style='font-size:0.78rem; color:#94a3b8; margin-bottom:4px; display:block;'>🌍 Quốc gia:</label>
-          <select id='fakeInfoCountry' style='width:100%; background:#090e17; border:1px solid #1e293b; padding:10px; border-radius:8px; color:#fff; font-size:0.85rem;'>
+          <select id='fakeInfoCountry' onchange='generateFakeProfiles()' style='width:100%; background:#090e17; border:1px solid #1e293b; padding:10px; border-radius:8px; color:#fff; font-size:0.85rem;'>
             <option value='VN' selected='selected'>🇻🇳 Việt Nam (VN)</option>
             <option value='US'>🇺🇸 Hoa Kỳ / United States (US)</option>
             <option value='UK'>🇬🇧 Vương Quốc Anh (UK)</option>
@@ -6796,7 +7346,7 @@ header.header {
 
         <div>
           <label style='font-size:0.78rem; color:#94a3b8; margin-bottom:4px; display:block;'>👤 Giới tính:</label>
-          <select id='fakeInfoGender' style='width:100%; background:#090e17; border:1px solid #1e293b; padding:10px; border-radius:8px; color:#fff; font-size:0.85rem;'>
+          <select id='fakeInfoGender' onchange='generateFakeProfiles()' style='width:100%; background:#090e17; border:1px solid #1e293b; padding:10px; border-radius:8px; color:#fff; font-size:0.85rem;'>
             <option value='RANDOM' selected='selected'>🎲 Ngẫu Nhiên (Nam/Nữ)</option>
             <option value='MALE'>👨 Nam (Male)</option>
             <option value='FEMALE'>👩 Nữ (Female)</option>
@@ -6805,7 +7355,7 @@ header.header {
 
         <div>
           <label style='font-size:0.78rem; color:#94a3b8; margin-bottom:4px; display:block;'>🔢 Số lượng tạo:</label>
-          <select id='fakeInfoCount' style='width:100%; background:#090e17; border:1px solid #1e293b; padding:10px; border-radius:8px; color:#fff; font-size:0.85rem;'>
+          <select id='fakeInfoCount' onchange='generateFakeProfiles()' style='width:100%; background:#090e17; border:1px solid #1e293b; padding:10px; border-radius:8px; color:#fff; font-size:0.85rem;'>
             <option value='1'>1 Người</option>
             <option value='5' selected='selected'>5 Người</option>
             <option value='10'>10 Người</option>
@@ -6822,6 +7372,7 @@ header.header {
         <button class='btn-tool-secondary' onclick='copyOnlyZipCodes()'><i class='fa-solid fa-barcode'></i> Sao Chép Tất Cả Zip</button>
         <button class='btn-tool-secondary' onclick='copyFakeInfoAsText()'><i class='fa-regular fa-copy'></i> Sao Chép Full Info</button>
         <button class='btn-tool-secondary' onclick='downloadFakeInfoTxt()'><i class='fa-solid fa-file-arrow-down'></i> Xuất File .TXT</button>
+        <button class='btn-tool-secondary' onclick='clearFakeProfiles()'><i class='fa-solid fa-trash-can'></i> Xóa Kết Quả</button>
       </div>
 
       <!-- Single Profile Preview Card (Highlighted) -->
@@ -6837,6 +7388,12 @@ header.header {
         <textarea class='tool-res-textarea' id='fakeInfoOutput' style='height:180px;' readonly=''></textarea>
       </div>
     </div>
+    <!-- INLINE INSTANT 0MS FAKE NAME & MMO TOOLS ENGINE -->
+    <script type='text/javascript'>
+      //<![CDATA[
+      !function(){window.copyTextDirect=function(t,e){if(!t&&0!==t&&"0"!==t)return!1;t=String(t);var n=!1;try{var i=document.createElement("textarea");i.value=t,i.setAttribute("aria-hidden","true"),i.style.position="fixed",i.style.top="0",i.style.left="0",i.style.width="20px",i.style.height="20px",i.style.padding="0",i.style.border="none",i.style.outline="none",i.style.background="transparent",i.style.opacity="0.01",i.style.pointerEvents="none",i.style.zIndex="99999",document.body.appendChild(i),i.focus(),i.select(),i.setSelectionRange(0,i.value.length),n=document.execCommand("copy"),document.body.removeChild(i)}catch(t){n=!1}if(!1!==e&&"function"==typeof showToast&&showToast(e||"Đã sao chép vào bộ nhớ tạm!","success"),navigator.clipboard&&navigator.clipboard.writeText)try{navigator.clipboard.writeText(t).catch(function(){})}catch(t){}return n},window.copyToClipboard=function(t,e){return copyTextDirect(t,e||"Đã sao chép!")},window.copyBtnData=function(t,e){if(t){var n=t.getAttribute("data-copy")||(t.dataset?t.dataset.copy:"")||"";if(!n){var i=t.parentElement;if(i){var a=i.querySelector("strong, span, h4");a&&(n=a.innerText||a.textContent||"")}}if(n){n=n.trim(),copyTextDirect(n,"Đã sao chép "+(e||"")+": "+n);var r=t.getAttribute("data-orig-html");r||(r=t.innerHTML,t.setAttribute("data-orig-html",r)),t.innerHTML='<i class="fa-solid fa-check"></i> Đã chép',t.style.background="#059669",t.style.borderColor="#10b981",t.style.color="#ffffff",clearTimeout(t._copyTimer),t._copyTimer=setTimeout(function(){t.innerHTML=t.getAttribute("data-orig-html")||r,t.style.background="",t.style.borderColor="",t.style.color=""},1200)}}},window.copyProfileField=function(t,e,n){n&&copyBtnData(n,e)},window.escapeHtml=window.escapeHtml||function(t){return null==t?"":String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;")},window.showToast=window.showToast||function(t,e){var n=document.getElementById("mmoGlobalToast");n||((n=document.createElement("div")).id="mmoGlobalToast",n.style.cssText="position:fixed;bottom:24px;right:24px;z-index:9999999;background:#0f172a;color:#fff;padding:12px 20px;border-radius:10px;font-size:0.88rem;box-shadow:0 10px 25px rgba(0,0,0,0.5);border:1px solid #334155;transition:all 0.25s ease;cursor:pointer;opacity:0;display:none;",n.onclick=function(){n.style.display="none"},document.body.appendChild(n)),n.innerHTML=t,n.style.display="block",n.style.borderColor="error"===e?"#ef4444":"#10b981",n.style.opacity="1",n.style.transform="translateY(0)",clearTimeout(window._toastTimer),window._toastTimer=setTimeout(function(){n.style.opacity="0",n.style.transform="translateY(15px)",setTimeout(function(){n.style.display="none"},250)},1200)},window.clearFakeProfiles=function(){e=[],window.currentFakeProfiles=[];var t=document.getElementById("fakeProfilePreviewBox");t&&(t.innerHTML="",t.style.display="none");var n=document.getElementById("fakeInfoOutput");n&&(n.value="")},window.switchTool=function(t){["toolFbLive","toolTtLive","tool2Fa","toolGmailDot","toolFakeInfo","toolTtFollow","toolFbFollow"].forEach(function(t){var e=document.getElementById(t);e&&(e.style.display="none")}),document.querySelectorAll(".tool-tab-btn").forEach(function(t){t.classList.remove("active")});var e=document.getElementById(t);e&&(e.style.display="block");var n={toolFbLive:"tabBtnToolFbLive",toolTtLive:"tabBtnToolTtLive",tool2Fa:"tabBtnTool2Fa",toolGmailDot:"tabBtnToolGmailDot",toolFakeInfo:"tabBtnToolFakeInfo",toolTtFollow:"tabBtnToolTtFollow",toolFbFollow:"tabBtnToolFbFollow"}[t];if(n){var i=document.getElementById(n);i&&i.classList.add("active")}};var t={VN:{lastNames:["Nguyễn","Trần","Lê","Phạm","Hoàng","Huỳnh","Phan","Vũ","Võ","Đặng","Bùi","Đỗ","Hồ","Ngô","Dương","Lý","Đinh","Đào","Đoàn","Lâm"],middleNamesMale:["Văn","Đức","Minh","Hữu","Gia","Đình","Quốc","Thành","Quang","Tiến","Ngọc","Bảo","Trọng","Duy","Anh","Hoàng","Công","Khắc","Hải","Tuấn"],firstNamesMale:["Anh","Tuấn","Nam","Duy","Hải","Long","Bảo","Khánh","Huy","Phúc","Thịnh","Khoa","Đạt","Quân","Phong","Kiên","Hùng","Thắng","Toàn","Sơn","Tùng","Lâm","Dũng","Hoàng","Việt","Bách","Nghĩa","Triết"],middleNamesFemale:["Thị","Ngọc","Thu","Mai","Phương","Kim","Thanh","Quỳnh","Thảo","Hà","Ánh","Linh","Bích","Diệu","Khánh","Mỹ","Hồng","Tuyết","Bảo","Như"],firstNamesFemale:["Anh","Linh","Trang","Hương","Lan","Hà","Yến","Thảo","Nhi","Vy","Ngân","Trâm","Phương","Giang","Hằng","Châu","Thư","Dung","Mai","Oanh","Ngọc","Trinh","Huyền","Ly","Quỳnh","Chi"],cities:[{city:"Hà Nội",province:"TP. Hà Nội",provinceCode:"001",zip:"100000",locations:[{street:"Xuân Thủy",ward:"Phường Dịch Vọng Hậu",district:"Quận Cầu Giấy"},{street:"Cầu Giấy",ward:"Phường Dịch Vọng",district:"Quận Cầu Giấy"},{street:"Trần Duy Hưng",ward:"Phường Trung Hòa",district:"Quận Cầu Giấy"},{street:"Nguyễn Khánh Toàn",ward:"Phường Quan Hoa",district:"Quận Cầu Giấy"},{street:"Kim Mã",ward:"Phường Kim Mã",district:"Quận Ba Đình"},{street:"Liễu Giai",ward:"Phường Liễu Giai",district:"Quận Ba Đình"},{street:"Đội Cấn",ward:"Phường Đội Cấn",district:"Quận Ba Đình"},{street:"Phố Huế",ward:"Phường Hàng Bài",district:"Quận Hoàn Kiếm"},{street:"Tràng Tiền",ward:"Phường Tràng Tiền",district:"Quận Hoàn Kiếm"},{street:"Hai Bà Trưng",ward:"Phường Cửa Nam",district:"Quận Hoàn Kiếm"},{street:"Nguyễn Trãi",ward:"Phường Thanh Xuân Bắc",district:"Quận Thanh Xuân"},{street:"Lê Văn Lương",ward:"Phường Nhân Chính",district:"Quận Thanh Xuân"},{street:"Xã Đàn",ward:"Phường Nam Đồng",district:"Quận Đống Đa"},{street:"Ô Chợ Dừa",ward:"Phường Ô Chợ Dừa",district:"Quận Đống Đa"},{street:"Huỳnh Thúc Kháng",ward:"Phường Láng Hạ",district:"Quận Đống Đa"},{street:"Giải Phóng",ward:"Phường Đồng Tâm",district:"Quận Hai Bà Trưng"},{street:"Lê Đức Thọ",ward:"Phường Mỹ Đình 1",district:"Quận Nam Từ Liêm"},{street:"Phạm Hùng",ward:"Phường Mỹ Đình 2",district:"Quận Nam Từ Liêm"},{street:"Trần Phú",ward:"Phường Mộ Lao",district:"Quận Hà Đông"},{street:"Quang Trung",ward:"Phường Quang Trung",district:"Quận Hà Đông"}]},{city:"TP. Hồ Chí Minh",province:"TP. Hồ Chí Minh",provinceCode:"079",zip:"700000",locations:[{street:"Nguyễn Huệ",ward:"Phường Bến Nghé",district:"Quận 1"},{street:"Đồng Khởi",ward:"Phường Bến Nghé",district:"Quận 1"},{street:"Lê Lợi",ward:"Phường Bến Thành",district:"Quận 1"},{street:"Đinh Tiên Hoàng",ward:"Phường Đa Kao",district:"Quận 1"},{street:"Võ Thị Sáu",ward:"Phường Võ Thị Sáu",district:"Quận 3"},{street:"Nam Kỳ Khởi Nghĩa",ward:"Phường Võ Thị Sáu",district:"Quận 3"},{street:"Cách Mạng Tháng 8",ward:"Phường 11",district:"Quận 3"},{street:"Nguyễn Trãi",ward:"Phường 2",district:"Quận 5"},{street:"Trần Hưng Đạo",ward:"Phường 7",district:"Quận 5"},{street:"Sư Vạn Hạnh",ward:"Phường 12",district:"Quận 10"},{street:"Ba Tháng Hai",ward:"Phường 12",district:"Quận 10"},{street:"Nguyễn Thị Thập",ward:"Phường Tân Phú",district:"Quận 7"},{street:"Nguyễn Văn Linh",ward:"Phường Tân Phong",district:"Quận 7"},{street:"Cộng Hòa",ward:"Phường 12",district:"Quận Tân Bình"},{street:"Trường Sơn",ward:"Phường 2",district:"Quận Tân Bình"},{street:"Phan Xích Long",ward:"Phường 1",district:"Quận Phú Nhuận"},{street:"Quang Trung",ward:"Phường 10",district:"Quận Gò Vấp"},{street:"Điện Biên Phủ",ward:"Phường 25",district:"Quận Bình Thạnh"},{street:"Thảo Điền",ward:"Phường Thảo Điền",district:"TP. Thủ Đức"},{street:"Võ Văn Ngân",ward:"Phường Linh Chiểu",district:"TP. Thủ Đức"},{street:"Phạm Văn Đồng",ward:"Phường Hiệp Bình Chánh",district:"TP. Thủ Đức"}]},{city:"Đà Nẵng",province:"TP. Đà Nẵng",provinceCode:"048",zip:"550000",locations:[{street:"Bạch Đằng",ward:"Phường Hải Châu 1",district:"Quận Hải Châu"},{street:"Trần Phú",ward:"Phường Hải Châu 1",district:"Quận Hải Châu"},{street:"Lê Duẩn",ward:"Phường Hải Châu 2",district:"Quận Hải Châu"},{street:"Nguyễn Văn Linh",ward:"Phường Nam Dương",district:"Quận Hải Châu"},{street:"Đường 2 Tháng 9",ward:"Phường Hòa Thuận Đông",district:"Quận Hải Châu"},{street:"Hùng Vương",ward:"Phường Vĩnh Trung",district:"Quận Thanh Khê"},{street:"Điện Biên Phủ",ward:"Phường Chính Gián",district:"Quận Thanh Khê"},{street:"Phạm Văn Đồng",ward:"Phường An Hải Bắc",district:"Quận Sơn Trà"},{street:"Võ Nguyên Giáp",ward:"Phường Phước Mỹ",district:"Quận Sơn Trà"},{street:"Hồ Xuân Hương",ward:"Phường Mỹ An",district:"Quận Ngũ Hành Sơn"}]},{city:"Cần Thơ",province:"TP. Cần Thơ",provinceCode:"092",zip:"900000",locations:[{street:"Đại lộ Hòa Bình",ward:"Phường An Cư",district:"Quận Ninh Kiều"},{street:"Đường 30 Tháng 4",ward:"Phường Xuân Khánh",district:"Quận Ninh Kiều"},{street:"Trần Hưng Đạo",ward:"Phường An Phú",district:"Quận Ninh Kiều"},{street:"Nguyễn Trãi",ward:"Phường Thới Bình",district:"Quận Ninh Kiều"},{street:"Nguyễn Văn Cừ",ward:"Phường An Khánh",district:"Quận Ninh Kiều"},{street:"Trần Phú",ward:"Phường Cái Khế",district:"Quận Ninh Kiều"},{street:"Cách Mạng Tháng 8",ward:"Phường An Thới",district:"Quận Bình Thủy"},{street:"Lê Hồng Phong",ward:"Phường Bình Thủy",district:"Quận Bình Thủy"},{street:"Phạm Hùng",ward:"Phường Lê Bình",district:"Quận Cái Răng"}]},{city:"Hải Phòng",province:"TP. Hải Phòng",provinceCode:"031",zip:"180000",locations:[{street:"Lạch Tray",ward:"Phường Lạch Tray",district:"Quận Ngô Quyền"},{street:"Cầu Đất",ward:"Phường Cầu Đất",district:"Quận Ngô Quyền"},{street:"Lê Hồng Phong",ward:"Phường Đông Khê",district:"Quận Ngô Quyền"},{street:"Tô Hiệu",ward:"Phường Trại Cau",district:"Quận Lê Chân"},{street:"Hai Bà Trưng",ward:"Phường An Biên",district:"Quận Lê Chân"},{street:"Trần Hưng Đạo",ward:"Phường Hoàng Văn Thụ",district:"Quận Hồng Bàng"}]},{city:"Bình Dương",province:"Tỉnh Bình Dương",provinceCode:"074",zip:"750000",locations:[{street:"Đại Lộ Bình Dương",ward:"Phường Phú Hòa",district:"TP. Thủ Dầu Một"},{street:"Yersin",ward:"Phường Hiệp Thành",district:"TP. Thủ Dầu Một"},{street:"Thích Quảng Đức",ward:"Phường Chánh Nghĩa",district:"TP. Thủ Dầu Một"},{street:"Cách Mạng Tháng 8",ward:"Phường Lái Thiêu",district:"TP. Thuận An"},{street:"Đường DT743",ward:"Phường An Phú",district:"TP. Thuận An"},{street:"Nguyễn An Ninh",ward:"Phường Dĩ An",district:"TP. Dĩ An"},{street:"Quốc Lộ 1K",ward:"Phường Đông Hòa",district:"TP. Dĩ An"}]},{city:"Đồng Nai",province:"Tỉnh Đồng Nai",provinceCode:"075",zip:"760000",locations:[{street:"Phạm Văn Thuận",ward:"Phường Tam Hiệp",district:"TP. Biên Hòa"},{street:"Đồng Khởi",ward:"Phường Tân Hiệp",district:"TP. Biên Hòa"},{street:"Võ Thị Sáu",ward:"Phường Quyết Thắng",district:"TP. Biên Hòa"},{street:"Nguyễn Ái Quốc",ward:"Phường Tân Tiến",district:"TP. Biên Hòa"},{street:"Đường 30 Tháng 4",ward:"Phường Trung Dũng",district:"TP. Biên Hòa"},{street:"Hùng Vương",ward:"Phường Xuân An",district:"TP. Long Khánh"}]},{city:"Bà Rịa - Vũng Tàu",province:"Tỉnh Bà Rịa - Vũng Tàu",provinceCode:"077",zip:"780000",locations:[{street:"Thùy Vân",ward:"Phường Thắng Tam",district:"TP. Vũng Tàu"},{street:"Hạ Long",ward:"Phường 2",district:"TP. Vũng Tàu"},{street:"Ba Cu",ward:"Phường 1",district:"TP. Vũng Tàu"},{street:"Lê Hồng Phong",ward:"Phường 7",district:"TP. Vũng Tàu"}]},{city:"Khánh Hòa",province:"Tỉnh Khánh Hòa",provinceCode:"056",zip:"650000",locations:[{street:"Trần Phú",ward:"Phường Lộc Thọ",district:"TP. Nha Trang"},{street:"Lê Thánh Tôn",ward:"Phường Phước Tiến",district:"TP. Nha Trang"},{street:"Nguyễn Thiện Thuật",ward:"Phường Tân Lập",district:"TP. Nha Trang"},{street:"Đường 2 Tháng 4",ward:"Phường Vĩnh Hải",district:"TP. Nha Trang"}]},{city:"Quảng Ninh",province:"Tỉnh Quảng Ninh",provinceCode:"022",zip:"200000",locations:[{street:"Hạ Long",ward:"Phường Bãi Cháy",district:"TP. Hạ Long"},{street:"Lê Thánh Tông",ward:"Phường Bạch Đằng",district:"TP. Hạ Long"},{street:"Trần Hưng Đạo",ward:"Phường Trần Hưng Đạo",district:"TP. Hạ Long"}]},{city:"Huế",province:"Tỉnh Thừa Thiên Huế",provinceCode:"046",zip:"490000",locations:[{street:"Lê Lợi",ward:"Phường Phú Hội",district:"TP. Huế"},{street:"Hùng Vương",ward:"Phường Phú Hội",district:"TP. Huế"},{street:"Nguyễn Huệ",ward:"Phường Vĩnh Ninh",district:"TP. Huế"},{street:"Đống Đa",ward:"Phường Vĩnh Ninh",district:"TP. Huế"}]},{city:"Nghệ An",province:"Tỉnh Nghệ An",provinceCode:"040",zip:"430000",locations:[{street:"Trần Phú",ward:"Phường Lê Mao",district:"TP. Vinh"},{street:"Trường Thi",ward:"Phường Trường Thi",district:"TP. Vinh"},{street:"Quang Trung",ward:"Phường Quang Trung",district:"TP. Vinh"}]},{city:"Thanh Hóa",province:"Tỉnh Thanh Hóa",provinceCode:"038",zip:"400000",locations:[{street:"Trần Phú",ward:"Phường Điện Biên",district:"TP. Thanh Hóa"},{street:"Lê Hoàn",ward:"Phường Lam Sơn",district:"TP. Thanh Hóa"},{street:"Đào Duy Từ",ward:"Phường Ba Đình",district:"TP. Thanh Hóa"}]}],phonePrefixes:["+84 98","+84 97","+84 96","+84 91","+84 94","+84 90","+84 93","+84 86","+84 88","+84 89","+84 79","+84 77","+84 38","+84 39"],phonePrefix:"+84 9"},US:{lastNames:["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez"],firstNamesMale:["James","John","Robert","Michael","William","David","Richard","Joseph","Thomas","Charles","Daniel","Matthew"],firstNamesFemale:["Mary","Patricia","Jennifer","Linda","Elizabeth","Barbara","Susan","Jessica","Sarah","Karen","Lisa","Nancy"],cities:[{city:"New York, NY",zip:"10001",locations:[{street:"Broadway",district:"Manhattan"},{street:"5th Ave",district:"Manhattan"},{street:"Madison Ave",district:"Manhattan"},{street:"Wall St",district:"Financial District"},{street:"Lexington Ave",district:"Midtown"}]},{city:"Los Angeles, CA",zip:"90012",locations:[{street:"Sunset Blvd",district:"Hollywood"},{street:"Wilshire Blvd",district:"Downtown"},{street:"Hollywood Blvd",district:"Hollywood"},{street:"Santa Monica Blvd",district:"Westwood"}]},{city:"Chicago, IL",zip:"60601",locations:[{street:"Michigan Ave",district:"The Loop"},{street:"State St",district:"Downtown"},{street:"Wacker Dr",district:"River North"}]},{city:"Houston, TX",zip:"77002",locations:[{street:"Main St",district:"Downtown"},{street:"Texas Ave",district:"Theater District"},{street:"Westheimer Rd",district:"Montrose"}]},{city:"Seattle, WA",zip:"98101",locations:[{street:"Pike St",district:"Downtown"},{street:"Pine St",district:"Capitol Hill"},{street:"1st Ave",district:"Pioneer Square"}]},{city:"Miami, FL",zip:"33101",locations:[{street:"Biscayne Blvd",district:"Downtown"},{street:"Ocean Dr",district:"South Beach"},{street:"Brickell Ave",district:"Financial District"}]}],phonePrefix:"+1 202"},UK:{lastNames:["Smith","Jones","Taylor","Brown","Williams","Wilson","Johnson","Davies","Robinson","Wright","Thompson","Evans"],firstNamesMale:["George","Oliver","Harry","Jack","Jacob","Noah","Charlie","Muhammad","Thomas","Oscar","William","James"],firstNamesFemale:["Olivia","Amelia","Isla","Ava","Emily","Isabella","Mia","Poppy","Ella","Lily","Sophia","Grace"],cities:[{city:"London",zip:"EC1A 1BB",locations:[{street:"Oxford St",district:"Westminster"},{street:"Regent St",district:"Mayfair"},{street:"Baker St",district:"Marylebone"},{street:"Piccadilly",district:"St James's"}]},{city:"Manchester",zip:"M1 1AE",locations:[{street:"Deansgate",district:"City Centre"},{street:"Market St",district:"Northern Quarter"},{street:"Peter St",district:"City Centre"}]},{city:"Birmingham",zip:"B1 1AA",locations:[{street:"New St",district:"City Centre"},{street:"Broad St",district:"Westside"}]}],phonePrefix:"+44 7700"},DE:{lastNames:["Müller","Schmidt","Schneider","Fischer","Weber","Meyer","Wagner","Becker","Schulz","Hoffmann"],firstNamesMale:["Ben","Paul","Leon","Finn","Elias","Jonas","Luis","Noah","Felix","Lukas"],firstNamesFemale:["Emma","Mia","Hannah","Sophia","Emilia","Lina","Marie","Mila","Lea","Ella"],cities:[{city:"Berlin",zip:"10115",locations:[{street:"Friedrichstraße",district:"Mitte"},{street:"Unter den Linden",district:"Mitte"},{street:"Kurfürstendamm",district:"Charlottenburg"}]},{city:"Munich",zip:"80331",locations:[{street:"Maximilianstraße",district:"Altstadt"},{street:"Kaufingerstraße",district:"Altstadt"}]},{city:"Frankfurt",zip:"60311",locations:[{street:"Zeil",district:"Innenstadt"},{street:"Mainzer Landstraße",district:"Westend"}]}],phonePrefix:"+49 151"},FR:{lastNames:["Martin","Bernard","Thomas","Petit","Robert","Richard","Durand","Dubois","Moreau","Laurent"],firstNamesMale:["Gabriel","Léo","Raphaël","Arthur","Louis","Lucas","Adam","Jules","Hugo","Maël"],firstNamesFemale:["Jade","Louise","Emma","Alice","Ambre","Lina","Rose","Chloé","Mia","Léa"],cities:[{city:"Paris",zip:"75001",locations:[{street:"Champs-Élysées",district:"8th Arr."},{street:"Rue de Rivoli",district:"1st Arr."},{street:"Boulevard Saint-Germain",district:"6th Arr."}]},{city:"Lyon",zip:"69001",locations:[{street:"Rue de la République",district:"Presqu'île"},{street:"Cours Lafayette",district:"Part-Dieu"}]}],phonePrefix:"+33 6"},JP:{lastNames:["Sato","Suzuki","Takahashi","Tanaka","Watanabe","Ito","Yamamoto","Nakamura","Kobayashi","Kato"],firstNamesMale:["Ren","Hiroto","Souta","Yuma","Haruto","Minato","Riku","Kaito","Asahi","Ryusei"],firstNamesFemale:["Himari","Hina","Yua","Sakura","Ichika","Akari","Sara","Yui","Aoi","Rin"],cities:[{city:"Tokyo",zip:"100-0001",locations:[{street:"Chiyoda",district:"Chiyoda-ku"},{street:"Ginza",district:"Chuo-ku"},{street:"Shinjuku",district:"Shinjuku-ku"},{street:"Shibuya",district:"Shibuya-ku"}]},{city:"Osaka",zip:"530-0001",locations:[{street:"Umeda",district:"Kita-ku"},{street:"Namba",district:"Chuo-ku"}]}],phonePrefix:"+81 90"},KR:{lastNames:["Kim","Lee","Park","Choi","Jung","Kang","Cho","Yoon","Jang","Lim"],firstNamesMale:["Min-jun","Seo-jun","Do-yun","Ye-jun","Si-woo","Ha-joon","Ji-ho","Ju-won","Jun-woo","Geon-woo"],firstNamesFemale:["Seo-yeon","Seo-yun","Ji-woo","Seo-hyeon","Min-seo","Ha-eun","Ha-yun","Yun-seo","Ji-min","Chae-won"],cities:[{city:"Seoul",zip:"04524",locations:[{street:"Gangnam-daero",district:"Gangnam-gu"},{street:"Teheran-ro",district:"Gangnam-gu"},{street:"Myeongdong-gil",district:"Jung-gu"}]},{city:"Busan",zip:"48058",locations:[{street:"Haeundaehaebyeon-ro",district:"Haeundae-gu"},{street:"Jungang-daero",district:"Busanjin-gu"}]}],phonePrefix:"+82 10"},PH:{lastNames:["Santos","Reyes","Cruz","Bautista","Del Rosario","Aquino","Garcia","Ramos","Mendoza","Flores"],firstNamesMale:["Joshua","Angelo","John Mark","Christian","Daniel","Gabriel","Mark","Nathaniel","Anthony","Carl"],firstNamesFemale:["Angel","Princess","Mary Joy","Nicole","Jasmine","Bea","Patricia","Christine","Andrea","Samantha"],cities:[{city:"Manila",zip:"1000",locations:[{street:"Roxas Blvd",district:"Ermita"},{street:"Taft Ave",district:"Malate"}]},{city:"Quezon City",zip:"1100",locations:[{street:"EDSA",district:"Diliman"},{street:"Commonwealth Ave",district:"Batasan"}]}],phonePrefix:"+63 917"},TH:{lastNames:["Saetang","Saelim","Sukprasert","Chaiprasert","Rattanakorn","Wongsuwan","Somboon","Srichan"],firstNamesMale:["Somchai","Somsak","Arthit","Kittisak","Narong","Prasert","Thanawat","Wichai"],firstNamesFemale:["Malee","Siriporn","Kannika","Supaporn","Sunisa","Rattana","Nattaya","Pornthip"],cities:[{city:"Bangkok",zip:"10110",locations:[{street:"Sukhumvit Rd",district:"Watthana"},{street:"Silom Rd",district:"Bang Rak"},{street:"Rama I Rd",district:"Pathum Wan"}]},{city:"Chiang Mai",zip:"50200",locations:[{street:"Nimmanahaeminda Rd",district:"Mueang"},{street:"Chang Khlan Rd",district:"Mueang"}]}],phonePrefix:"+66 81"},ID:{lastNames:["Wijaya","Kusuma","Santoso","Saputra","Pratama","Setiawan","Hidayat","Lestari","Nugroho","Gunawan"],firstNamesMale:["Budi","Agus","Eko","Bambang","Rizky","Bayu","Fajar","Hendra","Dimas","Aditya"],firstNamesFemale:["Siti","Sri","Dewi","Nur","Rini","Putri","Tri","Indah","Dian","Ratna"],cities:[{city:"Jakarta",zip:"10110",locations:[{street:"Jl. MH Thamrin",district:"Menteng"},{street:"Jl. Jend. Sudirman",district:"Setiabudi"},{street:"Jl. Gatot Subroto",district:"Kuningan"}]},{city:"Surabaya",zip:"60241",locations:[{street:"Jl. Pemuda",district:"Genteng"},{street:"Jl. Basuki Rahmat",district:"Tegalsari"}]}],phonePrefix:"+62 812"},CN:{lastNames:["Wang","Li","Zhang","Liu","Chen","Yang","Huang","Zhao","Wu","Zhou","Xu","Sun","Ma","Zhu"],firstNamesMale:["Wei","Qiang","Lei","Jun","Yong","Jie","Tao","Chao","Hao","Bo","Ping","Gang"],firstNamesFemale:["Fang","Na","Min","Jing","Li","Juan","Yan","Xiu","Ling","Hong","Dan","Ping"],cities:[{city:"Beijing",zip:"100000",locations:[{street:"Chang'an Ave",district:"Dongcheng"},{street:"Wangfujing St",district:"Dongcheng"}]},{city:"Shanghai",zip:"200000",locations:[{street:"Nanjing Rd",district:"Huangpu"},{street:"Huaihai Rd",district:"Xuhui"}]}],phonePrefix:"+86 138"},RU:{lastNames:["Ivanov","Smirnov","Kuznetsov","Popov","Vasiliev","Petrov","Sokolov","Mikhailov"],firstNamesMale:["Alexander","Dmitry","Maxim","Sergey","Andrey","Alexey","Artem","Ilya"],firstNamesFemale:["Anastasia","Maria","Daria","Anna","Polina","Elena","Olga","Ekaterina"],cities:[{city:"Moscow",zip:"101000",locations:[{street:"Tverskaya St",district:"Central District"},{street:"Arbat St",district:"Central District"}]},{city:"Saint Petersburg",zip:"190000",locations:[{street:"Nevsky Prospect",district:"Tsentralny"},{street:"Liteyny Ave",district:"Tsentralny"}]}],phonePrefix:"+7 916"}},e=[];function n(e,n){const i=t[e]||t.VN;let a="MALE"===n||"male"===n;"RANDOM"!==n&&"random"!==n||(a=Math.random()>.5);const r=a?"Nam (Male)":"Nữ (Female)",o=a?"male":"female";let s="";if("VN"===e){const t=i.lastNames[Math.floor(Math.random()*i.lastNames.length)];let e="",n="";a?(e=i.middleNamesMale[Math.floor(Math.random()*i.middleNamesMale.length)],n=i.firstNamesMale[Math.floor(Math.random()*i.firstNamesMale.length)]):(e=i.middleNamesFemale[Math.floor(Math.random()*i.middleNamesFemale.length)],n=i.firstNamesFemale[Math.floor(Math.random()*i.firstNamesFemale.length)]),s=t+" "+e+" "+n}else{const t=a?i.firstNamesMale:i.firstNamesFemale;s=t[Math.floor(Math.random()*t.length)]+" "+i.lastNames[Math.floor(Math.random()*i.lastNames.length)]}const d=Math.floor(25*Math.random()+1982),c=String(Math.floor(12*Math.random()+1)).padStart(2,"0"),l=String(Math.floor(28*Math.random()+1)).padStart(2,"0")+"/"+c+"/"+d,h=i.cities[Math.floor(Math.random()*i.cities.length)],g=h&&"object"==typeof h?h.city:h,u=h&&"object"==typeof h&&h.province?h.province:g,p=h&&"object"==typeof h?h.zip:"100000",m=h&&"object"==typeof h&&h.provinceCode?h.provinceCode:"079",y=Math.floor(888*Math.random()+12);let f="";if(h.locations&&h.locations.length>0){const t=h.locations[Math.floor(Math.random()*h.locations.length)];f="VN"===e?y+" "+t.street+", "+t.ward+", "+t.district+", "+u:y+" "+t.street+(t.district?", "+t.district:"")+", "+g}else f=y+" Main St, "+g;let T="";if("VN"===e&&Array.isArray(i.phonePrefixes)){T=i.phonePrefixes[Math.floor(Math.random()*i.phonePrefixes.length)]+" "+Math.floor(8999999*Math.random()+1e6)}else T=i.phonePrefix+" "+Math.floor(8999999*Math.random()+1e6);const w=s.toLowerCase().replace(/đ/g,"d").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]/g,""),P=w+d+"@gmail.com",b=w.charAt(0).toUpperCase()+w.slice(1,6)+"@"+Math.floor(899*Math.random()+100)+"!",M=function(t,e,n,i){if("VN"===t){let t="0";return t=n>=2e3?"female"===e?"3":"2":"female"===e?"1":"0",String(i||"079").padStart(3,"0")+t+String(n).slice(-2)+String(Math.floor(899999*Math.random()+1e5))}if("US"===t)return String(Math.floor(889*Math.random()+100))+"-"+String(Math.floor(89*Math.random()+10))+"-"+String(Math.floor(8999*Math.random()+1e3));if("UK"===t){const t="ABCEGHJKLMNOPRSTWXYZ";return t[Math.floor(Math.random()*t.length)]+t[Math.floor(Math.random()*t.length)]+" "+String(Math.floor(899999*Math.random()+1e5)).replace(/(\d{2})(\d{2})(\d{2})/,"$1 $2 $3")+" "+"ABCD"[Math.floor(4*Math.random())]}if("DE"===t)return String(Math.floor(89999999999*Math.random()+1e10));if("FR"===t)return("female"===e?"2":"1")+String(n).slice(-2)+String(Math.floor(899999999999*Math.random()+1e11));if("JP"===t)return String(Math.floor(899999999999*Math.random()+1e11));if("KR"===t)return String(n).slice(-2)+String(Math.floor(12*Math.random()+1)).padStart(2,"0")+String(Math.floor(28*Math.random()+1)).padStart(2,"0")+"-"+(n>=2e3?"female"===e?"4":"3":"female"===e?"2":"1")+String(Math.floor(899999*Math.random()+1e5));if("CN"===t)return String(Math.floor(899999*Math.random()+11e4))+n+"0815"+String(Math.floor(8999*Math.random()+1e3));if("PH"===t)return String(Math.floor(8999*Math.random()+1e3))+"-"+String(Math.floor(8999*Math.random()+1e3))+"-"+String(Math.floor(8999*Math.random()+1e3))+"-"+String(Math.floor(8999*Math.random()+1e3));if("TH"===t)return String(Math.floor(8999999999999*Math.random()+1e12));if("ID"===t)return String(Math.floor(8999999999999999*Math.random()+1e15));if("RU"===t)return String(Math.floor(899999999*Math.random()+1e8)).replace(/(\d{3})(\d{3})(\d{3})/,"$1-$2-$3")+" "+String(Math.floor(89*Math.random()+10));return String(Math.floor(899999999999*Math.random()+1e11))}(e,o,d,m);return{fullName:s,gender:r,genderCode:o,dob:l,birthYear:d,country:e,address:f,city:g,zipCode:p,phone:T,email:P,password:b,idNumber:M}}function i(){const t=document.getElementById("fakeInfoCountry")||document.getElementById("fakeCountrySelect"),i=document.getElementById("fakeInfoGender")||document.getElementById("fakeGenderSelect"),a=document.getElementById("fakeInfoCount")||document.getElementById("fakeCountSelect"),r=t?t.value:"VN",o=i?i.value:"RANDOM",s=parseInt(a?a.value:"5",10)||5;e=[];let d="";for(let t=0;t<s;t++){const i=n(r,o);e.push(i);const a="VN"===i.country?"CCCD":"ID/SSN";d+=t+1+". Họ Tên: "+i.fullName+"\n   Giới tính: "+i.gender+" | Ngày sinh: "+i.dob+"\n   "+a+": "+i.idNumber+"\n   Địa chỉ: "+i.address+" | Zip Code: "+i.zipCode+"\n   SĐT: "+i.phone+" | Email: "+i.email+"\n   Mật khẩu: "+i.password+"\n\n"}const c=document.getElementById("fakeInfoOutput");c&&(c.value=d.trim());const l=document.getElementById("fakeProfilePreviewBox");l&&(l.innerHTML="",l.style.display="grid",l.style.gridTemplateColumns="repeat(auto-fit, minmax(320px, 1fr))",l.style.gap="14px",e.forEach((t,e)=>{const n=document.createElement("div");n.className="fake-profile-card",n.style.cssText="background:#090e17; border:1px solid #1e293b; border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:8px; width:100%; box-sizing:border-box; align-items:stretch;";const i="VN"===t.country?"CCCD:":"SSN/ID:",a="VN"===t.country?"Copy CCCD":"Copy ID";n.innerHTML=`\n            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:8px; width:100%; box-sizing:border-box;">\n              <div>\n                <h4 style="font-size:1.05rem; font-weight:700; color:#fff; margin:0 0 4px 0;">${escapeHtml(t.fullName)}</h4>\n                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">\n                  <span style="font-size:0.75rem; color:#60a5fa; font-family:monospace;">${escapeHtml(t.gender)} • ${escapeHtml(t.dob)}</span>\n                  <button class="btn-action-copy" data-copy="${escapeHtml(t.dob)}" onclick="copyBtnData(this, 'Ngày sinh')" style="padding:1px 6px; font-size:0.68rem;" title="Copy Ngày sinh"><i class="fa-regular fa-copy"></i> Copy DOB</button>\n                </div>\n              </div>\n              <button class="btn-action-copy" data-copy="${escapeHtml(t.fullName)}" onclick="copyBtnData(this, 'Họ Tên')" style="padding:4px 10px; font-size:0.75rem;"><i class="fa-regular fa-copy"></i> Copy Tên</button>\n            </div>\n\n            \x3c!-- CCCD / ID Card --\x3e\n            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #334155; width:100%; box-sizing:border-box;">\n              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">\n                <i class="fa-solid fa-id-card" style="width:16px; color:#c084fc; flex-shrink:0;"></i>\n                <span style="color:#cbd5e1; font-size:0.78rem; flex-shrink:0;">${i}</span>\n                <strong style="color:#c084fc; font-family:monospace; font-size:0.88rem; letter-spacing:0.8px; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(t.idNumber)}</strong>\n              </div>\n              <button class="btn-action-copy" data-copy="${escapeHtml(t.idNumber)}" onclick="copyBtnData(this, '${a}')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Số Căn cước"><i class="fa-regular fa-copy"></i> ${a}</button>\n            </div>\n\n            \x3c!-- Address 2026 --\x3e\n            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">\n              <div style="display:flex; align-items:flex-start; gap:6px; flex:1; font-size:0.8rem; line-height:1.4;">\n                <i class="fa-solid fa-map-location-dot" style="width:16px; color:#64748b; margin-top:2px; flex-shrink:0;"></i>\n                <span style="color:#cbd5e1; word-break:break-word;">${escapeHtml(t.address)}</span>\n              </div>\n              <button class="btn-action-copy" data-copy="${escapeHtml(t.address)}" onclick="copyBtnData(this, 'Địa chỉ')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0; margin-top:2px;" title="Copy Địa chỉ"><i class="fa-regular fa-copy"></i> Copy Đ/c</button>\n            </div>\n\n            \x3c!-- Zip Code --\x3e\n            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">\n              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">\n                <i class="fa-solid fa-barcode" style="width:16px; color:#38bdf8; flex-shrink:0;"></i>\n                <span style="color:#cbd5e1; font-size:0.78rem; flex-shrink:0;">Zip/Postal:</span>\n                <strong style="color:#38bdf8; font-family:monospace; font-size:0.88rem; letter-spacing:0.5px;">${escapeHtml(t.zipCode)}</strong>\n              </div>\n              <button class="btn-action-copy" data-copy="${escapeHtml(t.zipCode)}" onclick="copyBtnData(this, 'Mã Zip')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Zip Code"><i class="fa-regular fa-copy"></i> Copy Zip</button>\n            </div>\n\n            \x3c!-- Phone --\x3e\n            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">\n              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">\n                <i class="fa-solid fa-phone" style="width:16px; color:#64748b; flex-shrink:0;"></i>\n                <span style="color:#cbd5e1; font-size:0.78rem; font-family:monospace;">${escapeHtml(t.phone)}</span>\n              </div>\n              <button class="btn-action-copy" data-copy="${escapeHtml(t.phone)}" onclick="copyBtnData(this, 'Số điện thoại')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Số điện thoại"><i class="fa-regular fa-copy"></i> Copy SĐT</button>\n            </div>\n\n            \x3c!-- Email --\x3e\n            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">\n              <div style="display:flex; align-items:center; gap:6px; overflow:hidden; flex:1;">\n                <i class="fa-solid fa-envelope" style="width:16px; color:#64748b; flex-shrink:0;"></i>\n                <span style="color:#cbd5e1; font-size:0.78rem; font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(t.email)}</span>\n              </div>\n              <button class="btn-action-copy" data-copy="${escapeHtml(t.email)}" onclick="copyBtnData(this, 'Email')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Email"><i class="fa-regular fa-copy"></i> Copy Email</button>\n            </div>\n\n            \x3c!-- Password --\x3e\n            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">\n              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">\n                <i class="fa-solid fa-key" style="width:16px; color:#10b981; flex-shrink:0;"></i>\n                <strong style="color:#10b981; font-size:0.82rem; font-family:monospace;">${escapeHtml(t.password)}</strong>\n              </div>\n              <button class="btn-action-copy" data-copy="${escapeHtml(t.password)}" onclick="copyBtnData(this, 'Mật khẩu')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Mật khẩu"><i class="fa-regular fa-copy"></i> Copy Pass</button>\n            </div>`,l.appendChild(n)})),showToast("Đã tạo thành công "+s+" hồ sơ Fake Name chuẩn 2026!","success")}function a(t,n,i){if(i)return void copyBtnData(i,n);const a=window.currentFakeProfiles||e;if(!a||!a[t])return;const r=a[t],o={fullName:{val:r.fullName,label:"Họ và Tên"},idNumber:{val:r.idNumber,label:"VN"===r.country?"Số Căn Cước (CCCD)":"Số Định Danh (SSN/ID)"},dob:{val:r.dob,label:"Ngày sinh"},address:{val:r.address,label:"Địa chỉ"},zipCode:{val:r.zipCode,label:"Mã Zip Code"},phone:{val:r.phone,label:"Số điện thoại"},email:{val:r.email,label:"Email"},password:{val:r.password,label:"Mật khẩu"}}[n];o&&o.val&&copyTextDirect(o.val,"Đã sao chép "+o.label+": "+o.val)}function r(silent){e=[],window.currentFakeProfiles=[];const t=document.getElementById("fakeProfilePreviewBox");t&&(t.innerHTML="",t.style.display="none");const n=document.getElementById("fakeInfoOutput");n&&(n.value=""),!silent&&"function"==typeof showToast&&showToast("Đã xóa sạch dữ liệu kết quả Fake Name!","info")}window.generateFakeProfiles=i,window.clearFakeProfiles=r,window.copyProfileField=a,window.copyFirstProfileName=function(t){a(t,"fullName")},window.copyProfileZip=function(t){a(t,"zipCode")},window.copyOnlyNames=function(){if(!e||0===e.length)return void showToast("Chưa có danh sách để sao chép!","warning");const t=e.map(t=>t.fullName).join("\n");copyToClipboard(t,"Đã sao chép toàn bộ Họ & Tên!")},window.copyOnlyIds=function(){if(!e||0===e.length)return void showToast("Chưa có danh sách để sao chép!","warning");const t=e.map(t=>t.idNumber).join("\n"),n=e[0]&&"VN"===e[0].country?"CCCD":"Số định danh (ID/SSN)";copyToClipboard(t,"Đã sao chép toàn bộ danh sách "+n+"!")},window.copyOnlyZipCodes=function(){if(!e||0===e.length)return void showToast("Chưa có danh sách để sao chép!","warning");const t=e.map(t=>t.zipCode).join("\n");copyToClipboard(t,"Đã sao chép toàn bộ Mã Zip Code!")},window.copyFakeInfoAsText=function(){if(!e||0===e.length)return void showToast("Chưa có thông tin để sao chép!","warning");let t=e.map((t,e)=>{const n="VN"===t.country?"CCCD":"ID/SSN";return e+1+". Họ Tên: "+t.fullName+"\n   Giới tính: "+t.gender+" | Ngày sinh: "+t.dob+"\n   "+n+": "+t.idNumber+"\n   Địa chỉ: "+t.address+" | Zip Code: "+t.zipCode+"\n   SĐT: "+t.phone+" | Email: "+t.email+"\n   Mật khẩu: "+t.password}).join("\n\n");copyToClipboard(t,"Đã sao chép toàn bộ thông tin Fake Name (không chứa IP)!")},window.downloadFakeInfoTxt=function(){if(!e||0===e.length)return void showToast("Chưa có dữ liệu để xuất file .txt!","warning");let t="=== DANH SÁCH FAKE NAME & PERSONA (MMO TOOLS - CHUẨN 2026) ===\n";t+="Thời gian tạo: "+(new Date).toLocaleString("vi-VN")+"\n",t+="Số lượng: "+e.length+" hồ sơ\n\n",e.forEach((e,n)=>{const i="VN"===e.country?"Số CCCD:    ":"Số ID/SSN:  ";t+="----------------------------------------\n",t+="HỒ SƠ #"+(n+1)+"\n",t+="----------------------------------------\n",t+="Họ & Tên:   "+e.fullName+"\n",t+="Giới tính:  "+e.gender+"\n",t+="Ngày sinh:  "+e.dob+"\n",t+=i+e.idNumber+"\n",t+="Quốc gia:   "+e.country+"\n",t+="Địa chỉ:    "+e.address+"\n",t+="Zip Code:   "+e.zipCode+"\n",t+="Điện thoại: "+e.phone+"\n",t+="Email:      "+e.email+"\n",t+="Mật khẩu:   "+e.password+"\n\n"});const n=new Blob([t],{type:"text/plain;charset=utf-8"}),i=document.createElement("a");i.href=URL.createObjectURL(n),i.download="fake_names_mmo_2026.txt",i.click(),showToast("Đã tải xuống file fake_names_mmo_2026.txt!","success")};try{r(true)}catch(t){}}();
+      //]]>
+    </script>
 
     <!-- TOOL 5: CHECK FOLLOWER TIKTOK HÀNG LOẠT -->
     <div class='tool-box-card' id='toolTtFollow' style='display:none;'>
@@ -9281,6 +9838,30 @@ header.header {
         </div>
         <div style='font-size:0.88rem; color:#94a3b8; margin-bottom:20px;'>
           Tự động cộng thêm tỷ lệ % lợi nhuận vào giá thuê sim từ hệ thống gốc ViOTP cho toàn bộ 983+ dịch vụ (Lưu trên Cloudflare Worker &amp; Turso DB).
+        </div>
+
+        <!-- THẺ TRẠNG THÁI SỐ DƯ KHO NGUỒN VIOTP LIVE -->
+        <div style='background:#070d17; border:1px solid #1e293b; border-radius:10px; padding:14px 18px; margin-bottom:18px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;'>
+          <div style='display:flex; align-items:center; gap:12px;'>
+            <div style='width:38px; height:38px; border-radius:8px; background:rgba(16,185,129,0.15); border:1px solid rgba(16,185,129,0.3); display:flex; align-items:center; justify-content:center; color:#10b981; font-size:1.1rem;'>
+              <i class='fa-solid fa-wallet'></i>
+            </div>
+            <div>
+              <div style='font-size:0.78rem; color:#94a3b8; font-weight:700; letter-spacing:0.5px;'>SỐ DƯ WEB NGUỒN VIOTP HIỆN TẠI</div>
+              <div style='font-size:1.15rem; font-weight:800; color:#ffffff; display:flex; align-items:center; gap:10px;'>
+                <span id='admViotpSourceBal' style='color:#38bdf8;'>Đang tải...</span>
+                <span id='admViotpBalBadge' style='font-size:0.75rem; padding:2px 8px; border-radius:12px; font-weight:700; display:none;'></span>
+              </div>
+            </div>
+          </div>
+          <div style='display:flex; align-items:center; gap:10px;'>
+            <button type='button' onclick='checkViotpSourceBalance(true)' style='background:#1e293b; border:1px solid #334155; color:#cbd5e1; border-radius:6px; padding:7px 12px; font-size:0.82rem; font-weight:700; cursor:pointer;'>
+              <i class='fa-solid fa-rotate'></i> Làm mới số dư
+            </button>
+            <a href='https://viotp.com' target='_blank' style='background:linear-gradient(135deg, #10b981, #059669); color:#fff; border-radius:6px; padding:7px 14px; font-size:0.82rem; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(16,185,129,0.3);'>
+              <i class='fa-solid fa-plus'></i> Nạp Tiền ViOTP
+            </a>
+          </div>
         </div>
         
         <div style='display:flex; align-items:center; gap:20px; flex-wrap:wrap; margin-bottom:16px;'>
@@ -13769,7 +14350,7 @@ print(res.json())</pre>
   <!-- ==========================================================================
        OFFLOADED CDN JAVASCRIPT BUNDLE (ALL FUNCTIONS AND MODULES)
        ========================================================================== -->
-  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.4/bundle.min.js?v=6.6.4' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
+  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/bundle.min.js?v=6.8.2' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
   <script type='text/javascript'>
     //<![CDATA[
     (function() {
@@ -13827,7 +14408,7 @@ print(res.json())</pre>
 
               // Tự động cập nhật CSS
               var cssEl = document.getElementById("mmoCdnThemeCss");
-              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.4/theme.min.css?v=6.6.4");
+              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/theme.min.css?v=6.8.2");
               if (cssEl) cssEl.href = newCssUrl;
 
               // Mã nguồn chính thức đã được tải an toàn từ CDN v5.7.9
@@ -14203,7 +14784,7 @@ print(res.json())</pre>
         console.warn("CDN primary slow or failed, falling back to Fastly mirror...");
         var fb = document.createElement("script");
         fb.defer = true;
-        fb.src = "https://fastly.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.6.4/bundle.min.js?v=6.6.4";
+        fb.src = "https://fastly.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/bundle.min.js?v=6.8.2";
         fb.onload = bootMMOCdnApp;
         document.body.appendChild(fb);
       }
