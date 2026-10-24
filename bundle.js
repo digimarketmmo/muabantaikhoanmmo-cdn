@@ -35782,13 +35782,11 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             }
             return;
           }
-          // Nếu không phải API on-demand, dừng và báo lỗi ngay
-          if (!isApiOnDemand) {
-            restoreBtn();
-            showToast("⚠️ " + errMsg, "danger");
-            return;
-          }
-          console.warn("Worker checkout API source notice, falling back to multi-tier API execution:", errMsg);
+          // Máy chủ Worker / Turso đã thẩm định và xử lý (tiền trong ví đã được bảo toàn nguyên vẹn 100%):
+          // Dừng ngay lập tức, tuyệt đối không chạy fallback ngoài luồng để chống hiện tượng lệch số dư / hoàn tiền ảo!
+          restoreBtn();
+          showToast("⚠️ " + errMsg, "warning");
+          return;
         }
       } catch(wErr) {
         console.warn("Worker direct checkout network fallback:", wErr);
@@ -40262,8 +40260,23 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       const qrUrl = `https://img.vietqr.io/image/${bankCode}-${bankAcc}-compact.png?amount=${amount}&addInfo=${memo}&accountName=${bankOwner}`;
       if (qrImgEl) qrImgEl.src = qrUrl;
 
-      // Register deposit order with Google Apps Script Cloud Backend
+      // Register deposit order with Cloudflare Worker Turso DB & Google Apps Script
       if (currentUser && currentUser.email) {
+        try {
+          const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+            ? MMO_WORKER_API.getApiUrl()
+            : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          fetch(workerUrl + "/api/deposit/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId: depositOrderCode,
+              amount: amount,
+              email: currentUser.email
+            })
+          }).catch(() => {});
+        } catch(eDepWorker) {}
+
         callGasApi("createDepositOrder", {
           orderId: depositOrderCode,
           amount: amount,
@@ -50405,6 +50418,44 @@ async function confirmRefundOrder() {
           }
         }).catch(() => {});
       }
+
+      // 5b. Đồng bộ hoàn tiền trực tiếp lên Cloudflare Worker Turso DB SSOT
+      try {
+        const workerRefundUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+          ? (MMO_WORKER_API.getApiUrl() + "/api/admin/orders/refund")
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/orders/refund";
+        const admSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+          ? MMO_WORKER_API.getAdminSecret()
+          : "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+        fetch(workerRefundUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + admSec,
+            "x-admin-token": admSec
+          },
+          body: JSON.stringify({
+            orderId: orderId,
+            email: finalEmail,
+            amount: refundAmt,
+            reason: refundNote
+          })
+        }).then(r => r.json()).then(wRes => {
+          if (wRes && wRes.success && wRes.newBalance !== undefined) {
+            let uList = getRegisteredUsers();
+            let uI = uList.findIndex(u => (u.email || "").toLowerCase().trim() === finalEmail);
+            if (uI !== -1) {
+              uList[uI].balance = Number(wRes.newBalance);
+              saveRegisteredUsers(uList);
+              if (currentUser && (currentUser.email || "").toLowerCase().trim() === finalEmail) {
+                currentUser.balance = Number(wRes.newBalance);
+                safeStorageSet("mmo_user", JSON.stringify(currentUser));
+                if (typeof updateUserUI === "function") updateUserUI();
+              }
+            }
+          }
+        }).catch(() => {});
+      } catch(eRefWorker) {}
 
       if (typeof callGasApi === "function") {
         callGasApi("adminUpdateBalance", {
