@@ -12273,30 +12273,36 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           showToast(customMsg || "Đã sao chép vào bộ nhớ tạm!", "success");
         }
       };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          doToast();
-        }).catch(() => {
-          fallbackCopy(text, customMsg);
-        });
-      } else {
-        fallbackCopy(text, customMsg);
-      }
-    }
-    function fallbackCopy(text, customMsg) {
+
+      // [TỐI ƯU SIÊU TỐC 0MS]: Dùng document.execCommand đồng bộ ngay trong call frame của click event
+      let syncCopied = false;
       try {
         const ta = document.createElement("textarea");
         ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
+        ta.setAttribute("readonly", "");
+        ta.style.cssText = "position:fixed;top:0;left:0;width:2px;height:2px;padding:0;border:none;outline:none;background:transparent;opacity:0.01;z-index:-1;";
         document.body.appendChild(ta);
+        ta.focus();
         ta.select();
-        document.execCommand("copy");
+        ta.setSelectionRange(0, ta.value.length);
+        syncCopied = document.execCommand("copy");
         document.body.removeChild(ta);
-        if (customMsg !== false && typeof showToast === "function") {
-          showToast(customMsg || "Đã sao chép!", "success");
-        }
-      } catch(e) {}
+      } catch(e) {
+        syncCopied = false;
+      }
+
+      // Thông báo tức thì không trễ 1 mili-giây nào
+      doToast();
+
+      // Gọi thêm navigator.clipboard ngầm để đảm bảo tính tương thích đa nền tảng
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          navigator.clipboard.writeText(text).catch(() => {});
+        } catch(e) {}
+      }
+    }
+    function fallbackCopy(text, customMsg) {
+      copyTextDirect(text, customMsg);
     }
     window.copyTextDirect = copyTextDirect;
 
@@ -38859,20 +38865,14 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
         currentFakeProfiles.forEach((p, idx) => {
           const card = document.createElement("div");
-          card.className = "profile-result-card";
-          card.style.background = "#090e17";
-          card.style.border = "1px solid #1e293b";
-          card.style.borderRadius = "10px";
-          card.style.padding = "14px";
-          card.style.display = "flex";
-          card.style.flexDirection = "column";
-          card.style.gap = "8px";
+          card.className = "fake-profile-card";
+          card.style.cssText = "background:#090e17; border:1px solid #1e293b; border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:8px; width:100%; box-sizing:border-box; align-items:stretch;";
 
           const idLabel = p.country === "VN" ? "CCCD:" : "SSN/ID:";
           const idBtnLabel = p.country === "VN" ? "Copy CCCD" : "Copy ID";
 
           card.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:8px; width:100%; box-sizing:border-box;">
               <div>
                 <h4 style="font-size:1.05rem; font-weight:700; color:#fff; margin:0 0 4px 0;">${escapeHtml(p.fullName)}</h4>
                 <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
@@ -38884,7 +38884,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             </div>
 
             <!-- CCCD / ID Card -->
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #334155;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #334155; width:100%; box-sizing:border-box;">
               <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
                 <i class="fa-solid fa-id-card" style="width:16px; color:#c084fc; flex-shrink:0;"></i>
                 <span style="color:#cbd5e1; font-size:0.78rem; flex-shrink:0;">${idLabel}</span>
@@ -38894,7 +38894,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             </div>
 
             <!-- Address 2026 -->
-            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">
               <div style="display:flex; align-items:flex-start; gap:6px; flex:1; font-size:0.8rem; line-height:1.4;">
                 <i class="fa-solid fa-map-location-dot" style="width:16px; color:#64748b; margin-top:2px; flex-shrink:0;"></i>
                 <span style="color:#cbd5e1; word-break:break-word;">${escapeHtml(p.address)}</span>
@@ -38903,7 +38903,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             </div>
 
             <!-- Zip Code -->
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">
               <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
                 <i class="fa-solid fa-barcode" style="width:16px; color:#38bdf8; flex-shrink:0;"></i>
                 <span style="color:#cbd5e1; font-size:0.78rem; flex-shrink:0;">Zip/Postal:</span>
@@ -38913,7 +38913,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             </div>
 
             <!-- Phone -->
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">
               <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
                 <i class="fa-solid fa-phone" style="width:16px; color:#64748b; flex-shrink:0;"></i>
                 <span style="color:#cbd5e1; font-size:0.78rem; font-family:monospace;">${escapeHtml(p.phone)}</span>
@@ -38922,7 +38922,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             </div>
 
             <!-- Email -->
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">
               <div style="display:flex; align-items:center; gap:6px; overflow:hidden; flex:1;">
                 <i class="fa-solid fa-envelope" style="width:16px; color:#64748b; flex-shrink:0;"></i>
                 <span style="color:#cbd5e1; font-size:0.78rem; font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(p.email)}</span>
@@ -38931,7 +38931,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             </div>
 
             <!-- Password -->
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">
               <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
                 <i class="fa-solid fa-key" style="width:16px; color:#10b981; flex-shrink:0;"></i>
                 <strong style="color:#10b981; font-size:0.82rem; font-family:monospace;">${escapeHtml(p.password)}</strong>

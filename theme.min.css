@@ -1866,3 +1866,4 @@
   }
 }
 
+.fake-profile-card{width:100%!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:stretch!important}.fake-profile-card *{box-sizing:border-box}.btn-action-copy{cursor:pointer!important;user-select:none!important;transition:transform .1s ease,background .15s ease!important}.btn-action-copy:active{transform:scale(.94)}
