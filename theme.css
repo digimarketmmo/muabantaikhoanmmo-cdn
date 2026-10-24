@@ -7935,28 +7935,71 @@ body.is-admin #profAdminShortcutBtn {
   background: #f0fdf4 !important;
   border: 1.5px dashed #86efac !important;
   border-radius: 12px !important;
-  padding: 12px 18px !important;
+  padding: 10px 16px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
+  gap: 10px !important;
+  overflow: hidden !important;
 }
 .sms-code-val {
-  font-size: 1.95rem !important;
+  font-size: 1.6rem !important;
   font-weight: 800 !important;
   color: #059669 !important;
-  letter-spacing: 8px !important;
-  font-family: monospace !important;
+  letter-spacing: 4px !important;
+  font-family: monospace, system-ui !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
 }
 .sms-btn-copy-code {
   background: transparent !important;
   color: #059669 !important;
   border: none !important;
-  font-size: 0.95rem !important;
+  font-size: 0.92rem !important;
   font-weight: 700 !important;
   cursor: pointer !important;
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+.sms-pagination-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  margin-top: 22px !important;
+  margin-bottom: 10px !important;
+}
+.sms-page-btn {
+  background: #0c1424 !important;
+  border: 1px solid #1e293b !important;
+  color: #94a3b8 !important;
+  min-width: 36px !important;
+  height: 36px !important;
+  border-radius: 8px !important;
+  font-size: 0.88rem !important;
+  font-weight: 700 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+}
+.sms-page-btn:hover:not(:disabled) {
+  border-color: #00b87c !important;
+  color: #00b87c !important;
+  background: rgba(0, 184, 124, 0.08) !important;
+}
+.sms-page-btn.active {
+  background: #00b87c !important;
+  border-color: #00b87c !important;
+  color: #ffffff !important;
+}
+.sms-page-btn:disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed !important;
 }
 .sms-btn-copy-code:hover {
   color: #047857 !important;
