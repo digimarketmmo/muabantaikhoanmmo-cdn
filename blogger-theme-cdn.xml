@@ -12118,7 +12118,7 @@ header.header {
   </div>
 
   <!-- Modal Chi Tiết Thành Viên và Lịch Sử Giao Dịch Dành Cho Admin -->
-  <div class='modal-overlay' id='adminUserDetailModal'>
+  <div class='modal-overlay' id='adminUserDetailModal' onclick='if(event.target === this) closeModal("adminUserDetailModal")' style='display:none; z-index:99999999; align-items:center; justify-content:center; background:rgba(0,0,0,0.85); position:fixed; inset:0; padding:16px; box-sizing:border-box;'>
     <div class='modal-card' style='max-width:850px; width:95%; max-height:90vh; overflow-y:auto;'>
       <div class='modal-header'>
         <span class='modal-title'><i class='fa-solid fa-id-card-clip green'></i> Hồ Sơ Thành Viên &amp; Lịch Sử Giao Dịch</span>

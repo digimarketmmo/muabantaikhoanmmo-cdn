@@ -10411,14 +10411,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (explicitBalance !== undefined && explicitBalance !== null && !isNaN(Number(explicitBalance)) && Number(explicitBalance) >= 0) {
         curBal = Number(explicitBalance);
       }
+
+      const uList = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+      const uFound = uList.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
+
       if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) {
         curBal = Number(currentUser.balance);
-      } else {
-        const uList = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
-        const uFound = uList.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
-        if (uFound && uFound.balance !== undefined && !isNaN(Number(uFound.balance))) {
-          curBal = Number(uFound.balance);
-        }
+      } else if (uFound && uFound.balance !== undefined && !isNaN(Number(uFound.balance))) {
+        curBal = Number(uFound.balance);
       }
 
       // Đối chiếu số dư với dòng tiền thực tế từ các giao dịch đã xác nhận (nạp - mua)
@@ -10638,7 +10638,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       }
 
       const modal = document.getElementById("adminUserDetailModal");
-      if (modal) modal.style.display = "flex";
+      if (modal) {
+        modal.style.setProperty("display", "flex", "important");
+      }
 
       // 2. Tự động đồng bộ lịch sử nạp tiền từ Cloud GAS cho thành viên này nếu cần
       if (typeof fetchAndSyncMemberCloudDeposits === "function") {
