@@ -7084,14 +7084,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         return;
       }
 
-      // 10 Items per page pagination
-      const page = (typeof paginationState !== "undefined" && paginationState.admUsers) ? paginationState.admUsers : 1;
-      const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
-      const safePage = Math.max(1, Math.min(page, totalPages));
-      if (typeof window.paginationState !== "undefined" && window.paginationState) paginationState.admUsers = safePage;
-
-      const startIndex = (safePage - 1) * ITEMS_PER_PAGE;
-      const pageUsers = users.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+      // HIỂN THỊ TOÀN BỘ THÀNH VIÊN (KHÔNG GIỚI HẠN THEO YÊU CẦU QUẢN TRỊ VIÊN)
+      const pageUsers = users;
 
       const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
 
@@ -7143,8 +7137,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         '</tr>';
       }).join("");
 
-      if (typeof renderPaginationUI === "function") {
-        renderPaginationUI("admUsersPagination", safePage, users.length, "changeAdmUsersPage");
+      const pagEl = document.getElementById("admUsersPagination");
+      if (pagEl) {
+        pagEl.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#0d121f; border-top:1px solid #1e293b; font-size:0.82rem; color:#94a3b8; border-radius:0 0 8px 8px;">' +
+          '<span><i class="fa-solid fa-users" style="color:#10b981;"></i> Đang hiển thị: <strong style="color:#fff;">' + users.length + '</strong> thành viên <span style="color:#10b981; font-weight:700;">(Không giới hạn)</span></span>' +
+          '<span style="color:#64748b; font-size:0.75rem;"><i class="fa-solid fa-cloud" style="color:#38bdf8;"></i> Dữ liệu tự động đồng bộ Realtime từ Cloudflare Worker & Turso SSOT</span>' +
+        '</div>';
       }
     }
     window.renderAdminUsersTable = renderAdminUsersTable;
@@ -7173,9 +7171,50 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const tbody = document.getElementById("admTxTableBody");
       if (!tbody) return;
 
-      const allHistory = (typeof getAllPlatformWalletTransactions === "function") 
-        ? getAllPlatformWalletTransactions() 
-        : (typeof getTransactionHistory === "function" ? getTransactionHistory() : []);
+      let allHistory = Array.isArray(window._adminAllPlatformTxs) && window._adminAllPlatformTxs.length > 0
+        ? window._adminAllPlatformTxs
+        : ((typeof getAllPlatformWalletTransactions === "function") 
+            ? getAllPlatformWalletTransactions() 
+            : (typeof getTransactionHistory === "function" ? getTransactionHistory() : []));
+
+      // Tự động tải Realtime toàn bộ giao dịch sàn từ Cloudflare Worker nếu chưa có hoặc cập nhật mới
+      if (!window._isFetchingAdminPlatformTxs) {
+        window._isFetchingAdminPlatformTxs = true;
+        (async function() {
+          try {
+            const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
+            const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) 
+              ? MMO_WORKER_API.getAdminSecret() 
+              : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+            const res = await fetch(workerUrl + "/api/wallet/transactions?token=" + encodeURIComponent(adminSec), {
+              headers: { "Authorization": "Bearer " + adminSec, "x-admin-token": adminSec }
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.success && Array.isArray(data.transactions) && data.transactions.length > 0) {
+                window._adminAllPlatformTxs = data.transactions.map(t => ({
+                  id: t.order_id || t.id,
+                  txId: t.id,
+                  orderId: t.order_id || "",
+                  userEmail: t.user_email || t.email || "khach@gmail.com",
+                  userName: t.user_name || (t.user_email ? t.user_email.split("@")[0] : "Khách Hàng"),
+                  type: t.type === "DEPOSIT" ? "Nạp tiền ví" : (t.type === "REFUND" ? "Hoàn tiền" : "Thanh toán mua hàng"),
+                  amount: Number(t.amount) || 0,
+                  balanceAfter: t.balance_after,
+                  time: t.created_at ? new Date(t.created_at).toLocaleString("vi-VN") : "Gần đây",
+                  note: t.note || ""
+                }));
+                // Cập nhật lại giao diện ngay khi có dữ liệu từ Worker
+                renderAdminTxTable();
+              }
+            }
+          } catch(ePlatTx) {
+            console.warn("fetch admin platform txs error:", ePlatTx);
+          } finally {
+            setTimeout(() => { window._isFetchingAdminPlatformTxs = false; }, 3000);
+          }
+        })();
+      }
 
       // Cập nhật huy hiệu số lượng biến động toàn sàn
       const countBadge = document.getElementById("admTxCountBadge");
@@ -10800,6 +10839,61 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (typeof fetchAndSyncMemberCloudDeposits === "function") {
         fetchAndSyncMemberCloudDeposits(cleanEmail);
       }
+
+      // TỰ ĐỘNG ĐỒNG BỘ LỊCH SỬ GIAO DỊCH TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO SSOT
+      (async function() {
+        try {
+          const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
+          const txRes = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail));
+          if (txRes.ok) {
+            const txData = await txRes.json();
+            if (txData && txData.success && Array.isArray(txData.transactions) && txData.transactions.length > 0) {
+              const liveTxs = txData.transactions;
+              const countEl = document.getElementById("admDetailTxCount");
+              if (countEl) countEl.innerText = liveTxs.length + " giao dịch (Cloud Realtime)";
+
+              const tbLive = document.getElementById("admDetailUserTxTableBody");
+              if (tbLive) {
+                tbLive.innerHTML = liveTxs.map(tx => {
+                  const amt = Number(tx.amount) || 0;
+                  const isPlus = amt > 0;
+                  const amtHtml = isPlus 
+                    ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(amt) + '</span>' 
+                    : '<span style="color:#ef4444; font-weight:800;">' + formatVND(amt) + '</span>';
+
+                  const tLow = String(tx.type || "").toLowerCase();
+                  const isRefund = tLow === 'refund' || tLow.includes("hoàn");
+                  const isDeposit = tLow === 'deposit' || tLow.includes("nạp");
+                  
+                  let typeBadge = '<span style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-cart-shopping"></i> Mua hàng</span>';
+                  if (isDeposit) {
+                    typeBadge = '<span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-arrow-down"></i> Nạp tiền ví</span>';
+                  } else if (isRefund) {
+                    typeBadge = '<span style="background:rgba(139,92,246,0.15); color:#a78bfa; border:1px solid rgba(139,92,246,0.3); padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền</span>';
+                  }
+
+                  let balAfterStr = (tx.balance_after !== null && tx.balance_after !== undefined && !isNaN(Number(tx.balance_after))) 
+                    ? formatVND(Number(tx.balance_after)) 
+                    : "-";
+
+                  let dateStr = tx.created_at ? new Date(tx.created_at).toLocaleString("vi-VN") : "Gần đây";
+
+                  return '<tr>' +
+                    '<td style="font-weight:700; color:#cbd5e1; font-size:0.75rem; font-family:monospace;">#' + escapeHtml(tx.order_id || tx.id || 'TX') + '</td>' +
+                    '<td>' + typeBadge + '</td>' +
+                    '<td>' + amtHtml + '</td>' +
+                    '<td style="color:#38bdf8; font-weight:700; font-size:0.8rem;">' + balAfterStr + '</td>' +
+                    '<td style="font-size:0.75rem; color:#94a3b8;">' + dateStr + '</td>' +
+                    '<td style="font-size:0.75rem; color:#94a3b8; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + escapeHtml(tx.note || '') + '">' + escapeHtml(tx.note || '-') + '</td>' +
+                  '</tr>';
+                }).join("");
+              }
+            }
+          }
+        } catch(eFetchTx) {
+          console.warn("fetch live user transactions error:", eFetchTx);
+        }
+      })();
     }
     window.openAdminUserDetailModal = openAdminUserDetailModal;
 
@@ -12742,16 +12836,24 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     window.openAdminAddUserModal = openAdminAddUserModal;
 
     function switchAdminUsersSubTab(tab) {
-      const btnAll = document.getElementById("btnAdmUsersSubAll");
-      const btnLocked = document.getElementById("btnAdmUsersSubLocked");
-      if (tab === "locked") {
-        if (btnAll) btnAll.style.background = "transparent";
-        if (btnLocked) btnLocked.style.background = "#ef4444";
+      const btnList = document.getElementById("subTabBtnUsersList");
+      const btnTx = document.getElementById("subTabBtnUsersTx");
+      const tabList = document.getElementById("adminSubTabUsersList");
+      const tabTx = document.getElementById("adminSubTabUsersTx");
+
+      if (tab === "tx") {
+        if (btnList) btnList.classList.remove("active");
+        if (btnTx) btnTx.classList.add("active");
+        if (tabList) tabList.style.display = "none";
+        if (tabTx) tabTx.style.display = "block";
+        if (typeof renderAdminTxTable === "function") renderAdminTxTable();
       } else {
-        if (btnAll) btnAll.style.background = "#10b981";
-        if (btnLocked) btnLocked.style.background = "transparent";
+        if (btnList) btnList.classList.add("active");
+        if (btnTx) btnTx.classList.remove("active");
+        if (tabList) tabList.style.display = "block";
+        if (tabTx) tabTx.style.display = "none";
+        if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
       }
-      if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
     }
     window.switchAdminUsersSubTab = switchAdminUsersSubTab;
 
@@ -40876,9 +40978,41 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         return;
       }
 
+      // Tự động tải Realtime biến động số dư từ Cloudflare Worker nếu chưa có
+      if (!window._isFetchingUserLogs && (!window._userLiveLogs || window._userLiveLogsEmail !== cleanEmail)) {
+        window._isFetchingUserLogs = true;
+        (async function() {
+          try {
+            const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
+            const res = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail));
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.success && Array.isArray(data.transactions) && data.transactions.length > 0) {
+                window._userLiveLogs = data.transactions.map(t => ({
+                  id: t.order_id || t.id,
+                  type: t.type === "DEPOSIT" ? "Nạp tiền ví" : (t.type === "REFUND" ? "Hoàn tiền" : "Thanh toán"),
+                  amount: Number(t.amount) || 0,
+                  balanceAfter: t.balance_after,
+                  time: t.created_at ? new Date(t.created_at).toLocaleString("vi-VN") : "Gần đây",
+                  note: t.note || ""
+                }));
+                window._userLiveLogsEmail = cleanEmail;
+                renderUserBalanceLogs();
+              }
+            }
+          } catch(eLog) {
+            console.warn("fetch user balance logs error:", eLog);
+          } finally {
+            setTimeout(() => { window._isFetchingUserLogs = false; }, 3000);
+          }
+        })();
+      }
+
       if (typeof getUserComprehensiveTransactions === "function") {
         const res = getUserComprehensiveTransactions(cleanEmail);
-        const allLogs = res.transactions;
+        const allLogs = (window._userLiveLogs && window._userLiveLogsEmail === cleanEmail && window._userLiveLogs.length > 0)
+          ? window._userLiveLogs
+          : res.transactions;
 
         if (allLogs.length === 0) {
           tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Chưa có biến động số dư nào.</td></tr>';
