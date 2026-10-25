@@ -408,8 +408,8 @@
     }
   </style>
   <link rel='preconnect' href='https://cdn.jsdelivr.net' crossorigin='anonymous'/>
-  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/bundle.min.js?v=6.8.2' as='script'/>
-  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/theme.min.css?v=6.8.2' as='style'/>
+  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.0/bundle.min.js?v=6.8.9' as='script'/>
+  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.0/theme.min.css?v=6.8.9' as='style'/>
   <script>
     /* BẢO TỒN DỮ LIỆU KHO HÀNG ĐÃ XÓA (0MS) */
     try {
@@ -1587,7 +1587,7 @@
       }
     }
   </style>
-<link href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/theme.min.css?v=6.8.2' id='mmoCdnThemeCss' rel='stylesheet' onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/theme.min.css';"/>
+<link href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.0/theme.min.css?v=6.8.9' id='mmoCdnThemeCss' rel='stylesheet' onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/theme.min.css';"/>
 
   <!-- Google Identity Services -->
   <script src='https://accounts.google.com/gsi/client' async='' defer=''></script>
@@ -1613,8 +1613,8 @@
   <b:skin><![CDATA[
 /* ==========================================================================
    MUABANTAIKHOANMMO.COM - CDN THEME ENGINE
-   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/theme.min.css?v=6.8.2
-   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/bundle.min.js?v=6.8.2
+   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.0/theme.min.css?v=6.8.9
+   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.0/bundle.min.js?v=6.8.9
    ========================================================================== */
 body { margin: 0; padding: 0; background: #070a12; color: #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif; }
 
@@ -10672,15 +10672,15 @@ header.header {
       <!-- Sub-Tab 1: Users List -->
       <div id='adminSubTabUsersList'>
         <div style='display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; gap:12px; flex-wrap:wrap;'>
-          <div style='display:flex; gap:10px; align-items:center; flex:1; max-width:400px;'>
-            <div style='position:relative; width:100%;'>
-              <input type='text' id='admUserSearchInput' oninput='if(typeof paginationState!=="undefined") paginationState.admUsers=1; renderAdminUsersTable();' placeholder='Tìm kiếm theo tên hoặc email...' style='width:100%; box-sizing:border-box; background:#090e18; border:1px solid #1e293b; padding:8px 12px 8px 34px; border-radius:6px; color:#fff; font-size:0.82rem;' />
-              <i class='fa-solid fa-magnifying-glass' style='position:absolute; left:12px; top:11px; color:#64748b; font-size:0.8rem;'></i>
+          <div style='display:flex; gap:10px; align-items:center; flex-wrap:wrap;'>
+            <div style='position:relative; width:340px; min-width:250px;'>
+              <input type='text' id='admUserSearchInput' oninput='if(typeof paginationState!=="undefined") paginationState.admUsers=1; renderAdminUsersTable();' placeholder='Tìm kiếm theo tên, email, User ID...' style='width:100%; box-sizing:border-box; background:#090e18; border:1px solid #1e293b; padding:8px 12px 8px 34px; border-radius:6px; color:#fff; font-size:0.85rem;' />
+              <i class='fa-solid fa-magnifying-glass' style='position:absolute; left:12px; top:11px; color:#64748b; font-size:0.82rem;'></i>
             </div>
-            <button type='button' class='btn-auth' onclick='openAdminAddUserModal()' style='background:#10b981; border:none; padding:7px 14px; font-size:0.8rem; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:6px;'>
+            <button type='button' class='btn-auth' onclick='openAdminAddUserModal()' style='background:#10b981; border:none; padding:8px 16px; font-size:0.82rem; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; border-radius:6px; cursor:pointer;'>
               <i class='fa-solid fa-user-plus'></i> Thêm Thành Viên
             </button>
-            <button type='button' class='btn-action-copy' onclick='fetchCloudUsers(true)' style='font-size:0.8rem; padding:7px 12px; background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.3); color:#38bdf8; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:6px;' title='Đồng bộ dữ liệu thành viên từ Google Sheet'>
+            <button type='button' class='btn-action-copy' onclick='fetchCloudUsers(true)' style='font-size:0.82rem; padding:8px 14px; background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; border-radius:6px; cursor:pointer;' title='Đồng bộ dữ liệu thành viên từ Google Sheet &amp; Cloudflare Worker'>
               <i class='fa-solid fa-rotate'></i> Đồng Bộ Sheet
             </button>
           </div>
@@ -14350,7 +14350,7 @@ print(res.json())</pre>
   <!-- ==========================================================================
        OFFLOADED CDN JAVASCRIPT BUNDLE (ALL FUNCTIONS AND MODULES)
        ========================================================================== -->
-  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/bundle.min.js?v=6.8.2' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
+  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.0/bundle.min.js?v=6.8.9' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
   <script type='text/javascript'>
     //<![CDATA[
     (function() {
@@ -14408,7 +14408,7 @@ print(res.json())</pre>
 
               // Tự động cập nhật CSS
               var cssEl = document.getElementById("mmoCdnThemeCss");
-              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/theme.min.css?v=6.8.2");
+              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.0/theme.min.css?v=6.8.9");
               if (cssEl) cssEl.href = newCssUrl;
 
               // Mã nguồn chính thức đã được tải an toàn từ CDN v5.7.9
@@ -14784,7 +14784,7 @@ print(res.json())</pre>
         console.warn("CDN primary slow or failed, falling back to Fastly mirror...");
         var fb = document.createElement("script");
         fb.defer = true;
-        fb.src = "https://fastly.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.8.2/bundle.min.js?v=6.8.2";
+        fb.src = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js";
         fb.onload = bootMMOCdnApp;
         document.body.appendChild(fb);
       }

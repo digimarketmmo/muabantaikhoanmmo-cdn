@@ -1311,7 +1311,7 @@ if (typeof window !== "undefined") {
         }
       });
 
-      var builtInUltraProds = [{"id":"18504","name":"HOTMAIL LIVE - TIKTOK VIỆT NAM SIÊU KHỎE MAIL TRUST OAuth2 LIVE ĐỌC CODE NHANH","price":1600,"amount":67,"category":"Tiktok việt","provider":"ultrammo"},{"id":"5759","name":"TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )","price":2200,"amount":142,"category":"Tiktok việt","provider":"ultrammo"},{"id":"33131","name":"TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ","price":2400,"amount":2662,"category":"Tiktok việt","provider":"ultrammo"},{"id":"32097","name":"Tiktok Việt Tạo 6-12 Tháng - Mail Megacloudx.com - BẢO HÀNH 3 NGÀY | T1/2026","price":2800,"amount":1617,"category":"Tiktok việt","provider":"ultrammo"},{"id":"4116","name":"TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25","price":1400,"amount":1544,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6257","name":"TikTok El Salvador - SV Reg 2025 Mail Lock | 2.11.25","price":1400,"amount":244,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6258","name":"TikTok Ghana - GH Reg 2025 Mail Lock | 3.11.25","price":1400,"amount":24,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6259","name":"TikTok Croatia - HR Reg 2025 Mail Lock | 8.11.25","price":1400,"amount":389,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"34626","name":"Tiktok Japan reg TTT bằng LINE đã đá mail bật 2fa","price":4500,"amount":389,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"19313","name":"Tiktok Japan reg bằng tiktok Lite reg gg đã đá mail bật 2FA - Login bằng username và pass, (chủ động đổi username pass tự bảo vệ tài sản của mình) mail hết phải mua mail khác nên tăng giá 1 2 hôm ae thông cảm","price":4500,"amount":4096,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"34620","name":"Tiktok Germany reg gg đã đá mail bật 2FA- Login bằng username và pass, (chủ động đổi username pass tự bảo vệ tài sản của mình)","price":7500,"amount":168,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"34623","name":"Tiktok Us reg app TikTok bằng Gmail - Login bằng username và pass, đã bật 2FA và gỡ mail (chủ động đổi username pass tự bảo vệ tài sản của mình)","price":7500,"amount":5278,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"32035","name":"Capcut Pro 4-7 ngày dùng riêng 2 tb, bảo hành full","price":15500,"amount":96,"category":"Capcut Pro","provider":"ultrammo"},{"id":"32026","name":"Capcut Pro 7Day | Riêng Tư [ BHF ]","price":18000,"amount":36,"category":"Capcut Pro","provider":"ultrammo"},{"id":"19388","name":"🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL )","price":54000,"amount":227,"category":"Capcut Pro","provider":"ultrammo"},{"id":"32025","name":"Capcut Pro 1 Tháng | RIÊNG TƯ [ BHF ]","price":70000,"amount":51,"category":"Capcut Pro","provider":"ultrammo"},{"id":"26819","name":"Canva Edu - 1 Tháng - Standard - Canva Education - Nâng cấp chính chủ","price":6000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"26818","name":"Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ","price":13000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"26820","name":"Canva Edu - 3 năm - VIP 🔥 - Canva Education - Nâng cấp chính chủ","price":32000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"21011","name":"NÂNG CẤP CANVA PRO FULL 3 THÁNG ( KHÔNG BẢO HÀNH )","price":36000,"amount":216,"category":"Cavana","provider":"ultrammo"},{"id":"26770","name":"🥇GPT PLUS 1 THÁNG ACC CẤP RIÊNG TƯ |BH FULL - CHAT GqT PLUS GIÁ RẺ","price":290000,"amount":19,"category":"Chat gpt","provider":"ultrammo"},{"id":"32016","name":"🚀GPT Plus 1 tháng - Tài khoản cấp BHF - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full","price":320000,"amount":99999,"category":"Chat gpt","provider":"ultrammo"},{"id":"32750","name":"Tài Khoản Discord Verify Phone Mail (Ngâm 6 Tháng)","price":18000,"amount":82,"category":"Discord","provider":"ultrammo"},{"id":"32749","name":"Tài Khoản Discord Verify Phone Mail(Ngâm 11 Tháng)","price":23000,"amount":104,"category":"Discord","provider":"ultrammo"},{"id":"33450","name":"KEY GPM LOGIN CHÍNH HÃNG 1 THÁNG - KEY GPM LOGIN CHÍNH HÃNG RIÊNG TƯ 100%","price":70000,"amount":62,"category":"Gpm Login","provider":"ultrammo"},{"id":"20474","name":"KEY GPM LOGIN CHÍNH HÃNG 1 THÁNG ( BẢO HÀNH FULL )","price":120000,"amount":89,"category":"Gpm Login","provider":"ultrammo"},{"id":"33448","name":"KEY GPM LOGIN CHÍNH HÃNG 3 THÁNG - KEY GPM LOGIN CHÍNH HÃNG RIÊNG TƯ 100%","price":210000,"amount":62,"category":"Gpm Login","provider":"ultrammo"},{"id":"20475","name":"KEY GPM LOGIN CHÍNH HÃNG 3 THÁNG ( BẢO HÀNH FULL )","price":340000,"amount":61,"category":"Gpm Login","provider":"ultrammo"},{"id":"26767","name":"Gói Chính Chủ: 1 Tháng (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":23000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26768","name":"Gói Chính Chủ: 3 Tháng (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":46000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26765","name":"Gói Chính Chủ: 1 Năm (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":80000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26766","name":"Gói Chính Chủ Riêng Tư: 1 Năm (Yêu cầu TK + MK) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":230000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"32130","name":"Super Grok 5-10 ngày (BHF) - Super Grok ( Bảo hành, Hỗ trợ, Uy tín )","price":140000,"amount":9,"category":"Grok","provider":"ultrammo"},{"id":"21165","name":"🔥 Nâng Cấp Heavy Grok 1 tháng + Cursor Ultra ( Không bảo hành )","price":1350000,"amount":42,"category":"Grok","provider":"ultrammo"},{"id":"26797","name":"SuperGrok cấp sẵn 3 tháng ( hàng trâu kbh ) - Super Grok ( Bảo hành, Hỗ trợ, Uy tín )","price":1440000,"amount":20,"category":"Grok","provider":"ultrammo"},{"id":"26757","name":"1 Slot Mail Khách | 1 THÁNG, Add Family, BHF - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":23000,"amount":11,"category":"Gemini Pro","provider":"ultrammo"},{"id":"26756","name":"1 Slot Mail Khách | 1 NĂM, Add Family, BH3M - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":80000,"amount":62,"category":"Gemini Pro","provider":"ultrammo"},{"id":"13367","name":"NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY ( Tặng kèm GG 5TB 1 năm + NHIỀU AI HOT )","price":95000,"amount":20,"category":"Gemini Pro","provider":"ultrammo"},{"id":"26755","name":"🔥 Nâng chính chủ | Chủ family add 5 slot | BH3M - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":230000,"amount":427,"category":"Gemini Pro","provider":"ultrammo"},{"id":"13629","name":"TÀI KHOẢN KLING AI 65 CREDIT","price":1200,"amount":108,"category":"Kling AI","provider":"ultrammo"},{"id":"26811","name":"Key Premium có VPN |1 thiết bị 1 năm","price":170000,"amount":13336,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26812","name":"Kas Premium 1 máy 1 năm(mail chính chủ khách) - Kaspersky Premium + VPN Diệt Virus Dọn data + Bảo Vệ quyền Riêng tư + giảm checkpoint trên 1 máy","price":210000,"amount":292,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26813","name":"Key Premium có VPN |2 thiết bị 1 năm","price":330000,"amount":298,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26814","name":"Key Premium có VPN |3 thiết bị 1 năm","price":460000,"amount":300,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"19261","name":"Instagram Clone · Random Username · Phone Registered · Live · Verified Phone or Email · No 2FA · Aged 1–30 Days","price":3500,"amount":52,"category":"Instagram","provider":"ultrammo"},{"id":"15811","name":"Instagram Clone · Random Username · Phone Registered · Live · Verified Phone or Email · 2FA On · Aged 1–30 Days","price":4000,"amount":660,"category":"Instagram","provider":"ultrammo"},{"id":"17406","name":"IG khỏe ngâm trên 6 tháng - IG strong over 6 months","price":7500,"amount":65,"category":"Instagram","provider":"ultrammo"},{"id":"17108","name":"IG khỏe ngâm trên 12 tháng - IG strong over 12 months","price":9000,"amount":29,"category":"Instagram","provider":"ultrammo"},{"id":"19338","name":"🔥 Tài Khoản Netflix 4K Full HD Private 1 Tháng ( Bảo Hành Full )","price":100000,"amount":19,"category":"Netflix","provider":"ultrammo"},{"id":"26777","name":"Youtube Premium: 1 Tháng","price":30000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26774","name":"Youtube Premium: 3 Tháng","price":80000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26775","name":"Youtube Premium: 6 Tháng","price":160000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26776","name":"Youtube Premium: 12 Tháng","price":290000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"39182","name":"24h plus - có box get api","price":419,"amount":11760,"category":"Gmail Edu","provider":"ultrammo"},{"id":"33761","name":"7 [ ID 9 ]","price":1800,"amount":56741,"category":"Gmail Edu","provider":"ultrammo"},{"id":"39175","name":"7day.us no box","price":2849,"amount":2482,"category":"Gmail Edu","provider":"ultrammo"},{"id":"39176","name":"14 day no box","price":5999,"amount":571,"category":"Gmail Edu","provider":"ultrammo"},{"id":"26807","name":"🔥5k Credit Ultra - Chính chủ, 1 tháng, BHF - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":630000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"26810","name":"Dùng chung 25k Credit hàng tháng - 3 tháng - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":1670000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"26809","name":"🚀25k Credit - Chính chủ, dùng riêng 1 tháng BHF - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":2470000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"39530","name":"Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️","price":133,"amount":532,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"34707","name":"Gmail Domain 1h - 10h .tokyo","price":673,"amount":2628,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"34708","name":"Gmail Domain 1h - 10h xxx.edu.pl","price":673,"amount":546,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"39533","name":"Gmail Domain✔️ live Vĩnh viễn ✔️domain xxx@0r9.org✔️Flash Sale 30%✔️","price":11768,"amount":6475,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"32032","name":"X Cổ 2023 - 2024 - Twitter cổ từ 2006-2022 2FA Hotmail","price":15000,"amount":337,"category":"Twitter","provider":"ultrammo"},{"id":"32027","name":"X Cổ 2006-2022 2FA Hotmail","price":20000,"amount":115,"category":"Twitter","provider":"ultrammo"},{"id":"32028","name":"X Cổ 2006-2022 2FA ( ĐÃ UNLOCKHOTMAIL )","price":30000,"amount":89,"category":"Twitter","provider":"ultrammo"},{"id":"32029","name":"X Cổ USA 2006 - 2022 - Twitter cổ từ 2006-2022 2FA Hotmail","price":34000,"amount":26,"category":"Twitter","provider":"ultrammo"},{"id":"33470","name":"MAIL DOMAIN OTP LOGIN 2 GIỜ TÊN VIỆT","price":450,"amount":236,"category":"mail domain","provider":"ultrammo"},{"id":"33471","name":"MAIL DOMAIN OTP LOGIN 2 GIỜ TÊN NGOAI","price":450,"amount":248,"category":"mail domain","provider":"ultrammo"},{"id":"33468","name":"MAIL DOMAIN OTP LOGIN 6 GIỜ TÊN VIỆT","price":675,"amount":200,"category":"mail domain","provider":"ultrammo"},{"id":"33469","name":"MAIL DOMAIN OTP LOGIN 6 GIỜ TÊN NGOẠI","price":675,"amount":200,"category":"mail domain","provider":"ultrammo"},{"id":"26784","name":"gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa","price":13000,"amount":20,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"26849","name":"mail NEW 2fa log all thiết bị (bảo hành 12h) - Gmail reg IOS new or old (log PC or log phone)","price":15000,"amount":38,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"16184","name":"Gmail New US - Hàng Reg Tay - BH log đầu 24h","price":16500,"amount":147,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"14886","name":"Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h)","price":18000,"amount":1114,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"26853","name":"YTB cổ không video - 🔥 YOUTUBE CỔ CÓ VIDEO 2006–2020 🔥","price":86000,"amount":39,"category":"Youtube Cổ","provider":"ultrammo"},{"id":"26851","name":"Youtube cổ có video","price":200000,"amount":1,"category":"Youtube Cổ","provider":"ultrammo"},{"id":"26955","name":"Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)","price":117,"amount":16126,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"26954","name":"Hotmail Trusted Mail Khôi Phục Fviainboxes/Smvmail Live Vĩnh Viên (Đã bật Graph API)","price":169,"amount":4679,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"18867","name":"Hotmail Trusted - OAuth2 [ Graph ] Skip 7 Days","price":234,"amount":69458,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"16197","name":"Hotmail Trusted US - OAuth2 [ Imap/Graph]","price":239,"amount":47554,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"19349","name":"Tài Khoản Zoom Pro 3 Tháng - Bảo Hành Full ( 100 Người )","price":320000,"amount":345,"category":"zoom","provider":"ultrammo"},{"id":"34028","name":"Proxy Viettel - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34031","name":"Proxy FPT - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34034","name":"Proxy VNPT - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34029","name":"Proxy Viettel - 7 ngày","price":9000,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"33954","name":"Đổi IP FPT 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33966","name":"Đổi IP Dân cư Việt Nam 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33978","name":"Đổi IP Viettel 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33990","name":"Đổi IP VNPT 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33926","name":"Đổi IP Dân cư/4G USA 10 Phút 1 Ngày","price":14500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33927","name":"Đổi IP Dân cư/4G USA 7 Phút 1 Ngày","price":15500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33928","name":"Đổi IP Dân cư/4G USA 5 Phút 1 Ngày","price":23500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33929","name":"Đổi IP Dân cư/4G USA 10 Phút 7 Ngày","price":92000,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33938","name":"Đổi nhanh 15 Giây VIP mạng Viettel (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33939","name":"Đổi nhanh 15 Giây VIP mạng FPT (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33940","name":"Đổi nhanh 15 Giây VIP mạng VNPT (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33941","name":"Đổi nhanh 15 Giây VIP Dân cư 3 mạng Việt Nam (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"34293","name":"Đổi IP 4 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":4500,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34294","name":"Đổi IP 2 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":5500,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34295","name":"Đổi IP 1 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":7000,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34296","name":"Đổi IP 4 Phút IPv6 Dân cư Việt Nam 7 Ngày","price":18000,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34305","name":"Đổi Proxy IPv6 USA 4 Phút (1 Ngày)","price":4500,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34306","name":"Đổi Proxy IPv6 USA 2 Phút (1 Ngày)","price":5500,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34307","name":"Đổi Proxy IPv6 USA 1 Phút (1 Ngày)","price":7000,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34308","name":"Đổi Proxy IPv6 USA 4 Phút (7 Ngày)","price":18000,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34077","name":"Đổi 4 Phút Proxy Datacenter VN 1 Ngày","price":10000,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34078","name":"Đổi 2 Phút Proxy Datacenter VN 1 Ngày","price":13500,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34079","name":"Đổi 1 Phút Proxy Datacenter VN 1 Ngày","price":14500,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34080","name":"Đổi 4 Phút Proxy Datacenter VN 7 Ngày","price":60000,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34101","name":"Đổi IP USA 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34102","name":"Đổi IP USA 2 Phút (1 Ngày )","price":13500,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34103","name":"Đổi IP USA 1 Phút (1 Ngày )","price":14500,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34104","name":"Đổi IP USA 4 Phút (7 Ngày )","price":60000,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34089","name":"Đổi IP 4 Phút Random Quốc gia 1 Ngày","price":10000,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34113","name":"Đổi IP 4 Phút Quốc gia EU (1 Ngày)","price":10000,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34090","name":"Đổi IP 2 Phút Random Quốc gia 1 Ngày","price":13500,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34114","name":"Đổi IP 2 Phút Quốc gia EU (1 Ngày)","price":13500,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34335","name":"PROXY IPV4 - PUBLIC - VIỆT NAM - SORT TUẦN TỰ - VER 02 30 Ngày","price":3500,"amount":31815,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34336","name":"Proxy IPv4 Việt Nam Public ID Sort Tuần Tự - V3 30 Ngày","price":3500,"amount":21476,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34339","name":"Proxy IPv4 Việt Nam Public ID 1181 - V3 30 Ngày","price":3500,"amount":13,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34340","name":"Proxy IPv4 Việt Nam Public ID 1182 - V3 30 Ngày","price":3500,"amount":17,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34394","name":"Proxy SOCKS5 Public VN ID 0095 - V1 30 Ngày","price":16500,"amount":44,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34395","name":"Proxy SOCKS5 Public VN ID 0139 - V1 30 Ngày","price":16500,"amount":42,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34396","name":"Proxy SOCKS5 Public VN ID 0157 - V1 30 Ngày","price":16500,"amount":43,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34397","name":"Proxy SOCKS5 Public VN ID 0166 - V1 30 Ngày","price":16500,"amount":44,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34414","name":"Proxy IPv4 USA Public ID 0151 - V5 30 Ngày","price":3500,"amount":20,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34415","name":"Proxy IPv4 USA Public ID 0188 - V5 30 Ngày","price":3500,"amount":28,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34416","name":"Proxy IPv4 USA Public ID 0227 - V5 30 Ngày","price":3500,"amount":32,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34417","name":"Proxy IPv4 USA Public ID Sort Tuần Tự V5 30 Ngày","price":3500,"amount":65613,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34234","name":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","price":13500,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34235","name":"Đổi IP Mobile 4G VinaPhone 2 Phút (1 Ngày)","price":15500,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34236","name":"Đổi IP Mobile 4G VinaPhone 5 Phút (15 Ngày)","price":123000,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34237","name":"Đổi IP Mobile 4G VinaPhone 2 Phút (15 Ngày)","price":154000,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34271","name":"GÓI 1 PROXY IPV6 USA FACEBOOK 30 Ngày","price":2200,"amount":5093,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34272","name":"GÓI 100 PROXY IPV6 USA FACEBOOK 30 Ngày","price":180000,"amount":141,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34273","name":"GÓI 500 PROXY IPV6 USA FACEBOOK 30 Ngày","price":740000,"amount":17,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34261","name":"GÓI COMBO 50 PROXY USA 4300-4349 V5 30 Ngày","price":165000,"amount":20,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34262","name":"GÓI COMBO 50 PROXY USA 4500-4549 V5 30 Ngày","price":165000,"amount":18,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34263","name":"GÓI COMBO 50 PROXY USA 4550-4599 V5 30 Ngày","price":165000,"amount":20,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34264","name":"GÓI COMBO 50 PROXY USA 4600-4649 V5 30 Ngày","price":165000,"amount":19,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34278","name":"Gói 1000 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":2200,"amount":1000,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34279","name":"Proxy IPv6 Vietnam Facebook V2 30 Ngày","price":2200,"amount":5071,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34275","name":"Gói 100 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":3500,"amount":100,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34277","name":"Gói 500 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":3500,"amount":500,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34241","name":"Proxy Mobile Hoa Kỳ (1 tuần)","price":430000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34252","name":"Proxy Mobile Ba Lan (1 tuần)","price":1230000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34244","name":"Proxy Mobile Cộng hòa Séc (1 tuần)","price":1270000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34243","name":"Proxy Mobile Bangladesh (1 tuần)","price":1500000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"39637","name":"Xoay Dân Cư Đa Quốc gia Siêu VIP (1 Ngày) - 60 Giây","price":20000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39638","name":"Xoay Dân cư Đa Quốc Gia Siêu VIP (1 Ngày) - 30 Giây","price":23500,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39639","name":"Xoay Dân cư Đa Quốc Gia Siêu VIP (1 Ngày) - 15 Giây","price":30000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39640","name":"Xoay Dân Cư Đa Quốc gia Siêu VIP (15 Ngày) - 60 Giây","price":220000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"25265","name":"ExpressVPN (3 Days)","price":5500,"amount":945,"category":"ExpressVPN","provider":"ultrammo"},{"id":"27037","name":"Key Express VPN 2-3 Ngày","price":9000,"amount":58,"category":"ExpressVPN","provider":"ultrammo"},{"id":"36224","name":"Express vpn 3 ngày","price":13000,"amount":9,"category":"ExpressVPN","provider":"ultrammo"},{"id":"26817","name":"VPN Express 3 day – Kết Nối 8 Máy Cùng Lúc","price":13000,"amount":25,"category":"ExpressVPN","provider":"ultrammo"},{"id":"16159","name":"Key HMA Android/PC 20-30 Ngày ( Bảo Hành Full )","price":8500,"amount":54,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"13643","name":"HMA 1 THÁNG - 5 THIẾT BỊ , PC , Android IOS ( Bảo Hành Full )","price":18000,"amount":88,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"36223","name":"KEY HMA VPN 5 THIẾT BỊ - 1 tháng ( ANDROID - PC )","price":18000,"amount":31,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"26839","name":"HMA 5 Thiết Bị Dùng Được Cho IOS/Androi/Máy Tính - HMA VPN Bản Quyền. Đổi IP Sạch, An Toàn - Full Tốc Độ","price":23000,"amount":341,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"25397","name":"Hotspot Shield VPN (7 Days)","price":6500,"amount":1331,"category":"VPN khác","provider":"ultrammo"},{"id":"25400","name":"IPVanish VPN (7 Days)","price":6500,"amount":1222,"category":"VPN khác","provider":"ultrammo"},{"id":"25412","name":"NordVPN (7 Days)","price":6500,"amount":959,"category":"VPN khác","provider":"ultrammo"},{"id":"25443","name":"PIA VPN (7 Days)","price":6500,"amount":1335,"category":"VPN khác","provider":"ultrammo"}];
+      var builtInUltraProds = [{"id":"18504","name":"HOTMAIL LIVE - TIKTOK VIỆT NAM SIÊU KHỎE MAIL TRUST OAuth2 LIVE ĐỌC CODE NHANH","price":1600,"amount":67,"category":"Tiktok việt","provider":"ultrammo"},{"id":"5759","name":"TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )","price":2200,"amount":142,"category":"Tiktok việt","provider":"ultrammo"},{"id":"33131","name":"TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ","price":2400,"amount":2662,"category":"Tiktok việt","provider":"ultrammo"},{"id":"32097","name":"Tiktok Việt Tạo 6-12 Tháng - Mail Megacloudx.com - BẢO HÀNH 3 NGÀY | T1/2026","price":2800,"amount":1617,"category":"Tiktok việt","provider":"ultrammo"},{"id":"4116","name":"TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25","price":1400,"amount":1544,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6257","name":"TikTok El Salvador - SV Reg 2025 Mail Lock | 2.11.25","price":1400,"amount":244,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6258","name":"TikTok Ghana - GH Reg 2025 Mail Lock | 3.11.25","price":1400,"amount":24,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6259","name":"TikTok Croatia - HR Reg 2025 Mail Lock | 8.11.25","price":1400,"amount":389,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"34626","name":"Tiktok Japan reg TTT bằng LINE đã đá mail bật 2fa","price":4500,"amount":389,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"19313","name":"Tiktok Japan reg bằng tiktok Lite reg gg đã đá mail bật 2FA - Login bằng username và pass, (chủ động đổi username pass tự bảo vệ tài sản của mình) mail hết phải mua mail khác nên tăng giá 1 2 hôm ae thông cảm","price":4500,"amount":4096,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"34620","name":"Tiktok Germany reg gg đã đá mail bật 2FA- Login bằng username và pass, (chủ động đổi username pass tự bảo vệ tài sản của mình)","price":7500,"amount":168,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"34623","name":"Tiktok Us reg app TikTok bằng Gmail - Login bằng username và pass, đã bật 2FA và gỡ mail (chủ động đổi username pass tự bảo vệ tài sản của mình)","price":7500,"amount":5278,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"32035","name":"Capcut Pro 4-7 ngày dùng riêng 2 tb, bảo hành full","price":15500,"amount":96,"category":"Capcut Pro","provider":"ultrammo"},{"id":"32037","name":"Capcut Pro 7 ngày ( Bảo hành Full )","price":18000,"amount":39,"category":"Capcut Pro","provider":"ultrammo"},{"id":"40760","name":"Tiktok France reg TTT bằng Hotmail đặt pass và bật 2FA - Login bằng username/hotmail và pass ( Hotmail Trusted - OAuth2 [GRAPH API ] Đã Thêm Mail Khôi Phục )","price":7500,"amount":7181,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"33524","name":"Tài khoản Gmail New ngâm chuẩn chất lượng 🔥","price":22000,"amount":31,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"19388","name":"🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL )","price":54000,"amount":227,"category":"Capcut Pro","provider":"ultrammo"},{"id":"32025","name":"Capcut Pro 1 Tháng | RIÊNG TƯ [ BHF ]","price":70000,"amount":51,"category":"Capcut Pro","provider":"ultrammo"},{"id":"26819","name":"Canva Edu - 1 Tháng - Standard - Canva Education - Nâng cấp chính chủ","price":6000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"26818","name":"Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ","price":13000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"26820","name":"Canva Edu - 3 năm - VIP 🔥 - Canva Education - Nâng cấp chính chủ","price":32000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"21011","name":"NÂNG CẤP CANVA PRO FULL 3 THÁNG ( KHÔNG BẢO HÀNH )","price":36000,"amount":216,"category":"Cavana","provider":"ultrammo"},{"id":"26770","name":"🥇GPT PLUS 1 THÁNG ACC CẤP RIÊNG TƯ |BH FULL - CHAT GqT PLUS GIÁ RẺ","price":290000,"amount":19,"category":"Chat gpt","provider":"ultrammo"},{"id":"32016","name":"🚀GPT Plus 1 tháng - Tài khoản cấp BHF - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full","price":320000,"amount":99999,"category":"Chat gpt","provider":"ultrammo"},{"id":"32750","name":"Tài Khoản Discord Verify Phone Mail (Ngâm 6 Tháng)","price":18000,"amount":82,"category":"Discord","provider":"ultrammo"},{"id":"32749","name":"Tài Khoản Discord Verify Phone Mail(Ngâm 11 Tháng)","price":23000,"amount":104,"category":"Discord","provider":"ultrammo"},{"id":"33450","name":"KEY GPM LOGIN CHÍNH HÃNG 1 THÁNG - KEY GPM LOGIN CHÍNH HÃNG RIÊNG TƯ 100%","price":70000,"amount":62,"category":"Gpm Login","provider":"ultrammo"},{"id":"20474","name":"KEY GPM LOGIN CHÍNH HÃNG 1 THÁNG ( BẢO HÀNH FULL )","price":120000,"amount":89,"category":"Gpm Login","provider":"ultrammo"},{"id":"33448","name":"KEY GPM LOGIN CHÍNH HÃNG 3 THÁNG - KEY GPM LOGIN CHÍNH HÃNG RIÊNG TƯ 100%","price":210000,"amount":62,"category":"Gpm Login","provider":"ultrammo"},{"id":"20475","name":"KEY GPM LOGIN CHÍNH HÃNG 3 THÁNG ( BẢO HÀNH FULL )","price":340000,"amount":61,"category":"Gpm Login","provider":"ultrammo"},{"id":"26767","name":"Gói Chính Chủ: 1 Tháng (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":23000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26768","name":"Gói Chính Chủ: 3 Tháng (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":46000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26765","name":"Gói Chính Chủ: 1 Năm (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":80000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26766","name":"Gói Chính Chủ Riêng Tư: 1 Năm (Yêu cầu TK + MK) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":230000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"32130","name":"Super Grok 5-10 ngày (BHF) - Super Grok ( Bảo hành, Hỗ trợ, Uy tín )","price":140000,"amount":9,"category":"Grok","provider":"ultrammo"},{"id":"21165","name":"🔥 Nâng Cấp Heavy Grok 1 tháng + Cursor Ultra ( Không bảo hành )","price":1350000,"amount":42,"category":"Grok","provider":"ultrammo"},{"id":"26797","name":"SuperGrok cấp sẵn 3 tháng ( hàng trâu kbh ) - Super Grok ( Bảo hành, Hỗ trợ, Uy tín )","price":1440000,"amount":20,"category":"Grok","provider":"ultrammo"},{"id":"26757","name":"1 Slot Mail Khách | 1 THÁNG, Add Family, BHF - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":23000,"amount":11,"category":"Gemini Pro","provider":"ultrammo"},{"id":"26756","name":"1 Slot Mail Khách | 1 NĂM, Add Family, BH3M - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":80000,"amount":62,"category":"Gemini Pro","provider":"ultrammo"},{"id":"13367","name":"NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY ( Tặng kèm GG 5TB 1 năm + NHIỀU AI HOT )","price":95000,"amount":20,"category":"Gemini Pro","provider":"ultrammo"},{"id":"26755","name":"🔥 Nâng chính chủ | Chủ family add 5 slot | BH3M - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":230000,"amount":427,"category":"Gemini Pro","provider":"ultrammo"},{"id":"13629","name":"TÀI KHOẢN KLING AI 65 CREDIT","price":1200,"amount":108,"category":"Kling AI","provider":"ultrammo"},{"id":"26811","name":"Key Premium có VPN |1 thiết bị 1 năm","price":170000,"amount":13336,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26812","name":"Kas Premium 1 máy 1 năm(mail chính chủ khách) - Kaspersky Premium + VPN Diệt Virus Dọn data + Bảo Vệ quyền Riêng tư + giảm checkpoint trên 1 máy","price":210000,"amount":292,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26813","name":"Key Premium có VPN |2 thiết bị 1 năm","price":330000,"amount":298,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26814","name":"Key Premium có VPN |3 thiết bị 1 năm","price":460000,"amount":300,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"19261","name":"Instagram Clone · Random Username · Phone Registered · Live · Verified Phone or Email · No 2FA · Aged 1–30 Days","price":3500,"amount":52,"category":"Instagram","provider":"ultrammo"},{"id":"15811","name":"Instagram Clone · Random Username · Phone Registered · Live · Verified Phone or Email · 2FA On · Aged 1–30 Days","price":4000,"amount":660,"category":"Instagram","provider":"ultrammo"},{"id":"17406","name":"IG khỏe ngâm trên 6 tháng - IG strong over 6 months","price":7500,"amount":65,"category":"Instagram","provider":"ultrammo"},{"id":"17108","name":"IG khỏe ngâm trên 12 tháng - IG strong over 12 months","price":9000,"amount":29,"category":"Instagram","provider":"ultrammo"},{"id":"19338","name":"🔥 Tài Khoản Netflix 4K Full HD Private 1 Tháng ( Bảo Hành Full )","price":100000,"amount":19,"category":"Netflix","provider":"ultrammo"},{"id":"26777","name":"Youtube Premium: 1 Tháng","price":30000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26774","name":"Youtube Premium: 3 Tháng","price":80000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26775","name":"Youtube Premium: 6 Tháng","price":160000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26776","name":"Youtube Premium: 12 Tháng","price":290000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"39182","name":"24h plus - có box get api","price":419,"amount":11760,"category":"Gmail Edu","provider":"ultrammo"},{"id":"33761","name":"7 [ ID 9 ]","price":1800,"amount":56741,"category":"Gmail Edu","provider":"ultrammo"},{"id":"39175","name":"7day.us no box","price":2849,"amount":2482,"category":"Gmail Edu","provider":"ultrammo"},{"id":"39176","name":"14 day no box","price":5999,"amount":571,"category":"Gmail Edu","provider":"ultrammo"},{"id":"26807","name":"🔥5k Credit Ultra - Chính chủ, 1 tháng, BHF - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":630000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"26810","name":"Dùng chung 25k Credit hàng tháng - 3 tháng - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":1670000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"26809","name":"🚀25k Credit - Chính chủ, dùng riêng 1 tháng BHF - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":2470000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"39530","name":"Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️","price":133,"amount":532,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"34707","name":"Gmail Domain 1h - 10h .tokyo","price":673,"amount":2628,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"34708","name":"Gmail Domain 1h - 10h xxx.edu.pl","price":673,"amount":546,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"39533","name":"Gmail Domain✔️ live Vĩnh viễn ✔️domain xxx@0r9.org✔️Flash Sale 30%✔️","price":11768,"amount":6475,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"32032","name":"X Cổ 2023 - 2024 - Twitter cổ từ 2006-2022 2FA Hotmail","price":15000,"amount":337,"category":"Twitter","provider":"ultrammo"},{"id":"32027","name":"X Cổ 2006-2022 2FA Hotmail","price":20000,"amount":115,"category":"Twitter","provider":"ultrammo"},{"id":"32028","name":"X Cổ 2006-2022 2FA ( ĐÃ UNLOCKHOTMAIL )","price":30000,"amount":89,"category":"Twitter","provider":"ultrammo"},{"id":"32029","name":"X Cổ USA 2006 - 2022 - Twitter cổ từ 2006-2022 2FA Hotmail","price":34000,"amount":26,"category":"Twitter","provider":"ultrammo"},{"id":"33470","name":"MAIL DOMAIN OTP LOGIN 2 GIỜ TÊN VIỆT","price":450,"amount":236,"category":"mail domain","provider":"ultrammo"},{"id":"33471","name":"MAIL DOMAIN OTP LOGIN 2 GIỜ TÊN NGOAI","price":450,"amount":248,"category":"mail domain","provider":"ultrammo"},{"id":"33468","name":"MAIL DOMAIN OTP LOGIN 6 GIỜ TÊN VIỆT","price":675,"amount":200,"category":"mail domain","provider":"ultrammo"},{"id":"33469","name":"MAIL DOMAIN OTP LOGIN 6 GIỜ TÊN NGOẠI","price":675,"amount":200,"category":"mail domain","provider":"ultrammo"},{"id":"26784","name":"gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa","price":13000,"amount":20,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"26849","name":"mail NEW 2fa log all thiết bị (bảo hành 12h) - Gmail reg IOS new or old (log PC or log phone)","price":15000,"amount":38,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"16184","name":"Gmail New US - Hàng Reg Tay - BH log đầu 24h","price":16500,"amount":147,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"14886","name":"Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h)","price":18000,"amount":1114,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"26853","name":"YTB cổ không video - 🔥 YOUTUBE CỔ CÓ VIDEO 2006–2020 🔥","price":86000,"amount":39,"category":"Youtube Cổ","provider":"ultrammo"},{"id":"26851","name":"Youtube cổ có video","price":200000,"amount":1,"category":"Youtube Cổ","provider":"ultrammo"},{"id":"26955","name":"Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)","price":117,"amount":16126,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"26954","name":"Hotmail Trusted Mail Khôi Phục Fviainboxes/Smvmail Live Vĩnh Viên (Đã bật Graph API)","price":169,"amount":4679,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"18867","name":"Hotmail Trusted - OAuth2 [ Graph ] Skip 7 Days","price":234,"amount":69458,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"16197","name":"Hotmail Trusted US - OAuth2 [ Imap/Graph]","price":239,"amount":47554,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"19349","name":"Tài Khoản Zoom Pro 3 Tháng - Bảo Hành Full ( 100 Người )","price":320000,"amount":345,"category":"zoom","provider":"ultrammo"},{"id":"34028","name":"Proxy Viettel - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34031","name":"Proxy FPT - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34034","name":"Proxy VNPT - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34029","name":"Proxy Viettel - 7 ngày","price":9000,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"33954","name":"Đổi IP FPT 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33966","name":"Đổi IP Dân cư Việt Nam 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33978","name":"Đổi IP Viettel 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33990","name":"Đổi IP VNPT 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33926","name":"Đổi IP Dân cư/4G USA 10 Phút 1 Ngày","price":14500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33927","name":"Đổi IP Dân cư/4G USA 7 Phút 1 Ngày","price":15500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33928","name":"Đổi IP Dân cư/4G USA 5 Phút 1 Ngày","price":23500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33929","name":"Đổi IP Dân cư/4G USA 10 Phút 7 Ngày","price":92000,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33938","name":"Đổi nhanh 15 Giây VIP mạng Viettel (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33939","name":"Đổi nhanh 15 Giây VIP mạng FPT (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33940","name":"Đổi nhanh 15 Giây VIP mạng VNPT (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33941","name":"Đổi nhanh 15 Giây VIP Dân cư 3 mạng Việt Nam (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"34293","name":"Đổi IP 4 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":4500,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34294","name":"Đổi IP 2 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":5500,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34295","name":"Đổi IP 1 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":7000,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34296","name":"Đổi IP 4 Phút IPv6 Dân cư Việt Nam 7 Ngày","price":18000,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34305","name":"Đổi Proxy IPv6 USA 4 Phút (1 Ngày)","price":4500,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34306","name":"Đổi Proxy IPv6 USA 2 Phút (1 Ngày)","price":5500,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34307","name":"Đổi Proxy IPv6 USA 1 Phút (1 Ngày)","price":7000,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34308","name":"Đổi Proxy IPv6 USA 4 Phút (7 Ngày)","price":18000,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34077","name":"Đổi 4 Phút Proxy Datacenter VN 1 Ngày","price":10000,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34078","name":"Đổi 2 Phút Proxy Datacenter VN 1 Ngày","price":13500,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34079","name":"Đổi 1 Phút Proxy Datacenter VN 1 Ngày","price":14500,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34080","name":"Đổi 4 Phút Proxy Datacenter VN 7 Ngày","price":60000,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34101","name":"Đổi IP USA 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34102","name":"Đổi IP USA 2 Phút (1 Ngày )","price":13500,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34103","name":"Đổi IP USA 1 Phút (1 Ngày )","price":14500,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34104","name":"Đổi IP USA 4 Phút (7 Ngày )","price":60000,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34089","name":"Đổi IP 4 Phút Random Quốc gia 1 Ngày","price":10000,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34113","name":"Đổi IP 4 Phút Quốc gia EU (1 Ngày)","price":10000,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34090","name":"Đổi IP 2 Phút Random Quốc gia 1 Ngày","price":13500,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34114","name":"Đổi IP 2 Phút Quốc gia EU (1 Ngày)","price":13500,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34335","name":"PROXY IPV4 - PUBLIC - VIỆT NAM - SORT TUẦN TỰ - VER 02 30 Ngày","price":3500,"amount":31815,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34336","name":"Proxy IPv4 Việt Nam Public ID Sort Tuần Tự - V3 30 Ngày","price":3500,"amount":21476,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34339","name":"Proxy IPv4 Việt Nam Public ID 1181 - V3 30 Ngày","price":3500,"amount":13,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34340","name":"Proxy IPv4 Việt Nam Public ID 1182 - V3 30 Ngày","price":3500,"amount":17,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34394","name":"Proxy SOCKS5 Public VN ID 0095 - V1 30 Ngày","price":16500,"amount":44,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34395","name":"Proxy SOCKS5 Public VN ID 0139 - V1 30 Ngày","price":16500,"amount":42,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34396","name":"Proxy SOCKS5 Public VN ID 0157 - V1 30 Ngày","price":16500,"amount":43,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34397","name":"Proxy SOCKS5 Public VN ID 0166 - V1 30 Ngày","price":16500,"amount":44,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34414","name":"Proxy IPv4 USA Public ID 0151 - V5 30 Ngày","price":3500,"amount":20,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34415","name":"Proxy IPv4 USA Public ID 0188 - V5 30 Ngày","price":3500,"amount":28,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34416","name":"Proxy IPv4 USA Public ID 0227 - V5 30 Ngày","price":3500,"amount":32,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34417","name":"Proxy IPv4 USA Public ID Sort Tuần Tự V5 30 Ngày","price":3500,"amount":65613,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34234","name":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","price":13500,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34235","name":"Đổi IP Mobile 4G VinaPhone 2 Phút (1 Ngày)","price":15500,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34236","name":"Đổi IP Mobile 4G VinaPhone 5 Phút (15 Ngày)","price":123000,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34237","name":"Đổi IP Mobile 4G VinaPhone 2 Phút (15 Ngày)","price":154000,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34271","name":"GÓI 1 PROXY IPV6 USA FACEBOOK 30 Ngày","price":2200,"amount":5093,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34272","name":"GÓI 100 PROXY IPV6 USA FACEBOOK 30 Ngày","price":180000,"amount":141,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34273","name":"GÓI 500 PROXY IPV6 USA FACEBOOK 30 Ngày","price":740000,"amount":17,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34261","name":"GÓI COMBO 50 PROXY USA 4300-4349 V5 30 Ngày","price":165000,"amount":20,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34262","name":"GÓI COMBO 50 PROXY USA 4500-4549 V5 30 Ngày","price":165000,"amount":18,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34263","name":"GÓI COMBO 50 PROXY USA 4550-4599 V5 30 Ngày","price":165000,"amount":20,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34264","name":"GÓI COMBO 50 PROXY USA 4600-4649 V5 30 Ngày","price":165000,"amount":19,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34278","name":"Gói 1000 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":2200,"amount":1000,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34279","name":"Proxy IPv6 Vietnam Facebook V2 30 Ngày","price":2200,"amount":5071,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34275","name":"Gói 100 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":3500,"amount":100,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34277","name":"Gói 500 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":3500,"amount":500,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34241","name":"Proxy Mobile Hoa Kỳ (1 tuần)","price":430000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34252","name":"Proxy Mobile Ba Lan (1 tuần)","price":1230000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34244","name":"Proxy Mobile Cộng hòa Séc (1 tuần)","price":1270000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34243","name":"Proxy Mobile Bangladesh (1 tuần)","price":1500000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"39637","name":"Xoay Dân Cư Đa Quốc gia Siêu VIP (1 Ngày) - 60 Giây","price":20000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39638","name":"Xoay Dân cư Đa Quốc Gia Siêu VIP (1 Ngày) - 30 Giây","price":23500,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39639","name":"Xoay Dân cư Đa Quốc Gia Siêu VIP (1 Ngày) - 15 Giây","price":30000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39640","name":"Xoay Dân Cư Đa Quốc gia Siêu VIP (15 Ngày) - 60 Giây","price":220000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"25265","name":"ExpressVPN (3 Days)","price":5500,"amount":945,"category":"ExpressVPN","provider":"ultrammo"},{"id":"27037","name":"Key Express VPN 2-3 Ngày","price":9000,"amount":58,"category":"ExpressVPN","provider":"ultrammo"},{"id":"36224","name":"Express vpn 3 ngày","price":13000,"amount":9,"category":"ExpressVPN","provider":"ultrammo"},{"id":"26817","name":"VPN Express 3 day – Kết Nối 8 Máy Cùng Lúc","price":13000,"amount":25,"category":"ExpressVPN","provider":"ultrammo"},{"id":"16159","name":"Key HMA Android/PC 20-30 Ngày ( Bảo Hành Full )","price":8500,"amount":54,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"13643","name":"HMA 1 THÁNG - 5 THIẾT BỊ , PC , Android IOS ( Bảo Hành Full )","price":18000,"amount":88,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"36223","name":"KEY HMA VPN 5 THIẾT BỊ - 1 tháng ( ANDROID - PC )","price":18000,"amount":31,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"26839","name":"HMA 5 Thiết Bị Dùng Được Cho IOS/Androi/Máy Tính - HMA VPN Bản Quyền. Đổi IP Sạch, An Toàn - Full Tốc Độ","price":23000,"amount":341,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"25397","name":"Hotspot Shield VPN (7 Days)","price":6500,"amount":1331,"category":"VPN khác","provider":"ultrammo"},{"id":"25400","name":"IPVanish VPN (7 Days)","price":6500,"amount":1222,"category":"VPN khác","provider":"ultrammo"},{"id":"25412","name":"NordVPN (7 Days)","price":6500,"amount":959,"category":"VPN khác","provider":"ultrammo"},{"id":"25443","name":"PIA VPN (7 Days)","price":6500,"amount":1335,"category":"VPN khác","provider":"ultrammo"}];
       builtInUltraProds.forEach(function(uItem) {
         var existing = result.find(function(r) {
           return String(r.id) === String(uItem.id) && r.provider === "ultrammo";
@@ -1644,14 +1644,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Mặc định",
         "price": 141,
-        "stock": 4707,
+        "stock": 2120,
         "available": true,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
           "sourceProdId": "26955",
           "sourcePrice": 117,
-          "sourceStock": 16087,
+          "sourceStock": 2120,
           "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
           "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
@@ -1665,12 +1665,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "provider": "ultrammo",
       "sourceProdId": "26955",
       "sourcePrice": 117,
-      "sourceStock": 16087,
+      "sourceStock": 2120,
       "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 4707,
+    "stock": 2120,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -1782,14 +1782,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "GEMINI PRO CHÍNH CHỦ 18 Tháng+ veo 3",
         "price": 89000,
-        "stock": 1705,
+        "stock": 259,
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "sourceProdId": "32428",
-          "sourcePrice": 51000,
-          "sourceStock": 1705,
-          "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 51.000 đ (Tồn: 1.705)",
+          "sourceProdId": "33270",
+          "sourcePrice": 68800,
+          "sourceStock": 259,
+          "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
           "baseUrl": "https://selltainguyenmmo.com",
           "isSourceDeleted": false
         },
@@ -1801,14 +1801,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "selltainguyenmmo",
-      "sourceProdId": "32428",
-      "sourcePrice": 51000,
-      "sourceStock": 1705,
-      "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 51.000 đ (Tồn: 1.705)",
+      "sourceProdId": "33270",
+      "sourcePrice": 68800,
+      "sourceStock": 259,
+      "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
       "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
-    "stock": 1705,
+    "stock": 259,
     "buffSold": 1238,
     "sold": 1238,
     "available": true
@@ -1828,15 +1828,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "TikTok Canada mail look",
         "price": 15000,
-        "stock": 9476,
+        "stock": 8449,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
-          "sourceProdId": "122569",
-          "sourcePrice": 7590,
-          "sourceStock": 9476,
+          "provider": "ultrammo",
+          "sourceProdId": "3479",
+          "sourcePrice": 2200,
+          "sourceStock": 8449,
           "sourceProdName": "TikTok Canada - CA Reg 2024 Mail Lock",
-          "baseUrl": "https://nguyenlieummo.com.vn",
+          "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
         },
         "available": true,
@@ -1846,15 +1846,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "nguyenlieummo",
-      "sourceProdId": "122569",
-      "sourcePrice": 7590,
-      "sourceStock": 9476,
+      "provider": "ultrammo",
+      "sourceProdId": "3479",
+      "sourcePrice": 2200,
+      "sourceStock": 8449,
       "sourceProdName": "TikTok Canada - CA Reg 2024 Mail Lock",
-      "baseUrl": "https://nguyenlieummo.com.vn",
+      "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 9476,
+    "stock": 8449,
     "buffSold": 1588,
     "sold": 1588,
     "available": true
@@ -1874,15 +1874,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Clone Facebook ngâm",
         "price": 15000,
-        "stock": 833,
+        "stock": 499,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
-          "sourceProdId": "130660",
-          "sourcePrice": 11849,
-          "sourceStock": 833,
-          "sourceProdName": "ON2 - CLONE FACEBOOK NGOẠI CÓ 2FA - VERI GMAIL",
-          "baseUrl": "https://nguyenlieummo.com.vn",
+          "provider": "selltainguyenmmo",
+          "sourceProdId": "31747",
+          "sourcePrice": 12000,
+          "sourceStock": 499,
+          "sourceProdName": "CLONE IP VIỆT NAME RANDOM TRÊN 3 NGÀY - 2FA - GMAIL LIVE ADS",
+          "baseUrl": "https://selltainguyenmmo.com",
           "isSourceDeleted": false
         },
         "available": true,
@@ -1892,15 +1892,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "nguyenlieummo",
-      "sourceProdId": "130660",
-      "sourcePrice": 11849,
-      "sourceStock": 833,
-      "sourceProdName": "ON2 - CLONE FACEBOOK NGOẠI CÓ 2FA - VERI GMAIL",
-      "baseUrl": "https://nguyenlieummo.com.vn",
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "31747",
+      "sourcePrice": 12000,
+      "sourceStock": 499,
+      "sourceProdName": "CLONE IP VIỆT NAME RANDOM TRÊN 3 NGÀY - 2FA - GMAIL LIVE ADS",
+      "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
-    "stock": 833,
+    "stock": 499,
     "buffSold": 1298,
     "sold": 1298,
     "available": true
@@ -1920,15 +1920,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Tài khoản clone Facebook",
         "price": 15000,
-        "stock": 7525,
+        "stock": 2343,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
-          "sourceProdId": "125445",
-          "sourcePrice": 11638,
-          "sourceStock": 7525,
-          "sourceProdName": "CLONE FACEBOOK NGOẠI CÓ 2FA - VERI HOTMAIL - NAME RANDOM",
-          "baseUrl": "https://nguyenlieummo.com.vn",
+          "provider": "selltainguyenmmo",
+          "sourceProdId": "31773",
+          "sourcePrice": 4400,
+          "sourceStock": 2343,
+          "sourceProdName": "Clone Ngoại Reg New ADS Live Trâu Ngon ( UID| Pass |Cookie)",
+          "baseUrl": "https://selltainguyenmmo.com",
           "isSourceDeleted": false
         },
         "available": true,
@@ -1938,15 +1938,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "nguyenlieummo",
-      "sourceProdId": "125445",
-      "sourcePrice": 11638,
-      "sourceStock": 7525,
-      "sourceProdName": "CLONE FACEBOOK NGOẠI CÓ 2FA - VERI HOTMAIL - NAME RANDOM",
-      "baseUrl": "https://nguyenlieummo.com.vn",
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "31773",
+      "sourcePrice": 4400,
+      "sourceStock": 2343,
+      "sourceProdName": "Clone Ngoại Reg New ADS Live Trâu Ngon ( UID| Pass |Cookie)",
+      "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
-    "stock": 7525,
+    "stock": 2343,
     "buffSold": 1255,
     "sold": 1255,
     "available": true
@@ -2012,13 +2012,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Gemini AI Pro Veo3 - 1 NĂM",
         "price": 120000,
-        "stock": 554,
+        "stock": 259,
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "sourceProdId": "32428",
-          "sourcePrice": 52600,
-          "sourceStock": 554,
+          "sourceProdId": "33270",
+          "sourcePrice": 68800,
+          "sourceStock": 259,
           "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
           "baseUrl": "https://selltainguyenmmo.com",
           "isSourceDeleted": false
@@ -2031,14 +2031,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "selltainguyenmmo",
-      "sourceProdId": "32428",
-      "sourcePrice": 52600,
-      "sourceStock": 554,
+      "sourceProdId": "33270",
+      "sourcePrice": 68800,
+      "sourceStock": 259,
       "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
       "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
-    "stock": 554,
+    "stock": 259,
     "buffSold": 1865,
     "sold": 1865,
     "available": true
@@ -2548,19 +2548,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "GMAIL  30 NGÀY",
         "price": 33000,
-        "stock": 6786,
+        "stock": 7173,
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
           "sourceProdId": "31976",
-          "sourceProdName": "Gmail domain Live 30 Days  Domain .ORG No gmail",
           "sourcePrice": 13400,
           "sourceStock": 7173,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MTQWQFZD",
-          "targetProdName": "Gmail cho thuê 30 Ngày"
+          "sourceProdName": "Gmail domain Live 30 Days  Domain .ORG No gmail",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -2577,7 +2574,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
-    "stock": 6786,
+    "stock": 7173,
     "buffSold": 480,
     "sold": 480,
     "available": true
@@ -2625,13 +2622,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Mail 7 ngày",
         "price": 7000,
-        "stock": 18157,
+        "stock": 2202,
         "apiMapping": {
           "enabled": true,
           "provider": "nguyenlieummo",
           "sourceProdId": "131037",
           "sourcePrice": 5093,
-          "sourceStock": 18157,
+          "sourceStock": 2202,
           "sourceProdName": "[Gmail] #131037 Gmail Domain 7 Ngày Đuôi . ORG Có Gmail - 5.093 đ (Tồn: 2.202)",
           "baseUrl": "https://nguyenlieummo.com.vn",
           "isSourceDeleted": false
@@ -2646,12 +2643,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "provider": "nguyenlieummo",
       "sourceProdId": "131037",
       "sourcePrice": 5093,
-      "sourceStock": 18157,
+      "sourceStock": 2202,
       "sourceProdName": "[Gmail] #131037 Gmail Domain 7 Ngày Đuôi . ORG Có Gmail - 5.093 đ (Tồn: 2.202)",
       "baseUrl": "https://nguyenlieummo.com.vn",
       "isSourceDeleted": false
     },
-    "stock": 18157,
+    "stock": 2202,
     "buffSold": 1678,
     "sold": 1678,
     "available": true
@@ -2671,19 +2668,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Chat GPT đã very phone",
         "price": 30000,
-        "stock": 48,
+        "stock": 23,
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
           "sourceProdId": "31699",
-          "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
           "sourcePrice": 16000,
-          "sourceStock": 48,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU5SPLMSEC",
-          "targetProdName": "ChatGPT New Gmail Trial"
+          "sourceStock": 23,
+          "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 23)",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -2693,17 +2687,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
       "sourceProdId": "31699",
-      "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
       "sourcePrice": 16000,
-      "sourceStock": 48,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU5SPLMSEC",
-      "targetProdName": "ChatGPT New Gmail Trial"
+      "sourceStock": 23,
+      "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 23)",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
     },
-    "stock": 48,
+    "stock": 23,
     "buffSold": 689,
     "sold": 689,
     "available": true
@@ -2769,14 +2760,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "TikTok Cambodia - Reg 2025",
         "price": 4500,
-        "stock": 1544,
+        "stock": 1532,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
           "sourceProdId": "4116",
           "sourcePrice": 1400,
-          "sourceStock": 1544,
-          "sourceProdName": "[Tiktok ngoại] #4116 TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25 - 1.400 đ (Tồn: 1.544)",
+          "sourceStock": 1532,
+          "sourceProdName": "TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25",
           "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
         },
@@ -2790,12 +2781,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "provider": "ultrammo",
       "sourceProdId": "4116",
       "sourcePrice": 1400,
-      "sourceStock": 1544,
-      "sourceProdName": "[Tiktok ngoại] #4116 TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25 - 1.400 đ (Tồn: 1.544)",
+      "sourceStock": 1532,
+      "sourceProdName": "TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 1544,
+    "stock": 1532,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -2907,19 +2898,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "gmail new ngâm 1- 10 ngày LIVE",
         "price": 20000,
-        "stock": 7,
+        "stock": 31,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
+          "sourceProdId": "33524",
+          "sourcePrice": 22000,
+          "sourceStock": 31,
+          "sourceProdName": "Tài khoản Gmail New ngâm chuẩn chất lượng 🔥",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-          "sourceProdId": "26784",
-          "sourceProdName": "[Gmail Việt-Ngoại] #26784 gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa - 13.000 đ (Tồn: 7)",
-          "sourcePrice": 13000,
-          "sourceStock": 7,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUOSDN0FCU",
-          "targetProdName": "gmail new ngâm 1- 10 ngày chỉ log phone- no 2fa"
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -2928,15 +2916,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "sellmmo",
-      "sourceProdId": "17773",
-      "sourcePrice": 20400,
-      "sourceStock": 291,
-      "sourceProdName": "[GMAIL.COM] #17773 Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h) - 20.400 đ (Tồn: 291)",
-      "baseUrl": "https://sellmmo.vn",
+      "provider": "ultrammo",
+      "sourceProdId": "33524",
+      "sourcePrice": 22000,
+      "sourceStock": 31,
+      "sourceProdName": "Tài khoản Gmail New ngâm chuẩn chất lượng 🔥",
+      "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 7,
+    "stock": 31,
     "buffSold": 218,
     "sold": 218,
     "available": true
@@ -3002,13 +2990,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "TIKTOK VIỆT  ĐÃ TẠO 1-3 NĂM",
         "price": 6000,
-        "stock": 4266,
+        "stock": 5419,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
           "sourceProdId": "33131",
-          "sourcePrice": 2400,
-          "sourceStock": 4266,
+          "sourcePrice": 3000,
+          "sourceStock": 5419,
           "sourceProdName": "TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ",
           "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
@@ -3022,13 +3010,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "enabled": true,
       "provider": "ultrammo",
       "sourceProdId": "33131",
-      "sourcePrice": 2400,
-      "sourceStock": 4266,
+      "sourcePrice": 3000,
+      "sourceStock": 5419,
       "sourceProdName": "TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 4266,
+    "stock": 5419,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -3048,13 +3036,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "TikTok VN Reg T1-2026",
         "price": 3500,
-        "stock": 486,
+        "stock": 471,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
           "sourceProdId": "5759",
-          "sourcePrice": 2200,
-          "sourceStock": 486,
+          "sourcePrice": 2800,
+          "sourceStock": 471,
           "sourceProdName": "TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )",
           "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
@@ -3068,13 +3056,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "enabled": true,
       "provider": "ultrammo",
       "sourceProdId": "5759",
-      "sourcePrice": 2200,
-      "sourceStock": 486,
+      "sourcePrice": 2800,
+      "sourceStock": 471,
       "sourceProdName": "TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 486,
+    "stock": 471,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -3140,19 +3128,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "chat Gpt Plush 1 tháng",
         "price": 456000,
-        "stock": 6,
+        "stock": 99999,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
+          "sourceProdId": "32016",
+          "sourcePrice": 290000,
+          "sourceStock": 99999,
+          "sourceProdName": "🚀GPT Plus 1 tháng - Tài khoản cấp BHF - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-          "sourceProdId": "19204",
-          "sourceProdName": "[Chat gpt] #19204 CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG ) BẢO HÀNH FULL - 380.000 đ (Tồn: 6)",
-          "sourcePrice": 380000,
-          "sourceStock": 6,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUNUEKI3NM",
-          "targetProdName": "Nâng Cấp ChatGPT Plus Giá Rẻ"
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3162,17 +3147,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
+      "sourceProdId": "32016",
+      "sourcePrice": 290000,
+      "sourceStock": 99999,
+      "sourceProdName": "🚀GPT Plus 1 tháng - Tài khoản cấp BHF - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-      "sourceProdId": "19204",
-      "sourceProdName": "[Chat gpt] #19204 CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG ) BẢO HÀNH FULL - 380.000 đ (Tồn: 6)",
-      "sourcePrice": 380000,
-      "sourceStock": 6,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUNUEKI3NM",
-      "targetProdName": "Nâng Cấp ChatGPT Plus Giá Rẻ"
+      "isSourceDeleted": false
     },
-    "stock": 6,
+    "stock": 99999,
     "buffSold": 299,
     "sold": 299,
     "available": true
@@ -3242,15 +3224,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "26777",
-          "sourceProdName": "Youtube Premium: 1 Tháng",
           "sourcePrice": 30000,
           "sourceStock": 99999,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUK7P74YNT",
-          "targetProdName": "Nâng Cấp Youtube Premium Chính Chủ 1 Tháng"
+          "sourceProdName": "Youtube Premium: 1 Tháng",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3260,15 +3239,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "26777",
-      "sourceProdName": "Youtube Premium: 1 Tháng",
       "sourcePrice": 30000,
       "sourceStock": 99999,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUK7P74YNT",
-      "targetProdName": "Nâng Cấp Youtube Premium Chính Chủ 1 Tháng"
+      "sourceProdName": "Youtube Premium: 1 Tháng",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
     "stock": 99999,
     "buffSold": 319,
@@ -3478,15 +3454,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "34234",
-          "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
           "sourcePrice": 13500,
           "sourceStock": 9999,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUJVJCV286",
-          "targetProdName": "Proxy 4Gvinaphone - 1 ngày"
+          "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3496,15 +3469,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "34234",
-      "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
       "sourcePrice": 13500,
       "sourceStock": 9999,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUJVJCV286",
-      "targetProdName": "Proxy 4Gvinaphone - 1 ngày"
+      "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
     "stock": 9999,
     "buffSold": 632,
@@ -3530,15 +3500,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "34028",
-          "sourceProdName": "Proxy Viettel - 1 ngày",
           "sourcePrice": 2200,
           "sourceStock": 9999,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUJVFEFFNP",
-          "targetProdName": "Proxy Viettel - 1 ngày"
+          "sourceProdName": "Proxy Viettel - 1 ngày",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3548,15 +3515,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "34028",
-      "sourceProdName": "Proxy Viettel - 1 ngày",
       "sourcePrice": 2200,
       "sourceStock": 9999,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUJVFEFFNP",
-      "targetProdName": "Proxy Viettel - 1 ngày"
+      "sourceProdName": "Proxy Viettel - 1 ngày",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
     "stock": 9999,
     "buffSold": 1798,
@@ -3624,19 +3588,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Capcut Pro team 1 THÁNG",
         "price": 70000,
-        "stock": 227,
+        "stock": 275,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "19388",
-          "sourceProdName": "[Capcut Pro] #19388 🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL ) - 54.000 đ (Tồn: 227)",
-          "sourcePrice": 54000,
-          "sourceStock": 227,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUJUGVQXET",
-          "targetProdName": "Capcut Pro Team 1 THÁNG"
+          "sourcePrice": 48000,
+          "sourceStock": 275,
+          "sourceProdName": "[Capcut Pro] #19388 🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL ) - 48.000 đ (Tồn: 275)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3646,17 +3607,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "19388",
-      "sourceProdName": "[Capcut Pro] #19388 🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL ) - 54.000 đ (Tồn: 227)",
-      "sourcePrice": 54000,
-      "sourceStock": 227,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUJUGVQXET",
-      "targetProdName": "Capcut Pro Team 1 THÁNG"
+      "sourcePrice": 48000,
+      "sourceStock": 275,
+      "sourceProdName": "[Capcut Pro] #19388 🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL ) - 48.000 đ (Tồn: 275)",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
-    "stock": 227,
+    "stock": 275,
     "buffSold": 1250,
     "sold": 1250,
     "available": true
@@ -3726,15 +3684,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
           "sourceProdId": "31918",
-          "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
           "sourcePrice": 1400,
           "sourceStock": 9999,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUJQDTNIH9",
-          "targetProdName": "Proxy datacenter us - 1 ngày"
+          "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3744,15 +3699,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
       "sourceProdId": "31918",
-      "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
       "sourcePrice": 1400,
       "sourceStock": 9999,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUJQDTNIH9",
-      "targetProdName": "Proxy datacenter us - 1 ngày"
+      "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
     },
     "stock": 9999,
     "buffSold": 0,
@@ -3824,15 +3776,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "26818",
-          "sourceProdName": "[Cavana] #26818 Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ - 13.000 đ (Tồn: 99.999)",
           "sourcePrice": 13000,
           "sourceStock": 99999,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU9YH8D9FK",
-          "targetProdName": "NÂNG CẤP CANVA EDU 1 NĂM"
+          "sourceProdName": "Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3842,15 +3791,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "26818",
-      "sourceProdName": "[Cavana] #26818 Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ - 13.000 đ (Tồn: 99.999)",
       "sourcePrice": 13000,
       "sourceStock": 99999,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU9YH8D9FK",
-      "targetProdName": "NÂNG CẤP CANVA EDU 1 NĂM"
+      "sourceProdName": "Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
     "stock": 99999,
     "buffSold": 513,
@@ -3872,19 +3818,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "KLING - AI 65 CREDIT",
         "price": 2500,
-        "stock": 108,
+        "stock": 207,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "13629",
-          "sourceProdName": "[Kling AI] #13629 TÀI KHOẢN KLING AI 65 CREDIT - 1.200 đ (Tồn: 108)",
           "sourcePrice": 1200,
-          "sourceStock": 108,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU5PWT7PP7",
-          "targetProdName": "TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ"
+          "sourceStock": 207,
+          "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3894,17 +3837,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "13629",
-      "sourceProdName": "[Kling AI] #13629 TÀI KHOẢN KLING AI 65 CREDIT - 1.200 đ (Tồn: 108)",
       "sourcePrice": 1200,
-      "sourceStock": 108,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU5PWT7PP7",
-      "targetProdName": "TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ"
+      "sourceStock": 207,
+      "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
-    "stock": 108,
+    "stock": 207,
     "buffSold": 1989,
     "sold": 1989,
     "available": true
@@ -3924,19 +3864,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Outlook Hotmail Trusted",
         "price": 500,
-        "stock": 16126,
+        "stock": 2120,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "26955",
-          "sourceProdName": "[Hotmail new - Trust] #26955 Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API) - 117 đ (Tồn: 16.126)",
           "sourcePrice": 117,
-          "sourceStock": 16126,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2YQ1J3PY",
-          "targetProdName": "Outlook Hotmail Trusted - OAuth2 Live 6-12 tháng"
+          "sourceStock": 2120,
+          "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3948,12 +3885,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "provider": "ultrammo",
       "sourceProdId": "26955",
       "sourcePrice": 117,
-      "sourceStock": 16089,
+      "sourceStock": 2120,
       "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 16126,
+    "stock": 2120,
     "buffSold": 2609,
     "sold": 2609,
     "available": true
@@ -3973,19 +3910,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "IG ĐÃ QUA SỬ DỤNG",
         "price": 6000,
-        "stock": 2857,
+        "stock": 2701,
         "apiMapping": {
           "enabled": true,
           "provider": "nguyenlieummo",
-          "baseUrl": "https://nguyenlieummo.com.vn",
-          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
           "sourceProdId": "128981",
-          "sourceProdName": "[ID #128981] ig qua sử dụng nofa",
           "sourcePrice": 2846,
-          "sourceStock": 2857,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2PA8VNDP",
-          "targetProdName": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP"
+          "sourceStock": 2701,
+          "sourceProdName": "ig qua sử dụng nofa",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3995,17 +3929,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "nguyenlieummo",
-      "baseUrl": "https://nguyenlieummo.com.vn",
-      "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
       "sourceProdId": "128981",
-      "sourceProdName": "[ID #128981] ig qua sử dụng nofa",
       "sourcePrice": 2846,
-      "sourceStock": 2857,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU2PA8VNDP",
-      "targetProdName": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP"
+      "sourceStock": 2701,
+      "sourceProdName": "ig qua sử dụng nofa",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
     },
-    "stock": 2857,
+    "stock": 2701,
     "buffSold": 928,
     "sold": 928,
     "available": true
@@ -4025,19 +3956,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "chat GPT  free trial",
         "price": 25000,
-        "stock": 48,
+        "stock": 23,
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
           "sourceProdId": "31699",
-          "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
           "sourcePrice": 16000,
-          "sourceStock": 48,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2OXBZC6K",
-          "targetProdName": "ChatGPT Free đã ver phone Code"
+          "sourceStock": 23,
+          "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 23)",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4047,17 +3975,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
       "sourceProdId": "31699",
-      "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
       "sourcePrice": 16000,
-      "sourceStock": 48,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU2OXBZC6K",
-      "targetProdName": "ChatGPT Free đã ver phone Code"
+      "sourceStock": 23,
+      "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 23)",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
     },
-    "stock": 48,
+    "stock": 23,
     "buffSold": 326,
     "sold": 326,
     "available": true
@@ -4165,19 +4090,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Tiktok Pháp live",
         "price": 8000,
-        "stock": 7,
+        "stock": 7181,
         "apiMapping": {
           "enabled": true,
-          "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-          "sourceProdId": "22454",
-          "sourceProdName": "[TIKTOK NGOẠI (BETA)] #22454 TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1 - 3.000 đ (Tồn: 7)",
-          "sourcePrice": 3000,
-          "sourceStock": 7,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2CZL38PH",
-          "targetProdName": "TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2"
+          "provider": "ultrammo",
+          "sourceProdId": "40760",
+          "sourcePrice": 7500,
+          "sourceStock": 7181,
+          "sourceProdName": "Tiktok France reg TTT bằng Hotmail đặt pass và bật 2FA - Login bằng username/hotmail và pass ( Hotmail Trusted - OAuth2 [GRAPH API ] Đã Thêm Mail Khôi Phục )",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4186,18 +4108,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-      "sourceProdId": "22454",
-      "sourceProdName": "[TIKTOK NGOẠI (BETA)] #22454 TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1 - 3.000 đ (Tồn: 7)",
-      "sourcePrice": 3000,
-      "sourceStock": 7,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU2CZL38PH",
-      "targetProdName": "TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2"
+      "provider": "ultrammo",
+      "sourceProdId": "40760",
+      "sourcePrice": 7500,
+      "sourceStock": 7181,
+      "sourceProdName": "Tiktok France reg TTT bằng Hotmail đặt pass và bật 2FA - Login bằng username/hotmail và pass ( Hotmail Trusted - OAuth2 [GRAPH API ] Đã Thêm Mail Khôi Phục )",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
-    "stock": 7,
+    "stock": 7181,
     "buffSold": 1234,
     "sold": 1234,
     "available": true
@@ -4263,19 +4182,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "capcut pro 7 ngày",
         "price": 25000,
-        "stock": 4,
+        "stock": 39,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-          "sourceProdId": "32026",
-          "sourceProdName": "Capcut Pro 7Day | Riêng Tư [ BHF ]",
+          "sourceProdId": "32037",
           "sourcePrice": 18000,
-          "sourceStock": 36,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2B32VLQY",
-          "targetProdName": "Capcut pro Cá Nhân 7 ngày - Dùng Riêng"
+          "sourceStock": 39,
+          "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4285,17 +4201,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-      "sourceProdId": "32026",
-      "sourceProdName": "Capcut Pro 7Day | Riêng Tư [ BHF ]",
+      "sourceProdId": "32037",
       "sourcePrice": 18000,
-      "sourceStock": 36,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU2B32VLQY",
-      "targetProdName": "Capcut pro Cá Nhân 7 ngày - Dùng Riêng"
+      "sourceStock": 39,
+      "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
-    "stock": 4,
+    "stock": 39,
     "buffSold": 225,
     "sold": 225,
     "available": true
@@ -4315,19 +4228,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "facebook",
         "price": 25000,
-        "stock": 17509,
+        "stock": 3117,
         "apiMapping": {
           "enabled": true,
-          "provider": "vuavia",
-          "baseUrl": "https://api.vuavia.io",
-          "apiKey": "",
-          "sourceProdId": "1977",
-          "sourceProdName": "[Clone] #1977 Clone Facebook Đăng Ký Ngẫu Nhiên - Đổi Số Điện Thoại - Gmail Không 2FA - 15.000 đ (Tồn: 17.509)",
-          "sourcePrice": 15000,
-          "sourceStock": 17509,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2ASBNSJT",
-          "targetProdName": "Facebook Via Việt  ACC SPAM - SEEDING - ĐÃ NGÂM LÂU"
+          "provider": "nguyenlieummo",
+          "sourceProdId": "127716",
+          "sourcePrice": 12061,
+          "sourceStock": 3117,
+          "sourceProdName": "OM7-CLONE FACEBOOK VIỆT NAM CÓ 2FA VERI HOTMAIL RANDOM AVATAR SIÊU TRÂU",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4336,18 +4246,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "vuavia",
-      "baseUrl": "https://api.vuavia.io",
-      "apiKey": "",
-      "sourceProdId": "1977",
-      "sourceProdName": "[Clone] #1977 Clone Facebook Đăng Ký Ngẫu Nhiên - Đổi Số Điện Thoại - Gmail Không 2FA - 15.000 đ (Tồn: 17.509)",
-      "sourcePrice": 15000,
-      "sourceStock": 17509,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU2ASBNSJT",
-      "targetProdName": "Facebook Via Việt  ACC SPAM - SEEDING - ĐÃ NGÂM LÂU"
+      "provider": "nguyenlieummo",
+      "sourceProdId": "127716",
+      "sourcePrice": 12061,
+      "sourceStock": 3117,
+      "sourceProdName": "OM7-CLONE FACEBOOK VIỆT NAM CÓ 2FA VERI HOTMAIL RANDOM AVATAR SIÊU TRÂU",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
     },
-    "stock": 17509,
+    "stock": 3117,
     "buffSold": 1256,
     "sold": 1256,
     "available": true
@@ -4539,19 +4446,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "capcut  - pro 7 ngày",
         "price": 15000,
-        "stock": 132,
+        "stock": 39,
         "apiMapping": {
           "enabled": true,
-          "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-          "sourceProdId": "25644",
-          "sourceProdName": "[CAPCUT PRO] #25644 Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO - 9.000 đ (Tồn: 132)",
-          "sourcePrice": 9000,
-          "sourceStock": 132,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU1G6LJX",
-          "targetProdName": "Capcut pro Cá Nhân 7 ngày"
+          "provider": "ultrammo",
+          "sourceProdId": "32037",
+          "sourcePrice": 18000,
+          "sourceStock": 39,
+          "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4560,18 +4464,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-      "sourceProdId": "25644",
-      "sourceProdName": "[CAPCUT PRO] #25644 Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO - 9.000 đ (Tồn: 132)",
-      "sourcePrice": 9000,
-      "sourceStock": 132,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU1G6LJX",
-      "targetProdName": "Capcut pro Cá Nhân 7 ngày"
+      "provider": "ultrammo",
+      "sourceProdId": "32037",
+      "sourcePrice": 18000,
+      "sourceStock": 39,
+      "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
-    "stock": 132,
+    "stock": 39,
     "buffSold": 293,
     "sold": 293,
     "available": true
@@ -4663,19 +4564,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Mail - Cho thuê - 24h",
         "price": 600,
-        "stock": 31,
+        "stock": 3689,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
-          "baseUrl": "https://nguyenlieummo.com.vn",
-          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
-          "sourceProdId": "39341",
-          "sourceProdName": "[ID #39341] Gmail Domain 12h - ramdom trùng dv",
-          "sourcePrice": 294,
-          "sourceStock": 31,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MTQQXO2E",
-          "targetProdName": "BÁN GMAIL CHO THUÊ 24H"
+          "provider": "ultrammo",
+          "sourceProdId": "39182",
+          "sourcePrice": 433.5,
+          "sourceStock": 3689,
+          "sourceProdName": "24h plus - có box get api",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4684,15 +4582,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "sellmmo",
-      "sourceProdId": "39341",
-      "sourcePrice": 303,
-      "sourceStock": 274,
-      "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
-      "baseUrl": "https://sellmmo.vn",
+      "provider": "ultrammo",
+      "sourceProdId": "39182",
+      "sourcePrice": 433.5,
+      "sourceStock": 3689,
+      "sourceProdName": "24h plus - có box get api",
+      "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 31,
+    "stock": 3689,
     "buffSold": 2180,
     "sold": 2180,
     "available": true
@@ -4712,15 +4610,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "mail 4h live",
         "price": 479,
-        "stock": 92571,
+        "stock": 59,
         "apiMapping": {
           "enabled": true,
-          "provider": "mail72h",
-          "sourceProdId": "712",
-          "sourcePrice": 259,
-          "sourceStock": 92550,
-          "sourceProdName": "24h [ ID 712 ]",
-          "baseUrl": "https://mail72h.com",
+          "provider": "sellmmo",
+          "sourceProdId": "39341",
+          "sourcePrice": 294.03,
+          "sourceStock": 59,
+          "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
+          "baseUrl": "https://sellmmo.vn",
           "isSourceDeleted": false
         },
         "available": true,
@@ -4732,13 +4630,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "enabled": true,
       "provider": "sellmmo",
       "sourceProdId": "39341",
-      "sourcePrice": 303,
-      "sourceStock": 274,
+      "sourcePrice": 294.03,
+      "sourceStock": 59,
       "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
       "baseUrl": "https://sellmmo.vn",
       "isSourceDeleted": false
     },
-    "stock": 92571,
+    "stock": 59,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -4758,19 +4656,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "mail 10 phut",
         "price": 217,
-        "stock": 17000,
+        "stock": 821,
         "apiMapping": {
           "enabled": true,
           "provider": "sellmmo",
-          "baseUrl": "https://sellmmo.vn",
-          "apiKey": "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
           "sourceProdId": "39073",
+          "sourcePrice": 180.54,
+          "sourceStock": 821,
           "sourceProdName": "Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️",
-          "sourcePrice": 175.23,
-          "sourceStock": 17000,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MTQX465U",
-          "targetProdName": "Gmail cho Thuế - 10 phút - live 10 phút"
+          "baseUrl": "https://sellmmo.vn",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4781,13 +4676,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "enabled": true,
       "provider": "sellmmo",
       "sourceProdId": "39073",
-      "sourcePrice": 181,
-      "sourceStock": 259,
+      "sourcePrice": 180.54,
+      "sourceStock": 821,
       "sourceProdName": "Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️",
       "baseUrl": "https://sellmmo.vn",
       "isSourceDeleted": false
     },
-    "stock": 1242,
+    "stock": 821,
     "buffSold": 3458,
     "sold": 3458,
     "available": true
@@ -4807,18 +4702,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Gmail Cho Thue 12h-24h",
         "price": 400,
-        "stock": 493,
+        "stock": 59,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
+          "provider": "sellmmo",
           "sourceProdId": "39341",
-          "sourcePrice": 294,
-          "sourceStock": 493,
-          "sourceProdName": "[ID #39341] Gmail Domain 12h - ramdom trùng dv",
-          "baseUrl": "https://nguyenlieummo.com.vn",
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MTQX7SIK",
-          "targetProdName": "Gmail Cho Thue 12h-24h"
+          "sourcePrice": 294.03,
+          "sourceStock": 59,
+          "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
+          "baseUrl": "https://sellmmo.vn",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4827,17 +4720,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "nguyenlieummo",
+      "provider": "sellmmo",
       "sourceProdId": "39341",
-      "sourcePrice": 294,
-      "sourceStock": 493,
-      "sourceProdName": "[ID #39341] Gmail Domain 12h - ramdom trùng dv",
-      "baseUrl": "https://nguyenlieummo.com.vn",
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MTQX7SIK",
-      "targetProdName": "Gmail Cho Thue 12h-24h"
+      "sourcePrice": 294.03,
+      "sourceStock": 59,
+      "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
+      "baseUrl": "https://sellmmo.vn",
+      "isSourceDeleted": false
     },
-    "stock": 493,
+    "stock": 59,
     "buffSold": 640,
     "sold": 640,
     "available": true
@@ -9372,14 +9263,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const bestProvForProd = (typeof autoDetectBestProviderForName === "function") ? autoDetectBestProviderForName(p.name) : null;
       const pNameLower = (p.name || "").toLowerCase();
 
-      // Nếu mapping cũ trỏ vào sellmmo hoặc nguồn không còn hàng cho Gemini/AI, tự động ưu tiên bestProv
-      if (!initialProv || initialProv === "sellmmo" || !existingMap || !existingMap.sourceProdId || Number(existingMap.sourceStock || 0) === 0) {
+      // Giữ nguyên provider đã cấu hình của sản phẩm; chỉ tự động gợi ý khi chưa có provider
+      if (!initialProv || !existingMap || !existingMap.sourceProdId) {
         if (bestProvForProd) {
           initialProv = bestProvForProd;
         }
-      }
-      if (pNameLower.includes("gemini") && (initialProv === "sellmmo" || !initialProv)) {
-        initialProv = "selltainguyenmmo";
       }
       if (!initialProv) initialProv = "selltainguyenmmo";
 
@@ -9388,16 +9276,20 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (isApi) {
         let prov = initialProv;
         let srcId = (existingMap && existingMap.sourceProdId) ? String(existingMap.sourceProdId) : (p.apiMapping && p.apiMapping.sourceProdId) ? String(p.apiMapping.sourceProdId) : "";
-        const DEAD_IDS = new Set(["25255", "23463", "19773", "19768", "19745", "19524", "11924", "1", "25241", "25242", "30878", "31953"]);
+        const DEAD_IDS = new Set(["25255", "23463", "19773", "19768", "19745", "19524", "11924", "1", "25241", "25242", "30878", "31953", "25395"]);
 
-        // Tự động chuyển các mã chết sang mã live còn hàng thật
+        // Tự động chuyển các mã chết sang mã live chuẩn 1-1
         if (DEAD_IDS.has(srcId) || (p.id === "PROD_MTQX465U" && (!srcId || DEAD_IDS.has(srcId)))) {
-          prov = "selltainguyenmmo";
-          srcId = "33097";
+          prov = "sellmmo";
+          srcId = "39073";
         }
-        if (pNameLower.includes("gemini") && (!srcId || srcId === "23586" || srcId === "23607")) {
+        if (pNameLower.includes("gemini") && (!srcId || srcId === "23586" || srcId === "23607" || srcId === "32428")) {
           prov = "selltainguyenmmo";
-          srcId = "32428";
+          srcId = "33270";
+        }
+        if ((p.id === "PROD_MU2B32VLQY" || p.id === "PROD_MU1G6LJX") && (!srcId || srcId === "25644" || srcId === "32026")) {
+          prov = "ultrammo";
+          srcId = "32037";
         }
 
         const pSel = document.getElementById("admProdApiProvider");
@@ -23135,61 +23027,61 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   "PROD_MU5T3T47AE": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MU2AB1XEGI": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MUQIMRJYG0": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MUR4EA44RE": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "122569",
-    "sourcePrice": 7590,
-    "sourceStock": 9476,
+    "provider": "ultrammo",
+    "sourceProdId": "3479",
+    "sourcePrice": 2200,
+    "sourceStock": 8449,
     "sourceProdName": "TikTok Canada - CA Reg 2024 Mail Lock",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MV5SHIF0DU": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "130660",
-    "sourcePrice": 11849,
-    "sourceStock": 833,
-    "sourceProdName": "ON2 - CLONE FACEBOOK NGOẠI CÓ 2FA - VERI GMAIL",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "31747",
+    "sourcePrice": 12000,
+    "sourceStock": 499,
+    "sourceProdName": "CLONE IP VIỆT NAME RANDOM TRÊN 3 NGÀY - 2FA - GMAIL LIVE ADS",
+    "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MV5RZ46QPB": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "125445",
-    "sourcePrice": 11638,
-    "sourceStock": 7525,
-    "sourceProdName": "CLONE FACEBOOK NGOẠI CÓ 2FA - VERI HOTMAIL - NAME RANDOM",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "31773",
+    "sourcePrice": 4400,
+    "sourceStock": 2343,
+    "sourceProdName": "Clone Ngoại Reg New ADS Live Trâu Ngon ( UID| Pass |Cookie)",
+    "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MV5RNGVO93": {
@@ -23205,40 +23097,40 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   "PROD_MV5QIZNFCZ": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
-    "baseUrl": "https://selltainguyenmmo.com",
-    "isSourceDeleted": false
-  },
-  "PROD_MV5PA8KZDW": {
-    "enabled": true,
-    "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MV5OYRDJCA": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
+    "baseUrl": "https://selltainguyenmmo.com",
+    "isSourceDeleted": false
+  },
+  "PROD_MV5PA8KZDW": {
+    "enabled": true,
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MU6R34FZ4Z": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
@@ -23297,8 +23189,8 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "provider": "ultrammo",
     "sourceProdId": "4116",
     "sourcePrice": 1400,
-    "sourceStock": 1544,
-    "sourceProdName": "[Tiktok ngoại] #4116 TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25 - 1.400 đ (Tồn: 1.544)",
+    "sourceStock": 1532,
+    "sourceProdName": "TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
@@ -23324,12 +23216,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MUOSDN0FCU": {
     "enabled": true,
-    "provider": "sellmmo",
-    "sourceProdId": "17773",
-    "sourcePrice": 20400,
-    "sourceStock": 291,
-    "sourceProdName": "[GMAIL.COM] #17773 Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h) - 20.400 đ (Tồn: 291)",
-    "baseUrl": "https://sellmmo.vn",
+    "provider": "ultrammo",
+    "sourceProdId": "33524",
+    "sourcePrice": 22000,
+    "sourceStock": 31,
+    "sourceProdName": "Tài khoản Gmail New ngâm chuẩn chất lượng 🔥",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MUORGNEQOE": {
@@ -23346,8 +23238,8 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "enabled": true,
     "provider": "ultrammo",
     "sourceProdId": "33131",
-    "sourcePrice": 2400,
-    "sourceStock": 4266,
+    "sourcePrice": 3000,
+    "sourceStock": 5419,
     "sourceProdName": "TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
@@ -23356,8 +23248,8 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "enabled": true,
     "provider": "ultrammo",
     "sourceProdId": "5759",
-    "sourcePrice": 2200,
-    "sourceStock": 486,
+    "sourcePrice": 2800,
+    "sourceStock": 471,
     "sourceProdName": "TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
@@ -23375,10 +23267,10 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   "PROD_MUNUEKI3NM": {
     "enabled": true,
     "provider": "ultrammo",
-    "sourceProdId": "19204",
-    "sourcePrice": 280000,
-    "sourceStock": 16,
-    "sourceProdName": "[Chat gpt] #19204 CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG ) BẢO HÀNH 5 NGÀY - 280.000 đ (Tồn: 16)",
+    "sourceProdId": "32016",
+    "sourcePrice": 290000,
+    "sourceStock": 99999,
+    "sourceProdName": "🚀GPT Plus 1 tháng - Tài khoản cấp BHF - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
@@ -23394,12 +23286,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MUK7P74YNT": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "119948",
-    "sourcePrice": 120750,
-    "sourceStock": 136,
-    "sourceProdName": "[Youtube] #119948 Nâng Cấp Youtube Premium Chính Chủ 1 Tháng ( Bảo Hành FULL TIME ) - 120.750 đ (Tồn: 136)",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "provider": "ultrammo",
+    "sourceProdId": "26777",
+    "sourcePrice": 30000,
+    "sourceStock": 99999,
+    "sourceProdName": "Youtube Premium: 1 Tháng",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MUK7DQMKAM": {
@@ -23454,12 +23346,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MUJVFEFFNP": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "122260",
-    "sourcePrice": 2817.5,
+    "provider": "ultrammo",
+    "sourceProdId": "34028",
+    "sourcePrice": 2200,
     "sourceStock": 9999,
-    "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "sourceProdName": "Proxy Viettel - 1 ngày",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MUJV1YHQ6N": {
@@ -23494,12 +23386,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MUJQDTNIH9": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "122260",
-    "sourcePrice": 2818,
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "31918",
+    "sourcePrice": 1400,
     "sourceStock": 9999,
     "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MUJGUY19DD": {
@@ -23514,12 +23406,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MUH57035HQ": {
     "enabled": true,
-    "provider": "ultrammo",
-    "sourceProdId": "13629",
-    "sourcePrice": 1200,
-    "sourceStock": 553,
-    "sourceProdName": "[Kling AI] #13629 TÀI KHOẢN KLING AI 65 CREDIT - 1.200 đ (Tồn: 553)",
-    "baseUrl": "https://ultrammo.com",
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "32023",
+    "sourcePrice": 2000,
+    "sourceStock": 494,
+    "sourceProdName": "[Kling AI] #32023 TÀI KHOẢN KLING AI 65 CREDIT",
+    "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MU9YH8D9FK": {
@@ -23537,8 +23429,8 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "provider": "ultrammo",
     "sourceProdId": "13629",
     "sourcePrice": 1200,
-    "sourceStock": 553,
-    "sourceProdName": "[Kling AI] #13629 TÀI KHOẢN KLING AI 65 CREDIT - 1.200 đ (Tồn: 553)",
+    "sourceStock": 207,
+    "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
@@ -23547,7 +23439,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "provider": "ultrammo",
     "sourceProdId": "26955",
     "sourcePrice": 117,
-    "sourceStock": 16089,
+    "sourceStock": 2120,
     "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
@@ -23574,12 +23466,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MU2CZL38PH": {
     "enabled": true,
-    "provider": "sellmmo",
-    "sourceProdId": "171",
-    "sourcePrice": 3400,
-    "sourceStock": 3299,
-    "sourceProdName": "TikTok France (Pháp) - FR Reg 2024 Mail Lock",
-    "baseUrl": "https://sellmmo.vn",
+    "provider": "ultrammo",
+    "sourceProdId": "40760",
+    "sourcePrice": 7500,
+    "sourceStock": 7181,
+    "sourceProdName": "Tiktok France reg TTT bằng Hotmail đặt pass và bật 2FA - Login bằng username/hotmail và pass ( Hotmail Trusted - OAuth2 [GRAPH API ] Đã Thêm Mail Khôi Phục )",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MU2BIFBBNE": {
@@ -23595,21 +23487,21 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   "PROD_MU2B32VLQY": {
     "enabled": true,
     "provider": "ultrammo",
-    "sourceProdId": "32026",
+    "sourceProdId": "32037",
     "sourcePrice": 18000,
-    "sourceStock": 36,
-    "sourceProdName": "Capcut Pro 7Day | Riêng Tư [ BHF ]",
+    "sourceStock": 39,
+    "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MU2ASBNSJT": {
     "enabled": true,
-    "provider": "vuavia",
-    "sourceProdId": "1977",
-    "sourcePrice": 15000,
-    "sourceStock": 18372,
-    "sourceProdName": "[Clone] #1977 Clone Facebook Đăng Ký Ngẫu Nhiên - Đổi Số Điện Thoại - Gmail Không 2FA - 15.000 đ (Tồn: 18.372)",
-    "baseUrl": "https://api.vuavia.io",
+    "provider": "nguyenlieummo",
+    "sourceProdId": "127716",
+    "sourcePrice": 12061,
+    "sourceStock": 3117,
+    "sourceProdName": "OM7-CLONE FACEBOOK VIỆT NAM CÓ 2FA VERI HOTMAIL RANDOM AVATAR SIÊU TRÂU",
+    "baseUrl": "https://nguyenlieummo.com.vn",
     "isSourceDeleted": false
   },
   "PROD_MU2A2S732Y": {
@@ -23635,21 +23527,21 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   "PROD_MU1G6LJX": {
     "enabled": true,
     "provider": "ultrammo",
-    "sourceProdId": "32026",
+    "sourceProdId": "32037",
     "sourcePrice": 18000,
-    "sourceStock": 36,
-    "sourceProdName": "Capcut Pro 7Day | Riêng Tư [ BHF ]",
+    "sourceStock": 39,
+    "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MTQZT2Y1": {
     "enabled": true,
-    "provider": "ultrammo",
-    "sourceProdId": "26955",
-    "sourcePrice": 117,
+    "provider": "sellmmo",
+    "sourceProdId": "33770",
+    "sourcePrice": 321.75,
     "sourceStock": 16087,
     "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
-    "baseUrl": "https://ultrammo.com",
+    "baseUrl": "https://sellmmo.vn",
     "isSourceDeleted": false
   },
   "PROD_MTRB6000": {
@@ -23657,27 +23549,27 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "provider": "ultrammo",
     "sourceProdId": "26955",
     "sourcePrice": 117,
-    "sourceStock": 16087,
+    "sourceStock": 2120,
     "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MTQQXO2E": {
     "enabled": true,
-    "provider": "sellmmo",
-    "sourceProdId": "39341",
-    "sourcePrice": 302.94,
-    "sourceStock": 12000,
-    "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
-    "baseUrl": "https://sellmmo.vn",
+    "provider": "ultrammo",
+    "sourceProdId": "39182",
+    "sourcePrice": 433.5,
+    "sourceStock": 3689,
+    "sourceProdName": "24h plus - có box get api",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MTQX1C7X": {
     "enabled": true,
     "provider": "sellmmo",
     "sourceProdId": "39341",
-    "sourcePrice": 302.94,
-    "sourceStock": 12000,
+    "sourcePrice": 294.03,
+    "sourceStock": 59,
     "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
     "baseUrl": "https://sellmmo.vn",
     "isSourceDeleted": false
@@ -23687,7 +23579,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "provider": "sellmmo",
     "sourceProdId": "39073",
     "sourcePrice": 180.54,
-    "sourceStock": 17000,
+    "sourceStock": 821,
     "sourceProdName": "Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️",
     "baseUrl": "https://sellmmo.vn",
     "isSourceDeleted": false
@@ -23696,10 +23588,20 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "enabled": true,
     "provider": "sellmmo",
     "sourceProdId": "39341",
-    "sourcePrice": 302.94,
-    "sourceStock": 12000,
+    "sourcePrice": 294.03,
+    "sourceStock": 59,
     "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
     "baseUrl": "https://sellmmo.vn",
+    "isSourceDeleted": false
+  },
+  "PROD_MVKLXCCFRB": {
+    "enabled": true,
+    "provider": "ultrammo",
+    "sourceProdId": "26765",
+    "sourcePrice": 80000,
+    "sourceStock": 99999,
+    "sourceProdName": "Gói Chính Chủ: 1 Năm (Thêm Vào Nhóm) - BH 3 Tháng - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   }
 };
@@ -23721,18 +23623,47 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
           const parsed = JSON.parse(stored);
           if (parsed && typeof parsed === "object") {
             let changed = false;
-            // Khắc phục đặc biệt cho PROD_MUR52EZ6H1 (Tiktok Korea #32393 tồn 9.490)
-            if (parsed["PROD_MUR52EZ6H1"]) {
-              const item = parsed["PROD_MUR52EZ6H1"];
-              if (item.sourceProdId === "32186" || item.sourceProdId === "32393" || item.isSourceDeleted || !item.sourceStock || item.sourceStock < 9000) {
-                item.sourceProdId = "32393";
-                item.sourcePrice = 4400;
-                item.sourceStock = 9490;
-                item.isSourceDeleted = false;
-                item.provider = "selltainguyenmmo";
-                changed = true;
+            const DEPRECATED_IDS_TO_UPGRADE = ["25644", "32026", "32428", "13367", "21664", "29532", "22454", "19204", "17773", "130660", "25395", "25255", "32186"];
+            Object.keys(DEFAULT_API_PRODUCT_MAPPINGS).forEach(prodKey => {
+              const defMap = DEFAULT_API_PRODUCT_MAPPINGS[prodKey];
+              const curMap = parsed[prodKey];
+              if (curMap && defMap) {
+                const curSid = String(curMap.sourceProdId || "").replace(/^#/, "").trim();
+                if (DEPRECATED_IDS_TO_UPGRADE.includes(curSid) || (curSid === "39341" && curMap.provider !== "sellmmo") || (prodKey === "PROD_MTQQXO2E" && curSid === "39341")) {
+                  parsed[prodKey] = Object.assign({}, defMap);
+                  changed = true;
+                }
               }
-            }
+            });
+            try {
+              const rawProds = localStorage.getItem("mmo_products");
+              if (rawProds) {
+                const prodArr = JSON.parse(rawProds);
+                if (Array.isArray(prodArr)) {
+                  let prodChanged = false;
+                  prodArr.forEach(p => {
+                    const defMap = p && p.id ? DEFAULT_API_PRODUCT_MAPPINGS[p.id] : null;
+                    if (p && defMap) {
+                      const curSid = p.apiMapping ? String(p.apiMapping.sourceProdId || "").replace(/^#/, "").trim() : "";
+                      if (DEPRECATED_IDS_TO_UPGRADE.includes(curSid) || (curSid === "39341" && p.apiMapping && p.apiMapping.provider !== "sellmmo") || (p.id === "PROD_MTQQXO2E" && curSid === "39341")) {
+                        p.apiMapping = Object.assign({}, defMap);
+                        p.stock = defMap.sourceStock;
+                        if (Array.isArray(p.variants)) {
+                          p.variants.forEach(v => {
+                            if (v) {
+                              v.apiMapping = Object.assign({}, defMap);
+                              v.stock = defMap.sourceStock;
+                            }
+                          });
+                        }
+                        prodChanged = true;
+                      }
+                    }
+                  });
+                  if (prodChanged) localStorage.setItem("mmo_products", JSON.stringify(prodArr));
+                }
+              }
+            } catch (pe) {}
             Object.keys(parsed).forEach(k => {
               const item = parsed[k];
               if (!item) return;
@@ -35895,31 +35826,33 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           }
         }
       }
-      // [SMART ALIAS CHO GMAIL THUÊ / LIVE TRÊN SELLMMO]: Khắc phục triệt để lỗi "Mất kết nối đến kho hàng"
+      // [CHUẨN HÓA ĐÚNG SẢN PHẨM 1-1]: Chỉ áp dụng đúng theo mã sản phẩm cụ thể, tuyệt đối không dùng mảng ID chung!
       const curPId = p ? (p.id || "") : "";
-      const curSId = apiMap ? String(apiMap.sourceProdId || "").replace(/[^\d]/g, "") : "";
       const normCurPId = curPId.replace(/_[0-9]+$/, "").toUpperCase();
-      // Nhóm 1: Gmail cho thuê 2 - 4h / 12h live -> sellmmo 39341 (ngoại trừ mail72h hoạt động độc lập)
-      if ((["PROD_MTQX1C7X", "PROD_MTQX7SIK", "PROD_MTQQXO2E"].includes(normCurPId) && (!apiMap || apiMap.provider !== "mail72h")) || ["19957", "34752", "39182"].includes(curSId)) {
+      if (["PROD_MTQX1C7X", "PROD_MTQX7SIK"].includes(normCurPId)) {
         if (!apiMap) apiMap = {};
         apiMap.enabled = true;
         apiMap.provider = "sellmmo";
         apiMap.sourceProdId = "39341";
-        apiMap.sourcePrice = 302.94;
-        apiMap.sourceStock = 12000;
+        apiMap.sourcePrice = 294.03;
+        apiMap.sourceStock = 59;
         apiMap.baseUrl = "https://sellmmo.vn";
-        apiMap.apiKey = apiMap.apiKey || "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO";
-      }
-      // Nhóm 2: Gmail cho thuê 10 phút - 1h live -> sellmmo 39073
-      else if (normCurPId === "PROD_MTQX465U" || ["19773", "19768", "19745", "19524", "23463", "25255", "25395", "30878", "31953", "35097", "33097", "39178"].includes(curSId)) {
+      } else if (normCurPId === "PROD_MTQX465U") {
         if (!apiMap) apiMap = {};
         apiMap.enabled = true;
         apiMap.provider = "sellmmo";
         apiMap.sourceProdId = "39073";
         apiMap.sourcePrice = 180.54;
-        apiMap.sourceStock = 17000;
+        apiMap.sourceStock = 821;
         apiMap.baseUrl = "https://sellmmo.vn";
-        apiMap.apiKey = apiMap.apiKey || "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO";
+      } else if (normCurPId === "PROD_MU2B32VLQY" || normCurPId === "PROD_MU1G6LJX") {
+        if (!apiMap) apiMap = {};
+        apiMap.enabled = true;
+        apiMap.provider = "ultrammo";
+        apiMap.sourceProdId = "32037";
+        apiMap.sourcePrice = 18000;
+        apiMap.sourceStock = 39;
+        apiMap.baseUrl = "https://ultrammo.com";
       }
       const isApiOnDemand = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
 
