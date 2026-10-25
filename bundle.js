@@ -9557,6 +9557,125 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     // =========================================================================
     var INITIAL_COMPLETED_DEPOSITS = [
       {
+        orderId: "DH4957207279",
+        id: "DH4957207279",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (hang giang)",
+        amount: 5000,
+        email: "gianghangasd@gmail.com",
+        userEmail: "gianghangasd@gmail.com",
+        userName: "hang giang",
+        status: "COMPLETED",
+        note: "Đã cộng 5.000 VNĐ vào ví (VietQR / SePay)",
+        time: "17:04:00 25/10/2026",
+        date: "17:04:00 25/10/2026",
+        createdAt: 1792922640000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 25000
+      },
+      {
+        orderId: "DH1288725247",
+        id: "DH1288725247",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (hang giang)",
+        amount: 20000,
+        email: "gianghangasd@gmail.com",
+        userEmail: "gianghangasd@gmail.com",
+        userName: "hang giang",
+        status: "COMPLETED",
+        note: "Đã cộng 20.000 VNĐ vào ví (VietQR / SePay)",
+        time: "16:53:00 25/10/2026",
+        date: "16:53:00 25/10/2026",
+        createdAt: 1792921980000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 20000
+      },
+      {
+        orderId: "DH2993198750",
+        id: "DH2993198750",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (koanh130103)",
+        amount: 100000,
+        email: "koanh130103@gmail.com",
+        userEmail: "koanh130103@gmail.com",
+        userName: "koanh130103",
+        status: "COMPLETED",
+        note: "Đã cộng 100.000 VNĐ vào ví (VietQR / SePay)",
+        time: "00:21:00 25/10/2026",
+        date: "00:21:00 25/10/2026",
+        createdAt: 1792862460000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 250000
+      },
+      {
+        orderId: "DH8056369050",
+        id: "DH8056369050",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (koanh130103)",
+        amount: 150000,
+        email: "koanh130103@gmail.com",
+        userEmail: "koanh130103@gmail.com",
+        userName: "koanh130103",
+        status: "COMPLETED",
+        note: "Đã cộng 150.000 VNĐ vào ví (VietQR / SePay)",
+        time: "00:14:00 25/10/2026",
+        date: "00:14:00 25/10/2026",
+        createdAt: 1792862040000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 150000
+      },
+      {
+        orderId: "DH9213194171",
+        id: "DH9213194171",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (trnguyen2610)",
+        amount: 30000,
+        email: "trnguyen2610@gmail.com",
+        userEmail: "trnguyen2610@gmail.com",
+        userName: "trnguyen2610",
+        status: "COMPLETED",
+        note: "Đã cộng 30.000 VNĐ vào ví (VietQR / SePay)",
+        time: "20:52:00 24/10/2026",
+        date: "20:52:00 24/10/2026",
+        createdAt: 1792849920000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 30000
+      },
+      {
+        orderId: "DH8815416867",
+        id: "DH8815416867",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
+        amount: 5000,
+        email: "digimarketmmo@gmail.com",
+        userEmail: "digimarketmmo@gmail.com",
+        userName: "digimarketmmo",
+        status: "COMPLETED",
+        note: "Đã cộng 5.000 VNĐ vào ví (VietQR / SePay)",
+        time: "11:07:37 23/10/2026",
+        date: "11:07:37 23/10/2026",
+        createdAt: 1792728457000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 118441
+      },
+      {
+        orderId: "DH6016360233",
+        id: "DH6016360233",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
+        amount: 5000,
+        email: "digimarketmmo@gmail.com",
+        userEmail: "digimarketmmo@gmail.com",
+        userName: "digimarketmmo",
+        status: "COMPLETED",
+        note: "Đã cộng 5.000 VNĐ vào ví (VietQR / SePay)",
+        time: "17:57:10 22/10/2026",
+        date: "17:57:10 22/10/2026",
+        createdAt: 1792666630000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 113441
+      },
+      {
         orderId: "DH9059731470",
         id: "DH9059731470",
         prodId: "NAP_VI",
@@ -9810,19 +9929,55 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const seenGeneralIds = new Set();
       const seenFingerprints = new Set();
 
+      const SEPAY_AUTHORITATIVE_AMOUNTS = {
+        "DH4957207279": 5000,
+        "DH1288725247": 20000,
+        "DH2993198750": 100000,
+        "DH8056369050": 150000,
+        "DH9213194171": 30000,
+        "DH8815416867": 5000,
+        "DH6016360233": 5000,
+        "DH9059731470": 10000,
+        "DH8878420221": 3000,
+        "DH1997736360": 10000,
+        "DH6298966273": 10000,
+        "DH1202214643": 4000,
+        "DH2710667006": 3000,
+        "DH8233002214": 2000,
+        "DH5281561978": 21000,
+        "DH1607454715": 99000
+      };
+
       depositList.forEach(rawItem => {
         if (!rawItem) return;
+        const stRaw = String(rawItem.status || "").toUpperCase();
+        if (stRaw === "PENDING" || stRaw === "UNPAID" || stRaw === "CANCELLED") return;
+
         const rawId = String(rawItem.id || rawItem.orderId || rawItem.code || "").trim();
         const rawOrderId = String(rawItem.orderId || rawItem.id || "").trim();
-        const rawNote = String(rawItem.note || rawItem.content || rawItem.description || rawItem.transferContent || "").trim();
+        let rawNote = String(rawItem.note || rawItem.content || rawItem.description || rawItem.transferContent || "").trim();
         const email = (rawItem.userEmail || rawItem.email || "").toLowerCase().trim();
-        const amt = Math.abs(Number(rawItem.amount) || 0);
-        if (amt <= 0) return;
+        if (email.includes("test") || email.includes("example")) return;
 
         // Bóc tách mã đơn nạp DH... / NAP... / MMO...
         const combined = (rawId + " " + rawOrderId + " " + rawNote).toUpperCase();
         const matchDH = combined.match(/(DH\d{6,15}|NAP[\w_]+|MMO\d{6,15})/i);
         const orderCode = matchDH ? matchDH[1].toUpperCase() : "";
+
+        let amt = Math.abs(Number(rawItem.amount) || 0);
+        // Ưu tiên bóc tách số tiền thực nhận từ ghi chú SePay ("Đã cộng 100.000 VNĐ vào ví" hoặc "(+100.000 đ)")
+        const noteAmtMatch = rawNote.match(/(?:đã cộng|cộng|nạp|\+)\s*([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+        if (noteAmtMatch && noteAmtMatch[1]) {
+          const parsedFromNote = Number(noteAmtMatch[1].replace(/[\.,]/g, ""));
+          if (!isNaN(parsedFromNote) && parsedFromNote >= 1000) {
+            amt = parsedFromNote;
+          }
+        }
+        if (orderCode && SEPAY_AUTHORITATIVE_AMOUNTS[orderCode]) {
+          amt = SEPAY_AUTHORITATIVE_AMOUNTS[orderCode];
+          rawNote = "Đã cộng " + amt.toLocaleString("vi-VN") + " VNĐ vào ví (VietQR / SePay)";
+        }
+        if (amt <= 0) return;
 
         // Bóc tách mã SePay số (7-10 chữ số)
         const isSepayNum = /^\d{7,10}$/.test(rawId);
@@ -9980,98 +10135,156 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         return !n.includes("đồng bộ") && !n.includes("dong bo") && !n.includes("hiệu chỉnh") && !n.includes("hieu chinh") && !n.includes("chuẩn hóa");
       });
 
-      // Hợp nhất INITIAL_COMPLETED_DEPOSITS nếu chưa có
-      const combined = cleanList.concat(INITIAL_COMPLETED_DEPOSITS);
+      // Hợp nhất INITIAL_COMPLETED_DEPOSITS lên đầu để luôn ưu tiên số tiền SePay chuẩn xác
+      const combined = INITIAL_COMPLETED_DEPOSITS.concat(cleanList);
       const dedupped = deduplicatePlatformDeposits(combined);
 
-      if (dedupped.length !== list.length) {
-        try { localStorage.setItem("mmo_deposits", JSON.stringify(dedupped)); } catch(e) {}
-      }
+      try { localStorage.setItem("mmo_deposits", JSON.stringify(dedupped)); } catch(e) {}
       return dedupped;
     }
     window.getPlatformDepositsLocal = getPlatformDepositsLocal;
 
     function savePlatformDeposits(deps) {
-      if (!Array.isArray(deps)) return;
+      if (!Array.isArray(deps)) return false;
       try {
         const cur = getPlatformDepositsLocal();
-        const seen = new Set(cur.map(d => String(d.id || d.orderId || "").trim()).filter(Boolean));
+        const idxMap = new Map();
+        cur.forEach((d, idx) => {
+          const k = String(d.id || d.orderId || "").trim().toUpperCase();
+          if (k) idxMap.set(k, idx);
+        });
         let changed = false;
         deps.forEach(d => {
           if (!d) return;
           const noteLow = String(d.note || d.content || d.reason || d.type || d.id || d.orderId || "").toLowerCase();
           if (noteLow.includes("đồng bộ") || noteLow.includes("dong bo") || noteLow.includes("hiệu chỉnh") || noteLow.includes("hieu chinh") || noteLow.includes("chuẩn hóa")) return;
-          const dId = String(d.id || d.orderId || d.code || "").trim();
-          if (dId && !seen.has(dId)) {
-            seen.add(dId);
+          const dId = String(d.id || d.orderId || d.code || "").trim().toUpperCase();
+          if (!dId) return;
+          if (!idxMap.has(dId)) {
+            idxMap.set(dId, cur.length);
             cur.push(d);
             changed = true;
+          } else {
+            const exIdx = idxMap.get(dId);
+            const exItem = cur[exIdx];
+            const newAmt = Number(d.amount) || 0;
+            if (newAmt > 0 && newAmt !== Number(exItem.amount)) {
+              exItem.amount = newAmt;
+              if (d.note) exItem.note = d.note;
+              changed = true;
+            }
           }
         });
         if (changed) {
-          localStorage.setItem("mmo_deposits", JSON.stringify(cur));
+          const finalClean = deduplicatePlatformDeposits(cur);
+          localStorage.setItem("mmo_deposits", JSON.stringify(finalClean));
         }
-      } catch(e) {}
+        return changed;
+      } catch(e) { return false; }
     }
     window.savePlatformDeposits = savePlatformDeposits;
 
-    // Tự động đồng bộ toàn bộ đơn nạp tiền từ Google Apps Script (Cloud)
+    // Tự động đồng bộ toàn bộ đơn nạp tiền từ Cloudflare Worker Turso SSOT & Google Apps Script (Cloud)
     var _lastAllDepositsSyncTime = 0;
     var _isSyncingAllDeposits = false;
     async function syncAllDepositsFromCloud(force = false) {
       const now = Date.now();
       if (!force && (now - _lastAllDepositsSyncTime < 15000 || _isSyncingAllDeposits)) return false;
-      if (typeof callGasApi !== "function") return false;
       _isSyncingAllDeposits = true;
       _lastAllDepositsSyncTime = now;
+      let anyUpdated = false;
 
       try {
-        let callerEmail = "";
+        // 1. Ưu tiên kéo từ Cloudflare Worker Turso SSOT (/api/wallet/transactions)
         try {
-          if (typeof currentUser !== "undefined" && currentUser && currentUser.email) {
-            callerEmail = currentUser.email;
-          }
-        } catch(e) {}
-        const res = await callGasApi("adminGetAllOrders", { adminEmail: callerEmail || "manhdongvtc@gmail.com" });
-        if (res && Array.isArray(res.orders)) {
-          const completedDeposits = res.orders.filter(o => {
-            if (!o) return false;
-            const isDep = o.prodId === "NAP_VI" || String(o.orderId).startsWith("DH") || String(o.orderId).startsWith("NAP") || String(o.prodName || "").toLowerCase().includes("nạp tiền");
-            const isPaid = o.status === "COMPLETED" || o.status === "PAID";
-            return isDep && isPaid;
-          }).map(o => {
-            const noteText = String(o.accounts || o.note || o.message || "");
-            const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
-            let depAmt = 0;
-            if (amtMatch && amtMatch[1]) {
-              const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
-              if (!isNaN(parsed) && parsed > 0) depAmt = parsed;
+          const workerUrl = (typeof MMO_WORKER_URL !== "undefined" && MMO_WORKER_URL) ? MMO_WORKER_URL : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          const resWorker = await fetch(workerUrl + "/api/wallet/transactions", {
+            headers: {
+              "Accept": "application/json",
+              "X-Admin-Token": "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60"
             }
-            if (!depAmt) {
-              depAmt = Number(o.totalAmount || o.actualAmount || o.paidAmount || o.price || 0);
-            }
-            return {
-              id: String(o.orderId || "").trim(),
-              orderId: String(o.orderId || "").trim(),
-              prodId: "NAP_VI",
-              prodName: o.prodName || "Nạp tiền vào ví điện tử",
-              amount: depAmt,
-              email: (o.email || o.userEmail || "").toLowerCase().trim(),
-              userEmail: (o.email || o.userEmail || "").toLowerCase().trim(),
-              userName: o.userName || (o.email ? o.email.split("@")[0] : "Khách Hàng"),
-              status: "COMPLETED",
-              note: o.accounts || ("Đã cộng " + formatVND(depAmt) + " vào ví (VietQR / SePay)"),
-              time: o.createdAt || (new Date().toLocaleString("vi-VN")),
-              date: o.createdAt || (new Date().toLocaleString("vi-VN")),
-              type: "Nạp tiền VietQR / SePay"
-            };
           });
+          if (resWorker.ok) {
+            const wData = await resWorker.json();
+            if (wData && wData.success && Array.isArray(wData.transactions)) {
+              const workerDeposits = wData.transactions.filter(tx => tx && String(tx.type || "").toUpperCase() === "DEPOSIT" && Math.abs(Number(tx.amount) || 0) > 0).map(tx => {
+                const depAmt = Math.abs(Number(tx.amount) || 0);
+                const rawEmail = String(tx.user_email || "").toLowerCase().trim();
+                const ordId = String(tx.order_id || tx.id || "").replace(/^TX_DEP_/i, "").trim();
+                return {
+                  id: ordId,
+                  orderId: ordId,
+                  prodId: "NAP_VI",
+                  prodName: "Nạp tiền vào ví điện tử",
+                  amount: depAmt,
+                  email: rawEmail,
+                  userEmail: rawEmail,
+                  userName: rawEmail ? rawEmail.split("@")[0] : "Khách Hàng",
+                  status: "COMPLETED",
+                  note: tx.note || ("Đã cộng " + formatVND(depAmt) + " vào ví (VietQR / SePay)"),
+                  time: tx.created_at || (new Date().toLocaleString("vi-VN")),
+                  date: tx.created_at || (new Date().toLocaleString("vi-VN")),
+                  type: "Nạp tiền VietQR / SePay"
+                };
+              });
+              if (workerDeposits.length > 0) {
+                if (savePlatformDeposits(workerDeposits)) anyUpdated = true;
+              }
+            }
+          }
+        } catch(eW) {}
 
-          if (completedDeposits.length > 0) {
-            savePlatformDeposits(completedDeposits);
+        // 2. Kết hợp thêm từ Google Apps Script (nếu có)
+        if (typeof callGasApi === "function") {
+          let callerEmail = "";
+          try {
+            if (typeof currentUser !== "undefined" && currentUser && currentUser.email) {
+              callerEmail = currentUser.email;
+            }
+          } catch(e) {}
+          const res = await callGasApi("adminGetAllOrders", { adminEmail: callerEmail || "manhdongvtc@gmail.com" });
+          if (res && Array.isArray(res.orders)) {
+            const completedDeposits = res.orders.filter(o => {
+              if (!o) return false;
+              const isDep = o.prodId === "NAP_VI" || String(o.orderId).startsWith("DH") || String(o.orderId).startsWith("NAP") || String(o.prodName || "").toLowerCase().includes("nạp tiền");
+              const isPaid = o.status === "COMPLETED" || o.status === "PAID";
+              return isDep && isPaid;
+            }).map(o => {
+              const noteText = String(o.accounts || o.note || o.message || "");
+              const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp|\+)\s*([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+              let depAmt = 0;
+              if (amtMatch && amtMatch[1]) {
+                const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
+                if (!isNaN(parsed) && parsed >= 1000) depAmt = parsed;
+              }
+              if (!depAmt) {
+                depAmt = Number(o.totalAmount || o.actualAmount || o.paidAmount || o.price || 0);
+              }
+              return {
+                id: String(o.orderId || "").trim(),
+                orderId: String(o.orderId || "").trim(),
+                prodId: "NAP_VI",
+                prodName: o.prodName || "Nạp tiền vào ví điện tử",
+                amount: depAmt,
+                email: (o.email || o.userEmail || "").toLowerCase().trim(),
+                userEmail: (o.email || o.userEmail || "").toLowerCase().trim(),
+                userName: o.userName || (o.email ? o.email.split("@")[0] : "Khách Hàng"),
+                status: "COMPLETED",
+                note: o.accounts || ("Đã cộng " + formatVND(depAmt) + " vào ví (VietQR / SePay)"),
+                time: o.createdAt || (new Date().toLocaleString("vi-VN")),
+                date: o.createdAt || (new Date().toLocaleString("vi-VN")),
+                type: "Nạp tiền VietQR / SePay"
+              };
+            });
+
+            if (completedDeposits.length > 0) {
+              if (savePlatformDeposits(completedDeposits)) anyUpdated = true;
+            }
           }
         }
+        return anyUpdated;
       } catch(e) {
+        return anyUpdated;
       } finally {
         _isSyncingAllDeposits = false;
       }
@@ -10104,14 +10317,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const isDep = o.prodId === "NAP_VI" || String(o.orderId).startsWith("DH") || String(o.orderId).startsWith("NAP") || String(o.prodName || "").toLowerCase().includes("nạp tiền");
             const isPaid = o.status === "COMPLETED" || o.status === "PAID";
             if (isDep && isPaid) {
-              let depAmt = Number(o.totalAmount || o.actualAmount || o.paidAmount || o.price || 0);
+              let depAmt = 0;
+              const noteText = String(o.accounts || o.note || o.message || "");
+              const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+              if (amtMatch && amtMatch[1]) {
+                const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
+                if (!isNaN(parsed) && parsed > 0) depAmt = parsed;
+              }
               if (!depAmt) {
-                const noteText = String(o.accounts || o.note || o.message || "");
-                const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
-                if (amtMatch && amtMatch[1]) {
-                  const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
-                  if (!isNaN(parsed) && parsed > 0) depAmt = parsed;
-                }
+                depAmt = Number(o.actualAmount || o.paidAmount || o.totalAmount || o.price || 0);
               }
               newDeps.push({
                 id: String(o.orderId || "").trim(),
@@ -10192,17 +10406,17 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
         }
 
-        // Luôn cập nhật modal chi tiết thành viên nếu đang mở
+        // Cập nhật modal chi tiết thành viên nếu Cloudflare Worker chưa tải xong
         const modal = document.getElementById("adminUserDetailModal");
         const curEmailEl = document.getElementById("admDetailUserEmail");
-        if (modal && modal.style.display === "flex" && curEmailEl && (curEmailEl.innerText || "").toLowerCase().trim() === cleanEmail) {
+        if (modal && modal.style.display === "flex" && curEmailEl && (curEmailEl.innerText || "").toLowerCase().trim() === cleanEmail && window._admDetailLiveWorkerLoaded !== cleanEmail) {
           const res = getUserComprehensiveTransactions(cleanEmail, cloudBal);
           const allTx = res.transactions;
           const txCountEl = document.getElementById("admDetailTxCount");
           const balanceEl = document.getElementById("admDetailUserBalance");
           const tbody = document.getElementById("admDetailUserTxTableBody");
           if (txCountEl) txCountEl.innerText = allTx.length + " giao dịch";
-          const finalModalBal = (cloudBal !== null && !isNaN(cloudBal)) ? cloudBal : res.currentBalance;
+          const finalModalBal = Math.max(Number(res.currentBalance) || 0, (cloudBal !== null && !isNaN(cloudBal)) ? Number(cloudBal) : 0);
           if (balanceEl) balanceEl.innerText = formatVND(finalModalBal);
           if (tbody && allTx.length > 0) {
             tbody.innerHTML = allTx.map(tx => {
@@ -10830,53 +11044,75 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         fetchAndSyncMemberCloudDeposits(cleanEmail);
       }
 
-      // TỰ ĐỘNG ĐỒNG BỘ LỊCH SỬ GIAO DỊCH TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO SSOT
+      window._admDetailLiveWorkerLoaded = null;
+
+      // TỰ ĐỘNG ĐỒNG BỘ LỊCH SỬ GIAO DỊCH TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO SSOT (CHUẨN 5 CỘT)
       (async function() {
         try {
           const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
           const txRes = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail));
           if (txRes.ok) {
             const txData = await txRes.json();
-            if (txData && txData.success && Array.isArray(txData.transactions) && txData.transactions.length > 0) {
-              const liveTxs = txData.transactions;
-              const countEl = document.getElementById("admDetailTxCount");
-              if (countEl) countEl.innerText = liveTxs.length + " giao dịch (Cloud Realtime)";
+            if (txData && txData.success && Array.isArray(txData.transactions)) {
+              window._admDetailLiveWorkerLoaded = cleanEmail;
 
-              const tbLive = document.getElementById("admDetailUserTxTableBody");
-              if (tbLive) {
-                tbLive.innerHTML = liveTxs.map(tx => {
-                  const amt = Number(tx.amount) || 0;
-                  const isPlus = amt > 0;
-                  const amtHtml = isPlus 
-                    ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(amt) + '</span>' 
-                    : '<span style="color:#ef4444; font-weight:800;">' + formatVND(amt) + '</span>';
+              if (txData.user_balance !== null && txData.user_balance !== undefined && !isNaN(Number(txData.user_balance))) {
+                const srvBal = Number(txData.user_balance);
+                const balElLive = document.getElementById("admDetailUserBalance");
+                if (balElLive) balElLive.innerText = formatVND(srvBal);
+              }
 
-                  const tLow = String(tx.type || "").toLowerCase();
-                  const isRefund = tLow === 'refund' || tLow.includes("hoàn");
-                  const isDeposit = tLow === 'deposit' || tLow.includes("nạp");
-                  
-                  let typeBadge = '<span style="background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-cart-shopping"></i> Mua hàng</span>';
-                  if (isDeposit) {
-                    typeBadge = '<span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-arrow-down"></i> Nạp tiền ví</span>';
-                  } else if (isRefund) {
-                    typeBadge = '<span style="background:rgba(139,92,246,0.15); color:#a78bfa; border:1px solid rgba(139,92,246,0.3); padding:2px 8px; border-radius:4px; font-size:0.75rem; font-weight:700;"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền</span>';
-                  }
+              if (txData.transactions.length > 0) {
+                const liveTxs = txData.transactions;
+                const countEl = document.getElementById("admDetailTxCount");
+                if (countEl) countEl.innerText = liveTxs.length + " giao dịch (Cloud Realtime)";
 
-                  let balAfterStr = (tx.balance_after !== null && tx.balance_after !== undefined && !isNaN(Number(tx.balance_after))) 
-                    ? formatVND(Number(tx.balance_after)) 
-                    : "-";
+                const tbLive = document.getElementById("admDetailUserTxTableBody");
+                if (tbLive) {
+                  tbLive.innerHTML = liveTxs.map(tx => {
+                    const amt = Number(tx.amount) || 0;
+                    const isPlus = amt > 0;
+                    const amtHtml = isPlus 
+                      ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(Math.abs(amt)) + '</span>' 
+                      : '<span style="color:#ef4444; font-weight:800;">-' + formatVND(Math.abs(amt)) + '</span>';
 
-                  let dateStr = tx.created_at ? new Date(tx.created_at).toLocaleString("vi-VN") : "Gần đây";
+                    const tLow = String(tx.type || "").toLowerCase();
+                    const isRefund = tLow === 'refund' || tLow.includes("hoàn");
+                    const isDeposit = tLow === 'deposit' || tLow.includes("nạp");
+                    
+                    let typeBadge = '<span class="badge-verified" style="font-size:0.72rem; color:#f87171; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.1);"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
+                    if (isDeposit) {
+                      typeBadge = '<span class="badge-trust" style="font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.3); background:rgba(56,189,248,0.1);"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
+                    } else if (isRefund) {
+                      typeBadge = '<span class="badge-verified" style="font-size:0.72rem; color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.1);"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền bảo hành</span>';
+                    }
 
-                  return '<tr>' +
-                    '<td style="font-weight:700; color:#cbd5e1; font-size:0.75rem; font-family:monospace;">#' + escapeHtml(tx.order_id || tx.id || 'TX') + '</td>' +
-                    '<td>' + typeBadge + '</td>' +
-                    '<td>' + amtHtml + '</td>' +
-                    '<td style="color:#38bdf8; font-weight:700; font-size:0.8rem;">' + balAfterStr + '</td>' +
-                    '<td style="font-size:0.75rem; color:#94a3b8;">' + dateStr + '</td>' +
-                    '<td style="font-size:0.75rem; color:#94a3b8; max-width:200px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + escapeHtml(tx.note || '') + '">' + escapeHtml(tx.note || '-') + '</td>' +
-                  '</tr>';
-                }).join("");
+                    let balAfterStr = (tx.balance_after !== null && tx.balance_after !== undefined && !isNaN(Number(tx.balance_after))) 
+                      ? formatVND(Math.max(0, Number(tx.balance_after))) 
+                      : "-";
+
+                    let dateStr = "Gần đây";
+                    if (tx.created_at) {
+                      const rawD = String(tx.created_at).trim();
+                      const dObj = new Date(rawD.includes("T") ? rawD : rawD.replace(" ", "T") + "Z");
+                      dateStr = !isNaN(dObj.getTime()) ? dObj.toLocaleString("vi-VN") : rawD;
+                    }
+
+                    const oCode = tx.order_id ? ("#" + String(tx.order_id).replace(/^#/, "")) : "";
+                    let noteStr = tx.note || (isDeposit ? ("Đã cộng " + formatVND(Math.abs(amt)) + " vào ví") : "Giao dịch ví");
+                    if (oCode && !noteStr.includes(oCode)) {
+                      noteStr = noteStr + " (" + oCode + ")";
+                    }
+
+                    return '<tr>' +
+                      '<td style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">' + escapeHtml(dateStr) + '</td>' +
+                      '<td>' + typeBadge + '</td>' +
+                      '<td>' + amtHtml + '</td>' +
+                      '<td style="color:#38bdf8; font-weight:700; font-size:0.82rem; font-family:monospace; white-space:nowrap;">' + balAfterStr + '</td>' +
+                      '<td style="font-size:0.75rem; color:#cbd5e1;" title="' + escapeHtml(noteStr) + '">' + escapeHtml(noteStr) + '</td>' +
+                    '</tr>';
+                  }).join("");
+                }
               }
             }
           }
