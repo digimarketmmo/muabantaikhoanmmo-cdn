@@ -448,8 +448,10 @@ function healStorageQuota(forceEmergency) {
         if (uObj && uObj.email) {
           const cEmail = (uObj.email || "").toLowerCase().trim();
           if (cEmail === "digimarketmmo@gmail.com") {
-            uObj.balance = Math.max(Number(uObj.balance || 0), 113441);
-            localStorage.setItem("mmo_user", JSON.stringify(uObj));
+            if (uObj.balance === undefined || uObj.balance === null || isNaN(Number(uObj.balance)) || uObj.balance === 122295 || uObj.balance > 113441) {
+              uObj.balance = 113441;
+              localStorage.setItem("mmo_user", JSON.stringify(uObj));
+            }
           }
         }
       }
@@ -460,8 +462,10 @@ function healStorageQuota(forceEmergency) {
           let mod = false;
           rUsers.forEach(ru => {
             if (ru && (ru.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com") {
-              ru.balance = Math.max(Number(ru.balance || 0), 113441);
-              mod = true;
+              if (ru.balance === undefined || ru.balance === null || isNaN(Number(ru.balance)) || ru.balance === 122295 || ru.balance > 113441) {
+                ru.balance = 113441;
+                mod = true;
+              }
             }
           });
           if (mod) localStorage.setItem("mmo_registered_users", JSON.stringify(rUsers));
@@ -1307,7 +1311,7 @@ if (typeof window !== "undefined") {
         }
       });
 
-      var builtInUltraProds = [{"id":"18504","name":"HOTMAIL LIVE - TIKTOK VIỆT NAM SIÊU KHỎE MAIL TRUST OAuth2 LIVE ĐỌC CODE NHANH","price":1600,"amount":67,"category":"Tiktok việt","provider":"ultrammo"},{"id":"5759","name":"TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )","price":2200,"amount":142,"category":"Tiktok việt","provider":"ultrammo"},{"id":"33131","name":"TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ","price":2400,"amount":2662,"category":"Tiktok việt","provider":"ultrammo"},{"id":"32097","name":"Tiktok Việt Tạo 6-12 Tháng - Mail Megacloudx.com - BẢO HÀNH 3 NGÀY | T1/2026","price":2800,"amount":1617,"category":"Tiktok việt","provider":"ultrammo"},{"id":"4116","name":"TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25","price":1400,"amount":1544,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6257","name":"TikTok El Salvador - SV Reg 2025 Mail Lock | 2.11.25","price":1400,"amount":244,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6258","name":"TikTok Ghana - GH Reg 2025 Mail Lock | 3.11.25","price":1400,"amount":24,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6259","name":"TikTok Croatia - HR Reg 2025 Mail Lock | 8.11.25","price":1400,"amount":389,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"34626","name":"Tiktok Japan reg TTT bằng LINE đã đá mail bật 2fa","price":4500,"amount":389,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"19313","name":"Tiktok Japan reg bằng tiktok Lite reg gg đã đá mail bật 2FA - Login bằng username và pass, (chủ động đổi username pass tự bảo vệ tài sản của mình) mail hết phải mua mail khác nên tăng giá 1 2 hôm ae thông cảm","price":4500,"amount":4096,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"34620","name":"Tiktok Germany reg gg đã đá mail bật 2FA- Login bằng username và pass, (chủ động đổi username pass tự bảo vệ tài sản của mình)","price":7500,"amount":168,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"34623","name":"Tiktok Us reg app TikTok bằng Gmail - Login bằng username và pass, đã bật 2FA và gỡ mail (chủ động đổi username pass tự bảo vệ tài sản của mình)","price":7500,"amount":5278,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"32035","name":"Capcut Pro 4-7 ngày dùng riêng 2 tb, bảo hành full","price":15500,"amount":96,"category":"Capcut Pro","provider":"ultrammo"},{"id":"32026","name":"Capcut Pro 7Day | Riêng Tư [ BHF ]","price":18000,"amount":36,"category":"Capcut Pro","provider":"ultrammo"},{"id":"19388","name":"🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL )","price":54000,"amount":227,"category":"Capcut Pro","provider":"ultrammo"},{"id":"32025","name":"Capcut Pro 1 Tháng | RIÊNG TƯ [ BHF ]","price":70000,"amount":51,"category":"Capcut Pro","provider":"ultrammo"},{"id":"26819","name":"Canva Edu - 1 Tháng - Standard - Canva Education - Nâng cấp chính chủ","price":6000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"26818","name":"Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ","price":13000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"26820","name":"Canva Edu - 3 năm - VIP 🔥 - Canva Education - Nâng cấp chính chủ","price":32000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"21011","name":"NÂNG CẤP CANVA PRO FULL 3 THÁNG ( KHÔNG BẢO HÀNH )","price":36000,"amount":216,"category":"Cavana","provider":"ultrammo"},{"id":"26770","name":"🥇GPT PLUS 1 THÁNG ACC CẤP RIÊNG TƯ |BH FULL - CHAT GqT PLUS GIÁ RẺ","price":290000,"amount":19,"category":"Chat gpt","provider":"ultrammo"},{"id":"32016","name":"🚀GPT Plus 1 tháng - Tài khoản cấp BHF - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full","price":320000,"amount":99999,"category":"Chat gpt","provider":"ultrammo"},{"id":"32750","name":"Tài Khoản Discord Verify Phone Mail (Ngâm 6 Tháng)","price":18000,"amount":82,"category":"Discord","provider":"ultrammo"},{"id":"32749","name":"Tài Khoản Discord Verify Phone Mail(Ngâm 11 Tháng)","price":23000,"amount":104,"category":"Discord","provider":"ultrammo"},{"id":"33450","name":"KEY GPM LOGIN CHÍNH HÃNG 1 THÁNG - KEY GPM LOGIN CHÍNH HÃNG RIÊNG TƯ 100%","price":70000,"amount":62,"category":"Gpm Login","provider":"ultrammo"},{"id":"20474","name":"KEY GPM LOGIN CHÍNH HÃNG 1 THÁNG ( BẢO HÀNH FULL )","price":120000,"amount":89,"category":"Gpm Login","provider":"ultrammo"},{"id":"33448","name":"KEY GPM LOGIN CHÍNH HÃNG 3 THÁNG - KEY GPM LOGIN CHÍNH HÃNG RIÊNG TƯ 100%","price":210000,"amount":62,"category":"Gpm Login","provider":"ultrammo"},{"id":"20475","name":"KEY GPM LOGIN CHÍNH HÃNG 3 THÁNG ( BẢO HÀNH FULL )","price":340000,"amount":61,"category":"Gpm Login","provider":"ultrammo"},{"id":"26767","name":"Gói Chính Chủ: 1 Tháng (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":23000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26768","name":"Gói Chính Chủ: 3 Tháng (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":46000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26765","name":"Gói Chính Chủ: 1 Năm (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":80000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26766","name":"Gói Chính Chủ Riêng Tư: 1 Năm (Yêu cầu TK + MK) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":230000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"32130","name":"Super Grok 5-10 ngày (BHF) - Super Grok ( Bảo hành, Hỗ trợ, Uy tín )","price":140000,"amount":9,"category":"Grok","provider":"ultrammo"},{"id":"21165","name":"🔥 Nâng Cấp Heavy Grok 1 tháng + Cursor Ultra ( Không bảo hành )","price":1350000,"amount":42,"category":"Grok","provider":"ultrammo"},{"id":"26797","name":"SuperGrok cấp sẵn 3 tháng ( hàng trâu kbh ) - Super Grok ( Bảo hành, Hỗ trợ, Uy tín )","price":1440000,"amount":20,"category":"Grok","provider":"ultrammo"},{"id":"26757","name":"1 Slot Mail Khách | 1 THÁNG, Add Family, BHF - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":23000,"amount":11,"category":"Gemini Pro","provider":"ultrammo"},{"id":"26756","name":"1 Slot Mail Khách | 1 NĂM, Add Family, BH3M - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":80000,"amount":62,"category":"Gemini Pro","provider":"ultrammo"},{"id":"13367","name":"NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY ( Tặng kèm GG 5TB 1 năm + NHIỀU AI HOT )","price":95000,"amount":20,"category":"Gemini Pro","provider":"ultrammo"},{"id":"26755","name":"🔥 Nâng chính chủ | Chủ family add 5 slot | BH3M - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":230000,"amount":427,"category":"Gemini Pro","provider":"ultrammo"},{"id":"13629","name":"TÀI KHOẢN KLING AI 65 CREDIT","price":1200,"amount":108,"category":"Kling AI","provider":"ultrammo"},{"id":"26811","name":"Key Premium có VPN |1 thiết bị 1 năm","price":170000,"amount":13336,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26812","name":"Kas Premium 1 máy 1 năm(mail chính chủ khách) - Kaspersky Premium + VPN Diệt Virus Dọn data + Bảo Vệ quyền Riêng tư + giảm checkpoint trên 1 máy","price":210000,"amount":292,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26813","name":"Key Premium có VPN |2 thiết bị 1 năm","price":330000,"amount":298,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26814","name":"Key Premium có VPN |3 thiết bị 1 năm","price":460000,"amount":300,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"19261","name":"Instagram Clone · Random Username · Phone Registered · Live · Verified Phone or Email · No 2FA · Aged 1–30 Days","price":3500,"amount":52,"category":"Instagram","provider":"ultrammo"},{"id":"15811","name":"Instagram Clone · Random Username · Phone Registered · Live · Verified Phone or Email · 2FA On · Aged 1–30 Days","price":4000,"amount":660,"category":"Instagram","provider":"ultrammo"},{"id":"17406","name":"IG khỏe ngâm trên 6 tháng - IG strong over 6 months","price":7500,"amount":65,"category":"Instagram","provider":"ultrammo"},{"id":"17108","name":"IG khỏe ngâm trên 12 tháng - IG strong over 12 months","price":9000,"amount":29,"category":"Instagram","provider":"ultrammo"},{"id":"19338","name":"🔥 Tài Khoản Netflix 4K Full HD Private 1 Tháng ( Bảo Hành Full )","price":100000,"amount":19,"category":"Netflix","provider":"ultrammo"},{"id":"26777","name":"Youtube Premium: 1 Tháng","price":30000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26774","name":"Youtube Premium: 3 Tháng","price":80000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26775","name":"Youtube Premium: 6 Tháng","price":160000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26776","name":"Youtube Premium: 12 Tháng","price":290000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"39182","name":"24h plus - có box get api","price":419,"amount":11760,"category":"Gmail Edu","provider":"ultrammo"},{"id":"33761","name":"7 [ ID 9 ]","price":1800,"amount":56741,"category":"Gmail Edu","provider":"ultrammo"},{"id":"39175","name":"7day.us no box","price":2849,"amount":2482,"category":"Gmail Edu","provider":"ultrammo"},{"id":"39176","name":"14 day no box","price":5999,"amount":571,"category":"Gmail Edu","provider":"ultrammo"},{"id":"26807","name":"🔥5k Credit Ultra - Chính chủ, 1 tháng, BHF - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":630000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"26810","name":"Dùng chung 25k Credit hàng tháng - 3 tháng - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":1670000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"26809","name":"🚀25k Credit - Chính chủ, dùng riêng 1 tháng BHF - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":2470000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"39530","name":"Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️","price":133,"amount":532,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"34707","name":"Gmail Domain 1h - 10h .tokyo","price":673,"amount":2628,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"34708","name":"Gmail Domain 1h - 10h xxx.edu.pl","price":673,"amount":546,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"39533","name":"Gmail Domain✔️ live Vĩnh viễn ✔️domain xxx@0r9.org✔️Flash Sale 30%✔️","price":11768,"amount":6475,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"32032","name":"X Cổ 2023 - 2024 - Twitter cổ từ 2006-2022 2FA Hotmail","price":15000,"amount":337,"category":"Twitter","provider":"ultrammo"},{"id":"32027","name":"X Cổ 2006-2022 2FA Hotmail","price":20000,"amount":115,"category":"Twitter","provider":"ultrammo"},{"id":"32028","name":"X Cổ 2006-2022 2FA ( ĐÃ UNLOCKHOTMAIL )","price":30000,"amount":89,"category":"Twitter","provider":"ultrammo"},{"id":"32029","name":"X Cổ USA 2006 - 2022 - Twitter cổ từ 2006-2022 2FA Hotmail","price":34000,"amount":26,"category":"Twitter","provider":"ultrammo"},{"id":"33470","name":"MAIL DOMAIN OTP LOGIN 2 GIỜ TÊN VIỆT","price":450,"amount":236,"category":"mail domain","provider":"ultrammo"},{"id":"33471","name":"MAIL DOMAIN OTP LOGIN 2 GIỜ TÊN NGOAI","price":450,"amount":248,"category":"mail domain","provider":"ultrammo"},{"id":"33468","name":"MAIL DOMAIN OTP LOGIN 6 GIỜ TÊN VIỆT","price":675,"amount":200,"category":"mail domain","provider":"ultrammo"},{"id":"33469","name":"MAIL DOMAIN OTP LOGIN 6 GIỜ TÊN NGOẠI","price":675,"amount":200,"category":"mail domain","provider":"ultrammo"},{"id":"26784","name":"gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa","price":13000,"amount":20,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"26849","name":"mail NEW 2fa log all thiết bị (bảo hành 12h) - Gmail reg IOS new or old (log PC or log phone)","price":15000,"amount":38,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"16184","name":"Gmail New US - Hàng Reg Tay - BH log đầu 24h","price":16500,"amount":147,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"14886","name":"Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h)","price":18000,"amount":1114,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"26853","name":"YTB cổ không video - 🔥 YOUTUBE CỔ CÓ VIDEO 2006–2020 🔥","price":86000,"amount":39,"category":"Youtube Cổ","provider":"ultrammo"},{"id":"26851","name":"Youtube cổ có video","price":200000,"amount":1,"category":"Youtube Cổ","provider":"ultrammo"},{"id":"26955","name":"Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)","price":117,"amount":16126,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"26954","name":"Hotmail Trusted Mail Khôi Phục Fviainboxes/Smvmail Live Vĩnh Viên (Đã bật Graph API)","price":169,"amount":4679,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"18867","name":"Hotmail Trusted - OAuth2 [ Graph ] Skip 7 Days","price":234,"amount":69458,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"16197","name":"Hotmail Trusted US - OAuth2 [ Imap/Graph]","price":239,"amount":47554,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"19349","name":"Tài Khoản Zoom Pro 3 Tháng - Bảo Hành Full ( 100 Người )","price":320000,"amount":345,"category":"zoom","provider":"ultrammo"},{"id":"34028","name":"Proxy Viettel - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34031","name":"Proxy FPT - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34034","name":"Proxy VNPT - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34029","name":"Proxy Viettel - 7 ngày","price":9000,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"33954","name":"Đổi IP FPT 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33966","name":"Đổi IP Dân cư Việt Nam 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33978","name":"Đổi IP Viettel 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33990","name":"Đổi IP VNPT 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33926","name":"Đổi IP Dân cư/4G USA 10 Phút 1 Ngày","price":14500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33927","name":"Đổi IP Dân cư/4G USA 7 Phút 1 Ngày","price":15500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33928","name":"Đổi IP Dân cư/4G USA 5 Phút 1 Ngày","price":23500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33929","name":"Đổi IP Dân cư/4G USA 10 Phút 7 Ngày","price":92000,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33938","name":"Đổi nhanh 15 Giây VIP mạng Viettel (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33939","name":"Đổi nhanh 15 Giây VIP mạng FPT (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33940","name":"Đổi nhanh 15 Giây VIP mạng VNPT (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33941","name":"Đổi nhanh 15 Giây VIP Dân cư 3 mạng Việt Nam (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"34293","name":"Đổi IP 4 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":4500,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34294","name":"Đổi IP 2 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":5500,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34295","name":"Đổi IP 1 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":7000,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34296","name":"Đổi IP 4 Phút IPv6 Dân cư Việt Nam 7 Ngày","price":18000,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34305","name":"Đổi Proxy IPv6 USA 4 Phút (1 Ngày)","price":4500,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34306","name":"Đổi Proxy IPv6 USA 2 Phút (1 Ngày)","price":5500,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34307","name":"Đổi Proxy IPv6 USA 1 Phút (1 Ngày)","price":7000,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34308","name":"Đổi Proxy IPv6 USA 4 Phút (7 Ngày)","price":18000,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34077","name":"Đổi 4 Phút Proxy Datacenter VN 1 Ngày","price":10000,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34078","name":"Đổi 2 Phút Proxy Datacenter VN 1 Ngày","price":13500,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34079","name":"Đổi 1 Phút Proxy Datacenter VN 1 Ngày","price":14500,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34080","name":"Đổi 4 Phút Proxy Datacenter VN 7 Ngày","price":60000,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34101","name":"Đổi IP USA 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34102","name":"Đổi IP USA 2 Phút (1 Ngày )","price":13500,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34103","name":"Đổi IP USA 1 Phút (1 Ngày )","price":14500,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34104","name":"Đổi IP USA 4 Phút (7 Ngày )","price":60000,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34089","name":"Đổi IP 4 Phút Random Quốc gia 1 Ngày","price":10000,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34113","name":"Đổi IP 4 Phút Quốc gia EU (1 Ngày)","price":10000,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34090","name":"Đổi IP 2 Phút Random Quốc gia 1 Ngày","price":13500,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34114","name":"Đổi IP 2 Phút Quốc gia EU (1 Ngày)","price":13500,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34335","name":"PROXY IPV4 - PUBLIC - VIỆT NAM - SORT TUẦN TỰ - VER 02 30 Ngày","price":3500,"amount":31815,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34336","name":"Proxy IPv4 Việt Nam Public ID Sort Tuần Tự - V3 30 Ngày","price":3500,"amount":21476,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34339","name":"Proxy IPv4 Việt Nam Public ID 1181 - V3 30 Ngày","price":3500,"amount":13,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34340","name":"Proxy IPv4 Việt Nam Public ID 1182 - V3 30 Ngày","price":3500,"amount":17,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34394","name":"Proxy SOCKS5 Public VN ID 0095 - V1 30 Ngày","price":16500,"amount":44,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34395","name":"Proxy SOCKS5 Public VN ID 0139 - V1 30 Ngày","price":16500,"amount":42,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34396","name":"Proxy SOCKS5 Public VN ID 0157 - V1 30 Ngày","price":16500,"amount":43,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34397","name":"Proxy SOCKS5 Public VN ID 0166 - V1 30 Ngày","price":16500,"amount":44,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34414","name":"Proxy IPv4 USA Public ID 0151 - V5 30 Ngày","price":3500,"amount":20,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34415","name":"Proxy IPv4 USA Public ID 0188 - V5 30 Ngày","price":3500,"amount":28,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34416","name":"Proxy IPv4 USA Public ID 0227 - V5 30 Ngày","price":3500,"amount":32,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34417","name":"Proxy IPv4 USA Public ID Sort Tuần Tự V5 30 Ngày","price":3500,"amount":65613,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34234","name":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","price":13500,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34235","name":"Đổi IP Mobile 4G VinaPhone 2 Phút (1 Ngày)","price":15500,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34236","name":"Đổi IP Mobile 4G VinaPhone 5 Phút (15 Ngày)","price":123000,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34237","name":"Đổi IP Mobile 4G VinaPhone 2 Phút (15 Ngày)","price":154000,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34271","name":"GÓI 1 PROXY IPV6 USA FACEBOOK 30 Ngày","price":2200,"amount":5093,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34272","name":"GÓI 100 PROXY IPV6 USA FACEBOOK 30 Ngày","price":180000,"amount":141,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34273","name":"GÓI 500 PROXY IPV6 USA FACEBOOK 30 Ngày","price":740000,"amount":17,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34261","name":"GÓI COMBO 50 PROXY USA 4300-4349 V5 30 Ngày","price":165000,"amount":20,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34262","name":"GÓI COMBO 50 PROXY USA 4500-4549 V5 30 Ngày","price":165000,"amount":18,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34263","name":"GÓI COMBO 50 PROXY USA 4550-4599 V5 30 Ngày","price":165000,"amount":20,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34264","name":"GÓI COMBO 50 PROXY USA 4600-4649 V5 30 Ngày","price":165000,"amount":19,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34278","name":"Gói 1000 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":2200,"amount":1000,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34279","name":"Proxy IPv6 Vietnam Facebook V2 30 Ngày","price":2200,"amount":5071,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34275","name":"Gói 100 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":3500,"amount":100,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34277","name":"Gói 500 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":3500,"amount":500,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34241","name":"Proxy Mobile Hoa Kỳ (1 tuần)","price":430000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34252","name":"Proxy Mobile Ba Lan (1 tuần)","price":1230000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34244","name":"Proxy Mobile Cộng hòa Séc (1 tuần)","price":1270000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34243","name":"Proxy Mobile Bangladesh (1 tuần)","price":1500000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"39637","name":"Xoay Dân Cư Đa Quốc gia Siêu VIP (1 Ngày) - 60 Giây","price":20000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39638","name":"Xoay Dân cư Đa Quốc Gia Siêu VIP (1 Ngày) - 30 Giây","price":23500,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39639","name":"Xoay Dân cư Đa Quốc Gia Siêu VIP (1 Ngày) - 15 Giây","price":30000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39640","name":"Xoay Dân Cư Đa Quốc gia Siêu VIP (15 Ngày) - 60 Giây","price":220000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"25265","name":"ExpressVPN (3 Days)","price":5500,"amount":945,"category":"ExpressVPN","provider":"ultrammo"},{"id":"27037","name":"Key Express VPN 2-3 Ngày","price":9000,"amount":58,"category":"ExpressVPN","provider":"ultrammo"},{"id":"36224","name":"Express vpn 3 ngày","price":13000,"amount":9,"category":"ExpressVPN","provider":"ultrammo"},{"id":"26817","name":"VPN Express 3 day – Kết Nối 8 Máy Cùng Lúc","price":13000,"amount":25,"category":"ExpressVPN","provider":"ultrammo"},{"id":"16159","name":"Key HMA Android/PC 20-30 Ngày ( Bảo Hành Full )","price":8500,"amount":54,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"13643","name":"HMA 1 THÁNG - 5 THIẾT BỊ , PC , Android IOS ( Bảo Hành Full )","price":18000,"amount":88,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"36223","name":"KEY HMA VPN 5 THIẾT BỊ - 1 tháng ( ANDROID - PC )","price":18000,"amount":31,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"26839","name":"HMA 5 Thiết Bị Dùng Được Cho IOS/Androi/Máy Tính - HMA VPN Bản Quyền. Đổi IP Sạch, An Toàn - Full Tốc Độ","price":23000,"amount":341,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"25397","name":"Hotspot Shield VPN (7 Days)","price":6500,"amount":1331,"category":"VPN khác","provider":"ultrammo"},{"id":"25400","name":"IPVanish VPN (7 Days)","price":6500,"amount":1222,"category":"VPN khác","provider":"ultrammo"},{"id":"25412","name":"NordVPN (7 Days)","price":6500,"amount":959,"category":"VPN khác","provider":"ultrammo"},{"id":"25443","name":"PIA VPN (7 Days)","price":6500,"amount":1335,"category":"VPN khác","provider":"ultrammo"}];
+      var builtInUltraProds = [{"id":"18504","name":"HOTMAIL LIVE - TIKTOK VIỆT NAM SIÊU KHỎE MAIL TRUST OAuth2 LIVE ĐỌC CODE NHANH","price":1600,"amount":67,"category":"Tiktok việt","provider":"ultrammo"},{"id":"5759","name":"TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )","price":2200,"amount":142,"category":"Tiktok việt","provider":"ultrammo"},{"id":"33131","name":"TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ","price":2400,"amount":2662,"category":"Tiktok việt","provider":"ultrammo"},{"id":"32097","name":"Tiktok Việt Tạo 6-12 Tháng - Mail Megacloudx.com - BẢO HÀNH 3 NGÀY | T1/2026","price":2800,"amount":1617,"category":"Tiktok việt","provider":"ultrammo"},{"id":"4116","name":"TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25","price":1400,"amount":1544,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6257","name":"TikTok El Salvador - SV Reg 2025 Mail Lock | 2.11.25","price":1400,"amount":244,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6258","name":"TikTok Ghana - GH Reg 2025 Mail Lock | 3.11.25","price":1400,"amount":24,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"6259","name":"TikTok Croatia - HR Reg 2025 Mail Lock | 8.11.25","price":1400,"amount":389,"category":"Tiktok ngoại","provider":"ultrammo"},{"id":"34626","name":"Tiktok Japan reg TTT bằng LINE đã đá mail bật 2fa","price":4500,"amount":389,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"19313","name":"Tiktok Japan reg bằng tiktok Lite reg gg đã đá mail bật 2FA - Login bằng username và pass, (chủ động đổi username pass tự bảo vệ tài sản của mình) mail hết phải mua mail khác nên tăng giá 1 2 hôm ae thông cảm","price":4500,"amount":4096,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"34620","name":"Tiktok Germany reg gg đã đá mail bật 2FA- Login bằng username và pass, (chủ động đổi username pass tự bảo vệ tài sản của mình)","price":7500,"amount":168,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"34623","name":"Tiktok Us reg app TikTok bằng Gmail - Login bằng username và pass, đã bật 2FA và gỡ mail (chủ động đổi username pass tự bảo vệ tài sản của mình)","price":7500,"amount":5278,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"32035","name":"Capcut Pro 4-7 ngày dùng riêng 2 tb, bảo hành full","price":15500,"amount":96,"category":"Capcut Pro","provider":"ultrammo"},{"id":"32037","name":"Capcut Pro 7 ngày ( Bảo hành Full )","price":18000,"amount":39,"category":"Capcut Pro","provider":"ultrammo"},{"id":"40760","name":"Tiktok France reg TTT bằng Hotmail đặt pass và bật 2FA - Login bằng username/hotmail và pass ( Hotmail Trusted - OAuth2 [GRAPH API ] Đã Thêm Mail Khôi Phục )","price":7500,"amount":7181,"category":"Tiktok Ngoại Mail Live","provider":"ultrammo"},{"id":"33524","name":"Tài khoản Gmail New ngâm chuẩn chất lượng 🔥","price":22000,"amount":31,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"19388","name":"🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL )","price":54000,"amount":227,"category":"Capcut Pro","provider":"ultrammo"},{"id":"32025","name":"Capcut Pro 1 Tháng | RIÊNG TƯ [ BHF ]","price":70000,"amount":51,"category":"Capcut Pro","provider":"ultrammo"},{"id":"26819","name":"Canva Edu - 1 Tháng - Standard - Canva Education - Nâng cấp chính chủ","price":6000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"26818","name":"Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ","price":13000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"26820","name":"Canva Edu - 3 năm - VIP 🔥 - Canva Education - Nâng cấp chính chủ","price":32000,"amount":99999,"category":"Cavana","provider":"ultrammo"},{"id":"21011","name":"NÂNG CẤP CANVA PRO FULL 3 THÁNG ( KHÔNG BẢO HÀNH )","price":36000,"amount":216,"category":"Cavana","provider":"ultrammo"},{"id":"26770","name":"🥇GPT PLUS 1 THÁNG ACC CẤP RIÊNG TƯ |BH FULL - CHAT GqT PLUS GIÁ RẺ","price":290000,"amount":19,"category":"Chat gpt","provider":"ultrammo"},{"id":"32016","name":"🚀GPT Plus 1 tháng - Tài khoản cấp BHF - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full","price":320000,"amount":99999,"category":"Chat gpt","provider":"ultrammo"},{"id":"32750","name":"Tài Khoản Discord Verify Phone Mail (Ngâm 6 Tháng)","price":18000,"amount":82,"category":"Discord","provider":"ultrammo"},{"id":"32749","name":"Tài Khoản Discord Verify Phone Mail(Ngâm 11 Tháng)","price":23000,"amount":104,"category":"Discord","provider":"ultrammo"},{"id":"33450","name":"KEY GPM LOGIN CHÍNH HÃNG 1 THÁNG - KEY GPM LOGIN CHÍNH HÃNG RIÊNG TƯ 100%","price":70000,"amount":62,"category":"Gpm Login","provider":"ultrammo"},{"id":"20474","name":"KEY GPM LOGIN CHÍNH HÃNG 1 THÁNG ( BẢO HÀNH FULL )","price":120000,"amount":89,"category":"Gpm Login","provider":"ultrammo"},{"id":"33448","name":"KEY GPM LOGIN CHÍNH HÃNG 3 THÁNG - KEY GPM LOGIN CHÍNH HÃNG RIÊNG TƯ 100%","price":210000,"amount":62,"category":"Gpm Login","provider":"ultrammo"},{"id":"20475","name":"KEY GPM LOGIN CHÍNH HÃNG 3 THÁNG ( BẢO HÀNH FULL )","price":340000,"amount":61,"category":"Gpm Login","provider":"ultrammo"},{"id":"26767","name":"Gói Chính Chủ: 1 Tháng (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":23000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26768","name":"Gói Chính Chủ: 3 Tháng (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":46000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26765","name":"Gói Chính Chủ: 1 Năm (Thêm Vào Nhóm Gia Đình) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":80000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"26766","name":"Gói Chính Chủ Riêng Tư: 1 Năm (Yêu cầu TK + MK) - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ","price":230000,"amount":99999,"category":"Google AI Pro","provider":"ultrammo"},{"id":"32130","name":"Super Grok 5-10 ngày (BHF) - Super Grok ( Bảo hành, Hỗ trợ, Uy tín )","price":140000,"amount":9,"category":"Grok","provider":"ultrammo"},{"id":"21165","name":"🔥 Nâng Cấp Heavy Grok 1 tháng + Cursor Ultra ( Không bảo hành )","price":1350000,"amount":42,"category":"Grok","provider":"ultrammo"},{"id":"26797","name":"SuperGrok cấp sẵn 3 tháng ( hàng trâu kbh ) - Super Grok ( Bảo hành, Hỗ trợ, Uy tín )","price":1440000,"amount":20,"category":"Grok","provider":"ultrammo"},{"id":"26757","name":"1 Slot Mail Khách | 1 THÁNG, Add Family, BHF - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":23000,"amount":11,"category":"Gemini Pro","provider":"ultrammo"},{"id":"26756","name":"1 Slot Mail Khách | 1 NĂM, Add Family, BH3M - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":80000,"amount":62,"category":"Gemini Pro","provider":"ultrammo"},{"id":"13367","name":"NÂNG CẤP GEMINI PRO CHÍNH CHỦ 1 NĂM - 365 NGÀY ( Tặng kèm GG 5TB 1 năm + NHIỀU AI HOT )","price":95000,"amount":20,"category":"Gemini Pro","provider":"ultrammo"},{"id":"26755","name":"🔥 Nâng chính chủ | Chủ family add 5 slot | BH3M - Gemini Pro + 5TB + Antigravity - Hạn 1 năm | Nâng chính chủ riêng tư, bảo hành full","price":230000,"amount":427,"category":"Gemini Pro","provider":"ultrammo"},{"id":"13629","name":"TÀI KHOẢN KLING AI 65 CREDIT","price":1200,"amount":108,"category":"Kling AI","provider":"ultrammo"},{"id":"26811","name":"Key Premium có VPN |1 thiết bị 1 năm","price":170000,"amount":13336,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26812","name":"Kas Premium 1 máy 1 năm(mail chính chủ khách) - Kaspersky Premium + VPN Diệt Virus Dọn data + Bảo Vệ quyền Riêng tư + giảm checkpoint trên 1 máy","price":210000,"amount":292,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26813","name":"Key Premium có VPN |2 thiết bị 1 năm","price":330000,"amount":298,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"26814","name":"Key Premium có VPN |3 thiết bị 1 năm","price":460000,"amount":300,"category":"KASPERSKY PREMIUM","provider":"ultrammo"},{"id":"19261","name":"Instagram Clone · Random Username · Phone Registered · Live · Verified Phone or Email · No 2FA · Aged 1–30 Days","price":3500,"amount":52,"category":"Instagram","provider":"ultrammo"},{"id":"15811","name":"Instagram Clone · Random Username · Phone Registered · Live · Verified Phone or Email · 2FA On · Aged 1–30 Days","price":4000,"amount":660,"category":"Instagram","provider":"ultrammo"},{"id":"17406","name":"IG khỏe ngâm trên 6 tháng - IG strong over 6 months","price":7500,"amount":65,"category":"Instagram","provider":"ultrammo"},{"id":"17108","name":"IG khỏe ngâm trên 12 tháng - IG strong over 12 months","price":9000,"amount":29,"category":"Instagram","provider":"ultrammo"},{"id":"19338","name":"🔥 Tài Khoản Netflix 4K Full HD Private 1 Tháng ( Bảo Hành Full )","price":100000,"amount":19,"category":"Netflix","provider":"ultrammo"},{"id":"26777","name":"Youtube Premium: 1 Tháng","price":30000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26774","name":"Youtube Premium: 3 Tháng","price":80000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26775","name":"Youtube Premium: 6 Tháng","price":160000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"26776","name":"Youtube Premium: 12 Tháng","price":290000,"amount":99999,"category":"Nâng Cấp Youtube Premium","provider":"ultrammo"},{"id":"39182","name":"24h plus - có box get api","price":419,"amount":11760,"category":"Gmail Edu","provider":"ultrammo"},{"id":"33761","name":"7 [ ID 9 ]","price":1800,"amount":56741,"category":"Gmail Edu","provider":"ultrammo"},{"id":"39175","name":"7day.us no box","price":2849,"amount":2482,"category":"Gmail Edu","provider":"ultrammo"},{"id":"39176","name":"14 day no box","price":5999,"amount":571,"category":"Gmail Edu","provider":"ultrammo"},{"id":"26807","name":"🔥5k Credit Ultra - Chính chủ, 1 tháng, BHF - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":630000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"26810","name":"Dùng chung 25k Credit hàng tháng - 3 tháng - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":1670000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"26809","name":"🚀25k Credit - Chính chủ, dùng riêng 1 tháng BHF - Veo3 Ultra 25k Credit - Công Cụ Tạo Video AI Cao Cấp Omni Flash 3.5","price":2470000,"amount":99999,"category":"Veo 3","provider":"ultrammo"},{"id":"39530","name":"Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️","price":133,"amount":532,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"34707","name":"Gmail Domain 1h - 10h .tokyo","price":673,"amount":2628,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"34708","name":"Gmail Domain 1h - 10h xxx.edu.pl","price":673,"amount":546,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"39533","name":"Gmail Domain✔️ live Vĩnh viễn ✔️domain xxx@0r9.org✔️Flash Sale 30%✔️","price":11768,"amount":6475,"category":"Gmail doman cho thuê","provider":"ultrammo"},{"id":"32032","name":"X Cổ 2023 - 2024 - Twitter cổ từ 2006-2022 2FA Hotmail","price":15000,"amount":337,"category":"Twitter","provider":"ultrammo"},{"id":"32027","name":"X Cổ 2006-2022 2FA Hotmail","price":20000,"amount":115,"category":"Twitter","provider":"ultrammo"},{"id":"32028","name":"X Cổ 2006-2022 2FA ( ĐÃ UNLOCKHOTMAIL )","price":30000,"amount":89,"category":"Twitter","provider":"ultrammo"},{"id":"32029","name":"X Cổ USA 2006 - 2022 - Twitter cổ từ 2006-2022 2FA Hotmail","price":34000,"amount":26,"category":"Twitter","provider":"ultrammo"},{"id":"33470","name":"MAIL DOMAIN OTP LOGIN 2 GIỜ TÊN VIỆT","price":450,"amount":236,"category":"mail domain","provider":"ultrammo"},{"id":"33471","name":"MAIL DOMAIN OTP LOGIN 2 GIỜ TÊN NGOAI","price":450,"amount":248,"category":"mail domain","provider":"ultrammo"},{"id":"33468","name":"MAIL DOMAIN OTP LOGIN 6 GIỜ TÊN VIỆT","price":675,"amount":200,"category":"mail domain","provider":"ultrammo"},{"id":"33469","name":"MAIL DOMAIN OTP LOGIN 6 GIỜ TÊN NGOẠI","price":675,"amount":200,"category":"mail domain","provider":"ultrammo"},{"id":"26784","name":"gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa","price":13000,"amount":20,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"26849","name":"mail NEW 2fa log all thiết bị (bảo hành 12h) - Gmail reg IOS new or old (log PC or log phone)","price":15000,"amount":38,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"16184","name":"Gmail New US - Hàng Reg Tay - BH log đầu 24h","price":16500,"amount":147,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"14886","name":"Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h)","price":18000,"amount":1114,"category":"Gmail Việt-Ngoại","provider":"ultrammo"},{"id":"26853","name":"YTB cổ không video - 🔥 YOUTUBE CỔ CÓ VIDEO 2006–2020 🔥","price":86000,"amount":39,"category":"Youtube Cổ","provider":"ultrammo"},{"id":"26851","name":"Youtube cổ có video","price":200000,"amount":1,"category":"Youtube Cổ","provider":"ultrammo"},{"id":"26955","name":"Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)","price":117,"amount":16126,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"26954","name":"Hotmail Trusted Mail Khôi Phục Fviainboxes/Smvmail Live Vĩnh Viên (Đã bật Graph API)","price":169,"amount":4679,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"18867","name":"Hotmail Trusted - OAuth2 [ Graph ] Skip 7 Days","price":234,"amount":69458,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"16197","name":"Hotmail Trusted US - OAuth2 [ Imap/Graph]","price":239,"amount":47554,"category":"Hotmail new - Trust","provider":"ultrammo"},{"id":"19349","name":"Tài Khoản Zoom Pro 3 Tháng - Bảo Hành Full ( 100 Người )","price":320000,"amount":345,"category":"zoom","provider":"ultrammo"},{"id":"34028","name":"Proxy Viettel - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34031","name":"Proxy FPT - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34034","name":"Proxy VNPT - 1 ngày","price":2200,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"34029","name":"Proxy Viettel - 7 ngày","price":9000,"amount":9999,"category":"IPv4 Dân Cư Tĩnh","provider":"ultrammo"},{"id":"33954","name":"Đổi IP FPT 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33966","name":"Đổi IP Dân cư Việt Nam 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33978","name":"Đổi IP Viettel 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33990","name":"Đổi IP VNPT 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"IPv4 Xoay Dân Cư VN","provider":"ultrammo"},{"id":"33926","name":"Đổi IP Dân cư/4G USA 10 Phút 1 Ngày","price":14500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33927","name":"Đổi IP Dân cư/4G USA 7 Phút 1 Ngày","price":15500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33928","name":"Đổi IP Dân cư/4G USA 5 Phút 1 Ngày","price":23500,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33929","name":"Đổi IP Dân cư/4G USA 10 Phút 7 Ngày","price":92000,"amount":9999,"category":"Proxy Xoay Dân cư/4G USA","provider":"ultrammo"},{"id":"33938","name":"Đổi nhanh 15 Giây VIP mạng Viettel (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33939","name":"Đổi nhanh 15 Giây VIP mạng FPT (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33940","name":"Đổi nhanh 15 Giây VIP mạng VNPT (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"33941","name":"Đổi nhanh 15 Giây VIP Dân cư 3 mạng Việt Nam (1 Ngày)","price":15500,"amount":9999,"category":"IPv4 Xoay Dân Cư VN VIP","provider":"ultrammo"},{"id":"34293","name":"Đổi IP 4 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":4500,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34294","name":"Đổi IP 2 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":5500,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34295","name":"Đổi IP 1 Phút IPv6 Dân cư Việt Nam 1 Ngày","price":7000,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34296","name":"Đổi IP 4 Phút IPv6 Dân cư Việt Nam 7 Ngày","price":18000,"amount":9999,"category":"IPv6 Xoay VN","provider":"ultrammo"},{"id":"34305","name":"Đổi Proxy IPv6 USA 4 Phút (1 Ngày)","price":4500,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34306","name":"Đổi Proxy IPv6 USA 2 Phút (1 Ngày)","price":5500,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34307","name":"Đổi Proxy IPv6 USA 1 Phút (1 Ngày)","price":7000,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34308","name":"Đổi Proxy IPv6 USA 4 Phút (7 Ngày)","price":18000,"amount":9999,"category":"IPv6 Xoay USA","provider":"ultrammo"},{"id":"34077","name":"Đổi 4 Phút Proxy Datacenter VN 1 Ngày","price":10000,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34078","name":"Đổi 2 Phút Proxy Datacenter VN 1 Ngày","price":13500,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34079","name":"Đổi 1 Phút Proxy Datacenter VN 1 Ngày","price":14500,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34080","name":"Đổi 4 Phút Proxy Datacenter VN 7 Ngày","price":60000,"amount":9999,"category":"Proxy Xoay Datacenter Việt Nam","provider":"ultrammo"},{"id":"34101","name":"Đổi IP USA 4 Phút (1 Ngày)","price":10000,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34102","name":"Đổi IP USA 2 Phút (1 Ngày )","price":13500,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34103","name":"Đổi IP USA 1 Phút (1 Ngày )","price":14500,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34104","name":"Đổi IP USA 4 Phút (7 Ngày )","price":60000,"amount":9999,"category":"Proxy Xoay Datacenter US","provider":"ultrammo"},{"id":"34089","name":"Đổi IP 4 Phút Random Quốc gia 1 Ngày","price":10000,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34113","name":"Đổi IP 4 Phút Quốc gia EU (1 Ngày)","price":10000,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34090","name":"Đổi IP 2 Phút Random Quốc gia 1 Ngày","price":13500,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34114","name":"Đổi IP 2 Phút Quốc gia EU (1 Ngày)","price":13500,"amount":9999,"category":"Proxy Xoay Random Quốc Gia","provider":"ultrammo"},{"id":"34335","name":"PROXY IPV4 - PUBLIC - VIỆT NAM - SORT TUẦN TỰ - VER 02 30 Ngày","price":3500,"amount":31815,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34336","name":"Proxy IPv4 Việt Nam Public ID Sort Tuần Tự - V3 30 Ngày","price":3500,"amount":21476,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34339","name":"Proxy IPv4 Việt Nam Public ID 1181 - V3 30 Ngày","price":3500,"amount":13,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34340","name":"Proxy IPv4 Việt Nam Public ID 1182 - V3 30 Ngày","price":3500,"amount":17,"category":"PROXY IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34394","name":"Proxy SOCKS5 Public VN ID 0095 - V1 30 Ngày","price":16500,"amount":44,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34395","name":"Proxy SOCKS5 Public VN ID 0139 - V1 30 Ngày","price":16500,"amount":42,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34396","name":"Proxy SOCKS5 Public VN ID 0157 - V1 30 Ngày","price":16500,"amount":43,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34397","name":"Proxy SOCKS5 Public VN ID 0166 - V1 30 Ngày","price":16500,"amount":44,"category":"PROXY SOCK5 IPV4 - VIET NAM SHARE","provider":"ultrammo"},{"id":"34414","name":"Proxy IPv4 USA Public ID 0151 - V5 30 Ngày","price":3500,"amount":20,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34415","name":"Proxy IPv4 USA Public ID 0188 - V5 30 Ngày","price":3500,"amount":28,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34416","name":"Proxy IPv4 USA Public ID 0227 - V5 30 Ngày","price":3500,"amount":32,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34417","name":"Proxy IPv4 USA Public ID Sort Tuần Tự V5 30 Ngày","price":3500,"amount":65613,"category":"PROXY IPV4 - USA SHARE","provider":"ultrammo"},{"id":"34234","name":"Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)","price":13500,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34235","name":"Đổi IP Mobile 4G VinaPhone 2 Phút (1 Ngày)","price":15500,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34236","name":"Đổi IP Mobile 4G VinaPhone 5 Phút (15 Ngày)","price":123000,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34237","name":"Đổi IP Mobile 4G VinaPhone 2 Phút (15 Ngày)","price":154000,"amount":9999,"category":"Proxy Mobile Vietnam","provider":"ultrammo"},{"id":"34271","name":"GÓI 1 PROXY IPV6 USA FACEBOOK 30 Ngày","price":2200,"amount":5093,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34272","name":"GÓI 100 PROXY IPV6 USA FACEBOOK 30 Ngày","price":180000,"amount":141,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34273","name":"GÓI 500 PROXY IPV6 USA FACEBOOK 30 Ngày","price":740000,"amount":17,"category":"Gói Proxy IPv6 Static USA","provider":"ultrammo"},{"id":"34261","name":"GÓI COMBO 50 PROXY USA 4300-4349 V5 30 Ngày","price":165000,"amount":20,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34262","name":"GÓI COMBO 50 PROXY USA 4500-4549 V5 30 Ngày","price":165000,"amount":18,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34263","name":"GÓI COMBO 50 PROXY USA 4550-4599 V5 30 Ngày","price":165000,"amount":20,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34264","name":"GÓI COMBO 50 PROXY USA 4600-4649 V5 30 Ngày","price":165000,"amount":19,"category":"Gói Proxy IPv4 Share USA","provider":"ultrammo"},{"id":"34278","name":"Gói 1000 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":2200,"amount":1000,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34279","name":"Proxy IPv6 Vietnam Facebook V2 30 Ngày","price":2200,"amount":5071,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34275","name":"Gói 100 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":3500,"amount":100,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34277","name":"Gói 500 Proxy IPv6 Vietnam - Facebook 30 Ngày","price":3500,"amount":500,"category":"Gói Proxy IPv4 Share Vietnam","provider":"ultrammo"},{"id":"34241","name":"Proxy Mobile Hoa Kỳ (1 tuần)","price":430000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34252","name":"Proxy Mobile Ba Lan (1 tuần)","price":1230000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34244","name":"Proxy Mobile Cộng hòa Séc (1 tuần)","price":1270000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"34243","name":"Proxy Mobile Bangladesh (1 tuần)","price":1500000,"amount":9999,"category":"Proxy Xoay Mobile","provider":"ultrammo"},{"id":"39637","name":"Xoay Dân Cư Đa Quốc gia Siêu VIP (1 Ngày) - 60 Giây","price":20000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39638","name":"Xoay Dân cư Đa Quốc Gia Siêu VIP (1 Ngày) - 30 Giây","price":23500,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39639","name":"Xoay Dân cư Đa Quốc Gia Siêu VIP (1 Ngày) - 15 Giây","price":30000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"39640","name":"Xoay Dân Cư Đa Quốc gia Siêu VIP (15 Ngày) - 60 Giây","price":220000,"amount":9999,"category":"Proxy Dân Cư Xoay Quốc Tế","provider":"ultrammo"},{"id":"25265","name":"ExpressVPN (3 Days)","price":5500,"amount":945,"category":"ExpressVPN","provider":"ultrammo"},{"id":"27037","name":"Key Express VPN 2-3 Ngày","price":9000,"amount":58,"category":"ExpressVPN","provider":"ultrammo"},{"id":"36224","name":"Express vpn 3 ngày","price":13000,"amount":9,"category":"ExpressVPN","provider":"ultrammo"},{"id":"26817","name":"VPN Express 3 day – Kết Nối 8 Máy Cùng Lúc","price":13000,"amount":25,"category":"ExpressVPN","provider":"ultrammo"},{"id":"16159","name":"Key HMA Android/PC 20-30 Ngày ( Bảo Hành Full )","price":8500,"amount":54,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"13643","name":"HMA 1 THÁNG - 5 THIẾT BỊ , PC , Android IOS ( Bảo Hành Full )","price":18000,"amount":88,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"36223","name":"KEY HMA VPN 5 THIẾT BỊ - 1 tháng ( ANDROID - PC )","price":18000,"amount":31,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"26839","name":"HMA 5 Thiết Bị Dùng Được Cho IOS/Androi/Máy Tính - HMA VPN Bản Quyền. Đổi IP Sạch, An Toàn - Full Tốc Độ","price":23000,"amount":341,"category":"Key HMA VPN","provider":"ultrammo"},{"id":"25397","name":"Hotspot Shield VPN (7 Days)","price":6500,"amount":1331,"category":"VPN khác","provider":"ultrammo"},{"id":"25400","name":"IPVanish VPN (7 Days)","price":6500,"amount":1222,"category":"VPN khác","provider":"ultrammo"},{"id":"25412","name":"NordVPN (7 Days)","price":6500,"amount":959,"category":"VPN khác","provider":"ultrammo"},{"id":"25443","name":"PIA VPN (7 Days)","price":6500,"amount":1335,"category":"VPN khác","provider":"ultrammo"}];
       builtInUltraProds.forEach(function(uItem) {
         var existing = result.find(function(r) {
           return String(r.id) === String(uItem.id) && r.provider === "ultrammo";
@@ -1640,14 +1644,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Mặc định",
         "price": 141,
-        "stock": 4707,
+        "stock": 2120,
         "available": true,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
           "sourceProdId": "26955",
           "sourcePrice": 117,
-          "sourceStock": 16087,
+          "sourceStock": 2120,
           "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
           "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
@@ -1661,12 +1665,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "provider": "ultrammo",
       "sourceProdId": "26955",
       "sourcePrice": 117,
-      "sourceStock": 16087,
+      "sourceStock": 2120,
       "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 4707,
+    "stock": 2120,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -1778,14 +1782,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "GEMINI PRO CHÍNH CHỦ 18 Tháng+ veo 3",
         "price": 89000,
-        "stock": 1705,
+        "stock": 259,
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "sourceProdId": "32428",
-          "sourcePrice": 51000,
-          "sourceStock": 1705,
-          "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 51.000 đ (Tồn: 1.705)",
+          "sourceProdId": "33270",
+          "sourcePrice": 68800,
+          "sourceStock": 259,
+          "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
           "baseUrl": "https://selltainguyenmmo.com",
           "isSourceDeleted": false
         },
@@ -1797,14 +1801,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "selltainguyenmmo",
-      "sourceProdId": "32428",
-      "sourcePrice": 51000,
-      "sourceStock": 1705,
-      "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 51.000 đ (Tồn: 1.705)",
+      "sourceProdId": "33270",
+      "sourcePrice": 68800,
+      "sourceStock": 259,
+      "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
       "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
-    "stock": 1705,
+    "stock": 259,
     "buffSold": 1238,
     "sold": 1238,
     "available": true
@@ -1824,15 +1828,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "TikTok Canada mail look",
         "price": 15000,
-        "stock": 9476,
+        "stock": 8449,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
-          "sourceProdId": "122569",
-          "sourcePrice": 7590,
-          "sourceStock": 9476,
+          "provider": "ultrammo",
+          "sourceProdId": "3479",
+          "sourcePrice": 2200,
+          "sourceStock": 8449,
           "sourceProdName": "TikTok Canada - CA Reg 2024 Mail Lock",
-          "baseUrl": "https://nguyenlieummo.com.vn",
+          "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
         },
         "available": true,
@@ -1842,15 +1846,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "nguyenlieummo",
-      "sourceProdId": "122569",
-      "sourcePrice": 7590,
-      "sourceStock": 9476,
+      "provider": "ultrammo",
+      "sourceProdId": "3479",
+      "sourcePrice": 2200,
+      "sourceStock": 8449,
       "sourceProdName": "TikTok Canada - CA Reg 2024 Mail Lock",
-      "baseUrl": "https://nguyenlieummo.com.vn",
+      "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 9476,
+    "stock": 8449,
     "buffSold": 1588,
     "sold": 1588,
     "available": true
@@ -1870,15 +1874,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Clone Facebook ngâm",
         "price": 15000,
-        "stock": 833,
+        "stock": 499,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
-          "sourceProdId": "130660",
-          "sourcePrice": 11849,
-          "sourceStock": 833,
-          "sourceProdName": "ON2 - CLONE FACEBOOK NGOẠI CÓ 2FA - VERI GMAIL",
-          "baseUrl": "https://nguyenlieummo.com.vn",
+          "provider": "selltainguyenmmo",
+          "sourceProdId": "31747",
+          "sourcePrice": 12000,
+          "sourceStock": 499,
+          "sourceProdName": "CLONE IP VIỆT NAME RANDOM TRÊN 3 NGÀY - 2FA - GMAIL LIVE ADS",
+          "baseUrl": "https://selltainguyenmmo.com",
           "isSourceDeleted": false
         },
         "available": true,
@@ -1888,15 +1892,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "nguyenlieummo",
-      "sourceProdId": "130660",
-      "sourcePrice": 11849,
-      "sourceStock": 833,
-      "sourceProdName": "ON2 - CLONE FACEBOOK NGOẠI CÓ 2FA - VERI GMAIL",
-      "baseUrl": "https://nguyenlieummo.com.vn",
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "31747",
+      "sourcePrice": 12000,
+      "sourceStock": 499,
+      "sourceProdName": "CLONE IP VIỆT NAME RANDOM TRÊN 3 NGÀY - 2FA - GMAIL LIVE ADS",
+      "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
-    "stock": 833,
+    "stock": 499,
     "buffSold": 1298,
     "sold": 1298,
     "available": true
@@ -1916,15 +1920,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Tài khoản clone Facebook",
         "price": 15000,
-        "stock": 7525,
+        "stock": 2343,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
-          "sourceProdId": "125445",
-          "sourcePrice": 11638,
-          "sourceStock": 7525,
-          "sourceProdName": "CLONE FACEBOOK NGOẠI CÓ 2FA - VERI HOTMAIL - NAME RANDOM",
-          "baseUrl": "https://nguyenlieummo.com.vn",
+          "provider": "selltainguyenmmo",
+          "sourceProdId": "31773",
+          "sourcePrice": 4400,
+          "sourceStock": 2343,
+          "sourceProdName": "Clone Ngoại Reg New ADS Live Trâu Ngon ( UID| Pass |Cookie)",
+          "baseUrl": "https://selltainguyenmmo.com",
           "isSourceDeleted": false
         },
         "available": true,
@@ -1934,15 +1938,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "nguyenlieummo",
-      "sourceProdId": "125445",
-      "sourcePrice": 11638,
-      "sourceStock": 7525,
-      "sourceProdName": "CLONE FACEBOOK NGOẠI CÓ 2FA - VERI HOTMAIL - NAME RANDOM",
-      "baseUrl": "https://nguyenlieummo.com.vn",
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "31773",
+      "sourcePrice": 4400,
+      "sourceStock": 2343,
+      "sourceProdName": "Clone Ngoại Reg New ADS Live Trâu Ngon ( UID| Pass |Cookie)",
+      "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
-    "stock": 7525,
+    "stock": 2343,
     "buffSold": 1255,
     "sold": 1255,
     "available": true
@@ -1965,12 +1969,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "stock": 307,
         "apiMapping": {
           "enabled": true,
-          "provider": "vuavia",
-          "sourceProdId": "2006",
-          "sourcePrice": 150000,
-          "sourceStock": 307,
-          "sourceProdName": "[Via] #2006 Acc Facebook Mỹ Thuê Tick Xanh - Có Avatar - Xác Thực Hotmail Live - 150.000 đ (Tồn: 307)",
-          "baseUrl": "https://api.vuavia.io",
+          "provider": "selltainguyenmmo",
+          "sourceProdId": "31867",
+          "sourcePrice": 90000,
+          "sourceStock": 0,
+          "sourceProdName": "ACC USA 2025- AVATAR - 2FA - VER HOTMAIL - REG IOS - ĐÃ KHÁNG 282 - IP USA | NÚT LÊN TÍCH XANH",
+          "baseUrl": "https://selltainguyenmmo.com",
           "isSourceDeleted": false
         },
         "available": true,
@@ -1980,12 +1984,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "vuavia",
-      "sourceProdId": "2006",
-      "sourcePrice": 150000,
-      "sourceStock": 307,
-      "sourceProdName": "[Via] #2006 Acc Facebook Mỹ Thuê Tick Xanh - Có Avatar - Xác Thực Hotmail Live - 150.000 đ (Tồn: 307)",
-      "baseUrl": "https://api.vuavia.io",
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "31867",
+      "sourcePrice": 90000,
+      "sourceStock": 0,
+      "sourceProdName": "ACC USA 2025- AVATAR - 2FA - VER HOTMAIL - REG IOS - ĐÃ KHÁNG 282 - IP USA | NÚT LÊN TÍCH XANH",
+      "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
     "stock": 307,
@@ -2008,13 +2012,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Gemini AI Pro Veo3 - 1 NĂM",
         "price": 120000,
-        "stock": 554,
+        "stock": 259,
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "sourceProdId": "32428",
-          "sourcePrice": 52600,
-          "sourceStock": 554,
+          "sourceProdId": "33270",
+          "sourcePrice": 68800,
+          "sourceStock": 259,
           "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
           "baseUrl": "https://selltainguyenmmo.com",
           "isSourceDeleted": false
@@ -2027,14 +2031,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "selltainguyenmmo",
-      "sourceProdId": "32428",
-      "sourcePrice": 52600,
-      "sourceStock": 554,
+      "sourceProdId": "33270",
+      "sourcePrice": 68800,
+      "sourceStock": 259,
       "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
       "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
-    "stock": 554,
+    "stock": 259,
     "buffSold": 1865,
     "sold": 1865,
     "available": true
@@ -2544,19 +2548,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "GMAIL  30 NGÀY",
         "price": 33000,
-        "stock": 6786,
+        "stock": 7173,
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
           "sourceProdId": "31976",
-          "sourceProdName": "Gmail domain Live 30 Days  Domain .ORG No gmail",
           "sourcePrice": 13400,
           "sourceStock": 7173,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MTQWQFZD",
-          "targetProdName": "Gmail cho thuê 30 Ngày"
+          "sourceProdName": "Gmail domain Live 30 Days  Domain .ORG No gmail",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -2573,7 +2574,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
-    "stock": 6786,
+    "stock": 7173,
     "buffSold": 480,
     "sold": 480,
     "available": true
@@ -2621,13 +2622,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Mail 7 ngày",
         "price": 7000,
-        "stock": 18157,
+        "stock": 2202,
         "apiMapping": {
           "enabled": true,
           "provider": "nguyenlieummo",
           "sourceProdId": "131037",
           "sourcePrice": 5093,
-          "sourceStock": 18157,
+          "sourceStock": 2202,
           "sourceProdName": "[Gmail] #131037 Gmail Domain 7 Ngày Đuôi . ORG Có Gmail - 5.093 đ (Tồn: 2.202)",
           "baseUrl": "https://nguyenlieummo.com.vn",
           "isSourceDeleted": false
@@ -2642,12 +2643,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "provider": "nguyenlieummo",
       "sourceProdId": "131037",
       "sourcePrice": 5093,
-      "sourceStock": 18157,
+      "sourceStock": 2202,
       "sourceProdName": "[Gmail] #131037 Gmail Domain 7 Ngày Đuôi . ORG Có Gmail - 5.093 đ (Tồn: 2.202)",
       "baseUrl": "https://nguyenlieummo.com.vn",
       "isSourceDeleted": false
     },
-    "stock": 18157,
+    "stock": 2202,
     "buffSold": 1678,
     "sold": 1678,
     "available": true
@@ -2667,19 +2668,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Chat GPT đã very phone",
         "price": 30000,
-        "stock": 48,
+        "stock": 23,
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
           "sourceProdId": "31699",
-          "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
           "sourcePrice": 16000,
-          "sourceStock": 48,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU5SPLMSEC",
-          "targetProdName": "ChatGPT New Gmail Trial"
+          "sourceStock": 23,
+          "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 23)",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -2689,17 +2687,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
       "sourceProdId": "31699",
-      "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
       "sourcePrice": 16000,
-      "sourceStock": 48,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU5SPLMSEC",
-      "targetProdName": "ChatGPT New Gmail Trial"
+      "sourceStock": 23,
+      "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 23)",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
     },
-    "stock": 48,
+    "stock": 23,
     "buffSold": 689,
     "sold": 689,
     "available": true
@@ -2719,15 +2714,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Clone Ngoại",
         "price": 9000,
-        "stock": 8255,
+        "stock": 1578,
         "apiMapping": {
           "enabled": true,
-          "provider": "vuavia",
-          "sourceProdId": "1993",
-          "sourcePrice": 6000,
-          "sourceStock": 8255,
-          "sourceProdName": "[vuavia.io] #1993 Clone Ngoại Reg New Name Random - 2FA - Mail Domain - Dùng Luôn - 6.000 đ (Tồn: 8.255)",
-          "baseUrl": "https://api.vuavia.io",
+          "provider": "selltainguyenmmo",
+          "sourceProdId": "25483",
+          "sourcePrice": 6600,
+          "sourceStock": 1578,
+          "sourceProdName": "Clone Ngoại Very Phone + Very mail Fvia | Định Dạng : UID|Pass|2FA|Mail lấy được Code ( Ngâm Random IPV4 Ngoại )",
+          "baseUrl": "https://selltainguyenmmo.com",
           "isSourceDeleted": false
         },
         "available": true,
@@ -2737,15 +2732,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "vuavia",
-      "sourceProdId": "1993",
-      "sourcePrice": 6000,
-      "sourceStock": 8255,
-      "sourceProdName": "[vuavia.io] #1993 Clone Ngoại Reg New Name Random - 2FA - Mail Domain - Dùng Luôn - 6.000 đ (Tồn: 8.255)",
-      "baseUrl": "https://api.vuavia.io",
+      "provider": "selltainguyenmmo",
+      "sourceProdId": "25483",
+      "sourcePrice": 6600,
+      "sourceStock": 1578,
+      "sourceProdName": "Clone Ngoại Very Phone + Very mail Fvia | Định Dạng : UID|Pass|2FA|Mail lấy được Code ( Ngâm Random IPV4 Ngoại )",
+      "baseUrl": "https://selltainguyenmmo.com",
       "isSourceDeleted": false
     },
-    "stock": 8255,
+    "stock": 1578,
     "buffSold": 1567,
     "sold": 1567,
     "available": true
@@ -2765,14 +2760,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "TikTok Cambodia - Reg 2025",
         "price": 4500,
-        "stock": 1544,
+        "stock": 1532,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
           "sourceProdId": "4116",
           "sourcePrice": 1400,
-          "sourceStock": 1544,
-          "sourceProdName": "[Tiktok ngoại] #4116 TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25 - 1.400 đ (Tồn: 1.544)",
+          "sourceStock": 1532,
+          "sourceProdName": "TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25",
           "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
         },
@@ -2786,12 +2781,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "provider": "ultrammo",
       "sourceProdId": "4116",
       "sourcePrice": 1400,
-      "sourceStock": 1544,
-      "sourceProdName": "[Tiktok ngoại] #4116 TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25 - 1.400 đ (Tồn: 1.544)",
+      "sourceStock": 1532,
+      "sourceProdName": "TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 1544,
+    "stock": 1532,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -2800,7 +2795,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "id": "PROD_MUR52EZ6H1",
     "name": "TÀI KHOẢN TIKTOK KOREA (HÀN QUỐC) - BAO ĐỔI TÊN ĐỔI MAIL",
     "slug": "prod-mur52ez6h1",
-    "category": "tiktok",
+    "category": "TikTok",
     "description": "Tài khoản TikTok South Korea (Hàn Quốc) live có Oauth2, Cookie, tạo tháng 7/2025.",
     "image": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR52EZ6H1_Tiktok_Korea_reg_gg_%C4%91%C3%A3_%C4%91%C3%A1_mail_b%E1%BA%ADt_2FA_C%C3%B3_Oauth2__.jpg",
     "image_url": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUR52EZ6H1_Tiktok_Korea_reg_gg_%C4%91%C3%A3_%C4%91%C3%A1_mail_b%E1%BA%ADt_2FA_C%C3%B3_Oauth2__.jpg",
@@ -2903,19 +2898,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "gmail new ngâm 1- 10 ngày LIVE",
         "price": 20000,
-        "stock": 7,
+        "stock": 31,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
+          "sourceProdId": "33524",
+          "sourcePrice": 22000,
+          "sourceStock": 31,
+          "sourceProdName": "Tài khoản Gmail New ngâm chuẩn chất lượng 🔥",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-          "sourceProdId": "26784",
-          "sourceProdName": "[Gmail Việt-Ngoại] #26784 gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa - 13.000 đ (Tồn: 7)",
-          "sourcePrice": 13000,
-          "sourceStock": 7,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUOSDN0FCU",
-          "targetProdName": "gmail new ngâm 1- 10 ngày chỉ log phone- no 2fa"
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -2924,15 +2916,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "sellmmo",
-      "sourceProdId": "17773",
-      "sourcePrice": 20400,
-      "sourceStock": 291,
-      "sourceProdName": "[GMAIL.COM] #17773 Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h) - 20.400 đ (Tồn: 291)",
-      "baseUrl": "https://sellmmo.vn",
+      "provider": "ultrammo",
+      "sourceProdId": "33524",
+      "sourcePrice": 22000,
+      "sourceStock": 31,
+      "sourceProdName": "Tài khoản Gmail New ngâm chuẩn chất lượng 🔥",
+      "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 7,
+    "stock": 31,
     "buffSold": 218,
     "sold": 218,
     "available": true
@@ -2998,13 +2990,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "TIKTOK VIỆT  ĐÃ TẠO 1-3 NĂM",
         "price": 6000,
-        "stock": 4266,
+        "stock": 5419,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
           "sourceProdId": "33131",
-          "sourcePrice": 2400,
-          "sourceStock": 4266,
+          "sourcePrice": 3000,
+          "sourceStock": 5419,
           "sourceProdName": "TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ",
           "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
@@ -3018,13 +3010,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "enabled": true,
       "provider": "ultrammo",
       "sourceProdId": "33131",
-      "sourcePrice": 2400,
-      "sourceStock": 4266,
+      "sourcePrice": 3000,
+      "sourceStock": 5419,
       "sourceProdName": "TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 4266,
+    "stock": 5419,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -3044,13 +3036,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "TikTok VN Reg T1-2026",
         "price": 3500,
-        "stock": 486,
+        "stock": 471,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
           "sourceProdId": "5759",
-          "sourcePrice": 2200,
-          "sourceStock": 486,
+          "sourcePrice": 2800,
+          "sourceStock": 471,
           "sourceProdName": "TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )",
           "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
@@ -3064,13 +3056,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "enabled": true,
       "provider": "ultrammo",
       "sourceProdId": "5759",
-      "sourcePrice": 2200,
-      "sourceStock": 486,
+      "sourcePrice": 2800,
+      "sourceStock": 471,
       "sourceProdName": "TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 486,
+    "stock": 471,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -3136,19 +3128,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "chat Gpt Plush 1 tháng",
         "price": 456000,
-        "stock": 6,
+        "stock": 99999,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
+          "sourceProdId": "32016",
+          "sourcePrice": 290000,
+          "sourceStock": 99999,
+          "sourceProdName": "🚀GPT Plus 1 tháng - Tài khoản cấp BHF - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full",
           "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-          "sourceProdId": "19204",
-          "sourceProdName": "[Chat gpt] #19204 CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG ) BẢO HÀNH FULL - 380.000 đ (Tồn: 6)",
-          "sourcePrice": 380000,
-          "sourceStock": 6,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUNUEKI3NM",
-          "targetProdName": "Nâng Cấp ChatGPT Plus Giá Rẻ"
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3158,17 +3147,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
+      "sourceProdId": "32016",
+      "sourcePrice": 290000,
+      "sourceStock": 99999,
+      "sourceProdName": "🚀GPT Plus 1 tháng - Tài khoản cấp BHF - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full",
       "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-      "sourceProdId": "19204",
-      "sourceProdName": "[Chat gpt] #19204 CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG ) BẢO HÀNH FULL - 380.000 đ (Tồn: 6)",
-      "sourcePrice": 380000,
-      "sourceStock": 6,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUNUEKI3NM",
-      "targetProdName": "Nâng Cấp ChatGPT Plus Giá Rẻ"
+      "isSourceDeleted": false
     },
-    "stock": 6,
+    "stock": 99999,
     "buffSold": 299,
     "sold": 299,
     "available": true
@@ -3238,15 +3224,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "26777",
-          "sourceProdName": "Youtube Premium: 1 Tháng",
           "sourcePrice": 30000,
           "sourceStock": 99999,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUK7P74YNT",
-          "targetProdName": "Nâng Cấp Youtube Premium Chính Chủ 1 Tháng"
+          "sourceProdName": "Youtube Premium: 1 Tháng",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3256,15 +3239,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "26777",
-      "sourceProdName": "Youtube Premium: 1 Tháng",
       "sourcePrice": 30000,
       "sourceStock": 99999,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUK7P74YNT",
-      "targetProdName": "Nâng Cấp Youtube Premium Chính Chủ 1 Tháng"
+      "sourceProdName": "Youtube Premium: 1 Tháng",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
     "stock": 99999,
     "buffSold": 319,
@@ -3319,7 +3299,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "id": "PROD_MUK6EFVE8X",
-    "name": "INSTAGRAM ĐÃ LUÔI CỰC KỲ TRÂU",
+    "name": "INSTAGRAM ĐÃ LUÔI LÂU CỰC KỲ TRÂU",
     "slug": "prod-muk6efve8x",
     "category": "Intagram",
     "description": "vui lòng mở khoá mail để lấy mã hoặc đăng nhập băng cokey Instagram cực kỳ trâu, mạnh mẽ, cực kỳ uy tín dành cho dân MMO, chạy chiến dịch, làm marketing hoặc phát triển hệ thống tài khoản số lượng lớn:\n\n🔥 INSTAGRAM ĐÃ NUÔI CỰC KỲ TRÂU – ĐỘ TRUST TUYỆT ĐỐI, KHÁNG QUÉT CỰC TỐT CHO DÂN MMO!\nBạn đang đau đầu vì tình trạng mua tài khoản Instagram mới tạo hoặc nuôi qua loa, cứ đăng nhập, đổi IP, đăng bài hoặc tương tác là dính checkpoint, khóa vách hay bay màu ngay lập tức?\n\nGiải pháp Instagram đã nuôi cực kỳ trâu tại shop chính là \"vũ khí tối thượng\" giúp bạn quét sạch mọi nỗi lo, chiến mượt mà mọi chiến dịch!\n\n💎 Điểm vượt trội của dòng Instagram \"Cực kỳ trâu\":\nĐộ Trust max cấp: Tài khoản đã trải qua quá trình nuôi bài bản, thời gian ngâm lâu, có lịch sử hoạt động và tương tác tự nhiên như người dùng thật.\n\nVượt rào kiểm duyệt thông minh: Thích ứng cực tốt với các thuật toán quét gắt gao của Meta, hạn chế tối đa tình trạng verphone, checkpoint ngớ ngẩn hay khóa tài khoản khi đổi thiết bị/IP.\n\nSẵn sàng cho mọi tác vụ nặng: Phục vụ hoàn hảo cho anh em làm MMO, chạy seeding, kéo traffic, làm marketing, xây dựng hệ thống mạng xã hội lớn hoặc chạy các chiến dịch dài hạn.\n\n🛠️ Cam kết chất lượng từ shop:\n🛡️ Bảo hành 1 đổi 1 ngay lập tức cho tài khoản lỗi đăng nhập lần đầu.\n\n🚀 Bàn giao siêu tốc ngay sau khi thanh toán, đúng định dạng, sạch sẽ.\n\n🔒 Hỗ trợ tư vấn tận tình cách đăng nhập và ngâm thêm trên thiết bị sạch để duy trì độ trâu bò lâu dài nhất.\n\n💡 Mẹo giữ tài khoản bền bỉ: Nên kết hợp sử dụng Antidetect Browser (trình duyệt sạch) cùng Proxy chất lượng cao, thao tác từ tốn trong những ngày đầu để tài khoản ổn định hoàn toàn trên môi trường mới!\n\n🛒 SỐ LƯỢNG CÓ HẠN – CHỐT ĐƠN NGAY HÔM NAY!\n💬 Inbox trực tiếp ngay cho shop hoặc để lại dấu chấm [ . ] bên dưới để nhận báo giá chi tiết và sở hữu ngay dàn nick chất lượng!\n\n📞 Hotline / Zalo / Telegram",
@@ -3474,15 +3454,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "34234",
-          "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
           "sourcePrice": 13500,
           "sourceStock": 9999,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUJVJCV286",
-          "targetProdName": "Proxy 4Gvinaphone - 1 ngày"
+          "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3492,15 +3469,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "34234",
-      "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
       "sourcePrice": 13500,
       "sourceStock": 9999,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUJVJCV286",
-      "targetProdName": "Proxy 4Gvinaphone - 1 ngày"
+      "sourceProdName": "Đổi IP Mobile 4G VinaPhone 5 Phút (1 Ngày)",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
     "stock": 9999,
     "buffSold": 632,
@@ -3526,15 +3500,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "34028",
-          "sourceProdName": "Proxy Viettel - 1 ngày",
           "sourcePrice": 2200,
           "sourceStock": 9999,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUJVFEFFNP",
-          "targetProdName": "Proxy Viettel - 1 ngày"
+          "sourceProdName": "Proxy Viettel - 1 ngày",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3544,15 +3515,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "34028",
-      "sourceProdName": "Proxy Viettel - 1 ngày",
       "sourcePrice": 2200,
       "sourceStock": 9999,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUJVFEFFNP",
-      "targetProdName": "Proxy Viettel - 1 ngày"
+      "sourceProdName": "Proxy Viettel - 1 ngày",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
     "stock": 9999,
     "buffSold": 1798,
@@ -3620,19 +3588,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Capcut Pro team 1 THÁNG",
         "price": 70000,
-        "stock": 227,
+        "stock": 275,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "19388",
-          "sourceProdName": "[Capcut Pro] #19388 🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL ) - 54.000 đ (Tồn: 227)",
-          "sourcePrice": 54000,
-          "sourceStock": 227,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUJUGVQXET",
-          "targetProdName": "Capcut Pro Team 1 THÁNG"
+          "sourcePrice": 48000,
+          "sourceStock": 275,
+          "sourceProdName": "[Capcut Pro] #19388 🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL ) - 48.000 đ (Tồn: 275)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3642,17 +3607,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "19388",
-      "sourceProdName": "[Capcut Pro] #19388 🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL ) - 54.000 đ (Tồn: 227)",
-      "sourcePrice": 54000,
-      "sourceStock": 227,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUJUGVQXET",
-      "targetProdName": "Capcut Pro Team 1 THÁNG"
+      "sourcePrice": 48000,
+      "sourceStock": 275,
+      "sourceProdName": "[Capcut Pro] #19388 🔥Capcut Pro Team 1 THÁNG - Dùng Riêng ( BẢO HÀNH FULL ) - 48.000 đ (Tồn: 275)",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
-    "stock": 227,
+    "stock": 275,
     "buffSold": 1250,
     "sold": 1250,
     "available": true
@@ -3722,15 +3684,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
           "sourceProdId": "31918",
-          "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
           "sourcePrice": 1400,
           "sourceStock": 9999,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MUJQDTNIH9",
-          "targetProdName": "Proxy datacenter us - 1 ngày"
+          "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3740,15 +3699,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
       "sourceProdId": "31918",
-      "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
       "sourcePrice": 1400,
       "sourceStock": 9999,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MUJQDTNIH9",
-      "targetProdName": "Proxy datacenter us - 1 ngày"
+      "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
     },
     "stock": 9999,
     "buffSold": 0,
@@ -3770,14 +3726,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Gmail New  đã ngâm 3 - 7 ngày live",
         "price": 20000,
-        "stock": 23,
+        "stock": 692,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "sourceProdId": "26784",
-          "sourcePrice": 13000,
-          "sourceStock": 23,
-          "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
+          "sourceProdId": "14886",
+          "sourcePrice": 18000,
+          "sourceStock": 692,
+          "sourceProdName": "Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h)",
           "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
         },
@@ -3789,14 +3745,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "sourceProdId": "26784",
-      "sourcePrice": 13000,
-      "sourceStock": 23,
-      "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
+      "sourceProdId": "14886",
+      "sourcePrice": 18000,
+      "sourceStock": 692,
+      "sourceProdName": "Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h)",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 23,
+    "stock": 692,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -3820,15 +3776,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "26818",
-          "sourceProdName": "[Cavana] #26818 Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ - 13.000 đ (Tồn: 99.999)",
           "sourcePrice": 13000,
           "sourceStock": 99999,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU9YH8D9FK",
-          "targetProdName": "NÂNG CẤP CANVA EDU 1 NĂM"
+          "sourceProdName": "Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3838,15 +3791,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "26818",
-      "sourceProdName": "[Cavana] #26818 Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ - 13.000 đ (Tồn: 99.999)",
       "sourcePrice": 13000,
       "sourceStock": 99999,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU9YH8D9FK",
-      "targetProdName": "NÂNG CẤP CANVA EDU 1 NĂM"
+      "sourceProdName": "Canva Edu - 12 Tháng Recommend ⭐ - Canva Education - Nâng cấp chính chủ",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
     "stock": 99999,
     "buffSold": 513,
@@ -3868,19 +3818,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "KLING - AI 65 CREDIT",
         "price": 2500,
-        "stock": 108,
+        "stock": 207,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "13629",
-          "sourceProdName": "[Kling AI] #13629 TÀI KHOẢN KLING AI 65 CREDIT - 1.200 đ (Tồn: 108)",
           "sourcePrice": 1200,
-          "sourceStock": 108,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU5PWT7PP7",
-          "targetProdName": "TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ"
+          "sourceStock": 207,
+          "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3890,17 +3837,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
       "sourceProdId": "13629",
-      "sourceProdName": "[Kling AI] #13629 TÀI KHOẢN KLING AI 65 CREDIT - 1.200 đ (Tồn: 108)",
       "sourcePrice": 1200,
-      "sourceStock": 108,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU5PWT7PP7",
-      "targetProdName": "TÀI KHOẢN KLING - AI 65 CREDIT GIÁ RẺ"
+      "sourceStock": 207,
+      "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
-    "stock": 108,
+    "stock": 207,
     "buffSold": 1989,
     "sold": 1989,
     "available": true
@@ -3920,19 +3864,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Outlook Hotmail Trusted",
         "price": 500,
-        "stock": 16126,
+        "stock": 2120,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
           "sourceProdId": "26955",
-          "sourceProdName": "[Hotmail new - Trust] #26955 Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API) - 117 đ (Tồn: 16.126)",
           "sourcePrice": 117,
-          "sourceStock": 16126,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2YQ1J3PY",
-          "targetProdName": "Outlook Hotmail Trusted - OAuth2 Live 6-12 tháng"
+          "sourceStock": 2120,
+          "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3944,12 +3885,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "provider": "ultrammo",
       "sourceProdId": "26955",
       "sourcePrice": 117,
-      "sourceStock": 16089,
+      "sourceStock": 2120,
       "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 16126,
+    "stock": 2120,
     "buffSold": 2609,
     "sold": 2609,
     "available": true
@@ -3969,19 +3910,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "IG ĐÃ QUA SỬ DỤNG",
         "price": 6000,
-        "stock": 2857,
+        "stock": 2701,
         "apiMapping": {
           "enabled": true,
           "provider": "nguyenlieummo",
-          "baseUrl": "https://nguyenlieummo.com.vn",
-          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
           "sourceProdId": "128981",
-          "sourceProdName": "[ID #128981] ig qua sử dụng nofa",
           "sourcePrice": 2846,
-          "sourceStock": 2857,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2PA8VNDP",
-          "targetProdName": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP"
+          "sourceStock": 2701,
+          "sourceProdName": "ig qua sử dụng nofa",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -3991,17 +3929,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "nguyenlieummo",
-      "baseUrl": "https://nguyenlieummo.com.vn",
-      "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
       "sourceProdId": "128981",
-      "sourceProdName": "[ID #128981] ig qua sử dụng nofa",
       "sourcePrice": 2846,
-      "sourceStock": 2857,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU2PA8VNDP",
-      "targetProdName": "INSTAGRAM ĐÃ QUA SỬ DỤNG - RANDOM IP"
+      "sourceStock": 2701,
+      "sourceProdName": "ig qua sử dụng nofa",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
     },
-    "stock": 2857,
+    "stock": 2701,
     "buffSold": 928,
     "sold": 928,
     "available": true
@@ -4021,19 +3956,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "chat GPT  free trial",
         "price": 25000,
-        "stock": 48,
+        "stock": 23,
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
           "sourceProdId": "31699",
-          "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
           "sourcePrice": 16000,
-          "sourceStock": 48,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2OXBZC6K",
-          "targetProdName": "ChatGPT Free đã ver phone Code"
+          "sourceStock": 23,
+          "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 23)",
+          "baseUrl": "https://selltainguyenmmo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4043,17 +3975,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
       "sourceProdId": "31699",
-      "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 48)",
       "sourcePrice": 16000,
-      "sourceStock": 48,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU2OXBZC6K",
-      "targetProdName": "ChatGPT Free đã ver phone Code"
+      "sourceStock": 23,
+      "sourceProdName": "[CHAT GPT] #31699 🔥ChatGPT Free đã verify phone codex - 16.000 đ (Tồn: 23)",
+      "baseUrl": "https://selltainguyenmmo.com",
+      "isSourceDeleted": false
     },
-    "stock": 48,
+    "stock": 23,
     "buffSold": 326,
     "sold": 326,
     "available": true
@@ -4161,19 +4090,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Tiktok Pháp live",
         "price": 8000,
-        "stock": 7,
+        "stock": 7181,
         "apiMapping": {
           "enabled": true,
-          "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-          "sourceProdId": "22454",
-          "sourceProdName": "[TIKTOK NGOẠI (BETA)] #22454 TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1 - 3.000 đ (Tồn: 7)",
-          "sourcePrice": 3000,
-          "sourceStock": 7,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2CZL38PH",
-          "targetProdName": "TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2"
+          "provider": "ultrammo",
+          "sourceProdId": "40760",
+          "sourcePrice": 7500,
+          "sourceStock": 7181,
+          "sourceProdName": "Tiktok France reg TTT bằng Hotmail đặt pass và bật 2FA - Login bằng username/hotmail và pass ( Hotmail Trusted - OAuth2 [GRAPH API ] Đã Thêm Mail Khôi Phục )",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4182,18 +4108,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-      "sourceProdId": "22454",
-      "sourceProdName": "[TIKTOK NGOẠI (BETA)] #22454 TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2 - BẢO HÀNH LOGIN 1-1 - 3.000 đ (Tồn: 7)",
-      "sourcePrice": 3000,
-      "sourceStock": 7,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU2CZL38PH",
-      "targetProdName": "TIKTOK PHÁP Mail Live Trust Đọc Code Qua OAuth2"
+      "provider": "ultrammo",
+      "sourceProdId": "40760",
+      "sourcePrice": 7500,
+      "sourceStock": 7181,
+      "sourceProdName": "Tiktok France reg TTT bằng Hotmail đặt pass và bật 2FA - Login bằng username/hotmail và pass ( Hotmail Trusted - OAuth2 [GRAPH API ] Đã Thêm Mail Khôi Phục )",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
-    "stock": 7,
+    "stock": 7181,
     "buffSold": 1234,
     "sold": 1234,
     "available": true
@@ -4259,19 +4182,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "capcut pro 7 ngày",
         "price": 25000,
-        "stock": 4,
+        "stock": 39,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "baseUrl": "https://ultrammo.com",
-          "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-          "sourceProdId": "32026",
-          "sourceProdName": "Capcut Pro 7Day | Riêng Tư [ BHF ]",
+          "sourceProdId": "32037",
           "sourcePrice": 18000,
-          "sourceStock": 36,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2B32VLQY",
-          "targetProdName": "Capcut pro Cá Nhân 7 ngày - Dùng Riêng"
+          "sourceStock": 39,
+          "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4281,17 +4201,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "baseUrl": "https://ultrammo.com",
-      "apiKey": "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
-      "sourceProdId": "32026",
-      "sourceProdName": "Capcut Pro 7Day | Riêng Tư [ BHF ]",
+      "sourceProdId": "32037",
       "sourcePrice": 18000,
-      "sourceStock": 36,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU2B32VLQY",
-      "targetProdName": "Capcut pro Cá Nhân 7 ngày - Dùng Riêng"
+      "sourceStock": 39,
+      "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
-    "stock": 4,
+    "stock": 39,
     "buffSold": 225,
     "sold": 225,
     "available": true
@@ -4311,19 +4228,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "facebook",
         "price": 25000,
-        "stock": 17509,
+        "stock": 3117,
         "apiMapping": {
           "enabled": true,
-          "provider": "vuavia",
-          "baseUrl": "https://api.vuavia.io",
-          "apiKey": "",
-          "sourceProdId": "1977",
-          "sourceProdName": "[Clone] #1977 Clone Facebook Đăng Ký Ngẫu Nhiên - Đổi Số Điện Thoại - Gmail Không 2FA - 15.000 đ (Tồn: 17.509)",
-          "sourcePrice": 15000,
-          "sourceStock": 17509,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU2ASBNSJT",
-          "targetProdName": "Facebook Via Việt  ACC SPAM - SEEDING - ĐÃ NGÂM LÂU"
+          "provider": "nguyenlieummo",
+          "sourceProdId": "127716",
+          "sourcePrice": 12061,
+          "sourceStock": 3117,
+          "sourceProdName": "OM7-CLONE FACEBOOK VIỆT NAM CÓ 2FA VERI HOTMAIL RANDOM AVATAR SIÊU TRÂU",
+          "baseUrl": "https://nguyenlieummo.com.vn",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4332,18 +4246,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "vuavia",
-      "baseUrl": "https://api.vuavia.io",
-      "apiKey": "",
-      "sourceProdId": "1977",
-      "sourceProdName": "[Clone] #1977 Clone Facebook Đăng Ký Ngẫu Nhiên - Đổi Số Điện Thoại - Gmail Không 2FA - 15.000 đ (Tồn: 17.509)",
-      "sourcePrice": 15000,
-      "sourceStock": 17509,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU2ASBNSJT",
-      "targetProdName": "Facebook Via Việt  ACC SPAM - SEEDING - ĐÃ NGÂM LÂU"
+      "provider": "nguyenlieummo",
+      "sourceProdId": "127716",
+      "sourcePrice": 12061,
+      "sourceStock": 3117,
+      "sourceProdName": "OM7-CLONE FACEBOOK VIỆT NAM CÓ 2FA VERI HOTMAIL RANDOM AVATAR SIÊU TRÂU",
+      "baseUrl": "https://nguyenlieummo.com.vn",
+      "isSourceDeleted": false
     },
-    "stock": 17509,
+    "stock": 3117,
     "buffSold": 1256,
     "sold": 1256,
     "available": true
@@ -4535,19 +4446,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "capcut  - pro 7 ngày",
         "price": 15000,
-        "stock": 132,
+        "stock": 39,
         "apiMapping": {
           "enabled": true,
-          "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-          "sourceProdId": "25644",
-          "sourceProdName": "[CAPCUT PRO] #25644 Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO - 9.000 đ (Tồn: 132)",
-          "sourcePrice": 9000,
-          "sourceStock": 132,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MU1G6LJX",
-          "targetProdName": "Capcut pro Cá Nhân 7 ngày"
+          "provider": "ultrammo",
+          "sourceProdId": "32037",
+          "sourcePrice": 18000,
+          "sourceStock": 39,
+          "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4556,18 +4464,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
-      "sourceProdId": "25644",
-      "sourceProdName": "[CAPCUT PRO] #25644 Capcut Pro 7 Ngày - Dùng Riêng ( BẢO HÀNH FULL ) CHECK ĐƯỢC HẠN SỬ DỤNG - CHỈ BAO CÓ CAPCUT PRO - 9.000 đ (Tồn: 132)",
-      "sourcePrice": 9000,
-      "sourceStock": 132,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MU1G6LJX",
-      "targetProdName": "Capcut pro Cá Nhân 7 ngày"
+      "provider": "ultrammo",
+      "sourceProdId": "32037",
+      "sourcePrice": 18000,
+      "sourceStock": 39,
+      "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
+      "baseUrl": "https://ultrammo.com",
+      "isSourceDeleted": false
     },
-    "stock": 132,
+    "stock": 39,
     "buffSold": 293,
     "sold": 293,
     "available": true
@@ -4659,19 +4564,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Mail - Cho thuê - 24h",
         "price": 600,
-        "stock": 31,
+        "stock": 3689,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
-          "baseUrl": "https://nguyenlieummo.com.vn",
-          "apiKey": "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
-          "sourceProdId": "39341",
-          "sourceProdName": "[ID #39341] Gmail Domain 12h - ramdom trùng dv",
-          "sourcePrice": 294,
-          "sourceStock": 31,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MTQQXO2E",
-          "targetProdName": "BÁN GMAIL CHO THUÊ 24H"
+          "provider": "ultrammo",
+          "sourceProdId": "39182",
+          "sourcePrice": 433.5,
+          "sourceStock": 3689,
+          "sourceProdName": "24h plus - có box get api",
+          "baseUrl": "https://ultrammo.com",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4680,15 +4582,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "sellmmo",
-      "sourceProdId": "39341",
-      "sourcePrice": 303,
-      "sourceStock": 274,
-      "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
-      "baseUrl": "https://sellmmo.vn",
+      "provider": "ultrammo",
+      "sourceProdId": "39182",
+      "sourcePrice": 433.5,
+      "sourceStock": 3689,
+      "sourceProdName": "24h plus - có box get api",
+      "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 31,
+    "stock": 3689,
     "buffSold": 2180,
     "sold": 2180,
     "available": true
@@ -4708,15 +4610,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "mail 4h live",
         "price": 479,
-        "stock": 92571,
+        "stock": 59,
         "apiMapping": {
           "enabled": true,
-          "provider": "mail72h",
-          "sourceProdId": "712",
-          "sourcePrice": 259,
-          "sourceStock": 92550,
-          "sourceProdName": "24h [ ID 712 ]",
-          "baseUrl": "https://mail72h.com",
+          "provider": "sellmmo",
+          "sourceProdId": "39341",
+          "sourcePrice": 294.03,
+          "sourceStock": 59,
+          "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
+          "baseUrl": "https://sellmmo.vn",
           "isSourceDeleted": false
         },
         "available": true,
@@ -4728,13 +4630,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "enabled": true,
       "provider": "sellmmo",
       "sourceProdId": "39341",
-      "sourcePrice": 303,
-      "sourceStock": 274,
+      "sourcePrice": 294.03,
+      "sourceStock": 59,
       "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
       "baseUrl": "https://sellmmo.vn",
       "isSourceDeleted": false
     },
-    "stock": 92571,
+    "stock": 59,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -4754,19 +4656,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "mail 10 phut",
         "price": 217,
-        "stock": 17000,
+        "stock": 821,
         "apiMapping": {
           "enabled": true,
           "provider": "sellmmo",
-          "baseUrl": "https://sellmmo.vn",
-          "apiKey": "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
           "sourceProdId": "39073",
+          "sourcePrice": 180.54,
+          "sourceStock": 821,
           "sourceProdName": "Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️",
-          "sourcePrice": 175.23,
-          "sourceStock": 17000,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MTQX465U",
-          "targetProdName": "Gmail cho Thuế - 10 phút - live 10 phút"
+          "baseUrl": "https://sellmmo.vn",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4777,13 +4676,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       "enabled": true,
       "provider": "sellmmo",
       "sourceProdId": "39073",
-      "sourcePrice": 181,
-      "sourceStock": 259,
+      "sourcePrice": 180.54,
+      "sourceStock": 821,
       "sourceProdName": "Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️",
       "baseUrl": "https://sellmmo.vn",
       "isSourceDeleted": false
     },
-    "stock": 1242,
+    "stock": 821,
     "buffSold": 3458,
     "sold": 3458,
     "available": true
@@ -4803,18 +4702,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Gmail Cho Thue 12h-24h",
         "price": 400,
-        "stock": 493,
+        "stock": 59,
         "apiMapping": {
           "enabled": true,
-          "provider": "nguyenlieummo",
+          "provider": "sellmmo",
           "sourceProdId": "39341",
-          "sourcePrice": 294,
-          "sourceStock": 493,
-          "sourceProdName": "[ID #39341] Gmail Domain 12h - ramdom trùng dv",
-          "baseUrl": "https://nguyenlieummo.com.vn",
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MTQX7SIK",
-          "targetProdName": "Gmail Cho Thue 12h-24h"
+          "sourcePrice": 294.03,
+          "sourceStock": 59,
+          "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
+          "baseUrl": "https://sellmmo.vn",
+          "isSourceDeleted": false
         },
         "available": true,
         "accounts": []
@@ -4823,17 +4720,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "delivery_type": "api",
     "apiMapping": {
       "enabled": true,
-      "provider": "nguyenlieummo",
+      "provider": "sellmmo",
       "sourceProdId": "39341",
-      "sourcePrice": 294,
-      "sourceStock": 493,
-      "sourceProdName": "[ID #39341] Gmail Domain 12h - ramdom trùng dv",
-      "baseUrl": "https://nguyenlieummo.com.vn",
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MTQX7SIK",
-      "targetProdName": "Gmail Cho Thue 12h-24h"
+      "sourcePrice": 294.03,
+      "sourceStock": 59,
+      "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
+      "baseUrl": "https://sellmmo.vn",
+      "isSourceDeleted": false
     },
-    "stock": 493,
+    "stock": 59,
     "buffSold": 640,
     "sold": 640,
     "available": true
@@ -5136,6 +5031,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       return result;
     }
     window.getVisibleProducts = getVisibleProducts;
+
+    // [DỌN DẸP LỖI MMO_NO_IMAGE]: Tự động gỡ bỏ cờ xóa ảnh nhầm lẫn cho Gemini và các sản phẩm đã có ảnh thật
+    try {
+      if (typeof localStorage !== "undefined") {
+        ["PROD_MVKLXCCFRB", "PROD_MV5QIZNFCZ", "PROD_MU6R34FZ4Z", "PROD_MU5T3T47AE", "PROD_MV5PA8KZDW", "PROD_MV5OYRDJCA", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"].forEach(function(gid) {
+          localStorage.removeItem("mmo_no_image_" + gid);
+        });
+      }
+    } catch(eCleanNoImg) {}
 
     // [BẢO VỆ TOÀN DIỆN DANH SÁCH SẢN PHẨM ĐÃ XÓA CỦA ADMIN]:
     try {
@@ -5512,12 +5416,31 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const savedCats = localStorage.getItem("mmo_categories");
       if (savedCats) {
         const parsedCats = JSON.parse(savedCats);
-        if (Array.isArray(parsedCats) && parsedCats.length > 0) MOCK_DATA.categories = parsedCats;
+        if (Array.isArray(parsedCats) && parsedCats.length > 0) {
+          const normCats = [];
+          const seen = new Set();
+          parsedCats.forEach(function(c) {
+            const norm = (String(c).toLowerCase() === 'tiktok') ? 'TikTok' : String(c).trim();
+            const lower = norm.toLowerCase();
+            if (!seen.has(lower)) {
+              seen.add(lower);
+              normCats.push(norm);
+            }
+          });
+          MOCK_DATA.categories = normCats;
+        }
       }
     } catch(e) {}
 
     // APP STATE
     window.MOCK_DATA = MOCK_DATA;
+    if (MOCK_DATA && Array.isArray(MOCK_DATA.products)) {
+      MOCK_DATA.products.forEach(function(p) {
+        if (p && p.category && String(p.category).toLowerCase() === 'tiktok') {
+          p.category = 'TikTok';
+        }
+      });
+    }
     var currentCategory = "Tất cả";
     var currentBlogCategory = "Tất cả";
     var currentUser = null;
@@ -5565,10 +5488,19 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         if (type === "warning") toast.style.borderLeftColor = "#f59e0b";
         if (type === "info") toast.style.borderLeftColor = "#3b82f6";
         toast.innerHTML = msg;
+        toast.style.cursor = "pointer";
+        toast.onclick = function() { try { toast.remove(); } catch(e) {} };
         container.appendChild(toast);
         setTimeout(() => {
-          try { toast.remove(); } catch(e) {}
-        }, 3500);
+          try {
+            toast.style.transition = "opacity 0.25s ease, transform 0.25s ease";
+            toast.style.opacity = "0";
+            toast.style.transform = "translateY(15px)";
+            setTimeout(() => { try { toast.remove(); } catch(e) {} }, 250);
+          } catch(e) {
+            try { toast.remove(); } catch(e2) {}
+          }
+        }, 1200);
       } catch(e) {
         console.log("Toast:", msg);
       }
@@ -5582,406 +5514,446 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     var ROOT_ADMIN_EMAILS = ["manhdongvtc@gmail.com"];
     window.ROOT_ADMIN_EMAILS = ROOT_ADMIN_EMAILS;
     var DEFAULT_REGISTERED_USERS = [
-      {
-            "userId": "USR_791847",
-            "name": "muabantaikhoanmmo",
-            "email": "muabantaikhoanmmo@gmail.com",
-            "role": "Quản Trị Viên",
-            "balance": 233880,
-            "created": "18/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_1791739240939",
-            "name": "Mạnh Đông Oficial",
-            "email": "manhdongvtc@gmail.com",
-            "role": "Quản Trị Viên",
-            "balance": 0,
-            "created": "2026-10-11 17:20:40",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_1791242528175",
-            "name": "digimarketmmo",
-            "email": "digimarketmmo@gmail.com",
-            "role": "Quản Trị Viên",
-            "balance": 113441,
-            "created": "2026-10-05 23:22:08",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_1791307755216",
-            "name": "hoangtuananh0968",
-            "email": "hoangtuananh0968@gmail.com",
-            "role": "Thành Viên",
-            "balance": 200200,
-            "created": "2026-10-06 17:29:15",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_457932",
-            "name": "Mạnh Đông Academy",
-            "email": "manhdongacademy@gmail.com",
-            "role": "Thành Viên",
-            "balance": 20000,
-            "created": "21/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_596924",
-            "name": "realuser",
-            "email": "realuser@gmail.com",
-            "role": "Thành Viên",
-            "balance": 15000,
-            "created": "21/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_678694",
-            "name": "huyphamfo3",
-            "email": "huyphamfo3@gmail.com",
-            "role": "Thành Viên",
-            "balance": 8000,
-            "created": "3/10/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_436479",
-            "name": "Wu Kinn",
-            "email": "kinnwu02@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "8/10/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_180829",
-            "name": "vien ku",
-            "email": "nguyenvienx3@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "8/10/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_926830",
-            "name": "hanggain17998",
-            "email": "hanggain17998@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "5/10/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_269623",
-            "name": "Minh Phước Vưu",
-            "email": "vuuminhphuoc@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "30/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_170407",
-            "name": "Phuong Minh",
-            "email": "dautukiemtien.vn@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "30/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_297880",
-            "name": "Đông Mạnh",
-            "email": "manhdong09d@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "30/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_763032",
-            "name": "hamy2026",
-            "email": "tnhamy2026@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "30/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_461520",
-            "name": "TimeKP TK",
-            "email": "nguyenqhanduyhung@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "3/10/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_276771",
-            "name": "khánh nguyễn",
-            "email": "khanhkenvidboy@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "25/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_711824",
-            "name": "Công phúc Hoàng",
-            "email": "hoangcongphuc14091997@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "24/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_379307",
-            "name": "fgbfds",
-            "email": "fgbfds@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "24/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_980492",
-            "name": "dongphanvts",
-            "email": "dongphanvts@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "23/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_135501",
-            "name": "shanktricia262",
-            "email": "shanktricia262@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "22/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_687780",
-            "name": "TestUser",
-            "email": "testxyz999@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "22/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_820591",
-            "name": "TestUser",
-            "email": "test_new_user_87654@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "22/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_173771",
-            "name": "nnam883566",
-            "email": "nnam883566@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "22/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_886552",
-            "name": "Đầu tư Blog",
-            "email": "blogdautu.me@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "22/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_599817",
-            "name": "Speed",
-            "email": "testspeed1@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "22/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_726016",
-            "name": "nguyen van anh",
-            "email": "manhdong22024@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "22/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_253814",
-            "name": "test",
-            "email": "test@example.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "22/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_374560",
-            "name": "test",
-            "email": "test@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "21/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_1791822983704",
-            "name": "manhdongofficial",
-            "email": "manhdongofficial@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "2026-10-12 16:36:23",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_1791534125632",
-            "name": "nguyenvinh09678",
-            "email": "nguyenvinh09678@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "2026-10-09 08:22:05",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_1791378968732",
-            "name": "kim long nguyen thi",
-            "email": "nguyenthikimlong400@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "2026-10-07 13:16:08",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_1791347421214",
-            "name": "khotaikhoanso.net",
-            "email": "khotaikhoanso.net@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "2026-10-07 04:30:21",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_286081",
-            "name": "thanhmx333",
-            "email": "thanhmx333@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "19/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_916091",
-            "name": "Mạnh Đông",
-            "email": "manhdongvt2019@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "18/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_479492",
-            "name": "Customer Test",
-            "email": "customer123@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "18/9/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_830832",
-            "name": "Phước hữu",
-            "email": "huu226111@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "16/10/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_118416",
-            "name": "pii lùn",
-            "email": "piihattieu698107@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "14/10/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_148939",
-            "name": "5D Khẩu Trang",
-            "email": "nhuanfuni@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "14/10/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_554268",
-            "name": "Cơ Thi",
-            "email": "ngocthico123@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "13/10/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      },
-      {
-            "userId": "USR_443561",
-            "name": "Chí Điệp",
-            "email": "chidiep003@gmail.com",
-            "role": "Thành Viên",
-            "balance": 0,
-            "created": "1/10/2026",
-            "avatar": "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
-            "isLocked": false
-      }
+  {
+    "userId": "USR_791847",
+    "name": "muabantaikhoanmmo",
+    "email": "muabantaikhoanmmo@gmail.com",
+    "role": "Quản Trị Viên",
+    "balance": 233880,
+    "created": "18/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=muabantaikhoanmmo%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1791739240939",
+    "name": "Mạnh Đồng Official",
+    "email": "manhdongvtc@gmail.com",
+    "role": "Quản Trị Viên",
+    "balance": 208269,
+    "created": "2026-10-11 17:20:40",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=manhdongvtc%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1792862559514",
+    "name": "koanh130103",
+    "email": "koanh130103@gmail.com",
+    "role": "USER",
+    "balance": 250000,
+    "created": "2026-10-24 17:22:39",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=koanh130103%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1791307755216",
+    "name": "hoangtuananh0968",
+    "email": "hoangtuananh0968@gmail.com",
+    "role": "USER",
+    "balance": 200200,
+    "created": "2026-10-06 17:29:15",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=hoangtuananh0968%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1791242528175",
+    "name": "digimarketmmo",
+    "email": "digimarketmmo@gmail.com",
+    "role": "Thành Viên",
+    "balance": 113441,
+    "created": "2026-10-05 23:22:08",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=digimarketmmo%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_457932",
+    "name": "Mạnh Đông Academy",
+    "email": "manhdongacademy@gmail.com",
+    "role": "USER",
+    "balance": 20000,
+    "created": "21/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=manhdongacademy%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_596924",
+    "name": "realuser",
+    "email": "realuser@gmail.com",
+    "role": "USER",
+    "balance": 15000,
+    "created": "21/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=realuser%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_678694",
+    "name": "huyphamfo3",
+    "email": "huyphamfo3@gmail.com",
+    "role": "USER",
+    "balance": 8000,
+    "created": "3/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=huyphamfo3%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_436479",
+    "name": "Wu Kinn",
+    "email": "kinnwu02@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "8/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=kinnwu02%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_180829",
+    "name": "vien ku",
+    "email": "nguyenvienx3@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "8/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=nguyenvienx3%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_926830",
+    "name": "hanggain17998",
+    "email": "hanggain17998@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "5/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=hanggain17998%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_269623",
+    "name": "Minh Phước Vưu",
+    "email": "vuuminhphuoc@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "30/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=vuuminhphuoc%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_170407",
+    "name": "Phuong Minh",
+    "email": "dautukiemtien.vn@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "30/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=dautukiemtien.vn%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_297880",
+    "name": "Đông Mạnh",
+    "email": "manhdong09d@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "30/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=manhdong09d%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_763032",
+    "name": "hamy2026",
+    "email": "tnhamy2026@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "30/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=tnhamy2026%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_461520",
+    "name": "TimeKP TK",
+    "email": "nguyenqhanduyhung@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "3/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=nguyenqhanduyhung%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_276771",
+    "name": "khánh nguyễn",
+    "email": "khanhkenvidboy@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "25/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=khanhkenvidboy%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_681215",
+    "name": "Vy Do",
+    "email": "dogiavy82007@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "25/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=dogiavy82007%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_711824",
+    "name": "Công phúc Hoàng",
+    "email": "hoangcongphuc14091997@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "24/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=hoangcongphuc14091997%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_379307",
+    "name": "fgbfds",
+    "email": "fgbfds@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "24/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=fgbfds%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_951445",
+    "name": "lamthanhhadx2",
+    "email": "lamthanhhadx2@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "24/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=lamthanhhadx2%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_720629",
+    "name": "trnguyen2610",
+    "email": "trnguyen2610@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "24/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=trnguyen2610%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_403177",
+    "name": "danh bui",
+    "email": "ditmemi32@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "24/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=ditmemi32%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_980492",
+    "name": "dongphanvts",
+    "email": "dongphanvts@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "23/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=dongphanvts%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_135501",
+    "name": "shanktricia262",
+    "email": "shanktricia262@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "22/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=shanktricia262%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_173771",
+    "name": "nnam883566",
+    "email": "nnam883566@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "22/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=nnam883566%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_886552",
+    "name": "Đầu tư Blog",
+    "email": "blogdautu.me@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "22/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=blogdautu.me%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_726016",
+    "name": "nguyen van anh",
+    "email": "manhdong22024@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "22/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=manhdong22024%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_757535",
+    "name": "hiep17863",
+    "email": "hiep17863@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "22/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=hiep17863%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1792922170057",
+    "name": "hang giang",
+    "email": "gianghangasd@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "2026-10-25 09:56:10",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=gianghangasd%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1792618305525",
+    "name": "admin",
+    "email": "admin@muabantaikhoanmmo.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "2026-10-21 21:31:45",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=admin%40muabantaikhoanmmo.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1791822983704",
+    "name": "manhdongofficial",
+    "email": "manhdongofficial@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "2026-10-12 16:36:23",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=manhdongofficial%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1791534125632",
+    "name": "nguyenvinh09678",
+    "email": "nguyenvinh09678@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "2026-10-09 08:22:05",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=nguyenvinh09678%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1791378968732",
+    "name": "kim long nguyen thi",
+    "email": "nguyenthikimlong400@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "2026-10-07 13:16:08",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=nguyenthikimlong400%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1791347421214",
+    "name": "khotaikhoanso.net",
+    "email": "khotaikhoanso.net@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "2026-10-07 04:30:21",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=khotaikhoanso.net%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_286081",
+    "name": "thanhmx333",
+    "email": "thanhmx333@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "19/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=thanhmx333%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_325242",
+    "name": "IT Adam",
+    "email": "adamit01012000@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "19/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=adamit01012000%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_188896",
+    "name": "Oanh Nguyễn Duy",
+    "email": "duyoanhbv@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "19/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=duyoanhbv%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_916091",
+    "name": "Mạnh Đông",
+    "email": "manhdongvt2019@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "18/9/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=manhdongvt2019%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_830832",
+    "name": "Phước hữu",
+    "email": "huu226111@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "16/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=huu226111%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_118416",
+    "name": "pii lùn",
+    "email": "piihattieu698107@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "14/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=piihattieu698107%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_148939",
+    "name": "5D Khẩu Trang",
+    "email": "nhuanfuni@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "14/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=nhuanfuni%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_554268",
+    "name": "Cơ Thi",
+    "email": "ngocthico123@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "13/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=ngocthico123%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_443561",
+    "name": "Chí Điệp",
+    "email": "chidiep003@gmail.com",
+    "role": "USER",
+    "balance": 0,
+    "created": "1/10/2026",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=chidiep003%40gmail.com",
+    "isLocked": false
+  }
 ];
 
     // HÀM TỰ ĐỘNG XÓA SẠCH 100% DỮ LIỆU DEMO / ĐƠN ẢO / TỒN KHO ẢO KHI KHỞI ĐỘNG
@@ -5992,38 +5964,69 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     window.purgeAllSystemDemoData = purgeAllSystemDemoData;
     try { purgeAllSystemDemoData(); } catch(e) {}
 
+    function getDeletedUserEmails() {
+      try {
+        const raw = localStorage.getItem("mmo_deleted_users");
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr.map(e => String(e || "").toLowerCase().trim()).filter(Boolean) : [];
+      } catch(e) { return []; }
+    }
+    window.getDeletedUserEmails = getDeletedUserEmails;
+
     function getRegisteredUsers() {
       try {
+        const deletedEmails = getDeletedUserEmails();
         const stored = localStorage.getItem("mmo_registered_users");
         let users = stored ? JSON.parse(stored) : null;
         if (!Array.isArray(users) || users.length === 0) {
-          users = JSON.parse(JSON.stringify(DEFAULT_REGISTERED_USERS));
+          users = JSON.parse(JSON.stringify(DEFAULT_REGISTERED_USERS)).filter(du => !deletedEmails.includes((du.email || "").toLowerCase().trim()));
           safeStorageSet("mmo_registered_users", JSON.stringify(users));
-        } else if (users.length <= 4 && Array.isArray(DEFAULT_REGISTERED_USERS) && DEFAULT_REGISTERED_USERS.length > 4) {
+        } else if (Array.isArray(DEFAULT_REGISTERED_USERS) && DEFAULT_REGISTERED_USERS.length > 0) {
           const uMap = new Map();
-          users.forEach(u => { if (u && u.email) uMap.set(u.email.toLowerCase().trim(), u); });
+          users.forEach(u => {
+            const em = (u && u.email) ? u.email.toLowerCase().trim() : "";
+            if (em && !deletedEmails.includes(em)) uMap.set(em, u);
+          });
+          let added = false;
           DEFAULT_REGISTERED_USERS.forEach(du => {
             const em = (du.email || "").toLowerCase().trim();
-            if (em && !uMap.has(em)) uMap.set(em, du);
+            if (em && !uMap.has(em) && !deletedEmails.includes(em)) {
+              uMap.set(em, du);
+              added = true;
+            }
           });
-          users = Array.from(uMap.values());
-          try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
+          if (added) {
+            users = Array.from(uMap.values());
+            try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
+          }
         }
 
-        // Tự động xoá sạch hoàn toàn tất cả khách hàng mẫu demo (Nguyễn Văn Hùng, Trần Minh Đức, Lê Hoàng Nam, Khách Hàng Mẫu...)
+        // Tự động xoá sạch hoàn toàn tất cả khách hàng mẫu demo và tài khoản test
         const DEMO_EMAILS = [
           "hungmmo88@gmail.com",
           "ductran.ads@gmail.com",
           "namle.affiliate@gmail.com",
           "khachhang@gmail.com",
           "khach@gmail.com",
-          "test@gmail.com"
+          "test@gmail.com",
+          "test_refund_user@gmail.com",
+          "testxyz999@gmail.com",
+          "test_new_user_87654@gmail.com",
+          "testspeed1@gmail.com",
+          "test@example.com",
+          "test_deposit@gmail.com",
+          "khachhangtest@example.com",
+          "test_admin_ultra@example.com",
+          "test@muabantaikhoanmmo.com",
+          "check_simulate@muabantaikhoanmmo.com",
+          "customer123@gmail.com"
         ];
         const prevCount = users.length;
         users = users.filter(u => {
           const em = (u.email || "").toLowerCase().trim();
           const nm = (u.name || "").toLowerCase().trim();
-          if (DEMO_EMAILS.includes(em)) return false;
+          if (DEMO_EMAILS.includes(em) || deletedEmails.includes(em)) return false;
+          if (em.includes("test") || em.includes("example.com")) return false;
           if (nm.includes("mẫu") || nm.includes("khách hàng mẫu")) return false;
           return true;
         });
@@ -6059,9 +6062,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           const emailLower = currentUser.email.toLowerCase().trim();
           const idx = users.findIndex(u => (u.email || "").toLowerCase().trim() === emailLower);
           if (idx !== -1) {
-            const safeBal = Math.max(Number(currentUser.balance || 0), Number(users[idx].balance || 0));
-            currentUser.balance = safeBal;
-            users[idx].balance = safeBal;
+            const curB = (currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) ? Number(currentUser.balance) : Number(users[idx].balance || 0);
+            currentUser.balance = curB;
+            users[idx].balance = curB;
             currentUser.name = users[idx].name || currentUser.name;
             currentUser.role = users[idx].role || currentUser.role;
           }
@@ -6401,13 +6404,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                   if (isLocked) forceLogoutLockedUser(currentUser.email);
                 }).catch(() => {});
               }
-              // Đồng bộ số dư chuẩn từ database thành viên (không để số dư cũ đè lên số dư thật)
-              if (found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
-                const safeBal = Math.max(Number(currentUser.balance || 0), Number(found.balance));
-                currentUser.balance = safeBal;
-                found.balance = safeBal;
+              // Đồng bộ số dư chuẩn từ session người dùng (cho phép trừ tiền khi thuê sim / mua hàng)
+              if (currentUser.balance !== undefined && currentUser.balance !== null && !isNaN(Number(currentUser.balance))) {
+                found.balance = Number(currentUser.balance);
+              } else if (found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
+                currentUser.balance = Number(found.balance);
               } else {
-                found.balance = Number(currentUser.balance) || 0;
+                currentUser.balance = 0;
+                found.balance = 0;
               }
               currentUser.role = found.role || currentUser.role;
               currentUser.name = found.name || currentUser.name;
@@ -6900,15 +6904,29 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       
       let users = getRegisteredUsers();
 
+      // Tự động đồng bộ Realtime danh sách thành viên mới nhất từ Cloudflare Worker & Turso SSOT
+      if (!window._hasAutoFetchedCloudUsers) {
+        window._hasAutoFetchedCloudUsers = true;
+        setTimeout(() => {
+          if (typeof fetchCloudUsers === "function") fetchCloudUsers(false);
+        }, 100);
+      }
+
+      const allUsersList = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : users;
       if (search) {
-        users = users.filter(u => (u.name || "").toLowerCase().includes(search) || (u.email || "").toLowerCase().includes(search));
+        users = users.filter(u => 
+          (u.name || "").toLowerCase().includes(search) || 
+          (u.email || "").toLowerCase().includes(search) ||
+          (u.userId || "").toLowerCase().includes(search) ||
+          (u.role || "").toLowerCase().includes(search)
+        );
       }
 
       // Update Header Stats
       const totalBal = users.reduce((sum, u) => sum + (u.balance || 0), 0);
       const countEl = document.getElementById("admUsersCountVal");
       const balEl = document.getElementById("admUsersTotalBalVal");
-      if (countEl) countEl.innerText = users.length;
+      if (countEl) countEl.innerText = search ? (users.length + " / " + allUsersList.length) : users.length;
       if (balEl) balEl.innerText = formatVND(totalBal);
 
       const topStatUsersEl = document.getElementById("admStatUsers");
@@ -6920,9 +6938,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         return;
       }
 
-      // 10 Items per page pagination
+      // PHÂN TRANG BẢNG QUẢN LÝ THÀNH VIÊN (10 THÀNH VIÊN / TRANG)
+      const ITEMS_PER_PAGE = 10;
       const page = (typeof paginationState !== "undefined" && paginationState.admUsers) ? paginationState.admUsers : 1;
-      const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
+      const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE) || 1;
       const safePage = Math.max(1, Math.min(page, totalPages));
       if (typeof window.paginationState !== "undefined" && window.paginationState) paginationState.admUsers = safePage;
 
@@ -6979,11 +6998,35 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         '</tr>';
       }).join("");
 
-      if (typeof renderPaginationUI === "function") {
-        renderPaginationUI("admUsersPagination", safePage, users.length, "changeAdmUsersPage");
+      const pagEl = document.getElementById("admUsersPagination");
+      if (pagEl) {
+        let pagesHtml = "";
+        for (let p = 1; p <= totalPages; p++) {
+          const isAct = p === safePage;
+          pagesHtml += '<button type="button" onclick="changeAdmUsersPage(' + p + ')" style="padding:5px 12px; font-size:0.8rem; font-weight:700; border-radius:6px; border:1px solid ' + (isAct ? '#10b981' : '#1e293b') + '; background:' + (isAct ? '#10b981' : '#0f172a') + '; color:' + (isAct ? '#0b111e' : '#cbd5e1') + '; cursor:pointer; min-width:32px; transition:all 0.2s;">' + p + '</button>';
+        }
+
+        pagEl.innerHTML = '<div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#0d121f; border-top:1px solid #1e293b; font-size:0.82rem; color:#94a3b8; border-radius:0 0 8px 8px; flex-wrap:wrap; gap:10px;">' +
+          '<span><i class="fa-solid fa-users" style="color:#10b981;"></i> Hiển thị <strong style="color:#fff;">' + (startIndex + 1) + ' - ' + Math.min(startIndex + ITEMS_PER_PAGE, users.length) + '</strong> trên tổng số <strong style="color:#10b981;">' + users.length + '</strong> thành viên (Trang ' + safePage + '/' + totalPages + ')</span>' +
+          '<div style="display:flex; gap:6px; align-items:center;">' +
+            '<button type="button" onclick="changeAdmUsersPage(' + (safePage - 1) + ')" ' + (safePage <= 1 ? 'disabled style="opacity:0.4; cursor:not-allowed;' : 'style="cursor:pointer;') + ' padding:5px 12px; font-size:0.8rem; font-weight:700; border-radius:6px; border:1px solid #1e293b; background:#0f172a; color:#cbd5e1;"><i class="fa-solid fa-chevron-left"></i> Trước</button>' +
+            pagesHtml +
+            '<button type="button" onclick="changeAdmUsersPage(' + (safePage + 1) + ')" ' + (safePage >= totalPages ? 'disabled style="opacity:0.4; cursor:not-allowed;' : 'style="cursor:pointer;') + ' padding:5px 12px; font-size:0.8rem; font-weight:700; border-radius:6px; border:1px solid #1e293b; background:#0f172a; color:#cbd5e1;">Sau <i class="fa-solid fa-chevron-right"></i></button>' +
+          '</div>' +
+        '</div>';
       }
+
     }
     window.renderAdminUsersTable = renderAdminUsersTable;
+
+    function changeAdmUsersPage(p) {
+      if (typeof paginationState === "undefined") window.paginationState = {};
+      paginationState.admUsers = p;
+      if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
+      const el = document.getElementById("adminSubTabUsersList");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    window.changeAdmUsersPage = changeAdmUsersPage;
 
     // =========================================================================
     // CORE SYSTEM: ADMIN TRANSACTION HISTORY & WALLET LOGS (TOÀN SÀN)
@@ -7009,9 +7052,50 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const tbody = document.getElementById("admTxTableBody");
       if (!tbody) return;
 
-      const allHistory = (typeof getAllPlatformWalletTransactions === "function") 
-        ? getAllPlatformWalletTransactions() 
-        : (typeof getTransactionHistory === "function" ? getTransactionHistory() : []);
+      let allHistory = Array.isArray(window._adminAllPlatformTxs) && window._adminAllPlatformTxs.length > 0
+        ? window._adminAllPlatformTxs
+        : ((typeof getAllPlatformWalletTransactions === "function") 
+            ? getAllPlatformWalletTransactions() 
+            : (typeof getTransactionHistory === "function" ? getTransactionHistory() : []));
+
+      // Tự động tải Realtime toàn bộ giao dịch sàn từ Cloudflare Worker nếu chưa có hoặc cập nhật mới
+      if (!window._isFetchingAdminPlatformTxs) {
+        window._isFetchingAdminPlatformTxs = true;
+        (async function() {
+          try {
+            const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
+            const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) 
+              ? MMO_WORKER_API.getAdminSecret() 
+              : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+            const res = await fetch(workerUrl + "/api/wallet/transactions?token=" + encodeURIComponent(adminSec), {
+              headers: { "Authorization": "Bearer " + adminSec, "x-admin-token": adminSec }
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.success && Array.isArray(data.transactions) && data.transactions.length > 0) {
+                window._adminAllPlatformTxs = data.transactions.map(t => ({
+                  id: t.order_id || t.id,
+                  txId: t.id,
+                  orderId: t.order_id || "",
+                  userEmail: t.user_email || t.email || "khach@gmail.com",
+                  userName: t.user_name || (t.user_email ? t.user_email.split("@")[0] : "Khách Hàng"),
+                  type: t.type === "DEPOSIT" ? "Nạp tiền ví" : (t.type === "REFUND" ? "Hoàn tiền" : "Thanh toán mua hàng"),
+                  amount: Number(t.amount) || 0,
+                  balanceAfter: t.balance_after,
+                  time: t.created_at ? new Date(t.created_at).toLocaleString("vi-VN") : "Gần đây",
+                  note: t.note || ""
+                }));
+                // Cập nhật lại giao diện ngay khi có dữ liệu từ Worker
+                renderAdminTxTable();
+              }
+            }
+          } catch(ePlatTx) {
+            console.warn("fetch admin platform txs error:", ePlatTx);
+          } finally {
+            setTimeout(() => { window._isFetchingAdminPlatformTxs = false; }, 3000);
+          }
+        })();
+      }
 
       // Cập nhật huy hiệu số lượng biến động toàn sàn
       const countBadge = document.getElementById("admTxCountBadge");
@@ -7155,6 +7239,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     }
     window.setAdmProductFilter = setAdmProductFilter;
 
+    function canonicalizeCategoryName(c) {
+      if (!c) return "";
+      let s = String(c).replace(/&amp;/g, '&').trim();
+      if (/^tiktok$/i.test(s)) return "TikTok";
+      if (/^instagram$|^intagram$/i.test(s)) return "Intagram";
+      return s;
+    }
+    window.canonicalizeCategoryName = canonicalizeCategoryName;
+
     var admProductCategoryFilter = "ALL";
     function setAdmProductCategoryFilter(cat) {
       admProductCategoryFilter = cat || "ALL";
@@ -7233,19 +7326,27 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             prods.push(p);
           }
 
-          // Tự động nạp danh sách danh mục vào bộ lọc danh mục Admin
+          // Tự động nạp danh sách danh mục vào bộ lọc danh mục Admin (Đã deduplicate & canonicalize 100%)
           const catFilterSel = document.getElementById("admProductCategoryFilterSelect");
           if (catFilterSel) {
             const currentCatVal = catFilterSel.value || admProductCategoryFilter || "ALL";
             const knownCats = new Set();
+            const lowerCats = new Set();
+            function addCatToFilter(c) {
+              if (!c || c === "Tất cả") return;
+              const norm = canonicalizeCategoryName(c);
+              const lower = norm.toLowerCase();
+              if (!lowerCats.has(lower)) {
+                lowerCats.add(lower);
+                knownCats.add(norm);
+              }
+            }
             if (MOCK_DATA && Array.isArray(MOCK_DATA.categories)) {
-              MOCK_DATA.categories.forEach(function(c) {
-                if (c && c !== "Tất cả") knownCats.add(String(c).replace(/&amp;/g, '&'));
-              });
+              MOCK_DATA.categories.forEach(addCatToFilter);
             }
             if (Array.isArray(rawProds)) {
               rawProds.forEach(function(p) {
-                if (p && p.category && p.category !== "Tất cả") knownCats.add(String(p.category).replace(/&amp;/g, '&'));
+                if (p && p.category) addCatToFilter(p.category);
               });
             }
             const sortedCats = Array.from(knownCats).sort(function(a, b) {
@@ -8098,20 +8199,29 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const select = document.getElementById("admProdCategory");
       if (!select) return;
       const cats = (MOCK_DATA && MOCK_DATA.categories) ? MOCK_DATA.categories : ["Gmail", "TikTok", "Facebook", "Rom & Tools", "Telegram", "Proxy", "AI & Video"];
-      const validCats = cats.filter(c => c !== "Tất cả").map(c => c.replace(/&amp;/g, '&'));
-      const normSelected = selectedCat ? String(selectedCat).replace(/&amp;/g, '&').toLowerCase() : "";
+      const validCats = [];
+      const seenLower = new Set();
+      cats.filter(c => c !== "Tất cả").forEach(c => {
+        const norm = (typeof canonicalizeCategoryName === "function") ? canonicalizeCategoryName(c) : (String(c).toLowerCase() === 'tiktok' ? 'TikTok' : String(c).replace(/&amp;/g, '&'));
+        const l = norm.toLowerCase();
+        if (!seenLower.has(l)) {
+          seenLower.add(l);
+          validCats.push(norm);
+        }
+      });
+      const canonicalSelected = selectedCat ? ((typeof canonicalizeCategoryName === "function") ? canonicalizeCategoryName(selectedCat) : String(selectedCat).replace(/&amp;/g, '&')) : "";
+      const normSelected = canonicalSelected.toLowerCase();
       
       let html = "";
       validCats.forEach(c => {
         const isSel = (normSelected && normSelected === c.toLowerCase()) ? "selected" : "";
         html += '<option value="' + escapeHtml(c).replace(/&amp;/g, '&') + '" ' + isSel + '>' + escapeHtml(c) + '</option>';
       });
-      if (selectedCat && selectedCat !== "Tất cả" && !validCats.some(c => c.toLowerCase() === normSelected)) {
-        const cleanSel = String(selectedCat).replace(/&amp;/g, '&');
-        html += '<option value="' + escapeHtml(cleanSel).replace(/&amp;/g, '&') + '" selected>' + escapeHtml(cleanSel) + '</option>';
+      if (canonicalSelected && canonicalSelected !== "Tất cả" && !seenLower.has(normSelected)) {
+        html += '<option value="' + escapeHtml(canonicalSelected).replace(/&amp;/g, '&') + '" selected>' + escapeHtml(canonicalSelected) + '</option>';
       }
       select.innerHTML = html;
-      if (selectedCat) select.value = String(selectedCat).replace(/&amp;/g, '&');
+      if (canonicalSelected) select.value = canonicalSelected;
     }
     window.populateCategorySelects = populateCategorySelects;
 
@@ -9153,14 +9263,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const bestProvForProd = (typeof autoDetectBestProviderForName === "function") ? autoDetectBestProviderForName(p.name) : null;
       const pNameLower = (p.name || "").toLowerCase();
 
-      // Nếu mapping cũ trỏ vào sellmmo hoặc nguồn không còn hàng cho Gemini/AI, tự động ưu tiên bestProv
-      if (!initialProv || initialProv === "sellmmo" || !existingMap || !existingMap.sourceProdId || Number(existingMap.sourceStock || 0) === 0) {
+      // Giữ nguyên provider đã cấu hình của sản phẩm; chỉ tự động gợi ý khi chưa có provider
+      if (!initialProv || !existingMap || !existingMap.sourceProdId) {
         if (bestProvForProd) {
           initialProv = bestProvForProd;
         }
-      }
-      if (pNameLower.includes("gemini") && (initialProv === "sellmmo" || !initialProv)) {
-        initialProv = "selltainguyenmmo";
       }
       if (!initialProv) initialProv = "selltainguyenmmo";
 
@@ -9169,16 +9276,20 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (isApi) {
         let prov = initialProv;
         let srcId = (existingMap && existingMap.sourceProdId) ? String(existingMap.sourceProdId) : (p.apiMapping && p.apiMapping.sourceProdId) ? String(p.apiMapping.sourceProdId) : "";
-        const DEAD_IDS = new Set(["25255", "23463", "19773", "19768", "19745", "19524", "11924", "1", "25241", "25242", "30878", "31953"]);
+        const DEAD_IDS = new Set(["25255", "23463", "19773", "19768", "19745", "19524", "11924", "1", "25241", "25242", "30878", "31953", "25395"]);
 
-        // Tự động chuyển các mã chết sang mã live còn hàng thật
+        // Tự động chuyển các mã chết sang mã live chuẩn 1-1
         if (DEAD_IDS.has(srcId) || (p.id === "PROD_MTQX465U" && (!srcId || DEAD_IDS.has(srcId)))) {
-          prov = "selltainguyenmmo";
-          srcId = "33097";
+          prov = "sellmmo";
+          srcId = "39073";
         }
-        if (pNameLower.includes("gemini") && (!srcId || srcId === "23586" || srcId === "23607")) {
+        if (pNameLower.includes("gemini") && (!srcId || srcId === "23586" || srcId === "23607" || srcId === "32428")) {
           prov = "selltainguyenmmo";
-          srcId = "32428";
+          srcId = "33270";
+        }
+        if ((p.id === "PROD_MU2B32VLQY" || p.id === "PROD_MU1G6LJX") && (!srcId || srcId === "25644" || srcId === "32026")) {
+          prov = "ultrammo";
+          srcId = "32037";
         }
 
         const pSel = document.getElementById("admProdApiProvider");
@@ -9238,6 +9349,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       // [CƠ CHẾ MỚI ĐƠN GIẢN]: Nạp trực tiếp ảnh của sản phẩm vào ô nhập & khung xem trước
       const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
       let effectiveImg = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || p.image_url || "");
+      if (!effectiveImg || effectiveImg.includes("default_product.png") || effectiveImg === "__NO_IMAGE__") {
+        const pIdClean = String(p.id || '').trim();
+        const canonIdClean = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(pIdClean) : pIdClean;
+        effectiveImg = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[pIdClean] || KNOWN_PROD_IMAGE_MAP[canonIdClean] || "") : "";
+      }
       if (effectiveImg.includes("default_product.png") || effectiveImg === "__NO_IMAGE__") {
         effectiveImg = "";
       }
@@ -9246,7 +9362,13 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const admImgInp = document.getElementById("admProdImage");
       const admImgPrev = document.getElementById("admProdImgPreview");
       if (admImgInp) {
-        admImgInp.value = effectiveImg || "";
+        if (effectiveImg && effectiveImg.startsWith("data:")) {
+          admImgInp.value = "";
+          admImgInp.placeholder = "[Ảnh đã lưu từ máy tính] - Dán link mới hoặc bấm Xoá Ảnh Cũ";
+        } else {
+          admImgInp.value = effectiveImg || "";
+          admImgInp.placeholder = "Dán link ảnh https://...";
+        }
         admImgInp.oninput = function() {
           const val = this.value.trim();
           if (admImgPrev) admImgPrev.src = val || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
@@ -9326,6 +9448,125 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     // - Tự động đối soát, truy xuất Google Apps Script & VietQR SePay thời gian thực
     // =========================================================================
     var INITIAL_COMPLETED_DEPOSITS = [
+      {
+        orderId: "DH4957207279",
+        id: "DH4957207279",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (hang giang)",
+        amount: 5000,
+        email: "gianghangasd@gmail.com",
+        userEmail: "gianghangasd@gmail.com",
+        userName: "hang giang",
+        status: "COMPLETED",
+        note: "Đã cộng 5.000 VNĐ vào ví (VietQR / SePay)",
+        time: "17:04:00 25/10/2026",
+        date: "17:04:00 25/10/2026",
+        createdAt: 1792922640000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 25000
+      },
+      {
+        orderId: "DH1288725247",
+        id: "DH1288725247",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (hang giang)",
+        amount: 20000,
+        email: "gianghangasd@gmail.com",
+        userEmail: "gianghangasd@gmail.com",
+        userName: "hang giang",
+        status: "COMPLETED",
+        note: "Đã cộng 20.000 VNĐ vào ví (VietQR / SePay)",
+        time: "16:53:00 25/10/2026",
+        date: "16:53:00 25/10/2026",
+        createdAt: 1792921980000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 20000
+      },
+      {
+        orderId: "DH2993198750",
+        id: "DH2993198750",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (koanh130103)",
+        amount: 100000,
+        email: "koanh130103@gmail.com",
+        userEmail: "koanh130103@gmail.com",
+        userName: "koanh130103",
+        status: "COMPLETED",
+        note: "Đã cộng 100.000 VNĐ vào ví (VietQR / SePay)",
+        time: "00:21:00 25/10/2026",
+        date: "00:21:00 25/10/2026",
+        createdAt: 1792862460000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 250000
+      },
+      {
+        orderId: "DH8056369050",
+        id: "DH8056369050",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (koanh130103)",
+        amount: 150000,
+        email: "koanh130103@gmail.com",
+        userEmail: "koanh130103@gmail.com",
+        userName: "koanh130103",
+        status: "COMPLETED",
+        note: "Đã cộng 150.000 VNĐ vào ví (VietQR / SePay)",
+        time: "00:14:00 25/10/2026",
+        date: "00:14:00 25/10/2026",
+        createdAt: 1792862040000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 150000
+      },
+      {
+        orderId: "DH9213194171",
+        id: "DH9213194171",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (trnguyen2610)",
+        amount: 30000,
+        email: "trnguyen2610@gmail.com",
+        userEmail: "trnguyen2610@gmail.com",
+        userName: "trnguyen2610",
+        status: "COMPLETED",
+        note: "Đã cộng 30.000 VNĐ vào ví (VietQR / SePay)",
+        time: "20:52:00 24/10/2026",
+        date: "20:52:00 24/10/2026",
+        createdAt: 1792849920000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 30000
+      },
+      {
+        orderId: "DH8815416867",
+        id: "DH8815416867",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
+        amount: 5000,
+        email: "digimarketmmo@gmail.com",
+        userEmail: "digimarketmmo@gmail.com",
+        userName: "digimarketmmo",
+        status: "COMPLETED",
+        note: "Đã cộng 5.000 VNĐ vào ví (VietQR / SePay)",
+        time: "11:07:37 23/10/2026",
+        date: "11:07:37 23/10/2026",
+        createdAt: 1792728457000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 118441
+      },
+      {
+        orderId: "DH6016360233",
+        id: "DH6016360233",
+        prodId: "NAP_VI",
+        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
+        amount: 5000,
+        email: "digimarketmmo@gmail.com",
+        userEmail: "digimarketmmo@gmail.com",
+        userName: "digimarketmmo",
+        status: "COMPLETED",
+        note: "Đã cộng 5.000 VNĐ vào ví (VietQR / SePay)",
+        time: "17:57:10 22/10/2026",
+        date: "17:57:10 22/10/2026",
+        createdAt: 1792666630000,
+        type: "Nạp tiền VietQR / SePay",
+        balanceAfter: 113441
+      },
       {
         orderId: "DH9059731470",
         id: "DH9059731470",
@@ -9580,19 +9821,55 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const seenGeneralIds = new Set();
       const seenFingerprints = new Set();
 
+      const SEPAY_AUTHORITATIVE_AMOUNTS = {
+        "DH4957207279": 5000,
+        "DH1288725247": 20000,
+        "DH2993198750": 100000,
+        "DH8056369050": 150000,
+        "DH9213194171": 30000,
+        "DH8815416867": 5000,
+        "DH6016360233": 5000,
+        "DH9059731470": 10000,
+        "DH8878420221": 3000,
+        "DH1997736360": 10000,
+        "DH6298966273": 10000,
+        "DH1202214643": 4000,
+        "DH2710667006": 3000,
+        "DH8233002214": 2000,
+        "DH5281561978": 21000,
+        "DH1607454715": 99000
+      };
+
       depositList.forEach(rawItem => {
         if (!rawItem) return;
+        const stRaw = String(rawItem.status || "").toUpperCase();
+        if (stRaw === "PENDING" || stRaw === "UNPAID" || stRaw === "CANCELLED") return;
+
         const rawId = String(rawItem.id || rawItem.orderId || rawItem.code || "").trim();
         const rawOrderId = String(rawItem.orderId || rawItem.id || "").trim();
-        const rawNote = String(rawItem.note || rawItem.content || rawItem.description || rawItem.transferContent || "").trim();
+        let rawNote = String(rawItem.note || rawItem.content || rawItem.description || rawItem.transferContent || "").trim();
         const email = (rawItem.userEmail || rawItem.email || "").toLowerCase().trim();
-        const amt = Math.abs(Number(rawItem.amount) || 0);
-        if (amt <= 0) return;
+        if (email.includes("test") || email.includes("example")) return;
 
         // Bóc tách mã đơn nạp DH... / NAP... / MMO...
         const combined = (rawId + " " + rawOrderId + " " + rawNote).toUpperCase();
         const matchDH = combined.match(/(DH\d{6,15}|NAP[\w_]+|MMO\d{6,15})/i);
         const orderCode = matchDH ? matchDH[1].toUpperCase() : "";
+
+        let amt = Math.abs(Number(rawItem.amount) || 0);
+        // Ưu tiên bóc tách số tiền thực nhận từ ghi chú SePay ("Đã cộng 100.000 VNĐ vào ví" hoặc "(+100.000 đ)")
+        const noteAmtMatch = rawNote.match(/(?:đã cộng|cộng|nạp|\+)\s*([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+        if (noteAmtMatch && noteAmtMatch[1]) {
+          const parsedFromNote = Number(noteAmtMatch[1].replace(/[\.,]/g, ""));
+          if (!isNaN(parsedFromNote) && parsedFromNote >= 1000) {
+            amt = parsedFromNote;
+          }
+        }
+        if (orderCode && SEPAY_AUTHORITATIVE_AMOUNTS[orderCode]) {
+          amt = SEPAY_AUTHORITATIVE_AMOUNTS[orderCode];
+          rawNote = "Đã cộng " + amt.toLocaleString("vi-VN") + " VNĐ vào ví (VietQR / SePay)";
+        }
+        if (amt <= 0) return;
 
         // Bóc tách mã SePay số (7-10 chữ số)
         const isSepayNum = /^\d{7,10}$/.test(rawId);
@@ -9750,98 +10027,161 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         return !n.includes("đồng bộ") && !n.includes("dong bo") && !n.includes("hiệu chỉnh") && !n.includes("hieu chinh") && !n.includes("chuẩn hóa");
       });
 
-      // Hợp nhất INITIAL_COMPLETED_DEPOSITS nếu chưa có
-      const combined = cleanList.concat(INITIAL_COMPLETED_DEPOSITS);
+      // Hợp nhất INITIAL_COMPLETED_DEPOSITS lên đầu để luôn ưu tiên số tiền SePay chuẩn xác
+      const combined = INITIAL_COMPLETED_DEPOSITS.concat(cleanList);
       const dedupped = deduplicatePlatformDeposits(combined);
 
-      if (dedupped.length !== list.length) {
-        try { localStorage.setItem("mmo_deposits", JSON.stringify(dedupped)); } catch(e) {}
-      }
+      try { localStorage.setItem("mmo_deposits", JSON.stringify(dedupped)); } catch(e) {}
       return dedupped;
     }
     window.getPlatformDepositsLocal = getPlatformDepositsLocal;
 
     function savePlatformDeposits(deps) {
-      if (!Array.isArray(deps)) return;
+      if (!Array.isArray(deps)) return false;
       try {
         const cur = getPlatformDepositsLocal();
-        const seen = new Set(cur.map(d => String(d.id || d.orderId || "").trim()).filter(Boolean));
+        const idxMap = new Map();
+        cur.forEach((d, idx) => {
+          const k = String(d.id || d.orderId || "").trim().toUpperCase();
+          if (k) idxMap.set(k, idx);
+        });
         let changed = false;
         deps.forEach(d => {
           if (!d) return;
           const noteLow = String(d.note || d.content || d.reason || d.type || d.id || d.orderId || "").toLowerCase();
           if (noteLow.includes("đồng bộ") || noteLow.includes("dong bo") || noteLow.includes("hiệu chỉnh") || noteLow.includes("hieu chinh") || noteLow.includes("chuẩn hóa")) return;
-          const dId = String(d.id || d.orderId || d.code || "").trim();
-          if (dId && !seen.has(dId)) {
-            seen.add(dId);
+          const dId = String(d.id || d.orderId || d.code || "").trim().toUpperCase();
+          if (!dId) return;
+          if (!idxMap.has(dId)) {
+            idxMap.set(dId, cur.length);
             cur.push(d);
             changed = true;
+          } else {
+            const exIdx = idxMap.get(dId);
+            const exItem = cur[exIdx];
+            const newAmt = Number(d.amount) || 0;
+            // AUTHORITATIVE_AMOUNTS_PROTECT: Tuyệt đối không cho phép đơn 10.000đ lỗi từ GAS ghi đè đơn thực tế
+            const authSepayAmounts = { "DH2993198750": 100000, "DH8056369050": 150000, "DH9213194171": 30000, "DH1288725247": 20000, "DH4957207279": 5000 };
+            if (authSepayAmounts[dId] && newAmt < authSepayAmounts[dId]) {
+              return;
+            }
+            if (newAmt > 0 && newAmt !== Number(exItem.amount)) {
+              exItem.amount = newAmt;
+              if (d.note) exItem.note = d.note;
+              changed = true;
+            }
           }
         });
         if (changed) {
-          localStorage.setItem("mmo_deposits", JSON.stringify(cur));
+          const finalClean = deduplicatePlatformDeposits(cur);
+          localStorage.setItem("mmo_deposits", JSON.stringify(finalClean));
         }
-      } catch(e) {}
+        return changed;
+      } catch(e) { return false; }
     }
     window.savePlatformDeposits = savePlatformDeposits;
 
-    // Tự động đồng bộ toàn bộ đơn nạp tiền từ Google Apps Script (Cloud)
+    // Tự động đồng bộ toàn bộ đơn nạp tiền từ Cloudflare Worker Turso SSOT & Google Apps Script (Cloud)
     var _lastAllDepositsSyncTime = 0;
     var _isSyncingAllDeposits = false;
     async function syncAllDepositsFromCloud(force = false) {
       const now = Date.now();
       if (!force && (now - _lastAllDepositsSyncTime < 15000 || _isSyncingAllDeposits)) return false;
-      if (typeof callGasApi !== "function") return false;
       _isSyncingAllDeposits = true;
       _lastAllDepositsSyncTime = now;
+      let anyUpdated = false;
 
       try {
-        let callerEmail = "";
+        // 1. Ưu tiên kéo từ Cloudflare Worker Turso SSOT (/api/wallet/transactions)
         try {
-          if (typeof currentUser !== "undefined" && currentUser && currentUser.email) {
-            callerEmail = currentUser.email;
-          }
-        } catch(e) {}
-        const res = await callGasApi("adminGetAllOrders", { adminEmail: callerEmail || "manhdongvtc@gmail.com" });
-        if (res && Array.isArray(res.orders)) {
-          const completedDeposits = res.orders.filter(o => {
-            if (!o) return false;
-            const isDep = o.prodId === "NAP_VI" || String(o.orderId).startsWith("DH") || String(o.orderId).startsWith("NAP") || String(o.prodName || "").toLowerCase().includes("nạp tiền");
-            const isPaid = o.status === "COMPLETED" || o.status === "PAID";
-            return isDep && isPaid;
-          }).map(o => {
-            const noteText = String(o.accounts || o.note || o.message || "");
-            const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
-            let depAmt = 0;
-            if (amtMatch && amtMatch[1]) {
-              const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
-              if (!isNaN(parsed) && parsed > 0) depAmt = parsed;
+          const workerUrl = (typeof MMO_WORKER_URL !== "undefined" && MMO_WORKER_URL) ? MMO_WORKER_URL : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          const resWorker = await fetch(workerUrl + "/api/wallet/transactions", {
+            headers: {
+              "Accept": "application/json",
+              "X-Admin-Token": "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60"
             }
-            if (!depAmt) {
-              depAmt = Number(o.totalAmount || o.actualAmount || o.paidAmount || o.price || 0);
-            }
-            return {
-              id: String(o.orderId || "").trim(),
-              orderId: String(o.orderId || "").trim(),
-              prodId: "NAP_VI",
-              prodName: o.prodName || "Nạp tiền vào ví điện tử",
-              amount: depAmt,
-              email: (o.email || o.userEmail || "").toLowerCase().trim(),
-              userEmail: (o.email || o.userEmail || "").toLowerCase().trim(),
-              userName: o.userName || (o.email ? o.email.split("@")[0] : "Khách Hàng"),
-              status: "COMPLETED",
-              note: o.accounts || ("Đã cộng " + formatVND(depAmt) + " vào ví (VietQR / SePay)"),
-              time: o.createdAt || (new Date().toLocaleString("vi-VN")),
-              date: o.createdAt || (new Date().toLocaleString("vi-VN")),
-              type: "Nạp tiền VietQR / SePay"
-            };
           });
+          if (resWorker.ok) {
+            const wData = await resWorker.json();
+            if (wData && wData.success && Array.isArray(wData.transactions)) {
+              const workerDeposits = wData.transactions.filter(tx => tx && String(tx.type || "").toUpperCase() === "DEPOSIT" && Math.abs(Number(tx.amount) || 0) > 0).map(tx => {
+                const depAmt = Math.abs(Number(tx.amount) || 0);
+                const rawEmail = String(tx.user_email || "").toLowerCase().trim();
+                const ordId = String(tx.order_id || tx.id || "").replace(/^TX_DEP_/i, "").trim();
+                return {
+                  id: ordId,
+                  orderId: ordId,
+                  prodId: "NAP_VI",
+                  prodName: "Nạp tiền vào ví điện tử",
+                  amount: depAmt,
+                  email: rawEmail,
+                  userEmail: rawEmail,
+                  userName: rawEmail ? rawEmail.split("@")[0] : "Khách Hàng",
+                  status: "COMPLETED",
+                  note: tx.note || ("Đã cộng " + formatVND(depAmt) + " vào ví (VietQR / SePay)"),
+                  time: tx.created_at || (new Date().toLocaleString("vi-VN")),
+                  date: tx.created_at || (new Date().toLocaleString("vi-VN")),
+                  type: "Nạp tiền VietQR / SePay"
+                };
+              });
+              if (workerDeposits.length > 0) {
+                if (savePlatformDeposits(workerDeposits)) anyUpdated = true;
+              }
+            }
+          }
+        } catch(eW) {}
 
-          if (completedDeposits.length > 0) {
-            savePlatformDeposits(completedDeposits);
+        // 2. Kết hợp thêm từ Google Apps Script (nếu có)
+        if (typeof callGasApi === "function") {
+          let callerEmail = "";
+          try {
+            if (typeof currentUser !== "undefined" && currentUser && currentUser.email) {
+              callerEmail = currentUser.email;
+            }
+          } catch(e) {}
+          const res = await callGasApi("adminGetAllOrders", { adminEmail: callerEmail || "manhdongvtc@gmail.com" });
+          if (res && Array.isArray(res.orders)) {
+            const completedDeposits = res.orders.filter(o => {
+              if (!o) return false;
+              const isDep = o.prodId === "NAP_VI" || String(o.orderId).startsWith("DH") || String(o.orderId).startsWith("NAP") || String(o.prodName || "").toLowerCase().includes("nạp tiền");
+              const isPaid = o.status === "COMPLETED" || o.status === "PAID";
+              return isDep && isPaid;
+            }).map(o => {
+              const noteText = String(o.accounts || o.note || o.message || "");
+              const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp|\+)\s*([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+              let depAmt = 0;
+              if (amtMatch && amtMatch[1]) {
+                const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
+                if (!isNaN(parsed) && parsed >= 1000) depAmt = parsed;
+              }
+              if (!depAmt) {
+                depAmt = Number(o.totalAmount || o.actualAmount || o.paidAmount || o.price || 0);
+              }
+              return {
+                id: String(o.orderId || "").trim(),
+                orderId: String(o.orderId || "").trim(),
+                prodId: "NAP_VI",
+                prodName: o.prodName || "Nạp tiền vào ví điện tử",
+                amount: depAmt,
+                email: (o.email || o.userEmail || "").toLowerCase().trim(),
+                userEmail: (o.email || o.userEmail || "").toLowerCase().trim(),
+                userName: o.userName || (o.email ? o.email.split("@")[0] : "Khách Hàng"),
+                status: "COMPLETED",
+                note: o.accounts || ("Đã cộng " + formatVND(depAmt) + " vào ví (VietQR / SePay)"),
+                time: o.createdAt || (new Date().toLocaleString("vi-VN")),
+                date: o.createdAt || (new Date().toLocaleString("vi-VN")),
+                type: "Nạp tiền VietQR / SePay"
+              };
+            });
+
+            if (completedDeposits.length > 0) {
+              if (savePlatformDeposits(completedDeposits)) anyUpdated = true;
+            }
           }
         }
+        return anyUpdated;
       } catch(e) {
+        return anyUpdated;
       } finally {
         _isSyncingAllDeposits = false;
       }
@@ -9851,6 +10191,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     // Tự động đồng bộ nạp tiền khi mở chi tiết thành viên
     async function fetchAndSyncMemberCloudDeposits(cleanEmail) {
       if (!cleanEmail) return;
+      if (window._isSyncingMemberDeposits) return;
+      window._isSyncingMemberDeposits = true;
       try {
         const workerApiUrl = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
           ? MMO_WORKER_API.getApiUrl()
@@ -9872,14 +10214,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const isDep = o.prodId === "NAP_VI" || String(o.orderId).startsWith("DH") || String(o.orderId).startsWith("NAP") || String(o.prodName || "").toLowerCase().includes("nạp tiền");
             const isPaid = o.status === "COMPLETED" || o.status === "PAID";
             if (isDep && isPaid) {
-              let depAmt = Number(o.totalAmount || o.actualAmount || o.paidAmount || o.price || 0);
+              let depAmt = 0;
+              const noteText = String(o.accounts || o.note || o.message || "");
+              const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
+              if (amtMatch && amtMatch[1]) {
+                const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
+                if (!isNaN(parsed) && parsed > 0) depAmt = parsed;
+              }
               if (!depAmt) {
-                const noteText = String(o.accounts || o.note || o.message || "");
-                const amtMatch = noteText.match(/(?:đã cộng|cộng|nạp)\s+([0-9\.,]+)\s*(?:đ|vnđ|vnd)/i);
-                if (amtMatch && amtMatch[1]) {
-                  const parsed = Number(amtMatch[1].replace(/[\.,]/g, ""));
-                  if (!isNaN(parsed) && parsed > 0) depAmt = parsed;
-                }
+                depAmt = Number(o.actualAmount || o.paidAmount || o.totalAmount || o.price || 0);
               }
               newDeps.push({
                 id: String(o.orderId || "").trim(),
@@ -9960,17 +10303,17 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
         }
 
-        // Luôn cập nhật modal chi tiết thành viên nếu đang mở
+        // Cập nhật modal chi tiết thành viên nếu Cloudflare Worker chưa tải xong
         const modal = document.getElementById("adminUserDetailModal");
         const curEmailEl = document.getElementById("admDetailUserEmail");
-        if (modal && modal.style.display === "flex" && curEmailEl && (curEmailEl.innerText || "").toLowerCase().trim() === cleanEmail) {
+        if (modal && modal.style.display === "flex" && curEmailEl && (curEmailEl.innerText || "").toLowerCase().trim() === cleanEmail && window._admDetailLiveWorkerLoaded !== cleanEmail) {
           const res = getUserComprehensiveTransactions(cleanEmail, cloudBal);
           const allTx = res.transactions;
           const txCountEl = document.getElementById("admDetailTxCount");
           const balanceEl = document.getElementById("admDetailUserBalance");
           const tbody = document.getElementById("admDetailUserTxTableBody");
           if (txCountEl) txCountEl.innerText = allTx.length + " giao dịch";
-          const finalModalBal = (cloudBal !== null && !isNaN(cloudBal)) ? cloudBal : res.currentBalance;
+          const finalModalBal = Math.max(Number(res.currentBalance) || 0, (cloudBal !== null && !isNaN(cloudBal)) ? Number(cloudBal) : 0);
           if (balanceEl) balanceEl.innerText = formatVND(finalModalBal);
           if (tbody && allTx.length > 0) {
             tbody.innerHTML = allTx.map(tx => {
@@ -10013,7 +10356,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             }).join("");
           }
         }
-      } catch(e) {}
+      } catch(e) {
+      } finally {
+        window._isSyncingMemberDeposits = false;
+      }
     }
     window.fetchAndSyncMemberCloudDeposits = fetchAndSyncMemberCloudDeposits;
 
@@ -10255,6 +10601,45 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         });
       } catch(e) {}
 
+      // G2. Quét danh sách thuê SIM OTP từ mmo_sms_rentals
+      try {
+        const smsRentals = JSON.parse(localStorage.getItem('mmo_sms_rentals') || '[]');
+        if (Array.isArray(smsRentals)) {
+          smsRentals.forEach(sr => {
+            if (!sr) return;
+            const srEmail = (sr.userEmail || sr.email || '').toLowerCase().trim();
+            const currentU = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            const curEmail = (currentU && (currentU.email || '')) ? currentU.email.toLowerCase().trim() : '';
+            if (srEmail === cleanEmail || (!srEmail && curEmail === cleanEmail)) {
+              const rPrice = Math.abs(Number(sr.price) || 0);
+              const rId = String(sr.id || sr.rentalId || '').trim();
+              if (rPrice > 0 && rId) {
+                rawLogs.push({
+                  id: 'OTP_' + rId,
+                  orderId: 'OTP' + rId,
+                  time: sr.createdAt || sr.time || new Date().toISOString(),
+                  type: 'Thuê số OTP',
+                  amount: -rPrice,
+                  balanceAfter: (sr.balanceAfter !== undefined && sr.balanceAfter !== null) ? Number(sr.balanceAfter) : null,
+                  note: 'Thuê số điện thoại OTP: ' + (sr.serviceName || 'Dịch vụ') + ' (' + (sr.phoneLocal || sr.phone || '') + ')'
+                });
+                if (Number(sr.refunded) === 1 || sr.status === 2) {
+                  rawLogs.push({
+                    id: 'OTP_REFUND_' + rId,
+                    orderId: 'OTP' + rId,
+                    time: sr.updatedAt || sr.createdAt || new Date().toISOString(),
+                    type: 'Hoàn tiền',
+                    amount: +rPrice,
+                    balanceAfter: null,
+                    note: 'Hoàn tiền thuê số OTP hết hạn không có mã: ' + (sr.serviceName || '') + ' (' + (sr.phoneLocal || sr.phone || '') + ')'
+                  });
+                }
+              }
+            }
+          });
+        }
+      } catch(eOtpRent) {}
+
       // G. Lọc trùng thông minh theo mã giao dịch và loại
       const seenMap = new Map();
       rawLogs.forEach(item => {
@@ -10268,7 +10653,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         const isPurchase = amt < 0;
 
         let key = "";
-        if (oId && isRef) {
+        const isOtp = String(item.id || item.orderId || '').startsWith('OTP_') || String(item.id || item.orderId || '').startsWith('OTP') || String(item.type || '').toLowerCase().includes('thuê số') || String(item.note || '').toLowerCase().includes('thuê số');
+        if (isOtp) {
+          key = "OTP_" + (item.orderId || item.id || '') + "_" + (amt > 0 ? "REFUND" : "RENT");
+        } else if (oId && isRef) {
           key = "REFUND_" + oId;
         } else if (oId && isDep) {
           key = "DEP_" + oId;
@@ -10332,13 +10720,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (explicitBalance !== undefined && explicitBalance !== null && !isNaN(Number(explicitBalance)) && Number(explicitBalance) >= 0) {
         curBal = Number(explicitBalance);
       }
-      if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) {
-        curBal = Math.max(curBal, Number(currentUser.balance));
-      }
+
       const uList = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
       const uFound = uList.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
-      if (uFound && uFound.balance !== undefined && !isNaN(Number(uFound.balance))) {
-        curBal = Math.max(curBal, Number(uFound.balance));
+
+      if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) {
+        curBal = Number(currentUser.balance);
+      } else if (uFound && uFound.balance !== undefined && !isNaN(Number(uFound.balance))) {
+        curBal = Number(uFound.balance);
       }
 
       // Đối chiếu số dư với dòng tiền thực tế từ các giao dịch đã xác nhận (nạp - mua)
@@ -10352,9 +10741,21 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         else totalDeposited += amt;
       });
 
-      // Nếu số dư tài khoản chưa từng được khởi tạo nhưng dòng tiền có dương
-      if (curBal === 0 && netLedger > 0) {
+      // [FIX v6.8.6]: Đối chiếu dòng tiền thực tế (Nạp - Mua hàng)
+      if (allLogs.length > 0 && totalDeposited > 0) {
+        if (totalSpent >= totalDeposited) {
+          // Khách đã mua hết tiền nạp (ví dụ nạp 30k, mua 2 đơn 15k+15k) -> số dư về 0đ
+          curBal = Math.max(0, netLedger);
+        } else if (netLedger >= 0) {
+          curBal = netLedger;
+        }
+      } else if (curBal === 0 && netLedger > 0) {
         curBal = netLedger;
+      }
+
+      // Bảo vệ Rule 0: Không can thiệp số dư digimarketmmo
+      if (cleanEmail === "digimarketmmo@gmail.com" && curBal < 113441) {
+        curBal = 113441;
       }
 
       // Đồng bộ số dư nếu curBal xác định được cao hơn
@@ -10364,7 +10765,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
         }
       }
-      if (uFound && curBal > 0 && uFound.balance !== curBal) {
+      if (uFound && uFound.balance !== curBal) {
         uFound.balance = curBal;
         try {
           if (!window._mmoSaveRegUsersDebounceTimer) {
@@ -10443,8 +10844,25 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       let users = getRegisteredUsers();
       let u = users.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
       if (!u) {
-        showToast("Không tìm thấy thông tin thành viên này!", "danger");
-        return;
+        const defFound = (typeof DEFAULT_REGISTERED_USERS !== "undefined" && Array.isArray(DEFAULT_REGISTERED_USERS))
+          ? DEFAULT_REGISTERED_USERS.find(item => (item.email || "").toLowerCase().trim() === cleanEmail)
+          : null;
+        if (defFound) {
+          u = JSON.parse(JSON.stringify(defFound));
+        } else {
+          u = {
+            userId: "USR_" + Date.now(),
+            email: cleanEmail,
+            name: cleanEmail.split("@")[0],
+            role: "Thành Viên",
+            balance: 0,
+            created: new Date().toLocaleDateString("vi-VN"),
+            avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=" + encodeURIComponent(cleanEmail),
+            isLocked: false
+          };
+        }
+        users.push(u);
+        try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(eU) {}
       }
 
       // Lấy số dư đã biết của user
@@ -10456,13 +10874,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         : { transactions: [], currentBalance: knownBal };
       
       const allTx = result.transactions;
-      let accurateBalance = (result.currentBalance > 0) ? result.currentBalance : knownBal;
+      let accurateBalance = (result.currentBalance !== undefined && !isNaN(Number(result.currentBalance))) ? Number(result.currentBalance) : knownBal;
 
       // Đồng bộ số dư chuẩn vào người dùng và hệ thống
-      if (accurateBalance > 0) {
-        u.balance = accurateBalance;
-        saveRegisteredUsers(users);
-      }
+      u.balance = accurateBalance;
+      saveRegisteredUsers(users);
 
       if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
         currentUser.balance = accurateBalance;
@@ -10526,9 +10942,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const isRefund = tLow.includes("hoàn tiền") || nLow.includes("hoàn tiền");
             const isPurchase = tLow.includes("thanh toán") || tLow.includes("mua hàng") || amt < 0;
 
+            const isOtp = tLow.includes("thuê số") || tLow.includes("otp") || nLow.includes("thuê số");
             let typeHtml = "";
             if (isRefund) {
               typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.1);"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền bảo hành</span>';
+            } else if (isOtp) {
+              typeHtml = '<span class="badge-trust" style="font-size:0.72rem; color:#a855f7; border-color:rgba(168,85,247,0.3); background:rgba(168,85,247,0.1);"><i class="fa-solid fa-sim-card"></i> Thuê số OTP</span>';
             } else if (isPurchase) {
               typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#f87171; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.1);"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
             } else if (tLow.includes("rút")) {
@@ -10558,12 +10977,107 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       }
 
       const modal = document.getElementById("adminUserDetailModal");
-      if (modal) modal.style.display = "flex";
-
-      // 2. Tự động đồng bộ lịch sử nạp tiền từ Cloud GAS cho thành viên này nếu cần
-      if (typeof fetchAndSyncMemberCloudDeposits === "function") {
-        fetchAndSyncMemberCloudDeposits(cleanEmail);
+      if (modal) {
+        modal.style.setProperty("display", "flex", "important");
       }
+
+      // [SSOT]: KHÔNG gọi fetchAndSyncMemberCloudDeposits vì GAS chứa số dư cũ & đơn hàng thiếu accounts ghi đè 10.000đ.
+      // Cloudflare Worker Turso DB là Single Source of Truth duy nhất.
+
+      window._admDetailLiveWorkerLoaded = null;
+
+      // TỰ ĐỘNG ĐỒNG BỘ LỊCH SỬ GIAO DỊCH TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO SSOT (CHUẨN 5 CỘT)
+      (async function() {
+        try {
+          const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
+          const txRes = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail) + "&_=" + Date.now(), { cache: "no-store" });
+          if (txRes.ok) {
+            const txData = await txRes.json();
+            if (txData && txData.success && Array.isArray(txData.transactions)) {
+              window._admDetailLiveWorkerLoaded = cleanEmail;
+
+              if (txData.user_balance !== null && txData.user_balance !== undefined && !isNaN(Number(txData.user_balance))) {
+                const srvBal = Number(txData.user_balance);
+                const balElLive = document.getElementById("admDetailUserBalance");
+                if (balElLive) balElLive.innerText = formatVND(srvBal);
+
+                // Đồng bộ chuẩn xác số dư Turso SSOT vào danh sách thành viên
+                try {
+                  let allU = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+                  const uI = allU.findIndex(item => (item.email || "").toLowerCase().trim() === cleanEmail);
+                  if (uI !== -1) {
+                    allU[uI].balance = srvBal;
+                    if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allU);
+                  }
+                  if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
+                    currentUser.balance = srvBal;
+                    safeStorageSet("mmo_user", JSON.stringify(currentUser));
+                    if (typeof updateUserUI === "function") updateUserUI();
+                  }
+                } catch(eBalSync) {}
+              }
+
+              if (txData.transactions.length > 0) {
+                const liveTxs = txData.transactions;
+                const countEl = document.getElementById("admDetailTxCount");
+                if (countEl) countEl.innerText = liveTxs.length + " giao dịch (Cloud Realtime)";
+
+                const tbLive = document.getElementById("admDetailUserTxTableBody");
+                if (tbLive) {
+                  tbLive.innerHTML = liveTxs.map(tx => {
+                    const amt = Number(tx.amount) || 0;
+                    const isPlus = amt > 0;
+                    const amtHtml = isPlus 
+                      ? '<span style="color:#10b981; font-weight:800;">+' + formatVND(Math.abs(amt)) + '</span>' 
+                      : '<span style="color:#ef4444; font-weight:800;">-' + formatVND(Math.abs(amt)) + '</span>';
+
+                    const tLow = String(tx.type || "").toLowerCase();
+                    const isRefund = tLow === 'refund' || tLow.includes("hoàn");
+                    const isDeposit = tLow === 'deposit' || tLow.includes("nạp");
+                    
+                    const isOtp = tLow === 'otp_rent' || tLow.includes("thuê số") || tLow.includes("otp") || String(tx.note || "").toLowerCase().includes("thuê số");
+                    let typeBadge = '<span class="badge-verified" style="font-size:0.72rem; color:#f87171; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.1);"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
+                    if (isDeposit) {
+                      typeBadge = '<span class="badge-trust" style="font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.3); background:rgba(56,189,248,0.1);"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
+                    } else if (isRefund) {
+                      typeBadge = '<span class="badge-verified" style="font-size:0.72rem; color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.1);"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền bảo hành</span>';
+                    } else if (isOtp) {
+                      typeBadge = '<span class="badge-trust" style="font-size:0.72rem; color:#a855f7; border-color:rgba(168,85,247,0.3); background:rgba(168,85,247,0.1);"><i class="fa-solid fa-sim-card"></i> Thuê số OTP</span>';
+                    }
+
+                    let balAfterStr = (tx.balance_after !== null && tx.balance_after !== undefined && !isNaN(Number(tx.balance_after))) 
+                      ? formatVND(Math.max(0, Number(tx.balance_after))) 
+                      : "-";
+
+                    let dateStr = "Gần đây";
+                    if (tx.created_at) {
+                      const rawD = String(tx.created_at).trim();
+                      const dObj = new Date(rawD.includes("T") ? rawD : rawD.replace(" ", "T") + "Z");
+                      dateStr = !isNaN(dObj.getTime()) ? dObj.toLocaleString("vi-VN") : rawD;
+                    }
+
+                    const oCode = tx.order_id ? ("#" + String(tx.order_id).replace(/^#/, "")) : "";
+                    let noteStr = tx.note || (isDeposit ? ("Đã cộng " + formatVND(Math.abs(amt)) + " vào ví") : "Giao dịch ví");
+                    if (oCode && !noteStr.includes(oCode)) {
+                      noteStr = noteStr + " (" + oCode + ")";
+                    }
+
+                    return '<tr>' +
+                      '<td style="font-size:0.75rem; color:#94a3b8; white-space:nowrap;">' + escapeHtml(dateStr) + '</td>' +
+                      '<td>' + typeBadge + '</td>' +
+                      '<td>' + amtHtml + '</td>' +
+                      '<td style="color:#38bdf8; font-weight:700; font-size:0.82rem; font-family:monospace; white-space:nowrap;">' + balAfterStr + '</td>' +
+                      '<td style="font-size:0.75rem; color:#cbd5e1;" title="' + escapeHtml(noteStr) + '">' + escapeHtml(noteStr) + '</td>' +
+                    '</tr>';
+                  }).join("");
+                }
+              }
+            }
+          }
+        } catch(eFetchTx) {
+          console.warn("fetch live user transactions error:", eFetchTx);
+        }
+      })();
     }
     window.openAdminUserDetailModal = openAdminUserDetailModal;
 
@@ -12077,7 +12591,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                 } catch(e) {}
                 const dtlImg = document.getElementById("dtlImage");
                 const curImg = (typeof resolveProductImage === "function") ? resolveProductImage(curP) : (curP.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png");
-                if (dtlImg && curImg && dtlImg.src !== curImg) dtlImg.src = curImg;
+                if (dtlImg && curImg && dtlImg.src !== curImg && !dtlImg.src.endsWith(curImg)) {
+                  if (!curImg.includes("default_product.png") || (!dtlImg.src || dtlImg.src.includes("default_product.png") || dtlImg.src.startsWith("data:image/svg+xml"))) {
+                    dtlImg.src = curImg;
+                  }
+                }
                 if (typeof renderProductDetailArticle === "function") {
                   renderProductDetailArticle(curP, curP.description);
                 } else {
@@ -12095,9 +12613,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                     const stockBadge = vStock > 0 
                       ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>' 
                       : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-                    return '<div class="variant-pill-option ' + (idx === activeVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                      '<span>' + escapeHtml(v.name || ("Gói " + (idx + 1))) + stockBadge + '</span>' +
-                      '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+                    return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === activeVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                      '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + escapeHtml(v.name || ("Gói " + (idx + 1))) + stockBadge + '</span>' +
+                      '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + formatVND(v.price || 0) + '</span>' +
                     '</div>';
                   }).join("");
                 }
@@ -12129,7 +12647,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     function closeModal(modalId) {
       try {
         const el = document.getElementById(modalId);
-        if (el) el.style.display = "none";
+        if (el) {
+          el.style.setProperty("display", "none", "important");
+          el.classList.remove("active");
+        }
       } catch(e) {}
     }
     window.closeModal = closeModal;
@@ -12198,36 +12719,79 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     window.logoutUser = handleLogout;
 
     function copyTextDirect(text, customMsg) {
-      if (!text) return;
+      if (!text && text !== 0 && text !== "0") return false;
+      text = String(text);
+
       const doToast = () => {
         if (customMsg !== false && typeof showToast === "function") {
           showToast(customMsg || "Đã sao chép vào bộ nhớ tạm!", "success");
         }
       };
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(() => {
-          doToast();
-        }).catch(() => {
-          fallbackCopy(text, customMsg);
-        });
-      } else {
-        fallbackCopy(text, customMsg);
-      }
-    }
-    function fallbackCopy(text, customMsg) {
+
+      // [TỐI ƯU SIÊU TỐC 0MS & CHỐNG LỖI TOÀN DIỆN]: Dùng document.execCommand đồng bộ không dùng readonly
+      let syncCopied = false;
       try {
         const ta = document.createElement("textarea");
         ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
+        ta.setAttribute("aria-hidden", "true");
+        ta.style.cssText = "position:fixed;top:0;left:0;width:20px;height:20px;padding:0;border:none;outline:none;background:transparent;opacity:0.01;pointer-events:none;z-index:99999;";
         document.body.appendChild(ta);
+        ta.focus();
         ta.select();
-        document.execCommand("copy");
+        ta.setSelectionRange(0, ta.value.length);
+        syncCopied = document.execCommand("copy");
         document.body.removeChild(ta);
-        if (customMsg !== false && typeof showToast === "function") {
-          showToast(customMsg || "Đã sao chép!", "success");
+      } catch(e) {
+        syncCopied = false;
+      }
+
+      // Bắn thông báo Toast tức thì 0ms
+      doToast();
+
+      // Luôn gọi navigator.clipboard để đảm bảo ghi thành công vào bộ nhớ tạm hệ điều hành
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          navigator.clipboard.writeText(text).catch(() => {});
+        } catch(e) {}
+      }
+      return syncCopied;
+    }
+
+    function copyBtnData(btnEl, label) {
+      if (!btnEl) return;
+      let text = btnEl.getAttribute("data-copy") || (btnEl.dataset ? btnEl.dataset.copy : "") || "";
+      if (!text) {
+        const parent = btnEl.parentElement;
+        if (parent) {
+          const strong = parent.querySelector("strong, span, h4");
+          if (strong) text = strong.innerText || strong.textContent || "";
         }
-      } catch(e) {}
+      }
+      if (!text) return;
+      text = text.trim();
+      copyTextDirect(text, "Đã sao chép " + (label || "") + ": " + text);
+
+      let origHtml = btnEl.getAttribute("data-orig-html");
+      if (!origHtml) {
+        origHtml = btnEl.innerHTML;
+        btnEl.setAttribute("data-orig-html", origHtml);
+      }
+      btnEl.innerHTML = '<i class="fa-solid fa-check"></i> Đã chép';
+      btnEl.style.background = "#059669";
+      btnEl.style.borderColor = "#10b981";
+      btnEl.style.color = "#ffffff";
+
+      clearTimeout(btnEl._copyTimer);
+      btnEl._copyTimer = setTimeout(() => {
+        btnEl.innerHTML = btnEl.getAttribute("data-orig-html") || origHtml;
+        btnEl.style.background = "";
+        btnEl.style.borderColor = "";
+        btnEl.style.color = "";
+      }, 1200);
+    }
+    window.copyBtnData = copyBtnData;
+    function fallbackCopy(text, customMsg) {
+      copyTextDirect(text, customMsg);
     }
     window.copyTextDirect = copyTextDirect;
 
@@ -12456,16 +13020,24 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     window.openAdminAddUserModal = openAdminAddUserModal;
 
     function switchAdminUsersSubTab(tab) {
-      const btnAll = document.getElementById("btnAdmUsersSubAll");
-      const btnLocked = document.getElementById("btnAdmUsersSubLocked");
-      if (tab === "locked") {
-        if (btnAll) btnAll.style.background = "transparent";
-        if (btnLocked) btnLocked.style.background = "#ef4444";
+      const btnList = document.getElementById("subTabBtnUsersList");
+      const btnTx = document.getElementById("subTabBtnUsersTx");
+      const tabList = document.getElementById("adminSubTabUsersList");
+      const tabTx = document.getElementById("adminSubTabUsersTx");
+
+      if (tab === "tx") {
+        if (btnList) btnList.classList.remove("active");
+        if (btnTx) btnTx.classList.add("active");
+        if (tabList) tabList.style.display = "none";
+        if (tabTx) tabTx.style.display = "block";
+        if (typeof renderAdminTxTable === "function") renderAdminTxTable();
       } else {
-        if (btnAll) btnAll.style.background = "#10b981";
-        if (btnLocked) btnLocked.style.background = "transparent";
+        if (btnList) btnList.classList.add("active");
+        if (btnTx) btnTx.classList.remove("active");
+        if (tabList) tabList.style.display = "block";
+        if (tabTx) tabTx.style.display = "none";
+        if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
       }
-      if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
     }
     window.switchAdminUsersSubTab = switchAdminUsersSubTab;
 
@@ -12730,9 +13302,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const stockBadge = vStock > 0
               ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
               : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-            return '<div class="variant-pill-option ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-              '<span>' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
-              '<span style="font-weight:700;">' + ((typeof formatVND === "function") ? formatVND(v.price || 0) : ((v.price || 0) + " đ")) + '</span>' +
+            return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === 0 ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+              '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
+              '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + ((typeof formatVND === "function") ? formatVND(v.price || 0) : ((v.price || 0) + " đ")) + '</span>' +
             '</div>';
           }).join("");
         }
@@ -12837,7 +13409,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         const isEditing = !!id;
         const prodId = id || ("PROD_" + Date.now().toString(36).toUpperCase() + Math.floor(100 + Math.random() * 900).toString(36).toUpperCase());
         const name = document.getElementById("admProdName")?.value.trim();
-        let category = (document.getElementById("admProdCategory")?.value || "Tài Khoản Khác").replace(/&amp;/g, '&');
+        let category = (document.getElementById("admProdCategory")?.value || "Tài Khoản Khác").replace(/&amp;/g, '&').trim();
+        if (typeof canonicalizeCategoryName === "function") {
+          category = canonicalizeCategoryName(category);
+        } else if (/^tiktok$/i.test(category)) {
+          category = "TikTok";
+        }
         if (name && name.toUpperCase().includes("TIKTOK") && !category.toUpperCase().includes("TIKTOK")) {
           category = "TikTok";
         }
@@ -12866,12 +13443,25 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         const defaultPlaceholder = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
         let image = "";
         let isImageDeleted = false;
-        if (window._imageExplicitlyDeleted || !inputImg || inputImg === "__NO_IMAGE__" || inputImg.includes("default_product.png")) {
+        if (window._imageExplicitlyDeleted || inputImg === "__NO_IMAGE__") {
           image = "__NO_IMAGE__";
           isImageDeleted = true;
         } else {
-          image = inputImg;
           isImageDeleted = false;
+          // [BẢO LƯU ẢNH TUYỆT ĐỐI 100%]: Ưu tiên input mới -> ảnh cũ đang sửa -> ảnh trong đối tượng sản phẩm -> KNOWN_PROD_IMAGE_MAP -> ảnh danh mục
+          if (inputImg && !inputImg.includes("default_product.png") && inputImg !== "__NO_IMAGE__") {
+            image = inputImg;
+          } else if (oldImgBeforeSave && !oldImgBeforeSave.includes("default_product.png") && oldImgBeforeSave !== "__NO_IMAGE__") {
+            image = oldImgBeforeSave;
+          } else if (oldProd && (oldProd.image || oldProd.image_url || oldProd.imageUrl) && (oldProd.image !== "__NO_IMAGE__" && oldProd.image_url !== "__NO_IMAGE__" && !String(oldProd.image || oldProd.image_url).includes("default_product.png"))) {
+            image = oldProd.image || oldProd.image_url || oldProd.imageUrl;
+          } else if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && (KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[canonicalTargetId])) {
+            image = KNOWN_PROD_IMAGE_MAP[actualTargetId] || KNOWN_PROD_IMAGE_MAP[canonicalTargetId];
+          } else if (typeof resolveCategoryFallbackImage === "function") {
+            image = resolveCategoryFallbackImage(oldProd || { id: actualTargetId, name: name, category: category });
+          } else {
+            image = defaultPlaceholder;
+          }
         }
 
         // Cập nhật ngay KNOWN_PROD_IMAGE_MAP và localStorage cho toàn bộ họ ID liên kết
@@ -12886,7 +13476,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               localStorage.setItem("mmo_custom_img_" + sid, image);
               localStorage.removeItem("mmo_no_image_" + sid);
             } catch(e) {}
-          } else {
+          } else if (isImageDeleted) {
             if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
               delete KNOWN_PROD_IMAGE_MAP[sid];
               delete KNOWN_PROD_IMAGE_MAP[sid.toUpperCase()];
@@ -13228,12 +13818,20 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
         // Lưu ngay URL ảnh & mô tả vào mmo_custom_ cho toàn bộ họ ID liên kết
         allSyncIds.forEach(sid => {
-          if (image) {
+          if (!isImageDeleted && image && image !== "__NO_IMAGE__" && !image.includes("default_product.png")) {
             try { localStorage.setItem("mmo_custom_img_" + sid, image); } catch(eImgLS) {}
             try { localStorage.removeItem("mmo_no_image_" + sid); } catch(eNo) {}
-          } else {
+            if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+              KNOWN_PROD_IMAGE_MAP[sid] = image;
+              KNOWN_PROD_IMAGE_MAP[sid.toUpperCase()] = image;
+            }
+          } else if (isImageDeleted) {
             try { localStorage.removeItem("mmo_custom_img_" + sid); } catch(eImgLS) {}
             try { localStorage.setItem("mmo_no_image_" + sid, "true"); } catch(eNo) {}
+            if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+              delete KNOWN_PROD_IMAGE_MAP[sid];
+              delete KNOWN_PROD_IMAGE_MAP[sid.toUpperCase()];
+            }
           }
           if (description !== undefined && description !== null) {
             try { localStorage.setItem("mmo_custom_desc_" + sid, description.trim()); } catch(eDescLS) {}
@@ -15039,16 +15637,62 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     }
 
     function syncAllWalletBalanceUI(amount) {
-      const val = Number(amount) || 0;
-      const str = (typeof formatVND === "function") ? formatVND(val) : (val.toLocaleString("vi-VN") + " đ");
-      const hEl = document.getElementById("headerWalletBalance");
-      if (hEl) hEl.innerText = str;
-      const pEl = document.getElementById("profDisplayBalance");
-      if (pEl) pEl.innerText = str;
-      const pEl2 = document.getElementById("profBalanceDisplay");
-      if (pEl2) pEl2.innerText = str;
-      const mobEl = document.getElementById("mobDrawerBalance");
-      if (mobEl) mobEl.innerText = "Số dư: " + str;
+      try {
+        var num;
+        if (typeof amount === "number" && !isNaN(amount)) {
+          num = amount;
+        } else if (amount !== undefined && amount !== null && !isNaN(Number(amount))) {
+          num = Number(amount);
+        } else {
+          var cur = (typeof currentUser !== "undefined" && currentUser && currentUser.balance !== undefined) ? currentUser.balance : null;
+          if (cur === null) {
+            try {
+              var raw = localStorage.getItem('mmo_user');
+              if (raw) cur = JSON.parse(raw).balance;
+            } catch(e) {}
+          }
+          if (cur !== null && !isNaN(Number(cur))) {
+            num = Number(cur);
+          } else {
+            return;
+          }
+        }
+
+        var str = (typeof formatVND === "function") ? formatVND(num) : (num.toLocaleString("vi-VN") + " đ");
+        
+        // 1. Header wallet balance
+        var hEl = document.getElementById("headerWalletBalance");
+        if (hEl) hEl.innerText = str;
+        
+        // 2. Profile balances
+        var pEl = document.getElementById("profDisplayBalance");
+        if (pEl) pEl.innerText = str;
+        var pEl2 = document.getElementById("profBalanceDisplay");
+        if (pEl2) pEl2.innerText = str;
+        
+        // 3. Mobile drawer balance
+        var mobEl = document.getElementById("mobDrawerBalance");
+        if (mobEl) mobEl.innerText = "Số dư: " + str;
+
+        // 4. SMS OTP Sidebar balance (CHỐNG LỆCH SỐ DƯ SIDEBAR VIOTP)
+        var smsSide = document.getElementById("smsSidebarBalance");
+        if (smsSide) smsSide.innerText = str;
+
+        // 5. Pre-order modal user balance
+        var poBal = document.getElementById("poModalUserBalance");
+        if (poBal) poBal.innerText = str;
+
+        // 6. Right summary box: Số dư sau khi thuê
+        var sumBal = document.getElementById("smsSumBalAfter");
+        if (sumBal) {
+          var p = window._smsOtpSelectedService ? Number(window._smsOtpSelectedService.price || 0) : 0;
+          var remain = num - p;
+          sumBal.innerText = (remain < 0 ? 0 : remain).toLocaleString("vi-VN") + " đ";
+          sumBal.style.color = (remain < 0) ? "#ef4444" : "#10b981";
+        }
+
+        if (typeof currentUser !== "undefined" && currentUser) currentUser.balance = num;
+      } catch(e) {}
     }
     window.syncAllWalletBalanceUI = syncAllWalletBalanceUI;
 
@@ -15070,7 +15714,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           const uList = getRegisteredUsers();
           const found = uList.find(u => (u.email || "").toLowerCase().trim() === currentUser.email.toLowerCase().trim());
           if (found && found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
-            const safeBal = Math.max(Number(currentUser.balance || 0), Number(found.balance));
+            const safeBal = Number(currentUser.balance !== undefined ? currentUser.balance : found.balance);
             currentUser.balance = safeBal;
             found.balance = safeBal;
             if (found.role) currentUser.role = found.role;
@@ -15152,7 +15796,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const uImg = authArea.querySelector(".user-header-pill img");
             if (uImg && uImg.src !== avatarUrl) uImg.src = avatarUrl;
           }
-          if (typeof renderHeaderNotifications === "function") renderHeaderNotifications();
+          const notifDdEl = document.getElementById("headerNotifDropdown");
+          const isNotifOpen = notifDdEl && (notifDdEl.style.display === "block");
+          if (!isNotifOpen && typeof renderHeaderNotifications === "function") {
+            renderHeaderNotifications();
+          }
         }
 
         // Profile View DOM elements
@@ -15266,84 +15914,73 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         let email = userEmail || (currentUser && currentUser.email ? currentUser.email : "guest");
         const key = getUserNotificationsStorageKey(email);
         const raw = localStorage.getItem(key);
-        if (!raw) return [];
-        let parsed = JSON.parse(raw);
-        if (!Array.isArray(parsed)) return [];
-        let sanitized = [];
-        let lastDepTs = 0;
-        let actualDepositsMap = { "DH9742533234": 2000 };
-        try {
-          let bLogsRaw = localStorage.getItem("mmo_balance_logs");
-          if (bLogsRaw) {
-            let bLogs = JSON.parse(bLogsRaw);
-            if (Array.isArray(bLogs)) {
-              bLogs.forEach(bl => {
-                let blAmt = Number(bl.amount || bl.diff || 0);
-                if (blAmt > 0) {
-                  let r = String(bl.reason || bl.description || bl.note || "").toUpperCase();
-                  let codeM = r.match(/(DH\d+|NAP\d+|MMO\d+)/);
-                  if (codeM && codeM[1]) actualDepositsMap[codeM[1]] = blAmt;
-                }
-              });
-            }
-          }
-        } catch(eBMap) {}
+        let parsed = [];
+        if (raw) {
+          try {
+            const p = JSON.parse(raw);
+            if (Array.isArray(p)) parsed = p;
+          } catch(eParse) {}
+        }
 
-        let needSave = false;
+        const seenIds = new Set();
+        const seenOrderCodes = new Set();
+        const sanitized = [];
+
+        // 1. Giữ lại các thông báo hiện có, loại bỏ hoàn toàn trùng lặp
         parsed.forEach(n => {
-          if (!n) return;
-          if (n.type === "DEPOSIT" || (n.title && n.title.includes("Nạp tiền thành công"))) {
-            let thisTs = n.timestamp || 0;
-            if (lastDepTs && thisTs && Math.abs(lastDepTs - thisTs) < 120000) {
-              needSave = true;
-              return;
-            }
-            if (thisTs) lastDepTs = thisTs;
-
-            let targetAmt = null;
-            if (n.orderId && actualDepositsMap[n.orderId]) {
-              targetAmt = actualDepositsMap[n.orderId];
-            } else if (actualDepositsMap["DH9742533234"] && n.title && (n.title.includes("20.000") || n.title.includes("20,000"))) {
-              targetAmt = actualDepositsMap["DH9742533234"];
-            }
-
-            if (targetAmt !== null && targetAmt > 0) {
-              let fmt = (typeof formatVND === "function") ? formatVND(targetAmt) : (targetAmt.toLocaleString("vi-VN") + " đ");
-              n.title = "💰 Nạp tiền thành công +" + fmt;
-              n.message = "Hệ thống đã tự động cộng +" + fmt + " vào số dư ví của bạn.";
-              needSave = true;
-            }
+          if (!n || !n.id) return;
+          let oCode = (n.orderId || "").toUpperCase().trim();
+          if (!oCode && n.message) {
+            const mMatch = n.message.match(/#(DH\d+)/i);
+            if (mMatch) oCode = mMatch[1].toUpperCase();
           }
+          if (seenIds.has(n.id) || (oCode && seenOrderCodes.has(oCode))) return;
+          seenIds.add(n.id);
+          if (oCode) seenOrderCodes.add(oCode);
           sanitized.push(n);
         });
-        // TỰ ĐỘNG BỔ SUNG THÔNG BÁO NẠP TIỀN TỪ SỔ CÁI GIAO DỊCH THỰC TẾ NẾU CHƯA CÓ TRONG CHUÔNG
+
+        // 2. Tự động đồng bộ các giao dịch nạp tiền thực tế của user vào chuông
         try {
           const userDeps = (typeof getPlatformDepositsLocal === "function" ? getPlatformDepositsLocal() : [])
             .filter(d => (d.email || d.userEmail || "").toLowerCase().trim() === String(email).toLowerCase().trim());
+          const now = Date.now();
+          const TWO_DAYS_MS = 48 * 3600 * 1000;
+
           userDeps.forEach(d => {
-            const depOrderId = d.orderId || d.id;
+            const depOrderId = String(d.orderId || d.id || "").toUpperCase().trim();
+            if (!depOrderId) return;
             const notifId = "NOTIF_DEP_" + depOrderId;
-            const exists = sanitized.some(n => n.id === notifId || n.orderId === depOrderId);
-            if (!exists) {
-              const dAmt = Number(d.amount) || 0;
-              const fmt = (typeof formatVND === "function") ? formatVND(dAmt) : (dAmt.toLocaleString("vi-VN") + " đ");
-              sanitized.unshift({
-                id: notifId,
-                orderId: depOrderId,
-                title: "💰 Nạp tiền thành công +" + fmt,
-                message: "Hệ thống đã tự động cộng +" + fmt + " vào số dư ví của bạn (Mã giao dịch: #" + depOrderId + ").",
-                type: "DEPOSIT",
-                read: false,
-                time: d.time || d.date || new Date().toLocaleString("vi-VN"),
-                timestamp: d.createdAt || Date.now()
-              });
-              needSave = true;
-            }
+            if (seenIds.has(notifId) || seenOrderCodes.has(depOrderId)) return;
+            seenIds.add(notifId);
+            seenOrderCodes.add(depOrderId);
+
+            const dAmt = Number(d.amount) || 0;
+            const fmt = (typeof formatVND === "function") ? formatVND(dAmt) : (dAmt.toLocaleString("vi-VN") + " đ");
+            const depTs = d.createdAt || (d.time ? (Date.parse(d.time) || now) : now);
+            // Các đơn nạp quá 48h trước tự động đánh dấu đã đọc để chuông luôn gọn gàng
+            const isOld = (now - depTs > TWO_DAYS_MS);
+
+            sanitized.push({
+              id: notifId,
+              orderId: depOrderId,
+              title: "💰 Nạp tiền thành công +" + fmt,
+              message: "Hệ thống đã tự động cộng +" + fmt + " vào số dư ví của bạn (Mã giao dịch: #" + depOrderId + ").",
+              type: "DEPOSIT",
+              read: isOld,
+              time: d.time || d.date || new Date(depTs).toLocaleString("vi-VN"),
+              timestamp: depTs
+            });
           });
         } catch(eDepMerge) {}
 
-        if (needSave) {
-          try { localStorage.setItem(key, JSON.stringify(sanitized.slice(0, 50))); } catch(eS) {}
+        // 3. Luôn sắp xếp theo thời gian mới nhất lên đầu tiên (Newest First)
+        sanitized.sort((a, b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0));
+
+        // 4. Chỉ lưu vào localStorage nếu nội dung THỰC SỰ THAY ĐỔI (CHỐNG TRIỆT ĐỂ VÒNG LẶP RERENDER NHẤP NHÁY)
+        const newJson = JSON.stringify(sanitized.slice(0, 50));
+        if (newJson !== raw) {
+          try { localStorage.setItem(key, newJson); } catch(eS) {}
         }
         return sanitized;
       } catch(e) {
@@ -15463,11 +16100,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
         const badge = document.getElementById("headerNotifBadge");
         if (badge) {
+          const targetText = unreadCount > 99 ? "99+" : String(unreadCount);
           if (unreadCount > 0) {
-            badge.innerText = unreadCount > 99 ? "99+" : unreadCount;
-            badge.style.display = "inline-flex";
+            if (badge.innerText !== targetText) badge.innerText = targetText;
+            if (badge.style.display !== "inline-flex") badge.style.display = "inline-flex";
           } else {
-            badge.style.display = "none";
+            if (badge.style.display !== "none") badge.style.display = "none";
           }
         }
 
@@ -15475,15 +16113,16 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         if (!listContainer) return;
 
         if (notifs.length === 0) {
-          listContainer.innerHTML = '<div style="padding:28px 16px; text-align:center; color:#64748b;">' +
+          const emptyHtml = '<div style="padding:28px 16px; text-align:center; color:#64748b;">' +
             '<i class="fa-regular fa-bell-slash" style="font-size:1.8rem; display:block; margin-bottom:8px; opacity:0.4;"></i>' +
             '<div style="font-size:0.85rem; font-weight:600;">Bạn chưa có thông báo nào</div>' +
             '<div style="font-size:0.75rem; color:#475569; margin-top:2px;">Các cập nhật đơn hàng, đặt trước và biến động số dư sẽ hiển thị ở đây.</div>' +
           '</div>';
+          if (listContainer.innerHTML !== emptyHtml) listContainer.innerHTML = emptyHtml;
           return;
         }
 
-        listContainer.innerHTML = notifs.map(function(n) {
+        const newHtml = notifs.map(function(n) {
           let icon = '<i class="fa-solid fa-bell" style="color:#38bdf8;"></i>';
           let iconBg = 'rgba(56,189,248,0.12)';
           if (n.type === 'PRE_ORDER') {
@@ -15515,6 +16154,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             '</div>' +
           '</div>';
         }).join("");
+
+        if (listContainer.innerHTML !== newHtml) {
+          listContainer.innerHTML = newHtml;
+        }
       } catch(e) {}
     }
     window.renderHeaderNotifications = renderHeaderNotifications;
@@ -15902,7 +16545,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             viewSitemap: "/?view=sitemap",
             viewTerms: "/?view=terms",
             viewPrivacy: "/?view=privacy",
-            viewWarranty: "/?view=warranty"
+            viewWarranty: "/?view=warranty",
+            viewSmsOtp: "/?view=sms-otp"
           };
           const targetUrl = origin + (pathMap[viewId] || "/");
           if (window.location.search && (window.location.search.includes("prod=") || window.location.search.includes("product="))) {
@@ -15921,7 +16565,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       // 1. TỨC THÌ 0MS: Chuyển đổi hiển thị view độc lập 100% (chống kẹt view với !important)
       var evs = document.getElementById("earlyViewRoutingStyle");
       if (evs) evs.remove();
-      const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewFaq"];
+      const views = ["viewStore", "viewProductDetail", "viewPreOrderDetail", "viewBlog", "viewBlogDetail", "viewTools", "viewProfile", "viewDeposit", "viewAdmin", "viewThankYou", "viewAllProducts", "viewSitemap", "viewTerms", "viewPrivacy", "viewWarranty", "viewFaq", "viewSmsOtp"];
       views.forEach(function(v) {
         const el = document.getElementById(v);
         if (el) {
@@ -15943,6 +16587,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (typeof updateMobileBottomNav === "function") updateMobileBottomNav(viewId);
 
       // 3. Render thông minh theo nhu cầu (Sử dụng setTimeout 0ms không block luồng UI chính)
+      if (viewId === "viewSmsOtp") {
+        document.getElementById("navSmsOtp")?.classList.add("active");
+        if (typeof initSmsOtpView === "function") {
+          initSmsOtpView();
+        }
+      }
       if (viewId === "viewStore") {
         document.getElementById("navStore")?.classList.add("active");
         const bList = document.getElementById("bestSellerList");
@@ -16152,6 +16802,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   "PROD_MU5SPLMSEC": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5SPLMSEC_ChatGPT_New_Gmail_Trial.jpg",
   "PROD_MU5T3T47AE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU5T3T47AE_N%C3%82NG_C%E1%BA%A4P_GEMINI_PRO_18_TH%C3%81NG_CH%C3%8DNH_CH%E1%BB%A6____GG_5TB__.jpg",
   "PROD_MU6R34FZ4Z": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "PROD_MVKLXCCFRB": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUQIMRJYG0_N%C3%82NG_C%E1%BA%A5P_GEMINI_PRO_CH%C3%8DNH_CH%E1%BB%A6_1_N%C4%82M_-_365_NG%C3%80Y.jpg",
+    "PROD_MV5QIZNFCZ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "PROD_MU5T3T47AE": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "PROD_MV5PA8KZDW": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
+    "PROD_MV5OYRDJCA": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg",
   "PROD_MU9YH8D9FK": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU9YH8D9FK_N%C3%82NG_C%E1%BA%A4P_CANVA_EDU_1_N%C4%82M.jpg",
   "PROD_MUH57035HQ": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUH57035HQ_T%C3%80I_KHO%E1%BA%A2N_KLING_AI_65_CREDIT_GI%C3%81_R%E1%BA%BA.png",
   "PROD_MUJGUY19DD": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MUJGUY19DD_Gmail_New_Random_%C4%91%C3%A3_ng%C3%A2m_3_-_7_ng%C3%A0y.jpg",
@@ -16205,6 +16860,25 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   "PROD_MV1GO2PD8A": "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU2ASBNSJT_Via_Vi%E1%BB%87t_2014_-_2019__ACC_C%E1%BB%94_-_ACC_SPAM_.png"
 };
     window.KNOWN_PROD_IMAGE_MAP = KNOWN_PROD_IMAGE_MAP;
+    try {
+      if (typeof localStorage !== "undefined") {
+        for (let i = 0; i < localStorage.length; i++) {
+          const k = localStorage.key(i);
+          if (k && k.startsWith("mmo_no_image_")) {
+            const delId = k.replace("mmo_no_image_", "");
+            delete KNOWN_PROD_IMAGE_MAP[delId];
+            delete KNOWN_PROD_IMAGE_MAP[delId.toUpperCase()];
+          } else if (k && k.startsWith("mmo_custom_img_")) {
+            const cId = k.replace("mmo_custom_img_", "");
+            const cVal = localStorage.getItem(k);
+            if (cVal && cVal !== "__NO_IMAGE__" && !cVal.includes("default_product.png")) {
+              KNOWN_PROD_IMAGE_MAP[cId] = cVal;
+              KNOWN_PROD_IMAGE_MAP[cId.toUpperCase()] = cVal;
+            }
+          }
+        }
+      }
+    } catch(eInitKnown) {}
 
     // RESOLVE CATEGORY FALLBACK IMAGE: Tự động đối chiếu theo Danh mục & Từ khóa sản phẩm, triệt tiêu 100% việc hiển thị sai ảnh ChatGPT
     function resolveCategoryFallbackImage(p) {
@@ -16251,8 +16925,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         return cdnBase + "capcut_pro.png";
       }
 
-      if (textToScan.includes("gemini") || textToScan.includes("veo") || textToScan.includes("mv5pa8kzdw") || textToScan.includes("mu6r34fz4z") || textToScan.includes("mu5t3t47ae")) {
-        return cdnBase + "PROD_MV5PA8KZDW_NANG_CAP_GEMINI_PRO_CHINH_CHU_18_Thang.png";
+      if (textToScan.includes("gemini") || textToScan.includes("veo") || textToScan.includes("mv5pa8kzdw") || textToScan.includes("mu6r34fz4z") || textToScan.includes("mu5t3t47ae") || textToScan.includes("mvklxccfrb")) {
+        if (textToScan.includes("1 năm") || textToScan.includes("1 nam") || textToScan.includes("365") || textToScan.includes("mvklxccfrb")) {
+          return cdnBase + "PROD_MUQIMRJYG0_N%C3%82NG_C%E1%BA%A5P_GEMINI_PRO_CH%C3%8DNH_CH%E1%BB%A6_1_N%C4%82M_-_365_NG%C3%80Y.jpg";
+        }
+        return cdnBase + "PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg";
       }
 
       if (textToScan.includes("kling") || textToScan.includes("mu5pwt7pp7") || textToScan.includes("muh57035hq")) {
@@ -16341,23 +17018,15 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const originalSrc = imgEl.dataset.originalSrc || imgEl.src;
       imgEl.dataset.originalSrc = originalSrc;
 
-      // Tầng 1: Nếu ảnh lưu từ Cloudflare Worker DB (/api/images/ hoặc workers.dev) bị mạng chặn -> Vượt rào tải qua proxy CDN toàn cầu weserv (tải mượt 100% không bao giờ lỗi)
-      if (retryCount === 0 && (originalSrc.includes("workers.dev") || originalSrc.includes("/api/images/"))) {
-        imgEl.dataset.retryCount = "1";
-        const cleanUrl = originalSrc.replace(/^https?:\/\//i, "");
-        imgEl.src = "https://images.weserv.nl/?url=" + encodeURIComponent(cleanUrl);
-        return;
-      }
-
-      // Tầng 2: Tra cứu ảnh chuẩn chính gốc trong KNOWN_PROD_IMAGE_MAP theo ID hoặc các mã Alias liên kết
+      // Tầng 1: Tra cứu ảnh chuẩn chính gốc trong KNOWN_PROD_IMAGE_MAP theo ID hoặc các mã Alias liên kết (Ưu tiên #1 khôi phục ngay lập tức 0ms)
       if (!pId) pId = null;
       if (prod && typeof prod === "object" && prod.id) pId = prod.id;
       else if (prod && typeof prod === "string") pId = prod;
       else if (imgEl.closest && imgEl.closest("[data-prod-id]")) pId = imgEl.closest("[data-prod-id]").getAttribute("data-prod-id");
       else if (window._currentActiveDetailProduct && window._currentActiveDetailProduct.id) pId = window._currentActiveDetailProduct.id;
 
-      if (retryCount <= 1 && pId && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
-        imgEl.dataset.retryCount = "2";
+      if (retryCount === 0 && pId && typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+        imgEl.dataset.retryCount = "1";
         const cleanId = String(pId).trim();
         let mapped = KNOWN_PROD_IMAGE_MAP[cleanId] || KNOWN_PROD_IMAGE_MAP[cleanId.toUpperCase()];
         if (!mapped && typeof getProductAliasIds === "function") {
@@ -16366,10 +17035,18 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             if (KNOWN_PROD_IMAGE_MAP[aliases[i]]) { mapped = KNOWN_PROD_IMAGE_MAP[aliases[i]]; break; }
           }
         }
-        if (mapped && mapped !== imgEl.src) {
+        if (mapped && mapped !== imgEl.src && !mapped.includes("default_product.png")) {
           imgEl.src = mapped;
           return;
         }
+      }
+
+      // Tầng 2: Nếu ảnh lưu từ Cloudflare Worker DB (/api/images/ hoặc workers.dev) bị mạng chặn -> Vượt rào tải qua proxy CDN toàn cầu weserv (tải mượt 100% không bao giờ lỗi)
+      if (retryCount <= 1 && (originalSrc.includes("workers.dev") || originalSrc.includes("/api/images/"))) {
+        imgEl.dataset.retryCount = "2";
+        const cleanUrl = originalSrc.replace(/^https?:\/\//i, "");
+        imgEl.src = "https://images.weserv.nl/?url=" + encodeURIComponent(cleanUrl);
+        return;
       }
 
       // Tầng 3: Tự động đối chiếu ảnh theo danh mục & từ khóa sản phẩm (resolveCategoryFallbackImage)
@@ -16407,7 +17084,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           if (localStorage.getItem("mmo_no_image_" + aid0) === "true") {
             const custCheck = localStorage.getItem("mmo_custom_img_" + aid0);
             if (!custCheck || custCheck === "__NO_IMAGE__" || custCheck.includes("default_product.png")) {
-              return defaultPlaceholder;
+              const hasRealPoster = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && (KNOWN_PROD_IMAGE_MAP[aid0] || KNOWN_PROD_IMAGE_MAP[p.id])) ||
+                (p.image && p.image !== "__NO_IMAGE__" && !p.image.includes("default_product.png")) ||
+                (p.image_url && p.image_url !== "__NO_IMAGE__" && !p.image_url.includes("default_product.png"));
+              if (!hasRealPoster) {
+                return defaultPlaceholder;
+              } else {
+                try { localStorage.removeItem("mmo_no_image_" + aid0); } catch(eR0) {}
+              }
             }
           }
         }
@@ -16796,8 +17480,17 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         if (total > 0) {
           const startIndex = (_recRotationIndex % total);
           const selectedRecs = [];
-          for (let i = 0; i < REC_ROW_COUNT && i < total; i++) {
-            selectedRecs.push(sortedProds[(startIndex + i) % total]);
+          // [ANTI-FLICKER]: Khởi tạo 6 sản phẩm đề xuất khớp chính xác Image 3
+          const preferredRecIds = ['PROD_MU29RGEBH0', 'PROD_MTPG0PUD', 'PROD_MUK5IKCQLN', 'PROD_MUOQS3DOIU', 'PROD_MUNUEKI3NM', 'PROD_MTQX7SIK'];
+          if (_recRotationIndex === 0) {
+            preferredRecIds.forEach(id => {
+              const p = sortedProds.find(x => x.id === id);
+              if (p && selectedRecs.length < REC_ROW_COUNT) selectedRecs.push(p);
+            });
+          }
+          for (let i = 0; selectedRecs.length < REC_ROW_COUNT && i < total; i++) {
+            const p = sortedProds[(startIndex + i) % total];
+            if (p && !selectedRecs.some(x => x.id === p.id)) selectedRecs.push(p);
           }
           grid.innerHTML = selectedRecs.map(p => renderSingleCard(p, false)).join("");
         }
@@ -16960,11 +17653,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         return pCat === "vpn proxy" || pCat === "vpn" || pCat === "proxy" || pCat.includes("proxy") || pCat.includes("vpn");
       }
       if (target === "chatgpt" || target.includes("chatgpt")) {
-        return pCat === "chatgpt" || pCat.includes("chatgpt");
+        return pCat === "chatgpt" || pCat.includes("chatgpt") || String(p.name || '').toLowerCase().includes("chatgpt");
       }
       if (target === "ai & video" || target === "ai" || target.includes("ai & video") || target.includes("kling")) {
-        if (pCat === "chatgpt" || pCat.includes("chatgpt")) return false;
-        return pCat === "ai & video" || pCat === "ai" || pCat.includes("ai & video") || pCat.includes("kling");
+        const pNameLower = String(p.name || '').toLowerCase();
+        return pCat === "ai & video" || pCat === "ai" || pCat === "chatgpt" || pCat.includes("ai & video") || pCat.includes("chatgpt") || pCat.includes("kling") || pNameLower.includes("chatgpt") || pNameLower.includes("gemini") || pNameLower.includes("claude") || pNameLower.includes("kling") || pNameLower.includes("veo");
       }
       if (target.includes("hot mail") || target.includes("hotmail") || target.includes("outlook")) {
         return pCat === "hot mail" || pCat === "hotmail" || pCat === "outlook" || pCat.includes("hot mail") || pCat.includes("hotmail") || pCat.includes("outlook");
@@ -17084,6 +17777,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       }
 
       if (filtered.length === 0) {
+        // [ANTI-FLICKER]: Nếu không có từ khóa và danh mục là Tất cả, giữ nguyên thẻ đã pre-render không xóa
+        if (!q && (!currentCategory || currentCategory === "Tất cả") && container.children && container.children.length > 0) {
+          return;
+        }
+        if (!q && (!currentCategory || currentCategory === "Tất cả")) return;
         container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding:50px 20px; color:#94a3b8;">' +
           '<i class="fa-solid fa-magnifying-glass" style="font-size:3rem; margin-bottom:14px; display:block; color:#475569;"></i>' +
           '<h4 style="font-size:1.05rem; color:#f1f5f9; margin-bottom:8px;">Không tìm thấy sản phẩm phù hợp</h4>' +
@@ -17263,6 +17961,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           }, 80);
         }
         if (tabId === "tabAdmChat") {
+          if (typeof syncCloudMessages === "function") syncCloudMessages(true);
           if (typeof renderAdminChatUI === "function") renderAdminChatUI();
           const tabEl = document.getElementById("tabAdmChat");
           if (tabEl) tabEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -18088,9 +18787,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const badge = vs > 0 
               ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
               : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-            return '<div class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-              '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
-              '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+            return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+              '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
+              '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + formatVND(v.price || 0) + '</span>' +
             '</div>';
           }).join("");
           pillsContainer.innerHTML = newPillsHtml;
@@ -19028,19 +19727,28 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
               const factoryKnownPoster = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") ? (KNOWN_PROD_IMAGE_MAP[cur.id] || KNOWN_PROD_IMAGE_MAP[cur.id.toUpperCase()]) : "";
               const isWorkerStillOldPoster = factoryKnownPoster && (resolvedWorkerImg === factoryKnownPoster);
+              const isExplicitlyNoImg = (tp.image_deleted === true || tp.image === '__NO_IMAGE__' || tp.image_url === '__NO_IMAGE__' || (typeof localStorage !== "undefined" && localStorage.getItem("mmo_no_image_" + cur.id) === "true"));
 
               let targetImage = "";
-              if (localCustomImg && localCustomImg.trim() && (hasFreshLocalEdit || isWorkerStillOldPoster)) {
+              if (isExplicitlyNoImg) {
+                targetImage = "__NO_IMAGE__";
+                cur.image = "__NO_IMAGE__";
+                cur.image_url = "__NO_IMAGE__";
+                cur.imageUrl = "__NO_IMAGE__";
+                cur._imageExplicitlyDeleted = true;
+                try { localStorage.setItem("mmo_no_image_" + cur.id, "true"); } catch(e) {}
+                try { localStorage.removeItem("mmo_custom_img_" + cur.id); } catch(e) {}
+                if (typeof KNOWN_PROD_IMAGE_MAP !== "undefined") {
+                  delete KNOWN_PROD_IMAGE_MAP[cur.id];
+                  delete KNOWN_PROD_IMAGE_MAP[cur.id.toUpperCase()];
+                }
+              } else if (localCustomImg && localCustomImg.trim() && localCustomImg !== "__NO_IMAGE__" && !localCustomImg.includes("default_product.png") && (hasFreshLocalEdit || isWorkerStillOldPoster)) {
                 targetImage = localCustomImg.trim();
-              } else if (resolvedWorkerImg && resolvedWorkerImg.trim() && !resolvedWorkerImg.includes("/api/products/") && !resolvedWorkerImg.includes("default_product.png")) {
+              } else if (resolvedWorkerImg && resolvedWorkerImg.trim() && resolvedWorkerImg !== "__NO_IMAGE__" && !resolvedWorkerImg.includes("default_product.png")) {
                 targetImage = resolvedWorkerImg.trim();
-              } else if (localCustomImg && localCustomImg.trim() && !localCustomImg.includes("/api/products/")) {
+              } else if (localCustomImg && localCustomImg.trim() && localCustomImg !== "__NO_IMAGE__" && !localCustomImg.includes("default_product.png")) {
                 targetImage = localCustomImg.trim();
-              } else if (resolvedWorkerImg && resolvedWorkerImg.trim()) {
-                targetImage = resolvedWorkerImg.trim();
-              } else if (localCustomImg && localCustomImg.trim()) {
-                targetImage = localCustomImg.trim();
-              } else if (isImgValid(cur.image) && !cur.image.includes("khotaikhoanso")) {
+              } else if (isImgValid(cur.image) && cur.image !== "__NO_IMAGE__" && !cur.image.includes("default_product.png") && !cur.image.includes("khotaikhoanso")) {
                 targetImage = cur.image.trim();
               } else if (typeof resolveProductImage === "function") {
                 targetImage = resolveProductImage(cur);
@@ -19048,7 +19756,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                 targetImage = cur.image || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
               }
 
-              if (targetImage && !targetImage.includes("default_product.png")) {
+              if (targetImage && !targetImage.includes("default_product.png") && targetImage !== "__NO_IMAGE__") {
                 try { localStorage.setItem("mmo_custom_img_" + cur.id, targetImage); } catch(eImgLS) {}
               }
 
@@ -19070,7 +19778,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
 
               MOCK_DATA.products[existingIdx] = Object.assign({}, cur, {
                 name: tp.name || cur.name,
-                category: tp.category || cur.category,
+                category: (typeof canonicalizeCategoryName === "function") ? canonicalizeCategoryName(tp.category || cur.category) : (tp.category || cur.category),
                 price: updatedPrice,
                 stock: updatedStock,
                 buffSold: finalBuffSold,
@@ -19153,7 +19861,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             MOCK_DATA.products.push({
               id: tp.id,
               name: tp.name,
-              category: tp.category || "Tài Khoản Khác",
+              category: (typeof canonicalizeCategoryName === "function") ? canonicalizeCategoryName(tp.category || "Tài Khoản Khác") : (tp.category || "Tài Khoản Khác"),
               price: Number(tp.price) || 0,
               stock: newStock,
               sold: Number(tp.sold) || Number(tp.buffSold) || Number(tp.buff_sold) || 0,
@@ -20047,9 +20755,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               const badge = vs > 0
                 ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>'
                 : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-              return '<div class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
-                '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+              return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
+                '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + formatVND(v.price || 0) + '</span>' +
               '</div>';
             }).join("");
           }
@@ -20166,7 +20874,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (s === "PROD_MU5PWT7PP7" || s === "PROD_MUH57035HQ") {
         return "PROD_MU5PWT7PP7";
       }
-      if (s === "PROD_MU5T3T47AE" || s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3") {
+      if (s === "PROD_MU5T3T47AE" || s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3" || s === "PROD_MV5QIZNFCZ") {
         return "PROD_MU5T3T47AE";
       }
       return s;
@@ -20182,8 +20890,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (s === "PROD_MU5PWT7PP7" || s === "PROD_MUH57035HQ") {
         return ["PROD_MU5PWT7PP7", "PROD_MUH57035HQ"];
       }
-      if (s === "PROD_MU5T3T47AE" || s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3") {
-        return ["PROD_MU5T3T47AE", "PROD_MV5PA8KZDW", "PROD_MV5OYRDJCA", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0"];
+      if (s === "PROD_MU5T3T47AE" || s === "PROD_MV5PA8KZDW" || s === "PROD_MV5OYRDJCA" || s === "PROD_MU6R34FZ4Z" || s === "PROD_MU2AB1XEGI" || s === "PROD_MUQIMRJYG0" || s === "SP_GEMINI_VEO3" || s === "PROD_MV5QIZNFCZ") {
+        return ["PROD_MU5T3T47AE", "PROD_MV5PA8KZDW", "PROD_MV5OYRDJCA", "PROD_MU6R34FZ4Z", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0", "PROD_MV5QIZNFCZ"];
       }
       return [s];
     }
@@ -20207,8 +20915,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (k1 && k2) return true;
 
       // Gemini Pro 18 Tháng
-      const g1 = s1 === "PROD_MV5PA8KZDW" || s1 === "PROD_MV5OYRDJCA" || s1 === "PROD_MU6R34FZ4Z" || s1 === "PROD_MU2AB1XEGI" || s1 === "PROD_MUQIMRJYG0" || s1 === "SP_GEMINI_VEO3" || s1 === "PROD_MU5T3T47AE";
-      const g2 = s2 === "PROD_MV5PA8KZDW" || s2 === "PROD_MV5OYRDJCA" || s2 === "PROD_MU6R34FZ4Z" || s2 === "PROD_MU2AB1XEGI" || s2 === "PROD_MUQIMRJYG0" || s2 === "SP_GEMINI_VEO3" || s2 === "PROD_MU5T3T47AE";
+      const g1 = s1 === "PROD_MV5PA8KZDW" || s1 === "PROD_MV5OYRDJCA" || s1 === "PROD_MU6R34FZ4Z" || s1 === "PROD_MU2AB1XEGI" || s1 === "PROD_MUQIMRJYG0" || s1 === "SP_GEMINI_VEO3" || s1 === "PROD_MU5T3T47AE" || s1 === "PROD_MV5QIZNFCZ";
+      const g2 = s2 === "PROD_MV5PA8KZDW" || s2 === "PROD_MV5OYRDJCA" || s2 === "PROD_MU6R34FZ4Z" || s2 === "PROD_MU2AB1XEGI" || s2 === "PROD_MUQIMRJYG0" || s2 === "SP_GEMINI_VEO3" || s2 === "PROD_MU5T3T47AE" || s2 === "PROD_MV5QIZNFCZ";
       if (g1 && g2) return true;
 
       // [KHÓA BẢO VỆ TUYỆT ĐỐI - KHÔNG BAO GIỜ GỘP NHẦM 2 SẢN PHẨM KHÁC NHAU]:
@@ -20268,9 +20976,9 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
               const badge = vs > 0 
                 ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
                 : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-              return '<div class="variant-pill-option ' + (idx === curVIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                '<span>' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)))) + badge + '</span>' +
-                '<span style="font-weight:700;">' + (typeof formatVND === "function" ? formatVND(v.price || 0) : ((v.price || 0) + ' đ')) + '</span>' +
+              return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === curVIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + (typeof escapeHtml === "function" ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)))) + badge + '</span>' +
+                '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + (typeof formatVND === "function" ? formatVND(v.price || 0) : ((v.price || 0) + ' đ')) + '</span>' +
               '</div>';
             }).join("");
           }
@@ -20445,9 +21153,9 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
                   const badge = vs > 0 
                     ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
                     : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-                  return '<div class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                    '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
-                    '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+                  return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                    '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
+                    '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + formatVND(v.price || 0) + '</span>' +
                   '</div>';
                 }).join("");
               }
@@ -21671,9 +22379,9 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
               username: pCfg.username,
               password: pCfg.password,
               authType: pCfg.authType,
-              customer_email: (currentUser && currentUser.email) || (payload && payload.customer_email) || ""
+              customer_email: (currentUser && currentUser.email) || (payload && payload.customer_email) || "admin@muabantaikhoanmmo.com"
             }),
-            signal: createFastSignal(12000)
+            signal: createFastSignal(15000)
           });
           const wJson = await wRes.json().catch(() => null);
           if (wJson && wJson.success && Array.isArray(wJson.accounts) && wJson.accounts.length > 0) {
@@ -21690,6 +22398,13 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
               trans_id: wJson.trans_id || "",
               accounts: wJson.accounts,
               count: wJson.accounts.length,
+              provider: provider,
+              raw: wJson
+            };
+          } else if (wJson && wJson.success === false && wJson.message) {
+            return {
+              success: false,
+              message: wJson.message,
               provider: provider,
               raw: wJson
             };
@@ -21719,19 +22434,9 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
           }
 
           if (json.status !== "success") {
-            let errMsg = json.msg || json.message || "Mua hàng từ nguồn thất bại hoặc kho nguồn tạm hết!";
-            if (provider === "ultrammo") {
-              if (errMsg.includes("Hàng trong kho không đủ") || errMsg.includes("kho không đủ") || errMsg.includes("hết hàng")) {
-                errMsg = "Kho hàng nhà cung cấp ultrammo.com tạm thời hết tài khoản hoặc đang cập nhật kho mới. Vui lòng chọn gói khác hoặc thử lại sau!";
-              } else if (errMsg.includes("Mất kết nối đến kho hàng") || errMsg.includes("404 Not Found")) {
-                errMsg = "Nhà cung cấp ultrammo.com đang bảo trì hoặc mất kết nối tới kho hàng đối tác. Vui lòng chọn sản phẩm khác hoặc thử lại sau!";
-              } else if ((errMsg.includes("Số dư không đủ") || errMsg.includes("số dư") || errMsg.includes("nạp thêm") || errMsg.includes("liên hệ Admin")) && !errMsg.includes("kho không đủ")) {
-                errMsg = "Số dư ví Admin trên ultrammo.com không đủ tiền để mua sản phẩm này! Vui lòng nạp thêm tiền vào ví ultrammo.com.";
-              }
-            }
             return {
               success: false,
-              message: errMsg,
+              message: "Sản phẩm này hiện đang tạm bảo trì kho hàng. Hệ thống đang chuyển sang Đặt Hàng Trước hoặc quý khách vui lòng quay lại sau!",
               provider: provider,
               raw: json
             };
@@ -22329,9 +23034,9 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
                     const stockBadge = activeTargetStock > 0
                       ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(activeTargetStock).toLocaleString("vi-VN") + ' acc)</small>'
                       : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-                    return '<div class="variant-pill-option ' + (idx === cIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                      '<span>' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
-                      '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
+                    return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === cIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                      '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
+                      '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
                     '</div>';
                   }).join("");
                 }
@@ -22385,110 +23090,110 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   "PROD_MU5T3T47AE": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MU2AB1XEGI": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MUQIMRJYG0": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MUR4EA44RE": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "122569",
-    "sourcePrice": 7590,
-    "sourceStock": 9476,
+    "provider": "ultrammo",
+    "sourceProdId": "3479",
+    "sourcePrice": 2200,
+    "sourceStock": 8449,
     "sourceProdName": "TikTok Canada - CA Reg 2024 Mail Lock",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MV5SHIF0DU": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "130660",
-    "sourcePrice": 11849,
-    "sourceStock": 833,
-    "sourceProdName": "ON2 - CLONE FACEBOOK NGOẠI CÓ 2FA - VERI GMAIL",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "31747",
+    "sourcePrice": 12000,
+    "sourceStock": 499,
+    "sourceProdName": "CLONE IP VIỆT NAME RANDOM TRÊN 3 NGÀY - 2FA - GMAIL LIVE ADS",
+    "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MV5RZ46QPB": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "125445",
-    "sourcePrice": 11638,
-    "sourceStock": 7525,
-    "sourceProdName": "CLONE FACEBOOK NGOẠI CÓ 2FA - VERI HOTMAIL - NAME RANDOM",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "31773",
+    "sourcePrice": 4400,
+    "sourceStock": 2343,
+    "sourceProdName": "Clone Ngoại Reg New ADS Live Trâu Ngon ( UID| Pass |Cookie)",
+    "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MV5RNGVO93": {
     "enabled": true,
-    "provider": "vuavia",
-    "sourceProdId": "2006",
-    "sourcePrice": 150000,
-    "sourceStock": 307,
-    "sourceProdName": "[Via] #2006 Acc Facebook Mỹ Thuê Tick Xanh - Có Avatar - Xác Thực Hotmail Live - 150.000 đ (Tồn: 307)",
-    "baseUrl": "https://api.vuavia.io",
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "31867",
+    "sourcePrice": 90000,
+    "sourceStock": 0,
+    "sourceProdName": "ACC USA 2025- AVATAR - 2FA - VER HOTMAIL - REG IOS - ĐÃ KHÁNG 282 - IP USA | NÚT LÊN TÍCH XANH",
+    "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MV5QIZNFCZ": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
-    "baseUrl": "https://selltainguyenmmo.com",
-    "isSourceDeleted": false
-  },
-  "PROD_MV5PA8KZDW": {
-    "enabled": true,
-    "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MV5OYRDJCA": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
+    "baseUrl": "https://selltainguyenmmo.com",
+    "isSourceDeleted": false
+  },
+  "PROD_MV5PA8KZDW": {
+    "enabled": true,
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MU6R34FZ4Z": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "32428",
-    "sourcePrice": 49600,
-    "sourceStock": 949,
-    "sourceProdName": "[GEMINI PRO] #32428 NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ ) - 49.600 đ (Tồn: 949)",
+    "sourceProdId": "33270",
+    "sourcePrice": 68800,
+    "sourceStock": 259,
+    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
@@ -22534,12 +23239,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MV1GO2PD8A": {
     "enabled": true,
-    "provider": "vuavia",
-    "sourceProdId": "1993",
-    "sourcePrice": 6000,
-    "sourceStock": 8255,
-    "sourceProdName": "[vuavia.io] #1993 Clone Ngoại Reg New Name Random - 2FA - Mail Domain - Dùng Luôn - 6.000 đ (Tồn: 8.255)",
-    "baseUrl": "https://api.vuavia.io",
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "25483",
+    "sourcePrice": 6600,
+    "sourceStock": 1578,
+    "sourceProdName": "Clone Ngoại Very Phone + Very mail Fvia | Định Dạng : UID|Pass|2FA|Mail lấy được Code ( Ngâm Random IPV4 Ngoại )",
+    "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MUR4SPH1IU": {
@@ -22547,8 +23252,8 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "provider": "ultrammo",
     "sourceProdId": "4116",
     "sourcePrice": 1400,
-    "sourceStock": 1544,
-    "sourceProdName": "[Tiktok ngoại] #4116 TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25 - 1.400 đ (Tồn: 1.544)",
+    "sourceStock": 1532,
+    "sourceProdName": "TikTok Cambodia - KH Reg 2025 Mail Lock | 28.8.25",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
@@ -22574,12 +23279,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MUOSDN0FCU": {
     "enabled": true,
-    "provider": "sellmmo",
-    "sourceProdId": "17773",
-    "sourcePrice": 20400,
-    "sourceStock": 291,
-    "sourceProdName": "[GMAIL.COM] #17773 Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h) - 20.400 đ (Tồn: 291)",
-    "baseUrl": "https://sellmmo.vn",
+    "provider": "ultrammo",
+    "sourceProdId": "33524",
+    "sourcePrice": 22000,
+    "sourceStock": 31,
+    "sourceProdName": "Tài khoản Gmail New ngâm chuẩn chất lượng 🔥",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MUORGNEQOE": {
@@ -22596,8 +23301,8 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "enabled": true,
     "provider": "ultrammo",
     "sourceProdId": "33131",
-    "sourcePrice": 2400,
-    "sourceStock": 4266,
+    "sourcePrice": 3000,
+    "sourceStock": 5419,
     "sourceProdName": "TIKTOK VIỆT CỔ ĐÃ TẠO 1-3 NĂM HOTMAIL LIVE ( RANDOM ĐẶT ĐƠN ) HÀNG BẤT TỬ",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
@@ -22606,8 +23311,8 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "enabled": true,
     "provider": "ultrammo",
     "sourceProdId": "5759",
-    "sourcePrice": 2200,
-    "sourceStock": 486,
+    "sourcePrice": 2800,
+    "sourceStock": 471,
     "sourceProdName": "TikTok VN Reg T1-2026 | Mail Live ( Có Oauth2 )",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
@@ -22625,10 +23330,10 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   "PROD_MUNUEKI3NM": {
     "enabled": true,
     "provider": "ultrammo",
-    "sourceProdId": "19204",
-    "sourcePrice": 280000,
-    "sourceStock": 16,
-    "sourceProdName": "[Chat gpt] #19204 CHATGPT PLUS 1 THÁNG ( DÙNG RIÊNG ) BẢO HÀNH 5 NGÀY - 280.000 đ (Tồn: 16)",
+    "sourceProdId": "32016",
+    "sourcePrice": 290000,
+    "sourceStock": 99999,
+    "sourceProdName": "🚀GPT Plus 1 tháng - Tài khoản cấp BHF - Chat gqt Plus Riêng tư - Dùng 1 tháng, Bảo hành full",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
@@ -22644,12 +23349,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MUK7P74YNT": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "119948",
-    "sourcePrice": 120750,
-    "sourceStock": 136,
-    "sourceProdName": "[Youtube] #119948 Nâng Cấp Youtube Premium Chính Chủ 1 Tháng ( Bảo Hành FULL TIME ) - 120.750 đ (Tồn: 136)",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "provider": "ultrammo",
+    "sourceProdId": "26777",
+    "sourcePrice": 30000,
+    "sourceStock": 99999,
+    "sourceProdName": "Youtube Premium: 1 Tháng",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MUK7DQMKAM": {
@@ -22704,12 +23409,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MUJVFEFFNP": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "122260",
-    "sourcePrice": 2817.5,
+    "provider": "ultrammo",
+    "sourceProdId": "34028",
+    "sourcePrice": 2200,
     "sourceStock": 9999,
-    "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "sourceProdName": "Proxy Viettel - 1 ngày",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MUJV1YHQ6N": {
@@ -22744,21 +23449,21 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MUJQDTNIH9": {
     "enabled": true,
-    "provider": "nguyenlieummo",
-    "sourceProdId": "122260",
-    "sourcePrice": 2818,
+    "provider": "selltainguyenmmo",
+    "sourceProdId": "31918",
+    "sourcePrice": 1400,
     "sourceStock": 9999,
     "sourceProdName": "Proxy IPv4 Datacenter Proxy US - Dùng Riêng ( 1 NGÀY ) ỔN ĐỊNH",
-    "baseUrl": "https://nguyenlieummo.com.vn",
+    "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
   "PROD_MUJGUY19DD": {
     "enabled": true,
     "provider": "ultrammo",
-    "sourceProdId": "26784",
-    "sourcePrice": 13000,
-    "sourceStock": 23,
-    "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
+    "sourceProdId": "14886",
+    "sourcePrice": 18000,
+    "sourceStock": 692,
+    "sourceProdName": "Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h)",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
@@ -22767,8 +23472,8 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "provider": "ultrammo",
     "sourceProdId": "13629",
     "sourcePrice": 1200,
-    "sourceStock": 553,
-    "sourceProdName": "[Kling AI] #13629 TÀI KHOẢN KLING AI 65 CREDIT - 1.200 đ (Tồn: 553)",
+    "sourceStock": 491,
+    "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
@@ -22787,8 +23492,8 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "provider": "ultrammo",
     "sourceProdId": "13629",
     "sourcePrice": 1200,
-    "sourceStock": 553,
-    "sourceProdName": "[Kling AI] #13629 TÀI KHOẢN KLING AI 65 CREDIT - 1.200 đ (Tồn: 553)",
+    "sourceStock": 207,
+    "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
@@ -22797,7 +23502,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "provider": "ultrammo",
     "sourceProdId": "26955",
     "sourcePrice": 117,
-    "sourceStock": 16089,
+    "sourceStock": 2120,
     "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
@@ -22824,12 +23529,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   },
   "PROD_MU2CZL38PH": {
     "enabled": true,
-    "provider": "sellmmo",
-    "sourceProdId": "171",
-    "sourcePrice": 3400,
-    "sourceStock": 3299,
-    "sourceProdName": "TikTok France (Pháp) - FR Reg 2024 Mail Lock",
-    "baseUrl": "https://sellmmo.vn",
+    "provider": "ultrammo",
+    "sourceProdId": "40760",
+    "sourcePrice": 7500,
+    "sourceStock": 7181,
+    "sourceProdName": "Tiktok France reg TTT bằng Hotmail đặt pass và bật 2FA - Login bằng username/hotmail và pass ( Hotmail Trusted - OAuth2 [GRAPH API ] Đã Thêm Mail Khôi Phục )",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MU2BIFBBNE": {
@@ -22845,21 +23550,21 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   "PROD_MU2B32VLQY": {
     "enabled": true,
     "provider": "ultrammo",
-    "sourceProdId": "32026",
+    "sourceProdId": "32037",
     "sourcePrice": 18000,
-    "sourceStock": 36,
-    "sourceProdName": "Capcut Pro 7Day | Riêng Tư [ BHF ]",
+    "sourceStock": 39,
+    "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MU2ASBNSJT": {
     "enabled": true,
-    "provider": "vuavia",
-    "sourceProdId": "1977",
-    "sourcePrice": 15000,
-    "sourceStock": 18372,
-    "sourceProdName": "[Clone] #1977 Clone Facebook Đăng Ký Ngẫu Nhiên - Đổi Số Điện Thoại - Gmail Không 2FA - 15.000 đ (Tồn: 18.372)",
-    "baseUrl": "https://api.vuavia.io",
+    "provider": "nguyenlieummo",
+    "sourceProdId": "127716",
+    "sourcePrice": 12061,
+    "sourceStock": 3117,
+    "sourceProdName": "OM7-CLONE FACEBOOK VIỆT NAM CÓ 2FA VERI HOTMAIL RANDOM AVATAR SIÊU TRÂU",
+    "baseUrl": "https://nguyenlieummo.com.vn",
     "isSourceDeleted": false
   },
   "PROD_MU2A2S732Y": {
@@ -22885,21 +23590,21 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   "PROD_MU1G6LJX": {
     "enabled": true,
     "provider": "ultrammo",
-    "sourceProdId": "32026",
+    "sourceProdId": "32037",
     "sourcePrice": 18000,
-    "sourceStock": 36,
-    "sourceProdName": "Capcut Pro 7Day | Riêng Tư [ BHF ]",
+    "sourceStock": 39,
+    "sourceProdName": "Capcut Pro 7 ngày ( Bảo hành Full )",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MTQZT2Y1": {
     "enabled": true,
-    "provider": "ultrammo",
-    "sourceProdId": "26955",
-    "sourcePrice": 117,
+    "provider": "sellmmo",
+    "sourceProdId": "33770",
+    "sourcePrice": 321.75,
     "sourceStock": 16087,
     "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
-    "baseUrl": "https://ultrammo.com",
+    "baseUrl": "https://sellmmo.vn",
     "isSourceDeleted": false
   },
   "PROD_MTRB6000": {
@@ -22907,27 +23612,27 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "provider": "ultrammo",
     "sourceProdId": "26955",
     "sourcePrice": 117,
-    "sourceStock": 16087,
+    "sourceStock": 2120,
     "sourceProdName": "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MTQQXO2E": {
     "enabled": true,
-    "provider": "sellmmo",
-    "sourceProdId": "39341",
-    "sourcePrice": 302.94,
-    "sourceStock": 12000,
-    "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
-    "baseUrl": "https://sellmmo.vn",
+    "provider": "ultrammo",
+    "sourceProdId": "39182",
+    "sourcePrice": 433.5,
+    "sourceStock": 3689,
+    "sourceProdName": "24h plus - có box get api",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MTQX1C7X": {
     "enabled": true,
     "provider": "sellmmo",
     "sourceProdId": "39341",
-    "sourcePrice": 302.94,
-    "sourceStock": 12000,
+    "sourcePrice": 294.03,
+    "sourceStock": 59,
     "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
     "baseUrl": "https://sellmmo.vn",
     "isSourceDeleted": false
@@ -22937,7 +23642,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "provider": "sellmmo",
     "sourceProdId": "39073",
     "sourcePrice": 180.54,
-    "sourceStock": 17000,
+    "sourceStock": 821,
     "sourceProdName": "Gmail Domain Cho Thuê live 10phut -1h .random✔️ trùng dv✔️",
     "baseUrl": "https://sellmmo.vn",
     "isSourceDeleted": false
@@ -22946,10 +23651,20 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "enabled": true,
     "provider": "sellmmo",
     "sourceProdId": "39341",
-    "sourcePrice": 302.94,
-    "sourceStock": 12000,
+    "sourcePrice": 294.03,
+    "sourceStock": 59,
     "sourceProdName": "Gmail Domain 12h - ramdom trùng dv",
     "baseUrl": "https://sellmmo.vn",
+    "isSourceDeleted": false
+  },
+  "PROD_MVKLXCCFRB": {
+    "enabled": true,
+    "provider": "ultrammo",
+    "sourceProdId": "26765",
+    "sourcePrice": 80000,
+    "sourceStock": 99999,
+    "sourceProdName": "Gói Chính Chủ: 1 Năm (Thêm Vào Nhóm) - BH 3 Tháng - Gemini Pro, Veo 3, Drive 5TB, Antigravity: Nâng Cấp Google AI Pro Chính Chủ Giá Rẻ",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   }
 };
@@ -22971,18 +23686,47 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
           const parsed = JSON.parse(stored);
           if (parsed && typeof parsed === "object") {
             let changed = false;
-            // Khắc phục đặc biệt cho PROD_MUR52EZ6H1 (Tiktok Korea #32393 tồn 9.490)
-            if (parsed["PROD_MUR52EZ6H1"]) {
-              const item = parsed["PROD_MUR52EZ6H1"];
-              if (item.sourceProdId === "32186" || item.sourceProdId === "32393" || item.isSourceDeleted || !item.sourceStock || item.sourceStock < 9000) {
-                item.sourceProdId = "32393";
-                item.sourcePrice = 4400;
-                item.sourceStock = 9490;
-                item.isSourceDeleted = false;
-                item.provider = "selltainguyenmmo";
-                changed = true;
+            const DEPRECATED_IDS_TO_UPGRADE = ["25644", "32026", "32428", "13367", "21664", "29532", "22454", "19204", "17773", "130660", "25395", "25255", "32186"];
+            Object.keys(DEFAULT_API_PRODUCT_MAPPINGS).forEach(prodKey => {
+              const defMap = DEFAULT_API_PRODUCT_MAPPINGS[prodKey];
+              const curMap = parsed[prodKey];
+              if (curMap && defMap) {
+                const curSid = String(curMap.sourceProdId || "").replace(/^#/, "").trim();
+                if (DEPRECATED_IDS_TO_UPGRADE.includes(curSid) || (curSid === "39341" && curMap.provider !== "sellmmo") || (prodKey === "PROD_MTQQXO2E" && curSid === "39341")) {
+                  parsed[prodKey] = Object.assign({}, defMap);
+                  changed = true;
+                }
               }
-            }
+            });
+            try {
+              const rawProds = localStorage.getItem("mmo_products");
+              if (rawProds) {
+                const prodArr = JSON.parse(rawProds);
+                if (Array.isArray(prodArr)) {
+                  let prodChanged = false;
+                  prodArr.forEach(p => {
+                    const defMap = p && p.id ? DEFAULT_API_PRODUCT_MAPPINGS[p.id] : null;
+                    if (p && defMap) {
+                      const curSid = p.apiMapping ? String(p.apiMapping.sourceProdId || "").replace(/^#/, "").trim() : "";
+                      if (DEPRECATED_IDS_TO_UPGRADE.includes(curSid) || (curSid === "39341" && p.apiMapping && p.apiMapping.provider !== "sellmmo") || (p.id === "PROD_MTQQXO2E" && curSid === "39341")) {
+                        p.apiMapping = Object.assign({}, defMap);
+                        p.stock = defMap.sourceStock;
+                        if (Array.isArray(p.variants)) {
+                          p.variants.forEach(v => {
+                            if (v) {
+                              v.apiMapping = Object.assign({}, defMap);
+                              v.stock = defMap.sourceStock;
+                            }
+                          });
+                        }
+                        prodChanged = true;
+                      }
+                    }
+                  });
+                  if (prodChanged) localStorage.setItem("mmo_products", JSON.stringify(prodArr));
+                }
+              }
+            } catch (pe) {}
             Object.keys(parsed).forEach(k => {
               const item = parsed[k];
               if (!item) return;
@@ -24217,13 +24961,15 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
 
       // Danh sách sản phẩm mẫu đã xác thực 100% test mua thành công cho từng nguồn
       const PINNED_VERIFIED = [
-        { id: "23960", provider: "selltainguyenmmo", name: "ChatGPT New Gmail Trial (Trial 2FA)", price: 2900, stock: 16037, tag: "⭐ [selltainguyenmmo] CHATGPT NEW TRIAL (16.037 ACC)" },
-        { id: "26521", provider: "selltainguyenmmo", name: "PROXY IPV4 - PUBLIC - USA 0151", price: 6600, stock: 42, tag: "⭐ [selltainguyenmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "32396", provider: "selltainguyenmmo", name: "Hotmail Trusted - OAuth2 [Graph]", price: 198, stock: 15000, tag: "⭐ [selltainguyenmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "31918", provider: "selltainguyenmmo", name: "Proxy IPv4 Datacenter Proxy US - Dùng Riêng (1 NGÀY)", price: 1400, stock: 9999, tag: "⭐ [selltainguyenmmo] PROXY US 1 NGÀY (9.999 ACC)" },
+        { id: "26955", provider: "ultrammo", name: "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)", price: 117, stock: 2078, tag: "⭐ [ultrammo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "39182", provider: "ultrammo", name: "Gmail 24h plus - có box get api", price: 433.5, stock: 1097, tag: "⭐ [ultrammo] GMAIL 24H PLUS (1.097 ACC)" },
         { id: "712", provider: "mail72h", name: "Mail 24h [ID 712]", price: 259, stock: 72357, tag: "⭐ [mail72h] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
         { id: "121063", provider: "nguyenlieummo", name: "Hotmail Trusted - OAuth2 [Graph] Live 12-36 Tháng", price: 656, stock: 88181, tag: "⭐ [nguyenlieummo] HOTMAIL LIVE TRÂU (88K ACC)" },
         { id: "117725", provider: "nguyenlieummo", name: "ID 4 - NVR name ngoai", price: 74, stock: 1810, tag: "⭐ [nguyenlieummo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
         { id: "19084", provider: "shop1989nd", name: "Outlook Trusted Oauth2 [Graph]", price: 201.5, stock: 67224, tag: "⭐ [shop1989nd] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
-        { id: "33171", provider: "sellmmo", name: "Gmail Domain ✔️ live 2 phút", price: 55, stock: 1550, tag: "⭐ [sellmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" }
+        { id: "39073", provider: "sellmmo", name: "Gmail Domain Cho Thuê live 10phut -1h .random✔️", price: 180.54, stock: 17000, tag: "⭐ [sellmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" }
       ];
 
       let html = '<optgroup label="✅ SẢN PHẨM KHUYÊN DÙNG TEST (ĐÃ XÁC THỰC 100% CÒN HÀNG THẬT & MUA THÀNH CÔNG)">';
@@ -28573,9 +29319,9 @@ function executeCompareSourcesSearch() {
             const badge = vs > 0 
               ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + vs + ' acc)</small>' 
               : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-            return '<div class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-              '<span>' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
-              '<span style="font-weight:700;">' + formatVND(v.price || 0) + '</span>' +
+            return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+              '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + escapeHtml(v.name || ('Gói ' + (idx + 1))) + badge + '</span>' +
+              '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + formatVND(v.price || 0) + '</span>' +
             '</div>';
           }).join("");
         }
@@ -29066,7 +29812,7 @@ function executeCompareSourcesSearch() {
           telegramChannel: 'https://t.me/muabantaikhoanmmo',
           brandLogo: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
           brandFavicon: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
-          brandOgImage: 'https://iili.io/nFV4Rln.png'
+          brandOgImage: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'
         };
       }
       return {
@@ -29089,7 +29835,7 @@ function executeCompareSourcesSearch() {
         telegramChannel: 'https://t.me/muabantaikhoanmmo',
         brandLogo: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
         brandFavicon: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
-        brandOgImage: 'https://iili.io/nFV4Rln.png'
+        brandOgImage: 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'
       };
     }
     window.getCurrentBrandProfile = getCurrentBrandProfile;
@@ -29103,7 +29849,7 @@ function executeCompareSourcesSearch() {
       var defaultName = isTapHoa ? 'TAPHOAMMO.INK' : 'MUABANTAIKHOANMMO';
       var defaultLogo = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png';
       var defaultFavicon = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png';
-      var defaultOg = 'https://iili.io/nFV4Rln.png';
+      var defaultOg = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';
 
       var result = {
         siteName: defaultName,
@@ -29204,7 +29950,7 @@ function executeCompareSourcesSearch() {
 
       var ogEl = document.getElementById('setSiteOgImageUrl');
       if (ogEl) {
-        ogEl.value = bData.brandOgImage || 'https://iili.io/nFV4Rln.png';
+        ogEl.value = bData.brandOgImage || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';
         previewBrandUrl(ogEl.value, 'setSiteOgImagePreview', 'setSiteOgImageHint', 'btnResetOgImage');
       }
 
@@ -29339,6 +30085,8 @@ function executeCompareSourcesSearch() {
             this.src = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png';
           } else if (previewId && previewId.includes('Favicon')) {
             this.src = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png';
+          } else if (previewId && (previewId.includes('Og') || previewId.includes('og'))) {
+            this.src = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';
           }
         };
         if (cleanUrl) {
@@ -29547,7 +30295,7 @@ function executeCompareSourcesSearch() {
         saveBrandSpecificSettings(targetKey, { brandFavicon: defFav });
       } else if (type === 'ogImage') {
         const inp = document.getElementById('setSiteOgImageUrl');
-        const defOg = 'https://iili.io/nFV4Rln.png';
+        const defOg = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';
         if (inp) inp.value = defOg;
         previewBrandUrl(defOg, 'setSiteOgImagePreview', 'setSiteOgImageHint', 'btnResetOgImage');
         saveBrandSpecificSettings(targetKey, { brandOgImage: defOg });
@@ -29590,7 +30338,7 @@ function executeCompareSourcesSearch() {
         document.title = (bProf && bProf.homeTitle && bProf.homeTitle.length <= 60) ? bProf.homeTitle : 'Mua Bán Tài Khoản MMO | Sàn Dịch Vụ MMO Uy Tín';
 
         // 2. Logo Header, Footer, Drawer & Toàn Bộ Trang (Đúng Logo riêng của Website)
-        const activeLogoUrl = (brandAssets.brandLogo && brandAssets.brandLogo.trim() && !brandAssets.brandLogo.includes('img_1790888969056_z00fh5.png') && brandAssets.brandLogo.trim() !== 'https://iili.io/nFV4Rln.png')
+        const activeLogoUrl = (brandAssets.brandLogo && brandAssets.brandLogo.trim() && !brandAssets.brandLogo.includes('img_1790888969056_z00fh5.png') && brandAssets.brandLogo.trim() !== 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png')
           ? brandAssets.brandLogo.trim()
           : (bProf && bProf.brandLogo ? bProf.brandLogo : 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png');
 
@@ -29618,7 +30366,7 @@ function executeCompareSourcesSearch() {
         });
 
         // 3. Favicon Website riêng biệt
-        const activeFaviconUrl = (brandAssets.brandFavicon && brandAssets.brandFavicon.trim() && !brandAssets.brandFavicon.includes('img_1790888988353_677lyw.png') && brandAssets.brandFavicon.trim() !== 'https://iili.io/nFV4Rln.png')
+        const activeFaviconUrl = (brandAssets.brandFavicon && brandAssets.brandFavicon.trim() && !brandAssets.brandFavicon.includes('img_1790888988353_677lyw.png') && brandAssets.brandFavicon.trim() !== 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png')
           ? brandAssets.brandFavicon.trim()
           : (bProf && bProf.brandFavicon ? bProf.brandFavicon : 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png');
 
@@ -29629,13 +30377,16 @@ function executeCompareSourcesSearch() {
         favLink.href = activeFaviconUrl;
         document.head.appendChild(favLink);
 
-        // 4. Ảnh OG Image riêng biệt
+        // 4. Ảnh OG Image riêng biệt & Đồng bộ toàn bộ thẻ Meta mạng xã hội
         const activeOgUrl = (brandAssets.brandOgImage && brandAssets.brandOgImage.trim())
           ? brandAssets.brandOgImage.trim()
-          : (bProf && bProf.brandOgImage ? bProf.brandOgImage : 'https://iili.io/nFV4Rln.png');
+          : 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/og-image';
 
-        let ogMeta = document.querySelector("meta[property='og:image']");
-        if (ogMeta) ogMeta.setAttribute('content', activeOgUrl);
+        const metaOgSelectors = ["meta[property='og:image']", "meta[property='og:image:secure_url']", "meta[name='twitter:image']"];
+        metaOgSelectors.forEach(function(sel) {
+          const el = document.querySelector(sel);
+          if (el) el.setAttribute('content', activeOgUrl);
+        });
 
         // 5. Đồng bộ Hotline / Zalo toàn trang
         if (typeof syncZaloLinks === 'function') {
@@ -29676,7 +30427,7 @@ function executeCompareSourcesSearch() {
             siteName: cs.taphoammo_siteName || 'TAPHOAMMO.INK',
             brandLogo: cs.taphoammo_brandLogo || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
             brandFavicon: cs.taphoammo_brandFavicon || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
-            brandOgImage: cs.taphoammo_brandOgImage || 'https://iili.io/nFV4Rln.png'
+            brandOgImage: cs.taphoammo_brandOgImage || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'
           };
           saveBrandSpecificSettings('taphoammo', tapHoaData);
 
@@ -29684,7 +30435,7 @@ function executeCompareSourcesSearch() {
             siteName: cs.muabantaikhoanmmo_siteName || cs.siteName || 'MUABANTAIKHOANMMO',
             brandLogo: cs.muabantaikhoanmmo_brandLogo || cs.brandLogo || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png',
             brandFavicon: cs.muabantaikhoanmmo_brandFavicon || cs.brandFavicon || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png',
-            brandOgImage: cs.muabantaikhoanmmo_brandOgImage || cs.brandOgImage || 'https://iili.io/nFV4Rln.png'
+            brandOgImage: cs.muabantaikhoanmmo_brandOgImage || cs.brandOgImage || 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png'
           };
           saveBrandSpecificSettings('muabantaikhoanmmo', muaBanData);
 
@@ -29864,20 +30615,20 @@ function executeCompareSourcesSearch() {
         // 2. Lấy dữ liệu trên Form hiện tại
         const siteName = document.getElementById('setSiteName') ? document.getElementById('setSiteName').value.trim() : (activeEditingKey === 'taphoammo' ? 'TAPHOAMMO.INK' : 'MUABANTAIKHOANMMO');
         let brandLogo = document.getElementById('setSiteLogoUrl') ? document.getElementById('setSiteLogoUrl').value.trim() : '';
-        if (!brandLogo || brandLogo === 'https://iili.io/nFV4Rln.png' || brandLogo.includes('img_1790888969056_z00fh5')) {
+        if (!brandLogo || brandLogo === 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png' || brandLogo.includes('img_1790888969056_z00fh5')) {
           brandLogo = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/logo_optimized.png';
           if (document.getElementById('setSiteLogoUrl')) document.getElementById('setSiteLogoUrl').value = brandLogo;
         }
 
         let brandFavicon = document.getElementById('setSiteFaviconUrl') ? document.getElementById('setSiteFaviconUrl').value.trim() : '';
-        if (!brandFavicon || brandFavicon === 'https://iili.io/nFV4Rln.png' || brandFavicon.includes('img_1790888988353_677lyw')) {
+        if (!brandFavicon || brandFavicon === 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png' || brandFavicon.includes('img_1790888988353_677lyw')) {
           brandFavicon = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/favicon.png';
           if (document.getElementById('setSiteFaviconUrl')) document.getElementById('setSiteFaviconUrl').value = brandFavicon;
         }
 
         let brandOgImage = document.getElementById('setSiteOgImageUrl') ? document.getElementById('setSiteOgImageUrl').value.trim() : '';
         if (!brandOgImage) {
-          brandOgImage = 'https://iili.io/nFV4Rln.png';
+          brandOgImage = 'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png';
           if (document.getElementById('setSiteOgImageUrl')) document.getElementById('setSiteOgImageUrl').value = brandOgImage;
         }
 
@@ -30035,10 +30786,10 @@ function executeCompareSourcesSearch() {
         if (activeProds.length === 0) return;
 
         // Xáo trộn ngẫu nhiên danh sách sản phẩm mỗi lần chạy (F5)
-        const shuffled = [...activeProds].sort(function() { return 0.5 - Math.random(); });
-        const pLeft = shuffled[0] || activeProds[0];
-        const pRight = shuffled[1] || (activeProds.length > 1 ? activeProds[1] : activeProds[0]);
-        const pSidebar = shuffled[2] || (activeProds.length > 2 ? activeProds[2] : (activeProds.length > 1 ? activeProds[1] : activeProds[0]));
+        // [ANTI-FLICKER]: Cố định 3 sản phẩm hiển thị chuẩn theo Image 3, không shuffle ngẫu nhiên gây giật lag
+        const pLeft = activeProds.find(p => p.id === "PROD_MTQX465U") || activeProds[0];
+        const pRight = activeProds.find(p => p.id === "PROD_MU2NKET1OG" || p.id === "PROD_MU2NUXL1Q4") || (activeProds.length > 1 ? activeProds[1] : activeProds[0]);
+        const pSidebar = activeProds.find(p => p.id === "PROD_MU2ASBNSJT") || (activeProds.length > 2 ? activeProds[2] : activeProds[0]);
 
         function renderCardContent(cardEl, p) {
           if (!cardEl || !p) return;
@@ -30233,7 +30984,7 @@ function executeCompareSourcesSearch() {
         let notice = text;
         if (notice === undefined || notice === null) {
           const s = (typeof getGeneralSettings === "function") ? getGeneralSettings() : {};
-          notice = (s && s.marqueeText !== undefined && s.marqueeText !== null) ? s.marqueeText : "🎉 Chào mừng bạn đến với MUABANTAIKHOANMMO.COM - Hệ thống mua bán tài khoản MMO, Gmail, TikTok, Facebook, Rom & Tools uy tín số 1. Nạp tiền tự động qua SePay 24/7. Hỗ trợ bảo hành 1-đổi-1 siêu tốc!";
+          notice = (s && s.marqueeText !== undefined && s.marqueeText !== null) ? s.marqueeText : "🎉 CHÀO MỪNG BẠN ĐẾN VỚI MUABANTAIKHOANMMO.COM - CHÚ Ý NẠP TIỀN TỪ 6H - 22H ĐỂ KHÔNG BỊ GIÁN ĐOẠN SAU 22H NGÂN HÀNG BẢO TRÌ SÁNG HÔM SAU MỚI + TIỀN";
         }
         const wrap = document.getElementById("homeMarqueeWrap");
         const track = document.getElementById("homeMarqueeTrack");
@@ -30738,6 +31489,16 @@ function executeCompareSourcesSearch() {
         });
         if (workerRes.ok) {
           const wJson = await workerRes.json();
+          if (wJson && Array.isArray(wJson.deletedEmails) && wJson.deletedEmails.length > 0) {
+            try {
+              const curDel = (typeof getDeletedUserEmails === "function") ? getDeletedUserEmails() : [];
+              wJson.deletedEmails.forEach(de => {
+                const cleanDe = String(de || "").toLowerCase().trim();
+                if (cleanDe && !curDel.includes(cleanDe)) curDel.push(cleanDe);
+              });
+              localStorage.setItem("mmo_deleted_users", JSON.stringify(curDel));
+            } catch(eSyncDel) {}
+          }
           if (wJson && wJson.success && Array.isArray(wJson.users) && wJson.users.length > 0) {
             allCloudUsers = allCloudUsers.concat(wJson.users);
           }
@@ -30748,8 +31509,8 @@ function executeCompareSourcesSearch() {
         console.warn("fetchCloudUsers worker error:", wErr);
       }
 
-      // 2. Đồng bộ bổ sung từ Google Apps Script Web App (chỉ khi cần hoặc khi nhấn nút)
-      if (allCloudUsers.length === 0 || showNotification) {
+      // 2. Đồng bộ bổ sung từ Google Apps Script Web App (chỉ khi Worker rỗng hoặc khi Admin bấm Đồng Bộ Sheet)
+      if (allCloudUsers.length === 0 || (showNotification && !allCloudUsers.length)) {
         try {
           const adminEmail = (typeof currentUser !== "undefined" && currentUser && currentUser.email) ? currentUser.email : "manhdongvtc@gmail.com";
           const gasData = await callGasApi("adminGetUsers", { adminEmail: adminEmail });
@@ -30771,10 +31532,12 @@ function executeCompareSourcesSearch() {
           if (em) userMap.set(em, u);
         });
 
-        // Merge các user từ Cloud
+        const activeDeletedList = (typeof getDeletedUserEmails === "function") ? getDeletedUserEmails() : [];
+        // Merge các user từ Cloud (Bỏ qua tài khoản test và tài khoản đã xóa)
         allCloudUsers.forEach(cu => {
           const em = (cu.email || "").toLowerCase().trim();
           if (!em) return;
+          if (em.includes("test") || em.includes("example") || em.startsWith("check_simulate") || em.startsWith("customer123") || activeDeletedList.includes(em)) return;
 
           const existing = userMap.get(em) || {};
           const isAdm = (em === "manhdongvtc@gmail.com" || cu.role === "ADMIN" || cu.role === "Quản Trị Viên" || existing.role === "Quản Trị Viên" || (typeof isAdminUser === "function" && isAdminUser({ email: em })));
@@ -33168,9 +33931,9 @@ function executeCompareSourcesSearch() {
             const stockBadge = vStock > 0
               ? '<small style="color:#10b981; font-weight:700; margin-left:6px; font-size:0.75rem;">(' + Number(vStock).toLocaleString("vi-VN") + ' acc)</small>'
               : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
-            return '<div class="variant-pill-option ' + (idx === curVIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-              '<span>' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
-              '<span style="font-weight:700;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
+            return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === curVIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+              '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + (typeof escapeHtml === 'function' ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)))) + stockBadge + '</span>' +
+              '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + (typeof formatVND === 'function' ? formatVND(v.price || 0) : (v.price || 0)) + '</span>' +
             '</div>';
           }).join("");
         }
@@ -33424,7 +34187,8 @@ function executeCompareSourcesSearch() {
         if (preDtlImg) {
           const preCanon = (typeof getCanonicalProductId === "function") ? getCanonicalProductId(cleanId) : cleanId;
           const preMapped = (typeof KNOWN_PROD_IMAGE_MAP !== "undefined" && (KNOWN_PROD_IMAGE_MAP[cleanId] || KNOWN_PROD_IMAGE_MAP[cleanId.toUpperCase()] || KNOWN_PROD_IMAGE_MAP[preCanon] || KNOWN_PROD_IMAGE_MAP[preCanon.toUpperCase()])) ? (KNOWN_PROD_IMAGE_MAP[cleanId] || KNOWN_PROD_IMAGE_MAP[cleanId.toUpperCase()] || KNOWN_PROD_IMAGE_MAP[preCanon] || KNOWN_PROD_IMAGE_MAP[preCanon.toUpperCase()]) : "";
-          if (preMapped) {
+          const curPreSrc = preDtlImg.src || "";
+          if (preMapped && (!curPreSrc || curPreSrc.includes("default_product.png") || curPreSrc.startsWith("data:image/svg+xml")) && curPreSrc !== preMapped) {
             preDtlImg.src = preMapped;
           }
         }
@@ -33556,7 +34320,12 @@ function executeCompareSourcesSearch() {
             this.src = (typeof resolveCategoryFallbackImage === "function") ? resolveCategoryFallbackImage(p) : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png";
           }
         };
-        dtlImg.src = exactImgUrl;
+        const curDtlSrc = dtlImg.src || "";
+        if (exactImgUrl && curDtlSrc !== exactImgUrl && !curDtlSrc.endsWith(exactImgUrl)) {
+          if (!exactImgUrl.includes("default_product.png") || (!curDtlSrc || curDtlSrc.includes("default_product.png") || curDtlSrc.startsWith("data:image/svg+xml"))) {
+            dtlImg.src = exactImgUrl;
+          }
+        }
       }
       try {
         let ogImg = document.querySelector("meta[property='og:image']");
@@ -33714,9 +34483,9 @@ function executeCompareSourcesSearch() {
             : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
           const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)));
           const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
-          return '<div class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-            '<span>' + safeName + stockBadge + '</span>' +
-            '<span style="font-weight:700;">' + safePrice + '</span>' +
+          return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+            '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + safeName + stockBadge + '</span>' +
+            '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + safePrice + '</span>' +
           '</div>';
         }).join("");
       } else {
@@ -33847,7 +34616,7 @@ function executeCompareSourcesSearch() {
         if (typeof injectAllProductsSchema === "function") injectAllProductsSchema();
 
         // Nạp đầy đủ thông tin sản phẩm mới nhất & ảnh mới ngầm từ Turso Cloud Worker
-        if (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
+        if (!isSilentRefresh && typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.isConfigured()) {
           MMO_WORKER_API.fetchProduct(p.id, { nocache: true }).then(res => {
             if (res && res.success && res.product) {
               const wp = res.product;
@@ -33938,9 +34707,9 @@ function executeCompareSourcesSearch() {
                     : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                   const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)));
                   const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
-                  return '<div class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                    '<span>' + safeName + stockBadge + '</span>' +
-                    '<span style="font-weight:700;">' + safePrice + '</span>' +
+                  return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === currentSelectedVariantIndex ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                    '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + safeName + stockBadge + '</span>' +
+                    '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + safePrice + '</span>' +
                   '</div>';
                 }).join("");
               } else {
@@ -33979,8 +34748,10 @@ function executeCompareSourcesSearch() {
                 p.imageUrl = finalImg;
                 isUpdated = true;
               }
-              if (dtlImgEl && finalImg && (!finalImg.includes("default_product.png") || !currentDisplayedSrc || currentDisplayedSrc.includes("default_product.png")) && dtlImgEl.src !== finalImg) {
-                dtlImgEl.src = finalImg;
+              if (dtlImgEl && finalImg && dtlImgEl.src !== finalImg && !dtlImgEl.src.endsWith(finalImg)) {
+                if (!finalImg.includes("default_product.png") || (!currentDisplayedSrc || currentDisplayedSrc.includes("default_product.png") || currentDisplayedSrc.startsWith("data:image/svg+xml"))) {
+                  dtlImgEl.src = finalImg;
+                }
               }
 
               // 10. Đồng bộ vào MOCK_DATA.products và localStorage
@@ -35120,31 +35891,33 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           }
         }
       }
-      // [SMART ALIAS CHO GMAIL THUÊ / LIVE TRÊN SELLMMO]: Khắc phục triệt để lỗi "Mất kết nối đến kho hàng"
+      // [CHUẨN HÓA ĐÚNG SẢN PHẨM 1-1]: Chỉ áp dụng đúng theo mã sản phẩm cụ thể, tuyệt đối không dùng mảng ID chung!
       const curPId = p ? (p.id || "") : "";
-      const curSId = apiMap ? String(apiMap.sourceProdId || "").replace(/[^\d]/g, "") : "";
       const normCurPId = curPId.replace(/_[0-9]+$/, "").toUpperCase();
-      // Nhóm 1: Gmail cho thuê 2 - 4h / 12h live -> sellmmo 39341 (ngoại trừ mail72h hoạt động độc lập)
-      if ((["PROD_MTQX1C7X", "PROD_MTQX7SIK", "PROD_MTQQXO2E"].includes(normCurPId) && (!apiMap || apiMap.provider !== "mail72h")) || ["19957", "34752", "39182"].includes(curSId)) {
+      if (["PROD_MTQX1C7X", "PROD_MTQX7SIK"].includes(normCurPId)) {
         if (!apiMap) apiMap = {};
         apiMap.enabled = true;
         apiMap.provider = "sellmmo";
         apiMap.sourceProdId = "39341";
-        apiMap.sourcePrice = 302.94;
-        apiMap.sourceStock = 12000;
+        apiMap.sourcePrice = 294.03;
+        apiMap.sourceStock = 59;
         apiMap.baseUrl = "https://sellmmo.vn";
-        apiMap.apiKey = apiMap.apiKey || "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO";
-      }
-      // Nhóm 2: Gmail cho thuê 10 phút - 1h live -> sellmmo 39073
-      else if (normCurPId === "PROD_MTQX465U" || ["19773", "19768", "19745", "19524", "23463", "25255", "25395", "30878", "31953", "35097", "33097", "39178"].includes(curSId)) {
+      } else if (normCurPId === "PROD_MTQX465U") {
         if (!apiMap) apiMap = {};
         apiMap.enabled = true;
         apiMap.provider = "sellmmo";
         apiMap.sourceProdId = "39073";
         apiMap.sourcePrice = 180.54;
-        apiMap.sourceStock = 17000;
+        apiMap.sourceStock = 821;
         apiMap.baseUrl = "https://sellmmo.vn";
-        apiMap.apiKey = apiMap.apiKey || "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO";
+      } else if (normCurPId === "PROD_MU2B32VLQY" || normCurPId === "PROD_MU1G6LJX") {
+        if (!apiMap) apiMap = {};
+        apiMap.enabled = true;
+        apiMap.provider = "ultrammo";
+        apiMap.sourceProdId = "32037";
+        apiMap.sourcePrice = 18000;
+        apiMap.sourceStock = 39;
+        apiMap.baseUrl = "https://ultrammo.com";
       }
       const isApiOnDemand = !!(apiMap && apiMap.enabled && apiMap.sourceProdId);
 
@@ -35279,16 +36052,16 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             currentUser.balance = Number(wData.balance_after);
           }
         } else if (wData && !wData.success) {
-          const errMsg = wData.message || "Kho hàng tạm thời không đủ số lượng tài khoản!";
+          const rawErrMsg = wData.message || "Sản phẩm này hiện đang tạm bảo trì kho hàng. Hệ thống đang chuyển sang Đặt Hàng Trước hoặc quý khách vui lòng quay lại sau!";
           if (wData.code === "UNAUTHENTICATED_CHECKOUT") {
             restoreBtn();
-            showToast("🔒 " + errMsg, "warning");
+            showToast("🔒 " + rawErrMsg, "warning");
             if (typeof openAuthModal === "function") openAuthModal("login");
             return;
           }
           if (wData.code === "INSUFFICIENT_BALANCE") {
             restoreBtn();
-            showToast("⚠️ " + errMsg, "warning");
+            showToast("⚠️ " + rawErrMsg, "warning");
             setTimeout(function() {
               if (typeof switchView === "function") switchView("viewDeposit");
             }, 600);
@@ -35307,16 +36080,15 @@ window.renderProductDetailArticle = renderProductDetailArticle;
               }
               if (typeof saveProducts === "function") saveProducts();
             }
-            const isAdm = (typeof isCurrentUserAdminOrAdminView === "function") ? isCurrentUserAdminOrAdminView() : false;
-            if (isAdm) {
-              const fullMsg = (wData && wData.admin_message) ? wData.admin_message : errMsg;
-              showToast("🛡️ " + fullMsg, "warning");
-            } else {
-              showToast("ℹ️ " + (wData.user_message || wData.message || "Sản phẩm đang được hệ thống cập nhật giá mới. Quý khách vui lòng tải lại trang để xem giá mới nhất và tiếp tục đặt mua!"), "warning");
+            showToast("ℹ️ Sản phẩm đang được hệ thống cập nhật giá mới. Quý khách vui lòng tải lại trang để xem giá mới nhất hoặc Đặt Hàng Trước!", "warning");
+            if (typeof openPreOrderModal === "function") {
+              setTimeout(() => openPreOrderModal(p, vIdx), 600);
             }
             return;
           }
-          const isOutOfStock = (wData.code === "OUT_OF_STOCK" || wData.code === "STOCK_EMPTY") || /hết hàng|không đủ|out of stock|tồn kho|số lượng/i.test(errMsg);
+          // [ZERO SUPPLIER LEAK POLICY]: Tuyệt đối không bao giờ hiển thị thông báo nhà cung cấp/API cho người dùng!
+          // Mọi trường hợp kho hàng tạm hết hoặc lỗi kết nối nguồn đều chuyển sang Đặt Hàng Trước / Thông báo bảo trì.
+          const isOutOfStock = (wData.code === "OUT_OF_STOCK" || wData.code === "STOCK_EMPTY") || /hết hàng|không đủ|out of stock|tồn kho|số lượng/i.test(rawErrMsg);
           if (isOutOfStock && !isApiOnDemand) {
             try {
               let clearedMap = {};
@@ -35340,21 +36112,13 @@ window.renderProductDetailArticle = renderProductDetailArticle;
                 syncAllOpenViewsStock(p.id, 0, [], false, vIdx);
               }
             } catch(eStock) {}
-
-            restoreBtn();
-            showToast("⚠️ " + errMsg + " Đang chuyển sang Đặt Trước...", "warning");
-            if (typeof openPreOrderModal === "function") {
-              setTimeout(() => openPreOrderModal(p, vIdx), 500);
-            }
-            return;
           }
-          // Nếu không phải API on-demand, dừng và báo lỗi ngay
-          if (!isApiOnDemand) {
-            restoreBtn();
-            showToast("⚠️ " + errMsg, "danger");
-            return;
+          restoreBtn();
+          showToast("⚠️ Sản phẩm này hiện đang tạm bảo trì kho hàng. Hệ thống đang chuyển sang Đặt Hàng Trước hoặc quý khách vui lòng quay lại sau!", "warning");
+          if (typeof openPreOrderModal === "function") {
+            setTimeout(() => openPreOrderModal(p, vIdx), 500);
           }
-          console.warn("Worker checkout API source notice, falling back to multi-tier API execution:", errMsg);
+          return;
         }
       } catch(wErr) {
         console.warn("Worker direct checkout network fallback:", wErr);
@@ -35371,11 +36135,9 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             if (typeof applyAutoPriceBoostToProduct === "function") {
               applyAutoPriceBoostToProduct(p.id, knownSrcCost, true);
             }
-            const isAdm = (typeof isCurrentUserAdminOrAdminView === "function") ? isCurrentUserAdminOrAdminView() : false;
-            if (isAdm) {
-              showToast("🛡️ Lá chắn chống bán lỗ: Giá bán (" + formatVND(unitPrice) + ") thấp hơn hoặc bằng giá vốn nhà cung cấp (" + formatVND(knownSrcCost) + ")! Hệ thống đã tự động nâng giá an toàn, vui lòng thử lại.", "warning");
-            } else {
-              showToast("ℹ️ Sản phẩm đang được hệ thống cập nhật giá mới. Quý khách vui lòng tải lại trang để xem giá mới nhất và tiếp tục đặt mua!", "warning");
+            showToast("ℹ️ Sản phẩm đang được hệ thống cập nhật giá mới. Quý khách vui lòng tải lại trang để xem giá mới nhất hoặc Đặt Hàng Trước!", "warning");
+            if (typeof openPreOrderModal === "function") {
+              setTimeout(() => openPreOrderModal(p, vIdx), 600);
             }
             return;
           }
@@ -35396,28 +36158,18 @@ window.renderProductDetailArticle = renderProductDetailArticle;
               credsLines = buyRes.accounts;
             } else {
               restoreBtn();
-              const errMsg = (buyRes && (buyRes.message || buyRes.msg)) || "⚠️ Kho hàng đang cập nhật thêm tài khoản. Số dư của bạn chưa bị trừ!";
-              const isOutOfStockOrBalance = /không đủ|hết hàng|out of stock|tồn kho|số lượng|balance|số dư|không khả dụng/i.test(errMsg);
-              if (isOutOfStockOrBalance && typeof markApiProductOutOfStock === "function") {
-                markApiProductOutOfStock(p, vIdx, errMsg);
-                showToast("⚠️ Nhà cung cấp hiện đang hết hàng (" + errMsg + "). Sản phẩm đã chuyển sang [ĐẶT TRƯỚC]! Số dư ví của bạn không bị trừ.", "warning");
-                if (typeof openPreOrderModal === "function") {
-                  setTimeout(() => openPreOrderModal(p, vIdx), 800);
-                }
-              } else {
-                // [LÁ CHẮN BẢO VỆ CHỐNG RÒ RỈ LỖI NGUỒN]: Không bao giờ hiển thị "Vui lòng đăng nhập" của đối tác lên khách hàng
-                const isPartnerAuthLeak = /đăng nhập|login|auth|unauthorized|thông tin đăng nhập|tài khoản\/mật khẩu/i.test(errMsg);
-                if (isPartnerAuthLeak) {
-                  showToast("⚠️ Kết nối tới nguồn hàng đối tác đang được làm mới. Vui lòng bấm Mua Lại sau vài giây!", "warning");
-                } else {
-                  showToast(errMsg, "warning");
-                }
+              showToast("⚠️ Sản phẩm này hiện đang tạm bảo trì kho hàng. Hệ thống đang chuyển sang Đặt Hàng Trước hoặc quý khách vui lòng quay lại sau!", "warning");
+              if (typeof openPreOrderModal === "function") {
+                setTimeout(() => openPreOrderModal(p, vIdx), 500);
               }
               return;
             }
           } catch(apiErr) {
             restoreBtn();
-            showToast("⚠️ Hệ thống đang bảo trì cập nhật kho tài khoản. Vui lòng thử lại sau giây lát!", "danger");
+            showToast("⚠️ Sản phẩm này hiện đang tạm bảo trì kho hàng. Hệ thống đang chuyển sang Đặt Hàng Trước hoặc quý khách vui lòng quay lại sau!", "warning");
+            if (typeof openPreOrderModal === "function") {
+              setTimeout(() => openPreOrderModal(p, vIdx), 500);
+            }
             return;
           }
         } else {
@@ -37427,7 +38179,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         cleanUser = cleanUser.substring(0, 30);
       }
 
-      const maxLimit = parseInt(document.getElementById("gmailDotLimit") ? document.getElementById("gmailDotLimit").value : "500") || 500;
+      const maxLimit = parseInt(document.getElementById("gmailDotLimit") ? document.getElementById("gmailDotLimit").value : "500", 10) || 500;
       const includeGooglemail = document.getElementById("gmailDotGooglemail") ? document.getElementById("gmailDotGooglemail").checked : true;
       const includePlus = document.getElementById("gmailDotPlus") ? document.getElementById("gmailDotPlus").checked : false;
 
@@ -37436,9 +38188,9 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       const n = chars.length;
       const numGaps = n - 1;
       const totalCombos = Math.pow(2, numGaps);
-      const combosToGenerate = Math.min(totalCombos, maxLimit);
 
-      for (let i = 0; i < combosToGenerate; i++) {
+      for (let i = 0; i < totalCombos; i++) {
+        if (results.length >= maxLimit) break;
         let emailUser = chars[0];
         for (let j = 0; j < numGaps; j++) {
           if ((i & (1 << j)) !== 0) {
@@ -37447,22 +38199,23 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           emailUser += chars[j + 1];
         }
         results.push(emailUser + "@gmail.com");
-        if (includeGooglemail && results.length < maxLimit * 2) {
+        if (includeGooglemail && results.length < maxLimit) {
           results.push(emailUser + "@googlemail.com");
         }
       }
 
-      if (includePlus) {
+      if (includePlus && results.length < maxLimit) {
         const plusTags = ["1", "2", "3", "sub", "mmo", "vip", "order", "acc"];
-        plusTags.forEach(tag => {
-          results.push(cleanUser + "+" + tag + "@gmail.com");
-          if (includeGooglemail) {
-            results.push(cleanUser + "+" + tag + "@googlemail.com");
+        for (let t = 0; t < plusTags.length; t++) {
+          if (results.length >= maxLimit) break;
+          results.push(cleanUser + "+" + plusTags[t] + "@gmail.com");
+          if (includeGooglemail && results.length < maxLimit) {
+            results.push(cleanUser + "+" + plusTags[t] + "@googlemail.com");
           }
-        });
+        }
       }
 
-      const uniqueResults = Array.from(new Set(results));
+      const uniqueResults = Array.from(new Set(results)).slice(0, maxLimit);
       const outputEl = document.getElementById("outputGmailDot");
       if (outputEl) {
         outputEl.value = uniqueResults.join("\n");
@@ -37944,148 +38697,222 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     }
 
     // ==========================================
-    // TOOL 4: FAKE NAME (FULL INFO PERSONA, ACCURATE GEO ADDRESS & ZIP CODE)
+    // TOOL 4: FAKE NAME (FULL INFO PERSONA, ACCURATE GEO ADDRESS & ZIP CODE - PHIÊN BẢN 2026 CÓ CCCD)
     // ==========================================
     var fakeDataDictionary = {
       VN: {
-        lastNames: ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Huỳnh", "Phan", "Vũ", "Võ", "Đặng", "Bùi", "Đỗ", "Hồ", "Ngô", "Dương", "Lý"],
-        middleNamesMale: ["Văn", "Đức", "Minh", "Hữu", "Gia", "Đình", "Quốc", "Thành", "Quang", "Tiến", "Ngọc", "Bảo", "Trọng", "Duy", "Anh", "Hoàng"],
-        firstNamesMale: ["Anh", "Tuấn", "Nam", "Duy", "Hải", "Long", "Bảo", "Khánh", "Huy", "Phúc", "Thịnh", "Khoa", "Đạt", "Quân", "Phong", "Kiên", "Hùng", "Thắng", "Toàn", "Sơn", "Tùng", "Lâm", "Dũng", "Hoàng"],
-        middleNamesFemale: ["Thị", "Ngọc", "Thu", "Mai", "Phương", "Kim", "Thanh", "Quỳnh", "Thảo", "Hà", "Ánh", "Linh", "Bích", "Diệu", "Khánh", "Mỹ"],
-        firstNamesFemale: ["Anh", "Linh", "Trang", "Hương", "Lan", "Hà", "Yến", "Thảo", "Nhi", "Vy", "Ngân", "Trâm", "Phương", "Giang", "Hằng", "Châu", "Thư", "Dung", "Mai", "Oanh"],
+        lastNames: ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Huỳnh", "Phan", "Vũ", "Võ", "Đặng", "Bùi", "Đỗ", "Hồ", "Ngô", "Dương", "Lý", "Đinh", "Đào", "Đoàn", "Lâm"],
+        middleNamesMale: ["Văn", "Đức", "Minh", "Hữu", "Gia", "Đình", "Quốc", "Thành", "Quang", "Tiến", "Ngọc", "Bảo", "Trọng", "Duy", "Anh", "Hoàng", "Công", "Khắc", "Hải", "Tuấn"],
+        firstNamesMale: ["Anh", "Tuấn", "Nam", "Duy", "Hải", "Long", "Bảo", "Khánh", "Huy", "Phúc", "Thịnh", "Khoa", "Đạt", "Quân", "Phong", "Kiên", "Hùng", "Thắng", "Toàn", "Sơn", "Tùng", "Lâm", "Dũng", "Hoàng", "Việt", "Bách", "Nghĩa", "Triết"],
+        middleNamesFemale: ["Thị", "Ngọc", "Thu", "Mai", "Phương", "Kim", "Thanh", "Quỳnh", "Thảo", "Hà", "Ánh", "Linh", "Bích", "Diệu", "Khánh", "Mỹ", "Hồng", "Tuyết", "Bảo", "Như"],
+        firstNamesFemale: ["Anh", "Linh", "Trang", "Hương", "Lan", "Hà", "Yến", "Thảo", "Nhi", "Vy", "Ngân", "Trâm", "Phương", "Giang", "Hằng", "Châu", "Thư", "Dung", "Mai", "Oanh", "Ngọc", "Trinh", "Huyền", "Ly", "Quỳnh", "Chi"],
         cities: [
           {
             city: "Hà Nội",
-            province: "Hà Nội",
+            province: "TP. Hà Nội",
+            provinceCode: "001",
             zip: "100000",
             locations: [
-              { street: "Cầu Giấy", ward: "Phường Dịch Vọng", district: "Quận Cầu Giấy" },
               { street: "Xuân Thủy", ward: "Phường Dịch Vọng Hậu", district: "Quận Cầu Giấy" },
+              { street: "Cầu Giấy", ward: "Phường Dịch Vọng", district: "Quận Cầu Giấy" },
               { street: "Trần Duy Hưng", ward: "Phường Trung Hòa", district: "Quận Cầu Giấy" },
+              { street: "Nguyễn Khánh Toàn", ward: "Phường Quan Hoa", district: "Quận Cầu Giấy" },
               { street: "Kim Mã", ward: "Phường Kim Mã", district: "Quận Ba Đình" },
+              { street: "Liễu Giai", ward: "Phường Liễu Giai", district: "Quận Ba Đình" },
               { street: "Đội Cấn", ward: "Phường Đội Cấn", district: "Quận Ba Đình" },
               { street: "Phố Huế", ward: "Phường Hàng Bài", district: "Quận Hoàn Kiếm" },
-              { street: "Tràng Thi", ward: "Phường Hàng Trống", district: "Quận Hoàn Kiếm" },
+              { street: "Tràng Tiền", ward: "Phường Tràng Tiền", district: "Quận Hoàn Kiếm" },
+              { street: "Hai Bà Trưng", ward: "Phường Cửa Nam", district: "Quận Hoàn Kiếm" },
               { street: "Nguyễn Trãi", ward: "Phường Thanh Xuân Bắc", district: "Quận Thanh Xuân" },
+              { street: "Lê Văn Lương", ward: "Phường Nhân Chính", district: "Quận Thanh Xuân" },
+              { street: "Xã Đàn", ward: "Phường Nam Đồng", district: "Quận Đống Đa" },
+              { street: "Ô Chợ Dừa", ward: "Phường Ô Chợ Dừa", district: "Quận Đống Đa" },
+              { street: "Huỳnh Thúc Kháng", ward: "Phường Láng Hạ", district: "Quận Đống Đa" },
               { street: "Giải Phóng", ward: "Phường Đồng Tâm", district: "Quận Hai Bà Trưng" },
-              { street: "Xã Đàn", ward: "Phường Nam Đồng", district: "Quận Đống Đa" }
+              { street: "Lê Đức Thọ", ward: "Phường Mỹ Đình 1", district: "Quận Nam Từ Liêm" },
+              { street: "Phạm Hùng", ward: "Phường Mỹ Đình 2", district: "Quận Nam Từ Liêm" },
+              { street: "Trần Phú", ward: "Phường Mộ Lao", district: "Quận Hà Đông" },
+              { street: "Quang Trung", ward: "Phường Quang Trung", district: "Quận Hà Đông" }
             ]
           },
           {
             city: "TP. Hồ Chí Minh",
             province: "TP. Hồ Chí Minh",
+            provinceCode: "079",
             zip: "700000",
             locations: [
               { street: "Nguyễn Huệ", ward: "Phường Bến Nghé", district: "Quận 1" },
+              { street: "Đồng Khởi", ward: "Phường Bến Nghé", district: "Quận 1" },
               { street: "Lê Lợi", ward: "Phường Bến Thành", district: "Quận 1" },
-              { street: "Cách Mạng Tháng 8", ward: "Phường 11", district: "Quận 3" },
+              { street: "Đinh Tiên Hoàng", ward: "Phường Đa Kao", district: "Quận 1" },
+              { street: "Võ Thị Sáu", ward: "Phường Võ Thị Sáu", district: "Quận 3" },
               { street: "Nam Kỳ Khởi Nghĩa", ward: "Phường Võ Thị Sáu", district: "Quận 3" },
+              { street: "Cách Mạng Tháng 8", ward: "Phường 11", district: "Quận 3" },
               { street: "Nguyễn Trãi", ward: "Phường 2", district: "Quận 5" },
               { street: "Trần Hưng Đạo", ward: "Phường 7", district: "Quận 5" },
+              { street: "Sư Vạn Hạnh", ward: "Phường 12", district: "Quận 10" },
+              { street: "Ba Tháng Hai", ward: "Phường 12", district: "Quận 10" },
               { street: "Nguyễn Thị Thập", ward: "Phường Tân Phú", district: "Quận 7" },
-              { street: "Quang Trung", ward: "Phường 10", district: "Quận Gò Vấp" },
+              { street: "Nguyễn Văn Linh", ward: "Phường Tân Phong", district: "Quận 7" },
               { street: "Cộng Hòa", ward: "Phường 12", district: "Quận Tân Bình" },
-              { street: "Võ Văn Ngân", ward: "Phường Linh Chiểu", district: "TP. Thủ Đức" }
+              { street: "Trường Sơn", ward: "Phường 2", district: "Quận Tân Bình" },
+              { street: "Phan Xích Long", ward: "Phường 1", district: "Quận Phú Nhuận" },
+              { street: "Quang Trung", ward: "Phường 10", district: "Quận Gò Vấp" },
+              { street: "Điện Biên Phủ", ward: "Phường 25", district: "Quận Bình Thạnh" },
+              { street: "Thảo Điền", ward: "Phường Thảo Điền", district: "TP. Thủ Đức" },
+              { street: "Võ Văn Ngân", ward: "Phường Linh Chiểu", district: "TP. Thủ Đức" },
+              { street: "Phạm Văn Đồng", ward: "Phường Hiệp Bình Chánh", district: "TP. Thủ Đức" }
             ]
           },
           {
             city: "Đà Nẵng",
-            province: "Đà Nẵng",
+            province: "TP. Đà Nẵng",
+            provinceCode: "048",
             zip: "550000",
             locations: [
               { street: "Bạch Đằng", ward: "Phường Hải Châu 1", district: "Quận Hải Châu" },
-              { street: "Nguyễn Văn Linh", ward: "Phường Nam Dương", district: "Quận Hải Châu" },
+              { street: "Trần Phú", ward: "Phường Hải Châu 1", district: "Quận Hải Châu" },
               { street: "Lê Duẩn", ward: "Phường Hải Châu 2", district: "Quận Hải Châu" },
+              { street: "Nguyễn Văn Linh", ward: "Phường Nam Dương", district: "Quận Hải Châu" },
+              { street: "Đường 2 Tháng 9", ward: "Phường Hòa Thuận Đông", district: "Quận Hải Châu" },
               { street: "Hùng Vương", ward: "Phường Vĩnh Trung", district: "Quận Thanh Khê" },
               { street: "Điện Biên Phủ", ward: "Phường Chính Gián", district: "Quận Thanh Khê" },
-              { street: "Võ Nguyên Giáp", ward: "Phường Mỹ An", district: "Quận Ngũ Hành Sơn" }
+              { street: "Phạm Văn Đồng", ward: "Phường An Hải Bắc", district: "Quận Sơn Trà" },
+              { street: "Võ Nguyên Giáp", ward: "Phường Phước Mỹ", district: "Quận Sơn Trà" },
+              { street: "Hồ Xuân Hương", ward: "Phường Mỹ An", district: "Quận Ngũ Hành Sơn" }
             ]
           },
           {
             city: "Cần Thơ",
-            province: "Cần Thơ",
+            province: "TP. Cần Thơ",
+            provinceCode: "092",
             zip: "900000",
             locations: [
               { street: "Đại lộ Hòa Bình", ward: "Phường An Cư", district: "Quận Ninh Kiều" },
               { street: "Đường 30 Tháng 4", ward: "Phường Xuân Khánh", district: "Quận Ninh Kiều" },
               { street: "Trần Hưng Đạo", ward: "Phường An Phú", district: "Quận Ninh Kiều" },
               { street: "Nguyễn Trãi", ward: "Phường Thới Bình", district: "Quận Ninh Kiều" },
+              { street: "Nguyễn Văn Cừ", ward: "Phường An Khánh", district: "Quận Ninh Kiều" },
+              { street: "Trần Phú", ward: "Phường Cái Khế", district: "Quận Ninh Kiều" },
               { street: "Cách Mạng Tháng 8", ward: "Phường An Thới", district: "Quận Bình Thủy" },
-              { street: "Lê Hồng Phong", ward: "Phường Trà An", district: "Quận Bình Thủy" }
+              { street: "Lê Hồng Phong", ward: "Phường Bình Thủy", district: "Quận Bình Thủy" },
+              { street: "Phạm Hùng", ward: "Phường Lê Bình", district: "Quận Cái Răng" }
             ]
           },
           {
             city: "Hải Phòng",
-            province: "Hải Phòng",
+            province: "TP. Hải Phòng",
+            provinceCode: "031",
             zip: "180000",
             locations: [
               { street: "Lạch Tray", ward: "Phường Lạch Tray", district: "Quận Ngô Quyền" },
               { street: "Cầu Đất", ward: "Phường Cầu Đất", district: "Quận Ngô Quyền" },
+              { street: "Lê Hồng Phong", ward: "Phường Đông Khê", district: "Quận Ngô Quyền" },
               { street: "Tô Hiệu", ward: "Phường Trại Cau", district: "Quận Lê Chân" },
-              { street: "Trần Phú", ward: "Phường Lương Khánh Thiện", district: "Quận Ngô Quyền" },
-              { street: "Lê Hồng Phong", ward: "Phường Đông Khê", district: "Quận Ngô Quyền" }
-            ]
-          },
-          {
-            city: "Nha Trang",
-            province: "Tỉnh Khánh Hòa",
-            zip: "650000",
-            locations: [
-              { street: "Trần Phú", ward: "Phường Lộc Thọ", district: "TP. Nha Trang" },
-              { street: "Lê Thánh Tôn", ward: "Phường Phước Tiến", district: "TP. Nha Trang" },
-              { street: "Quang Trung", ward: "Phường Vạn Thắng", district: "TP. Nha Trang" },
-              { street: "Yersin", ward: "Phường Phương Sài", district: "TP. Nha Trang" },
-              { street: "Nguyễn Thiện Thuật", ward: "Phường Tân Lập", district: "TP. Nha Trang" }
-            ]
-          },
-          {
-            city: "Biên Hòa",
-            province: "Tỉnh Đồng Nai",
-            zip: "760000",
-            locations: [
-              { street: "Đồng Khởi", ward: "Phường Tân Hiệp", district: "TP. Biên Hòa" },
-              { street: "Phạm Văn Thuận", ward: "Phường Tam Hiệp", district: "TP. Biên Hòa" },
-              { street: "Võ Thị Sáu", ward: "Phường Quyết Thắng", district: "TP. Biên Hòa" },
-              { street: "Nguyễn Ái Quốc", ward: "Phường Tân Tiến", district: "TP. Biên Hòa" },
-              { street: "Bùi Trọng Nghĩa", ward: "Phường Trảng Dài", district: "TP. Biên Hòa" }
-            ]
-          },
-          {
-            city: "Huế",
-            province: "Tỉnh Thừa Thiên Huế",
-            zip: "490000",
-            locations: [
-              { street: "Lê Lợi", ward: "Phường Phú Hội", district: "TP. Huế" },
-              { street: "Hùng Vương", ward: "Phường Phú Nhuận", district: "TP. Huế" },
-              { street: "Đống Đa", ward: "Phường Vĩnh Ninh", district: "TP. Huế" },
-              { street: "Nguyễn Huệ", ward: "Phường Vĩnh Ninh", district: "TP. Huế" },
-              { street: "Bà Triệu", ward: "Phường Phú Hội", district: "TP. Huế" }
-            ]
-          },
-          {
-            city: "Vũng Tàu",
-            province: "Tỉnh Bà Rịa - Vũng Tàu",
-            zip: "780000",
-            locations: [
-              { street: "Thùy Vân", ward: "Phường Thắng Tam", district: "TP. Vũng Tàu" },
-              { street: "Hạ Long", ward: "Phường 2", district: "TP. Vũng Tàu" },
-              { street: "Lê Hồng Phong", ward: "Phường 4", district: "TP. Vũng Tàu" },
-              { street: "Ba Cu", ward: "Phường 1", district: "TP. Vũng Tàu" },
-              { street: "Trương Công Định", ward: "Phường 3", district: "TP. Vũng Tàu" }
+              { street: "Hai Bà Trưng", ward: "Phường An Biên", district: "Quận Lê Chân" },
+              { street: "Trần Hưng Đạo", ward: "Phường Hoàng Văn Thụ", district: "Quận Hồng Bàng" }
             ]
           },
           {
             city: "Bình Dương",
             province: "Tỉnh Bình Dương",
+            provinceCode: "074",
             zip: "750000",
             locations: [
               { street: "Đại Lộ Bình Dương", ward: "Phường Phú Hòa", district: "TP. Thủ Dầu Một" },
               { street: "Yersin", ward: "Phường Hiệp Thành", district: "TP. Thủ Dầu Một" },
+              { street: "Thích Quảng Đức", ward: "Phường Chánh Nghĩa", district: "TP. Thủ Dầu Một" },
               { street: "Cách Mạng Tháng 8", ward: "Phường Lái Thiêu", district: "TP. Thuận An" },
-              { street: "Nguyễn An Ninh", ward: "Phường Dĩ An", district: "TP. Dĩ An" }
+              { street: "Đường DT743", ward: "Phường An Phú", district: "TP. Thuận An" },
+              { street: "Nguyễn An Ninh", ward: "Phường Dĩ An", district: "TP. Dĩ An" },
+              { street: "Quốc Lộ 1K", ward: "Phường Đông Hòa", district: "TP. Dĩ An" }
+            ]
+          },
+          {
+            city: "Đồng Nai",
+            province: "Tỉnh Đồng Nai",
+            provinceCode: "075",
+            zip: "760000",
+            locations: [
+              { street: "Phạm Văn Thuận", ward: "Phường Tam Hiệp", district: "TP. Biên Hòa" },
+              { street: "Đồng Khởi", ward: "Phường Tân Hiệp", district: "TP. Biên Hòa" },
+              { street: "Võ Thị Sáu", ward: "Phường Quyết Thắng", district: "TP. Biên Hòa" },
+              { street: "Nguyễn Ái Quốc", ward: "Phường Tân Tiến", district: "TP. Biên Hòa" },
+              { street: "Đường 30 Tháng 4", ward: "Phường Trung Dũng", district: "TP. Biên Hòa" },
+              { street: "Hùng Vương", ward: "Phường Xuân An", district: "TP. Long Khánh" }
+            ]
+          },
+          {
+            city: "Bà Rịa - Vũng Tàu",
+            province: "Tỉnh Bà Rịa - Vũng Tàu",
+            provinceCode: "077",
+            zip: "780000",
+            locations: [
+              { street: "Thùy Vân", ward: "Phường Thắng Tam", district: "TP. Vũng Tàu" },
+              { street: "Hạ Long", ward: "Phường 2", district: "TP. Vũng Tàu" },
+              { street: "Ba Cu", ward: "Phường 1", district: "TP. Vũng Tàu" },
+              { street: "Lê Hồng Phong", ward: "Phường 7", district: "TP. Vũng Tàu" }
+            ]
+          },
+          {
+            city: "Khánh Hòa",
+            province: "Tỉnh Khánh Hòa",
+            provinceCode: "056",
+            zip: "650000",
+            locations: [
+              { street: "Trần Phú", ward: "Phường Lộc Thọ", district: "TP. Nha Trang" },
+              { street: "Lê Thánh Tôn", ward: "Phường Phước Tiến", district: "TP. Nha Trang" },
+              { street: "Nguyễn Thiện Thuật", ward: "Phường Tân Lập", district: "TP. Nha Trang" },
+              { street: "Đường 2 Tháng 4", ward: "Phường Vĩnh Hải", district: "TP. Nha Trang" }
+            ]
+          },
+          {
+            city: "Quảng Ninh",
+            province: "Tỉnh Quảng Ninh",
+            provinceCode: "022",
+            zip: "200000",
+            locations: [
+              { street: "Hạ Long", ward: "Phường Bãi Cháy", district: "TP. Hạ Long" },
+              { street: "Lê Thánh Tông", ward: "Phường Bạch Đằng", district: "TP. Hạ Long" },
+              { street: "Trần Hưng Đạo", ward: "Phường Trần Hưng Đạo", district: "TP. Hạ Long" }
+            ]
+          },
+          {
+            city: "Huế",
+            province: "Tỉnh Thừa Thiên Huế",
+            provinceCode: "046",
+            zip: "490000",
+            locations: [
+              { street: "Lê Lợi", ward: "Phường Phú Hội", district: "TP. Huế" },
+              { street: "Hùng Vương", ward: "Phường Phú Hội", district: "TP. Huế" },
+              { street: "Nguyễn Huệ", ward: "Phường Vĩnh Ninh", district: "TP. Huế" },
+              { street: "Đống Đa", ward: "Phường Vĩnh Ninh", district: "TP. Huế" }
+            ]
+          },
+          {
+            city: "Nghệ An",
+            province: "Tỉnh Nghệ An",
+            provinceCode: "040",
+            zip: "430000",
+            locations: [
+              { street: "Trần Phú", ward: "Phường Lê Mao", district: "TP. Vinh" },
+              { street: "Trường Thi", ward: "Phường Trường Thi", district: "TP. Vinh" },
+              { street: "Quang Trung", ward: "Phường Quang Trung", district: "TP. Vinh" }
+            ]
+          },
+          {
+            city: "Thanh Hóa",
+            province: "Tỉnh Thanh Hóa",
+            provinceCode: "038",
+            zip: "400000",
+            locations: [
+              { street: "Trần Phú", ward: "Phường Điện Biên", district: "TP. Thanh Hóa" },
+              { street: "Lê Hoàn", ward: "Phường Lam Sơn", district: "TP. Thanh Hóa" },
+              { street: "Đào Duy Từ", ward: "Phường Ba Đình", district: "TP. Thanh Hóa" }
             ]
           }
         ],
+        phonePrefixes: ["+84 98", "+84 97", "+84 96", "+84 91", "+84 94", "+84 90", "+84 93", "+84 86", "+84 88", "+84 89", "+84 79", "+84 77", "+84 38", "+84 39"],
         phonePrefix: "+84 9"
       },
       US: {
@@ -38147,7 +38974,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             locations: [
               { street: "Biscayne Blvd", district: "Downtown" },
               { street: "Ocean Dr", district: "South Beach" },
-              { street: "Brickell Ave", district: "Brickell" }
+              { street: "Brickell Ave", district: "Financial District" }
             ]
           }
         ],
@@ -38155,17 +38982,17 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       },
       UK: {
         lastNames: ["Smith", "Jones", "Taylor", "Brown", "Williams", "Wilson", "Johnson", "Davies", "Robinson", "Wright", "Thompson", "Evans"],
-        firstNamesMale: ["Oliver", "George", "Harry", "Noah", "Jack", "Leo", "Arthur", "Muhammad", "Oscar", "Charlie"],
-        firstNamesFemale: ["Olivia", "Amelia", "Isla", "Ava", "Mia", "Ivy", "Lily", "Freya", "Florence", "Rosie"],
+        firstNamesMale: ["George", "Oliver", "Harry", "Jack", "Jacob", "Noah", "Charlie", "Muhammad", "Thomas", "Oscar", "William", "James"],
+        firstNamesFemale: ["Olivia", "Amelia", "Isla", "Ava", "Emily", "Isabella", "Mia", "Poppy", "Ella", "Lily", "Sophia", "Grace"],
         cities: [
           {
             city: "London",
-            zip: "SW1A 1AA",
+            zip: "EC1A 1BB",
             locations: [
-              { street: "Oxford St", district: "West End" },
+              { street: "Oxford St", district: "Westminster" },
+              { street: "Regent St", district: "Mayfair" },
               { street: "Baker St", district: "Marylebone" },
-              { street: "Regent St", district: "Soho" },
-              { street: "Fleet St", district: "City of London" }
+              { street: "Piccadilly", district: "St James's" }
             ]
           },
           {
@@ -38173,8 +39000,8 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             zip: "M1 1AE",
             locations: [
               { street: "Deansgate", district: "City Centre" },
-              { street: "Market St", district: "City Centre" },
-              { street: "Oxford Rd", district: "University Quarter" }
+              { street: "Market St", district: "Northern Quarter" },
+              { street: "Peter St", district: "City Centre" }
             ]
           },
           {
@@ -38182,93 +39009,65 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             zip: "B1 1AA",
             locations: [
               { street: "New St", district: "City Centre" },
-              { street: "Corporation St", district: "City Centre" },
-              { street: "Colmore Row", district: "Financial District" }
-            ]
-          },
-          {
-            city: "Edinburgh",
-            zip: "EH1 1YZ",
-            locations: [
-              { street: "Princes St", district: "New Town" },
-              { street: "Royal Mile", district: "Old Town" },
-              { street: "George St", district: "New Town" }
+              { street: "Broad St", district: "Westside" }
             ]
           }
         ],
-        phonePrefix: "+44 79"
+        phonePrefix: "+44 7700"
       },
       DE: {
-        lastNames: ["Müller", "Schmidt", "Schneider", "Fischer", "Weber", "Meyer", "Wagner", "Becker", "Schulz", "Hoffmann", "Schäfer", "Koch"],
-        firstNamesMale: ["Lukas", "Leon", "Maximilian", "Paul", "Jonas", "Felix", "Noah", "Elias", "Tim", "Niklas", "David", "Julian"],
-        firstNamesFemale: ["Emma", "Mia", "Hannah", "Sophia", "Anna", "Lea", "Emilia", "Marie", "Lena", "Sarah", "Laura", "Lara"],
+        lastNames: ["Müller", "Schmidt", "Schneider", "Fischer", "Weber", "Meyer", "Wagner", "Becker", "Schulz", "Hoffmann"],
+        firstNamesMale: ["Ben", "Paul", "Leon", "Finn", "Elias", "Jonas", "Luis", "Noah", "Felix", "Lukas"],
+        firstNamesFemale: ["Emma", "Mia", "Hannah", "Sophia", "Emilia", "Lina", "Marie", "Mila", "Lea", "Ella"],
         cities: [
           {
             city: "Berlin",
             zip: "10115",
             locations: [
-              { street: "Unter den Linden", district: "Mitte" },
               { street: "Friedrichstraße", district: "Mitte" },
+              { street: "Unter den Linden", district: "Mitte" },
               { street: "Kurfürstendamm", district: "Charlottenburg" }
             ]
           },
           {
-            city: "München",
+            city: "Munich",
             zip: "80331",
             locations: [
               { street: "Maximilianstraße", district: "Altstadt" },
-              { street: "Leopoldstraße", district: "Schwabing" },
               { street: "Kaufingerstraße", district: "Altstadt" }
             ]
           },
           {
-            city: "Hamburg",
-            zip: "20095",
-            locations: [
-              { street: "Mönckebergstraße", district: "Mitte" },
-              { street: "Jungfernstieg", district: "Neustadt" }
-            ]
-          },
-          {
-            city: "Frankfurt am Main",
+            city: "Frankfurt",
             zip: "60311",
             locations: [
               { street: "Zeil", district: "Innenstadt" },
-              { street: "Kaiserstraße", district: "Bahnhofsviertel" }
+              { street: "Mainzer Landstraße", district: "Westend" }
             ]
           }
         ],
         phonePrefix: "+49 151"
       },
       FR: {
-        lastNames: ["Martin", "Bernard", "Thomas", "Petit", "Robert", "Richard", "Durand", "Dubois", "Moreau", "Laurent", "Simon", "Michel"],
-        firstNamesMale: ["Gabriel", "Léo", "Raphaël", "Arthur", "Louis", "Lucas", "Adam", "Jules", "Hugo", "Liam", "Noah", "Paul"],
-        firstNamesFemale: ["Jade", "Louise", "Emma", "Alice", "Ambre", "Lina", "Rose", "Chloé", "Mia", "Léa", "Julia", "Mila"],
+        lastNames: ["Martin", "Bernard", "Thomas", "Petit", "Robert", "Richard", "Durand", "Dubois", "Moreau", "Laurent"],
+        firstNamesMale: ["Gabriel", "Léo", "Raphaël", "Arthur", "Louis", "Lucas", "Adam", "Jules", "Hugo", "Maël"],
+        firstNamesFemale: ["Jade", "Louise", "Emma", "Alice", "Ambre", "Lina", "Rose", "Chloé", "Mia", "Léa"],
         cities: [
           {
             city: "Paris",
             zip: "75001",
             locations: [
-              { street: "Avenue des Champs-Élysées", district: "8e Arrondissement" },
-              { street: "Boulevard Saint-Germain", district: "6e Arrondissement" },
-              { street: "Rue de Rivoli", district: "1er Arrondissement" },
-              { street: "Rue de la Paix", district: "2e Arrondissement" }
-            ]
-          },
-          {
-            city: "Marseille",
-            zip: "13001",
-            locations: [
-              { street: "La Canebière", district: "1er Arrondissement" },
-              { street: "Rue Paradis", district: "6e Arrondissement" }
+              { street: "Champs-Élysées", district: "8th Arr." },
+              { street: "Rue de Rivoli", district: "1st Arr." },
+              { street: "Boulevard Saint-Germain", district: "6th Arr." }
             ]
           },
           {
             city: "Lyon",
-            zip: "69002",
+            zip: "69001",
             locations: [
-              { street: "Rue de la République", district: "2e Arrondissement" },
-              { street: "Rue Victor Hugo", district: "2e Arrondissement" }
+              { street: "Rue de la République", district: "Presqu'île" },
+              { street: "Cours Lafayette", district: "Part-Dieu" }
             ]
           }
         ],
@@ -38276,33 +39075,25 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       },
       JP: {
         lastNames: ["Sato", "Suzuki", "Takahashi", "Tanaka", "Watanabe", "Ito", "Yamamoto", "Nakamura", "Kobayashi", "Kato"],
-        firstNamesMale: ["Haruto", "Yuto", "Sota", "Yuki", "Hayato", "Ryota", "Kaito", "Daiki", "Ren", "Takumi"],
-        firstNamesFemale: ["Yui", "Rio", "Hina", "Koharu", "Hinata", "Mei", "Mio", "Saki", "Akari", "Aoi"],
+        firstNamesMale: ["Ren", "Hiroto", "Souta", "Yuma", "Haruto", "Minato", "Riku", "Kaito", "Asahi", "Ryusei"],
+        firstNamesFemale: ["Himari", "Hina", "Yua", "Sakura", "Ichika", "Akari", "Sara", "Yui", "Aoi", "Rin"],
         cities: [
           {
             city: "Tokyo",
             zip: "100-0001",
             locations: [
-              { street: "Ginza 4-Chome", district: "Chuo-ku" },
-              { street: "Roppongi 6-Chome", district: "Minato-ku" },
-              { street: "Shinjuku 3-Chome", district: "Shinjuku-ku" },
-              { street: "Shibuya 1-Chome", district: "Shibuya-ku" }
+              { street: "Chiyoda", district: "Chiyoda-ku" },
+              { street: "Ginza", district: "Chuo-ku" },
+              { street: "Shinjuku", district: "Shinjuku-ku" },
+              { street: "Shibuya", district: "Shibuya-ku" }
             ]
           },
           {
             city: "Osaka",
             zip: "530-0001",
             locations: [
-              { street: "Umeda 2-Chome", district: "Kita-ku" },
-              { street: "Dotonbori 1-Chome", district: "Chuo-ku" }
-            ]
-          },
-          {
-            city: "Kyoto",
-            zip: "600-8001",
-            locations: [
-              { street: "Shijo-dori", district: "Shimogyo-ku" },
-              { street: "Kawaramachi-dori", district: "Nakagyo-ku" }
+              { street: "Umeda", district: "Kita-ku" },
+              { street: "Namba", district: "Chuo-ku" }
             ]
           }
         ],
@@ -38310,18 +39101,16 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       },
       KR: {
         lastNames: ["Kim", "Lee", "Park", "Choi", "Jung", "Kang", "Cho", "Yoon", "Jang", "Lim"],
-        firstNamesMale: ["Min-jun", "Seo-jun", "Do-yun", "Ye-jun", "Si-woo", "Ha-jun", "Ju-won", "Ji-ho", "Jun-seo"],
-        firstNamesFemale: ["Seo-yeon", "Seo-yun", "Ji-woo", "Seo-hyeon", "Min-seo", "Ha-eun", "Ha-yoon", "Yun-seo"],
+        firstNamesMale: ["Min-jun", "Seo-jun", "Do-yun", "Ye-jun", "Si-woo", "Ha-joon", "Ji-ho", "Ju-won", "Jun-woo", "Geon-woo"],
+        firstNamesFemale: ["Seo-yeon", "Seo-yun", "Ji-woo", "Seo-hyeon", "Min-seo", "Ha-eun", "Ha-yun", "Yun-seo", "Ji-min", "Chae-won"],
         cities: [
           {
             city: "Seoul",
-            zip: "03050",
+            zip: "04524",
             locations: [
               { street: "Gangnam-daero", district: "Gangnam-gu" },
               { street: "Teheran-ro", district: "Gangnam-gu" },
-              { street: "Myeongdong-gil", district: "Jung-gu" },
-              { street: "Itaewon-ro", district: "Yongsan-gu" },
-              { street: "Jong-ro", district: "Jongno-gu" }
+              { street: "Myeongdong-gil", district: "Jung-gu" }
             ]
           },
           {
@@ -38336,9 +39125,9 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         phonePrefix: "+82 10"
       },
       PH: {
-        lastNames: ["Santos", "Reyes", "Cruz", "Bautista", "Ocampo", "Garcia", "Mendoza", "Torres", "Tomas", "Andrada"],
-        firstNamesMale: ["Jose", "Juan", "Mark", "John", "Angelo", "Gabriel", "Christian", "Paul"],
-        firstNamesFemale: ["Maria", "Angel", "Jasmine", "Princess", "Bea", "Nicole", "Rhea", "Camille"],
+        lastNames: ["Santos", "Reyes", "Cruz", "Bautista", "Del Rosario", "Aquino", "Garcia", "Ramos", "Mendoza", "Flores"],
+        firstNamesMale: ["Joshua", "Angelo", "John Mark", "Christian", "Daniel", "Gabriel", "Mark", "Nathaniel", "Anthony", "Carl"],
+        firstNamesFemale: ["Angel", "Princess", "Mary Joy", "Nicole", "Jasmine", "Bea", "Patricia", "Christine", "Andrea", "Samantha"],
         cities: [
           {
             city: "Manila",
@@ -38352,76 +39141,67 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             city: "Quezon City",
             zip: "1100",
             locations: [
-              { street: "Commonwealth Ave", district: "Diliman" },
-              { street: "EDSA", district: "Cubao" }
-            ]
-          },
-          {
-            city: "Makati",
-            zip: "1200",
-            locations: [
-              { street: "Ayala Ave", district: "Bel-Air" },
-              { street: "Makati Ave", district: "Poblacion" }
+              { street: "EDSA", district: "Diliman" },
+              { street: "Commonwealth Ave", district: "Batasan" }
             ]
           }
         ],
         phonePrefix: "+63 917"
       },
       TH: {
-        lastNames: ["Saetang", "Saelim", "Saelee", "Suksom", "Phromma", "Thongsuk", "Chanthara", "Rattanasiri"],
-        firstNamesMale: ["Somchai", "Somsak", "Arthit", "Kittisak", "Narong", "Prawit", "Wichai", "Chaiwat"],
-        firstNamesFemale: ["Malee", "Siriporn", "Kannika", "Ratree", "Duangkamol", "Sunisa", "Pornthip", "Kanya"],
+        lastNames: ["Saetang", "Saelim", "Sukprasert", "Chaiprasert", "Rattanakorn", "Wongsuwan", "Somboon", "Srichan"],
+        firstNamesMale: ["Somchai", "Somsak", "Arthit", "Kittisak", "Narong", "Prasert", "Thanawat", "Wichai"],
+        firstNamesFemale: ["Malee", "Siriporn", "Kannika", "Supaporn", "Sunisa", "Rattana", "Nattaya", "Pornthip"],
         cities: [
           {
             city: "Bangkok",
-            zip: "10100",
+            zip: "10110",
             locations: [
-              { street: "Sukhumvit Rd", district: "Khlong Toei" },
+              { street: "Sukhumvit Rd", district: "Watthana" },
               { street: "Silom Rd", district: "Bang Rak" },
-              { street: "Sathorn Rd", district: "Sathon" },
-              { street: "Ratchadamnoen Ave", district: "Phra Nakhon" }
+              { street: "Rama I Rd", district: "Pathum Wan" }
             ]
           },
           {
             city: "Chiang Mai",
-            zip: "50000",
+            zip: "50200",
             locations: [
-              { street: "Nimmanahaeminda Rd", district: "Mueang Chiang Mai" },
-              { street: "Chang Khlan Rd", district: "Mueang Chiang Mai" }
+              { street: "Nimmanahaeminda Rd", district: "Mueang" },
+              { street: "Chang Khlan Rd", district: "Mueang" }
             ]
           }
         ],
         phonePrefix: "+66 81"
       },
       ID: {
-        lastNames: ["Wijaya", "Kusuma", "Santoso", "Saputra", "Pratama", "Setiawan", "Hidayat", "Lestari"],
-        firstNamesMale: ["Budi", "Agus", "Eko", "Bambang", "Rizky", "Dian", "Hendra", "Aris"],
-        firstNamesFemale: ["Siti", "Sri", "Nur", "Dewi", "Putri", "Indah", "Rina", "Tri"],
+        lastNames: ["Wijaya", "Kusuma", "Santoso", "Saputra", "Pratama", "Setiawan", "Hidayat", "Lestari", "Nugroho", "Gunawan"],
+        firstNamesMale: ["Budi", "Agus", "Eko", "Bambang", "Rizky", "Bayu", "Fajar", "Hendra", "Dimas", "Aditya"],
+        firstNamesFemale: ["Siti", "Sri", "Dewi", "Nur", "Rini", "Putri", "Tri", "Indah", "Dian", "Ratna"],
         cities: [
           {
             city: "Jakarta",
             zip: "10110",
             locations: [
-              { street: "Jl. Sudirman", district: "Jakarta Selatan" },
-              { street: "Jl. Thamrin", district: "Jakarta Pusat" },
-              { street: "Jl. Gatot Subroto", district: "Jakarta Selatan" }
+              { street: "Jl. MH Thamrin", district: "Menteng" },
+              { street: "Jl. Jend. Sudirman", district: "Setiabudi" },
+              { street: "Jl. Gatot Subroto", district: "Kuningan" }
             ]
           },
           {
-            city: "Bandung",
-            zip: "40111",
+            city: "Surabaya",
+            zip: "60241",
             locations: [
-              { street: "Jl. Asia Afrika", district: "Sumur Bandung" },
-              { street: "Jl. Dago", district: "Coblong" }
+              { street: "Jl. Pemuda", district: "Genteng" },
+              { street: "Jl. Basuki Rahmat", district: "Tegalsari" }
             ]
           }
         ],
         phonePrefix: "+62 812"
       },
       CN: {
-        lastNames: ["Wang", "Li", "Zhang", "Liu", "Chen", "Yang", "Huang", "Zhao", "Wu", "Zhou"],
-        firstNamesMale: ["Wei", "Qiang", "Lei", "Jun", "Yong", "Jie", "Tao", "Chao", "Ming", "Peng"],
-        firstNamesFemale: ["Fang", "Xiuying", "Min", "Jing", "Li", "Na", "Yan", "Ping", "Dan", "Juan"],
+        lastNames: ["Wang", "Li", "Zhang", "Liu", "Chen", "Yang", "Huang", "Zhao", "Wu", "Zhou", "Xu", "Sun", "Ma", "Zhu"],
+        firstNamesMale: ["Wei", "Qiang", "Lei", "Jun", "Yong", "Jie", "Tao", "Chao", "Hao", "Bo", "Ping", "Gang"],
+        firstNamesFemale: ["Fang", "Na", "Min", "Jing", "Li", "Juan", "Yan", "Xiu", "Ling", "Hong", "Dan", "Ping"],
         cities: [
           {
             city: "Beijing",
@@ -38470,6 +39250,74 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
     var currentFakeProfiles = [];
 
+    // ==========================================
+    // HÀM SINH SỐ CĂN CƯỚC (CCCD) / NATIONAL ID / SSN CHUẨN XÁC
+    // ==========================================
+    function generateIdNumber(country, genderCode, birthYear, provinceCode) {
+      if (country === "VN") {
+        // Chuẩn 12 số Bộ Công An Việt Nam
+        // 3 số đầu: Mã tỉnh/thành phố khai sinh
+        const pCode = String(provinceCode || "079").padStart(3, '0');
+        // 1 số tiếp theo: Giới tính & Thế kỷ
+        // Thế kỷ 20 (1900 - 1999): Nam = 0, Nữ = 1
+        // Thế kỷ 21 (2000 - 2099): Nam = 2, Nữ = 3
+        let centuryGender = "0";
+        if (birthYear >= 2000) {
+          centuryGender = (genderCode === "female") ? "3" : "2";
+        } else {
+          centuryGender = (genderCode === "female") ? "1" : "0";
+        }
+        // 2 số tiếp: 2 số cuối năm sinh
+        const yCode = String(birthYear).slice(-2);
+        // 6 số cuối: số ngẫu nhiên từ 100000 đến 999999
+        const rand6 = String(Math.floor(Math.random() * 899999 + 100000));
+        return pCode + centuryGender + yCode + rand6;
+      } else if (country === "US") {
+        // SSN: XXX-XX-XXXX
+        const area = String(Math.floor(Math.random() * 889 + 100));
+        const group = String(Math.floor(Math.random() * 89 + 10));
+        const serial = String(Math.floor(Math.random() * 8999 + 1000));
+        return area + "-" + group + "-" + serial;
+      } else if (country === "UK") {
+        // NINO: XX 12 34 56 X
+        const letters = "ABCEGHJKLMNOPRSTWXYZ";
+        const l1 = letters[Math.floor(Math.random() * letters.length)];
+        const l2 = letters[Math.floor(Math.random() * letters.length)];
+        const num = String(Math.floor(Math.random() * 899999 + 100000)).replace(/(\d{2})(\d{2})(\d{2})/, "$1 $2 $3");
+        const suffix = "ABCD"[Math.floor(Math.random() * 4)];
+        return l1 + l2 + " " + num + " " + suffix;
+      } else if (country === "DE") {
+        return String(Math.floor(Math.random() * 89999999999 + 10000000000));
+      } else if (country === "FR") {
+        const g = genderCode === "female" ? "2" : "1";
+        const y = String(birthYear).slice(-2);
+        const rand12 = String(Math.floor(Math.random() * 899999999999 + 100000000000));
+        return g + y + rand12;
+      } else if (country === "JP") {
+        return String(Math.floor(Math.random() * 899999999999 + 100000000000));
+      } else if (country === "KR") {
+        const y = String(birthYear).slice(-2);
+        const m = String(Math.floor(Math.random() * 12 + 1)).padStart(2, '0');
+        const d = String(Math.floor(Math.random() * 28 + 1)).padStart(2, '0');
+        const gDigit = birthYear >= 2000 ? (genderCode === "female" ? "4" : "3") : (genderCode === "female" ? "2" : "1");
+        return y + m + d + "-" + gDigit + String(Math.floor(Math.random() * 899999 + 100000));
+      } else if (country === "CN") {
+        return String(Math.floor(Math.random() * 899999 + 110000)) + birthYear + "0815" + String(Math.floor(Math.random() * 8999 + 1000));
+      } else if (country === "PH") {
+        return String(Math.floor(Math.random()*8999+1000)) + "-" + String(Math.floor(Math.random()*8999+1000)) + "-" + String(Math.floor(Math.random()*8999+1000)) + "-" + String(Math.floor(Math.random()*8999+1000));
+      } else if (country === "TH") {
+        return String(Math.floor(Math.random() * 8999999999999 + 1000000000000));
+      } else if (country === "ID") {
+        return String(Math.floor(Math.random() * 8999999999999999 + 1000000000000000));
+      } else if (country === "RU") {
+        const n9 = String(Math.floor(Math.random() * 899999999 + 100000000)).replace(/(\d{3})(\d{3})(\d{3})/, "$1-$2-$3");
+        const n2 = String(Math.floor(Math.random() * 89 + 10));
+        return n9 + " " + n2;
+      } else {
+        return String(Math.floor(Math.random() * 899999999999 + 100000000000));
+      }
+    }
+
     function generateRandomProfile(country, gender) {
       const cData = fakeDataDictionary[country] || fakeDataDictionary.VN;
       let isMale = gender === "MALE" || gender === "male";
@@ -38507,6 +39355,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       const cityName = (cityItem && typeof cityItem === "object") ? cityItem.city : cityItem;
       const provinceName = (cityItem && typeof cityItem === "object" && cityItem.province) ? cityItem.province : cityName;
       const zipCode = (cityItem && typeof cityItem === "object") ? cityItem.zip : "100000";
+      const provinceCode = (cityItem && typeof cityItem === "object" && cityItem.provinceCode) ? cityItem.provinceCode : "079";
 
       const streetNum = Math.floor(Math.random() * 888 + 12);
       let address = "";
@@ -38521,17 +39370,25 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         address = streetNum + " Main St, " + cityName;
       }
 
-      const phone = cData.phonePrefix + " " + Math.floor(Math.random() * 8999999 + 1000000);
-      const cleanName = fullName.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+      let phone = "";
+      if (country === "VN" && Array.isArray(cData.phonePrefixes)) {
+        const pfx = cData.phonePrefixes[Math.floor(Math.random() * cData.phonePrefixes.length)];
+        phone = pfx + " " + Math.floor(Math.random() * 8999999 + 1000000);
+      } else {
+        phone = cData.phonePrefix + " " + Math.floor(Math.random() * 8999999 + 1000000);
+      }
+
+      const cleanName = fullName.toLowerCase().replace(/đ/g, "d").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
       const email = cleanName + y + "@gmail.com";
       const password = cleanName.charAt(0).toUpperCase() + cleanName.slice(1, 6) + "@" + (Math.floor(Math.random() * 899 + 100)) + "!";
-      const ip = (Math.floor(Math.random() * 200 + 20)) + "." + (Math.floor(Math.random() * 250 + 1)) + "." + (Math.floor(Math.random() * 250 + 1)) + "." + (Math.floor(Math.random() * 250 + 1));
+      const idNumber = generateIdNumber(country, gCode, y, provinceCode);
 
       return {
         fullName,
         gender: gStr,
         genderCode: gCode,
         dob,
+        birthYear: y,
         country,
         address,
         city: cityName,
@@ -38539,11 +39396,11 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         phone,
         email,
         password,
-        ip
+        idNumber
       };
     }
 
-        function generateFakeProfiles() {
+    function generateFakeProfiles() {
       const countryEl = document.getElementById("fakeInfoCountry") || document.getElementById("fakeCountrySelect");
       const genderEl = document.getElementById("fakeInfoGender") || document.getElementById("fakeGenderSelect");
       const countEl = document.getElementById("fakeInfoCount") || document.getElementById("fakeCountSelect");
@@ -38559,11 +39416,13 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         const p = generateRandomProfile(country, gender);
         currentFakeProfiles.push(p);
 
+        const idLabel = p.country === "VN" ? "CCCD" : "ID/SSN";
         fullTextResult += (i + 1) + ". Họ Tên: " + p.fullName + "\n" +
                           "   Giới tính: " + p.gender + " | Ngày sinh: " + p.dob + "\n" +
+                          "   " + idLabel + ": " + p.idNumber + "\n" +
                           "   Địa chỉ: " + p.address + " | Zip Code: " + p.zipCode + "\n" +
                           "   SĐT: " + p.phone + " | Email: " + p.email + "\n" +
-                          "   Mật khẩu: " + p.password + " | IP: " + p.ip + "\n\n";
+                          "   Mật khẩu: " + p.password + "\n\n";
       }
 
       // Update Textarea
@@ -38582,55 +39441,121 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
         currentFakeProfiles.forEach((p, idx) => {
           const card = document.createElement("div");
-          card.className = "profile-result-card";
-          card.style.background = "#090e17";
-          card.style.border = "1px solid #1e293b";
-          card.style.borderRadius = "10px";
-          card.style.padding = "14px";
-          card.innerHTML = `
-            <div style="flex:1;">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; gap:8px;">
-                <div>
-                  <h4 style="font-size:1.1rem; font-weight:700; color:#fff; margin:0 0 4px 0;">${escapeHtml(p.fullName)}</h4>
-                  <span style="font-size:0.75rem; color:#60a5fa; font-family:monospace;">${escapeHtml(p.gender)} • ${escapeHtml(p.dob)}</span>
-                </div>
-                <button class="btn-action-copy" onclick="copyFirstProfileName(${idx})" style="padding:4px 10px; font-size:0.75rem;"><i class="fa-regular fa-copy"></i> Copy Tên</button>
-              </div>
+          card.className = "fake-profile-card";
+          card.style.cssText = "background:#090e17; border:1px solid #1e293b; border-radius:10px; padding:14px; display:flex; flex-direction:column; gap:8px; width:100%; box-sizing:border-box; align-items:stretch;";
 
-              <div style="font-size:0.8rem; color:#94a3b8; display:flex; flex-direction:column; gap:6px;">
-                <div><i class="fa-solid fa-map-location-dot" style="width:16px; color:#64748b;"></i> ${escapeHtml(p.address)}</div>
-                <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:5px 8px; border-radius:6px; border:1px solid #1e293b;">
-                  <div>
-                    <i class="fa-solid fa-barcode" style="width:16px; color:#38bdf8;"></i> <span style="color:#cbd5e1; font-size:0.78rem;">Zip/Postal Code:</span> <strong style="color:#38bdf8; font-family:monospace; font-size:0.88rem; letter-spacing:0.5px;">${escapeHtml(p.zipCode)}</strong>
-                  </div>
-                  <button class="btn-action-copy" onclick="copyProfileZip(${idx})" style="padding:2px 8px; font-size:0.72rem;" title="Copy Zip Code"><i class="fa-regular fa-copy"></i> Copy Zip</button>
+          const idLabel = p.country === "VN" ? "CCCD:" : "SSN/ID:";
+          const idBtnLabel = p.country === "VN" ? "Copy CCCD" : "Copy ID";
+
+          card.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:4px; gap:8px; width:100%; box-sizing:border-box;">
+              <div>
+                <h4 style="font-size:1.05rem; font-weight:700; color:#fff; margin:0 0 4px 0;">${escapeHtml(p.fullName)}</h4>
+                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                  <span style="font-size:0.75rem; color:#60a5fa; font-family:monospace;">${escapeHtml(p.gender)} • ${escapeHtml(p.dob)}</span>
+                  <button class="btn-action-copy" data-copy="${escapeHtml(p.dob)}" onclick="copyBtnData(this, 'Ngày sinh')" style="padding:1px 6px; font-size:0.68rem;" title="Copy Ngày sinh"><i class="fa-regular fa-copy"></i> Copy DOB</button>
                 </div>
-                <div><i class="fa-solid fa-phone" style="width:16px; color:#64748b;"></i> ${escapeHtml(p.phone)}</div>
-                <div><i class="fa-solid fa-envelope" style="width:16px; color:#64748b;"></i> ${escapeHtml(p.email)}</div>
-                <div><i class="fa-solid fa-key" style="width:16px; color:#10b981;"></i> <strong style="color:#10b981;">${escapeHtml(p.password)}</strong></div>
-                <div><i class="fa-solid fa-network-wired" style="width:16px; color:#64748b;"></i> ${escapeHtml(p.ip)}</div>
               </div>
+              <button class="btn-action-copy" data-copy="${escapeHtml(p.fullName)}" onclick="copyBtnData(this, 'Họ Tên')" style="padding:4px 10px; font-size:0.75rem;"><i class="fa-regular fa-copy"></i> Copy Tên</button>
             </div>
-          `;
+
+            <!-- CCCD / ID Card -->
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #334155; width:100%; box-sizing:border-box;">
+              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+                <i class="fa-solid fa-id-card" style="width:16px; color:#c084fc; flex-shrink:0;"></i>
+                <span style="color:#cbd5e1; font-size:0.78rem; flex-shrink:0;">${idLabel}</span>
+                <strong style="color:#c084fc; font-family:monospace; font-size:0.88rem; letter-spacing:0.8px; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(p.idNumber)}</strong>
+              </div>
+              <button class="btn-action-copy" data-copy="${escapeHtml(p.idNumber)}" onclick="copyBtnData(this, '${idBtnLabel}')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Số Căn cước"><i class="fa-regular fa-copy"></i> ${idBtnLabel}</button>
+            </div>
+
+            <!-- Address 2026 -->
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">
+              <div style="display:flex; align-items:flex-start; gap:6px; flex:1; font-size:0.8rem; line-height:1.4;">
+                <i class="fa-solid fa-map-location-dot" style="width:16px; color:#64748b; margin-top:2px; flex-shrink:0;"></i>
+                <span style="color:#cbd5e1; word-break:break-word;">${escapeHtml(p.address)}</span>
+              </div>
+              <button class="btn-action-copy" data-copy="${escapeHtml(p.address)}" onclick="copyBtnData(this, 'Địa chỉ')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0; margin-top:2px;" title="Copy Địa chỉ"><i class="fa-regular fa-copy"></i> Copy Đ/c</button>
+            </div>
+
+            <!-- Zip Code -->
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">
+              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+                <i class="fa-solid fa-barcode" style="width:16px; color:#38bdf8; flex-shrink:0;"></i>
+                <span style="color:#cbd5e1; font-size:0.78rem; flex-shrink:0;">Zip/Postal:</span>
+                <strong style="color:#38bdf8; font-family:monospace; font-size:0.88rem; letter-spacing:0.5px;">${escapeHtml(p.zipCode)}</strong>
+              </div>
+              <button class="btn-action-copy" data-copy="${escapeHtml(p.zipCode)}" onclick="copyBtnData(this, 'Mã Zip')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Zip Code"><i class="fa-regular fa-copy"></i> Copy Zip</button>
+            </div>
+
+            <!-- Phone -->
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">
+              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+                <i class="fa-solid fa-phone" style="width:16px; color:#64748b; flex-shrink:0;"></i>
+                <span style="color:#cbd5e1; font-size:0.78rem; font-family:monospace;">${escapeHtml(p.phone)}</span>
+              </div>
+              <button class="btn-action-copy" data-copy="${escapeHtml(p.phone)}" onclick="copyBtnData(this, 'Số điện thoại')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Số điện thoại"><i class="fa-regular fa-copy"></i> Copy SĐT</button>
+            </div>
+
+            <!-- Email -->
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">
+              <div style="display:flex; align-items:center; gap:6px; overflow:hidden; flex:1;">
+                <i class="fa-solid fa-envelope" style="width:16px; color:#64748b; flex-shrink:0;"></i>
+                <span style="color:#cbd5e1; font-size:0.78rem; font-family:monospace; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${escapeHtml(p.email)}</span>
+              </div>
+              <button class="btn-action-copy" data-copy="${escapeHtml(p.email)}" onclick="copyBtnData(this, 'Email')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Email"><i class="fa-regular fa-copy"></i> Copy Email</button>
+            </div>
+
+            <!-- Password -->
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; background:#0f172a; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; width:100%; box-sizing:border-box;">
+              <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+                <i class="fa-solid fa-key" style="width:16px; color:#10b981; flex-shrink:0;"></i>
+                <strong style="color:#10b981; font-size:0.82rem; font-family:monospace;">${escapeHtml(p.password)}</strong>
+              </div>
+              <button class="btn-action-copy" data-copy="${escapeHtml(p.password)}" onclick="copyBtnData(this, 'Mật khẩu')" style="padding:2px 8px; font-size:0.72rem; flex-shrink:0;" title="Copy Mật khẩu"><i class="fa-regular fa-copy"></i> Copy Pass</button>
+            </div>`;
           previewBox.appendChild(card);
         });
       }
 
-      showToast("Đã tạo thành công " + count + " hồ sơ Fake Name!", "success");
+      showToast("Đã tạo thành công " + count + " hồ sơ Fake Name chuẩn 2026!", "success");
     }
 
     var runGenerateFakePersona = generateFakeProfiles;
 
-    function copyFirstProfileName(idx) {
-      if (currentFakeProfiles && currentFakeProfiles[idx]) {
-        copyToClipboard(currentFakeProfiles[idx].fullName, "Đã sao chép tên: " + currentFakeProfiles[idx].fullName);
+    // ==========================================
+    // CÁC HÀM SAO CHÉP TỪNG MỤC & TOÀN BỘ
+    // ==========================================
+    function copyProfileField(idx, field, btnEl) {
+      if (btnEl) {
+        copyBtnData(btnEl, field);
+        return;
+      }
+      const list = window.currentFakeProfiles || currentFakeProfiles;
+      if (!list || !list[idx]) return;
+      const p = list[idx];
+      const map = {
+        fullName: { val: p.fullName, label: "Họ và Tên" },
+        idNumber: { val: p.idNumber, label: (p.country === "VN" ? "Số Căn Cước (CCCD)" : "Số Định Danh (SSN/ID)") },
+        dob: { val: p.dob, label: "Ngày sinh" },
+        address: { val: p.address, label: "Địa chỉ" },
+        zipCode: { val: p.zipCode, label: "Mã Zip Code" },
+        phone: { val: p.phone, label: "Số điện thoại" },
+        email: { val: p.email, label: "Email" },
+        password: { val: p.password, label: "Mật khẩu" }
+      };
+      const item = map[field];
+      if (item && item.val) {
+        copyTextDirect(item.val, "Đã sao chép " + item.label + ": " + item.val);
       }
     }
 
+    function copyFirstProfileName(idx) {
+      copyProfileField(idx, 'fullName');
+    }
+
     function copyProfileZip(idx) {
-      if (currentFakeProfiles && currentFakeProfiles[idx]) {
-        copyToClipboard(currentFakeProfiles[idx].zipCode, "Đã sao chép Mã Zip: " + currentFakeProfiles[idx].zipCode);
-      }
+      copyProfileField(idx, 'zipCode');
     }
 
     function copyOnlyNames() {
@@ -38640,6 +39565,16 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       }
       const names = currentFakeProfiles.map(p => p.fullName).join("\n");
       copyToClipboard(names, "Đã sao chép toàn bộ Họ & Tên!");
+    }
+
+    function copyOnlyIds() {
+      if (!currentFakeProfiles || currentFakeProfiles.length === 0) {
+        showToast("Chưa có danh sách để sao chép!", "warning");
+        return;
+      }
+      const ids = currentFakeProfiles.map(p => p.idNumber).join("\n");
+      const label = (currentFakeProfiles[0] && currentFakeProfiles[0].country === "VN") ? "CCCD" : "Số định danh (ID/SSN)";
+      copyToClipboard(ids, "Đã sao chép toàn bộ danh sách " + label + "!");
     }
 
     function copyOnlyZipCodes() {
@@ -38657,13 +39592,15 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         return;
       }
       let text = currentFakeProfiles.map((p, i) => {
+        const idLabel = p.country === "VN" ? "CCCD" : "ID/SSN";
         return (i + 1) + ". Họ Tên: " + p.fullName + "\n" +
                "   Giới tính: " + p.gender + " | Ngày sinh: " + p.dob + "\n" +
+               "   " + idLabel + ": " + p.idNumber + "\n" +
                "   Địa chỉ: " + p.address + " | Zip Code: " + p.zipCode + "\n" +
                "   SĐT: " + p.phone + " | Email: " + p.email + "\n" +
-               "   Mật khẩu: " + p.password + " | IP: " + p.ip;
+               "   Mật khẩu: " + p.password;
       }).join("\n\n");
-      copyToClipboard(text, "Đã sao chép toàn bộ thông tin Fake Name!");
+      copyToClipboard(text, "Đã sao chép toàn bộ thông tin Fake Name (không chứa IP)!");
     }
 
     function downloadFakeInfoTxt() {
@@ -38671,33 +39608,61 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         showToast("Chưa có dữ liệu để xuất file .txt!", "warning");
         return;
       }
-      let content = "=== DANH SÁCH FAKE NAME & PERSONA (MMO TOOLS) ===\n";
+      let content = "=== DANH SÁCH FAKE NAME & PERSONA (MMO TOOLS - CHUẨN 2026) ===\n";
       content += "Thời gian tạo: " + new Date().toLocaleString("vi-VN") + "\n";
       content += "Số lượng: " + currentFakeProfiles.length + " hồ sơ\n\n";
 
       currentFakeProfiles.forEach((p, idx) => {
+        const idLabel = p.country === "VN" ? "Số CCCD:    " : "Số ID/SSN:  ";
         content += "----------------------------------------\n";
         content += "HỒ SƠ #" + (idx + 1) + "\n";
         content += "----------------------------------------\n";
         content += "Họ & Tên:   " + p.fullName + "\n";
         content += "Giới tính:  " + p.gender + "\n";
         content += "Ngày sinh:  " + p.dob + "\n";
+        content += idLabel + p.idNumber + "\n";
         content += "Quốc gia:   " + p.country + "\n";
         content += "Địa chỉ:    " + p.address + "\n";
         content += "Zip Code:   " + p.zipCode + "\n";
         content += "Điện thoại: " + p.phone + "\n";
         content += "Email:      " + p.email + "\n";
-        content += "Mật khẩu:   " + p.password + "\n";
-        content += "IP Vùng:    " + p.ip + "\n\n";
+        content += "Mật khẩu:   " + p.password + "\n\n";
       });
 
       const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = "fake_names_mmo.txt";
+      a.download = "fake_names_mmo_2026.txt";
       a.click();
-      showToast("Đã tải xuống file fake_names_mmo.txt!", "success");
+      showToast("Đã tải xuống file fake_names_mmo_2026.txt!", "success");
     }
+
+    // Gắn vào window để đảm bảo gọi mọi nơi
+    window.generateFakeProfiles = generateFakeProfiles;
+
+    function clearFakeProfiles(silent) {
+      currentFakeProfiles = [];
+      window.currentFakeProfiles = [];
+      const previewBox = document.getElementById("fakeProfilePreviewBox");
+      if (previewBox) {
+        previewBox.innerHTML = "";
+        previewBox.style.display = "none";
+      }
+      const outArea = document.getElementById("fakeInfoOutput");
+      if (outArea) {
+        outArea.value = "";
+      }
+      if (!silent && typeof showToast === "function") showToast("Đã xóa sạch dữ liệu kết quả Fake Name!", "info");
+    }
+    window.clearFakeProfiles = clearFakeProfiles;
+    window.copyProfileField = copyProfileField;
+    window.copyFirstProfileName = copyFirstProfileName;
+    window.copyProfileZip = copyProfileZip;
+    window.copyOnlyNames = copyOnlyNames;
+    window.copyOnlyIds = copyOnlyIds;
+    window.copyOnlyZipCodes = copyOnlyZipCodes;
+    window.copyFakeInfoAsText = copyFakeInfoAsText;
+    window.downloadFakeInfoTxt = downloadFakeInfoTxt;
 
     // ==========================================
     // TOOL 5: CHECK FOLLOWER TIKTOK HÀNG LOẠT (REAL-TIME METRIC ENGINE)
@@ -39615,8 +40580,23 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       const qrUrl = `https://img.vietqr.io/image/${bankCode}-${bankAcc}-compact.png?amount=${amount}&addInfo=${memo}&accountName=${bankOwner}`;
       if (qrImgEl) qrImgEl.src = qrUrl;
 
-      // Register deposit order with Google Apps Script Cloud Backend
+      // Register deposit order with Cloudflare Worker Turso DB & Google Apps Script
       if (currentUser && currentUser.email) {
+        try {
+          const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+            ? MMO_WORKER_API.getApiUrl()
+            : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          fetch(workerUrl + "/api/deposit/create", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId: depositOrderCode,
+              amount: amount,
+              email: currentUser.email
+            })
+          }).catch(() => {});
+        } catch(eDepWorker) {}
+
         callGasApi("createDepositOrder", {
           orderId: depositOrderCode,
           amount: amount,
@@ -39981,6 +40961,19 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           pHeaders["Authorization"] = "Bearer " + sTok;
         }
 
+        let workerBal = null;
+        try {
+          const uProfRes = await fetch(workerUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail), {
+            headers: pHeaders
+          });
+          if (uProfRes.ok) {
+            const uProfData = await uProfRes.json();
+            if (uProfData && uProfData.success && uProfData.user && !isNaN(Number(uProfData.user.balance))) {
+              workerBal = Number(uProfData.user.balance);
+            }
+          }
+        } catch(eWk) {}
+
         const [walletRes, ordersRes] = await Promise.all([
           (typeof callGasApi === "function") 
             ? callGasApi("getUserWallet", { email: cleanEmail }).catch(() => null) 
@@ -39996,27 +40989,22 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         let localBal = (currentUser && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) ? Number(currentUser.balance) : 0;
         let allUsers = getRegisteredUsers();
         const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
-        if (uIdx !== -1 && allUsers[uIdx].balance !== undefined && !isNaN(Number(allUsers[uIdx].balance))) {
-          localBal = Math.max(localBal, Number(allUsers[uIdx].balance));
-        }
 
         // Dọn dẹp đơn nạp đang chờ nếu có
         try { localStorage.removeItem("mmo_pending_deposit"); } catch(e) {}
 
-        // Lấy số dư từ sổ cái giao dịch toàn diện
-        let calcBal = 0;
-        if (typeof getUserComprehensiveTransactions === "function") {
-          try {
-            const comp = getUserComprehensiveTransactions(cleanEmail);
-            if (comp && !isNaN(Number(comp.currentBalance))) {
-              calcBal = Number(comp.currentBalance);
-            }
-          } catch(e) {}
+        // [SSOT TURSO CLOUD WALLET SYNC v6.7.9]:
+        // Ưu tiên số dư chuẩn xác 100% từ Cloudflare Worker Turso DB (SSOT)
+        let effectiveBal;
+        if (workerBal !== null) {
+          effectiveBal = workerBal;
+        } else {
+          effectiveBal = localBal;
+          if (gasBal !== null && !isNaN(gasBal) && gasBal > localBal) {
+            effectiveBal = gasBal;
+          }
         }
 
-        // [ĐỒNG BỘ SỐ DƯ ĐỒNG NHẤT 100% TRÊN VÀ DƯỚI v6.2.2]:
-        // Lấy số dư an toàn cao nhất giữa Cloud và Local (chống việc Cloud chậm làm hạ số dư vừa nạp)
-        let effectiveBal = Math.max(localBal || 0, (gasBal !== null && !isNaN(gasBal)) ? gasBal : 0, (calcBal || 0));
         currentUser.balance = effectiveBal;
         try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
 
@@ -40208,9 +41196,41 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         return;
       }
 
+      // Tự động tải Realtime biến động số dư từ Cloudflare Worker nếu chưa có
+      if (!window._isFetchingUserLogs && (!window._userLiveLogs || window._userLiveLogsEmail !== cleanEmail)) {
+        window._isFetchingUserLogs = true;
+        (async function() {
+          try {
+            const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
+            const res = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail));
+            if (res.ok) {
+              const data = await res.json();
+              if (data && data.success && Array.isArray(data.transactions) && data.transactions.length > 0) {
+                window._userLiveLogs = data.transactions.map(t => ({
+                  id: t.order_id || t.id,
+                  type: t.type === "DEPOSIT" ? "Nạp tiền ví" : (t.type === "REFUND" ? "Hoàn tiền" : (t.type === "OTP_RENT" ? "Thuê số OTP" : "Thanh toán")),
+                  amount: Number(t.amount) || 0,
+                  balanceAfter: t.balance_after,
+                  time: t.created_at ? new Date(t.created_at).toLocaleString("vi-VN") : "Gần đây",
+                  note: t.note || ""
+                }));
+                window._userLiveLogsEmail = cleanEmail;
+                renderUserBalanceLogs();
+              }
+            }
+          } catch(eLog) {
+            console.warn("fetch user balance logs error:", eLog);
+          } finally {
+            setTimeout(() => { window._isFetchingUserLogs = false; }, 3000);
+          }
+        })();
+      }
+
       if (typeof getUserComprehensiveTransactions === "function") {
         const res = getUserComprehensiveTransactions(cleanEmail);
-        const allLogs = res.transactions;
+        const allLogs = (window._userLiveLogs && window._userLiveLogsEmail === cleanEmail && window._userLiveLogs.length > 0)
+          ? window._userLiveLogs
+          : res.transactions;
 
         if (allLogs.length === 0) {
           tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:28px; color:#64748b;">Chưa có biến động số dư nào.</td></tr>';
@@ -40243,9 +41263,12 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           const isRefund = tLow.includes("hoàn tiền") || nLow.includes("hoàn tiền");
           const isPurchase = tLow.includes("thanh toán") || tLow.includes("mua hàng") || amt < 0;
 
+          const isOtp = tLow.includes("thuê số") || tLow.includes("otp") || nLow.includes("thuê số");
           let typeHtml = "";
           if (isRefund) {
             typeHtml = '<span style="color:#10b981; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền đơn hàng bảo hành</span>';
+          } else if (isOtp) {
+            typeHtml = '<span style="color:#a855f7; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-sim-card"></i> Thuê số OTP</span>';
           } else if (isPurchase) {
             typeHtml = '<span style="color:#f87171; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
           } else if (tLow.includes("rút")) {
@@ -41840,19 +42863,28 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         return;
       }
 
-      // Remove from registered users
+      // 0. Ghi nhận vào danh sách đã xóa vĩnh viễn để không bị khôi phục lại từ DEFAULT_REGISTERED_USERS
+      try {
+        const delList = (typeof getDeletedUserEmails === "function") ? getDeletedUserEmails() : [];
+        if (!delList.includes(targetEmail)) {
+          delList.push(targetEmail);
+          localStorage.setItem("mmo_deleted_users", JSON.stringify(delList));
+        }
+      } catch(eDel) {}
+
+      // 1. Remove immediately from local registered users state
       let users = getRegisteredUsers();
       users = users.filter(u => (u.email || "").toLowerCase().trim() !== targetEmail);
       localStorage.setItem("mmo_registered_users", JSON.stringify(users));
 
-      // Also remove from admin emails list if present
+      // 2. Also remove from admin emails list if present
       let adminList = getAdminEmails();
       if (adminList.map(e => (e || "").toLowerCase().trim()).includes(targetEmail)) {
         adminList = adminList.filter(e => (e || "").toLowerCase().trim() !== targetEmail);
         saveAdminEmails(adminList);
       }
 
-      // Broadcast user deleted
+      // 3. Broadcast user deleted to other tabs
       try {
         const bc = new BroadcastChannel("muabanmmo_channel");
         bc.postMessage({
@@ -41862,7 +42894,25 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         });
       } catch(e) {}
 
-      // Also delete from Google Sheet in real time!
+      // 4. Delete permanently on Cloudflare Worker & Turso DB SSOT!
+      try {
+        const workerEndpoint = (typeof MMO_API_BASE !== "undefined" && MMO_API_BASE) 
+          ? MMO_API_BASE 
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+        const adminToken = localStorage.getItem("mmo_admin_session_token") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+        fetch(workerEndpoint + "/api/admin/users/delete", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + adminToken
+          },
+          body: JSON.stringify({ email: targetEmail })
+        }).then(res => res.json()).then(data => {
+          console.log("[Worker Delete User Success]:", data);
+        }).catch(err => console.warn("[Worker Delete User Error]:", err));
+      } catch(e) {}
+
+      // 5. Also delete from Google Sheet as backup
       try {
         if (typeof callGasApi === "function") {
           callGasApi("adminDeleteUser", {
@@ -42321,9 +43371,9 @@ function changeAdmUsersPage(p) {
                       : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                     const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)));
                     const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
-                    return '<div class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                      '<span>' + safeName + badge + '</span>' +
-                      '<span style="font-weight:700;">' + safePrice + '</span>' +
+                    return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === vIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                      '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + safeName + badge + '</span>' +
+                      '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + safePrice + '</span>' +
                     '</div>';
                   }).join("");
                 } else if (pillsContainer) {
@@ -42714,9 +43764,9 @@ function changeAdmUsersPage(p) {
                     : '<small style="color:#ef4444; font-weight:700; margin-left:6px; font-size:0.75rem;">(0 acc)</small>';
                   const safeName = (typeof escapeHtml === 'function') ? escapeHtml(v.name || ('Gói ' + (idx + 1))) : (v.name || ('Gói ' + (idx + 1)));
                   const safePrice = (typeof formatVND === 'function') ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
-                  return '<div class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
-                    '<span>' + safeName + badge + '</span>' +
-                    '<span style="font-weight:700;">' + safePrice + '</span>' +
+                  return '<div style="white-space:nowrap; overflow:hidden;" class="variant-pill-option ' + (idx === curVarIdx ? 'active' : '') + '" onclick="selectVariant(' + idx + ', ' + (v.price || 0) + ')">' +
+                    '<span style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">' + safeName + badge + '</span>' +
+                    '<span style="flex:0 0 auto; white-space:nowrap; font-weight:700; margin-left:auto; padding-left:8px;">' + safePrice + '</span>' +
                   '</div>';
                 }).join("");
               } else if (pillsContainer) {
@@ -44686,30 +45736,93 @@ function initMMOApplication() {
     }
 
     // 2. LẤY & LƯU DANH SÁCH TIN NHẮN
-    function getAllChatMessages() {
+    var DEFAULT_SAVED_CHAT_MESSAGES = [{"id":"MSG_MU11THXD_701","sender":"user","senderName":"Đông Nguyễn Mạnh","userEmail":"muabantaikhoanmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO350138\n📦 Sản phẩm: Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu\n🏷️ Phân loại: acc cổ ramdom có video\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 15.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 16:36:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MU12LEZA_996","sender":"admin","senderName":"Mạnh Đông Oficial","userEmail":"muabantaikhoanmmo@gmail.com","text":"💰 ADMIN ĐÃ HOÀN TIỀN THÀNH CÔNG CHO ĐƠN HÀNG #MMO350138!\nSố tiền +2.000 đ đã được cộng hoàn trả vào ví của bạn trên hệ thống. Quý khách vui lòng kiểm tra lại số dư ví!","time":"Sat Dec 30 1899 16:58:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MU12NN74_968","sender":"admin","senderName":"Mạnh Đông Oficial","userEmail":"muabantaikhoanmmo@gmail.com","text":"💰 ADMIN ĐÃ HOÀN TIỀN THÀNH CÔNG CHO ĐƠN HÀNG #MMO350138!\nSố tiền +15.000 đ đã được cộng hoàn trả vào ví của bạn trên hệ thống. Quý khách vui lòng kiểm tra lại số dư ví!","time":"Sat Dec 30 1899 17:00:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU13GERM_383","sender":"user","senderName":"Đông Nguyễn Mạnh","userEmail":"muabantaikhoanmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO352435\n📦 Sản phẩm: Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu\n🏷️ Phân loại: Tiktok 2026\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 2.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 17:22:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU13GFQ3_496","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"muabantaikhoanmmo@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 17:22:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MU13GWY0_166","sender":"admin","senderName":"Mạnh Đông Oficial","userEmail":"muabantaikhoanmmo@gmail.com","text":"💰 ADMIN ĐÃ HOÀN TIỀN THÀNH CÔNG CHO ĐƠN HÀNG #MMO352435!\nSố tiền +2.000 đ đã được cộng hoàn trả vào ví của bạn trên hệ thống. Quý khách vui lòng kiểm tra lại số dư ví!","time":"Sat Dec 30 1899 17:22:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU14KJAM_245","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO131747\n📦 Sản phẩm: Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu\n🏷️ Phân loại: Tiktok 2026\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 2.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 17:53:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU14KK95_622","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"digimarketmmo@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 17:53:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MU14KSUS_170","sender":"admin","senderName":"Mạnh Đông Oficial","userEmail":"digimarketmmo@gmail.com","text":"✅ ADMIN ĐÃ DUYỆT BẢO HÀNH ĐỔI TRẢ 1-ĐỔI-1 CHO ĐƠN HÀNG #MMO131747!\n🎁 Tài khoản mới thay thế của bạn:\nhhhhhhhhhhhhhhhhhhhhhhhhhhhh\nQuý khách vui lòng đăng nhập kiểm tra lại. Cảm ơn bạn đã tin tưởng MuaBanTaiKhoanMMO!","time":"Sat Dec 30 1899 17:53:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU15T9R0_795","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO266359\n📦 Sản phẩm: Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu\n🏷️ Phân loại: Tiktok 2026\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 2.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 18:28:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU15TAPA_950","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"digimarketmmo@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 18:28:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MU15TNVT_187","sender":"admin","senderName":"Mạnh Đông Oficial","userEmail":"digimarketmmo@gmail.com","text":"✅ ADMIN ĐÃ DUYỆT BẢO HÀNH ĐỔI TRẢ 1-ĐỔI-1 CHO ĐƠN HÀNG #MMO266359!\n🎁 Tài khoản mới thay thế của bạn:\nuuuuuuuuuuuuuuu\nQuý khách vui lòng đăng nhập kiểm tra lại. Cảm ơn bạn đã tin tưởng MuaBanTaiKhoanMMO!","time":"Sat Dec 30 1899 18:28:00 GMT+0700 (GMT+07:00)","date":"Mon Sep 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU43KI21_667","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO979592\n📦 Sản phẩm: Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu\n🏷️ Phân loại: Tiktok 2026\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 2.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 19:49:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU43KJ0D_453","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"digimarketmmo@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 19:49:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU43LAPQ_137","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"lỗi","time":"Sat Dec 30 1899 19:49:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU43LBNM_714","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"digimarketmmo@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 19:49:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU45FR0O_101","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO261880\n📦 Sản phẩm: Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu\n🏷️ Phân loại: Tiktok 2026\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 2.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 20:41:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU45FS52_80","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"digimarketmmo@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 20:41:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU45GFNW_959","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO494069\n📦 Sản phẩm: TikTok Việt Đã Ngâm Lâu Cực Kỳ Trâu\n🏷️ Phân loại: Tiktok 2024-2025\n🔢 Số lượng: 2 acc\n💰 Tổng tiền: 10.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 20:41:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU45GGTT_503","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"digimarketmmo@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 20:41:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MU45IJTU_590","sender":"admin","senderName":"Mạnh Đông Oficial","userEmail":"digimarketmmo@gmail.com","text":"💰 ADMIN ĐÃ HOÀN TIỀN THÀNH CÔNG CHO ĐƠN HÀNG #MMO494069!\nSố tiền +10.000 đ đã được cộng hoàn trả vào ví của bạn trên hệ thống. Quý khách vui lòng kiểm tra lại số dư ví!","time":"Sat Dec 30 1899 20:43:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MU45NRP0_833","sender":"admin","senderName":"Mạnh Đông Oficial","userEmail":"digimarketmmo@gmail.com","text":"✅ ADMIN ĐÃ DUYỆT BẢO HÀNH ĐỔI TRẢ 1-ĐỔI-1 CHO ĐƠN HÀNG #MMO261880!\n🎁 Tài khoản mới thay thế của bạn:\n777777777777777\nQuý khách vui lòng đăng nhập kiểm tra lại. Cảm ơn bạn đã tin tưởng MuaBanTaiKhoanMMO!","time":"Sat Dec 30 1899 20:47:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU46DUWP_880","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO979592\n📦 Sản phẩm: Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu\n🏷️ Phân loại: Tiktok 2026\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 2.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 21:07:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU46DVV3_61","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"digimarketmmo@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 21:07:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MU46EAP5_713","sender":"admin","senderName":"Mạnh Đông Oficial","userEmail":"digimarketmmo@gmail.com","text":"💰 ADMIN ĐÃ HOÀN TIỀN THÀNH CÔNG CHO ĐƠN HÀNG #MMO979592!\nSố tiền +2.000 đ đã được cộng hoàn trả vào ví của bạn trên hệ thống. Quý khách vui lòng kiểm tra lại số dư ví!","time":"Sat Dec 30 1899 21:08:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU46HAWR_403","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO367238\n📦 Sản phẩm: TikTok Việt Đã Ngâm Lâu Cực Kỳ Trâu\n🏷️ Phân loại: Tiktok 2026\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 2.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 21:10:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU46HBVE_487","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"digimarketmmo@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 21:10:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MU46KAXR_764","sender":"admin","senderName":"Mạnh Đông Oficial","userEmail":"digimarketmmo@gmail.com","text":"💰 ADMIN ĐÃ HOÀN TIỀN THÀNH CÔNG CHO ĐƠN HÀNG #MMO367238!\nSố tiền +2.000 đ đã được cộng hoàn trả vào ví của bạn trên hệ thống. Quý khách vui lòng kiểm tra lại số dư ví!","time":"Sat Dec 30 1899 21:12:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU478O7C_376","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO677657\n📦 Sản phẩm: TikTok Việt Đã Ngâm Lâu Cực Kỳ Trâu\n🏷️ Phân loại: Tiktok 2026\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 2.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 21:31:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU478P5T_429","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"digimarketmmo@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 21:31:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MU47B73R_665","sender":"admin","senderName":"Mạnh Đông Oficial","userEmail":"digimarketmmo@gmail.com","text":"✅ ADMIN ĐÃ DUYỆT BẢO HÀNH ĐỔI TRẢ 1-ĐỔI-1 CHO ĐƠN HÀNG #MMO677657!\n🎁 Tài khoản mới thay thế của bạn:\n66666666666666\nQuý khách vui lòng đăng nhập kiểm tra lại. Cảm ơn bạn đã tin tưởng MuaBanTaiKhoanMMO!","time":"Sat Dec 30 1899 21:33:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 16 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU6HCZ45_64","sender":"user","senderName":"Đông Nguyễn Mạnh","userEmail":"muabantaikhoanmmo@gmail.com","text":"💰 Tôi đã chuyển khoản nạp tiền nhưng cần kiểm tra hỗ trợ ví.","time":"Sat Dec 30 1899 11:50:00 GMT+0700 (GMT+07:00)","date":"Fri Sep 18 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU6HD02I_513","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"muabantaikhoanmmo@gmail.com","text":"💰 Về nạp tiền tự động: Hệ thống SePay quét giao dịch 24/7 trong 1-5 giây. Nếu quá 3 phút chưa thấy tiền vào ví, bạn vui lòng gửi hình ảnh bill hoặc mã giao dịch để Admin cộng tay ngay nhé!","time":"Sat Dec 30 1899 11:50:00 GMT+0700 (GMT+07:00)","date":"Fri Sep 18 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"RES_MU6HM3OZ_168","sender":"admin","senderName":"Hệ Thống","userEmail":"muabantaikhoanmmo@gmail.com","text":"✅ Yêu cầu hỗ trợ / bảo hành đã được Admin xử lý hoàn tất 100%! Nếu cần thêm hỗ trợ khác, bạn cứ nhắn tin tiếp tại đây nhé!","time":"Sat Dec 30 1899 11:57:00 GMT+0700 (GMT+07:00)","date":"Fri Sep 18 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU6HMYIN_592","sender":"user","senderName":"Đông Nguyễn Mạnh","userEmail":"muabantaikhoanmmo@gmail.com","text":"📦 YÊU CẦU BẢO HÀNH ĐƠN HÀNG #MMO612660 - Sản phẩm: Tiktok Việt Đã Ngâm Lâu Cực Kỳ Trâu (Tiktok 2026)","time":"Sat Dec 30 1899 11:58:00 GMT+0700 (GMT+07:00)","date":"Fri Sep 18 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU6HMZGW_770","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"muabantaikhoanmmo@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 11:58:00 GMT+0700 (GMT+07:00)","date":"Fri Sep 18 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MU6I0QL9_418","sender":"user","senderName":"Đông Nguyễn Mạnh","userEmail":"muabantaikhoanmmo@gmail.com","text":"📷 [Hình ảnh khách gửi]","time":"Sat Dec 30 1899 12:09:00 GMT+0700 (GMT+07:00)","date":"Fri Sep 18 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MU6I0RJM_66","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"muabantaikhoanmmo@gmail.com","text":"Dạ chào bạn! Shop MUABANTAIKHOANMMO luôn sẵn sàng phục vụ. Bạn cần hỗ trợ bảo hành sản phẩm hay tư vấn mua hàng ạ?","time":"Sat Dec 30 1899 12:09:00 GMT+0700 (GMT+07:00)","date":"Fri Sep 18 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUNYPJIV_709","sender":"user","senderName":"tnhamy2026","userEmail":"tnhamy2026@gmail.com","text":"📦 YÊU CẦU BẢO HÀNH ĐƠN HÀNG #PRE531094 - Sản phẩm: Đặt trước: Tiktok việt reg trên 4 tháng (tiktok việt reg trên 4 tháng) (Đặt trước (7 ngày)) (Mặc định)","time":"Sat Dec 30 1899 17:28:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 30 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MUNYPKHC_658","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"tnhamy2026@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 17:28:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 30 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUNYPZTC_827","sender":"user","senderName":"tnhamy2026","userEmail":"tnhamy2026@gmail.com","text":"tại sao mình k đặt mua được trước hàng nhỉ","time":"Sat Dec 30 1899 17:28:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 30 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUNYQA12_667","sender":"admin","senderName":"Mạnh Đồng Official","userEmail":"tnhamy2026@gmail.com","text":"BẠN MUA MẤY CÁI ĐẤY","time":"Sat Dec 30 1899 17:28:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 30 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUNYQ85Z_78","sender":"user","senderName":"tnhamy2026","userEmail":"tnhamy2026@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 17:28:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 30 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MUNYQ93E_391","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"tnhamy2026@gmail.com","text":"Dạ chào bạn! Shop MUABANTAIKHOANMMO luôn sẵn sàng phục vụ. Bạn cần hỗ trợ bảo hành sản phẩm hay tư vấn mua hàng ạ?","time":"Sat Dec 30 1899 17:28:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 30 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUNYQHLT_635","sender":"user","senderName":"tnhamy2026","userEmail":"tnhamy2026@gmail.com","text":"📦 YÊU CẦU BẢO HÀNH ĐƠN HÀNG #PRE531094 - Sản phẩm: Đặt trước: Tiktok việt reg trên 4 tháng (tiktok việt reg trên 4 tháng) (Đặt trước (7 ngày)) (Mặc định)","time":"Sat Dec 30 1899 17:29:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 30 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MUNYQIJ7_175","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"tnhamy2026@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 17:29:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 30 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUNYR4BF_559","sender":"admin","senderName":"Mạnh Đồng Official","userEmail":"tnhamy2026@gmail.com","text":"NHẮN ZALO 0975902076","time":"Sat Dec 30 1899 17:29:00 GMT+0700 (GMT+07:00)","date":"Wed Sep 30 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUODP0YU_735","sender":"user","senderName":"Khách guest_121680","userEmail":"guest_121680@khach.mmo","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 00:27:00 GMT+0700 (GMT+07:00)","date":"Thu Oct 01 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MUODP1X0_771","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"guest_121680@khach.mmo","text":"Dạ chào bạn! Shop MUABANTAIKHOANMMO luôn sẵn sàng phục vụ. Bạn cần hỗ trợ bảo hành sản phẩm hay tư vấn mua hàng ạ?","time":"Sat Dec 30 1899 00:27:00 GMT+0700 (GMT+07:00)","date":"Thu Oct 01 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUODPHU2_252","sender":"admin","senderName":"Mạnh Đồng Official","userEmail":"guest_121680@khach.mmo","text":"ok bạn","time":"Sat Dec 30 1899 00:28:00 GMT+0700 (GMT+07:00)","date":"Thu Oct 01 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUODPYGP_666","sender":"admin","senderName":"Mạnh Đồng Official","userEmail":"guest_121680@khach.mmo","text":"có vấn đề gì vậy","time":"Sat Dec 30 1899 00:28:00 GMT+0700 (GMT+07:00)","date":"Thu Oct 01 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MURAJPBX_524","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"chào bạn","time":"Sat Dec 30 1899 01:23:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MURAJW12_259","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"📦 YÊU CẦU BẢO HÀNH ĐƠN HÀNG #MMO361666 - Sản phẩm: Gmail cho Thuế 60 phút live 60 phút (mail 60 phut)","time":"Sat Dec 30 1899 01:23:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MURAKALA_370","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"bảo hành cho tôi","time":"Sat Dec 30 1899 01:23:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MURAKE2Q_62","sender":"admin","senderName":"Mạnh Đồng Official","userEmail":"digimarketmmo@gmail.com","text":"ok","time":"Sat Dec 30 1899 01:23:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MURAN7RV_729","sender":"admin","senderName":"Mạnh Đồng Official","userEmail":"digimarketmmo@gmail.com","text":"đc chưa bạn","time":"Sat Dec 30 1899 01:25:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MURB0ECK_171","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"🔄 Tài khoản của tôi không đăng nhập được / bị sai pass, xin hỗ trợ đổi tài khoản mới.","time":"Sat Dec 30 1899 01:36:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MURBAHYW_29","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"💰 Tôi đã chuyển khoản nạp tiền nhưng cần kiểm tra hỗ trợ ví.","time":"Sat Dec 30 1899 01:43:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MURBAM47_708","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 01:43:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MURBAZN9_412","sender":"admin","senderName":"Admin Quản Trị","userEmail":"digimarketmmo@gmail.com","text":"ok bạn","time":"Sat Dec 30 1899 01:44:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSASC9O_494","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"hello","time":"Sat Dec 30 1899 18:17:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSASNGN_245","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"ok bạn","time":"Sat Dec 30 1899 18:17:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"BOT_MUSASU6L_795","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"huyphamfo3@gmail.com","text":"💰 Về nạp tiền tự động: Hệ thống SePay quét giao dịch 24/7 trong 1-5 giây. Nếu quá 3 phút chưa thấy tiền vào ví, bạn vui lòng gửi hình ảnh bill hoặc mã giao dịch để Admin cộng tay ngay nhé!","time":"Sat Dec 30 1899 18:17:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSAT35V_955","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"mà mình mua acc 12k ins thì web báo ko đủ số dư ví là sao nhỉ ?","time":"Sat Dec 30 1899 18:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSATDHC_551","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 18:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSATHWU_546","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"admin ơi","time":"Sat Dec 30 1899 18:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSATKEW_862","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"cho mình hỏi này với","time":"Sat Dec 30 1899 18:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSATOE2_934","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"bạn mua acc nào đấy","time":"Sat Dec 30 1899 18:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSATRGN_118","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"mình mua cái acc ig trâu á","time":"Sat Dec 30 1899 18:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSATSEE_699","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"loại 12k","time":"Sat Dec 30 1899 18:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSAU354_449","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"để mình kiểm tra lại","time":"Sat Dec 30 1899 18:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSAU2WJ_923","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"INSTAGRAM ĐÃ LUÔI CỰC KỲ TRÂU","time":"Sat Dec 30 1899 18:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSAU4DO_640","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"loại này admin","time":"Sat Dec 30 1899 18:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSAUCTE_652","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"ok để mình xem","time":"Sat Dec 30 1899 18:19:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUSAUGCW_292","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"đợi chút","time":"Sat Dec 30 1899 18:19:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSAUHLW_189","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"tks ad , có gì ad báo lại mình","time":"Sat Dec 30 1899 18:19:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSAUN92_953","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"ok","time":"Sat Dec 30 1899 18:19:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSBL7QH_387","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"như nào rồi b ?","time":"Sat Dec 30 1899 18:39:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSBMUTU_555","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 18:41:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSBVN40_410","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"như nào r b","time":"Sat Dec 30 1899 18:48:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSBVPFT_290","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"vẫn chưa mua dc à","time":"Sat Dec 30 1899 18:48:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSBVQH4_551","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 18:48:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSCKDHA_674","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"mua được rồi đấy bạn thử lại","time":"Sat Dec 30 1899 19:07:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUSCKHJA_122","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"f5 lại","time":"Sat Dec 30 1899 19:07:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSCLOPC_503","sender":"user","senderName":"Hoàng cửu bảo","userEmail":"huyphamfo3@gmail.com","text":"ok b ơi, tks b","time":"Sat Dec 30 1899 19:08:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSCLU0F_578","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"ok","time":"Sat Dec 30 1899 19:08:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUSCM5AW_370","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"có gì cứ nhắn mình","time":"Sat Dec 30 1899 19:08:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSCPH8C_476","sender":"user","senderName":"Hoàng cửu bảo","userEmail":"huyphamfo3@gmail.com","text":"ok tks ad nhiều","time":"Sat Dec 30 1899 19:11:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSCQC3Q_57","sender":"user","senderName":"Hoàng cửu bảo","userEmail":"huyphamfo3@gmail.com","text":"mình mua về loại đó chayh tool cmt dc luon ch b nhỉ , hay cần phải cho nó quen môi trg trc nhỉ b","time":"Sat Dec 30 1899 19:11:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSLEWW6_690","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 23:15:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSLF1Y8_16","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"b ơi , cho tôi hỏi tí với","time":"Sat Dec 30 1899 23:15:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSLF9BE_693","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"tôi vừa mua , xong tôi login thì nó bảo lấy mã từ gmail","time":"Sat Dec 30 1899 23:15:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSLFBYL_185","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"là lấy nnao b","time":"Sat Dec 30 1899 23:15:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSLFE3U_692","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"k phải lấy của 2FA","time":"Sat Dec 30 1899 23:15:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSLFQ4X_448","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 23:15:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSLIM59_803","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"login = cooky đi bạn","time":"Sat Dec 30 1899 23:17:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUSLIWVI_609","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"UID|Pass|Cookie|Email|Phone — 1:1 Replacement Warranty if Account Has Passed BM","time":"Sat Dec 30 1899 23:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSLIWP3_838","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"chỉ tôi cách login = cookie dc ko b","time":"Sat Dec 30 1899 23:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSLIZVO_513","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"tôi k rành cái login kiểu này","time":"Sat Dec 30 1899 23:18:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSLKLLK_440","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"https://plus24h.com/huong-dan-instagramplus/huong-dan-login-cookie-vao-instagramplus.html","time":"Sat Dec 30 1899 23:19:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSLLTW2_317","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"sau này đều phải login = cookie cả à b","time":"Sat Dec 30 1899 23:20:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSLP387_964","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"login kiểu đó ít bị checkpont  còn lại log bình thường mail pass","time":"Sat Dec 30 1899 23:22:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUSLRVSZ_912","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"id pas đây catherinejacksonl_950823   psss  02.10CKI7i2IU","time":"Sat Dec 30 1899 23:25:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUSLS47D_265","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"log bình thường","time":"Sat Dec 30 1899 23:25:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSLYMFQ_371","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"sao tôi làm y vid mà tôi vào insta nó vẫn bị ngay cái khúc lấy mã gmail ta","time":"Sat Dec 30 1899 23:30:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSLYS37_872","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"tôi bấm login = cookie các kiểu luôn","time":"Sat Dec 30 1899 23:30:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSM2GO6_858","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"à cái này chỉ sử dụng trên cái ig plus th à b ?","time":"Sat Dec 30 1899 23:33:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSM2KIF_146","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"k pahri trên web chrome bth à","time":"Sat Dec 30 1899 23:33:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSM589U_647","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"phải ko b , nếu thật như z thì sao tôi sài b","time":"Sat Dec 30 1899 23:35:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSM5C7X_380","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"tôi mua acc sài bth trên web ấy","time":"Sat Dec 30 1899 23:35:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSM8RA5_157","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 23:38:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSMPRQK_583","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 23:51:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSMVJLC_691","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"đăng nhập = id pass đi bạn","time":"Sat Dec 30 1899 23:55:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSMVT14_254","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"mà bị dính cái code của mail á b","time":"Sat Dec 30 1899 23:56:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSMWMGO_364","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"làm như nào pass dc khúc đó đây b :))))","time":"Sat Dec 30 1899 23:56:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSMYFWI_168","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"support tui với b","time":"Sat Dec 30 1899 23:58:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSMZQ2C_237","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"bạn thêm mail mới vào hoặc add số dt vào song nó gủi code về số dt  ssong đổi mail  là song có thể xoá số dt đó đi","time":"Sat Dec 30 1899 23:59:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 03 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSN3JES_324","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"ý của tui là tui chưa login dc zô cái profile của nó lun á","time":"Sat Dec 30 1899 00:02:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSN3LJM_78","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"thì làm sao mà thêm á b","time":"Sat Dec 30 1899 00:02:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSN4J0N_923","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"để mình kiểm tra","time":"Sat Dec 30 1899 00:02:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSN4WNE_991","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"b cứ login vào đi là thấy á , bấm login là nó zô cái khúc pass của mail lun","time":"Sat Dec 30 1899 00:03:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSN4ZTH_971","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"chứ tui chưa zô profile lun á","time":"Sat Dec 30 1899 00:03:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSND8CR_118","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"https://chromewebstore.google.com/detail/instagram-cookie-login/lphemncnaicgpipcminajcnpbmndcmhb?pli=1","time":"Sat Dec 30 1899 00:09:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUSNDCY1_902","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"tải cái này về","time":"Sat Dec 30 1899 00:09:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUSNDOSS_701","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"song login bằng cooky","time":"Sat Dec 30 1899 00:10:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUSNDUEO_802","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"wd=208x560; ig_did=9D68B024-8EFD-4950-8B8E-4C5E6785CA6C; datr=oqq_aj5Ba0mSM9vq0jwZURxV; mid=ar-qogALAAFfup_d-PqdZ5F_75xu; dpr=3; csrftoken=Rm5PZUEB830fNpsSZs7c3FrmJN7X9HgX; ds_user_id=25867518595; sessionid=25867518595%3AGAXpl06eTHAHww%3A15%3AAYm7js8OSrr-2sXAweDeIJsxEJi0Ud5i19sWaWfo9g; rur=NCG%2C17841425877873439%2C1792155649%3A01fff3bc569c84215ba7c07be944677921e14462b40b5425c232767e3425b32e383078df","time":"Sat Dec 30 1899 00:10:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUSNEA0K_393","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"song đổi thông tin mail đi hoặc add số dt vào","time":"Sat Dec 30 1899 00:10:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSNEWLZ_811","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"đù ngon luôn","time":"Sat Dec 30 1899 00:10:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSNFM7Q_178","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"cứ bình tính đâu khác  vào đó","time":"Sat Dec 30 1899 00:11:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"ADM_MUSNFRP8_531","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"cần gì cứ nhắn mình","time":"Sat Dec 30 1899 00:11:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSNGA35_445","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"ok sir , để tui setup lại acc xem sao","time":"Sat Dec 30 1899 00:12:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSNGBHB_470","sender":"user","senderName":"huyphamfo3","userEmail":"huyphamfo3@gmail.com","text":"cần tui hú","time":"Sat Dec 30 1899 00:12:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MUSNIC1L_581","sender":"admin","senderName":"Admin Quản Trị","userEmail":"huyphamfo3@gmail.com","text":"ok","time":"Sat Dec 30 1899 00:13:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MUSOE44B_661","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"[Hình ảnh]","time":"Sat Dec 30 1899 00:38:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MUSOSQ5R_830","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1791049780284_ai2uvo.jpg","time":"Sat Dec 30 1899 00:49:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 04 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MV6Z9A5F_683","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO569625\n📦 Sản phẩm: Gmail cho Thuê 24h - Live 24h\n🏷️ Phân loại: Mail - Cho thuê - 24h\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 3.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 00:51:00 GMT+0700 (GMT+07:00)","date":"Wed Oct 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MV70DFUS_137","sender":"admin","senderName":"Admin Quản Trị","userEmail":"digimarketmmo@gmail.com","text":"✅ ADMIN ĐÃ DUYỆT BẢO HÀNH ĐỔI TRẢ 1-ĐỔI-1 CHO ĐƠN HÀNG #MMO569625!\n🎁 Tài khoản mới thay thế của bạn:\nttttttttttttttttttttttttttt\nQuý khách vui lòng đăng nhập kiểm tra lại. Cảm ơn bạn đã tin tưởng MuaBanTaiKhoanMMO!","time":"Sat Dec 30 1899 01:22:00 GMT+0700 (GMT+07:00)","date":"Wed Oct 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MV70E4B4_11","sender":"user","senderName":"Nguyễn Mạnh Đông","userEmail":"digimarketmmo@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO967321\n📦 Sản phẩm: Gmail cho thuê 2 - 4  giờ live\n🏷️ Phân loại: mail 4h live\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 300 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 01:23:00 GMT+0700 (GMT+07:00)","date":"Wed Oct 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MV70G81U_308","sender":"admin","senderName":"Admin Quản Trị","userEmail":"digimarketmmo@gmail.com","text":"💰 ADMIN ĐÃ HOÀN TIỀN THÀNH CÔNG CHO ĐƠN HÀNG #MMO967321!\nSố tiền +300 đ đã được cộng hoàn trả vào ví của bạn trên hệ thống. Quý khách vui lòng kiểm tra lại số dư ví!","time":"Sat Dec 30 1899 01:24:00 GMT+0700 (GMT+07:00)","date":"Wed Oct 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MV7ITK1C_107","sender":"user","senderName":"pii lùn","userEmail":"piihattieu698107@gmail.com","text":"Mã qr k quét đc","time":"Sat Dec 30 1899 09:58:00 GMT+0700 (GMT+07:00)","date":"Wed Oct 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MV7IULWD_120","sender":"user","senderName":"pii lùn","userEmail":"piihattieu698107@gmail.com","text":"Tôi không nạp tiền đc","time":"Sat Dec 30 1899 09:59:00 GMT+0700 (GMT+07:00)","date":"Wed Oct 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MV7IUMTU_190","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"piihattieu698107@gmail.com","text":"💰 Về nạp tiền tự động: Hệ thống SePay quét giao dịch 24/7 trong 1-5 giây. Nếu quá 3 phút chưa thấy tiền vào ví, bạn vui lòng gửi hình ảnh bill hoặc mã giao dịch để Admin cộng tay ngay nhé!","time":"Sat Dec 30 1899 09:59:00 GMT+0700 (GMT+07:00)","date":"Wed Oct 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MV7IV24A_193","sender":"user","senderName":"pii lùn","userEmail":"piihattieu698107@gmail.com","text":"Tôi k quét đc mã","time":"Sat Dec 30 1899 10:00:00 GMT+0700 (GMT+07:00)","date":"Wed Oct 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MV7IVCGX_246","sender":"user","senderName":"pii lùn","userEmail":"piihattieu698107@gmail.com","text":"Quét đề tài khoản không tồn tại","time":"Sat Dec 30 1899 10:00:00 GMT+0700 (GMT+07:00)","date":"Wed Oct 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MV803IEG_511","sender":"admin","senderName":"Admin Quản Trị","userEmail":"piihattieu698107@gmail.com","text":"ok rồi bạn nhé lãy  ngân hàng lỗi  nạp tiền","time":"Sat Dec 30 1899 18:02:00 GMT+0700 (GMT+07:00)","date":"Wed Oct 14 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MVMGNCH2_750","sender":"user","senderName":"Đmcbmlol","userEmail":"trnguyen2610@gmail.com","text":"Nạp tiền chưa vào","time":"Sat Dec 30 1899 20:54:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 24 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MVMGNE3O_365","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"trnguyen2610@gmail.com","text":"💰 Về nạp tiền tự động: Hệ thống quét giao dịch 24/7 trong 1-5 giây. Nếu quá 3 phút chưa thấy tiền vào ví, bạn vui lòng gửi hình ảnh bill hoặc mã giao dịch để Admin sử lý ngay nhé!","time":"Sat Dec 30 1899 20:54:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 24 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MVMGNSI2_205","sender":"user","senderName":"Đmcbmlol","userEmail":"trnguyen2610@gmail.com","text":"Ok","time":"Sat Dec 30 1899 20:55:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 24 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"ADM_MVMGT9FL_987","sender":"admin","senderName":"Admin Quản Trị","userEmail":"trnguyen2610@gmail.com","text":"mình thấy rồi đợi mình kiển tra","time":"Sat Dec 30 1899 20:59:00 GMT+0700 (GMT+07:00)","date":"Sat Oct 24 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MVMOWG5V_301","sender":"user","senderName":"Kim Oanh","userEmail":"koanh130103@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 00:45:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MVMOWH5Q_44","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"koanh130103@gmail.com","text":"Dạ chào bạn! Shop MUABANTAIKHOANMMO luôn sẵn sàng phục vụ. Bạn cần hỗ trợ bảo hành sản phẩm hay tư vấn mua hàng ạ?","time":"Sat Dec 30 1899 00:45:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MVMOWH89_714","sender":"user","senderName":"Kim Oanh","userEmail":"koanh130103@gmail.com","text":"💰 Tôi đã chuyển khoản nạp tiền nhưng cần kiểm tra hỗ trợ ví.","time":"Sat Dec 30 1899 00:45:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MVMOWI0Z_260","sender":"user","senderName":"Kim Oanh","userEmail":"koanh130103@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 00:45:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MVMOWI5R_917","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"koanh130103@gmail.com","text":"💰 Về nạp tiền tự động: Hệ thống quét giao dịch 24/7 trong 1-5 giây. Nếu quá 3 phút chưa thấy tiền vào ví, bạn vui lòng gửi hình ảnh bill hoặc mã giao dịch để Admin sử lý ngay nhé!","time":"Sat Dec 30 1899 00:45:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"BOT_MVMOWIYH_271","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"koanh130103@gmail.com","text":"Dạ chào bạn! Shop MUABANTAIKHOANMMO luôn sẵn sàng phục vụ. Bạn cần hỗ trợ bảo hành sản phẩm hay tư vấn mua hàng ạ?","time":"Sat Dec 30 1899 00:45:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MVMOWRB6_297","sender":"user","senderName":"Kim Oanh","userEmail":"koanh130103@gmail.com","text":"https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1792863957146_o4yybb.jpg","time":"Sat Dec 30 1899 00:45:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MVMOX377_487","sender":"user","senderName":"Kim Oanh","userEmail":"koanh130103@gmail.com","text":"Cách khắc phục lỗi API key như","time":"Sat Dec 30 1899 00:46:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MVMOX44N_184","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"koanh130103@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 00:46:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MVMOX4NJ_393","sender":"user","senderName":"Kim Oanh","userEmail":"koanh130103@gmail.com","text":"Nào ạ","time":"Sat Dec 30 1899 00:46:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MVNNPS2E_432","sender":"user","senderName":"hang giang","userEmail":"gianghangasd@gmail.com","text":"Tôi mua nó báo như này là sao vậy adm ơi","time":"Sat Dec 30 1899 17:00:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MVNNPUME_731","sender":"user","senderName":"hang giang","userEmail":"gianghangasd@gmail.com","text":"Tôi mua nó báo như này là sao vậy adm ơi\nhttps://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1792922421106_ze18dx.jpg","time":"Sat Dec 30 1899 17:00:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MVNNSG5Y_21","sender":"user","senderName":"hang giang","userEmail":"gianghangasd@gmail.com","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 17:02:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MVNNSH3F_295","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"gianghangasd@gmail.com","text":"Dạ chào bạn! Shop MUABANTAIKHOANMMO luôn sẵn sàng phục vụ. Bạn cần hỗ trợ bảo hành sản phẩm hay tư vấn mua hàng ạ?","time":"Sat Dec 30 1899 17:02:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MVNNSYNA_243","sender":"user","senderName":"hang giang","userEmail":"gianghangasd@gmail.com","text":"Tôi mua nó báo như này là sao vậy adm ơi","time":"Sat Dec 30 1899 17:02:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MVNNT14Y_974","sender":"user","senderName":"hang giang","userEmail":"gianghangasd@gmail.com","text":"Tôi mua nó báo như này là sao vậy adm ơi\nhttps://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/images/img_1792922569628_e900gy.jpg","time":"Sat Dec 30 1899 17:02:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MVNOTMQ1_142","sender":"user","senderName":"hang giang","userEmail":"gianghangasd@gmail.com","text":"Alo shop","time":"Sat Dec 30 1899 17:31:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MVNOTNNH_9","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"gianghangasd@gmail.com","text":"Dạ chào bạn! Shop MUABANTAIKHOANMMO luôn sẵn sàng phục vụ. Bạn cần hỗ trợ bảo hành sản phẩm hay tư vấn mua hàng ạ?","time":"Sat Dec 30 1899 17:31:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MVNOTYXA_543","sender":"user","senderName":"hang giang","userEmail":"gianghangasd@gmail.com","text":"Có ai ở đây không","time":"Sat Dec 30 1899 17:31:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"MSG_MVNOWQ2O_988","sender":"user","senderName":"hang giang","userEmail":"gianghangasd@gmail.com","text":"⚠️ KHIẾU NẠI & BẢO HÀNH ĐƠN HÀNG #MMO951871\n📦 Sản phẩm: Capcut pro Cá Nhân 7 ngày - Dùng Riêng\n🏷️ Phân loại: capcut pro 7 ngày\n🔢 Số lượng: 1 acc\n💰 Tổng tiền: 25.000 đ\n❓ Lý do: Tài khoản gặp sự cố không đăng nhập được, yêu cầu Admin kiểm tra bảo hành và đổi trả 1-ĐỔI-1.","time":"Sat Dec 30 1899 17:33:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":true},{"id":"BOT_MVNOWR0R_948","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"gianghangasd@gmail.com","text":"✅ ĐÃ GHI NHẬN YÊU CẦU BẢO HÀNH! Admin đang kiểm tra đơn hàng của bạn để chuẩn bị tài khoản đổi trả 1-đổi-1. Vui lòng giữ cửa sổ chat, Admin sẽ phản hồi trong 1-3 phút!","time":"Sat Dec 30 1899 17:33:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MVO1OAJL_94","sender":"user","senderName":"Khách guest_473520","userEmail":"guest_473520@khach.mmo","text":"👨‍💻 Xin chào, tôi muốn kết nối trực tiếp với Quản trị viên.","time":"Sat Dec 30 1899 23:31:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":false},{"id":"BOT_MVO1OBI7_949","sender":"admin","senderName":"Trợ Lý Bảo Hành 24/7","userEmail":"guest_473520@khach.mmo","text":"Dạ chào bạn! Shop MUABANTAIKHOANMMO luôn sẵn sàng phục vụ. Bạn cần hỗ trợ bảo hành sản phẩm hay tư vấn mua hàng ạ?","time":"Sat Dec 30 1899 23:31:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":false,"isReadByAdmin":true},{"id":"MSG_MVO1OYMX_662","sender":"user","senderName":"Khách guest_473520","userEmail":"guest_473520@khach.mmo","text":"bên mình còn ChatGPT Gmail Trial có offer Plus 0$ 1 tháng","time":"Sat Dec 30 1899 23:31:00 GMT+0700 (GMT+07:00)","date":"Sun Oct 25 2026 00:00:00 GMT+0700 (GMT+07:00)","isReadByUser":true,"isReadByAdmin":false}];
+
+    var _inMemoryChatMessages = null;
+    var _notifiedChatMsgIds = null;
+    var _hasCompletedFirstCloudChatSync = false;
+
+    function getNotifiedChatMsgIdsSet() {
+      if (_notifiedChatMsgIds) return _notifiedChatMsgIds;
+      _notifiedChatMsgIds = new Set();
       try {
-        const stored = localStorage.getItem("mmo_chat_messages");
-        if (stored) return JSON.parse(stored);
-      } catch(e) {}
-      return [
-        {
-          id: "MSG_INIT",
-          sender: "admin",
-          senderName: "Admin Quản Trị",
-          userEmail: "system",
-          text: "Chào bạn! Cửa hàng cam kết BẢO HÀNH 1-ĐỔI-1 NGAY LẬP TỨC nếu tài khoản bị lỗi, sai pass hoặc không đăng nhập được. Bạn vui lòng gửi mã đơn hàng hoặc mô tả lỗi để Admin hỗ trợ ngay nhé!",
-          time: new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }),
-          date: new Date().toLocaleDateString("vi-VN"),
-          isReadByUser: true,
-          isReadByAdmin: true
+        const baseMsgs = Array.isArray(DEFAULT_SAVED_CHAT_MESSAGES) ? DEFAULT_SAVED_CHAT_MESSAGES : [];
+        baseMsgs.forEach(m => { if (m && m.id) _notifiedChatMsgIds.add(m.id); });
+        const sIds = sessionStorage.getItem("mmo_notified_chat_ids") || localStorage.getItem("mmo_notified_chat_ids");
+        if (sIds) {
+          const parsedIds = JSON.parse(sIds);
+          if (Array.isArray(parsedIds)) parsedIds.forEach(id => _notifiedChatMsgIds.add(id));
         }
-      ];
+      } catch(e) {}
+      return _notifiedChatMsgIds;
+    }
+
+    function markChatMsgIdNotified(id) {
+      if (!id) return;
+      const set = getNotifiedChatMsgIdsSet();
+      set.add(id);
+      try {
+        const arr = Array.from(set).slice(-500);
+        sessionStorage.setItem("mmo_notified_chat_ids", JSON.stringify(arr));
+        localStorage.setItem("mmo_notified_chat_ids", JSON.stringify(arr));
+      } catch(e) {}
+    }
+
+    function compactChatMsgForStorage(m) {
+      if (!m || typeof m !== "object") return m;
+      const copy = Object.assign({}, m);
+      if (typeof copy.text === "string" && copy.text.length > 1500 && copy.text.includes("data:image/")) {
+        copy.text = copy.text.replace(/\[IMG\]data:image\/[^\s]+/g, "📷 [Hình ảnh khách gửi]");
+      }
+      if (typeof copy.imageUrl === "string" && copy.imageUrl.length > 1500 && copy.imageUrl.startsWith("data:image/")) {
+        delete copy.imageUrl;
+      }
+      return copy;
+    }
+
+    function getAllChatMessages() {
+      if (Array.isArray(_inMemoryChatMessages) && _inMemoryChatMessages.length > 0) {
+        return _inMemoryChatMessages;
+      }
+      try {
+        const baseMsgs = Array.isArray(DEFAULT_SAVED_CHAT_MESSAGES) ? DEFAULT_SAVED_CHAT_MESSAGES : [];
+        const stored = localStorage.getItem("mmo_chat_messages");
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            const msgMap = new Map();
+            baseMsgs.forEach(m => { if (m && m.id) msgMap.set(m.id, m); });
+            parsed.forEach(m => { if (m && m.id) msgMap.set(m.id, m); });
+            const merged = Array.from(msgMap.values());
+            _inMemoryChatMessages = merged;
+            const nSet = getNotifiedChatMsgIdsSet();
+            merged.forEach(m => { if (m && m.id) nSet.add(m.id); });
+            return merged;
+          }
+        }
+        _inMemoryChatMessages = baseMsgs.slice();
+        const nSet = getNotifiedChatMsgIdsSet();
+        _inMemoryChatMessages.forEach(m => { if (m && m.id) nSet.add(m.id); });
+        return _inMemoryChatMessages;
+      } catch(e) {}
+      _inMemoryChatMessages = Array.isArray(DEFAULT_SAVED_CHAT_MESSAGES) ? DEFAULT_SAVED_CHAT_MESSAGES.slice() : [];
+      return _inMemoryChatMessages;
     }
 
     function saveAllChatMessages(msgs) {
+      if (!Array.isArray(msgs)) return;
+      _inMemoryChatMessages = msgs;
+      const nSet = getNotifiedChatMsgIdsSet();
+      msgs.forEach(m => { if (m && m.id) nSet.add(m.id); });
       try {
-        localStorage.setItem("mmo_chat_messages", JSON.stringify(msgs));
-      } catch(e) {}
+        const compacted = msgs.map(compactChatMsgForStorage);
+        localStorage.setItem("mmo_chat_messages", JSON.stringify(compacted));
+      } catch(e) {
+        try {
+          const recentCompacted = msgs.slice(-120).map(compactChatMsgForStorage);
+          localStorage.setItem("mmo_chat_messages", JSON.stringify(recentCompacted));
+        } catch(e2) {}
+      }
     }
 
     // PHÁT SÓNG ĐA KÊNH TOÀN DIỆN (BroadcastChannel + Realtime Cloud SSE + Google Sheets)
@@ -44861,17 +45974,24 @@ function initMMOApplication() {
 
     function mergeIncomingMessages(incomingList, playSoundOnNew = true) {
       if (!incomingList || !incomingList.length) return;
+      const isFirstSync = !_hasCompletedFirstCloudChatSync;
+      _hasCompletedFirstCloudChatSync = true;
+
       const allMsgs = getAllChatMessages();
       const idMap = new Set(allMsgs.map(m => m.id));
+      const notifiedSet = getNotifiedChatMsgIdsSet();
       let hasChange = false;
-      let hasNewUserMsg = false;
+      let newlyAddedUserMsgs = [];
       let hasNewAdminMsg = false;
       const isAdm = typeof isAdminUser === "function" && isAdminUser();
       const myEmail = getCurrentChatUserEmail();
 
       incomingList.forEach(function(item) {
         if (!item || !item.id || (!item.text && !item.imageUrl)) return;
-        if (idMap.has(item.id)) return;
+        if (idMap.has(item.id)) {
+          notifiedSet.add(item.id);
+          return;
+        }
 
         if (!item.imageUrl) {
           item.imageUrl = extractChatImageUrl(item);
@@ -44881,10 +46001,16 @@ function initMMOApplication() {
         allMsgs.push(item);
         hasChange = true;
 
-        if (item.sender === "user") {
-          hasNewUserMsg = true;
-        } else if (item.sender === "admin" && item.userEmail === myEmail) {
-          hasNewAdminMsg = true;
+        if (isFirstSync) {
+          // Trong lần đồng bộ lịch sử đầu tiên khi mở trang: đánh dấu đã biết để không báo lại tin cũ
+          markChatMsgIdNotified(item.id);
+        } else if (!notifiedSet.has(item.id)) {
+          markChatMsgIdNotified(item.id);
+          if (item.sender === "user") {
+            newlyAddedUserMsgs.push(item);
+          } else if (item.sender === "admin" && item.userEmail === myEmail) {
+            hasNewAdminMsg = true;
+          }
         }
       });
 
@@ -44897,9 +46023,9 @@ function initMMOApplication() {
           if (currentAdminChatTargetEmail) {
             renderAdminActiveStream(currentAdminChatTargetEmail);
           }
-          if (hasNewUserMsg && playSoundOnNew) {
+          if (newlyAddedUserMsgs.length > 0 && playSoundOnNew && !isFirstSync) {
             playChatNotificationSound("receive");
-            const newest = incomingList.slice().reverse().find(m => m && m.sender === "user");
+            const newest = newlyAddedUserMsgs[newlyAddedUserMsgs.length - 1];
             if (newest && typeof showToast === "function") {
               const who = newest.senderName || newest.userEmail;
               const snip = newest.text.length > 35 ? (newest.text.slice(0, 35) + "...") : newest.text;
@@ -44908,7 +46034,7 @@ function initMMOApplication() {
           }
         } else {
           renderChatMessageList();
-          if (hasNewAdminMsg && playSoundOnNew) {
+          if (hasNewAdminMsg && playSoundOnNew && !isFirstSync) {
             playChatNotificationSound("receive");
           }
         }
@@ -45996,9 +47122,9 @@ function initMMOApplication() {
         renderAdminChatList();
       }
 
-      // Polling dự phòng mỗi 30s (vì chat đã có SSE Realtime <100ms tức thì)
+      // Polling dự phòng mỗi 30s ở chế độ im lặng (vì tin nhắn mới trực tiếp đã có SSE Realtime <100ms tức thì)
       setInterval(function() {
-        syncCloudMessages(false);
+        syncCloudMessages(true);
       }, 30000);
     }, 4000);
 
@@ -49751,6 +50877,44 @@ async function confirmRefundOrder() {
         }).catch(() => {});
       }
 
+      // 5b. Đồng bộ hoàn tiền trực tiếp lên Cloudflare Worker Turso DB SSOT
+      try {
+        const workerRefundUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+          ? (MMO_WORKER_API.getApiUrl() + "/api/admin/orders/refund")
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/orders/refund";
+        const admSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
+          ? MMO_WORKER_API.getAdminSecret()
+          : "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+        fetch(workerRefundUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + admSec,
+            "x-admin-token": admSec
+          },
+          body: JSON.stringify({
+            orderId: orderId,
+            email: finalEmail,
+            amount: refundAmt,
+            reason: refundNote
+          })
+        }).then(r => r.json()).then(wRes => {
+          if (wRes && wRes.success && wRes.newBalance !== undefined) {
+            let uList = getRegisteredUsers();
+            let uI = uList.findIndex(u => (u.email || "").toLowerCase().trim() === finalEmail);
+            if (uI !== -1) {
+              uList[uI].balance = Number(wRes.newBalance);
+              saveRegisteredUsers(uList);
+              if (currentUser && (currentUser.email || "").toLowerCase().trim() === finalEmail) {
+                currentUser.balance = Number(wRes.newBalance);
+                safeStorageSet("mmo_user", JSON.stringify(currentUser));
+                if (typeof updateUserUI === "function") updateUserUI();
+              }
+            }
+          }
+        }).catch(() => {});
+      } catch(eRefWorker) {}
+
       if (typeof callGasApi === "function") {
         callGasApi("adminUpdateBalance", {
           adminEmail: adminEmail,
@@ -53288,3 +54452,1833 @@ if (typeof window !== "undefined") {
     }
   }
 }
+
+
+
+
+// ==========================================================================
+// SMS OTP CLIENT MODULE (VIOTP.NET INTEGRATION) - PRODUCTION GRADE
+// ==========================================================================
+(function() {
+  window._smsOtpServices = [];
+  window._smsOtpCarriers = [];
+  window._smsOtpSelectedService = null;
+  window._smsOtpMode = 'quick';
+  window._smsOtpSelectedCarrier = 'ALL';
+  window._smsOtpSelectedPrefix = 'ALL';
+  window._smsOtpRentals = [];
+  window._smsOtpPollers = {};
+  window._smsOtpCountdowns = {};
+  window._smsOtpInitialized = false;
+
+  // Icon Helper for 984+ Services
+  function getSmsServiceIcon(name) {
+    var n = String(name || '').toLowerCase();
+    if (n.includes('google') || n.includes('gmail')) return '<i class="fa-brands fa-google" style="color:#ea4335;"></i>';
+    if (n.includes('facebook') || n.includes('fb')) return '<i class="fa-brands fa-facebook" style="color:#1877f2;"></i>';
+    if (n.includes('shopee')) return '<i class="fa-solid fa-bag-shopping" style="color:#ee4d2d;"></i>';
+    if (n.includes('lazada')) return '<i class="fa-solid fa-cart-shopping" style="color:#f43f5e;"></i>';
+    if (n.includes('hotmail') || n.includes('outlook') || n.includes('microsoft') || n.includes('azure')) return '<i class="fa-brands fa-microsoft" style="color:#00a4ef;"></i>';
+    if (n.includes('yahoo')) return '<i class="fa-brands fa-yahoo" style="color:#6001d2;"></i>';
+    if (n.includes('telegram')) return '<i class="fa-brands fa-telegram" style="color:#229ed9;"></i>';
+    if (n.includes('tiktok')) return '<i class="fa-brands fa-tiktok" style="color:#ff0050;"></i>';
+    if (n.includes('zalo')) return '<i class="fa-solid fa-comment-dots" style="color:#0068ff;"></i>';
+    if (n.includes('viber')) return '<i class="fa-brands fa-viber" style="color:#7360f2;"></i>';
+    if (n.includes('whatsapp')) return '<i class="fa-brands fa-whatsapp" style="color:#25d366;"></i>';
+    if (n.includes('instagram')) return '<i class="fa-brands fa-instagram" style="color:#e1306c;"></i>';
+    if (n.includes('twitter') || n.includes(' x ')) return '<i class="fa-brands fa-x-twitter" style="color:#e2e8f0;"></i>';
+    if (n.includes('netflix')) return '<i class="fa-solid fa-film" style="color:#e50914;"></i>';
+    if (n.includes('momo')) return '<i class="fa-solid fa-wallet" style="color:#d82d8b;"></i>';
+    return '<i class="fa-regular fa-circle-dot" style="color:#94a3b8;"></i>';
+  }
+  window.getSmsServiceIcon = getSmsServiceIcon;
+
+  // Initialize SMS OTP View
+    // Dọn dẹp dữ liệu khi F5: chuyển các tin nhắn chờ đã nhận OTP sang Lịch Sử, không lưu lại những cái đã hết hạn
+    // Tự động khôi phục tiếng Việt chuẩn cho tin nhắn SMS bị lỗi font do SIM/modem GSM
+  function cleanSmsVietnameseText(str) {
+    if (!str || typeof str !== 'string') return str || '';
+    var s = str.trim();
+
+    // 1. Template chuẩn cho PayPal
+    if (/PayPal/i.test(s)) {
+      var codeMatch = s.match(/(?:(?:la|là|code|m[ãa])\D{0,10})?(\b\d{4,8}\b)/i) || s.match(/(\b\d{4,8}\b)/);
+      if (codeMatch) {
+        var code = codeMatch[1];
+        var minMatch = s.match(/sau\s*(\d+)\s*ph/i);
+        var mins = minMatch ? minMatch[1] : '10';
+        var tokens = s.split(/\s+/);
+        var lastToken = tokens[tokens.length - 1];
+        var hash = '';
+        if (lastToken && lastToken.length >= 8 && /[A-Za-z0-9\/+_-]/.test(lastToken) && !lastToken.includes('phút') && !lastToken.includes('PayPal')) {
+          hash = ' ' + lastToken.trim();
+        }
+        return '<#> PayPal: Mã bảo mật là ' + code + '. Hết hạn sau ' + mins + ' phút. Đừng trả lời.' + hash;
+      }
+    }
+
+    // 2. Khôi phục từ khóa tiếng Việt bị lỗi font GSM / ký tự modem (ß, £, Δ, @, ?, ...)
+    s = s.replace(/Ma\s+b[ß\?£]+o\s+m[ß\?\-]+t/gi, 'Mã bảo mật')
+         .replace(/b[ß\?£]+o\s+m[ß\?\-]+t/gi, 'bảo mật')
+         .replace(/m[ß\?\-]+t\s+kh[ß\?£]+u/gi, 'mật khẩu')
+         .replace(/x[ß\?£]+c\s+minh/gi, 'xác minh')
+         .replace(/x[ß\?£]+c\s+th[ß\?£\Δ]+c/gi, 'xác thực')
+         .replace(/t[ß\?£]+i\s+kho[ß\?£]+n/gi, 'tài khoản')
+         .replace(/H[ß\?Yy]+t\s+h[ß\?@a]+n/gi, 'Hết hạn')
+         .replace(/h[ß\?Yy]+t\s+h[ß\?@a]+n/gi, 'hết hạn')
+         .replace(/sau\s+(\d+)\s+ph[uú\w]*\b/gi, 'sau $1 phút')
+         .replace(/[£\?Δß]+eng\s+tr[ß\?£]+(?:\s+l[ß\?Yi]+)?/gi, 'Đừng trả lời')
+         .replace(/\b(?:Dung|dung)\s+tra\s+loi\b/gi, 'Đừng trả lời')
+         .replace(/\bc[ß\?£]+a\s+b[ß\?@a]+n\b/gi, 'của bạn')
+         .replace(/\bkh[ß\?o]+ng\s+chia\s+s[ß\?e]+\b/gi, 'không chia sẻ')
+         .replace(/\bchia\s+s[ß\?e]+\b/gi, 'chia sẻ')
+         .replace(/\bkh[ß\?o]+ng\b/gi, 'không')
+         .replace(/\bv[ß\?o]+i\s+b[ß\?a]+t\s+k[ß\?y]+\s+ai\b/gi, 'với bất kỳ ai')
+         .replace(/\bl[aà\?ß]\s+m[aã\?ß]\b/gi, 'là mã')
+         .replace(/\bl[aà\?ß]\s+(\d{4,8})\b/gi, 'là $1')
+         .replace(/\bm[aã\?ß]\s+x[aá\?ß]+c\s+minh\b/gi, 'mã xác minh')
+         .replace(/\bm[aã\?ß]\s+x[aá\?ß]+c\s+th[uự\?ß\Δ]+c\b/gi, 'mã xác thực')
+         .replace(/\bm[aã\?ß]\s+n[aà\?ß]+y\b/gi, 'mã này')
+         .replace(/\bl[aà\?ß]\b/g, 'là')
+         .replace(/\bm[aã\?ß]\b/g, 'mã')
+         .replace(/\bm[aã\?ß]\s+OTP\b/gi, 'mã OTP');
+
+    return s;
+  }
+  window.cleanSmsVietnameseText = cleanSmsVietnameseText;
+
+function cleanupSmsRentalsOnF5() {
+    try {
+      var saved = localStorage.getItem('mmo_sms_rentals');
+      if (!saved) {
+        window._smsOtpRentals = [];
+        return;
+      }
+      var list = JSON.parse(saved);
+      if (!Array.isArray(list)) {
+        window._smsOtpRentals = [];
+        return;
+      }
+
+      var nowSec = Math.floor(Date.now() / 1000);
+      var cleaned = [];
+
+      list.forEach(function(r) {
+        if (!r) return;
+        var createdSec = 0;
+        if (r.createdAt) {
+          createdSec = (typeof r.createdAt === 'number') ? (r.createdAt < 10000000000 ? r.createdAt : Math.floor(r.createdAt / 1000)) : Math.floor(new Date(r.createdAt).getTime() / 1000);
+        }
+        var isTimeout = (r.status === 0 && createdSec && (nowSec - createdSec) > 420);
+        var isExpired = (r.status === 2 || r.refunded === 1 || isTimeout);
+
+        // NGUYÊN TẮC: "KHÔNG LƯU LẠI NHỮNG CÁI ĐÃ HẾT HẠN" -> Tuyệt đối không lưu các đơn hết hạn
+        if (isExpired) {
+          return;
+        }
+
+        // NGUYÊN TẮC: "CÁC TIN NHẮN CHỜ CHUYỂN SANG PHẦN LỊCH SỬ" -> Đơn đã nhận mã (status === 1) chuyển sang lịch sử
+        if (r.status === 1) {
+          r.inWaitingScreen = false;
+          if (r.smsContent) r.smsContent = cleanSmsVietnameseText(r.smsContent);
+          cleaned.push(r);
+          return;
+        }
+
+        // Đơn đang chờ (status === 0) còn hạn (< 420s):
+        if (r.status === 0) {
+          r.inWaitingScreen = true;
+          cleaned.push(r);
+        }
+      });
+
+      window._smsOtpRentals = cleaned;
+      localStorage.setItem('mmo_sms_rentals', JSON.stringify(cleaned));
+    } catch(e) {}
+  }
+  window.cleanupSmsRentalsOnF5 = cleanupSmsRentalsOnF5;
+  try { cleanupSmsRentalsOnF5(); } catch(eCl) {}
+
+  async function checkViotpSourceBalance(forceRefresh) {
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var res = await fetch(workerUrl + '/api/viotp/balance');
+      var json = await res.json();
+      if (!json || !json.success) return;
+
+      var bal = typeof json.balance === 'number' ? json.balance : 0;
+      window._viotpSourceBalance = bal;
+      var isOutOfMoney = (bal <= 0) || !!json.isOutOfBalance;
+      var isLowMoney = (bal < 2000) || !!json.isLowBalance;
+      var isAdm = (typeof isAdminUser === 'function') && isAdminUser();
+
+      // 1. Cập nhật thẻ số dư Web nguồn trong Quản Trị Viên (Admin View)
+      var admBalEl = document.getElementById('admViotpSourceBal');
+      if (admBalEl) {
+        admBalEl.innerText = bal.toLocaleString('vi-VN') + ' đ';
+      }
+      var admBadgeEl = document.getElementById('admViotpBalBadge');
+      if (admBadgeEl) {
+        admBadgeEl.style.display = 'inline-block';
+        if (isOutOfMoney) {
+          admBadgeEl.style.background = 'rgba(239, 68, 68, 0.2)';
+          admBadgeEl.style.color = '#ef4444';
+          admBadgeEl.style.border = '1px solid #ef4444';
+          admBadgeEl.innerText = '⚠️ HẾT TIỀN - CẦN NẠP THÊM';
+        } else if (isLowMoney) {
+          admBadgeEl.style.background = 'rgba(245, 158, 11, 0.2)';
+          admBadgeEl.style.color = '#f59e0b';
+          admBadgeEl.style.border = '1px solid #f59e0b';
+          admBadgeEl.innerText = '⚠️ SẮP HẾT TIỀN';
+        } else {
+          admBadgeEl.style.background = 'rgba(16, 185, 129, 0.2)';
+          admBadgeEl.style.color = '#10b981';
+          admBadgeEl.style.border = '1px solid #10b981';
+          admBadgeEl.innerText = '● HOẠT ĐỘNG TỐT';
+        }
+      }
+
+      // 2. Banner cảnh báo Admin trên trang Thuê SIM & Header Admin
+      var admAlertBanner = document.getElementById('smsAdminLowBalanceBanner');
+      var admLiveText = document.getElementById('admViotpLiveBalText');
+      if (admLiveText) admLiveText.innerText = bal.toLocaleString('vi-VN') + ' đ';
+
+      if (isAdm && (isOutOfMoney || isLowMoney)) {
+        if (admAlertBanner) admAlertBanner.style.setProperty('display', 'flex', 'important');
+      } else {
+        if (admAlertBanner) admAlertBanner.style.setProperty('display', 'none', 'important');
+      }
+
+      // 3. Banner thông báo Bảo trì cho Khách hàng trên trang Thuê SIM
+      var maintBanner = document.getElementById('smsMaintenanceBanner');
+      var rentBtn = document.getElementById('smsOtpRentBtn');
+
+      if (isOutOfMoney) {
+        window._viotpInMaintenance = true;
+        if (maintBanner) maintBanner.style.setProperty('display', 'flex', 'important');
+        if (rentBtn) {
+          rentBtn.disabled = true;
+          rentBtn.setAttribute('disabled', 'disabled');
+          rentBtn.innerHTML = '<i class="fa-solid fa-screwdriver-wrench"></i> Dịch vụ đang bảo trì (Quay lại sau)';
+          rentBtn.style.background = '#475569';
+          rentBtn.style.cursor = 'not-allowed';
+        }
+      } else {
+        window._viotpInMaintenance = false;
+        if (maintBanner) maintBanner.style.setProperty('display', 'none', 'important');
+        if (rentBtn && rentBtn.innerHTML.includes('bảo trì')) {
+          rentBtn.disabled = !window._smsOtpSelectedService;
+          if (window._smsOtpSelectedService) rentBtn.removeAttribute('disabled');
+          rentBtn.innerHTML = 'Thuê số ngay <i class="fa-solid fa-arrow-right"></i>';
+          rentBtn.style.background = '';
+          rentBtn.style.cursor = '';
+        }
+      }
+
+      if (forceRefresh && typeof showToast === 'function') {
+        showToast('Đã làm mới số dư ViOTP: ' + bal.toLocaleString('vi-VN') + ' đ', isOutOfMoney ? 'error' : 'success');
+      }
+    } catch(e) {
+      console.warn('Lỗi kiểm tra số dư ViOTP:', e);
+    }
+  }
+  window.checkViotpSourceBalance = checkViotpSourceBalance;
+
+async function initSmsOtpView() {
+    cleanupSmsRentalsOnF5();
+    renderSmsRentals();
+    if (typeof renderSmsHistory === 'function') renderSmsHistory();
+
+    updateSmsUserBalanceDisplay();
+
+    // Tự động kiểm tra số dư nguồn ViOTP để cập nhật thông báo bảo trì / cảnh báo Admin
+    if (typeof checkViotpSourceBalance === 'function') {
+      checkViotpSourceBalance(false);
+    }
+
+    if (!window._smsOtpServices || window._smsOtpServices.length === 0) {
+      await loadSmsOtpServices();
+    }
+    if (!window._smsOtpCarriers || window._smsOtpCarriers.length === 0) {
+      loadSmsOtpCarriers();
+    }
+
+    var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
+    if (u && u.email) {
+      loadServerRentalHistory(u.email);
+    }
+
+    window._smsOtpInitialized = true;
+  }
+  window.initSmsOtpView = initSmsOtpView;
+
+  function updateSmsUserBalanceDisplay() {
+    var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
+    if (!u) {
+      try {
+        var raw = localStorage.getItem('mmo_user');
+        if (raw) u = JSON.parse(raw);
+      } catch(e) {}
+    }
+    var bal = (u && u.balance !== undefined && !isNaN(Number(u.balance))) ? Number(u.balance) : 0;
+
+    var sideBal = document.getElementById('smsSidebarBalance');
+    if (sideBal) sideBal.innerText = bal.toLocaleString('vi-VN') + ' đ';
+
+    if (typeof syncAllWalletBalanceUI === 'function') {
+      syncAllWalletBalanceUI(bal);
+    } else {
+      var hBal = document.getElementById('headerWalletBalance');
+      if (hBal) hBal.innerText = bal.toLocaleString('vi-VN') + ' đ';
+    }
+
+    var topUser = document.getElementById('smsTopUsername');
+    if (topUser) {
+      topUser.innerText = u ? (u.name || u.username || 'Khách') : 'Khách';
+    }
+
+    var el = document.getElementById('smsSumBalAfter');
+    if (el) {
+      var p = window._smsOtpSelectedService ? Number(window._smsOtpSelectedService.price || 0) : 0;
+      var remain = bal - p;
+      el.innerText = (remain < 0 ? 0 : remain).toLocaleString('vi-VN') + ' đ';
+      el.style.color = (remain < 0) ? '#ef4444' : '#10b981';
+    }
+  }
+  window.updateSmsUserBalanceDisplay = updateSmsUserBalanceDisplay;
+
+  async function loadSmsOtpServices() {
+    var listEl = document.getElementById('smsOtpServicesList');
+    if (listEl) {
+      listEl.innerHTML = '<div class="sms-otp-loading-box" style="padding:20px; text-align:center; color:#94a3b8;"><i class="fa-solid fa-spinner fa-spin"></i> Đang nạp 984+ dịch vụ ViOTP...</div>';
+    }
+
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var res = await fetch(workerUrl + '/api/viotp/services');
+      var data = await res.json();
+      if (data && data.success && Array.isArray(data.services)) {
+        window._smsOtpServices = data.services;
+        var countEl = document.getElementById('smsOtpServiceCount');
+        if (countEl) countEl.innerText = data.services.length + ' dịch vụ';
+        renderSmsOtpServicesList('');
+      } else {
+        if (listEl) listEl.innerHTML = '<div style="padding:20px; text-align:center; color:#ef4444;">Không thể nạp danh sách dịch vụ. Vui lòng bấm thử lại.</div>';
+      }
+    } catch(err) {
+      console.error('Lỗi loadSmsOtpServices:', err);
+      if (listEl) listEl.innerHTML = '<div style="padding:20px; text-align:center; color:#ef4444;">Lỗi kết nối máy chủ ViOTP.</div>';
+    }
+  }
+  window.loadSmsOtpServices = loadSmsOtpServices;
+
+  async function loadSmsOtpCarriers() {
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var res = await fetch(workerUrl + '/api/viotp/carriers');
+      var data = await res.json();
+      if (data && data.success && Array.isArray(data.carriers)) {
+        window._smsOtpCarriers = data.carriers;
+      }
+    } catch(e) {}
+  }
+
+  async function loadServerRentalHistory(email) {
+    if (!email) return;
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var res = await fetch(workerUrl + '/api/viotp/history?email=' + encodeURIComponent(email));
+      var data = await res.json();
+      if (data && data.success && Array.isArray(data.history) && data.history.length > 0) {
+        var merged = (window._smsOtpRentals || []).slice();
+        data.history.forEach(function(sh) {
+          var rid = sh.rental_id || sh.id;
+          // "KHÔNG LƯU LẠI NHỮNG CÁI ĐÃ HẾT HẠN":
+          // Bỏ qua tất cả đơn có status === 2 từ server
+          if (sh.status === 2) return;
+
+          var ex = merged.find(function(m) { return (m.id == rid || m.rental_id == rid); });
+          if (!ex) {
+            if (sh.status === 1) {
+              merged.push({
+                id: rid,
+                serviceId: sh.service_id,
+                serviceName: sh.service_name,
+                price: sh.price,
+                phone: sh.phone,
+                phoneLocal: sh.phone_local,
+                carrier: sh.carrier,
+                status: sh.status,
+                code: sh.code,
+                smsContent: cleanSmsVietnameseText(sh.sms_content),
+                createdAt: sh.created_at,
+                inWaitingScreen: false // ĐƠN LỊCH SỬ TỪ SERVER -> CHỈ HIỆN TRONG TAB LỊCH SỬ, KHÔNG HIỆN TRÊN MÀN HÌNH CHỜ!
+              });
+            }
+          } else {
+            ex.status = sh.status;
+            if (sh.code) ex.code = sh.code;
+            if (sh.sms_content) ex.smsContent = cleanSmsVietnameseText(sh.sms_content);
+            ex.inWaitingScreen = false;
+          }
+        });
+        // Lọc bỏ đơn hết hạn
+        merged = merged.filter(function(m) { return m.status !== 2 && !m.refunded; });
+        window._smsOtpRentals = merged;
+        try { localStorage.setItem('mmo_sms_rentals', JSON.stringify(merged)); } catch(eS) {}
+        renderSmsRentals();
+        if (typeof renderSmsHistory === 'function') renderSmsHistory();
+      }
+    } catch(eH) {}
+  }
+
+  function renderSmsOtpServicesList(query) {
+    var listEl = document.getElementById('smsOtpServicesList');
+    if (!listEl) return;
+
+    var services = window._smsOtpServices || [];
+    var q = String(query || '').trim().toLowerCase();
+
+    var filtered = services.filter(function(s) {
+      if (!s) return false;
+      if (!q) return true;
+      var name = String(s.name || '').toLowerCase();
+      var id = String(s.id || '');
+      return name.includes(q) || id.includes(q);
+    });
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = '<div style="padding:24px; text-align:center; color:#64748b; font-size:0.9rem;">Không tìm thấy dịch vụ phù hợp</div>';
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(function(s) {
+      var isAct = (window._smsOtpSelectedService && window._smsOtpSelectedService.id === s.id);
+      var safeName = (typeof escapeHtml === 'function') ? escapeHtml(s.name) : s.name;
+      var icon = getSmsServiceIcon(s.name);
+      var priceVnd = (s.price !== undefined ? Number(s.price) : 0).toLocaleString('vi-VN') + ' đ';
+
+      return '<div class="sms-otp-service-item ' + (isAct ? 'active' : '') + '" data-sid="' + s.id + '" onclick="selectSmsOtpService(' + s.id + ')">' +
+        '<div class="sms-service-left">' +
+          '<span style="font-size:1.15rem; width:24px; display:inline-flex; align-items:center; justify-content:center;">' + icon + '</span>' +
+          '<span>' + safeName + '</span>' +
+        '</div>' +
+        '<div class="sms-service-price">' + priceVnd + '</div>' +
+      '</div>';
+    }).join('');
+  }
+  window.renderSmsOtpServicesList = renderSmsOtpServicesList;
+
+  function toggleSmsOtpDropdown(forceState) {
+    var menu = document.getElementById('smsOtpDropdownMenu');
+    var chevron = document.getElementById('smsOtpChevron');
+    if (!menu) return;
+
+    var isShow = (forceState !== undefined) ? forceState : (menu.style.display === 'none' || menu.style.display === '');
+    menu.style.display = isShow ? 'block' : 'none';
+    if (chevron) {
+      chevron.style.transform = isShow ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+    if (isShow) {
+      var inp = document.getElementById('smsOtpSearchInput');
+      if (inp) {
+        inp.value = '';
+        setTimeout(function() { inp.focus(); }, 50);
+      }
+      renderSmsOtpServicesList('');
+    }
+  }
+  window.toggleSmsOtpDropdown = toggleSmsOtpDropdown;
+
+  function filterSmsOtpServices(val) {
+    renderSmsOtpServicesList(val);
+  }
+  window.filterSmsOtpServices = filterSmsOtpServices;
+
+  function selectSmsOtpService(serviceId) {
+    var s = (window._smsOtpServices || []).find(function(it) { return it && it.id === serviceId; });
+    if (!s) return;
+
+    window._smsOtpSelectedService = s;
+    toggleSmsOtpDropdown(false);
+
+    var icon = getSmsServiceIcon(s.name);
+    var nameEl = document.getElementById('smsOtpSelectedName');
+    if (nameEl) {
+      nameEl.innerHTML = '<span style="font-size:1.1rem; margin-right:8px;">' + icon + '</span>' +
+        '<span style="color:#ffffff; font-weight:700;">' + s.name + '</span>' +
+        '<span style="color:#10b981; font-weight:800; margin-left:10px;">(' + Number(s.price).toLocaleString('vi-VN') + ' đ)</span>';
+    }
+
+    var sumBox = document.getElementById('smsOtpSummaryServiceBox');
+    if (sumBox) {
+      sumBox.innerHTML = '<div style="display:flex; align-items:center; justify-content:space-between; width:100%;">' +
+        '<div style="display:flex; align-items:center; gap:10px;">' +
+          '<span style="font-size:1.3rem;">' + icon + '</span>' +
+          '<div>' +
+            '<div style="font-weight:700; color:#ffffff; font-size:0.95rem;">' + s.name + '</div>' +
+            '<div style="font-size:0.78rem; color:#64748b;">Mã DV: #' + s.id + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div style="color:#10b981; font-weight:800; font-size:1.05rem;">' + Number(s.price).toLocaleString('vi-VN') + ' đ</div>' +
+      '</div>';
+    }
+
+    var priceEl = document.getElementById('smsSumPrice');
+    if (priceEl) priceEl.innerText = Number(s.price).toLocaleString('vi-VN') + ' đ';
+
+    var rentBtn = document.getElementById('smsOtpRentBtn');
+    if (rentBtn) {
+      rentBtn.disabled = false;
+    }
+
+    updateSmsUserBalanceDisplay();
+  }
+  window.selectSmsOtpService = selectSmsOtpService;
+
+  function setSmsOtpMode(mode) {
+    window._smsOtpMode = mode;
+    var quickBtn = document.getElementById('smsModeQuick');
+    var customBtn = document.getElementById('smsModeCustom');
+    var quickDesc = document.getElementById('smsOtpQuickDesc');
+    var customOpts = document.getElementById('smsOtpCustomOptions');
+    var sumMode = document.getElementById('smsSumMode');
+    var carrierRow = document.getElementById('smsSumCarrierRow');
+    var prefixRow = document.getElementById('smsSumPrefixRow');
+    var excludeRow = document.getElementById('smsSumExcludeRow');
+
+    if (mode === 'quick') {
+      if (quickBtn) quickBtn.classList.add('active');
+      if (customBtn) customBtn.classList.remove('active');
+      if (quickDesc) quickDesc.style.display = 'block';
+      if (customOpts) customOpts.style.display = 'none';
+      if (sumMode) sumMode.innerText = 'Thuê nhanh';
+      if (carrierRow) carrierRow.style.display = 'none';
+      if (prefixRow) prefixRow.style.display = 'none';
+      if (excludeRow) excludeRow.style.display = 'none';
+      window._smsOtpSelectedCarrier = 'ALL';
+      window._smsOtpSelectedPrefix = 'ALL';
+    } else {
+      if (quickBtn) quickBtn.classList.remove('active');
+      if (customBtn) customBtn.classList.add('active');
+      if (quickDesc) quickDesc.style.display = 'none';
+      if (customOpts) customOpts.style.display = 'block';
+      if (sumMode) sumMode.innerText = 'Tùy chọn nhà mạng';
+      if (carrierRow) carrierRow.style.display = 'flex';
+      if (prefixRow) prefixRow.style.display = 'flex';
+      if (excludeRow) excludeRow.style.display = 'flex';
+    }
+  }
+  window.setSmsOtpMode = setSmsOtpMode;
+
+  function selectSmsCarrier(carrier) {
+    window._smsOtpSelectedCarrier = carrier;
+    document.querySelectorAll('.sms-carrier-pill').forEach(function(btn) {
+      if (btn.getAttribute('data-carrier') === carrier) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+    var sumCarrier = document.getElementById('smsSumCarrier');
+    if (sumCarrier) sumCarrier.innerText = (carrier === 'ALL') ? 'Tất cả' : carrier;
+  }
+  window.selectSmsCarrier = selectSmsCarrier;
+
+  function updateSmsOrderSummary() {
+    var sel = document.getElementById('smsOtpPrefixSelect');
+    var val = sel ? sel.value : 'ALL';
+    window._smsOtpSelectedPrefix = val;
+    var sumPrefix = document.getElementById('smsSumPrefix');
+    if (sumPrefix) sumPrefix.innerText = (val === 'ALL') ? 'Tất cả' : val;
+  }
+  window.updateSmsOrderSummary = updateSmsOrderSummary;
+
+  function toggleSmsTips() {
+    var tips = document.getElementById('smsOtpTipsBox');
+    if (tips) {
+      tips.style.display = (tips.style.display === 'none' || tips.style.display === '') ? 'block' : 'none';
+    }
+  }
+  window.toggleSmsTips = toggleSmsTips;
+
+  function setSmsListView(viewType) {
+    var gridBtn = document.getElementById('smsViewGridBtn');
+    var listBtn = document.getElementById('smsViewListBtn');
+    if (viewType === 'grid') {
+      if (gridBtn) gridBtn.classList.add('active');
+      if (listBtn) listBtn.classList.remove('active');
+    } else {
+      if (gridBtn) gridBtn.classList.remove('active');
+      if (listBtn) listBtn.classList.add('active');
+    }
+  }
+  window.setSmsListView = setSmsListView;
+
+  async function executeRentSmsOtp() {
+    var s = window._smsOtpSelectedService;
+    if (!s) {
+      if (typeof showToast === 'function') showToast('Vui lòng chọn dịch vụ cần thuê số!', 'warning');
+      return;
+    }
+
+    var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
+    if (!u || !u.email) {
+      if (typeof showToast === 'function') showToast('🔒 Vui lòng đăng nhập tài khoản để thuê số nhận OTP!', 'info');
+      if (typeof openAuthModal === 'function') openAuthModal('login');
+      return;
+    }
+
+    var userBal = (u.balance !== undefined && !isNaN(Number(u.balance))) ? Number(u.balance) : 0;
+    var price = Number(s.price || 0);
+
+    if (userBal < price) {
+      if (typeof showToast === 'function') {
+        showToast('⚠️ Số dư không đủ (' + userBal.toLocaleString('vi-VN') + ' đ). Cần ' + price.toLocaleString('vi-VN') + ' đ. Vui lòng nạp thêm tiền!', 'warning');
+      }
+      setTimeout(function() {
+        if (typeof switchView === 'function') switchView('viewDeposit');
+      }, 1000);
+      return;
+    }
+
+    if (window._viotpInMaintenance) {
+      var isAdm = (typeof isAdminUser === 'function') && isAdminUser();
+      if (isAdm) {
+        if (typeof showToast === 'function') {
+          showToast('⚠️ Cảnh báo Admin: Web nguồn thuê SIM ViOTP đã hết tiền, cần nạp thêm!', 'error', 9000);
+        }
+      } else {
+        if (typeof showToast === 'function') {
+          showToast('⚠️ Dịch vụ bảo trì vui lòng quay lại sau!', 'warning', 7000);
+        }
+      }
+      return;
+    }
+
+    var rentBtn = document.getElementById('smsOtpRentBtn');
+    if (rentBtn) {
+      rentBtn.disabled = true;
+      rentBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    }
+
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var payload = {
+        userEmail: u.email,
+        serviceId: s.id,
+        serviceName: s.name,
+        price: price
+      };
+
+      if (window._smsOtpMode === 'custom') {
+        if (window._smsOtpSelectedCarrier && window._smsOtpSelectedCarrier !== 'ALL') {
+          payload.carriers = [window._smsOtpSelectedCarrier];
+        }
+        if (window._smsOtpSelectedPrefix && window._smsOtpSelectedPrefix !== 'ALL') {
+          payload.includePrefixes = [window._smsOtpSelectedPrefix];
+        }
+      }
+
+      var res = await fetch(workerUrl + '/api/viotp/rent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      var data = await res.json();
+
+      if (!res.ok || !data.success || !data.rental) {
+        var isOutOfBal = data.isSourceOutOfBalance || data.maintenance || false;
+        var rawErr = (data.error || data.message || '').toLowerCase();
+        if (rawErr.includes('không đủ tiền') || rawErr.includes('khong du tien') || rawErr.includes('bảo trì') || rawErr.includes('hết tiền')) {
+          isOutOfBal = true;
+        }
+
+        if (isOutOfBal) {
+          window._viotpInMaintenance = true;
+          var maintBanner = document.getElementById('smsMaintenanceBanner');
+          if (maintBanner) maintBanner.style.setProperty('display', 'flex', 'important');
+
+          var isAdmCheck = (typeof isAdminUser === 'function') && isAdminUser();
+          if (isAdmCheck) {
+            var admAlertBanner = document.getElementById('smsAdminLowBalanceBanner');
+            if (admAlertBanner) admAlertBanner.style.setProperty('display', 'flex', 'important');
+            if (typeof showToast === 'function') {
+              showToast('⚠️ CẢNH BÁO ADMIN: Web nguồn thuê sim ViOTP đã hết tiền, cần nạp thêm!', 'error', 9000);
+            }
+          } else {
+            if (typeof showToast === 'function') {
+              showToast('⚠️ Dịch vụ bảo trì vui lòng quay lại sau!', 'warning', 7000);
+            }
+          }
+          if (rentBtn) {
+            rentBtn.disabled = true;
+            rentBtn.setAttribute('disabled', 'disabled');
+            rentBtn.innerHTML = '<i class="fa-solid fa-screwdriver-wrench"></i> Dịch vụ đang bảo trì (Quay lại sau)';
+            rentBtn.style.background = '#475569';
+            rentBtn.style.cursor = 'not-allowed';
+          }
+          if (typeof checkViotpSourceBalance === 'function') checkViotpSourceBalance(false);
+          return;
+        }
+
+        var errMsg = data.error || data.message || 'Không thể thuê số. Vui lòng thử lại sau ít phút!';
+        if (typeof showToast === 'function') showToast('❌ ' + errMsg, 'error');
+        if (rentBtn) {
+          rentBtn.disabled = false;
+          rentBtn.innerHTML = 'Thuê số ngay <i class="fa-solid fa-arrow-right"></i>';
+        }
+        return;
+      }
+
+      if (data.newBalance !== undefined) {
+        var newB = Number(data.newBalance);
+        u.balance = newB;
+        if (window.currentUser) window.currentUser.balance = newB;
+        if (typeof saveUserToStorage === 'function') saveUserToStorage(u);
+        else {
+          try { localStorage.setItem('mmo_user', JSON.stringify(u)); } catch(eU) {}
+        }
+        try {
+          var rUsers = JSON.parse(localStorage.getItem('mmo_registered_users') || '[]');
+          if (Array.isArray(rUsers)) {
+            rUsers.forEach(function(ru) {
+              if (ru && (ru.email || '').toLowerCase().trim() === (u.email || '').toLowerCase().trim()) {
+                ru.balance = newB;
+              }
+            });
+            localStorage.setItem('mmo_registered_users', JSON.stringify(rUsers));
+          }
+        } catch(eR) {}
+        if (typeof syncAllWalletBalanceUI === 'function') {
+          syncAllWalletBalanceUI(newB);
+        }
+        if (typeof updateUserUI === 'function') updateUserUI(u);
+
+        // Ghi nhận biến động số dư trừ tiền thuê sim vào mmo_transactions để sổ cái cân bằng 100%
+        try {
+          var curTxs = JSON.parse(localStorage.getItem('mmo_transactions') || '[]');
+          var nowD = new Date();
+          var timeStr = nowD.toLocaleDateString('vi-VN') + ' ' + nowD.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+          curTxs.unshift({
+            id: 'TX_RENT_OTP_' + data.rental.id,
+            txId: 'TX_RENT_OTP_' + data.rental.id,
+            orderId: 'RENT_OTP_' + data.rental.id,
+            userEmail: u.email,
+            userName: u.name || u.email,
+            type: 'Thanh toán dịch vụ',
+            amount: -price,
+            balanceAfter: newB,
+            note: 'Thuê số OTP ' + (s.name || 'Dịch vụ') + ' (' + (data.rental.phoneLocal || data.rental.phone || '') + ')',
+            time: timeStr,
+            date: nowD.toLocaleDateString('vi-VN')
+          });
+          localStorage.setItem('mmo_transactions', JSON.stringify(curTxs));
+        } catch(eTxRent) {}
+      }
+
+      if (typeof showToast === 'function') {
+        showToast('🎉 Thuê số thành công! Số: ' + (data.rental.phoneLocal || data.rental.phone), 'success');
+      }
+
+      var rObj = {
+        id: data.rental.id,
+        userEmail: (u && u.email) || '',
+        serviceId: s.id,
+        serviceName: s.name,
+        price: price,
+        phone: data.rental.phone,
+        phoneLocal: data.rental.phoneLocal,
+        carrier: data.rental.carrier || window._smsOtpSelectedCarrier,
+        status: 0,
+        code: null,
+        smsContent: null,
+        inWaitingScreen: true,
+        createdAt: new Date().toISOString()
+      };
+
+      window._smsOtpRentals.unshift(rObj);
+      try { localStorage.setItem('mmo_sms_rentals', JSON.stringify(window._smsOtpRentals)); } catch(eS) {}
+
+      renderSmsRentals();
+      startPollingRental(rObj.id);
+
+      if (rentBtn) {
+        rentBtn.disabled = false;
+        rentBtn.innerHTML = 'Thuê số ngay <i class="fa-solid fa-arrow-right"></i>';
+      }
+
+    } catch(err) {
+      console.error('Lỗi executeRentSmsOtp:', err);
+      if (typeof showToast === 'function') showToast('Lỗi kết nối máy chủ: ' + err.message, 'error');
+      if (rentBtn) {
+        rentBtn.disabled = false;
+        rentBtn.innerHTML = 'Thuê số ngay <i class="fa-solid fa-arrow-right"></i>';
+      }
+    }
+  }
+  window.executeRentSmsOtp = executeRentSmsOtp;
+
+    async function handleExpireAndRefundRental(rentalId) {
+    var list = window._smsOtpRentals || [];
+    var target = list.find(function(r) { return String(r.id) === String(rentalId); });
+    if (!target || target.status !== 0) return;
+
+    // Ngắt polling ngay lập tức để không bao giờ bị load vô hạn
+    if (window._smsOtpPollers && window._smsOtpPollers[rentalId]) {
+      clearInterval(window._smsOtpPollers[rentalId]);
+      delete window._smsOtpPollers[rentalId];
+    }
+
+    target.status = 2; // Hết hạn
+    target.refunded = 1;
+    try { localStorage.setItem('mmo_sms_rentals', JSON.stringify(list)); } catch(e) {}
+    renderSmsRentals();
+
+    var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
+    if (!u) return;
+
+    var refundAmt = Number(target.price || 0);
+    if (refundAmt > 0) {
+      var newB = Number(u.balance || 0) + refundAmt;
+      u.balance = newB;
+      if (window.currentUser) window.currentUser.balance = newB;
+      try { localStorage.setItem('mmo_user', JSON.stringify(u)); } catch(eU) {}
+      try {
+        var rUsers = JSON.parse(localStorage.getItem('mmo_registered_users') || '[]');
+        if (Array.isArray(rUsers)) {
+          rUsers.forEach(function(ru) {
+            if (ru && (ru.email || '').toLowerCase().trim() === (u.email || '').toLowerCase().trim()) {
+              ru.balance = newB;
+            }
+          });
+          localStorage.setItem('mmo_registered_users', JSON.stringify(rUsers));
+        }
+      } catch(eR) {}
+      if (typeof syncAllWalletBalanceUI === 'function') {
+        syncAllWalletBalanceUI(newB);
+      }
+      if (typeof updateUserUI === 'function') updateUserUI(u);
+
+      // GHI LỊCH SỬ BIẾN ĐỘNG SỐ DƯ (RULE BẮT BUỘC)
+      var note = 'Hoàn tiền thuê sim OTP ' + (target.serviceName || 'Dịch vụ') + ' (' + (target.phoneLocal || target.phone || '') + ') do hết hạn không nhận được mã';
+      var orderCode = 'REFUND_OTP_' + rentalId;
+      if (typeof recordTransaction === 'function') {
+        recordTransaction(u.email, u.name || u.email, 'Hoàn tiền', refundAmt, u.balance, note, orderCode);
+      }
+
+      // Đưa trực tiếp vào mmo_transactions để hiển thị ngay trong tab Biến động số dư
+      try {
+        var curTxs = JSON.parse(localStorage.getItem('mmo_transactions') || '[]');
+        var nowD = new Date();
+        var timeStr = nowD.toLocaleDateString('vi-VN') + ' ' + nowD.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        curTxs.unshift({
+          id: 'TX_OTP_' + rentalId,
+          txId: 'TX_OTP_' + rentalId,
+          orderId: orderCode,
+          userEmail: u.email,
+          userName: u.name || u.email,
+          type: 'Hoàn tiền',
+          amount: refundAmt,
+          balanceAfter: u.balance,
+          note: note,
+          time: timeStr,
+          date: nowD.toLocaleDateString('vi-VN')
+        });
+        localStorage.setItem('mmo_transactions', JSON.stringify(curTxs));
+      } catch(eTx) {}
+
+      // Đồng bộ về Cloudflare Worker & Turso DB
+      try {
+        var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+        fetch(workerUrl + '/api/viotp/refund', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ rentalId: rentalId, userEmail: u.email, price: refundAmt })
+        }).catch(function() {});
+      } catch(eW) {}
+
+      if (typeof showToast === 'function') {
+        showToast('⏱ Số ' + (target.phoneLocal || target.phone) + ' đã hết hạn. Đã hoàn +' + refundAmt.toLocaleString('vi-VN') + ' đ vào biến động số dư!', 'info');
+      }
+    }
+  }
+  window.handleExpireAndRefundRental = handleExpireAndRefundRental;
+
+  function startSmsCountdownTicker() {
+    if (window._smsCountdownTimer) clearInterval(window._smsCountdownTimer);
+
+    function tick() {
+      var list = window._smsOtpRentals || [];
+      var hasWaiting = false;
+      var now = Date.now();
+      list.forEach(function(r) {
+        if (r.status === 0) {
+          hasWaiting = true;
+          var createdTime = new Date(r.createdAt || now).getTime();
+          var elapsedSec = Math.floor((now - createdTime) / 1000);
+          var remainSec = Math.max(0, 420 - elapsedSec); // 7 phút = 420s
+          
+          var rid = r.id || r.requestId;
+          var el = document.getElementById('timer-' + rid) || document.getElementById('smsCountdown_' + rid);
+          if (el) {
+            var mm = String(Math.floor(remainSec / 60)).padStart(2, '0');
+            var ss = String(remainSec % 60).padStart(2, '0');
+            el.textContent = mm + ':' + ss;
+          }
+          if (remainSec <= 0) {
+            handleExpireAndRefundRental(rid);
+          }
+        }
+      });
+      if (!hasWaiting && window._smsCountdownTimer) {
+        clearInterval(window._smsCountdownTimer);
+        window._smsCountdownTimer = null;
+      }
+    }
+
+    tick();
+    window._smsCountdownTimer = setInterval(tick, 1000);
+  }
+  window.startSmsCountdownTicker = startSmsCountdownTicker;
+
+  function startPollingRental(rentalId) {
+    if (window._smsOtpPollers[rentalId]) return;
+    startSmsCountdownTicker();
+
+    window._smsOtpPollers[rentalId] = setInterval(async function() {
+      try {
+        var target = window._smsOtpRentals.find(function(r) { return String(r.id) === String(rentalId); });
+        if (!target) {
+          clearInterval(window._smsOtpPollers[rentalId]);
+          delete window._smsOtpPollers[rentalId];
+          return;
+        }
+
+        // Tự động kiểm tra thời gian quá 7 phút -> ngắt và hoàn tiền ngay lập tức
+        var createdTime = new Date(target.createdAt || Date.now()).getTime();
+        if (Date.now() - createdTime >= 420000) {
+          handleExpireAndRefundRental(rentalId);
+          return;
+        }
+
+        var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
+        var emailParam = u && u.email ? ('?email=' + encodeURIComponent(u.email)) : '';
+        var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+        var controller = new AbortController();
+        var timeoutId = setTimeout(function() { controller.abort(); }, 5000);
+        var res = await fetch(workerUrl + '/api/viotp/rental/' + rentalId + emailParam, { signal: controller.signal });
+        clearTimeout(timeoutId);
+        var json = await res.json();
+
+        if (json && json.success && json.data) {
+          var d = json.data;
+          if (d.status === 1) {
+            target.status = 1;
+            target.code = d.code;
+            target.smsContent = cleanSmsVietnameseText(d.smsContent || d.content || d.sms || d.message || '');
+            delete target._isOldExpired;
+            clearInterval(window._smsOtpPollers[rentalId]);
+            delete window._smsOtpPollers[rentalId];
+
+            try { localStorage.setItem('mmo_sms_rentals', JSON.stringify(window._smsOtpRentals)); } catch(e) {}
+            if (typeof renderSmsRentals === 'function') renderSmsRentals();
+            if (typeof renderSmsHistory === 'function') renderSmsHistory();
+
+            if (typeof showToast === 'function') {
+              showToast('🎉 MÃ OTP ĐÃ VỀ: ' + d.code + ' (' + target.serviceName + ')', 'success');
+            }
+            try {
+              var audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+              audio.play().catch(function() {});
+            } catch(eA) {}
+          } else if (d.status === 2) {
+            handleExpireAndRefundRental(rentalId);
+          }
+        }
+      } catch(ePoll) {
+        console.warn('Polling check ViOTP (ignoring network glitch):', ePoll.message);
+      }
+    }, 5000);
+  }
+
+  async function rerentSmsOtp(serviceId, phone, price, serviceName) {
+    var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
+    if (!u || !u.email) {
+      if (typeof showToast === 'function') showToast('Vui lòng đăng nhập để thuê lại!', 'info');
+      return;
+    }
+
+    if (confirm('Bạn có chắc chắn muốn thuê lại số ' + phone + ' (' + serviceName + ' - ' + Number(price).toLocaleString('vi-VN') + ' đ)?')) {
+      try {
+        var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+        var res = await fetch(workerUrl + '/api/viotp/rerent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userEmail: u.email,
+            serviceId: parseInt(serviceId, 10),
+            phone: phone,
+            price: parseInt(price, 10),
+            serviceName: serviceName
+          })
+        });
+        var data = await res.json();
+        if (!res.ok || !data.success || !data.rental) {
+          var isOutOfBal = data.isSourceOutOfBalance || data.maintenance || false;
+          var rawErr = (data.error || data.message || '').toLowerCase();
+          if (rawErr.includes('không đủ tiền') || rawErr.includes('bảo trì') || rawErr.includes('hết tiền')) {
+            isOutOfBal = true;
+          }
+          if (isOutOfBal) {
+            var isAdm = (typeof isAdminUser === 'function') && isAdminUser();
+            if (isAdm) {
+              if (typeof showToast === 'function') showToast('⚠️ Cảnh báo Admin: Web nguồn thuê sim ViOTP đã hết tiền, cần nạp thêm!', 'error', 9000);
+            } else {
+              if (typeof showToast === 'function') showToast('⚠️ Dịch vụ bảo trì vui lòng quay lại sau!', 'warning', 7000);
+            }
+            if (typeof checkViotpSourceBalance === 'function') checkViotpSourceBalance(false);
+            return;
+          }
+          if (typeof showToast === 'function') showToast('❌ ' + (data.error || data.message || 'Không thể thuê lại số này'), 'error');
+          return;
+        }
+
+        if (data.newBalance !== undefined) {
+          var newB = Number(data.newBalance);
+          u.balance = newB;
+          if (window.currentUser) window.currentUser.balance = newB;
+          try { localStorage.setItem('mmo_user', JSON.stringify(u)); } catch(eU) {}
+          try {
+            var rUsers = JSON.parse(localStorage.getItem('mmo_registered_users') || '[]');
+            if (Array.isArray(rUsers)) {
+              rUsers.forEach(function(ru) {
+                if (ru && (ru.email || '').toLowerCase().trim() === (u.email || '').toLowerCase().trim()) {
+                  ru.balance = newB;
+                }
+              });
+              localStorage.setItem('mmo_registered_users', JSON.stringify(rUsers));
+            }
+          } catch(eR) {}
+          if (typeof syncAllWalletBalanceUI === 'function') {
+            syncAllWalletBalanceUI(newB);
+          }
+          if (typeof updateUserUI === 'function') updateUserUI(u);
+
+          // Ghi nhận biến động số dư trừ tiền thuê lại sim vào mmo_transactions
+          try {
+            var curTxs = JSON.parse(localStorage.getItem('mmo_transactions') || '[]');
+            var nowD = new Date();
+            var timeStr = nowD.toLocaleDateString('vi-VN') + ' ' + nowD.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+            curTxs.unshift({
+              id: 'TX_RENT_OTP_' + data.rental.id,
+              txId: 'TX_RENT_OTP_' + data.rental.id,
+              orderId: 'RENT_OTP_' + data.rental.id,
+              userEmail: u.email,
+              userName: u.name || u.email,
+              type: 'Thanh toán dịch vụ',
+              amount: -parseInt(price, 10),
+              balanceAfter: newB,
+              note: 'Thuê lại số OTP ' + (serviceName || 'Dịch vụ') + ' (' + phone + ')',
+              time: timeStr,
+              date: nowD.toLocaleDateString('vi-VN')
+            });
+            localStorage.setItem('mmo_transactions', JSON.stringify(curTxs));
+          } catch(eTxRe) {}
+        }
+
+        if (typeof showToast === 'function') showToast('🎉 Thuê lại thành công số ' + phone + '!', 'success');
+
+        var rObj = {
+          id: data.rental.id,
+          serviceId: parseInt(serviceId, 10),
+          serviceName: serviceName,
+          price: parseInt(price, 10),
+          phone: data.rental.phone || phone,
+          phoneLocal: data.rental.phoneLocal,
+          carrier: 'Thuê lại',
+          status: 0,
+          code: null,
+          smsContent: null,
+          inWaitingScreen: true,
+          createdAt: new Date().toISOString()
+        };
+
+        window._smsOtpRentals.unshift(rObj);
+        try { localStorage.setItem('mmo_sms_rentals', JSON.stringify(window._smsOtpRentals)); } catch(eS) {}
+        renderSmsRentals();
+        startPollingRental(rObj.id);
+
+      } catch(e) {
+        if (typeof showToast === 'function') showToast('Lỗi: ' + e.message, 'error');
+      }
+    }
+  }
+  window.rerentSmsOtp = rerentSmsOtp;
+
+  function copySmsText(text, label) {
+    if (!text) return;
+    try {
+      navigator.clipboard.writeText(text).then(function() {
+        if (typeof showToast === 'function') showToast('📋 Đã sao chép ' + (label || 'văn bản') + ': ' + text, 'success');
+      }).catch(function() {
+        fallbackCopyText(text, label);
+      });
+    } catch(e) {
+      fallbackCopyText(text, label);
+    }
+  }
+  window.copySmsText = copySmsText;
+
+  function fallbackCopyText(text, label) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    if (typeof showToast === 'function') showToast('📋 Đã sao chép ' + (label || 'văn bản') + ': ' + text, 'success');
+  }
+
+  function formatVnPhone(ph) {
+    if (!ph) return '';
+    var clean = ph.replace(/\D/g, '');
+    if (clean.startsWith('84')) clean = '0' + clean.substring(2);
+    if (clean.length === 10) {
+      return clean.substring(0, 3) + ' ' + clean.substring(3, 6) + ' ' + clean.substring(6);
+    }
+    return ph;
+  }
+  window.formatVnPhone = formatVnPhone;
+
+  // Đánh dấu các số đã hết hạn từ trước khi F5 để chuyển vào Lịch Sử
+  if (!window._smsF5Checked) {
+    window._smsF5Checked = true;
+    (window._smsOtpRentals || []).forEach(function(r) {
+      if (r.status === 2 || r.refunded === 1) {
+        r._isOldExpired = true;
+      }
+    });
+  }
+
+  function formatVnPhoneForCard(ph) {
+    if (!ph) return '';
+    var clean = ph.replace(/\D/g, '');
+    if (clean.startsWith('84')) clean = clean.substring(2);
+    if (clean.startsWith('0') && clean.length === 10) clean = clean.substring(1);
+    if (clean.length === 9) {
+      return clean.substring(0, 3) + '  ' + clean.substring(3, 6) + '  ' + clean.substring(6);
+    }
+    if (clean.length === 10) {
+      return clean.substring(0, 4) + '  ' + clean.substring(4, 7) + '  ' + clean.substring(7);
+    }
+    return ph;
+  }
+  window.formatVnPhoneForCard = formatVnPhoneForCard;
+
+  window._smsRentalsPage = window._smsRentalsPage || 1;
+
+  function changeSmsRentalsPage(page) {
+    window._smsRentalsPage = page;
+    renderSmsRentals();
+    var sec = document.getElementById('smsOtpWaitingSection');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  window.changeSmsRentalsPage = changeSmsRentalsPage;
+
+  function renderSmsRentals() {
+    var c = document.getElementById('smsOtpNumbersContainer');
+    if (!c) return;
+
+    var list = window._smsOtpRentals || [];
+
+    // Tự động kiểm tra và LOẠI BỎ các đơn quá 7 phút mà chưa có mã ("không lưu lại những cái đã hết hạn")
+    var nowSec = Math.floor(Date.now() / 1000);
+    var validList = [];
+    list.forEach(function(r) {
+      if (!r) return;
+      var createdSec = 0;
+      if (r.createdAt) {
+        createdSec = (typeof r.createdAt === 'number') ? (r.createdAt < 10000000000 ? r.createdAt : Math.floor(r.createdAt / 1000)) : Math.floor(new Date(r.createdAt).getTime() / 1000);
+      }
+      var isTimeout = (r.status === 0 && createdSec && (nowSec - createdSec) > 420);
+      if (r.status === 2 || r.refunded === 1 || isTimeout) {
+        return; // Hết hạn -> loại bỏ hoàn toàn, không lưu!
+      }
+      validList.push(r);
+    });
+
+    if (validList.length !== list.length) {
+      window._smsOtpRentals = validList;
+      try { localStorage.setItem('mmo_sms_rentals', JSON.stringify(validList)); } catch(e) {}
+      list = validList;
+    }
+
+    // LỌC DANH SÁCH HIỂN THỊ TRÊN KHUNG "SỐ ĐANG CHỜ TIN NHẮN":
+    // 1. Khi F5 lại: Các tin nhắn chờ trước đó đã chuyển sang Lịch Sử (inWaitingScreen === false) -> KHÔNG hiển thị ở đây!
+    // 2. Trong phiên trực tiếp: Số vừa thuê (status === 0) hoặc vừa nhận OTP (status === 1) mà inWaitingScreen !== false ĐƯỢC HIỂN THỊ!
+    // 3. Đơn hết hạn (status === 2 hoặc refunded): TUYỆT ĐỐI KHÔNG HIỂN THỊ!
+    var displayList = list.filter(function(r) {
+      if (r.status === 2 || r.refunded === 1) return false;
+      if (r.inWaitingScreen === false) return false;
+      return (r.status === 0 || r.status === 1);
+    });
+
+    // Cập nhật số lượng trên tiêu đề
+    var waitTitle = document.getElementById('smsWaitingTitle');
+    if (waitTitle) {
+      waitTitle.textContent = 'SỐ ĐANG CHỜ TIN NHẮN' + (displayList.length > 0 ? ' (' + displayList.length + ')' : '');
+    }
+
+    if (displayList.length === 0) {
+      window._smsRentalsPage = 1;
+      c.innerHTML = '<div class="sms-otp-empty-state">' +
+        '<div class="sms-otp-empty-icon"><i class="fa-solid fa-sim-card"></i></div>' +
+        '<h3 class="sms-otp-empty-title">Chưa có số nào</h3>' +
+        '<p class="sms-otp-empty-sub">Chọn dịch vụ ở trên và bấm Thuê số ngay.</p>' +
+      '</div>';
+      if (typeof renderSmsHistory === 'function') renderSmsHistory();
+      return;
+    }
+
+    startSmsCountdownTicker();
+
+    // =========================================================================
+    // PHÂN TRANG: 4 MÃ OTP / THẺ TRÊN 1 TRANG (THEO YÊU CẦU NGƯỜI DÙNG)
+    // =========================================================================
+    var perPage = 4;
+    var totalPages = Math.ceil(displayList.length / perPage);
+    if (!window._smsRentalsPage || window._smsRentalsPage < 1) window._smsRentalsPage = 1;
+    if (window._smsRentalsPage > totalPages) window._smsRentalsPage = totalPages;
+    var curPage = window._smsRentalsPage;
+
+    var startIdx = (curPage - 1) * perPage;
+    var pagedList = displayList.slice(startIdx, startIdx + perPage);
+
+    var cardsHtml = pagedList.map(function(r) {
+      var rawPhone = r.phoneLocal || r.phone || 'Đang lấy số...';
+      var formattedPhone = formatVnPhoneForCard(rawPhone);
+      var isDone = (r.status === 1);
+      var isExpired = (r.status === 2 || r.refunded === 1);
+
+      var statusBadge = '';
+      if (isDone) {
+        statusBadge = '<span class="sms-badge-status success" style="white-space:nowrap !important; display:inline-block !important;">Hoàn thành</span>';
+      } else if (isExpired) {
+        statusBadge = '<span class="sms-badge-status expired" style="white-space:nowrap !important; display:inline-block !important;">Hết hạn</span>';
+      } else {
+        statusBadge = '<span class="sms-badge-status waiting" style="white-space:nowrap !important; display:inline-block !important;"><i class="fa-solid fa-spinner fa-spin"></i> Đang chờ...</span>';
+      }
+
+      var icon = getSmsServiceIcon(r.serviceName || '');
+      var priceDisplay = (r.price !== undefined) ? Number(r.price).toLocaleString('vi-VN') + 'đ' : '';
+
+      var actionBox = '';
+      if (isDone && r.code) {
+        // MÃ OTP TRÊN 1 HÀNG DUY NHẤT, TUYỆT ĐỐI KHÔNG XUỐNG DÒNG (CHUẨN HÌNH 1 & HÌNH 2)
+        var rawCode = String(r.code).trim();
+        var rawSms = r.smsContent || r.content || r.sms || r.message || ('<#> ' + (r.serviceName || 'Dịch vụ') + ': Mã bảo mật là ' + r.code + '. Hết hạn sau 10 phút. Đừng trả lời.');
+        var smsText = cleanSmsVietnameseText(rawSms);
+
+        actionBox = '<div class="sms-code-box-v1">' +
+          '<div class="sms-code-val" style="white-space:nowrap !important; overflow:hidden !important; font-size:1.6rem !important; letter-spacing:4px !important;">' + rawCode + '</div>' +
+          '<button type="button" class="sms-btn-copy-code" data-code="' + rawCode + '" onclick="copySmsText(this.getAttribute(\'data-code\'), \'Mã OTP\')" style="flex-shrink:0 !important; white-space:nowrap !important;">' +
+            '<i class="fa-regular fa-copy"></i> Sao chép' +
+          '</button>' +
+        '</div>' +
+        '<div class="sms-full-text-v1">' + escapeHtml(smsText) + '</div>';
+      } else if (isExpired) {
+        actionBox = '<div class="sms-expired-box-v1">' +
+          '<div class="sms-expired-icon"><i class="fa-solid fa-hourglass-end"></i></div>' +
+          '<div class="sms-expired-info">' +
+            '<div class="sms-expired-title">Hết hạn, không có tin nhắn</div>' +
+            '<div class="sms-expired-sub">Đã hoàn ' + priceDisplay + ' vào số dư</div>' +
+          '</div>' +
+        '</div>';
+      } else {
+        // Đang chờ tin nhắn
+        actionBox = '<div class="sms-waiting-box-v1">' +
+          (function() {
+          var nowS = Math.floor(Date.now() / 1000);
+          var cSec = (typeof r.createdAt === 'number') ? (r.createdAt < 10000000000 ? r.createdAt : Math.floor(r.createdAt / 1000)) : Math.floor(new Date(r.createdAt || Date.now()).getTime() / 1000);
+          var remS = Math.max(0, 420 - Math.max(0, nowS - cSec));
+          var mm = String(Math.floor(remS / 60)).padStart(2, '0');
+          var ss = String(remS % 60).padStart(2, '0');
+          return '<div class="sms-waiting-loader"><i class="fa-solid fa-spinner fa-spin"></i> Đang chờ tin nhắn...</div>' +
+            '<div class="sms-countdown-timer" id="timer-' + (r.id || r.requestId) + '">' + mm + ':' + ss + '</div>';
+        })() +
+        '</div>' +
+        '<div class="sms-waiting-sub">Hết giờ mà chưa có mã sẽ tự hoàn ' + priceDisplay + ' vào số dư.</div>';
+      }
+
+      var formattedDate = '';
+      if (r.createdAt) {
+        var d = new Date(typeof r.createdAt === 'number' && r.createdAt < 10000000000 ? r.createdAt * 1000 : r.createdAt);
+        var hh = ('0' + d.getHours()).slice(-2);
+        var mm = ('0' + d.getMinutes()).slice(-2);
+        var dd = ('0' + d.getDate()).slice(-2);
+        var mo = ('0' + (d.getMonth() + 1)).slice(-2);
+        var yy = d.getFullYear();
+        formattedDate = hh + ':' + mm + ' · ' + dd + '/' + mo + '/' + yy;
+      }
+
+      var cleanPh = (r.phone || r.phoneLocal || '').replace(/'/g, '');
+      var cleanNm = (r.serviceName || '').replace(/'/g, '');
+      var rerentBtn = '<button type="button" class="sms-btn-rerent" onclick="rerentSmsOtp(' + (r.serviceId || 0) + ', \'' + cleanPh + '\', ' + (r.price || 0) + ', \'' + cleanNm + '\')">' +
+        '<i class="fa-solid fa-rotate-right"></i> Thuê lại' +
+      '</button>';
+
+      return '<div class="sms-card-v1" id="rental-card-' + (r.id || r.requestId) + '">' +
+        '<div class="sms-card-header">' +
+          '<div class="sms-card-service-meta">' +
+            '<div class="sms-srv-icon">' + icon + '</div>' +
+            '<div>' +
+              '<div class="sms-card-service-name">' + (r.serviceName || 'Dịch vụ') + '</div>' +
+              '<div class="sms-card-service-price">' + priceDisplay + '</div>' +
+            '</div>' +
+          '</div>' +
+          statusBadge +
+        '</div>' +
+        '<div class="sms-card-phone-row">' +
+          '<div class="sms-phone-left">' +
+            '<span class="sms-flag-vn-circle"><i class="fa-solid fa-star"></i></span>' +
+            '<span class="sms-phone-number-big" data-phone="' + rawPhone + '" onclick="copySmsText(this.getAttribute(\'data-phone\'), \'Số điện thoại\')" title="Bấm để sao chép">' +
+              formattedPhone +
+            '</span>' +
+          '</div>' +
+          '<button type="button" class="sms-btn-copy-mini" data-phone="' + rawPhone + '" onclick="copySmsText(this.getAttribute(\'data-phone\'), \'Số điện thoại\')" title="Sao chép số">' +
+            '<i class="fa-regular fa-copy"></i>' +
+          '</button>' +
+        '</div>' +
+        '<div class="sms-ticket-divider"></div>' +
+        actionBox +
+        '<div class="sms-card-footer">' +
+          '<span>' + formattedDate + '</span>' +
+          rerentBtn +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    // Thanh phân trang nếu có nhiều hơn 4 mã OTP / thẻ số
+    var paginationHtml = '';
+    if (totalPages > 1) {
+      paginationHtml = '<div class="sms-pagination-bar">' +
+        '<button type="button" class="sms-page-btn" onclick="changeSmsRentalsPage(' + (curPage - 1) + ')" ' + (curPage === 1 ? 'disabled' : '') + ' title="Trang trước"><i class="fa-solid fa-chevron-left"></i></button>';
+
+      for (var p = 1; p <= totalPages; p++) {
+        paginationHtml += '<button type="button" class="sms-page-btn' + (p === curPage ? ' active' : '') + '" onclick="changeSmsRentalsPage(' + p + ')">' + p + '</button>';
+      }
+
+      paginationHtml += '<button type="button" class="sms-page-btn" onclick="changeSmsRentalsPage(' + (curPage + 1) + ')" ' + (curPage === totalPages ? 'disabled' : '') + ' title="Trang sau"><i class="fa-solid fa-chevron-right"></i></button>' +
+      '</div>';
+    }
+
+    c.innerHTML = '<div class="sms-rental-grid">' + cardsHtml + '</div>' + paginationHtml;
+    if (typeof renderSmsHistory === 'function') renderSmsHistory();
+  }
+  window.renderSmsRentals = renderSmsRentals;
+  window.rerentSmsNumber = rerentSmsOtp;
+
+  // =========================================================================
+  // BỘ MÃ LỊCH SỬ THUÊ SỐ (CHUẨN GIAO DIỆN HÌNH 2ac64a81 CỦA NGƯỜI DÙNG)
+  // =========================================================================
+  function renderSmsHistory() {
+    var container = document.getElementById('smsOtpHistoryContainer');
+    if (!container) return;
+
+    var list = window._smsOtpRentals || [];
+
+    // Cập nhật số lượng trên Tab "Thuê số (N)"
+    var tabBadge = document.getElementById('smsTabRentCount');
+    if (tabBadge) {
+      var histCount = list.filter(function(r) { return r.status !== 0; }).length;
+      tabBadge.textContent = '(' + histCount + ')';
+    }
+
+    // Populate service dropdown filter if empty
+    var sFilter = document.getElementById('smsHistService');
+    if (sFilter && sFilter.options.length <= 1) {
+      var sNames = {};
+      list.forEach(function(r) { if (r.serviceName) sNames[r.serviceName] = true; });
+      Object.keys(sNames).sort().forEach(function(name) {
+        var opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name;
+        sFilter.appendChild(opt);
+      });
+    }
+
+    // Đọc bộ lọc
+    var fDate = document.getElementById('smsHistFromDate') ? document.getElementById('smsHistFromDate').value : '';
+    var tDate = document.getElementById('smsHistToDate') ? document.getElementById('smsHistToDate').value : '';
+    var phoneQuery = document.getElementById('smsHistPhone') ? document.getElementById('smsHistPhone').value.trim() : '';
+    var sFilterVal = sFilter ? sFilter.value : 'ALL';
+    var stFilter = document.getElementById('smsHistStatus') ? document.getElementById('smsHistStatus').value : 'ALL';
+
+    var filtered = list.filter(function(r) {
+      // Chỉ hiện các đơn đã hoàn thành hoặc hết hạn vào lịch sử (không hiện đơn đang chờ)
+      if (r.status === 0) return false;
+
+      // Lọc trạng thái
+      if (stFilter !== 'ALL') {
+        if (stFilter === '1' && r.status !== 1) return false;
+        if (stFilter === '2' && r.status !== 2) return false;
+      }
+
+      // Lọc số điện thoại
+      if (phoneQuery) {
+        var raw = (r.phoneLocal || r.phone || '').replace(/\D/g, '');
+        var cleanQ = phoneQuery.replace(/\D/g, '');
+        if (!raw.includes(cleanQ)) return false;
+      }
+
+      // Lọc dịch vụ
+      if (sFilterVal !== 'ALL' && r.serviceName !== sFilterVal) {
+        return false;
+      }
+
+      // Lọc ngày (r.createdAt)
+      if (fDate || tDate) {
+        if (r.createdAt) {
+          var itemD = new Date(typeof r.createdAt === 'number' && r.createdAt < 10000000000 ? r.createdAt * 1000 : r.createdAt);
+          var itemDateStr = itemD.toISOString().slice(0, 10);
+          if (fDate && itemDateStr < fDate) return false;
+          if (tDate && itemDateStr > tDate) return false;
+        }
+      }
+
+      return true;
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="sms-hist-empty">' +
+        '<div style="font-size:32px; margin-bottom:8px; opacity:0.6;"><i class="fa-solid fa-clock-rotate-left"></i></div>' +
+        '<div style="font-weight:600; font-size:15px; color:#cbd5e1;">Không tìm thấy lịch sử thuê số nào</div>' +
+        '<div style="font-size:13px; color:#94a3b8; margin-top:4px;">Các số đã hết hạn hoặc nhận mã OTP sẽ tự động lưu trữ tại đây.</div>' +
+      '</div>';
+      return;
+    }
+
+    // Phân trang 10 số / 1 trang theo lệnh người dùng
+    var histPerPage = 10;
+    var histCurPage = window._smsHistCurPage || 1;
+    var histTotal = filtered.length;
+    var histTotalPages = Math.ceil(histTotal / histPerPage);
+    if (histCurPage > histTotalPages && histTotalPages > 0) histCurPage = histTotalPages;
+    if (histCurPage < 1) histCurPage = 1;
+    window._smsHistCurPage = histCurPage;
+
+    var startIdx = (histCurPage - 1) * histPerPage;
+    var pagedFiltered = filtered.slice(startIdx, startIdx + histPerPage);
+
+    // Nhóm theo Ngày (Hôm nay, Hôm qua, Ngày DD/MM/YYYY)
+    var groups = {};
+    var todayStr = new Date().toDateString();
+    var yest = new Date();
+    yest.setDate(yest.getDate() - 1);
+    var yestStr = yest.toDateString();
+
+    pagedFiltered.forEach(function(item) {
+      var d = item.createdAt ? new Date(typeof item.createdAt === 'number' && item.createdAt < 10000000000 ? item.createdAt * 1000 : item.createdAt) : new Date();
+      var dStr = d.toDateString();
+      var label = '';
+      var vnDate = ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear();
+
+      if (dStr === todayStr) {
+        label = 'Hôm nay ' + vnDate;
+      } else if (dStr === yestStr) {
+        label = 'Hôm qua ' + vnDate;
+      } else {
+        label = 'Ngày ' + vnDate;
+      }
+
+      if (!groups[label]) groups[label] = [];
+      groups[label].push(item);
+    });
+
+    var html = '';
+    Object.keys(groups).forEach(function(groupLabel) {
+      var items = groups[groupLabel];
+      html += '<div class="sms-hist-day-group">' +
+        '<div class="sms-hist-day-header">' +
+          '<span class="sms-hist-day-title"><i class="fa-regular fa-calendar-days" style="color:#00b87c; margin-right:6px;"></i>' + groupLabel + '</span>' +
+          '<span class="sms-hist-day-count">' + items.length + ' mục</span>' +
+        '</div>' +
+        '<div class="sms-hist-table-wrap">' +
+          '<table class="sms-hist-table">' +
+            '<thead>' +
+              '<tr>' +
+                '<th style="width:16%;">Dịch vụ</th>' +
+                '<th style="width:20%;">Số điện thoại</th>' +
+                '<th style="width:16%;">Mã OTP</th>' +
+                '<th style="width:24%;">Tin nhắn</th>' +
+                '<th style="width:12%;">Thời gian</th>' +
+                '<th style="width:12%; text-align:center; white-space:nowrap;">Trạng thái</th>' +
+              '</tr>' +
+            '</thead>' +
+            '<tbody>';
+
+      items.forEach(function(r) {
+        var rawPhone = r.phoneLocal || r.phone || '';
+        var formattedPhone = formatVnPhone(rawPhone);
+        var isDone = (r.status === 1);
+        var isExpired = (r.status === 2 || r.refunded === 1);
+
+        var stBadge = isDone
+          ? '<span class="sms-badge-status success" style="padding:4px 10px; font-size:11px; white-space:nowrap !important; display:inline-block !important;">Hoàn thành</span>'
+          : '<span class="sms-badge-status expired" style="padding:4px 10px; font-size:11px; white-space:nowrap !important; display:inline-block !important;">Hết hạn</span>';
+
+        var priceDisp = (r.price !== undefined) ? Number(r.price).toLocaleString('vi-VN') + 'đ' : '';
+        var icon = getSmsServiceIcon(r.serviceName || '');
+
+        // Cột OTP / Hoàn tiền
+        var codeCol = '';
+        if (isDone && r.code) {
+          codeCol = '<div class="sms-hist-code-box">' +
+            '<span class="sms-hist-code-val">' + r.code + '</span>' +
+            '<button type="button" class="sms-btn-copy-mini" onclick="copySmsText(\'' + r.code + '\', \'Mã OTP\')" title="Sao chép OTP">' +
+              '<i class="fa-regular fa-copy"></i>' +
+            '</button>' +
+          '</div>';
+        } else {
+          codeCol = '<div class="sms-hist-refund-tag"><i class="fa-solid fa-rotate-left" style="margin-right:4px;"></i> Đã hoàn tiền</div>';
+        }
+
+        // Cột Tin nhắn SMS
+        var smsCol = '';
+        if (r.smsContent) {
+          var cleanHMsg = cleanSmsVietnameseText(r.smsContent);
+smsCol = '<div class="sms-hist-msg-text" title="' + cleanHMsg.replace(/"/g, '&quot;') + '">' + cleanHMsg + '</div>';
+        } else if (isExpired) {
+          smsCol = '<div style="font-size:12px; color:#ef4444; font-style:italic;"><i class="fa-regular fa-circle-xmark"></i> Không có tin nhắn (đã hoàn ' + priceDisp + ')</div>';
+        } else {
+          smsCol = '<span style="color:#64748b; font-size:12px;">--</span>';
+        }
+
+        // Cột Thời gian
+        var timeCol = '';
+        if (r.createdAt) {
+          var dt = new Date(typeof r.createdAt === 'number' && r.createdAt < 10000000000 ? r.createdAt * 1000 : r.createdAt);
+          timeCol = ('0' + dt.getHours()).slice(-2) + ':' + ('0' + dt.getMinutes()).slice(-2) + ':' + ('0' + dt.getSeconds()).slice(-2) + '<br><span style="font-size:11px; color:#64748b;">' + ('0' + dt.getDate()).slice(-2) + '/' + ('0' + (dt.getMonth() + 1)).slice(-2) + '</span>';
+        }
+
+        var rerentBtn = '<button type="button" class="sms-btn-rerent-mini" onclick="rerentSmsNumber(' + (r.serviceId || 0) + ', \'' + (r.serviceName || '') + '\', \'' + (r.phone || '') + '\')" title="Thuê lại dịch vụ này">' +
+          '<i class="fa-solid fa-rotate-right"></i>' +
+        '</button>';
+
+        html += '<tr>' +
+          '<td>' +
+            '<div style="display:flex; align-items:center; gap:8px;">' +
+              '<div class="sms-srv-icon" style="width:26px; height:26px; font-size:12px;">' + icon + '</div>' +
+              '<div>' +
+                '<div style="font-weight:600; color:#f8fafc; font-size:13px;">' + (r.serviceName || 'Dịch vụ') + '</div>' +
+                '<div style="color:#00b87c; font-size:12px; font-weight:600;">' + priceDisp + '</div>' +
+              '</div>' +
+            '</div>' +
+          '</td>' +
+          '<td>' +
+            '<div style="display:flex; align-items:center; gap:6px;">' +
+              '<span>🇻🇳</span>' +
+              '<span style="font-family:monospace; font-weight:700; color:#e2e8f0; font-size:13px;">' + formattedPhone + '</span>' +
+              '<button type="button" class="sms-btn-copy-mini" onclick="copySmsText(\'' + rawPhone + '\', \'Số điện thoại\')" title="Sao chép số">' +
+                '<i class="fa-regular fa-copy"></i>' +
+              '</button>' +
+              rerentBtn +
+            '</div>' +
+          '</td>' +
+          '<td>' + codeCol + '</td>' +
+          '<td>' + smsCol + '</td>' +
+          '<td style="font-size:12px; color:#94a3b8;">' + timeCol + '</td>' +
+          '<td style="text-align:center; white-space:nowrap;">' + stBadge + '</td>' +
+        '</tr>';
+      });
+
+      html += '</tbody></table></div></div>';
+    });
+
+    // Thanh phân trang lịch sử (10 số 1 trang theo lệnh người dùng)
+    if (histTotalPages > 1) {
+      html += '<div class="sms-pagination-bar" style="margin-top:22px;">' +
+        '<button type="button" class="sms-page-btn" onclick="changeSmsHistoryPage(' + (histCurPage - 1) + ')" ' + (histCurPage === 1 ? 'disabled' : '') + ' title="Trang trước"><i class="fa-solid fa-chevron-left"></i></button>';
+
+      for (var p = 1; p <= histTotalPages; p++) {
+        html += '<button type="button" class="sms-page-btn' + (p === histCurPage ? ' active' : '') + '" onclick="changeSmsHistoryPage(' + p + ')">' + p + '</button>';
+      }
+
+      html += '<button type="button" class="sms-page-btn" onclick="changeSmsHistoryPage(' + (histCurPage + 1) + ')" ' + (histCurPage === histTotalPages ? 'disabled' : '') + ' title="Trang sau"><i class="fa-solid fa-chevron-right"></i></button>' +
+      '</div>';
+    }
+
+    container.innerHTML = html;
+  }
+  window.renderSmsHistory = renderSmsHistory;
+
+  function changeSmsHistoryPage(page) {
+    window._smsHistCurPage = page;
+    renderSmsHistory();
+    var el = document.getElementById('smsOtpHistoryContainer') || document.getElementById('viewSmsOtp');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  window.changeSmsHistoryPage = changeSmsHistoryPage;
+
+  function resetSmsHistFilter() {
+    window._smsHistCurPage = 1;
+    if (document.getElementById('smsHistFromDate')) document.getElementById('smsHistFromDate').value = '';
+    if (document.getElementById('smsHistToDate')) document.getElementById('smsHistToDate').value = '';
+    if (document.getElementById('smsHistPhone')) document.getElementById('smsHistPhone').value = '';
+    if (document.getElementById('smsHistService')) document.getElementById('smsHistService').value = 'ALL';
+    if (document.getElementById('smsHistStatus')) document.getElementById('smsHistStatus').value = 'ALL';
+    renderSmsHistory();
+  }
+  window.resetSmsHistFilter = resetSmsHistFilter;
+
+  function exportSmsHistoryExcel() {
+    var list = window._smsOtpRentals || [];
+    var hist = list.filter(function(r) { return r.status !== 0; });
+    if (hist.length === 0) {
+      if (typeof showToast === 'function') showToast('Chưa có dữ liệu lịch sử để xuất Excel!', 'warning');
+      return;
+    }
+
+    var csv = '\uFEFFDịch vụ,Số điện thoại,Giá tiền,Trạng thái,Mã OTP,Nội dung tin nhắn,Thời gian\n';
+    hist.forEach(function(r) {
+      var stStr = (r.status === 1) ? 'Hoàn thành' : 'Hết hạn (Đã hoàn tiền)';
+      var ph = r.phoneLocal || r.phone || '';
+      var code = r.code || '';
+      var sms = cleanSmsVietnameseText(r.smsContent || '').replace(/,/g, ' ').replace(/[\r\n]+/g, ' ');
+      csv += '"' + (r.serviceName || '') + '","' + ph + '","' + (r.price || 0) + '","' + stStr + '","' + code + '","' + sms + '","' + (r.createdAt || '') + '"\n';
+    });
+
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'lich_su_thue_sim_viotp_' + Date.now() + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    if (typeof showToast === 'function') showToast('📊 Đã xuất file Excel lịch sử thành công!', 'success');
+  }
+  window.exportSmsHistoryExcel = exportSmsHistoryExcel;
+
+  function openSmsOtpPriceModal() {
+    var modal = document.getElementById('smsPriceModal');
+    if (!modal) {
+      var div = document.createElement('div');
+      div.id = 'smsPriceModal';
+      div.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:99999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);';
+      div.innerHTML = '<div style="background:#0c1322; border:1px solid #1e293b; border-radius:14px; width:92%; max-width:800px; max-height:85vh; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 50px rgba(0,0,0,0.6);">' +
+        '<div style="padding:16px 20px; border-bottom:1px solid #1e293b; display:flex; align-items:center; justify-content:space-between; background:#090e17;">' +
+          '<h3 style="margin:0; font-size:1.15rem; color:#ffffff; font-weight:800;"><i class="fa-solid fa-table-list" style="color:#10b981; margin-right:8px;"></i> BẢNG GIÁ DỊCH VỤ THUÊ SIM OTP</h3>' +
+          '<button type="button" onclick="closeSmsPriceModal()" style="background:transparent; border:none; color:#94a3b8; font-size:1.2rem; cursor:pointer;">✕</button>' +
+        '</div>' +
+        '<div style="padding:14px 20px; border-bottom:1px solid #1e293b; background:#0c1322;">' +
+          '<input type="text" placeholder="Tìm dịch vụ trong bảng giá..." oninput="filterPriceModal(this.value)" style="width:100%; padding:10px 14px; background:#090e17; border:1px solid #334155; border-radius:8px; color:#ffffff; outline:none;" />' +
+        '</div>' +
+        '<div id="smsPriceModalBody" style="padding:10px 20px; overflow-y:auto; flex:1;"></div>' +
+      '</div>';
+      document.body.appendChild(div);
+      modal = div;
+    }
+
+    modal.style.display = 'flex';
+    renderPriceModalTable('');
+  }
+  window.openSmsOtpPriceModal = openSmsOtpPriceModal;
+
+  function closeSmsPriceModal() {
+    var modal = document.getElementById('smsPriceModal');
+    if (modal) modal.style.display = 'none';
+  }
+  window.closeSmsPriceModal = closeSmsPriceModal;
+
+  function renderPriceModalTable(q) {
+    var body = document.getElementById('smsPriceModalBody');
+    if (!body) return;
+    var list = window._smsOtpServices || [];
+    var filter = list.filter(function(s) {
+      if (!q) return true;
+      return String(s.name || '').toLowerCase().includes(q.toLowerCase());
+    });
+
+    body.innerHTML = '<table style="width:100%; border-collapse:collapse; font-size:0.9rem; text-align:left;">' +
+      '<thead><tr style="border-bottom:1px solid #334155; color:#94a3b8;"><th style="padding:10px;">MÃ ID</th><th style="padding:10px;">DỊCH VỤ</th><th style="padding:10px; text-align:right;">GIÁ THUÊ</th><th style="padding:10px; text-align:center;">THAO TÁC</th></tr></thead>' +
+      '<tbody>' + filter.map(function(s) {
+        return '<tr style="border-bottom:1px solid rgba(255,255,255,0.04);">' +
+          '<td style="padding:10px; color:#64748b;">#' + s.id + '</td>' +
+          '<td style="padding:10px; font-weight:600; color:#f1f5f9;">' + getSmsServiceIcon(s.name) + ' <span style="margin-left:6px;">' + s.name + '</span></td>' +
+          '<td style="padding:10px; text-align:right; color:#10b981; font-weight:700;">' + Number(s.price).toLocaleString('vi-VN') + ' đ</td>' +
+          '<td style="padding:10px; text-align:center;"><button type="button" data-id="' + s.id + '" onclick="selectSmsOtpServiceFromModal(this.getAttribute(\'data-id\'))" style="background:#10b981; color:#fff; border:none; padding:4px 10px; border-radius:4px; font-size:0.8rem; font-weight:700; cursor:pointer;">Chọn</button></td>' +
+        '</tr>';
+      }).join('') + '</tbody></table>';
+  }
+  window.filterPriceModal = function(q) { renderPriceModalTable(q); };
+
+  function selectSmsOtpServiceFromModal(id) {
+    closeSmsPriceModal();
+    selectSmsOtpService(parseInt(id, 10));
+  }
+  window.selectSmsOtpServiceFromModal = selectSmsOtpServiceFromModal;
+
+  function openRequestServiceModal() {
+    alert('📞 Quý khách có nhu cầu thuê OTP cho dịch vụ chuyên biệt chưa có trong danh sách, vui lòng liên hệ trực tiếp Admin qua Zalo / Telegram để được hỗ trợ mở cổng ưu tiên!');
+  }
+  window.openRequestServiceModal = openRequestServiceModal;
+
+  document.addEventListener('click', function(e) {
+    var wrap = document.getElementById('smsOtpServiceTrigger');
+    var menu = document.getElementById('smsOtpDropdownMenu');
+    if (menu && menu.style.display !== 'none') {
+      if (wrap && !wrap.contains(e.target) && !menu.contains(e.target)) {
+        toggleSmsOtpDropdown(false);
+      }
+    }
+  });
+
+})();
+
+
+
+  function toggleSmsTips() {
+    var box = document.getElementById('smsOtpTipsBox');
+    var icon = document.getElementById('smsTipsChevron');
+    if (!box) return;
+    var isHidden = (box.style.display === 'none' || box.style.display === '');
+    box.style.display = isHidden ? 'grid' : 'none';
+    if (icon) {
+      icon.className = isHidden ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
+    }
+  }
+  window.toggleSmsTips = toggleSmsTips;
+
+  function scrollToSmsRentals() {
+    var sec = document.getElementById('smsOtpWaitingSection');
+    if (sec) {
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+  window.scrollToSmsRentals = scrollToSmsRentals;
+
+  function switchSmsTab(tab) {
+    var rentView = document.getElementById('smsRentTabView');
+    var histView = document.getElementById('smsOtpHistorySection');
+    var rentBtn = document.getElementById('smsNavRentBtn');
+    var histBtn = document.getElementById('smsNavHistBtn');
+
+    if (tab === 'history') {
+      if (rentView) rentView.style.setProperty('display', 'none', 'important');
+      if (histView) histView.style.setProperty('display', 'block', 'important');
+      if (rentBtn) rentBtn.classList.remove('active');
+      if (histBtn) histBtn.classList.add('active');
+      if (typeof renderSmsHistory === 'function') renderSmsHistory();
+      var sec = document.getElementById('viewSmsOtp');
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      if (rentView) rentView.style.setProperty('display', 'block', 'important');
+      if (histView) histView.style.setProperty('display', 'none', 'important');
+      if (rentBtn) rentBtn.classList.add('active');
+      if (histBtn) histBtn.classList.remove('active');
+      if (typeof renderSmsRentals === 'function') renderSmsRentals();
+    }
+  }
+  window.switchSmsTab = switchSmsTab;
+
+  function scrollToSmsHistory() {
+    switchSmsTab('history');
+  }
+  window.scrollToSmsHistory = scrollToSmsHistory;
+
+  // ==========================================
+  // ADMIN SMS OTP AUTO-MARKUP SETTINGS
+  // ==========================================
+  async function loadSmsOtpAdminSettings() {
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var res = await fetch(workerUrl + '/api/admin/sms-otp/settings');
+      var json = await res.json();
+      if (json && json.success && json.settings) {
+        var s = json.settings;
+        var inp = document.getElementById('inpAdmSmsMarginPercent');
+        if (inp) inp.value = s.marginPercent !== undefined ? s.marginPercent : s.percent;
+
+        var chk = document.getElementById('chkAdmSmsMarginEnabled');
+        if (chk) chk.checked = s.marginEnabled !== undefined ? s.marginEnabled : s.enabled;
+
+        updateSmsOtpAdminPreview();
+      }
+      if (typeof checkViotpSourceBalance === 'function') {
+        checkViotpSourceBalance(false);
+      }
+    } catch(e) {
+      console.warn('Lỗi loadSmsOtpAdminSettings:', e);
+    }
+  }
+  window.loadSmsOtpAdminSettings = loadSmsOtpAdminSettings;
+
+  function setSmsOtpAdminPreset(pct) {
+    var inp = document.getElementById('inpAdmSmsMarginPercent');
+    if (inp) inp.value = pct;
+    document.querySelectorAll('.adm-sms-pct-pill').forEach(function(btn) {
+      btn.classList.remove('active');
+      btn.style.background = '#1e293b';
+      btn.style.color = '#cbd5e1';
+      btn.style.borderColor = '#334155';
+    });
+    if (typeof event !== 'undefined' && event && event.currentTarget) {
+      event.currentTarget.classList.add('active');
+      event.currentTarget.style.background = '#10b981';
+      event.currentTarget.style.color = '#ffffff';
+      event.currentTarget.style.borderColor = '#10b981';
+    }
+    updateSmsOtpAdminPreview();
+  }
+  window.setSmsOtpAdminPreset = setSmsOtpAdminPreset;
+
+  function updateSmsOtpAdminPreview() {
+    var inp = document.getElementById('inpAdmSmsMarginPercent');
+    var pct = Number(inp ? inp.value : 20) || 20;
+
+    var previewBox = document.getElementById('admSmsFormulaPreview');
+    if (previewBox) {
+      var sampleCost = 2000;
+      var selling = Math.ceil((sampleCost * (1 + pct / 100)) / 100) * 100;
+      var profit = selling - sampleCost;
+      previewBox.innerHTML = '<b>💡 Công thức áp dụng:</b> Giá bán trên web = Giá vốn ViOTP + <span style="color:#10b981; font-weight:800;">+' + pct + '%</span> (Làm tròn 100đ).<br/>' +
+        '<b>Ví dụ minh họa:</b> Giá gốc ViOTP là <span style="color:#f59e0b; font-weight:700;">' + sampleCost.toLocaleString('vi-VN') + ' đ</span> &rarr; Giá bán cho khách tự động nhảy lên <span style="color:#10b981; font-weight:800;">' + selling.toLocaleString('vi-VN') + ' đ</span> (Lợi nhuận shop: <b style="color:#38bdf8;">+' + profit.toLocaleString('vi-VN') + ' đ</b>/số).';
+    }
+  }
+  window.updateSmsOtpAdminPreview = updateSmsOtpAdminPreview;
+
+  async function saveSmsOtpAdminSettings() {
+    var inp = document.getElementById('inpAdmSmsMarginPercent');
+    var chk = document.getElementById('chkAdmSmsMarginEnabled');
+    var pct = Number(inp ? inp.value : 20) || 0;
+    var enabled = chk ? chk.checked : true;
+
+    try {
+      var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var res = await fetch(workerUrl + '/api/admin/sms-otp/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ marginPercent: pct, marginEnabled: enabled })
+      });
+      var data = await res.json();
+      if (res.ok && data.success) {
+        if (typeof showToast === 'function') {
+          showToast('💾 ' + (data.message || 'Đã lưu cấu hình tăng giá SMS OTP!'), 'success');
+        }
+        if (typeof loadSmsOtpServices === 'function') {
+          loadSmsOtpServices();
+        }
+      } else {
+        if (typeof showToast === 'function') {
+          showToast('❌ Không thể lưu cấu hình: ' + (data.error || data.message), 'error');
+        }
+      }
+    } catch(err) {
+      if (typeof showToast === 'function') showToast('Lỗi: ' + err.message, 'error');
+    }
+  }
+  window.saveSmsOtpAdminSettings = saveSmsOtpAdminSettings;
+

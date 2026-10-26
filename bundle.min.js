@@ -10060,6 +10060,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const exIdx = idxMap.get(dId);
             const exItem = cur[exIdx];
             const newAmt = Number(d.amount) || 0;
+            // AUTHORITATIVE_AMOUNTS_PROTECT: Tuyệt đối không cho phép đơn 10.000đ lỗi từ GAS ghi đè đơn thực tế
+            const authSepayAmounts = { "DH2993198750": 100000, "DH8056369050": 150000, "DH9213194171": 30000, "DH1288725247": 20000, "DH4957207279": 5000 };
+            if (authSepayAmounts[dId] && newAmt < authSepayAmounts[dId]) {
+              return;
+            }
             if (newAmt > 0 && newAmt !== Number(exItem.amount)) {
               exItem.amount = newAmt;
               if (d.note) exItem.note = d.note;
@@ -10596,6 +10601,45 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         });
       } catch(e) {}
 
+      // G2. Quét danh sách thuê SIM OTP từ mmo_sms_rentals
+      try {
+        const smsRentals = JSON.parse(localStorage.getItem('mmo_sms_rentals') || '[]');
+        if (Array.isArray(smsRentals)) {
+          smsRentals.forEach(sr => {
+            if (!sr) return;
+            const srEmail = (sr.userEmail || sr.email || '').toLowerCase().trim();
+            const currentU = (typeof getCurrentUser === 'function') ? getCurrentUser() : null;
+            const curEmail = (currentU && (currentU.email || '')) ? currentU.email.toLowerCase().trim() : '';
+            if (srEmail === cleanEmail || (!srEmail && curEmail === cleanEmail)) {
+              const rPrice = Math.abs(Number(sr.price) || 0);
+              const rId = String(sr.id || sr.rentalId || '').trim();
+              if (rPrice > 0 && rId) {
+                rawLogs.push({
+                  id: 'OTP_' + rId,
+                  orderId: 'OTP' + rId,
+                  time: sr.createdAt || sr.time || new Date().toISOString(),
+                  type: 'Thuê số OTP',
+                  amount: -rPrice,
+                  balanceAfter: (sr.balanceAfter !== undefined && sr.balanceAfter !== null) ? Number(sr.balanceAfter) : null,
+                  note: 'Thuê số điện thoại OTP: ' + (sr.serviceName || 'Dịch vụ') + ' (' + (sr.phoneLocal || sr.phone || '') + ')'
+                });
+                if (Number(sr.refunded) === 1 || sr.status === 2) {
+                  rawLogs.push({
+                    id: 'OTP_REFUND_' + rId,
+                    orderId: 'OTP' + rId,
+                    time: sr.updatedAt || sr.createdAt || new Date().toISOString(),
+                    type: 'Hoàn tiền',
+                    amount: +rPrice,
+                    balanceAfter: null,
+                    note: 'Hoàn tiền thuê số OTP hết hạn không có mã: ' + (sr.serviceName || '') + ' (' + (sr.phoneLocal || sr.phone || '') + ')'
+                  });
+                }
+              }
+            }
+          });
+        }
+      } catch(eOtpRent) {}
+
       // G. Lọc trùng thông minh theo mã giao dịch và loại
       const seenMap = new Map();
       rawLogs.forEach(item => {
@@ -10609,7 +10653,10 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         const isPurchase = amt < 0;
 
         let key = "";
-        if (oId && isRef) {
+        const isOtp = String(item.id || item.orderId || '').startsWith('OTP_') || String(item.id || item.orderId || '').startsWith('OTP') || String(item.type || '').toLowerCase().includes('thuê số') || String(item.note || '').toLowerCase().includes('thuê số');
+        if (isOtp) {
+          key = "OTP_" + (item.orderId || item.id || '') + "_" + (amt > 0 ? "REFUND" : "RENT");
+        } else if (oId && isRef) {
           key = "REFUND_" + oId;
         } else if (oId && isDep) {
           key = "DEP_" + oId;
@@ -10895,9 +10942,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const isRefund = tLow.includes("hoàn tiền") || nLow.includes("hoàn tiền");
             const isPurchase = tLow.includes("thanh toán") || tLow.includes("mua hàng") || amt < 0;
 
+            const isOtp = tLow.includes("thuê số") || tLow.includes("otp") || nLow.includes("thuê số");
             let typeHtml = "";
             if (isRefund) {
               typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.1);"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền bảo hành</span>';
+            } else if (isOtp) {
+              typeHtml = '<span class="badge-trust" style="font-size:0.72rem; color:#a855f7; border-color:rgba(168,85,247,0.3); background:rgba(168,85,247,0.1);"><i class="fa-solid fa-sim-card"></i> Thuê số OTP</span>';
             } else if (isPurchase) {
               typeHtml = '<span class="badge-verified" style="font-size:0.72rem; color:#f87171; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.1);"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
             } else if (tLow.includes("rút")) {
@@ -10931,10 +10981,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         modal.style.setProperty("display", "flex", "important");
       }
 
-      // 2. Tự động đồng bộ lịch sử nạp tiền từ Cloud GAS cho thành viên này nếu cần
-      if (typeof fetchAndSyncMemberCloudDeposits === "function") {
-        fetchAndSyncMemberCloudDeposits(cleanEmail);
-      }
+      // [SSOT]: KHÔNG gọi fetchAndSyncMemberCloudDeposits vì GAS chứa số dư cũ & đơn hàng thiếu accounts ghi đè 10.000đ.
+      // Cloudflare Worker Turso DB là Single Source of Truth duy nhất.
 
       window._admDetailLiveWorkerLoaded = null;
 
@@ -10942,7 +10990,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       (async function() {
         try {
           const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
-          const txRes = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail));
+          const txRes = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail) + "&_=" + Date.now(), { cache: "no-store" });
           if (txRes.ok) {
             const txData = await txRes.json();
             if (txData && txData.success && Array.isArray(txData.transactions)) {
@@ -10952,6 +11000,21 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                 const srvBal = Number(txData.user_balance);
                 const balElLive = document.getElementById("admDetailUserBalance");
                 if (balElLive) balElLive.innerText = formatVND(srvBal);
+
+                // Đồng bộ chuẩn xác số dư Turso SSOT vào danh sách thành viên
+                try {
+                  let allU = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+                  const uI = allU.findIndex(item => (item.email || "").toLowerCase().trim() === cleanEmail);
+                  if (uI !== -1) {
+                    allU[uI].balance = srvBal;
+                    if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allU);
+                  }
+                  if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
+                    currentUser.balance = srvBal;
+                    safeStorageSet("mmo_user", JSON.stringify(currentUser));
+                    if (typeof updateUserUI === "function") updateUserUI();
+                  }
+                } catch(eBalSync) {}
               }
 
               if (txData.transactions.length > 0) {
@@ -10972,11 +11035,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                     const isRefund = tLow === 'refund' || tLow.includes("hoàn");
                     const isDeposit = tLow === 'deposit' || tLow.includes("nạp");
                     
+                    const isOtp = tLow === 'otp_rent' || tLow.includes("thuê số") || tLow.includes("otp") || String(tx.note || "").toLowerCase().includes("thuê số");
                     let typeBadge = '<span class="badge-verified" style="font-size:0.72rem; color:#f87171; border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.1);"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
                     if (isDeposit) {
                       typeBadge = '<span class="badge-trust" style="font-size:0.72rem; color:#38bdf8; border-color:rgba(56,189,248,0.3); background:rgba(56,189,248,0.1);"><i class="fa-solid fa-wallet"></i> Nạp tiền ví</span>';
                     } else if (isRefund) {
                       typeBadge = '<span class="badge-verified" style="font-size:0.72rem; color:#10b981; border-color:rgba(16,185,129,0.3); background:rgba(16,185,129,0.1);"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền bảo hành</span>';
+                    } else if (isOtp) {
+                      typeBadge = '<span class="badge-trust" style="font-size:0.72rem; color:#a855f7; border-color:rgba(168,85,247,0.3); background:rgba(168,85,247,0.1);"><i class="fa-solid fa-sim-card"></i> Thuê số OTP</span>';
                     }
 
                     let balAfterStr = (tx.balance_after !== null && tx.balance_after !== undefined && !isNaN(Number(tx.balance_after))) 
@@ -41142,7 +41208,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
               if (data && data.success && Array.isArray(data.transactions) && data.transactions.length > 0) {
                 window._userLiveLogs = data.transactions.map(t => ({
                   id: t.order_id || t.id,
-                  type: t.type === "DEPOSIT" ? "Nạp tiền ví" : (t.type === "REFUND" ? "Hoàn tiền" : "Thanh toán"),
+                  type: t.type === "DEPOSIT" ? "Nạp tiền ví" : (t.type === "REFUND" ? "Hoàn tiền" : (t.type === "OTP_RENT" ? "Thuê số OTP" : "Thanh toán")),
                   amount: Number(t.amount) || 0,
                   balanceAfter: t.balance_after,
                   time: t.created_at ? new Date(t.created_at).toLocaleString("vi-VN") : "Gần đây",
@@ -41197,9 +41263,12 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           const isRefund = tLow.includes("hoàn tiền") || nLow.includes("hoàn tiền");
           const isPurchase = tLow.includes("thanh toán") || tLow.includes("mua hàng") || amt < 0;
 
+          const isOtp = tLow.includes("thuê số") || tLow.includes("otp") || nLow.includes("thuê số");
           let typeHtml = "";
           if (isRefund) {
             typeHtml = '<span style="color:#10b981; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-hand-holding-dollar"></i> Hoàn tiền đơn hàng bảo hành</span>';
+          } else if (isOtp) {
+            typeHtml = '<span style="color:#a855f7; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-sim-card"></i> Thuê số OTP</span>';
           } else if (isPurchase) {
             typeHtml = '<span style="color:#f87171; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-cart-shopping"></i> Thanh toán mua hàng</span>';
           } else if (tLow.includes("rút")) {
@@ -54429,43 +54498,50 @@ if (typeof window !== "undefined") {
     // Tự động khôi phục tiếng Việt chuẩn cho tin nhắn SMS bị lỗi font do SIM/modem GSM
   function cleanSmsVietnameseText(str) {
     if (!str || typeof str !== 'string') return str || '';
-    var s = str;
+    var s = str.trim();
 
     // 1. Template chuẩn cho PayPal
     if (/PayPal/i.test(s)) {
-      var m = s.match(/(?:<#>s*)?PayPal:?s*.*?(?:l[aà\?]|là|la)?\s*(\d{4,8})\.?\s*(?:.*?[hH][?eê\w\W]*?[hH][?aạ\w\W]*?\s*sau\s*(\d+)\s*ph[uú\w]*\b)?\.?\s*(?:.*?(?:tr[?a\w]*\s*l[?o\w]*|[?]{2,}))?\.?\s*([A-Za-z0-9\/+_-]{8,})?$/i);
-      if (m) {
-        var code = m[1];
-        var mins = m[2] || '10';
-        var hash = m[3] ? (' ' + m[3].trim()) : '';
+      var codeMatch = s.match(/(?:(?:la|là|code|m[ãa])\D{0,10})?(\b\d{4,8}\b)/i) || s.match(/(\b\d{4,8}\b)/);
+      if (codeMatch) {
+        var code = codeMatch[1];
+        var minMatch = s.match(/sau\s*(\d+)\s*ph/i);
+        var mins = minMatch ? minMatch[1] : '10';
+        var tokens = s.split(/\s+/);
+        var lastToken = tokens[tokens.length - 1];
+        var hash = '';
+        if (lastToken && lastToken.length >= 8 && /[A-Za-z0-9\/+_-]/.test(lastToken) && !lastToken.includes('phút') && !lastToken.includes('PayPal')) {
+          hash = ' ' + lastToken.trim();
+        }
         return '<#> PayPal: Mã bảo mật là ' + code + '. Hết hạn sau ' + mins + ' phút. Đừng trả lời.' + hash;
       }
     }
 
-    // 2. Khôi phục từ khóa tiếng Việt bị lỗi font/dấu hỏi do SIM modem GSM
-    s = s.replace(/Ma\s+b[\?]+o\s+m[\?\-]+t/gi, 'Mã bảo mật')
-         .replace(/b[\?]+o\s+m[\?\-]+t/gi, 'bảo mật')
-         .replace(/m[\?\-]+t\s+kh[\?]+u/gi, 'mật khẩu')
-         .replace(/x[\?]+c\s+minh/gi, 'xác minh')
-         .replace(/x[\?]+c\s+th[\?]+c/gi, 'xác thực')
-         .replace(/t[\?]+i\s+kho[\?]+n/gi, 'tài khoản')
-         .replace(/H[\?Yy]+t\s+h[\?@a]+n/gi, 'Hết hạn')
-         .replace(/h[\?Yy]+t\s+h[\?@a]+n/gi, 'hết hạn')
-         .replace(/sau\s+(\d+)\s+ph[\?]*ut/gi, 'sau $1 phút')
-         .replace(/[\?]+eng\s+tr[\?]+(?:\s+l[\?Yy]+i)?/gi, 'Đừng trả lời')
+    // 2. Khôi phục từ khóa tiếng Việt bị lỗi font GSM / ký tự modem (ß, £, Δ, @, ?, ...)
+    s = s.replace(/Ma\s+b[ß\?£]+o\s+m[ß\?\-]+t/gi, 'Mã bảo mật')
+         .replace(/b[ß\?£]+o\s+m[ß\?\-]+t/gi, 'bảo mật')
+         .replace(/m[ß\?\-]+t\s+kh[ß\?£]+u/gi, 'mật khẩu')
+         .replace(/x[ß\?£]+c\s+minh/gi, 'xác minh')
+         .replace(/x[ß\?£]+c\s+th[ß\?£\Δ]+c/gi, 'xác thực')
+         .replace(/t[ß\?£]+i\s+kho[ß\?£]+n/gi, 'tài khoản')
+         .replace(/H[ß\?Yy]+t\s+h[ß\?@a]+n/gi, 'Hết hạn')
+         .replace(/h[ß\?Yy]+t\s+h[ß\?@a]+n/gi, 'hết hạn')
+         .replace(/sau\s+(\d+)\s+ph[uú\w]*\b/gi, 'sau $1 phút')
+         .replace(/[£\?Δß]+eng\s+tr[ß\?£]+(?:\s+l[ß\?Yi]+)?/gi, 'Đừng trả lời')
          .replace(/\b(?:Dung|dung)\s+tra\s+loi\b/gi, 'Đừng trả lời')
-         .replace(/\bc[\?]+a\s+b[\?]+n\b/gi, 'của bạn')
-         .replace(/\bkh[\?]+ng\s+chia\s+s[\?]+\b/gi, 'không chia sẻ')
-         .replace(/\bchia\s+s[\?]+\b/gi, 'chia sẻ')
-         .replace(/\bkh[\?]+ng\b/gi, 'không')
-         .replace(/\bv[\?]+i\s+b[\?]+t\s+k[\?]+\s+ai\b/gi, 'với bất kỳ ai')
-         .replace(/\bl[\?]\s+m[\?]\b/gi, 'là mã')
-         .replace(/\bl[\?]\s+(\d{4,8})\b/gi, 'là $1')
-         .replace(/\bm[\?]\s+x[\?]+c\s+minh\b/gi, 'mã xác minh')
-         .replace(/\bm[\?]\s+x[\?]+c\s+th[\?]+c\b/gi, 'mã xác thực')
-         .replace(/\bm[\?]\s+n[\?]+y\b/gi, 'mã này')
-         .replace(/\bl[\?]\b/g, 'là')
-         .replace(/\bm[\?]\b/g, 'mã');
+         .replace(/\bc[ß\?£]+a\s+b[ß\?@a]+n\b/gi, 'của bạn')
+         .replace(/\bkh[ß\?o]+ng\s+chia\s+s[ß\?e]+\b/gi, 'không chia sẻ')
+         .replace(/\bchia\s+s[ß\?e]+\b/gi, 'chia sẻ')
+         .replace(/\bkh[ß\?o]+ng\b/gi, 'không')
+         .replace(/\bv[ß\?o]+i\s+b[ß\?a]+t\s+k[ß\?y]+\s+ai\b/gi, 'với bất kỳ ai')
+         .replace(/\bl[aà\?ß]\s+m[aã\?ß]\b/gi, 'là mã')
+         .replace(/\bl[aà\?ß]\s+(\d{4,8})\b/gi, 'là $1')
+         .replace(/\bm[aã\?ß]\s+x[aá\?ß]+c\s+minh\b/gi, 'mã xác minh')
+         .replace(/\bm[aã\?ß]\s+x[aá\?ß]+c\s+th[uự\?ß\Δ]+c\b/gi, 'mã xác thực')
+         .replace(/\bm[aã\?ß]\s+n[aà\?ß]+y\b/gi, 'mã này')
+         .replace(/\bl[aà\?ß]\b/g, 'là')
+         .replace(/\bm[aã\?ß]\b/g, 'mã')
+         .replace(/\bm[aã\?ß]\s+OTP\b/gi, 'mã OTP');
 
     return s;
   }
@@ -55107,6 +55183,7 @@ async function initSmsOtpView() {
 
       var rObj = {
         id: data.rental.id,
+        userEmail: (u && u.email) || '',
         serviceId: s.id,
         serviceName: s.name,
         price: price,

@@ -408,8 +408,8 @@
     }
   </style>
   <link rel='preconnect' href='https://cdn.jsdelivr.net' crossorigin='anonymous'/>
-  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.4/bundle.min.js?v=6.9.4' as='script'/>
-  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.4/theme.min.css?v=6.9.4' as='style'/>
+  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.5/bundle.min.js?v=6.9.5' as='script'/>
+  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.5/theme.min.css?v=6.9.5' as='style'/>
   <script>
     /* BẢO TỒN DỮ LIỆU KHO HÀNG ĐÃ XÓA (0MS) */
     try {
@@ -1587,7 +1587,7 @@
       }
     }
   </style>
-<link href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.4/theme.min.css?v=6.9.4' id='mmoCdnThemeCss' rel='stylesheet' onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/theme.min.css';"/>
+<link href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.5/theme.min.css?v=6.9.5' id='mmoCdnThemeCss' rel='stylesheet' onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/theme.min.css';"/>
 
   <!-- Google Identity Services -->
   <script src='https://accounts.google.com/gsi/client' async='' defer=''></script>
@@ -1613,8 +1613,8 @@
   <b:skin><![CDATA[
 /* ==========================================================================
    MUABANTAIKHOANMMO.COM - CDN THEME ENGINE
-   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.4/theme.min.css?v=6.9.4
-   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.4/bundle.min.js?v=6.9.4
+   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.5/theme.min.css?v=6.9.5
+   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.5/bundle.min.js?v=6.9.5
    ========================================================================== */
 body { margin: 0; padding: 0; background: #070a12; color: #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif; }
 
@@ -14350,7 +14350,7 @@ print(res.json())</pre>
   <!-- ==========================================================================
        OFFLOADED CDN JAVASCRIPT BUNDLE (ALL FUNCTIONS AND MODULES)
        ========================================================================== -->
-  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.4/bundle.min.js?v=6.9.4' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
+  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.5/bundle.min.js?v=6.9.5' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
   <script type='text/javascript'>
     //<![CDATA[
     (function() {
@@ -14408,7 +14408,7 @@ print(res.json())</pre>
 
               // Tự động cập nhật CSS
               var cssEl = document.getElementById("mmoCdnThemeCss");
-              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.4/theme.min.css?v=6.9.4");
+              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.5/theme.min.css?v=6.9.5");
               if (cssEl) cssEl.href = newCssUrl;
 
               // Mã nguồn chính thức đã được tải an toàn từ CDN v5.7.9
