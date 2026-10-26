@@ -7027,7 +7027,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
             const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) 
               ? MMO_WORKER_API.getAdminSecret() 
-              : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+              : (localStorage.getItem("mmo_admin_secret") || "");
             const res = await fetch(workerUrl + "/api/wallet/transactions?token=" + encodeURIComponent(adminSec), {
               headers: { "Authorization": "Bearer " + adminSec, "x-admin-token": adminSec }
             });
@@ -10059,7 +10059,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           const resWorker = await fetch(workerUrl + "/api/wallet/transactions", {
             headers: {
               "Accept": "application/json",
-              "X-Admin-Token": "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60"
+              "X-Admin-Token": ""
             }
           });
           if (resWorker.ok) {
@@ -13457,7 +13457,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             try { localStorage.removeItem("mmo_custom_desc_" + aid); } catch(e) {}
           });
           try {
-            const wSecClean = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+            const wSecClean = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) ? MMO_WORKER_API.getAdminSecret() : "";
             const wUrlClean = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
             fetch(wUrlClean + "/api/admin/delete-old-image", {
               method: "POST",
@@ -13874,7 +13874,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         try {
           const workerSecret = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
             ? MMO_WORKER_API.getAdminSecret()
-            : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+            : (localStorage.getItem("mmo_admin_secret") || "");
           const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
           const leanVariants = (variants || []).map(v => ({
             name: v.name,
@@ -18907,9 +18907,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       getAdminSecret: function() {
         const stored = (localStorage.getItem("mmo_admin_secret") || "").trim();
         if (stored) return stored;
-        const defaultSecret = "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
-        try { localStorage.setItem("mmo_admin_secret", defaultSecret); } catch(e) {}
-        return defaultSecret;
+        const inputVal = (typeof document !== "undefined" && document.getElementById("setAdminSecretToken")) ? document.getElementById("setAdminSecretToken").value.trim() : "";
+        if (inputVal) return inputVal;
+        return "";
       },
 
       setAdminSecret: function(token) {
@@ -21213,7 +21213,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         name: "mail72h.com",
         badgeColor: "#10b981",
         baseUrl: "https://mail72h.com",
-        apiKey: "83636705f8a17c6c48fcd8b7c8a32f10",
+        apiKey: "",
         username: "",
         rechargeUrl: "https://mail72h.com/client/recharge"
       },
@@ -21222,7 +21222,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         name: "sellmmo.vn",
         badgeColor: "#38bdf8",
         baseUrl: "https://sellmmo.vn",
-        apiKey: "0f98b868df2a1a94298ac2cc8825cc3aNxqnIK3gkCwQ6ivGXPB7Up8zMVlHescO",
+        apiKey: "",
         username: "",
         rechargeUrl: "https://sellmmo.vn/recharge"
       },
@@ -21231,7 +21231,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         name: "nguyenlieummo.com.vn",
         badgeColor: "#f59e0b",
         baseUrl: "https://nguyenlieummo.com.vn",
-        apiKey: "6825079591fae146be775d957897fb94Wjv3FtMYo8b4OrUN10VlLSae9EigKknZ",
+        apiKey: "",
         username: "",
         rechargeUrl: "https://nguyenlieummo.com.vn/client/wallet"
       },
@@ -21240,7 +21240,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         name: "selltainguyenmmo.com",
         badgeColor: "#8b5cf6",
         baseUrl: "https://selltainguyenmmo.com",
-        apiKey: "983c5cfd6b8187ff48634ed6ac1b15fe8N05S73dnb9TvuZVYl62rHOgRxhA4KPQ",
+        apiKey: "",
         username: "",
         rechargeUrl: "https://selltainguyenmmo.com/client/wallet"
       },
@@ -21250,7 +21250,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         badgeColor: "#f97316",
         baseUrl: "https://www.shop1989nd.com",
         username: "manhdong",
-        password: "Manhdong123@",
+        password: "",
         rechargeUrl: "https://www.shop1989nd.com/user/recharge",
         authType: "userpass"
       },
@@ -21259,7 +21259,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         name: "ultrammo.com",
         badgeColor: "#ec4899",
         baseUrl: "https://ultrammo.com",
-        apiKey: "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F",
+        apiKey: "",
         username: "manhdong",
         password: "",
         rechargeUrl: "https://ultrammo.com/client/wallet"
@@ -21766,7 +21766,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       const baseUrl = pCfg.baseUrl || (payload && payload.baseUrl) || "https://sellmmo.vn";
       let apiKey = pCfg.apiKey || (payload && payload.apiKey) || "";
       if (provider === "ultrammo" && !apiKey) {
-        apiKey = "8920ab567dde50693b84ac39dfecf750b530QvjaxnALOHRBhYKN9Zm4VG6yIM7F";
+        // Handled securely server-side by Worker API
         pCfg.apiKey = apiKey;
       }
       const workerProxy = (typeof sourceProxyUrl !== "undefined" && sourceProxyUrl) ? sourceProxyUrl.replace(/\/+$/, "") : "https://mmo-api-proxy.muabantaikhoanmmo.workers.dev";
@@ -21783,7 +21783,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       // ---- shop1989nd: authType=userpass, dùng username/password thay api_key ----
       if (pCfg.authType === "userpass" || provider === "shop1989nd") {
         const uname = pCfg.username || (payload && payload.username) || (provider === "shop1989nd" ? "manhdong" : "");
-        const upass = pCfg.password || (payload && payload.password) || (provider === "shop1989nd" ? "Manhdong123@" : "");
+        const upass = pCfg.password || (payload && payload.password) || "";
         const bUrl = baseUrl.replace(/\/+$/, "");
 
         if (action === "getProfile") {
@@ -29563,7 +29563,7 @@ function executeCompareSourcesSearch() {
         const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
           ? MMO_WORKER_API.getApiUrl()
           : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
-        const adminSec = "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+        const adminSec = "";
         await fetch(workerUrl + "/api/admin/settings", {
           method: "POST",
           headers: {
@@ -29703,7 +29703,7 @@ function executeCompareSourcesSearch() {
               payload['ai_key_' + p] = clean;
               const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
                 ? MMO_WORKER_API.getAdminSecret()
-                : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+                : (localStorage.getItem("mmo_admin_secret") || "");
               fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
                 method: "POST",
                 headers: {
@@ -29754,7 +29754,7 @@ function executeCompareSourcesSearch() {
             payload['ai_key_' + p] = "";
             const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
               ? MMO_WORKER_API.getAdminSecret()
-              : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+              : (localStorage.getItem("mmo_admin_secret") || "");
             fetch("https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings", {
               method: "POST",
               headers: {
@@ -30179,7 +30179,7 @@ function executeCompareSourcesSearch() {
 
             const adminSecToken = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getAdminSecret)
               ? MMO_WORKER_API.getAdminSecret()
-              : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || 'mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60');
+              : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || "");
 
             fetch('https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/upload-image', {
               method: 'POST',
@@ -30412,7 +30412,7 @@ function executeCompareSourcesSearch() {
       try {
         const adminSecToken = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getAdminSecret)
           ? MMO_WORKER_API.getAdminSecret()
-          : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || 'mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60');
+          : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || "");
 
         const res = await fetch('https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings', {
           headers: {
@@ -30570,7 +30570,7 @@ function executeCompareSourcesSearch() {
 
       const adminSecToken = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getAdminSecret)
         ? MMO_WORKER_API.getAdminSecret()
-        : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || 'mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60');
+        : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || "");
 
       providers.forEach(function(p) {
         const el = document.getElementById('setAiKey' + p.charAt(0).toUpperCase() + p.slice(1));
@@ -30740,7 +30740,7 @@ function executeCompareSourcesSearch() {
         try {
           const adminSecToken = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getAdminSecret)
             ? MMO_WORKER_API.getAdminSecret()
-            : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || 'mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60');
+            : (localStorage.getItem('mmo_admin_secret') || (document.getElementById('setAdminSecretToken') ? document.getElementById('setAdminSecretToken').value.trim() : '') || "");
 
           fetch('https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/settings', {
             method: 'POST',
@@ -31133,7 +31133,7 @@ function executeCompareSourcesSearch() {
       try {
         const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
           ? MMO_WORKER_API.getAdminSecret()
-          : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+          : (localStorage.getItem("mmo_admin_secret") || "");
         const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
           ? MMO_WORKER_API.getApiUrl()
           : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
@@ -31274,7 +31274,7 @@ function executeCompareSourcesSearch() {
           window._isUploadingProductImage = true;
           const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
             ? MMO_WORKER_API.getAdminSecret()
-            : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+            : (localStorage.getItem("mmo_admin_secret") || "");
           const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
             ? MMO_WORKER_API.getApiUrl()
             : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
@@ -31489,7 +31489,7 @@ function executeCompareSourcesSearch() {
       const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
       const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) 
         ? MMO_WORKER_API.getAdminSecret() 
-        : (localStorage.getItem("mmo_admin_secret") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60");
+        : (localStorage.getItem("mmo_admin_secret") || "");
 
       // 1. Đồng bộ siêu tốc từ Cloudflare Worker & Turso SSOT
       try {
@@ -40962,7 +40962,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         const sTok = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mmo_session_token")) ||
                      (typeof localStorage !== "undefined" && localStorage.getItem("mmo_session_token")) || "";
         const admSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
-          ? MMO_WORKER_API.getAdminSecret() : "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+          ? MMO_WORKER_API.getAdminSecret() : "";
         const pHeaders = { "Cache-Control": "no-store" };
         if (admSec) {
           pHeaders["x-admin-token"] = admSec;
@@ -42909,7 +42909,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         const workerEndpoint = (typeof MMO_API_BASE !== "undefined" && MMO_API_BASE) 
           ? MMO_API_BASE 
           : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
-        const adminToken = localStorage.getItem("mmo_admin_session_token") || "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+        const adminToken = localStorage.getItem("mmo_admin_session_token") || "";
         fetch(workerEndpoint + "/api/admin/users/delete", {
           method: "POST",
           headers: {
@@ -50894,7 +50894,7 @@ async function confirmRefundOrder() {
           : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev/api/admin/orders/refund";
         const admSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret)
           ? MMO_WORKER_API.getAdminSecret()
-          : "mmo_sec_adm_a700664aa10309a1a4a76fedf6f7584517456c658fc83e60";
+          : "";
         fetch(workerRefundUrl, {
           method: "POST",
           headers: {
