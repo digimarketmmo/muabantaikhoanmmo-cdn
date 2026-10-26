@@ -5557,7 +5557,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "name": "muabantaikhoanmmo",
     "email": "muabantaikhoanmmo@gmail.com",
     "role": "Quản Trị Viên",
-    "balance": 233880,
+    "balance": 0,
     "created": "18/9/2026",
     "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=muabantaikhoanmmo%40gmail.com",
     "isLocked": false
@@ -5567,7 +5567,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "name": "Mạnh Đồng Official",
     "email": "manhdongvtc@gmail.com",
     "role": "Quản Trị Viên",
-    "balance": 208269,
+    "balance": 0,
     "created": "2026-10-11 17:20:40",
     "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=manhdongvtc%40gmail.com",
     "isLocked": false
@@ -5577,7 +5577,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "name": "koanh130103",
     "email": "koanh130103@gmail.com",
     "role": "USER",
-    "balance": 250000,
+    "balance": 0,
     "created": "2026-10-24 17:22:39",
     "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=koanh130103%40gmail.com",
     "isLocked": false
@@ -5587,7 +5587,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "name": "hoangtuananh0968",
     "email": "hoangtuananh0968@gmail.com",
     "role": "USER",
-    "balance": 200200,
+    "balance": 0,
     "created": "2026-10-06 17:29:15",
     "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=hoangtuananh0968%40gmail.com",
     "isLocked": false
@@ -5597,7 +5597,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "name": "digimarketmmo",
     "email": "digimarketmmo@gmail.com",
     "role": "Thành Viên",
-    "balance": 95874,
+    "balance": 0,
     "created": "2026-10-05 23:22:08",
     "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=digimarketmmo%40gmail.com",
     "isLocked": false
@@ -5607,7 +5607,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "name": "Mạnh Đông Academy",
     "email": "manhdongacademy@gmail.com",
     "role": "USER",
-    "balance": 20000,
+    "balance": 0,
     "created": "21/9/2026",
     "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=manhdongacademy%40gmail.com",
     "isLocked": false
@@ -5617,7 +5617,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "name": "realuser",
     "email": "realuser@gmail.com",
     "role": "USER",
-    "balance": 15000,
+    "balance": 0,
     "created": "21/9/2026",
     "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=realuser%40gmail.com",
     "isLocked": false
@@ -5627,7 +5627,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "name": "huyphamfo3",
     "email": "huyphamfo3@gmail.com",
     "role": "USER",
-    "balance": 8000,
+    "balance": 0,
     "created": "3/10/2026",
     "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=huyphamfo3%40gmail.com",
     "isLocked": false
@@ -9510,366 +9510,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     // - Khắc phục tình trạng chỉ hiện trừ tiền mua hàng mà không hiện giao dịch nạp tiền
     // - Tự động đối soát, truy xuất Google Apps Script & VietQR SePay thời gian thực
     // =========================================================================
-    var INITIAL_COMPLETED_DEPOSITS = [
-      {
-        orderId: "DH4957207279",
-        id: "DH4957207279",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (hang giang)",
-        amount: 5000,
-        email: "gianghangasd@gmail.com",
-        userEmail: "gianghangasd@gmail.com",
-        userName: "hang giang",
-        status: "COMPLETED",
-        note: "Đã cộng 5.000 VNĐ vào ví (VietQR / SePay)",
-        time: "17:04:00 25/10/2026",
-        date: "17:04:00 25/10/2026",
-        createdAt: 1792922640000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 25000
-      },
-      {
-        orderId: "DH1288725247",
-        id: "DH1288725247",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (hang giang)",
-        amount: 20000,
-        email: "gianghangasd@gmail.com",
-        userEmail: "gianghangasd@gmail.com",
-        userName: "hang giang",
-        status: "COMPLETED",
-        note: "Đã cộng 20.000 VNĐ vào ví (VietQR / SePay)",
-        time: "16:53:00 25/10/2026",
-        date: "16:53:00 25/10/2026",
-        createdAt: 1792921980000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 20000
-      },
-      {
-        orderId: "DH2993198750",
-        id: "DH2993198750",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (koanh130103)",
-        amount: 100000,
-        email: "koanh130103@gmail.com",
-        userEmail: "koanh130103@gmail.com",
-        userName: "koanh130103",
-        status: "COMPLETED",
-        note: "Đã cộng 100.000 VNĐ vào ví (VietQR / SePay)",
-        time: "00:21:00 25/10/2026",
-        date: "00:21:00 25/10/2026",
-        createdAt: 1792862460000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 250000
-      },
-      {
-        orderId: "DH8056369050",
-        id: "DH8056369050",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (koanh130103)",
-        amount: 150000,
-        email: "koanh130103@gmail.com",
-        userEmail: "koanh130103@gmail.com",
-        userName: "koanh130103",
-        status: "COMPLETED",
-        note: "Đã cộng 150.000 VNĐ vào ví (VietQR / SePay)",
-        time: "00:14:00 25/10/2026",
-        date: "00:14:00 25/10/2026",
-        createdAt: 1792862040000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 150000
-      },
-      {
-        orderId: "DH9213194171",
-        id: "DH9213194171",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (trnguyen2610)",
-        amount: 30000,
-        email: "trnguyen2610@gmail.com",
-        userEmail: "trnguyen2610@gmail.com",
-        userName: "trnguyen2610",
-        status: "COMPLETED",
-        note: "Đã cộng 30.000 VNĐ vào ví (VietQR / SePay)",
-        time: "20:52:00 24/10/2026",
-        date: "20:52:00 24/10/2026",
-        createdAt: 1792849920000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 30000
-      },
-      {
-        orderId: "DH8815416867",
-        id: "DH8815416867",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 5000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 5.000 VNĐ vào ví (VietQR / SePay)",
-        time: "11:07:37 23/10/2026",
-        date: "11:07:37 23/10/2026",
-        createdAt: 1792728457000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 118441
-      },
-      {
-        orderId: "DH6016360233",
-        id: "DH6016360233",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 5000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 5.000 VNĐ vào ví (VietQR / SePay)",
-        time: "17:57:10 22/10/2026",
-        date: "17:57:10 22/10/2026",
-        createdAt: 1792666630000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 113441
-      },
-      {
-        orderId: "DH9059731470",
-        id: "DH9059731470",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 10000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 10.000 VNĐ vào ví (VietQR / SePay)",
-        time: "16:51:16 22/10/2026",
-        date: "16:51:16 22/10/2026",
-        createdAt: 1792662676000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 113441
-      },
-      {
-        orderId: "DH8878420221",
-        id: "DH8878420221",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 3000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 3.000 VNĐ vào ví (VietQR / SePay)",
-        time: "11:05:33 21/10/2026",
-        date: "11:05:33 21/10/2026",
-        createdAt: 1792554333000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 103441
-      },
-      {
-        orderId: "DH1997736360",
-        id: "DH1997736360",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 10000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 10.000 VNĐ vào ví (VietQR / SePay)",
-        time: "11:04:34 21/10/2026",
-        date: "11:04:34 21/10/2026",
-        createdAt: 1792554274000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 100441
-      },
-      {
-        orderId: "DH6298966273",
-        id: "DH6298966273",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 10000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 10.000 VNĐ vào ví (VietQR / SePay)",
-        time: "21:40:00 20/10/2026",
-        date: "21:40:00 20/10/2026",
-        createdAt: 1792506000000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 90441
-      },
-      {
-        orderId: "DH1202214643",
-        id: "DH1202214643",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 4000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 4.000 VNĐ vào ví (VietQR / SePay)",
-        time: "21:04:30 20/10/2026",
-        date: "21:04:30 20/10/2026",
-        createdAt: 1792503870000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 80441
-      },
-      {
-        orderId: "DH2710667006",
-        id: "DH2710667006",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 3000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 3.000 VNĐ vào ví (VietQR / SePay)",
-        time: "20:43:59 20/10/2026",
-        date: "20:43:59 20/10/2026",
-        createdAt: 1792502639000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 76441
-      },
-      {
-        orderId: "DH8233002214",
-        id: "DH8233002214",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 2000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 2.000 VNĐ vào ví (VietQR / SePay)",
-        time: "19:50:27 20/10/2026",
-        date: "19:50:27 20/10/2026",
-        createdAt: 1792499427000,
-        type: "Nạp tiền VietQR / SePay",
-        balanceAfter: 73441
-      },
-      {
-        orderId: "DH5281561978",
-        id: "DH5281561978",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (TimeKP TK)",
-        amount: 21000,
-        email: "nguyenqhanduyhung@gmail.com",
-        userEmail: "nguyenqhanduyhung@gmail.com",
-        userName: "TimeKP TK",
-        status: "COMPLETED",
-        note: "Đã cộng 21.000 VNĐ vào ví (VietQR / SePay)",
-        time: "15:54:58 3/10/2026",
-        date: "15:54:58 3/10/2026",
-        type: "Nạp tiền VietQR / SePay"
-      },
-      {
-        orderId: "DH1607454715",
-        id: "DH1607454715",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (TimeKP TK)",
-        amount: 99000,
-        email: "nguyenqhanduyhung@gmail.com",
-        userEmail: "nguyenqhanduyhung@gmail.com",
-        userName: "TimeKP TK",
-        status: "COMPLETED",
-        note: "Đã cộng 99.000 VNĐ vào ví (VietQR / SePay)",
-        time: "15:52:04 3/10/2026",
-        date: "15:52:04 3/10/2026",
-        type: "Nạp tiền VietQR / SePay"
-      },
-      {
-        orderId: "DH6079947553",
-        id: "DH6079947553",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 20000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 20.000 VNĐ vào ví (VietQR / SePay)",
-        time: "21:33:04 2/10/2026",
-        date: "21:33:04 2/10/2026",
-        type: "Nạp tiền VietQR / SePay"
-      },
-      {
-        orderId: "DH1493871010",
-        id: "DH1493871010",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 20000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 20.000 VNĐ vào ví (VietQR / SePay)",
-        time: "14:40:48 29/9/2026",
-        date: "14:40:48 29/9/2026",
-        type: "Nạp tiền VietQR / SePay"
-      },
-      {
-        orderId: "DH1687713622",
-        id: "DH1687713622",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 20000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 20.000 VNĐ vào ví (VietQR / SePay)",
-        time: "13:19:42 29/9/2026",
-        date: "13:19:42 29/9/2026",
-        type: "Nạp tiền VietQR / SePay"
-      },
-      {
-        orderId: "DH6415660631",
-        id: "DH6415660631",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (Mạnh Đông Academy)",
-        amount: 20000,
-        email: "manhdongacademy@gmail.com",
-        userEmail: "manhdongacademy@gmail.com",
-        userName: "Mạnh Đông Academy",
-        status: "COMPLETED",
-        note: "Đã cộng 20.000 VNĐ vào ví (VietQR / SePay)",
-        time: "19:23:41 22/9/2026",
-        date: "19:23:41 22/9/2026",
-        type: "Nạp tiền VietQR / SePay"
-      },
-      {
-        orderId: "DH6389081312",
-        id: "DH6389081312",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (hoangtuananh0968)",
-        amount: 20000,
-        email: "hoangtuananh0968@gmail.com",
-        userEmail: "hoangtuananh0968@gmail.com",
-        userName: "hoangtuananh0968",
-        status: "COMPLETED",
-        note: "Đã cộng 20.000 VNĐ vào ví (VietQR / SePay)",
-        time: "22:56:43 21/9/2026",
-        date: "22:56:43 21/9/2026",
-        type: "Nạp tiền VietQR / SePay"
-      },
-      {
-        orderId: "DH8810818210",
-        id: "DH8810818210",
-        prodId: "NAP_VI",
-        prodName: "Nạp tiền vào ví điện tử (digimarketmmo)",
-        amount: 20000,
-        email: "digimarketmmo@gmail.com",
-        userEmail: "digimarketmmo@gmail.com",
-        userName: "digimarketmmo",
-        status: "COMPLETED",
-        note: "Đã cộng 20.000 VNĐ vào ví (VietQR / SePay)",
-        time: "22:52:04 21/9/2026",
-        date: "22:52:04 21/9/2026",
-        type: "Nạp tiền VietQR / SePay"
-      }
-    ];
+    var INITIAL_COMPLETED_DEPOSITS = [];
 
 
     // =========================================================================
@@ -10158,11 +9799,21 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         // 1. Ưu tiên kéo từ Cloudflare Worker Turso SSOT (/api/wallet/transactions)
         try {
           const workerUrl = (typeof MMO_WORKER_URL !== "undefined" && MMO_WORKER_URL) ? MMO_WORKER_URL : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          const sTok = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mmo_session_token")) ||
+                       (typeof localStorage !== "undefined" && (localStorage.getItem("mmo_session_token") || localStorage.getItem("mmo_user_session_token"))) || "";
+          const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) 
+                        ? MMO_WORKER_API.getAdminSecret() 
+                        : (localStorage.getItem("mmo_admin_secret") || "");
+          const txHeaders = { "Accept": "application/json" };
+          if (adminSec) {
+            txHeaders["Authorization"] = "Bearer " + adminSec;
+            txHeaders["x-admin-token"] = adminSec;
+          } else if (sTok) {
+            txHeaders["Authorization"] = "Bearer " + sTok;
+            txHeaders["x-user-token"] = sTok;
+          }
           const resWorker = await fetch(workerUrl + "/api/wallet/transactions", {
-            headers: {
-              "Accept": "application/json",
-              "X-Admin-Token": ""
-            }
+            headers: txHeaders
           });
           if (resWorker.ok) {
             const wData = await resWorker.json();
@@ -10355,11 +10006,11 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           let allUsers = getRegisteredUsers();
           const uIdx = allUsers.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
           if (uIdx !== -1) {
-            allUsers[uIdx].balance = Math.max(Number(allUsers[uIdx].balance || 0), cloudBal);
+            allUsers[uIdx].balance = cloudBal;
             saveRegisteredUsers(allUsers);
           }
           if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
-            currentUser.balance = Math.max(Number(currentUser.balance || 0), cloudBal);
+            currentUser.balance = cloudBal;
             try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
             if (typeof updateUserUI === "function") updateUserUI();
           }
@@ -10376,7 +10027,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
           const balanceEl = document.getElementById("admDetailUserBalance");
           const tbody = document.getElementById("admDetailUserTxTableBody");
           if (txCountEl) txCountEl.innerText = allTx.length + " giao dịch";
-          const finalModalBal = Math.max(Number(res.currentBalance) || 0, (cloudBal !== null && !isNaN(cloudBal)) ? Number(cloudBal) : 0);
+          const finalModalBal = (cloudBal !== null && !isNaN(cloudBal)) ? Number(cloudBal) : (Number(res.currentBalance) || 0);
           if (balanceEl) balanceEl.innerText = formatVND(finalModalBal);
           if (tbody && allTx.length > 0) {
             tbody.innerHTML = allTx.map(tx => {
@@ -11060,7 +10711,20 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       (async function() {
         try {
           const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
-          const txRes = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail) + "&_=" + Date.now(), { cache: "no-store" });
+          const sTok = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mmo_session_token")) ||
+                       (typeof localStorage !== "undefined" && (localStorage.getItem("mmo_session_token") || localStorage.getItem("mmo_user_session_token"))) || "";
+          const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) 
+                        ? MMO_WORKER_API.getAdminSecret() 
+                        : (localStorage.getItem("mmo_admin_secret") || "");
+          const txHeaders = { "Accept": "application/json" };
+          if (adminSec) {
+            txHeaders["Authorization"] = "Bearer " + adminSec;
+            txHeaders["x-admin-token"] = adminSec;
+          } else if (sTok) {
+            txHeaders["Authorization"] = "Bearer " + sTok;
+            txHeaders["x-user-token"] = sTok;
+          }
+          const txRes = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail) + "&_=" + Date.now(), { cache: "no-store", headers: txHeaders });
           if (txRes.ok) {
             const txData = await txRes.json();
             if (txData && txData.success && Array.isArray(txData.transactions)) {
@@ -41145,7 +40809,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
               }
 
               // Số dư mới chính xác
-              const newCalculatedBalance = Math.max((serverBal > 0 ? serverBal : 0), (prevBalance + actualCreditAmt));
+              const newCalculatedBalance = serverBal > 0 ? serverBal : (prevBalance + actualCreditAmt);
               currentUser.balance = newCalculatedBalance;
 
               safeStorageSet("mmo_user", JSON.stringify(currentUser));
@@ -41272,7 +40936,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         let workerBal = null;
         try {
           // 1. Ưu tiên lấy số dư trực tiếp từ Turso DB SSOT qua /api/wallet/transactions
-          const txRes = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail) + "&_=" + Date.now(), { cache: "no-store" });
+          const txRes = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail) + "&_=" + Date.now(), { cache: "no-store", headers: pHeaders });
           if (txRes.ok) {
             const txData = await txRes.json();
             if (txData && txData.success && txData.user_balance !== undefined && txData.user_balance !== null && !isNaN(Number(txData.user_balance))) {
@@ -41527,7 +41191,20 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         (async function() {
           try {
             const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
-            const res = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail) + "&_=" + Date.now(), { cache: "no-store" });
+            const sTok = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mmo_session_token")) ||
+                         (typeof localStorage !== "undefined" && (localStorage.getItem("mmo_session_token") || localStorage.getItem("mmo_user_session_token"))) || "";
+            const adminSec = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getAdminSecret) 
+                          ? MMO_WORKER_API.getAdminSecret() 
+                          : (localStorage.getItem("mmo_admin_secret") || "");
+            const txHeaders = { "Accept": "application/json" };
+            if (adminSec) {
+              txHeaders["Authorization"] = "Bearer " + adminSec;
+              txHeaders["x-admin-token"] = adminSec;
+            } else if (sTok) {
+              txHeaders["Authorization"] = "Bearer " + sTok;
+              txHeaders["x-user-token"] = sTok;
+            }
+            const res = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail) + "&_=" + Date.now(), { cache: "no-store", headers: txHeaders });
             if (res.ok) {
               const data = await res.json();
               if (data && data.success) {
@@ -48118,17 +47795,17 @@ function initMMOApplication() {
         const cleanEmail = (user.email || "").toLowerCase().trim();
         // 1. Kiểm tra balance trực tiếp trong user object
         if (user.balance !== undefined && user.balance !== null && !isNaN(Number(user.balance))) {
-          bal = Math.max(bal, Number(user.balance));
+          bal = Number(user.balance);
+        } else {
+          // 2. Fallback sang danh sách getRegisteredUsers()
+          try {
+            const allU = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+            const found = allU.find(u => (u.email || "").toLowerCase().trim() === cleanEmail);
+            if (found && found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
+              bal = Number(found.balance);
+            }
+          } catch(e2) {}
         }
-
-        // 2. Kiểm tra trong danh sách getRegisteredUsers()
-        try {
-          const allU = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
-          const found = allU.find(u => (u.email || "").toLowerCase().trim() === cleanEmail);
-          if (found && found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
-            bal = Math.max(bal, Number(found.balance));
-          }
-        } catch(e2) {}
       }
 
       return bal;
