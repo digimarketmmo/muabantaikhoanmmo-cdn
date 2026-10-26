@@ -448,8 +448,8 @@ function healStorageQuota(forceEmergency) {
         if (uObj && uObj.email) {
           const cEmail = (uObj.email || "").toLowerCase().trim();
           if (cEmail === "digimarketmmo@gmail.com") {
-            if (uObj.balance === undefined || uObj.balance === null || isNaN(Number(uObj.balance)) || uObj.balance === 122295 || uObj.balance > 113441) {
-              uObj.balance = 113441;
+            if (uObj.balance === undefined || uObj.balance === null || isNaN(Number(uObj.balance)) || uObj.balance === 122295 || uObj.balance === 113441) {
+              uObj.balance = 95874;
               localStorage.setItem("mmo_user", JSON.stringify(uObj));
             }
           }
@@ -462,8 +462,8 @@ function healStorageQuota(forceEmergency) {
           let mod = false;
           rUsers.forEach(ru => {
             if (ru && (ru.email || "").toLowerCase().trim() === "digimarketmmo@gmail.com") {
-              if (ru.balance === undefined || ru.balance === null || isNaN(Number(ru.balance)) || ru.balance === 122295 || ru.balance > 113441) {
-                ru.balance = 113441;
+              if (ru.balance === undefined || ru.balance === null || isNaN(Number(ru.balance)) || ru.balance === 122295 || ru.balance === 113441) {
+                ru.balance = 95874;
                 mod = true;
               }
             }
@@ -5520,7 +5520,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "name": "digimarketmmo",
     "email": "digimarketmmo@gmail.com",
     "role": "Thành Viên",
-    "balance": 113441,
+    "balance": 95874,
     "created": "2026-10-05 23:22:08",
     "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=digimarketmmo%40gmail.com",
     "isLocked": false
@@ -10714,9 +10714,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         curBal = netLedger;
       }
 
-      // Bảo vệ Rule 0: Không can thiệp số dư digimarketmmo
-      if (cleanEmail === "digimarketmmo@gmail.com" && curBal < 113441) {
-        curBal = 113441;
+      // [SSOT TURSO]: Ưu tiên số dư sau (balanceAfter) của giao dịch mới nhất trong sổ cái
+      if (allLogs.length > 0 && allLogs[0].balanceAfter !== undefined && allLogs[0].balanceAfter !== null && !isNaN(Number(allLogs[0].balanceAfter))) {
+        curBal = Number(allLogs[0].balanceAfter);
       }
 
       // Đồng bộ số dư nếu curBal xác định được cao hơn
@@ -40973,16 +40973,29 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
         let workerBal = null;
         try {
-          const uProfRes = await fetch(workerUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail), {
-            headers: pHeaders
-          });
-          if (uProfRes.ok) {
-            const uProfData = await uProfRes.json();
-            if (uProfData && uProfData.success && uProfData.user && !isNaN(Number(uProfData.user.balance))) {
-              workerBal = Number(uProfData.user.balance);
+          // 1. Ưu tiên lấy số dư trực tiếp từ Turso DB SSOT qua /api/wallet/transactions
+          const txRes = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail) + "&_=" + Date.now(), { cache: "no-store" });
+          if (txRes.ok) {
+            const txData = await txRes.json();
+            if (txData && txData.success && txData.user_balance !== undefined && txData.user_balance !== null && !isNaN(Number(txData.user_balance))) {
+              workerBal = Number(txData.user_balance);
             }
           }
-        } catch(eWk) {}
+        } catch(eWkTx) {}
+
+        if (workerBal === null) {
+          try {
+            const uProfRes = await fetch(workerUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail), {
+              headers: pHeaders
+            });
+            if (uProfRes.ok) {
+              const uProfData = await uProfRes.json();
+              if (uProfData && uProfData.success && uProfData.user && !isNaN(Number(uProfData.user.balance))) {
+                workerBal = Number(uProfData.user.balance);
+              }
+            }
+          } catch(eWk) {}
+        }
 
         const [walletRes, ordersRes] = await Promise.all([
           (typeof callGasApi === "function") 
@@ -41070,7 +41083,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
       let allHistory = [];
       if (typeof getUserComprehensiveTransactions === "function") {
-        const res = getUserComprehensiveTransactions(cleanEmail);
+        const res = getUserComprehensiveTransactions(cleanEmail, (currentUser && currentUser.balance !== undefined) ? currentUser.balance : undefined);
         const rawTxs = res.transactions || [];
         allHistory = rawTxs.filter(tx => {
           const t = String(tx.type || "").toLowerCase();
@@ -41212,20 +41225,39 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         (async function() {
           try {
             const workerUrl = (typeof getWorkerApiUrl === "function" ? getWorkerApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev");
-            const res = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail));
+            const res = await fetch(workerUrl + "/api/wallet/transactions?email=" + encodeURIComponent(cleanEmail) + "&_=" + Date.now(), { cache: "no-store" });
             if (res.ok) {
               const data = await res.json();
-              if (data && data.success && Array.isArray(data.transactions) && data.transactions.length > 0) {
-                window._userLiveLogs = data.transactions.map(t => ({
-                  id: t.order_id || t.id,
-                  type: t.type === "DEPOSIT" ? "Nạp tiền ví" : (t.type === "REFUND" ? "Hoàn tiền" : (t.type === "OTP_RENT" ? "Thuê số OTP" : "Thanh toán")),
-                  amount: Number(t.amount) || 0,
-                  balanceAfter: t.balance_after,
-                  time: t.created_at ? new Date(t.created_at).toLocaleString("vi-VN") : "Gần đây",
-                  note: t.note || ""
-                }));
-                window._userLiveLogsEmail = cleanEmail;
-                renderUserBalanceLogs();
+              if (data && data.success) {
+                if (data.user_balance !== undefined && data.user_balance !== null && !isNaN(Number(data.user_balance))) {
+                  const srvBal = Number(data.user_balance);
+                  if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
+                    if (currentUser.balance !== srvBal) {
+                      currentUser.balance = srvBal;
+                      safeStorageSet("mmo_user", JSON.stringify(currentUser));
+                    }
+                  }
+                  let allU = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
+                  const uI = allU.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
+                  if (uI !== -1 && allU[uI].balance !== srvBal) {
+                    allU[uI].balance = srvBal;
+                    if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allU);
+                  }
+                  if (typeof syncAllWalletBalanceUI === "function") syncAllWalletBalanceUI(srvBal);
+                }
+
+                if (Array.isArray(data.transactions) && data.transactions.length > 0) {
+                  window._userLiveLogs = data.transactions.map(t => ({
+                    id: t.order_id || t.id,
+                    type: t.type === "DEPOSIT" ? "Nạp tiền ví" : (t.type === "REFUND" ? "Hoàn tiền" : (t.type === "OTP_RENT" ? "Thuê số OTP" : "Thanh toán")),
+                    amount: Number(t.amount) || 0,
+                    balanceAfter: t.balance_after,
+                    time: t.created_at ? new Date(t.created_at).toLocaleString("vi-VN") : "Gần đây",
+                    note: t.note || ""
+                  }));
+                  window._userLiveLogsEmail = cleanEmail;
+                  renderUserBalanceLogs();
+                }
               }
             }
           } catch(eLog) {
@@ -41237,7 +41269,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       }
 
       if (typeof getUserComprehensiveTransactions === "function") {
-        const res = getUserComprehensiveTransactions(cleanEmail);
+        const res = getUserComprehensiveTransactions(cleanEmail, (currentUser && currentUser.balance !== undefined) ? currentUser.balance : undefined);
         const allLogs = (window._userLiveLogs && window._userLiveLogsEmail === cleanEmail && window._userLiveLogs.length > 0)
           ? window._userLiveLogs
           : res.transactions;
