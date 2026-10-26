@@ -120,6 +120,19 @@ if (typeof document !== "undefined") {
         localStorage.removeItem("mmo_no_image_" + tid);
       });
 
+      // [SELF-HEALING GOOGLE GEMINI AI PRO VEO3 - 18 THÁNG]: Tự động thanh tẩy ảnh hỏng/default_product.png và khóa chặt ảnh chuẩn 100%
+      const geminiPoster = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg";
+      const geminiAliases = ["PROD_MV5OYRDJCA", "PROD_MV5PA8KZDW", "PROD_MV5QIZNFCZ", "PROD_MU6R34FZ4Z", "PROD_MU5T3T47AE", "PROD_MU2AB1XEGI", "PROD_MUQIMRJYG0", "SP_GEMINI_VEO3"];
+      geminiAliases.forEach(function(gid) {
+        try { localStorage.removeItem("mmo_no_image_" + gid); } catch(e) {}
+        try {
+          const cGImg = localStorage.getItem("mmo_custom_img_" + gid);
+          if (!cGImg || cGImg.includes("default_product.png") || cGImg.includes("876xpg") || cGImg.includes("placeholder") || cGImg.includes("chatgpt") || cGImg.includes("gemini_pro_veo3.png")) {
+            localStorage.setItem("mmo_custom_img_" + gid, geminiPoster);
+          }
+        } catch(e) {}
+      });
+
       ["mmo_products", "mmo_admin_products"].forEach(function(k) {
         const raw = localStorage.getItem(k);
         if (raw) {
@@ -157,6 +170,14 @@ if (typeof document !== "undefined") {
                     p.image = tiktokBrazilPoster;
                     p.image_url = tiktokBrazilPoster;
                     p.imageUrl = tiktokBrazilPoster;
+                    updated = true;
+                  }
+                }
+                if (p && (geminiAliases.includes(p.id) || (p.name && (p.name.includes("Gemini") || p.name.includes("Veo3"))))) {
+                  if (!p.image || p.image.includes("default_product.png") || p.image.includes("876xpg") || p.image.includes("placeholder") || p.image.includes("gemini_pro_veo3.png")) {
+                    p.image = geminiPoster;
+                    p.image_url = geminiPoster;
+                    p.imageUrl = geminiPoster;
                     updated = true;
                   }
                 }
@@ -5292,7 +5313,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             'PROD_MUQIMRJYG0',
             'PROD_MV5PA8KZDW',
             'PROD_MU6R34FZ4Z',
-            'PROD_MUH57035HQ'
+            'PROD_MUH57035HQ',
+            'PROD_MV5QIZNFCZ',
+            'PROD_MU5T3T47AE'
           ]);
           const seenIds = new Set();
           const seenCanonicals = new Set();
@@ -16959,6 +16982,13 @@ const pillsContainer = document.getElementById("dtlVariantPills");
         return cdnBase + "blog_tiktok.png";
       }
 
+      if (textToScan.includes("gemini") || textToScan.includes("veo") || textToScan.includes("mv5pa8kzdw") || textToScan.includes("mu6r34fz4z") || textToScan.includes("mu5t3t47ae") || textToScan.includes("mv5oyrdjca") || textToScan.includes("mv5qiznfcz") || textToScan.includes("mvklxccfrb")) {
+        if (textToScan.includes("1 năm") || textToScan.includes("1 nam") || textToScan.includes("365") || textToScan.includes("mvklxccfrb")) {
+          return cdnBase + "PROD_MUQIMRJYG0_N%C3%82NG_C%E1%BA%A5P_GEMINI_PRO_CH%C3%8DNH_CH%E1%BB%A6_1_N%C4%82M_-_365_NG%C3%80Y.jpg";
+        }
+        return cdnBase + "PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg";
+      }
+
       if (textToScan.includes("facebook") || textToScan.includes("via") || textToScan.includes("clone") || textToScan.includes("fb") || textToScan.includes("fanpage") || textToScan.includes("page")) {
         return cdnBase + "default_product.png";
       }
@@ -16973,13 +17003,6 @@ const pillsContainer = document.getElementById("dtlVariantPills");
 
       if (textToScan.includes("capcut") || textToScan.includes("cap cut")) {
         return cdnBase + "capcut_pro.png";
-      }
-
-      if (textToScan.includes("gemini") || textToScan.includes("veo") || textToScan.includes("mv5pa8kzdw") || textToScan.includes("mu6r34fz4z") || textToScan.includes("mu5t3t47ae") || textToScan.includes("mvklxccfrb")) {
-        if (textToScan.includes("1 năm") || textToScan.includes("1 nam") || textToScan.includes("365") || textToScan.includes("mvklxccfrb")) {
-          return cdnBase + "PROD_MUQIMRJYG0_N%C3%82NG_C%E1%BA%A5P_GEMINI_PRO_CH%C3%8DNH_CH%E1%BB%A6_1_N%C4%82M_-_365_NG%C3%80Y.jpg";
-        }
-        return cdnBase + "PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg";
       }
 
       if (textToScan.includes("kling") || textToScan.includes("mu5pwt7pp7") || textToScan.includes("muh57035hq")) {
@@ -17053,6 +17076,15 @@ const pillsContainer = document.getElementById("dtlVariantPills");
       if (prod && (prod._imageExplicitlyDeleted || prod.image === "__NO_IMAGE__" || prod.image_url === "__NO_IMAGE__")) {
         imgEl.onerror = null;
         imgEl.src = defaultPlaceholder;
+        return;
+      }
+
+      // [KHÓA CHẶN 100% ẢNH GEMINI VEO3]: Luôn trả về ảnh poster chính thức, không bao giờ nhảy về default_product.png
+      const isGeminiCard = (pId && (pId === "PROD_MV5OYRDJCA" || pId === "PROD_MV5PA8KZDW" || pId === "PROD_MV5QIZNFCZ" || pId === "PROD_MU6R34FZ4Z" || pId === "PROD_MU5T3T47AE" || pId === "PROD_MU2AB1XEGI" || pId === "PROD_MUQIMRJYG0" || pId === "SP_GEMINI_VEO3")) ||
+        (prod && typeof prod === "object" && prod.name && (prod.name.includes("Gemini") || prod.name.includes("Veo3")));
+      if (isGeminiCard) {
+        imgEl.onerror = null;
+        imgEl.src = "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg";
         return;
       }
       if (pId && typeof localStorage !== "undefined" && localStorage.getItem("mmo_no_image_" + pId) === "true") {
@@ -17148,6 +17180,13 @@ const pillsContainer = document.getElementById("dtlVariantPills");
       }
       if (p.image === "__NO_IMAGE__" || p.image_url === "__NO_IMAGE__" || p.imageUrl === "__NO_IMAGE__" || p._imageExplicitlyDeleted === true) {
         return defaultPlaceholder;
+      }
+
+      // [BẢO VỆ CHÍNH XÁC GEMINI VEO3]: Luôn trả về poster chuẩn 100% nếu là sản phẩm Gemini Veo3
+      const isGeminiProd = (p.id && (p.id === "PROD_MV5OYRDJCA" || p.id === "PROD_MV5PA8KZDW" || p.id === "PROD_MV5QIZNFCZ" || p.id === "PROD_MU6R34FZ4Z" || p.id === "PROD_MU5T3T47AE" || p.id === "PROD_MU2AB1XEGI" || p.id === "PROD_MUQIMRJYG0" || p.id === "SP_GEMINI_VEO3")) ||
+        (p.name && (p.name.includes("Gemini") || p.name.includes("Veo3")));
+      if (isGeminiProd && !p._imageExplicitlyDeleted) {
+        return "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/PROD_MU6R34FZ4Z_N%C3%A2ng_C%E1%BA%A5p_Google_Gemini_AI_Pro_Veo3_-_18_Th%C3%A1ng_Ch%C3%ADn.jpg";
       }
 
       // 1. [ƯU TIÊN TUYỆT ĐỐI #1]: Ảnh do người dùng vừa sửa hoặc lưu (localStorage cho cả ID này và mọi Alias)
@@ -19568,7 +19607,7 @@ const pillsContainer = document.getElementById("dtlVariantPills");
 
         let hasNewOrUpdated = false;
 
-        const purgedRedundantIds = new Set(['PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ', 'PROD_MTU9F5HN', 'PROD_MV9NXBULDO']);
+        const purgedRedundantIds = new Set(['PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ', 'PROD_MTU9F5HN', 'PROD_MV9NXBULDO', 'PROD_MV5QIZNFCZ', 'PROD_MU5T3T47AE']);
 
         res.products.forEach(function(tp) {
           if (!tp || !tp.id || tp.id === 'zalo-new-2016') return;
@@ -20000,7 +20039,7 @@ const pillsContainer = document.getElementById("dtlVariantPills");
 
         // [SSOT DEDUPLICATION ENGINE]: Loại bỏ triệt để sản phẩm trùng lặp theo ID, Canonical ID và Normalized Name
         if (Array.isArray(MOCK_DATA.products)) {
-          const purgedRedundantIds = new Set(['PROD_MTPG0PUD', 'PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ']);
+          const purgedRedundantIds = new Set(['PROD_MTPG0PUD', 'PROD_MU2AB1XEGI', 'PROD_MUQIMRJYG0', 'PROD_MV5PA8KZDW', 'PROD_MU6R34FZ4Z', 'PROD_MUH57035HQ', 'PROD_MV5QIZNFCZ', 'PROD_MU5T3T47AE']);
           const seenIds = new Set();
           const seenCanonicals = new Set();
           const seenNames = new Set();
