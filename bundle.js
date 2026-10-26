@@ -22102,6 +22102,28 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       // ---- END shop1989nd ----
 
       if (action === "getProfile") {
+        try {
+          const wBase = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
+            ? MMO_WORKER_API.getApiUrl()
+            : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          const res = await fetch(wBase + "/api/sources/balances?provider=" + encodeURIComponent(provider), {
+            signal: createFastSignal(7500)
+          }).then(r => r.json()).catch(() => null);
+
+          if (res && res.success && (typeof res.balance === "number" || (res.balances && typeof res.balances[provider] === "number"))) {
+            const m = typeof res.balance === "number" ? res.balance : res.balances[provider];
+            const u = (res.data && res.data.username) || (res.usernames && res.usernames[provider]) || "manhdong";
+            return {
+              success: true,
+              data: { money: m, username: u },
+              provider: provider,
+              raw: res
+            };
+          }
+        } catch(wErr) {
+          console.warn("Worker getProfile call notice:", wErr);
+        }
+
         let isVuavia = bUrlIn.includes("vuavia.io") || provider.includes("vuavia");
         let targetUrls = [];
         if (isVuavia) {
@@ -22513,12 +22535,13 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
 
     // Khởi tạo bộ nhớ tạm số dư an toàn chống ReferenceError & gán số dư thực tế ban đầu
     var DEFAULT_KNOWN_BALANCES = {
-      mail72h: 14842,
-      sellmmo: 11406,
-      nguyenlieummo: 30441,
-      selltainguyenmmo: 121159,
-      shop1989nd: 39798,
-      ultrammo: 47
+      mail72h: 4708,
+      sellmmo: 2418,
+      nguyenlieummo: 6445,
+      selltainguyenmmo: 119773,
+      shop1989nd: 38584,
+      ultrammo: 61813,
+      vuavia: 0
     };
 
     if (typeof window.cachedSourceBalances === "undefined" || !window.cachedSourceBalances) {
@@ -22574,17 +22597,24 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       let isSuccess = false;
 
       try {
-        const res = await executeSourceApiCall("getProfile", { 
-          provider: providerKey, 
-          baseUrl: pCfg.baseUrl, 
-          apiKey: pCfg.apiKey,
-          username: pCfg.username,
-          password: pCfg.password
-        });
+        const workerApiBase = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+        const res = await fetch(workerApiBase + "/api/sources/balances?provider=" + encodeURIComponent(providerKey), {
+          signal: (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") ? AbortSignal.timeout(8000) : undefined
+        }).then(r => r.json()).catch(() => null);
 
-        if (res && res.success && res.data) {
-          if (typeof res.data.money !== "undefined") {
-            moneyVal = Math.round(Number(res.data.money) || 0);
+        if (res && res.success && typeof res.balance === "number") {
+          moneyVal = Math.round(res.balance);
+          isSuccess = true;
+        } else if (res && res.success && res.balances && typeof res.balances[providerKey] === "number") {
+          moneyVal = Math.round(res.balances[providerKey]);
+          isSuccess = true;
+        } else {
+          // Fallback to executeSourceApiCall
+          const fbRes = await executeSourceApiCall("getProfile", { provider: providerKey });
+          if (fbRes && fbRes.success && fbRes.data && typeof fbRes.data.money !== "undefined") {
+            moneyVal = Math.round(Number(fbRes.data.money) || 0);
             isSuccess = true;
           }
         }
@@ -22617,6 +22647,37 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     window.fetchSingleSourceProfile = fetchSingleSourceProfile;
 
     async function fetchBothSourceBalances(isManual = false) {
+      try {
+        const workerApiBase = (typeof MMO_WORKER_API !== "undefined" && typeof MMO_WORKER_API.getApiUrl === "function")
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+        const res = await fetch(workerApiBase + "/api/sources/balances", {
+          signal: (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") ? AbortSignal.timeout(10000) : undefined
+        }).then(r => r.json()).catch(() => null);
+
+        if (res && res.success && res.balances && typeof res.balances === "object") {
+          if (typeof window.cachedSourceBalances === "undefined" || !window.cachedSourceBalances) {
+            window.cachedSourceBalances = Object.assign({}, DEFAULT_KNOWN_BALANCES);
+          }
+          Object.keys(res.balances).forEach(k => {
+            window.cachedSourceBalances[k] = Math.round(Number(res.balances[k]) || 0);
+          });
+          try {
+            localStorage.setItem("mmo_source_balances", JSON.stringify(window.cachedSourceBalances));
+          } catch(e) {}
+          renderAllSourceBalancesUI();
+          if (typeof renderSourceBalanceWarning === "function") {
+            try { renderSourceBalanceWarning(); } catch(e) {}
+          }
+          if (isManual && typeof showToast === "function") {
+            showToast("Đã đồng bộ số dư tất cả các ví nhà cung cấp thành công!", "success");
+          }
+          return;
+        }
+      } catch(e) {
+        console.warn("fetchBothSourceBalances centralized error:", e);
+      }
+
       const provKeys = (typeof API_SOURCES !== "undefined") ? Object.keys(API_SOURCES) : ["mail72h", "sellmmo", "nguyenlieummo", "selltainguyenmmo", "shop1989nd", "ultrammo", "vuavia"];
       await Promise.allSettled(provKeys.map(k => fetchSingleSourceProfile(k, isManual)));
       renderAllSourceBalancesUI();
