@@ -6384,9 +6384,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
                 safeStorageSet("mmo_user", JSON.stringify(currentUser));
               }
             }
-            // Đồng bộ lịch sử giao dịch và số dư thực tế từ máy chủ Google Sheet
+            // Đồng bộ lịch sử giao dịch và số dư thực tế từ Turso DB SSOT
             if (typeof loadUserWalletFromCloud === "function") {
-              setTimeout(loadUserWalletFromCloud, 300);
+              loadUserWalletFromCloud();
             }
           }
           if (typeof updateUserUI === "function") updateUserUI();
@@ -10677,7 +10677,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       allLogs.sort((a, b) => parseVietnamDateTime(b.time || b.date) - parseVietnamDateTime(a.time || a.date));
 
       // I. Xác định số dư hiện tại của tài khoản (SSOT thống nhất 100%)
-      let curBal = 0;
+      let curBal = null;
       if (explicitBalance !== undefined && explicitBalance !== null && !isNaN(Number(explicitBalance)) && Number(explicitBalance) >= 0) {
         curBal = Number(explicitBalance);
       }
@@ -10685,41 +10685,45 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       const uList = (typeof getRegisteredUsers === "function") ? getRegisteredUsers() : [];
       const uFound = uList.find(item => (item.email || "").toLowerCase().trim() === cleanEmail);
 
-      if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) {
-        curBal = Number(currentUser.balance);
-      } else if (uFound && uFound.balance !== undefined && !isNaN(Number(uFound.balance))) {
-        curBal = Number(uFound.balance);
-      }
-
-      // Đối chiếu số dư với dòng tiền thực tế từ các giao dịch đã xác nhận (nạp - mua)
-      let totalSpent = 0;
-      let totalDeposited = 0;
-      let netLedger = 0;
-      allLogs.forEach(tx => {
-        const amt = Number(tx.amount) || 0;
-        netLedger += amt;
-        if (amt < 0) totalSpent += Math.abs(amt);
-        else totalDeposited += amt;
-      });
-
-      // [FIX v6.8.6]: Đối chiếu dòng tiền thực tế (Nạp - Mua hàng)
-      if (allLogs.length > 0 && totalDeposited > 0) {
-        if (totalSpent >= totalDeposited) {
-          // Khách đã mua hết tiền nạp (ví dụ nạp 30k, mua 2 đơn 15k+15k) -> số dư về 0đ
-          curBal = Math.max(0, netLedger);
-        } else if (netLedger >= 0) {
-          curBal = netLedger;
+      if (curBal === null) {
+        if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail && currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) {
+          curBal = Number(currentUser.balance);
+        } else if (uFound && uFound.balance !== undefined && !isNaN(Number(uFound.balance))) {
+          curBal = Number(uFound.balance);
         }
-      } else if (curBal === 0 && netLedger > 0) {
-        curBal = netLedger;
       }
 
-      // [SSOT TURSO]: Ưu tiên số dư sau (balanceAfter) của giao dịch mới nhất trong sổ cái
+      // [SSOT TURSO]: Ưu tiên số dư sau (balanceAfter) của giao dịch mới nhất trong sổ cái nếu có
       if (allLogs.length > 0 && allLogs[0].balanceAfter !== undefined && allLogs[0].balanceAfter !== null && !isNaN(Number(allLogs[0].balanceAfter))) {
         curBal = Number(allLogs[0].balanceAfter);
       }
 
-      // Đồng bộ số dư nếu curBal xác định được cao hơn
+      // Nếu hoàn toàn chưa có số dư từ bất kỳ nguồn tin cậy nào, mới dùng netLedger làm fallback
+      if (curBal === null || isNaN(curBal)) {
+        let totalSpent = 0;
+        let totalDeposited = 0;
+        let netLedger = 0;
+        allLogs.forEach(tx => {
+          const amt = Number(tx.amount) || 0;
+          netLedger += amt;
+          if (amt < 0) totalSpent += Math.abs(amt);
+          else totalDeposited += amt;
+        });
+
+        if (allLogs.length > 0 && totalDeposited > 0) {
+          if (totalSpent >= totalDeposited) {
+            curBal = Math.max(0, netLedger);
+          } else if (netLedger >= 0) {
+            curBal = netLedger;
+          } else {
+            curBal = 0;
+          }
+        } else {
+          curBal = Math.max(0, netLedger);
+        }
+      }
+
+      // Đồng bộ số dư chuẩn xác vào session người dùng và cập nhật toàn bộ giao diện
       if (typeof currentUser !== "undefined" && currentUser && (currentUser.email || "").toLowerCase().trim() === cleanEmail) {
         if (currentUser.balance !== curBal) {
           currentUser.balance = curBal;
@@ -10736,6 +10740,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             }, 300);
           }
         } catch(eU) {}
+      }
+      if (typeof syncAllWalletBalanceUI === "function") {
+        syncAllWalletBalanceUI(curBal);
       }
 
       // J. [BẢO TỒN DỮ LIỆU THỰC TẾ 100% v6.2.2]:
@@ -40979,6 +40986,10 @@ window.renderProductDetailArticle = renderProductDetailArticle;
             const txData = await txRes.json();
             if (txData && txData.success && txData.user_balance !== undefined && txData.user_balance !== null && !isNaN(Number(txData.user_balance))) {
               workerBal = Number(txData.user_balance);
+              currentUser.balance = workerBal;
+              try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+              if (typeof syncAllWalletBalanceUI === "function") syncAllWalletBalanceUI(workerBal);
+              if (typeof updateUserUI === "function") updateUserUI();
             }
           }
         } catch(eWkTx) {}
@@ -41244,6 +41255,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
                     if (typeof saveRegisteredUsers === "function") saveRegisteredUsers(allU);
                   }
                   if (typeof syncAllWalletBalanceUI === "function") syncAllWalletBalanceUI(srvBal);
+                  if (typeof updateUserUI === "function") updateUserUI();
                 }
 
                 if (Array.isArray(data.transactions) && data.transactions.length > 0) {
@@ -41269,7 +41281,10 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       }
 
       if (typeof getUserComprehensiveTransactions === "function") {
-        const res = getUserComprehensiveTransactions(cleanEmail, (currentUser && currentUser.balance !== undefined) ? currentUser.balance : undefined);
+        const curBalExplicit = (window._userLiveLogs && window._userLiveLogsEmail === cleanEmail && window._userLiveLogs.length > 0 && window._userLiveLogs[0].balanceAfter !== undefined && window._userLiveLogs[0].balanceAfter !== null)
+          ? Number(window._userLiveLogs[0].balanceAfter)
+          : ((currentUser && currentUser.balance !== undefined) ? currentUser.balance : undefined);
+        const res = getUserComprehensiveTransactions(cleanEmail, curBalExplicit);
         const allLogs = (window._userLiveLogs && window._userLiveLogsEmail === cleanEmail && window._userLiveLogs.length > 0)
           ? window._userLiveLogs
           : res.transactions;
@@ -55229,6 +55244,7 @@ async function initSmsOtpView() {
         serviceId: s.id,
         serviceName: s.name,
         price: price,
+        balanceAfter: (typeof newB !== 'undefined') ? newB : null,
         phone: data.rental.phone,
         phoneLocal: data.rental.phoneLocal,
         carrier: data.rental.carrier || window._smsOtpSelectedCarrier,
@@ -55284,6 +55300,7 @@ async function initSmsOtpView() {
     if (refundAmt > 0) {
       var newB = Number(u.balance || 0) + refundAmt;
       u.balance = newB;
+      target.refundBalanceAfter = newB;
       if (window.currentUser) window.currentUser.balance = newB;
       try { localStorage.setItem('mmo_user', JSON.stringify(u)); } catch(eU) {}
       try {
