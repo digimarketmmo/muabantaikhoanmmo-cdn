@@ -13395,11 +13395,11 @@ const pillsContainer = document.getElementById("dtlVariantPills");
       };
 
       try {
-        // Nếu người dùng vừa chọn ảnh xong bấm Lưu ngay, đợi tối đa 6s để CDN upload hoàn tất
+        // Nếu người dùng vừa chọn ảnh xong bấm Lưu ngay, đợi tối đa 10s để CDN upload hoàn tất
         if (window._isUploadingProductImage) {
-          const waitEnd = Date.now() + 1000;
+          const waitEnd = Date.now() + 10000;
           while (window._isUploadingProductImage && Date.now() < waitEnd) {
-            await new Promise(r => setTimeout(r, 50));
+            await new Promise(r => setTimeout(r, 100));
           }
         }
 
@@ -19743,8 +19743,6 @@ const pillsContainer = document.getElementById("dtlVariantPills");
                   delete KNOWN_PROD_IMAGE_MAP[cur.id];
                   delete KNOWN_PROD_IMAGE_MAP[cur.id.toUpperCase()];
                 }
-              } else if (localCustomImg && localCustomImg.trim() && localCustomImg !== "__NO_IMAGE__" && !localCustomImg.includes("default_product.png") && (hasFreshLocalEdit || isWorkerStillOldPoster)) {
-                targetImage = localCustomImg.trim();
               } else if (resolvedWorkerImg && resolvedWorkerImg.trim() && resolvedWorkerImg !== "__NO_IMAGE__" && !resolvedWorkerImg.includes("default_product.png")) {
                 targetImage = resolvedWorkerImg.trim();
               } else if (localCustomImg && localCustomImg.trim() && localCustomImg !== "__NO_IMAGE__" && !localCustomImg.includes("default_product.png")) {
@@ -19844,17 +19842,13 @@ const pillsContainer = document.getElementById("dtlVariantPills");
               localCustomImgNew = null;
             }
             let localCustomDescNew = (typeof localStorage !== "undefined") ? localStorage.getItem("mmo_custom_desc_" + tp.id) : null;
-            const targetImageNew = (localCustomImgNew && localCustomImgNew.trim() && !localCustomImgNew.includes("/api/products/"))
-              ? localCustomImgNew.trim()
-              : ((resolvedWorkerImgNew && resolvedWorkerImgNew.trim() && !resolvedWorkerImgNew.includes("/api/products/"))
-                ? resolvedWorkerImgNew.trim()
-                : ((localCustomImgNew && localCustomImgNew.trim())
-                  ? localCustomImgNew.trim()
-                  : ((resolvedWorkerImgNew && resolvedWorkerImgNew.trim())
-                    ? resolvedWorkerImgNew.trim()
-                    : ((typeof resolveProductImage === "function") 
-                      ? resolveProductImage(tp) 
-                      : (tp.image && !tp.image.includes("khotaikhoanso") && !tp.image.includes("nFV4Rln") ? tp.image : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png")))));
+            const targetImageNew = (resolvedWorkerImgNew && resolvedWorkerImgNew.trim() && !resolvedWorkerImgNew.includes("default_product.png"))
+              ? resolvedWorkerImgNew.trim()
+              : ((localCustomImgNew && localCustomImgNew.trim() && !localCustomImgNew.includes("default_product.png"))
+                ? localCustomImgNew.trim()
+                : ((typeof resolveProductImage === "function") 
+                  ? resolveProductImage(tp) 
+                  : (tp.image && !tp.image.includes("khotaikhoanso") && !tp.image.includes("nFV4Rln") ? tp.image : "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png")));
             const targetDescNew = ((typeof tp.description === "string" && tp.description.trim() !== "") 
               ? tp.description.trim() 
               : ((localCustomDescNew && localCustomDescNew.trim()) ? localCustomDescNew.trim() : (tp.description || "")));
@@ -20146,6 +20140,22 @@ const pillsContainer = document.getElementById("dtlVariantPills");
       }
     }
     window.syncTursoStockToLocalUI = syncTursoStockToLocalUI;
+
+    if (typeof window !== "undefined" && !window._mmoProductsAutoPollingStarted) {
+      window._mmoProductsAutoPollingStarted = true;
+      setInterval(function() {
+        if (typeof document !== "undefined" && document.visibilityState === "visible") {
+          syncTursoProductsToLocalUI().catch(function() {});
+        }
+      }, 15000);
+      if (typeof document !== "undefined") {
+        document.addEventListener("visibilitychange", function() {
+          if (document.visibilityState === "visible") {
+            syncTursoProductsToLocalUI().catch(function() {});
+          }
+        });
+      }
+    }
 
 
     // HỆ THỐNG KHO HÀNG HỢP NHẤT TẬP TRUNG (MMO_WAREHOUSE)
