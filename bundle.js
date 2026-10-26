@@ -34085,96 +34085,142 @@ function executeCompareSourcesSearch() {
     window.startDetailStockAutoSync = startDetailStockAutoSync;
 
     function renderDetailRelatedProducts(currentProd) {
-      const container = document.getElementById("dtlRelatedProductsGrid");
-      const clusterTagsContainer = document.getElementById("dtlTopicClusterTags");
-      if (!currentProd) return;
+      try {
+        const container = document.getElementById("dtlRelatedProductsGrid");
+        const clusterTagsContainer = document.getElementById("dtlTopicClusterTags");
+        if (!container && !clusterTagsContainer) return;
 
-      const allProds = (typeof getVisibleProducts === "function") ? getVisibleProducts() : ((typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : []);
-      
-      // Lọc sản phẩm cùng danh mục, loại trừ sản phẩm hiện tại
-      let related = allProds.filter(function(p) {
-        return p.id !== currentProd.id && p.category === currentProd.category;
-      });
+        if (!currentProd) {
+          currentProd = window.currentSelectedProduct || window._currentActiveDetailProduct;
+        }
+        if (!currentProd && typeof window !== "undefined") {
+          try {
+            const urlP = new URLSearchParams(window.location.search);
+            const curUrlProd = urlP.get("prod") || urlP.get("product");
+            if (curUrlProd && typeof findShopProduct === "function") {
+              currentProd = findShopProduct(curUrlProd);
+            }
+          } catch(eU) {}
+        }
+        if (!currentProd && typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products) && MOCK_DATA.products.length > 0) {
+          currentProd = MOCK_DATA.products[0];
+        }
+        if (!currentProd) return;
 
-      // Nếu không đủ sản phẩm cùng danh mục, lấy thêm từ các danh mục khác
-      if (related.length < 5) {
-        const others = allProds.filter(function(p) {
-          return p.id !== currentProd.id && p.category !== currentProd.category;
+        const safeEscape = (typeof escapeHtml === "function") ? escapeHtml : function(str) {
+          if (str === null || str === undefined) return '';
+          return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+        };
+
+        const allProds = (typeof getVisibleProducts === "function") 
+          ? getVisibleProducts() 
+          : ((typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : []);
+
+        const curId = String(currentProd.id || "").trim();
+        const curCat = String(currentProd.category || "MMO").trim().toLowerCase();
+
+        // Lọc sản phẩm cùng danh mục, loại trừ sản phẩm hiện tại
+        let related = allProds.filter(function(p) {
+          if (!p || !p.id) return false;
+          if (String(p.id).trim() === curId) return false;
+          const pCat = String(p.category || "").trim().toLowerCase();
+          return pCat === curCat;
         });
-        related = related.concat(others);
-      }
 
-      // Hiển thị chuẩn 5 sản phẩm đề xuất
-      const selected = related.slice(0, 5);
+        // Nếu không đủ sản phẩm cùng danh mục, lấy thêm từ các danh mục khác
+        if (related.length < 5) {
+          const others = allProds.filter(function(p) {
+            if (!p || !p.id) return false;
+            if (String(p.id).trim() === curId) return false;
+            const pCat = String(p.category || "").trim().toLowerCase();
+            return pCat !== curCat;
+          });
+          related = related.concat(others);
+        }
 
-      if (container) {
-        container.innerHTML = selected.map(function(p) {
-          const pStock = (typeof getProductStockCount === "function") ? getProductStockCount(p) : (p.stock || 0);
-          const inStock = pStock > 0;
-          const soldCount = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p).toLocaleString("vi-VN") : (p.buffSold || p.sold || 0);
-          const pPrice = (typeof formatVND === "function") ? formatVND(p.price || 0) : ((p.price || 0).toLocaleString("vi-VN") + " đ");
-          const pRating = (p.rating || 5.0).toFixed ? (p.rating || 5.0).toFixed(1) : (p.rating || "5.0");
-          const revCount = String((typeof getRealisticProductSold === "function" ? Math.min(250, Math.floor(getRealisticProductSold(p) / 5)) : 35) || 28);
-          const prodUrl = "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
-          const pIdEscaped = escapeHtml(p.id);
-          const pNameEscaped = escapeHtml(p.name);
-          const pImgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || p.image_url || "");
-          const pImageEscaped = escapeHtml(pImgUrl);
-          const pCatEscaped = escapeHtml(p.category || "MMO");
+        // Hiển thị chuẩn 5 sản phẩm đề xuất
+        const selected = related.slice(0, 5);
 
-          return '<div class="product-card" style="background:#0b111e; border:1px solid #1e293b; border-radius:10px; overflow:hidden; display:flex; flex-direction:column; transition:transform 0.2s, box-shadow 0.2s;">' +
-            '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; background:#070a12; display:block; text-decoration:none;">' +
-              '<img src="' + pImageEscaped + '" alt="' + pNameEscaped + '" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;" onerror="if(typeof handleProductImageError===\'function\'){handleProductImageError(this, {id:\'' + pIdEscaped + '\', name:\'' + pNameEscaped + '\', category:\'' + pCatEscaped + '\'});}else{this.onerror=null;this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\';}" />' +
-              '<span style="position:absolute; top:4px; left:4px; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); color:#38bdf8; font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:3px; border:1px solid rgba(56,189,248,0.3); max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + pCatEscaped + '</span>' +
-              '<span style="position:absolute; top:4px; right:4px; background:' + (inStock ? 'rgba(16,185,129,0.9)' : 'rgba(245,158,11,0.9)') + '; color:#000; font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:3px; white-space:nowrap;">' + (inStock ? 'SẴN HÀNG' : 'ĐẶT TRƯỚC') + '</span>' +
-            '</a>' +
-            '<div style="padding:8px 6px; display:flex; flex-direction:column; flex:1;">' +
-              '<h4 style="font-size:0.78rem; font-weight:700; color:#f8fafc; line-height:1.3; margin:0 0 4px 0; height:2.6em; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">' +
-                '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="color:inherit; text-decoration:none;" title="' + pNameEscaped + '">' + pNameEscaped + '</a>' +
-              '</h4>' +
-              '' +
-              '<div style="display:flex; align-items:center; gap:2px; margin-bottom:6px; font-size:0.65rem;">' +
-                '<div style="color:#fbbf24; display:inline-flex; gap:1px; font-size:0.6rem;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>' +
-                '<span style="color:#fbbf24; font-weight:800;">' + pRating + '</span>' +
-                '<span style="color:#64748b; font-size:0.62rem;">(' + revCount + ')</span>' +
-              '</div>' +
-              '<div style="margin-top:auto; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:3px; border-top:1px solid #1e293b; padding-top:5px;">' +
-                '<div style="min-width:0;">' +
-                  '<div style="color:#64748b; font-size:0.62rem;">Đã bán: ' + soldCount + '</div>' +
-                  '<div style="color:#34d399; font-size:0.82rem; font-weight:800; white-space:nowrap;">' + pPrice + '</div>' +
+        if (container && selected.length > 0) {
+          container.innerHTML = selected.map(function(p) {
+            if (!p) return "";
+            const pStock = (typeof getProductStockCount === "function") ? getProductStockCount(p) : (p.stock || 0);
+            const inStock = pStock > 0;
+            const soldCount = (typeof getRealisticProductSold === "function") ? getRealisticProductSold(p).toLocaleString("vi-VN") : (p.buffSold || p.sold || 0);
+            const pPrice = (typeof formatVND === "function") ? formatVND(p.price || 0) : ((p.price || 0).toLocaleString("vi-VN") + " đ");
+            const pRating = (p.rating || 5.0).toFixed ? (p.rating || 5.0).toFixed(1) : (p.rating || "5.0");
+            const revCount = String((typeof getRealisticProductSold === "function" ? Math.min(250, Math.floor(getRealisticProductSold(p) / 5)) : 35) || 28);
+            const prodUrl = "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
+            const pIdEscaped = safeEscape(p.id);
+            const pNameEscaped = safeEscape(p.name);
+            const pImgUrl = (typeof resolveProductImage === "function") ? resolveProductImage(p) : (p.image || p.image_url || "");
+            const pImageEscaped = safeEscape(pImgUrl);
+            const pCatEscaped = safeEscape(p.category || "MMO");
+
+            return '<div class="product-card" style="background:#0b111e; border:1px solid #1e293b; border-radius:10px; overflow:hidden; display:flex; flex-direction:column; transition:transform 0.2s, box-shadow 0.2s;">' +
+              '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="position:relative; width:100%; aspect-ratio:1/1; overflow:hidden; background:#070a12; display:block; text-decoration:none;">' +
+                '<img src="' + pImageEscaped + '" alt="' + pNameEscaped + '" style="width:100%; height:100%; object-fit:cover; transition:transform 0.3s;" onerror="if(typeof handleProductImageError===\'function\'){handleProductImageError(this, {id:\'' + pIdEscaped + '\', name:\'' + pNameEscaped + '\', category:\'' + pCatEscaped + '\'});}else{this.onerror=null;this.src=\'https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/assets/images/default_product.png\';}" />' +
+                '<span style="position:absolute; top:4px; left:4px; background:rgba(0,0,0,0.75); backdrop-filter:blur(4px); color:#38bdf8; font-size:0.6rem; font-weight:700; padding:1px 5px; border-radius:3px; border:1px solid rgba(56,189,248,0.3); max-width:55%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + pCatEscaped + '</span>' +
+                '<span style="position:absolute; top:4px; right:4px; background:' + (inStock ? 'rgba(16,185,129,0.9)' : 'rgba(245,158,11,0.9)') + '; color:#000; font-size:0.58rem; font-weight:800; padding:1px 5px; border-radius:3px; white-space:nowrap;">' + (inStock ? 'SẴN HÀNG' : 'ĐẶT TRƯỚC') + '</span>' +
+              '</a>' +
+              '<div style="padding:8px 6px; display:flex; flex-direction:column; flex:1;">' +
+                '<h4 style="font-size:0.78rem; font-weight:700; color:#f8fafc; line-height:1.3; margin:0 0 4px 0; height:2.6em; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">' +
+                  '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="color:inherit; text-decoration:none;" title="' + pNameEscaped + '">' + pNameEscaped + '</a>' +
+                '</h4>' +
+                '' +
+                '<div style="display:flex; align-items:center; gap:2px; margin-bottom:6px; font-size:0.65rem;">' +
+                  '<div style="color:#fbbf24; display:inline-flex; gap:1px; font-size:0.6rem;"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>' +
+                  '<span style="color:#fbbf24; font-weight:800;">' + pRating + '</span>' +
+                  '<span style="color:#64748b; font-size:0.62rem;">(' + revCount + ')</span>' +
                 '</div>' +
-                '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="background:#1e293b; color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:2px 7px; border-radius:4px; font-size:0.68rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:2px; transition:all 0.2s; white-space:nowrap;" title="Xem ' + pNameEscaped + '">' +
-                  '<i class="fa-solid fa-arrow-right" style="font-size:0.6rem;"></i> Xem' +
-                '</a>' +
+                '<div style="margin-top:auto; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:3px; border-top:1px solid #1e293b; padding-top:5px;">' +
+                  '<div style="min-width:0;">' +
+                    '<div style="color:#64748b; font-size:0.62rem;">Đã bán: ' + soldCount + '</div>' +
+                    '<div style="color:#34d399; font-size:0.82rem; font-weight:800; white-space:nowrap;">' + pPrice + '</div>' +
+                  '</div>' +
+                  '<a href="' + prodUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEscaped + '\');" style="background:#1e293b; color:#38bdf8; border:1px solid rgba(56,189,248,0.4); padding:2px 7px; border-radius:4px; font-size:0.68rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:2px; transition:all 0.2s; white-space:nowrap;" title="Xem ' + pNameEscaped + '">' +
+                    '<i class="fa-solid fa-arrow-right" style="font-size:0.6rem;"></i> Xem' +
+                  '</a>' +
+                '</div>' +
               '</div>' +
-            '</div>' +
-          '</div>';
-        }).join("");
-      }
+            '</div>';
+          }).join("");
+        }
 
-      // Render SEO Topic Cluster Keyword Links (Không có tiêu đề)
-      if (clusterTagsContainer) {
-        let tagHtml = '';
-        const cat = currentProd.category || 'MMO';
-        const catEscaped = escapeHtml(cat);
-        
-        // 1. Tag chuyên mục chính
-        tagHtml += '<a href="?category=' + encodeURIComponent(cat) + '" onclick="event.preventDefault(); if(typeof filterShopCategory===\'function\') filterShopCategory(\'' + catEscaped + '\'); switchView(\'viewStore\');" style="background:rgba(56,189,248,0.1); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:3px 9px; border-radius:20px; font-size:0.72rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-layer-group" style="font-size:0.62rem;"></i> Mua ' + catEscaped + ' giá rẻ</a>';
-        tagHtml += '<a href="?category=' + encodeURIComponent(cat) + '" onclick="event.preventDefault(); if(typeof filterShopCategory===\'function\') filterShopCategory(\'' + catEscaped + '\'); switchView(\'viewStore\');" style="background:rgba(16,185,129,0.1); color:#34d399; border:1px solid rgba(16,185,129,0.3); padding:3px 9px; border-radius:20px; font-size:0.72rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-shield-check" style="font-size:0.62rem;"></i> Tài khoản ' + catEscaped + ' uy tín</a>';
-        tagHtml += '<a href="?category=' + encodeURIComponent(cat) + '" onclick="event.preventDefault(); if(typeof filterShopCategory===\'function\') filterShopCategory(\'' + catEscaped + '\'); switchView(\'viewStore\');" style="background:rgba(251,191,36,0.1); color:#fbbf24; border:1px solid rgba(251,191,36,0.3); padding:3px 9px; border-radius:20px; font-size:0.72rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-bolt" style="font-size:0.62rem;"></i> Bán nick ' + catEscaped + ' tự động 24/7</a>';
+        // Render SEO Topic Cluster Keyword Links (Không có tiêu đề)
+        if (clusterTagsContainer) {
+          let tagHtml = '';
+          const cat = currentProd.category || 'MMO';
+          const catEscaped = safeEscape(cat);
+          
+          // 1. Tag chuyên mục chính
+          tagHtml += '<a href="?category=' + encodeURIComponent(cat) + '" onclick="event.preventDefault(); if(typeof filterShopCategory===\'function\') filterShopCategory(\'' + catEscaped + '\'); switchView(\'viewStore\');" style="background:rgba(56,189,248,0.1); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:3px 9px; border-radius:20px; font-size:0.72rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-layer-group" style="font-size:0.62rem;"></i> Mua ' + catEscaped + ' giá rẻ</a>';
+          tagHtml += '<a href="?category=' + encodeURIComponent(cat) + '" onclick="event.preventDefault(); if(typeof filterShopCategory===\'function\') filterShopCategory(\'' + catEscaped + '\'); switchView(\'viewStore\');" style="background:rgba(16,185,129,0.1); color:#34d399; border:1px solid rgba(16,185,129,0.3); padding:3px 9px; border-radius:20px; font-size:0.72rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-shield-check" style="font-size:0.62rem;"></i> Tài khoản ' + catEscaped + ' uy tín</a>';
+          tagHtml += '<a href="?category=' + encodeURIComponent(cat) + '" onclick="event.preventDefault(); if(typeof filterShopCategory===\'function\') filterShopCategory(\'' + catEscaped + '\'); switchView(\'viewStore\');" style="background:rgba(251,191,36,0.1); color:#fbbf24; border:1px solid rgba(251,191,36,0.3); padding:3px 9px; border-radius:20px; font-size:0.72rem; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-bolt" style="font-size:0.62rem;"></i> Bán nick ' + catEscaped + ' tự động 24/7</a>';
 
-        // 2. Tags cho từng sản phẩm liên quan trong chùm
-        selected.forEach(function(p) {
-          const pUrl = "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
-          const pIdEsc = escapeHtml(p.id);
-          const pNameEsc = escapeHtml(p.name);
-          tagHtml += '<a href="' + pUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEsc + '\');" style="background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:3px 9px; border-radius:20px; font-size:0.72rem; text-decoration:none; display:inline-flex; align-items:center; gap:4px; transition:all 0.2s;"><i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.6rem;"></i> ' + pNameEsc + '</a>';
-        });
+          // 2. Tags cho từng sản phẩm liên quan trong chùm
+          if (Array.isArray(selected) && selected.length > 0) {
+            selected.forEach(function(p) {
+              if (!p) return;
+              const pUrl = "?prod=" + encodeURIComponent(p.id) + "&view=viewProductDetail";
+              const pIdEsc = safeEscape(p.id);
+              const pNameEsc = safeEscape(p.name);
+              tagHtml += '<a href="' + pUrl + '" onclick="event.preventDefault(); openProductDetailById(\'' + pIdEsc + '\');" style="background:#1e293b; color:#cbd5e1; border:1px solid #334155; padding:3px 9px; border-radius:20px; font-size:0.72rem; text-decoration:none; display:inline-flex; align-items:center; gap:4px; transition:all 0.2s;"><i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.6rem;"></i> ' + pNameEsc + '</a>';
+            });
+          }
 
-        // 3. Tags tổng hợp hỗ trợ SEO MMO
-        tagHtml += '<a href="/?view=viewStore" onclick="event.preventDefault(); switchView(\'viewStore\');" style="background:#0f172a; color:#94a3b8; border:1px dashed #475569; padding:3px 9px; border-radius:20px; font-size:0.72rem; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-boxes-stacked" style="font-size:0.62rem;"></i> Kho tài khoản MMO Việt Nam</a>';
+          // 3. Tags tổng hợp hỗ trợ SEO MMO
+          tagHtml += '<a href="/?view=viewStore" onclick="event.preventDefault(); switchView(\'viewStore\');" style="background:#0f172a; color:#94a3b8; border:1px dashed #475569; padding:3px 9px; border-radius:20px; font-size:0.72rem; text-decoration:none; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-boxes-stacked" style="font-size:0.62rem;"></i> Kho tài khoản MMO Việt Nam</a>';
 
-        clusterTagsContainer.innerHTML = tagHtml;
+          clusterTagsContainer.innerHTML = tagHtml;
+        }
+      } catch(eMainRel) {
+        console.error("renderDetailRelatedProducts error:", eMainRel);
       }
     }
     window.renderDetailRelatedProducts = renderDetailRelatedProducts;
@@ -34722,6 +34768,9 @@ function executeCompareSourcesSearch() {
       }
 
       if (typeof switchProductDescTab === "function") switchProductDescTab("desc");
+      if (typeof renderDetailRelatedProducts === "function") {
+        try { renderDetailRelatedProducts(p); } catch(eRelSync) { console.warn("renderDetailRelatedProducts sync error:", eRelSync); }
+      }
 
       // Khóa chặt 100% hiển thị trang chi tiết sản phẩm ngay lần bấm đầu tiên
       const dtlEl = document.getElementById("viewProductDetail");
@@ -35737,6 +35786,11 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         renderProductReviews();
       } else if (tabKey === "api") {
         if (typeof renderProductApiIntegration === "function") renderProductApiIntegration();
+      } else if (tabKey === "desc") {
+        const gridEl = document.getElementById("dtlRelatedProductsGrid");
+        if (gridEl && (!gridEl.children || gridEl.children.length === 0) && typeof renderDetailRelatedProducts === "function") {
+          try { renderDetailRelatedProducts(); } catch(e) {}
+        }
       }
     }
     window.switchProductDescTab = switchProductDescTab;
@@ -44549,6 +44603,13 @@ function initMMOApplication() {
           if (savedProfTab && typeof switchProfileTab === "function") {
             switchProfileTab(savedProfTab);
           }
+        } else if (targetView === "viewProductDetail") {
+          setTimeout(function() {
+            const gridEl = document.getElementById("dtlRelatedProductsGrid");
+            if (gridEl && (!gridEl.children || gridEl.children.length === 0) && typeof renderDetailRelatedProducts === "function") {
+              try { renderDetailRelatedProducts(); } catch(e) {}
+            }
+          }, 150);
         }
         
         // Tự động kích hoạt bộ theo dõi nạp tiền chạy ngầm nếu có giao dịch nạp tiền đang chờ
