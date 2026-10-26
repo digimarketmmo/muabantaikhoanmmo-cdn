@@ -22551,7 +22551,12 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         if (_storedB) {
           const parsed = JSON.parse(_storedB);
           if (parsed && typeof parsed === "object") {
-            Object.assign(window.cachedSourceBalances, parsed);
+            // TỰ ĐỘNG DỌN DẸP SỐ DƯ CŨ LỖI THỜI TỪ BẢN SNAPSHOT CŨ
+            if (parsed.mail72h === 14842 || parsed.selltainguyenmmo === 121159 || parsed.sellmmo === 11406 || parsed.ultrammo === 47 || parsed.nguyenlieummo === 30441 || parsed.shop1989nd === 39798) {
+              localStorage.removeItem("mmo_source_balances");
+            } else {
+              Object.assign(window.cachedSourceBalances, parsed);
+            }
           }
         }
       } catch(e) {}
@@ -22689,7 +22694,8 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     var _lastFetchBothBalancesTime = 0;
     async function safeFetchBothSourceBalancesOnDemand(isManual = false) {
       const now = Date.now();
-      if (!isManual && (now - _lastFetchBothBalancesTime < 600000)) {
+      // Throttle 15 giây (thay vì 10 phút) để đảm bảo Admin mở tab luôn nhận số dư mới nhất
+      if (!isManual && (now - _lastFetchBothBalancesTime < 15000)) {
         renderAllSourceBalancesUI();
         return;
       }
