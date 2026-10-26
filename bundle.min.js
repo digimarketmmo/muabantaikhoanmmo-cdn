@@ -9160,14 +9160,23 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
             displaySellStr = formatVND(sellPrice).replace(/\s*đ$/, 'đ');
           }
         }
+        const stockStr = (stock > 0)
+          ? ('<span><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Tồn: <strong style="color:#10b981;">' + stock.toLocaleString() + ' SL</strong></span>')
+          : ('<span><i class="fa-solid fa-boxes-stacked" style="color:#ef4444;"></i> Tồn: <strong style="color:#ef4444; background:rgba(239,68,68,0.2); padding:1px 5px; border-radius:3px; border:1px solid rgba(239,68,68,0.4);">0 SL (HẾT HÀNG)</strong></span>');
+
+        const outOfStockNotice = (stock === 0)
+          ? '<div style="margin-top:5px; font-size:0.71rem; color:#f59e0b; background:rgba(245,158,11,0.12); padding:4px 8px; border-radius:4px; border:1px solid rgba(245,158,11,0.3); line-height:1.4;"><i class="fa-solid fa-clock"></i> <strong>Lưu ý:</strong> Nguồn API hiện đang <strong>HẾT HÀNG (0 tài khoản)</strong>. Trang khách hàng sẽ tự động hiển thị nút <strong>ĐẶT HÀNG TRƯỚC</strong> để tránh khách mua phải đơn rỗng. Khi shop nguồn nạp thêm hàng, hệ thống sẽ tự động mở lại nút Mua ngay.</div>'
+          : '';
+
         info.innerHTML = '<div style="background:rgba(15,23,42,0.85); border:1px solid ' + (isLoss ? 'rgba(239,68,68,0.45)' : 'rgba(6,182,212,0.3)') + '; border-left:3px solid ' + (isLoss ? '#ef4444' : '#06b6d4') + '; padding:5px 8px; border-radius:6px; margin-top:5px; line-height:1.4; text-align:left; max-width:100%; box-sizing:border-box;">' +
           '<div style="color:#e2e8f0; font-size:0.73rem; display:flex; align-items:center; gap:4px; overflow:hidden;"><i class="fa-solid fa-link" style="color:' + (isLoss ? '#ef4444' : '#06b6d4') + '; flex-shrink:0;"></i> <strong style="flex-shrink:0;">SP Nguồn:</strong> <span style="color:#38bdf8; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1;" title="' + (typeof esc === "function" ? esc(optName) : optName) + '">' + (typeof esc === "function" ? esc(optName) : optName) + '</span></div>' +
           '<div style="font-size:0.69rem; color:#cbd5e1; margin-top:3px; display:flex; flex-wrap:wrap; gap:4px 10px; align-items:center; border-top:1px dashed rgba(255,255,255,0.08); padding-top:3px;">' +
             '<span><i class="fa-solid fa-tag" style="color:#f59e0b;"></i> Gốc: <strong style="color:#f59e0b;">' + (price > 0 ? formatVND(price).replace(/\s*đ$/, 'đ') : '--') + '</strong></span>' +
             (displaySellStr ? '<span><i class="fa-solid fa-store" style="color:#a855f7;"></i> Bán: <strong style="color:#c084fc;">' + displaySellStr + '</strong></span>' : '') +
             profitStr +
-            '<span><i class="fa-solid fa-boxes-stacked" style="color:#38bdf8;"></i> Tồn: <strong style="color:#10b981;">' + stock.toLocaleString() + '</strong></span>' +
+            stockStr +
           '</div>' +
+          outOfStockNotice +
         '</div>';
       } else {
         info.innerHTML = '<span style="color:#94a3b8; font-size:0.75rem;">Vui lòng chọn sản phẩm tương ứng từ nguồn API để khách mua sẽ được tự động cấp tài khoản.</span>';
@@ -9273,12 +9282,28 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         if (sSel && srcId) {
           sSel.value = srcId;
           if (!sSel.value && !DEAD_IDS.has(srcId)) {
+            const allSrcProds = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+              ? window.cachedSourceProducts
+              : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+            const cleanIdStr = String(srcId).trim().replace(/^#/, "");
+            const foundLive = (typeof getFastSourceProduct === "function" ? getFastSourceProduct(prov, cleanIdStr) : null)
+              || allSrcProds.find(s => String(s.id).trim().replace(/^#/, "") === cleanIdStr && (!prov || s.provider === prov || (typeof isSameProvider === "function" && isSameProvider(s.provider, prov))))
+              || allSrcProds.find(s => String(s.id).trim().replace(/^#/, "") === cleanIdStr);
+            const liveStock = (foundLive && typeof foundLive.amount === "number")
+              ? foundLive.amount
+              : ((existingMap && existingMap.sourceStock !== undefined) ? existingMap.sourceStock : (p.stock || 0));
+            const livePrice = (foundLive && typeof foundLive.price === "number")
+              ? foundLive.price
+              : ((existingMap && existingMap.sourcePrice) ? existingMap.sourcePrice : (p.price || 0));
+            const liveName = (foundLive && foundLive.name) || (existingMap && existingMap.sourceProdName) || ("Sản phẩm nguồn #" + srcId);
+
             const tempOpt = document.createElement("option");
             tempOpt.value = srcId;
-            tempOpt.textContent = "[ID #" + srcId + "] " + ((existingMap && existingMap.sourceProdName) || "Sản phẩm nguồn #" + srcId);
+            tempOpt.textContent = "[ID #" + srcId + "] " + liveName + (liveStock === 0 ? " (Hết hàng: 0 SL)" : " (" + liveStock.toLocaleString() + " SL)");
             tempOpt.selected = true;
-            tempOpt.setAttribute("data-stock", (existingMap && existingMap.sourceStock !== undefined) ? existingMap.sourceStock : (p.stock || 0));
-            tempOpt.setAttribute("data-price", (existingMap && existingMap.sourcePrice) ? existingMap.sourcePrice : (p.price || 0));
+            tempOpt.setAttribute("data-stock", liveStock);
+            tempOpt.setAttribute("data-price", livePrice);
+            tempOpt.setAttribute("data-name", liveName);
             sSel.appendChild(tempOpt);
             sSel.value = srcId;
           }
@@ -18449,9 +18474,12 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         if (apiMap && apiMap.sourceProdId) {
           cleanSrcId = String(apiMap.sourceProdId).trim().replace(/^#/, "");
           let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(apiMap.provider, cleanSrcId) : null;
-          if (!inSrc && typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) {
-            inSrc = cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!apiMap.provider || s.provider === apiMap.provider || (typeof isSameProvider === "function" && isSameProvider(s.provider, apiMap.provider))))
-                 || cachedSourceProducts.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
+          const allProdsList = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+            ? window.cachedSourceProducts
+            : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+          if (!inSrc && allProdsList.length > 0) {
+            inSrc = allProdsList.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!apiMap.provider || s.provider === apiMap.provider || (typeof isSameProvider === "function" && isSameProvider(s.provider, apiMap.provider))))
+                 || allProdsList.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
           }
           if (inSrc && typeof inSrc.amount === "number") {
             const st = inSrc.amount;
