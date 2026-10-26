@@ -34592,6 +34592,19 @@ function executeCompareSourcesSearch() {
 
       const dtlQty = document.getElementById("dtlQtyInput");
       if (dtlQty) dtlQty.value = 1;
+      const dtlCoupon = document.getElementById("dtlCouponInput");
+      if (dtlCoupon) {
+        dtlCoupon.value = "";
+        dtlCoupon.setAttribute("readonly", "readonly");
+        setTimeout(function() {
+          if (dtlCoupon.value && (dtlCoupon.value.includes("@") || dtlCoupon.value.toLowerCase().includes("digimarketmmo"))) {
+            dtlCoupon.value = "";
+          }
+        }, 150);
+      }
+      if (typeof setupCouponInputAutofillShield === "function") {
+        setupCouponInputAutofillShield();
+      }
 
       // Render Variant Pills & Toggle Section
       const pillsContainer = document.getElementById("dtlVariantPills");
@@ -35872,7 +35885,12 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
     function applyCoupon() {
       const input = document.getElementById("dtlCouponInput");
-      const code = input ? input.value.trim().toUpperCase() : "";
+      let code = input ? input.value.trim().toUpperCase() : "";
+      if (code.includes("@") || code.toLowerCase().includes("digimarketmmo")) {
+        if (input) input.value = "";
+        showToast("Vui lòng nhập mã giảm giá hợp lệ!", "warning");
+        return;
+      }
       if (!code) {
         showToast("Vui lòng nhập mã giảm giá!", "warning");
         return;
@@ -35892,6 +35910,43 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       }
     }
     window.applyCoupon = applyCoupon;
+
+    function setupCouponInputAutofillShield() {
+      const cInp = document.getElementById("dtlCouponInput");
+      if (!cInp || cInp._autofillShieldSetup) return;
+      cInp._autofillShieldSetup = true;
+      cInp.setAttribute("autocomplete", "off");
+      cInp.setAttribute("readonly", "readonly");
+      cInp.addEventListener("focus", function() {
+        this.removeAttribute("readonly");
+      });
+      cInp.addEventListener("click", function() {
+        this.removeAttribute("readonly");
+      });
+      cInp.addEventListener("input", function() {
+        if (this.value && (this.value.includes("@") || this.value.toLowerCase().includes("digimarketmmo"))) {
+          this.value = "";
+        }
+      });
+      cInp.addEventListener("change", function() {
+        if (this.value && (this.value.includes("@") || this.value.toLowerCase().includes("digimarketmmo"))) {
+          this.value = "";
+        }
+      });
+      setInterval(function() {
+        if (cInp.value && (cInp.value.includes("@") || cInp.value.toLowerCase().includes("digimarketmmo"))) {
+          cInp.value = "";
+        }
+      }, 400);
+    }
+    window.setupCouponInputAutofillShield = setupCouponInputAutofillShield;
+    if (typeof window !== "undefined") {
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", setupCouponInputAutofillShield);
+      } else {
+        setupCouponInputAutofillShield();
+      }
+    }
 
     
     // ==================== EXECUTE BUY NOW FLOW ====================
