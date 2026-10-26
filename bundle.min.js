@@ -5,6 +5,58 @@
 var MMO_CURRENT_CODE_VERSION = "6.4.0";
 window.MMO_CURRENT_CODE_VERSION = MMO_CURRENT_CODE_VERSION;
 
+// =========================================================================
+// CANONICAL VARIANT PILL & AUTOFILL SHIELD HELPERS (GLOBAL SCOPE)
+// =========================================================================
+function renderVariantPillOptionHtml(v, idx, isSelected, vStock) {
+  if (!v) return "";
+  const stockCount = (typeof vStock === "number") ? vStock : (Number(v.stock) || 0);
+  const stockText = stockCount > 0 ? (Number(stockCount).toLocaleString("vi-VN") + " acc") : "0 acc";
+  const stockColor = stockCount > 0 ? "#10b981" : "#ef4444";
+  const safeName = (typeof escapeHtml === "function") ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)));
+  const safePrice = (typeof formatVND === "function") ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
+
+  return '<div class="variant-pill-option' + (isSelected ? ' active' : '') + '" onclick="selectVariant(' + idx + ')" ' +
+    'data-variant-index="' + idx + '" ' +
+    'style="cursor:pointer; display:flex; align-items:center; justify-content:space-between; width:100%; box-sizing:border-box; padding:8px 12px; border-radius:8px; border:1px solid ' + (isSelected ? '#0284c7' : '#1e293b') + '; background:' + (isSelected ? 'rgba(2,132,199,0.12)' : '#070a12') + '; transition:all 0.15s ease;">' +
+    '<span class="var-name" style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; font-size:0.83rem; color:' + (isSelected ? '#38bdf8' : '#e2e8f0') + ';">' + safeName + '</span>' +
+    '<span class="var-stock" style="flex:0 0 auto; white-space:nowrap !important; font-weight:800; font-size:0.8rem; margin:0 8px; color:' + stockColor + ';">(' + stockText + ')</span>' +
+    '<span class="var-price" style="flex:0 0 auto; white-space:nowrap !important; font-weight:800; font-size:0.85rem; margin-left:auto; color:#38bdf8;">' + safePrice + '</span>' +
+  '</div>';
+}
+window.renderVariantPillOptionHtml = renderVariantPillOptionHtml;
+
+function setupCouponInputAutofillShield() {
+  const cInp = document.getElementById("dtlCouponInput");
+  if (!cInp) return;
+  if (!cInp._autofillShieldSetup) {
+    cInp._autofillShieldSetup = true;
+    cInp.setAttribute("autocomplete", "one-time-code");
+    const wipeIfEmail = function() {
+      if (cInp.value && (cInp.value.includes("@") || cInp.value.includes(".com") || cInp.value.toLowerCase().includes("digimarketmmo") || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cInp.value.trim()))) {
+        cInp.value = "";
+      }
+    };
+    cInp.addEventListener("input", wipeIfEmail);
+    cInp.addEventListener("change", wipeIfEmail);
+    cInp.addEventListener("focus", wipeIfEmail);
+    cInp.addEventListener("animationstart", function(e) {
+      if (e.animationName && e.animationName.includes("autofill")) {
+        wipeIfEmail();
+      }
+    });
+    setInterval(wipeIfEmail, 150);
+  }
+}
+window.setupCouponInputAutofillShield = setupCouponInputAutofillShield;
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupCouponInputAutofillShield);
+  } else {
+    setupCouponInputAutofillShield();
+  }
+}
+
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
 (function cleanLegacyProductImageStorage() {
   if (typeof localStorage === "undefined") return;
@@ -34117,9 +34169,10 @@ function executeCompareSourcesSearch() {
             .replace(/'/g, '&#039;');
         };
 
-        const allProds = (typeof getVisibleProducts === "function") 
-          ? getVisibleProducts() 
-          : ((typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : []);
+        let allProds = (typeof getVisibleProducts === "function") ? getVisibleProducts() : [];
+        if (!allProds || allProds.length === 0) {
+          allProds = (typeof MOCK_DATA !== "undefined" && Array.isArray(MOCK_DATA.products)) ? MOCK_DATA.products : [];
+        }
 
         const curId = String(currentProd.id || "").trim();
         const curCat = String(currentProd.category || "MMO").trim().toLowerCase();
