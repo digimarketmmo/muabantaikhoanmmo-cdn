@@ -1970,7 +1970,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
         "apiMapping": {
           "enabled": true,
           "provider": "selltainguyenmmo",
-          "sourceProdId": "22283",
+          "sourceProdId": "31867",
           "sourcePrice": 90000,
           "sourceStock": 0,
           "sourceProdName": "ACC USA 2025- AVATAR - 2FA - VER HOTMAIL - REG IOS - ĐÃ KHÁNG 282 - IP USA | NÚT LÊN TÍCH XANH",
@@ -1985,7 +1985,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "selltainguyenmmo",
-      "sourceProdId": "22283",
+      "sourceProdId": "31867",
       "sourcePrice": 90000,
       "sourceStock": 0,
       "sourceProdName": "ACC USA 2025- AVATAR - 2FA - VER HOTMAIL - REG IOS - ĐÃ KHÁNG 282 - IP USA | NÚT LÊN TÍCH XANH",
@@ -3726,14 +3726,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       {
         "name": "Gmail New  đã ngâm 3 - 7 ngày live",
         "price": 20000,
-        "stock": 23,
+        "stock": 692,
         "apiMapping": {
           "enabled": true,
           "provider": "ultrammo",
-          "sourceProdId": "26784",
-          "sourcePrice": 13000,
-          "sourceStock": 23,
-          "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
+          "sourceProdId": "14886",
+          "sourcePrice": 18000,
+          "sourceStock": 692,
+          "sourceProdName": "Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h)",
           "baseUrl": "https://ultrammo.com",
           "isSourceDeleted": false
         },
@@ -3745,14 +3745,14 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "apiMapping": {
       "enabled": true,
       "provider": "ultrammo",
-      "sourceProdId": "26784",
-      "sourcePrice": 13000,
-      "sourceStock": 23,
-      "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
+      "sourceProdId": "14886",
+      "sourcePrice": 18000,
+      "sourceStock": 692,
+      "sourceProdName": "Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h)",
       "baseUrl": "https://ultrammo.com",
       "isSourceDeleted": false
     },
-    "stock": 23,
+    "stock": 692,
     "buffSold": 0,
     "sold": 0,
     "available": true
@@ -22313,9 +22313,9 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
               username: pCfg.username,
               password: pCfg.password,
               authType: pCfg.authType,
-              customer_email: (currentUser && currentUser.email) || (payload && payload.customer_email) || ""
+              customer_email: (currentUser && currentUser.email) || (payload && payload.customer_email) || "admin@muabantaikhoanmmo.com"
             }),
-            signal: createFastSignal(12000)
+            signal: createFastSignal(15000)
           });
           const wJson = await wRes.json().catch(() => null);
           if (wJson && wJson.success && Array.isArray(wJson.accounts) && wJson.accounts.length > 0) {
@@ -22332,6 +22332,13 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
               trans_id: wJson.trans_id || "",
               accounts: wJson.accounts,
               count: wJson.accounts.length,
+              provider: provider,
+              raw: wJson
+            };
+          } else if (wJson && wJson.success === false && wJson.message) {
+            return {
+              success: false,
+              message: wJson.message,
               provider: provider,
               raw: wJson
             };
@@ -23077,7 +23084,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   "PROD_MV5RNGVO93": {
     "enabled": true,
     "provider": "selltainguyenmmo",
-    "sourceProdId": "22283",
+    "sourceProdId": "31867",
     "sourcePrice": 90000,
     "sourceStock": 0,
     "sourceProdName": "ACC USA 2025- AVATAR - 2FA - VER HOTMAIL - REG IOS - ĐÃ KHÁNG 282 - IP USA | NÚT LÊN TÍCH XANH",
@@ -23387,21 +23394,21 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
   "PROD_MUJGUY19DD": {
     "enabled": true,
     "provider": "ultrammo",
-    "sourceProdId": "26784",
-    "sourcePrice": 13000,
-    "sourceStock": 23,
-    "sourceProdName": "gmail new ngâm 1- 10 ngày(chỉ log phone)no 2fa",
+    "sourceProdId": "14886",
+    "sourcePrice": 18000,
+    "sourceStock": 692,
+    "sourceProdName": "Gmail New Random đã ngâm 3 - 7 ngày (ID|Pass) (BH log đầu 24h)",
     "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MUH57035HQ": {
     "enabled": true,
-    "provider": "selltainguyenmmo",
-    "sourceProdId": "32023",
-    "sourcePrice": 2000,
-    "sourceStock": 494,
-    "sourceProdName": "[Kling AI] #32023 TÀI KHOẢN KLING AI 65 CREDIT",
-    "baseUrl": "https://selltainguyenmmo.com",
+    "provider": "ultrammo",
+    "sourceProdId": "13629",
+    "sourcePrice": 1200,
+    "sourceStock": 491,
+    "sourceProdName": "TÀI KHOẢN KLING AI 65 CREDIT",
+    "baseUrl": "https://ultrammo.com",
     "isSourceDeleted": false
   },
   "PROD_MU9YH8D9FK": {
@@ -24888,13 +24895,15 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
 
       // Danh sách sản phẩm mẫu đã xác thực 100% test mua thành công cho từng nguồn
       const PINNED_VERIFIED = [
-        { id: "23960", provider: "selltainguyenmmo", name: "ChatGPT New Gmail Trial (Trial 2FA)", price: 2900, stock: 16037, tag: "⭐ [selltainguyenmmo] CHATGPT NEW TRIAL (16.037 ACC)" },
-        { id: "26521", provider: "selltainguyenmmo", name: "PROXY IPV4 - PUBLIC - USA 0151", price: 6600, stock: 42, tag: "⭐ [selltainguyenmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "32396", provider: "selltainguyenmmo", name: "Hotmail Trusted - OAuth2 [Graph]", price: 198, stock: 15000, tag: "⭐ [selltainguyenmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "31918", provider: "selltainguyenmmo", name: "Proxy IPv4 Datacenter Proxy US - Dùng Riêng (1 NGÀY)", price: 1400, stock: 9999, tag: "⭐ [selltainguyenmmo] PROXY US 1 NGÀY (9.999 ACC)" },
+        { id: "26955", provider: "ultrammo", name: "Hotmail Trusted Qua Dịch Vụ (Đã bật Graph API)", price: 117, stock: 2078, tag: "⭐ [ultrammo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
+        { id: "39182", provider: "ultrammo", name: "Gmail 24h plus - có box get api", price: 433.5, stock: 1097, tag: "⭐ [ultrammo] GMAIL 24H PLUS (1.097 ACC)" },
         { id: "712", provider: "mail72h", name: "Mail 24h [ID 712]", price: 259, stock: 72357, tag: "⭐ [mail72h] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
         { id: "121063", provider: "nguyenlieummo", name: "Hotmail Trusted - OAuth2 [Graph] Live 12-36 Tháng", price: 656, stock: 88181, tag: "⭐ [nguyenlieummo] HOTMAIL LIVE TRÂU (88K ACC)" },
         { id: "117725", provider: "nguyenlieummo", name: "ID 4 - NVR name ngoai", price: 74, stock: 1810, tag: "⭐ [nguyenlieummo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
         { id: "19084", provider: "shop1989nd", name: "Outlook Trusted Oauth2 [Graph]", price: 201.5, stock: 67224, tag: "⭐ [shop1989nd] ĐÃ XÁC THỰC MUA THÀNH CÔNG" },
-        { id: "33171", provider: "sellmmo", name: "Gmail Domain ✔️ live 2 phút", price: 55, stock: 1550, tag: "⭐ [sellmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" }
+        { id: "39073", provider: "sellmmo", name: "Gmail Domain Cho Thuê live 10phut -1h .random✔️", price: 180.54, stock: 17000, tag: "⭐ [sellmmo] ĐÃ XÁC THỰC MUA THÀNH CÔNG" }
       ];
 
       let html = '<optgroup label="✅ SẢN PHẨM KHUYÊN DÙNG TEST (ĐÃ XÁC THỰC 100% CÒN HÀNG THẬT & MUA THÀNH CÔNG)">';
