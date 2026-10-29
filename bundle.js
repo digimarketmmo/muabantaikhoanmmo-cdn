@@ -54667,7 +54667,7 @@ function cleanupSmsRentalsOnF5() {
         if (r.createdAt) {
           createdSec = (typeof r.createdAt === 'number') ? (r.createdAt < 10000000000 ? r.createdAt : Math.floor(r.createdAt / 1000)) : Math.floor(new Date(r.createdAt).getTime() / 1000);
         }
-        var isTimeout = (r.status === 0 && createdSec && (nowSec - createdSec) > 420);
+        var isTimeout = isViotpExpired(r);
         var isExpired = (r.status === 2 || r.refunded === 1 || isTimeout);
 
         // NGUYÊN TẮC: "KHÔNG LƯU LẠI NHỮNG CÁI ĐÃ HẾT HẠN" -> Tuyệt đối không lưu các đơn hết hạn
@@ -55319,7 +55319,7 @@ async function initSmsOtpView() {
         code: null,
         smsContent: null,
         inWaitingScreen: true,
-        createdAt: new Date().toISOString()
+        createdAt: (data.rental && data.rental.createdAt) ? data.rental.createdAt : new Date().toISOString()
       };
 
       window._smsOtpRentals.unshift(rObj);
@@ -55437,6 +55437,52 @@ async function initSmsOtpView() {
   }
   window.handleExpireAndRefundRental = handleExpireAndRefundRental;
 
+
+  // =========================================================================
+  // ĐỒNG BỘ THỜI GIAN VÀ HẠN CHÍNH THỨC CỦA VIOTP (CHUẨN XÁC 100% VỚI WEB NGUỒN)
+  // =========================================================================
+  var VIOTP_MINUTE_MS = 60000;
+  var VIOTP_STEP_MS = 3 * VIOTP_MINUTE_MS; // 180,000 ms = 3 phút
+  var VIOTP_DEFAULT_TIMEOUT_MIN = 5;       // Mặc định 5 phút
+  var VIOTP_SPECIAL_TIMEOUTS = { 43: 10 }; // Dịch vụ 43 là 10 phút
+
+  function parseViotpTimestamp(ts) {
+    if (!ts) return Date.now();
+    if (ts instanceof Date) return ts.getTime();
+    if (typeof ts === 'number') return (ts < 10000000000 ? ts * 1000 : ts);
+    var s = String(ts).trim();
+    var d = /^\/Date\((-?\d+)/.exec(s);
+    if (d) return Number(d[1]);
+    var r = s.indexOf('T') !== -1 ? s : s.replace(' ', 'T');
+    var m = /(Z|[+-]\d{2}:?\d{2})$/i.test(r);
+    var v = new Date(m ? r : (r + '+07:00'));
+    var t = v.getTime();
+    return isNaN(t) ? Date.now() : t;
+  }
+
+  function getViotpExpireTimestamp(rental) {
+    if (!rental) return Date.now();
+    var cTime = parseViotpTimestamp(rental.createdAt);
+    var sId = Number(rental.serviceId || 0);
+    var timeoutMin = VIOTP_SPECIAL_TIMEOUTS[sId] || VIOTP_DEFAULT_TIMEOUT_MIN;
+    var d = Math.floor(cTime / VIOTP_MINUTE_MS) * VIOTP_MINUTE_MS + (timeoutMin * VIOTP_MINUTE_MS);
+    return Math.ceil(d / VIOTP_STEP_MS) * VIOTP_STEP_MS;
+  }
+
+  function getViotpRemainingSeconds(rental, nowMs) {
+    if (!rental || rental.status !== 0) return 0;
+    var now = nowMs || Date.now();
+    var expireTime = getViotpExpireTimestamp(rental);
+    return Math.max(0, Math.floor((expireTime - now) / 1000));
+  }
+
+  function isViotpExpired(rental, nowMs) {
+    if (!rental) return true;
+    if (rental.status === 2 || rental.refunded === 1) return true;
+    if (rental.status === 1) return false;
+    return getViotpRemainingSeconds(rental, nowMs) <= 0;
+  }
+
   function startSmsCountdownTicker() {
     if (window._smsCountdownTimer) clearInterval(window._smsCountdownTimer);
 
@@ -55447,9 +55493,7 @@ async function initSmsOtpView() {
       list.forEach(function(r) {
         if (r.status === 0) {
           hasWaiting = true;
-          var createdTime = new Date(r.createdAt || now).getTime();
-          var elapsedSec = Math.floor((now - createdTime) / 1000);
-          var remainSec = Math.max(0, 420 - elapsedSec); // 7 phút = 420s
+          var remainSec = getViotpRemainingSeconds(r, now);
           
           var rid = r.id || r.requestId;
           var el = document.getElementById('timer-' + rid) || document.getElementById('smsCountdown_' + rid);
@@ -55487,9 +55531,8 @@ async function initSmsOtpView() {
           return;
         }
 
-        // Tự động kiểm tra thời gian quá 7 phút -> ngắt và hoàn tiền ngay lập tức
-        var createdTime = new Date(target.createdAt || Date.now()).getTime();
-        if (Date.now() - createdTime >= 420000) {
+        // Tự động kiểm tra thời gian hết hạn theo chuẩn ViOTP -> ngắt và hoàn tiền ngay lập tức
+        if (isViotpExpired(target)) {
           handleExpireAndRefundRental(rentalId);
           return;
         }
@@ -55497,14 +55540,27 @@ async function initSmsOtpView() {
         var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
         var emailParam = u && u.email ? ('?email=' + encodeURIComponent(u.email)) : '';
         var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+        var pollToken = '';
+        if (typeof getUserSessionToken === 'function') pollToken = getUserSessionToken();
+        var pollHeaders = {};
+        if (pollToken) {
+          pollHeaders['Authorization'] = 'Bearer ' + pollToken;
+          pollHeaders['x-user-token'] = pollToken;
+        }
         var controller = new AbortController();
         var timeoutId = setTimeout(function() { controller.abort(); }, 5000);
-        var res = await fetch(workerUrl + '/api/viotp/rental/' + rentalId + emailParam, { signal: controller.signal });
+        var res = await fetch(workerUrl + '/api/viotp/rental/' + rentalId + emailParam, {
+          headers: pollHeaders,
+          signal: controller.signal
+        });
         clearTimeout(timeoutId);
         var json = await res.json();
 
         if (json && json.success && json.data) {
           var d = json.data;
+          if (d.createdAt && (!target.createdAt || target.createdAt.length < 10)) {
+            target.createdAt = d.createdAt;
+          }
           if (d.status === 1) {
             target.status = 1;
             target.code = d.code;
@@ -55654,7 +55710,7 @@ async function initSmsOtpView() {
           code: null,
           smsContent: null,
           inWaitingScreen: true,
-          createdAt: new Date().toISOString()
+          createdAt: (data.rental && data.rental.createdAt) ? data.rental.createdAt : new Date().toISOString()
         };
 
         window._smsOtpRentals.unshift(rObj);
@@ -55754,7 +55810,7 @@ async function initSmsOtpView() {
       if (r.createdAt) {
         createdSec = (typeof r.createdAt === 'number') ? (r.createdAt < 10000000000 ? r.createdAt : Math.floor(r.createdAt / 1000)) : Math.floor(new Date(r.createdAt).getTime() / 1000);
       }
-      var isTimeout = (r.status === 0 && createdSec && (nowSec - createdSec) > 420);
+      var isTimeout = isViotpExpired(r);
       if (r.status === 2 || r.refunded === 1 || isTimeout) {
         return; // Hết hạn -> loại bỏ hoàn toàn, không lưu!
       }
@@ -55852,9 +55908,7 @@ async function initSmsOtpView() {
         // Đang chờ tin nhắn
         actionBox = '<div class="sms-waiting-box-v1">' +
           (function() {
-          var nowS = Math.floor(Date.now() / 1000);
-          var cSec = (typeof r.createdAt === 'number') ? (r.createdAt < 10000000000 ? r.createdAt : Math.floor(r.createdAt / 1000)) : Math.floor(new Date(r.createdAt || Date.now()).getTime() / 1000);
-          var remS = Math.max(0, 420 - Math.max(0, nowS - cSec));
+          var remS = getViotpRemainingSeconds(r);
           var mm = String(Math.floor(remS / 60)).padStart(2, '0');
           var ss = String(remS % 60).padStart(2, '0');
           return '<div class="sms-waiting-loader"><i class="fa-solid fa-spinner fa-spin"></i> Đang chờ tin nhắn...</div>' +
