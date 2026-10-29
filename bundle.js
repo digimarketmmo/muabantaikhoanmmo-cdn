@@ -57,6 +57,114 @@ if (typeof document !== "undefined") {
   }
 }
 
+function setupSearchInputAutofillShield() {
+  const isEmailLike = function(val) {
+    if (!val || typeof val !== "string") return false;
+    const s = val.trim().toLowerCase();
+    if (s.includes("@") && (s.includes(".com") || s.includes(".vn") || s.includes(".net") || s.includes(".org") || s.includes("digimarketmmo") || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s))) return true;
+    if (s.includes("digimarketmmo")) return true;
+    return false;
+  };
+
+  const wipeSearchEmail = function() {
+    const sInp = document.getElementById("searchInput");
+    if (sInp && isEmailLike(sInp.value)) {
+      sInp.value = "";
+      if (typeof closeHeroSearchDropdown === "function") {
+        closeHeroSearchDropdown();
+      } else {
+        const dd = document.getElementById("heroSearchDropdown");
+        if (dd) { dd.style.display = "none"; dd.innerHTML = ""; }
+      }
+    }
+    const aInp = document.getElementById("allProdSearchInp");
+    if (aInp && isEmailLike(aInp.value)) {
+      aInp.value = "";
+      if (typeof handleAllProdFilter === "function") {
+        handleAllProdFilter();
+      }
+    }
+  };
+
+  const sInp = document.getElementById("searchInput");
+  if (sInp) {
+    try {
+      sInp.setAttribute("type", "search");
+      sInp.setAttribute("name", "mmo_search_query");
+      sInp.setAttribute("role", "searchbox");
+      sInp.setAttribute("autocomplete", "off");
+      sInp.setAttribute("autocorrect", "off");
+      sInp.setAttribute("autocapitalize", "off");
+      sInp.setAttribute("spellcheck", "false");
+      sInp.setAttribute("data-lpignore", "true");
+      sInp.setAttribute("data-form-type", "other");
+      sInp.setAttribute("data-1p-ignore", "true");
+    } catch(e) {}
+
+    if (!sInp._searchAutofillShieldBound) {
+      sInp._searchAutofillShieldBound = true;
+      sInp.addEventListener("input", function() {
+        if (isEmailLike(sInp.value)) wipeSearchEmail();
+      });
+      sInp.addEventListener("change", wipeSearchEmail);
+      sInp.addEventListener("focus", wipeSearchEmail);
+      sInp.addEventListener("blur", wipeSearchEmail);
+      sInp.addEventListener("animationstart", function(e) {
+        if (e.animationName && e.animationName.toLowerCase().includes("autofill")) {
+          wipeSearchEmail();
+        }
+      });
+    }
+  }
+
+  const aInp = document.getElementById("allProdSearchInp");
+  if (aInp) {
+    try {
+      aInp.setAttribute("type", "search");
+      aInp.setAttribute("name", "mmo_all_prod_query");
+      aInp.setAttribute("role", "searchbox");
+      aInp.setAttribute("autocomplete", "off");
+      aInp.setAttribute("autocorrect", "off");
+      aInp.setAttribute("autocapitalize", "off");
+      aInp.setAttribute("spellcheck", "false");
+      aInp.setAttribute("data-lpignore", "true");
+      aInp.setAttribute("data-form-type", "other");
+      aInp.setAttribute("data-1p-ignore", "true");
+    } catch(e) {}
+
+    if (!aInp._searchAutofillShieldBound) {
+      aInp._searchAutofillShieldBound = true;
+      aInp.addEventListener("input", function() {
+        if (isEmailLike(aInp.value)) wipeSearchEmail();
+      });
+      aInp.addEventListener("change", wipeSearchEmail);
+      aInp.addEventListener("focus", wipeSearchEmail);
+    }
+  }
+
+  wipeSearchEmail();
+  if (typeof window !== "undefined" && !window._searchAutofillIntervalStarted) {
+    window._searchAutofillIntervalStarted = true;
+    let runs = 0;
+    const intId = setInterval(function() {
+      wipeSearchEmail();
+      runs++;
+      if (runs > 35) {
+        clearInterval(intId);
+        setInterval(wipeSearchEmail, 2000);
+      }
+    }, 200);
+  }
+}
+window.setupSearchInputAutofillShield = setupSearchInputAutofillShield;
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", setupSearchInputAutofillShield);
+  } else {
+    setupSearchInputAutofillShield();
+  }
+}
+
 // KHÔI PHỤC 100% ẢNH TỪ BẢN BACKUP: Tự động dọn sạch cache ảnh cũ bị lỗi khỏi localStorage
 (function cleanLegacyProductImageStorage() {
   if (typeof localStorage === "undefined") return;
@@ -36475,6 +36583,21 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       const dropdown = document.getElementById("heroSearchDropdown");
       if (!input || !dropdown) return;
 
+      const isEmailLike = function(val) {
+        if (!val || typeof val !== "string") return false;
+        const s = val.trim().toLowerCase();
+        if (s.includes("@") && (s.includes(".com") || s.includes(".vn") || s.includes(".net") || s.includes(".org") || s.includes("digimarketmmo") || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s))) return true;
+        if (s.includes("digimarketmmo")) return true;
+        return false;
+      };
+
+      if (isEmailLike(input.value)) {
+        input.value = "";
+        dropdown.style.display = "none";
+        dropdown.innerHTML = "";
+        return;
+      }
+
       const q = (input.value || "").trim();
       if (!q) {
         dropdown.style.display = "none";
@@ -36541,6 +36664,19 @@ window.renderProductDetailArticle = renderProductDetailArticle;
 
     var _searchDebounceTimer = null;
     function handleSearchInput(e) {
+      const curInput = document.getElementById("searchInput");
+      const isEmailLike = function(val) {
+        if (!val || typeof val !== "string") return false;
+        const s = val.trim().toLowerCase();
+        if (s.includes("@") && (s.includes(".com") || s.includes(".vn") || s.includes(".net") || s.includes(".org") || s.includes("digimarketmmo") || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s))) return true;
+        if (s.includes("digimarketmmo")) return true;
+        return false;
+      };
+      if (curInput && isEmailLike(curInput.value)) {
+        curInput.value = "";
+        closeHeroSearchDropdown();
+        return;
+      }
       if (e && e.key === "Enter") {
         triggerSearch();
         return;
@@ -36568,6 +36704,17 @@ window.renderProductDetailArticle = renderProductDetailArticle;
     function triggerSearch() {
       closeHeroSearchDropdown();
       const input = document.getElementById("searchInput");
+      const isEmailLike = function(val) {
+        if (!val || typeof val !== "string") return false;
+        const s = val.trim().toLowerCase();
+        if (s.includes("@") && (s.includes(".com") || s.includes(".vn") || s.includes(".net") || s.includes(".org") || s.includes("digimarketmmo") || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s))) return true;
+        if (s.includes("digimarketmmo")) return true;
+        return false;
+      };
+      if (input && isEmailLike(input.value)) {
+        input.value = "";
+        return;
+      }
       const q = (input ? input.value : "").trim();
 
       // 1. Chuyển về viewStore nếu đang ở view khác (viewAllProducts, viewBlog, viewProfile, viewDetail)
@@ -45111,6 +45258,10 @@ function initMMOApplication() {
     window.setAllProdViewMode = setAllProdViewMode;
 
     function handleAllProdFilter() {
+      const aInp = document.getElementById("allProdSearchInp");
+      if (aInp && aInp.value && (aInp.value.includes("@") && (aInp.value.includes(".com") || aInp.value.includes(".vn") || aInp.value.toLowerCase().includes("digimarketmmo")))) {
+        aInp.value = "";
+      }
       allProdCurrentPage = 1;
       renderAllProductsPage();
     }
