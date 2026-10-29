@@ -18604,7 +18604,8 @@ const pillsContainer = document.getElementById("dtlVariantPills");
     // USER IDENTITY & SESSION MANAGEMENT (HMAC-SHA256 SESSION TOKEN)
     // =========================================================================
     function getUserSessionToken() {
-      return (localStorage.getItem("mmo_user_session_token") || "").trim();
+      return ((typeof sessionStorage !== "undefined" && sessionStorage.getItem("mmo_session_token")) ||
+              (typeof localStorage !== "undefined" && (localStorage.getItem("mmo_session_token") || localStorage.getItem("mmo_user_session_token"))) || "").trim();
     }
     window.getUserSessionToken = getUserSessionToken;
 
@@ -18653,6 +18654,8 @@ const pillsContainer = document.getElementById("dtlVariantPills");
           const data = await res.json();
           if (data && data.success && data.token) {
             localStorage.setItem("mmo_user_session_token", data.token);
+            localStorage.setItem("mmo_session_token", data.token);
+            if (typeof sessionStorage !== "undefined") sessionStorage.setItem("mmo_session_token", data.token);
             return data.token;
           }
         }
@@ -55119,6 +55122,12 @@ async function initSmsOtpView() {
 
     var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
     if (!u || !u.email) {
+      try {
+        var rawU = localStorage.getItem('mmo_user');
+        if (rawU) u = JSON.parse(rawU);
+      } catch(eU) {}
+    }
+    if (!u || !u.email) {
       if (typeof showToast === 'function') showToast('🔒 Vui lòng đăng nhập tài khoản để thuê số nhận OTP!', 'info');
       if (typeof openAuthModal === 'function') openAuthModal('login');
       return;
@@ -55159,8 +55168,22 @@ async function initSmsOtpView() {
 
     try {
       var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+      var userToken = '';
+      if (typeof ensureUserSessionToken === 'function') {
+        try { userToken = await ensureUserSessionToken(); } catch(eTok) {}
+      }
+      if (!userToken && typeof getUserSessionToken === 'function') {
+        userToken = getUserSessionToken();
+      }
+      if (!userToken) {
+        userToken = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('mmo_session_token')) ||
+                    (typeof localStorage !== 'undefined' && (localStorage.getItem('mmo_session_token') || localStorage.getItem('mmo_user_session_token'))) || '';
+      }
+
       var payload = {
         userEmail: u.email,
+        sessionToken: userToken,
+        token: userToken,
         serviceId: s.id,
         serviceName: s.name,
         price: price
@@ -55175,9 +55198,15 @@ async function initSmsOtpView() {
         }
       }
 
+      var reqHeaders = { 'Content-Type': 'application/json' };
+      if (userToken) {
+        reqHeaders['Authorization'] = 'Bearer ' + userToken;
+        reqHeaders['x-user-token'] = userToken;
+      }
+
       var res = await fetch(workerUrl + '/api/viotp/rent', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: reqHeaders,
         body: JSON.stringify(payload)
       });
       var data = await res.json();
@@ -55388,10 +55417,16 @@ async function initSmsOtpView() {
       // Đồng bộ về Cloudflare Worker & Turso DB
       try {
         var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+        var refundToken = (typeof getUserSessionToken === 'function') ? getUserSessionToken() : '';
+        var refundHeaders = { 'Content-Type': 'application/json' };
+        if (refundToken) {
+          refundHeaders['Authorization'] = 'Bearer ' + refundToken;
+          refundHeaders['x-user-token'] = refundToken;
+        }
         fetch(workerUrl + '/api/viotp/refund', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ rentalId: rentalId, userEmail: u.email, price: refundAmt })
+          headers: refundHeaders,
+          body: JSON.stringify({ rentalId: rentalId, userEmail: u.email, price: refundAmt, sessionToken: refundToken, token: refundToken })
         }).catch(function() {});
       } catch(eW) {}
 
@@ -55502,6 +55537,12 @@ async function initSmsOtpView() {
   async function rerentSmsOtp(serviceId, phone, price, serviceName) {
     var u = (typeof getCurrentUser === 'function') ? getCurrentUser() : (window.currentUser || null);
     if (!u || !u.email) {
+      try {
+        var rawU = localStorage.getItem('mmo_user');
+        if (rawU) u = JSON.parse(rawU);
+      } catch(eU) {}
+    }
+    if (!u || !u.email) {
       if (typeof showToast === 'function') showToast('Vui lòng đăng nhập để thuê lại!', 'info');
       return;
     }
@@ -55509,11 +55550,26 @@ async function initSmsOtpView() {
     if (confirm('Bạn có chắc chắn muốn thuê lại số ' + phone + ' (' + serviceName + ' - ' + Number(price).toLocaleString('vi-VN') + ' đ)?')) {
       try {
         var workerUrl = 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+        var reRentToken = '';
+        if (typeof ensureUserSessionToken === 'function') {
+          try { reRentToken = await ensureUserSessionToken(); } catch(eTok) {}
+        }
+        if (!reRentToken && typeof getUserSessionToken === 'function') {
+          reRentToken = getUserSessionToken();
+        }
+        var reRentHeaders = { 'Content-Type': 'application/json' };
+        if (reRentToken) {
+          reRentHeaders['Authorization'] = 'Bearer ' + reRentToken;
+          reRentHeaders['x-user-token'] = reRentToken;
+        }
+
         var res = await fetch(workerUrl + '/api/viotp/rerent', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: reRentHeaders,
           body: JSON.stringify({
             userEmail: u.email,
+            sessionToken: reRentToken,
+            token: reRentToken,
             serviceId: parseInt(serviceId, 10),
             phone: phone,
             price: parseInt(price, 10),
