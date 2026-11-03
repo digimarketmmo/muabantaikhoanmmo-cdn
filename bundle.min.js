@@ -9415,8 +9415,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
       if (document.getElementById("admProdName")) document.getElementById("admProdName").value = p.name;
       
       // Đồng bộ Loại Nguồn Hàng (Kho Nội Bộ vs API)
-      const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null);
-      const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
+      const isExplicitLocal = (p.deliveryType === "local" || p.delivery_type === "local" || p.deliveryType === "manual" || p.delivery_type === "manual");
+      const existingMap = (!isExplicitLocal && typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (isExplicitLocal ? null : (p.apiMapping || null));
+      const isApi = !isExplicitLocal && ((p.deliveryType === "api" || p.delivery_type === "api") || !!(existingMap && existingMap.enabled && existingMap.sourceProdId));
       const radioLocal = document.getElementById("admProdTypeLocal");
       const radioApi = document.getElementById("admProdTypeApi");
       if (radioLocal && radioApi) {
@@ -12156,8 +12157,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
               // Bảo vệ tồn kho nếu sản phẩm đang bật On-Demand API
               // QUAN TRỌNG: Không check balance ở đây — balance chỉ cần check khi mua hàng
               // Non-admin không có balance thật → không được dùng balance để ẩn tồn kho
-              const isApiTypeGas = (serverProd.deliveryType === 'api' || serverProd.delivery_type === 'api' || currentProd.deliveryType === 'api' || currentProd.delivery_type === 'api' || (typeof isProductApi === 'function' && isProductApi(currentProd)));
-              const existingApiMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(currentProd.id) : (currentProd.apiMapping || null);
+              const isExplicitLocalGas = (serverProd.deliveryType === 'local' || serverProd.delivery_type === 'local' || currentProd.deliveryType === 'local' || currentProd.delivery_type === 'local');
+              const isApiTypeGas = !isExplicitLocalGas && (serverProd.deliveryType === 'api' || serverProd.delivery_type === 'api' || currentProd.deliveryType === 'api' || currentProd.delivery_type === 'api' || (typeof isProductApi === 'function' && isProductApi(currentProd)));
+              const existingApiMap = !isExplicitLocalGas && (typeof getApiProductMapping === "function") ? getApiProductMapping(currentProd.id) : (isExplicitLocalGas ? null : (currentProd.apiMapping || null));
               if (isApiTypeGas || (existingApiMap && existingApiMap.enabled && existingApiMap.sourceProdId)) {
                 currentProd.deliveryType = 'api';
                 serverProd.deliveryType = 'api';
@@ -13543,11 +13545,21 @@ const pillsContainer = document.getElementById("dtlVariantPills");
               localStorage.setItem("mmo_api_map_" + actualTargetId, JSON.stringify(mapItem));
             } catch(eMap) {}
           } else {
-            delete maps[actualTargetId];
+            const disabledMapItem = { enabled: false, deliveryType: "local" };
+            maps[actualTargetId] = disabledMapItem;
+            if (name) maps[name] = disabledMapItem;
+            if (oldProd && oldProd.name && oldProd.name !== name) maps[oldProd.name] = disabledMapItem;
+            allSyncIds.forEach(sid => {
+              maps[sid] = disabledMapItem;
+              try { localStorage.removeItem("mmo_api_map_" + sid); } catch(eMap) {}
+            });
             variants.forEach((v, vIdx) => {
               delete maps[actualTargetId + '__VAR__' + vIdx];
               delete maps[actualTargetId + '_' + vIdx];
               if (v && v.name) delete maps[v.name];
+              if (v) {
+                delete v.apiMapping;
+              }
             });
             delete prodData.apiMapping;
             prodData.deliveryType = "local";
@@ -13602,6 +13614,14 @@ const pillsContainer = document.getElementById("dtlVariantPills");
           if (allIdsToUpdate.has(pid)) {
             Object.assign(p, prodData);
             p.variants = variants;
+            if (!isApiSelected) {
+              p.deliveryType = "local";
+              p.delivery_type = "local";
+              delete p.apiMapping;
+              if (Array.isArray(p.variants)) {
+                p.variants.forEach(v => { if (v) delete v.apiMapping; });
+              }
+            }
             matchedCount++;
           }
         });
@@ -13719,14 +13739,24 @@ const pillsContainer = document.getElementById("dtlVariantPills");
             ? MMO_WORKER_API.getAdminSecret()
             : (localStorage.getItem("mmo_admin_secret") || "");
           const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl) ? MMO_WORKER_API.getApiUrl() : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
-          const leanVariants = (variants || []).map(v => ({
-            name: v.name,
-            price: v.price,
-            stock: v.stock,
-            apiMapping: v.apiMapping
-          }));
+          const userToken = (typeof getUserSessionToken === "function") ? getUserSessionToken() : "";
+          const adminEmail = (window.currentUser && window.currentUser.email) ? window.currentUser.email : "";
+          const leanVariants = (variants || []).map(v => {
+            const vObj = {
+              name: v.name,
+              price: v.price,
+              stock: v.stock
+            };
+            if (isApiSelected && v.apiMapping) {
+              vObj.apiMapping = v.apiMapping;
+            }
+            return vObj;
+          });
           const syncProductPayload = {
             ...prodData,
+            deliveryType: isApiSelected ? "api" : "local",
+            delivery_type: isApiSelected ? "api" : "local",
+            apiMapping: isApiSelected ? prodData.apiMapping : null,
             variants: leanVariants
           };
 
@@ -13734,7 +13764,10 @@ const pillsContainer = document.getElementById("dtlVariantPills");
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": "Bearer " + workerSecret
+              "Authorization": "Bearer " + (workerSecret || userToken),
+              "x-admin-token": workerSecret || userToken,
+              "x-user-token": userToken,
+              "x-admin-email": adminEmail
             },
             body: JSON.stringify({ product: syncProductPayload, alias_ids: allSyncIds, old_image: oldImgBeforeSave, image_deleted: isImageDeleted, webhook: true })
           });
@@ -19389,7 +19422,8 @@ const pillsContainer = document.getElementById("dtlVariantPills");
             const cur = MOCK_DATA.products[existingIdx];
             const isLocallyFresh = !!(cur._lastEditedAt && (Date.now() - cur._lastEditedAt < 5000));
             if (!isLocallyFresh) {
-              const isApiType = (tp.delivery_type === 'api' || tp.deliveryType === 'api' || cur.deliveryType === 'api' || cur.delivery_type === 'api' || (typeof isProductApi === 'function' && (isProductApi(cur) || isProductApi(tp))));
+              const isExplicitLocalIncoming = (tp.delivery_type === 'local' || tp.deliveryType === 'local');
+              const isApiType = !isExplicitLocalIncoming && (tp.delivery_type === 'api' || tp.deliveryType === 'api' || ((cur.deliveryType === 'api' || cur.delivery_type === 'api') && cur.deliveryType !== 'local' && cur.delivery_type !== 'local') || (typeof isProductApi === 'function' && isProductApi(tp)));
               let updatedStock = cur.stock;
               const effectiveMapping = isApiType ? (tp.apiMapping || cur.apiMapping || (variants && variants[0] && variants[0].apiMapping) || (cur.variants && cur.variants[0] && cur.variants[0].apiMapping) || (typeof getApiProductMapping === 'function' ? getApiProductMapping(cur) : null)) : null;
               if (effectiveMapping && effectiveMapping.sourceProdId) {
@@ -19404,6 +19438,9 @@ const pillsContainer = document.getElementById("dtlVariantPills");
               
               const updatedPrice = (Number(tp.price) > 0) ? Number(tp.price) : (Number(cur.price) > 0 ? Number(cur.price) : (Number(tp.price) || 0));
               if (!isApiType) {
+                cur.deliveryType = 'local';
+                cur.delivery_type = 'local';
+                delete cur.apiMapping;
                 const isPhoneFarmOrRom = (cur.category === 'Phone Farm' || (typeof cur.category === 'string' && (cur.category.toLowerCase().includes('phone farm') || cur.category.toLowerCase().includes('rom'))) || (typeof cur.name === 'string' && (cur.name.toLowerCase().includes('rom') || cur.name.toLowerCase().includes('phone farm'))));
                 const pfMaster = (typeof MASTER_PF_STOCK !== "undefined" && MASTER_PF_STOCK[cur.id]) ? MASTER_PF_STOCK[cur.id] : null;
                 const manuallyCleared = (function() {
@@ -23785,13 +23822,18 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     function isProductApi(productOrId) {
       if (!productOrId) return false;
       const prod = (typeof productOrId === "object") ? productOrId : (typeof findShopProduct === "function" ? findShopProduct(productOrId) : null);
+      if (prod && (prod.deliveryType === "local" || prod.delivery_type === "local" || prod.deliveryType === "manual" || prod.delivery_type === "manual")) return false;
+      const pId = typeof productOrId === "string" ? productOrId.trim() : (prod ? (prod.id || "").trim() : "");
+      if (pId) {
+        const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+        if (maps[pId] && (maps[pId].enabled === false || maps[pId].deliveryType === "local")) return false;
+      }
       // [ƯU TIÊN TUYỆT ĐỐI 1]: Nếu sản phẩm có API mapping đang BẬT -> 100% là sản phẩm API
       if (prod && prod.apiMapping && prod.apiMapping.enabled && prod.apiMapping.sourceProdId) {
         prod.deliveryType = "api";
         prod.delivery_type = "api";
         return true;
       }
-      const pId = typeof productOrId === "string" ? productOrId : (prod ? prod.id : "");
       if (typeof getApiProductMapping === "function") {
         const map = getApiProductMapping(pId || prod);
         if (map && map.enabled && map.sourceProdId) {
@@ -23803,7 +23845,6 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         }
       }
       if (prod && (prod.deliveryType === "api" || prod.delivery_type === "api")) return true;
-      if (prod && (prod.deliveryType === "local" || prod.delivery_type === "local" || prod.deliveryType === "manual" || prod.delivery_type === "manual")) return false;
       return false;
     }
     window.isProductApi = isProductApi;
@@ -23848,8 +23889,8 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         return res;
       }
 
-      // [BẢO VỆ KHO NỘI BỘ]: Nếu sản phẩm là kho nội bộ và không có mapping API nào, không tự động gán
-      const isExplicitLocal = prodObj && (prodObj.deliveryType === "local" || prodObj.delivery_type === "local" || prodObj.deliveryType === "manual" || prodObj.delivery_type === "manual") && !maps[prodId] && !DEFAULT_API_PRODUCT_MAPPINGS[prodId] && !(prodObj.apiMapping && prodObj.apiMapping.enabled);
+      // [BẢO VỆ KHO NỘI BỘ]: Nếu sản phẩm là kho nội bộ và không có mapping API riêng
+      const isExplicitLocal = prodObj && (prodObj.deliveryType === "local" || prodObj.delivery_type === "local" || prodObj.deliveryType === "manual" || prodObj.delivery_type === "manual");
       if (isExplicitLocal) {
         if (prodObj.apiMapping && prodObj.apiMapping.enabled && prodObj.apiMapping.sourceProdId) {
           return enrichMapping(prodObj.apiMapping);
@@ -23867,10 +23908,11 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         maps[prodId].sourceStock = 88181;
       }
 
-
-
-      // 1. Kiểm tra cấu hình explicitly bị tắt
-      if (prodId && maps[prodId] && maps[prodId].enabled === false) {
+      // 1. Kiểm tra cấu hình explicitly bị tắt hoặc đánh dấu local
+      if (prodId && maps[prodId] && (maps[prodId].enabled === false || maps[prodId].deliveryType === "local")) {
+        return null;
+      }
+      if (prodObj && prodObj.id && maps[prodObj.id] && (maps[prodObj.id].enabled === false || maps[prodObj.id].deliveryType === "local")) {
         return null;
       }
 
@@ -23905,27 +23947,18 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         }
       } catch(e) {}
 
-      // 3. Fallback: nếu sản phẩm chưa có mapping hợp lệ trong maps/SSOT, dùng defaultMappings
-      if (prodId && defaultMappings[prodId]) {
-        return enrichMapping(defaultMappings[prodId]);
-      }
-      if (prodObj && prodObj.id && defaultMappings[prodObj.id]) {
-        return enrichMapping(defaultMappings[prodObj.id]);
-      }
-
-      // 2.1 Tra cứu theo khóa sao lưu độc lập mmo_api_map_[id]
-      try {
-        const storedMap = (prodId ? localStorage.getItem("mmo_api_map_" + prodId) : null) || (prodObj && prodObj.id ? localStorage.getItem("mmo_api_map_" + prodObj.id) : null);
-        if (storedMap) {
-          const parsedM = JSON.parse(storedMap);
-          if (parsedM && parsedM.enabled && parsedM.sourceProdId) {
-            return enrichMapping(parsedM);
-          }
+      // 3. Fallback: nếu sản phẩm chưa có mapping hợp lệ trong maps/SSOT, dùng defaultMappings (CHỈ KHI không phải kho nội bộ)
+      if (!isExplicitLocal) {
+        if (prodId && defaultMappings[prodId] && (!maps[prodId] || (maps[prodId].enabled !== false && maps[prodId].deliveryType !== "local"))) {
+          return enrichMapping(defaultMappings[prodId]);
         }
-      } catch(e) {}
+        if (prodObj && prodObj.id && defaultMappings[prodObj.id] && (!maps[prodObj.id] || (maps[prodObj.id].enabled !== false && maps[prodObj.id].deliveryType !== "local"))) {
+          return enrichMapping(defaultMappings[prodObj.id]);
+        }
+      }
 
-      // 4. Tra cứu theo tên sản phẩm (CHỈ khi tham số truyền vào là chuỗi tên, TUYỆT ĐỐI không áp dụng khi là mã ID)
-      if (!isIdKey && prodName) {
+      // 4. Tra cứu theo tên sản phẩm (CHỈ khi không phải kho nội bộ và tham số truyền vào là chuỗi tên, TUYỆT ĐỐI không áp dụng khi là mã ID)
+      if (!isExplicitLocal && !isIdKey && prodName) {
         const lowerPN = prodName.toLowerCase().trim();
         const isGenericName = ["default", "gói 1", "gói 2", "gói 3", "gói 4", "hotmail live", "mail 24h", "mặc định"].includes(lowerPN);
         if (!isGenericName) {
@@ -34534,8 +34567,9 @@ function executeCompareSourcesSearch() {
           if (dtlAdminSourceBox) dtlAdminSourceBox.innerHTML = "";
         } else {
           quickStockWrap.style.setProperty("display", "block", "important");
-        const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (p.apiMapping || null);
-          const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p)) || !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
+        const isExplicitLocal = (p.deliveryType === "local" || p.delivery_type === "local" || p.deliveryType === "manual" || p.delivery_type === "manual");
+        const existingMap = (!isExplicitLocal && typeof getApiProductMapping === "function") ? getApiProductMapping(p.id) : (isExplicitLocal ? null : (p.apiMapping || null));
+        const isApi = !isExplicitLocal && ((p.deliveryType === "api" || p.delivery_type === "api") || (typeof isProductApi === "function" && isProductApi(p)) || !!(existingMap && existingMap.enabled && existingMap.sourceProdId));
           
           let btn = quickStockWrap.querySelector("button") || document.getElementById("btnDtlAdminStock");
           if (!btn) {
@@ -34888,10 +34922,11 @@ function executeCompareSourcesSearch() {
 
       const prodId = p.id;
       const varIdx = (typeof currentSelectedVariantIndex === "number") ? currentSelectedVariantIndex : 0;
-      const existingMap = (typeof getApiProductMapping === "function") ? getApiProductMapping(prodId) : (p.apiMapping || null);
-      const isApi = (p.deliveryType === "api" || p.delivery_type === "api") || 
+      const isExplicitLocal = (p.deliveryType === "local" || p.delivery_type === "local" || p.deliveryType === "manual" || p.delivery_type === "manual");
+      const existingMap = (!isExplicitLocal && typeof getApiProductMapping === "function") ? getApiProductMapping(prodId) : (isExplicitLocal ? null : (p.apiMapping || null));
+      const isApi = !isExplicitLocal && ((p.deliveryType === "api" || p.delivery_type === "api") || 
                     (typeof isProductApi === "function" && isProductApi(p)) || 
-                    !!(existingMap && existingMap.enabled && existingMap.sourceProdId);
+                    !!(existingMap && existingMap.enabled && existingMap.sourceProdId));
 
       // Chuyển sang giao diện Quản Trị
       if (typeof switchView === "function") {
