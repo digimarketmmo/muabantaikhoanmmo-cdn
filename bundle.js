@@ -328,6 +328,8 @@ window.isForeignKhotaikhoansoOrder = isForeignKhotaikhoansoOrder;
 
 function cleanForeignKhotaikhoansoStorage() {
   if (typeof localStorage === "undefined") return;
+  if (window._hasCleanedForeignStorage) return;
+  window._hasCleanedForeignStorage = true;
   const keysToClean = ["mmo_pre_orders", "mmo_all_orders", "mmo_orders", "mmo_user_orders", "mmo_balance_logs", "mmo_registered_users"];
   keysToClean.forEach(function(k) {
     try {
@@ -17719,6 +17721,11 @@ const pillsContainer = document.getElementById("dtlVariantPills");
       const needsRender = !!forceRefresh || !window._adminTabRendered[tabId] || !!window._adminTabDirty[tabId];
       if (!needsRender) {
         // Tab đã có sẵn trong DOM và hoàn toàn sạch sẽ, chuyển hiển thị 0ms tức thì!
+        if (isOrdersTab) {
+          if (typeof switchAdmTxSubTab === "function") switchAdmTxSubTab("orders");
+        } else if (tabId === "tabAdmTxLogs") {
+          if (typeof switchAdmTxSubTab === "function") switchAdmTxSubTab("walletTx");
+        }
         return;
       }
 
@@ -28577,11 +28584,11 @@ function executeCompareSourcesSearch() {
       try {
         const alerts = (typeof computeApiSourceAlerts === "function") ? computeApiSourceAlerts() : [];
         const lossAlerts = alerts.filter(a => a.isLoss && a.product);
-        if (lossAlerts.length > 0) {
+        const isAdm = (typeof isCurrentUserAdminOrAdminView === "function") ? isCurrentUserAdminOrAdminView() : false;
+        if (lossAlerts.length > 0 && isAdm) {
           console.log("[AutoPriceProtect] Phát hiện " + lossAlerts.length + " sản phẩm có nguy cơ bán lỗ -> Tự động tăng giá bảo vệ!");
           const count = applyAutoPriceBoostToAllLoss(false);
-          const isAdm = (typeof isCurrentUserAdminOrAdminView === "function") ? isCurrentUserAdminOrAdminView() : false;
-          if (count > 0 && isAdm && typeof showToast === "function") {
+          if (count > 0 && typeof showToast === "function") {
             const configuredPct = getAutoPriceMarginPercent();
             showToast("🛡️ ĐÃ TỰ ĐỘNG TĂNG GIÁ " + count + " SẢN PHẨM CHỐNG BÁN LỖ (+" + configuredPct + "% THEO CÀI ĐẶT)!", "success");
           }
@@ -40620,13 +40627,20 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
             ? MMO_WORKER_API.getApiUrl()
             : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+          const sTok = (typeof getUserSessionToken === "function") ? getUserSessionToken() : "";
+          const depHeaders = { "Content-Type": "application/json" };
+          if (sTok) {
+            depHeaders["Authorization"] = "Bearer " + sTok;
+            depHeaders["x-user-token"] = sTok;
+          }
           fetch(workerUrl + "/api/deposit/create", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: depHeaders,
             body: JSON.stringify({
               orderId: depositOrderCode,
               amount: amount,
-              email: currentUser.email
+              email: currentUser.email,
+              sessionToken: sTok
             })
           }).catch(() => {});
         } catch(eDepWorker) {}
@@ -47255,7 +47269,19 @@ function initMMOApplication() {
     }
     window.isOrderWarrantyOrExchange = isOrderWarrantyOrExchange;
 
-    function getAllOrders() {
+    var _cachedAllOrders = null;
+    var _cachedAllOrdersTime = 0;
+    function markAllOrdersCacheDirty() {
+      _cachedAllOrders = null;
+      _cachedAllOrdersTime = 0;
+    }
+    window.markAllOrdersCacheDirty = markAllOrdersCacheDirty;
+
+    function getAllOrders(forceRefresh = false) {
+      const now = Date.now();
+      if (!forceRefresh && _cachedAllOrders && (now - _cachedAllOrdersTime < 1500)) {
+        return _cachedAllOrders;
+      }
       let all = [];
       if (typeof cleanForeignKhotaikhoansoStorage === "function") cleanForeignKhotaikhoansoStorage();
       const idMap = new Map();
@@ -47428,11 +47454,14 @@ function initMMOApplication() {
         });
       }
 
+      _cachedAllOrders = all;
+      _cachedAllOrdersTime = Date.now();
       return all;
     }
     window.getAllOrders = getAllOrders;
 
     function saveAllOrders(orders) {
+      if (typeof markAllOrdersCacheDirty === "function") markAllOrdersCacheDirty();
       if (!Array.isArray(orders)) return;
       try {
         localStorage.setItem("mmo_all_orders", JSON.stringify(orders));
