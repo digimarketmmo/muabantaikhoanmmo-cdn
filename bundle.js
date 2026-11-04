@@ -6134,6 +6134,497 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   }
 ];
 
+    // HÀM TỰ ĐỘNG XÓA SẠCH 100% DỮ LIỆU DEMO / ĐƠN ẢO / TỒN KHO ẢO KHI KHỞI ĐỘNG
+    function purgeAllSystemDemoData() {
+      // Đã hoàn thành dọn dẹp hệ thống. Vô hiệu hóa vĩnh viễn để bảo vệ 100% dữ liệu đơn hàng và kho hàng thật của khách.
+      return;
+    }
+    window.purgeAllSystemDemoData = purgeAllSystemDemoData;
+    try { purgeAllSystemDemoData(); } catch(e) {}
+
+    function getDeletedUserEmails() {
+      try {
+        const raw = localStorage.getItem("mmo_deleted_users");
+        const arr = raw ? JSON.parse(raw) : [];
+        return Array.isArray(arr) ? arr.map(e => String(e || "").toLowerCase().trim()).filter(Boolean) : [];
+      } catch(e) { return []; }
+    }
+    window.getDeletedUserEmails = getDeletedUserEmails;
+
+    function getRegisteredUsers() {
+      try {
+        const deletedEmails = getDeletedUserEmails();
+        const stored = localStorage.getItem("mmo_registered_users");
+        let users = stored ? JSON.parse(stored) : null;
+        if (!Array.isArray(users) || users.length === 0) {
+          users = JSON.parse(JSON.stringify(DEFAULT_REGISTERED_USERS)).filter(du => !deletedEmails.includes((du.email || "").toLowerCase().trim()));
+          safeStorageSet("mmo_registered_users", JSON.stringify(users));
+        } else if (Array.isArray(DEFAULT_REGISTERED_USERS) && DEFAULT_REGISTERED_USERS.length > 0) {
+          const uMap = new Map();
+          users.forEach(u => {
+            const em = (u && u.email) ? u.email.toLowerCase().trim() : "";
+            if (em && !deletedEmails.includes(em)) uMap.set(em, u);
+          });
+          let added = false;
+          DEFAULT_REGISTERED_USERS.forEach(du => {
+            const em = (du.email || "").toLowerCase().trim();
+            if (em && !uMap.has(em) && !deletedEmails.includes(em)) {
+              uMap.set(em, du);
+              added = true;
+            }
+          });
+          if (added) {
+            users = Array.from(uMap.values());
+            try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
+          }
+        }
+
+        // Tự động xoá sạch hoàn toàn tất cả khách hàng mẫu demo và tài khoản test
+        const DEMO_EMAILS = [
+          "hungmmo88@gmail.com",
+          "ductran.ads@gmail.com",
+          "namle.affiliate@gmail.com",
+          "khachhang@gmail.com",
+          "khach@gmail.com",
+          "test@gmail.com",
+          "test_refund_user@gmail.com",
+          "testxyz999@gmail.com",
+          "test_new_user_87654@gmail.com",
+          "testspeed1@gmail.com",
+          "test@example.com",
+          "test_deposit@gmail.com",
+          "khachhangtest@example.com",
+          "test_admin_ultra@example.com",
+          "test@muabantaikhoanmmo.com",
+          "check_simulate@muabantaikhoanmmo.com",
+          "customer123@gmail.com"
+        ];
+        const prevCount = users.length;
+        users = users.filter(u => {
+          const em = (u.email || "").toLowerCase().trim();
+          const nm = (u.name || "").toLowerCase().trim();
+          if (DEMO_EMAILS.includes(em) || deletedEmails.includes(em)) return false;
+          if (em.includes("test") || em.includes("example.com")) return false;
+          if (nm.includes("mẫu") || nm.includes("khách hàng mẫu")) return false;
+          return true;
+        });
+
+        // Đảm bảo Root Admin luôn tồn tại với vai trò Quản Trị Viên
+        if (!users.some(u => (u.email || "").toLowerCase().trim() === ROOT_ADMIN_EMAIL.toLowerCase().trim())) {
+          users.unshift(DEFAULT_REGISTERED_USERS[0]);
+        }
+
+        // Tự động lưu lại bộ nhớ nếu vừa dọn dẹp các tài khoản mẫu
+        if (users.length !== prevCount) {
+          try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
+        }
+
+        // H1 Patch: Tự động loại bỏ 100% mật khẩu plaintext còn sót lại trong bộ nhớ client
+        let hasPlaintextPass = false;
+        users.forEach(u => {
+          if (u && u.password) {
+            delete u.password;
+            hasPlaintextPass = true;
+          }
+        });
+        if (hasPlaintextPass) {
+          try { localStorage.setItem("mmo_registered_users", JSON.stringify(users)); } catch(e) {}
+        }
+
+        // Synchronize with currently active user session
+        if (currentUser && currentUser.email) {
+          if (currentUser.password) {
+            delete currentUser.password;
+            try { safeStorageSet("mmo_user", JSON.stringify(currentUser)); } catch(e) {}
+          }
+          const emailLower = currentUser.email.toLowerCase().trim();
+          const idx = users.findIndex(u => (u.email || "").toLowerCase().trim() === emailLower);
+          if (idx !== -1) {
+            const curB = (currentUser.balance !== undefined && !isNaN(Number(currentUser.balance))) ? Number(currentUser.balance) : Number(users[idx].balance || 0);
+            currentUser.balance = curB;
+            users[idx].balance = curB;
+            currentUser.name = users[idx].name || currentUser.name;
+            currentUser.role = users[idx].role || currentUser.role;
+          }
+        }
+
+        return users;
+      } catch(e) {
+        return JSON.parse(JSON.stringify(DEFAULT_REGISTERED_USERS));
+      }
+    }
+    window.getRegisteredUsers = getRegisteredUsers;
+
+    function saveRegisteredUsers(users) {
+      try {
+        if (Array.isArray(users)) {
+          // H1 Patch: Xóa vĩnh viễn plaintext password khỏi mảng thành viên lưu ở client
+          users.forEach(u => {
+            if (u && typeof u === "object" && u.password) {
+              delete u.password;
+            }
+          });
+        }
+        localStorage.setItem("mmo_registered_users", JSON.stringify(users));
+        const curTab = localStorage.getItem("mmo_admin_tab");
+        const curView = localStorage.getItem("mmo_current_view");
+        if (curView === "viewAdmin" && curTab === "tabAdmUsers") {
+          if (typeof renderAdminUsersTable === "function") renderAdminUsersTable();
+        }
+      } catch(e) {}
+    }
+    window.saveRegisteredUsers = saveRegisteredUsers;
+
+
+    function isUserLocked(email) {
+      if (!email) return false;
+      const cleanEmail = String(email).trim().toLowerCase();
+      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
+      if (cleanEmail === rootEmail) return false;
+
+      // Ưu tiên kiểm tra danh sách thành viên thực tế
+      if (typeof getRegisteredUsers === "function") {
+        try {
+          const users = getRegisteredUsers();
+          const u = users.find(x => String(x.email || "").toLowerCase().trim() === cleanEmail);
+          if (u) {
+            const locked = Boolean(u.isLocked === true || u.status === "LOCKED");
+            if (!locked) {
+              // Tự động dọn dẹp mmo_locked_emails nếu tài khoản đang Hoạt Động
+              try {
+                let lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
+                if (Array.isArray(lockedList) && lockedList.includes(cleanEmail)) {
+                  lockedList = lockedList.filter(e => String(e||"").toLowerCase().trim() !== cleanEmail);
+                  localStorage.setItem("mmo_locked_emails", JSON.stringify(lockedList));
+                }
+              } catch(e) {}
+            }
+            return locked;
+          }
+        } catch(e) {}
+      }
+
+      try {
+        const lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
+        if (Array.isArray(lockedList) && lockedList.map(e => String(e||"").toLowerCase().trim()).includes(cleanEmail)) {
+          return true;
+        }
+      } catch(e) {}
+
+      return false;
+    }
+    window.isUserLocked = isUserLocked;
+
+    // KIỂM TRA TRẠNG THÁI KHÓA TÀI KHOẢN TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO (SSOT 24/7)
+    var _lastUserLockCheckTimes = {};
+    async function checkUserLockedFromCloud(email) {
+      if (!email) return false;
+      const cleanEmail = String(email).trim().toLowerCase();
+      const rootEmail = (typeof ROOT_ADMIN_EMAIL !== "undefined" ? ROOT_ADMIN_EMAIL : "manhdongvtc@gmail.com").toLowerCase().trim();
+      if (cleanEmail === rootEmail || cleanEmail === "manhdongvtc@gmail.com" || (typeof isAdminUser === "function" && isAdminUser({ email: cleanEmail }))) return false;
+
+      // Rate limit: Không kiểm tra cùng 1 tài khoản quá nhiều lần trong 30 giây để tránh nghẽn luồng
+      const now = Date.now();
+      if (_lastUserLockCheckTimes[cleanEmail] && (now - _lastUserLockCheckTimes[cleanEmail] < 30000)) {
+        return false;
+      }
+      _lastUserLockCheckTimes[cleanEmail] = now;
+
+      // 1. TRUY VẤN TRỰC TIẾP TỪ CLOUDFLARE WORKER TURSO DATABASE (SSOT 24/7)
+      try {
+        const workerUrl = (typeof MMO_WORKER_API !== "undefined" && MMO_WORKER_API.getApiUrl)
+          ? MMO_WORKER_API.getApiUrl()
+          : "https://mmo-shop-api.muabantaikhoanmmo.workers.dev";
+
+        const sTok = (typeof sessionStorage !== "undefined" && sessionStorage.getItem("mmo_session_token")) ||
+                     (typeof localStorage !== "undefined" && localStorage.getItem("mmo_session_token")) || "";
+        const pHeaders = { "Cache-Control": "no-store" };
+        if (sTok) pHeaders["Authorization"] = "Bearer " + sTok;
+
+        const resp = await fetch(workerUrl + "/api/user/profile?email=" + encodeURIComponent(cleanEmail), {
+          cache: "no-store",
+          headers: pHeaders
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data && data.success && data.user) {
+            const isLocked = Boolean(data.user.is_locked || data.user.isLocked || data.user.status === "LOCKED");
+
+            // Cập nhật lại mmo_locked_emails trong localStorage theo đúng Cloud
+            try {
+              let lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
+              if (!Array.isArray(lockedList)) lockedList = [];
+              if (isLocked) {
+                if (!lockedList.includes(cleanEmail)) lockedList.push(cleanEmail);
+              } else {
+                lockedList = lockedList.filter(e => String(e||"").toLowerCase().trim() !== cleanEmail);
+              }
+              localStorage.setItem("mmo_locked_emails", JSON.stringify(lockedList));
+            } catch(e) {}
+
+            // Cập nhật lại mmo_registered_users theo đúng Cloud
+            try {
+              let users = getRegisteredUsers();
+              const idx = users.findIndex(u => (u.email || "").toLowerCase().trim() === cleanEmail);
+              if (idx !== -1) {
+                users[idx].isLocked = isLocked;
+                users[idx].status = isLocked ? "LOCKED" : "ACTIVE";
+                saveRegisteredUsers(users);
+              }
+            } catch(e) {}
+
+            // Nếu tài khoản đã được mở khóa trên Cloud, tự động đóng modal thông báo khóa
+            if (!isLocked) {
+              const modal = document.getElementById("accountLockedModal");
+              if (modal) modal.style.display = "none";
+            }
+
+            return isLocked;
+          }
+        }
+      } catch(err) {
+        console.warn("checkUserLockedFromCloud warning:", err);
+      }
+
+      // 2. Chỉ khi mất mạng hoàn toàn / lỗi kết nối mới fallback về localStorage
+      if (typeof isUserLocked === "function") {
+        return isUserLocked(cleanEmail);
+      }
+
+      return false;
+    }
+    window.checkUserLockedFromCloud = checkUserLockedFromCloud;
+
+    // HÀM LẤY TOÀN BỘ THÔNG TIN LIÊN HỆ ĐỘNG 100% THEO CÀI ĐẶT HỆ THỐNG
+    function getSystemContactInfo() {
+      let s = {};
+      try {
+        if (typeof getGeneralSettings === "function") {
+          s = getGeneralSettings();
+        } else {
+          const stored = localStorage.getItem("mmo_system_settings") || localStorage.getItem("mmo_general_settings");
+          if (stored) s = JSON.parse(stored);
+        }
+      } catch(e) {}
+
+      // 1. Hotline / Zalo Phone
+      let rawPhone = String(s.hotline || s.phone || s.zalo || "0975902076").trim();
+      let cleanPhone = rawPhone.replace(/[^0-9]/g, "");
+      if (!cleanPhone || cleanPhone.length < 9 || cleanPhone === "0968033451" || cleanPhone.includes("0968033451") || rawPhone.includes("0968.033.451")) {
+        cleanPhone = "0975902076";
+      }
+      if (!cleanPhone.startsWith("0")) cleanPhone = "0" + cleanPhone;
+
+      let formattedPhone = "0975.902.076";
+      if (cleanPhone === "0975902076") {
+        formattedPhone = "0975.902.076";
+      } else if (cleanPhone.length === 10) {
+        formattedPhone = cleanPhone.slice(0, 4) + "." + cleanPhone.slice(4, 7) + "." + cleanPhone.slice(7);
+      } else if (cleanPhone.length === 11) {
+        formattedPhone = cleanPhone.slice(0, 5) + "." + cleanPhone.slice(5, 8) + "." + cleanPhone.slice(8);
+      }
+
+      // 2. Email hỗ trợ chính thức
+      let email = String(s.email || s.supportEmail || s.adminEmail || s.contactEmail || "muabantaikhoanmmo@gmail.com").trim().toLowerCase();
+      if (!email || !email.includes("@") || email === "manhdongvtc@gmail.com" || email.includes("manhdongvtc")) {
+        email = "muabantaikhoanmmo@gmail.com";
+      }
+
+      // 3. Telegram Group / Cộng đồng & Telegram Channel / Kênh
+      let rawTeleGroup = String(s.telegramGroup || s.telegram || s.tele || "https://t.me/groupmuabantaikhoanmmo").trim();
+      let teleGroupUrl = rawTeleGroup;
+      if (!teleGroupUrl.startsWith("http://") && !teleGroupUrl.startsWith("https://")) {
+        teleGroupUrl = "https://" + teleGroupUrl.replace(/^@/, "t.me/");
+      }
+      let teleGroupHandle = rawTeleGroup.replace(/^https?:\/\/t\.me\//, "@").replace(/^https?:\/\/telegram\.me\//, "@");
+      if (!teleGroupHandle.startsWith("@")) teleGroupHandle = "@" + teleGroupHandle;
+
+      let rawTeleChannel = String(s.telegramChannel || s.telegram || "https://t.me/muabantaikhoanmmo").trim();
+      let teleChannelUrl = rawTeleChannel;
+      if (!teleChannelUrl.startsWith("http://") && !teleChannelUrl.startsWith("https://")) {
+        teleChannelUrl = "https://" + teleChannelUrl.replace(/^@/, "t.me/");
+      }
+      let teleChannelHandle = rawTeleChannel.replace(/^https?:\/\/t\.me\//, "@").replace(/^https?:\/\/telegram\.me\//, "@");
+      if (!teleChannelHandle.startsWith("@")) teleChannelHandle = "@" + teleChannelHandle;
+
+      return {
+        phone: cleanPhone,
+        formattedPhone: formattedPhone,
+        zaloUrl: "https://zalo.me/" + cleanPhone,
+        email: email,
+        telegramUrl: teleGroupUrl,
+        telegramHandle: teleGroupHandle,
+        telegramGroupUrl: teleGroupUrl,
+        telegramGroupHandle: teleGroupHandle,
+        telegramChannelUrl: teleChannelUrl,
+        telegramChannelHandle: teleChannelHandle
+      };
+    }
+    window.getSystemContactInfo = getSystemContactInfo;
+
+    function showAccountLockedModal(email) {
+      const contact = getSystemContactInfo();
+      let modal = document.getElementById("accountLockedModal");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "accountLockedModal";
+        modal.className = "mmo-modal-backdrop";
+        modal.style.cssText = "display:flex; position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:16px;";
+        document.body.appendChild(modal);
+      }
+
+      modal.innerHTML = `
+        <div style="background:#0f172a; border:2px solid #ef4444; border-radius:16px; max-width:480px; width:100%; box-shadow:0 20px 50px rgba(239,68,68,0.4); overflow:hidden; animation:modalPopIn 0.3s ease;">
+          <div style="background:linear-gradient(135deg, rgba(239,68,68,0.25), rgba(185,28,28,0.45)); padding:22px; text-align:center; border-bottom:1px solid rgba(239,68,68,0.3);">
+            <div style="width:64px; height:64px; border-radius:50%; background:rgba(239,68,68,0.2); border:2px solid #ef4444; color:#ef4444; font-size:30px; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px; box-shadow:0 0 20px rgba(239,68,68,0.4);">
+              <i class="fa-solid fa-user-lock"></i>
+            </div>
+            <h3 style="color:#ef4444; margin:0; font-size:1.3rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">Tài Khoản Tạm Khóa</h3>
+          </div>
+          <div style="padding:24px 20px; text-align:center;">
+            <p style="color:#fca5a5; font-size:1.05rem; font-weight:700; line-height:1.6; margin:0 0 18px 0;">
+              Tài khoản nghi ngờ gian lận, vui lòng liên hệ admin để mở khóa.
+            </p>
+            <div id="accountLockedEmailNotice" style="font-size:0.85rem; color:#94a3b8; margin-bottom:14px; display:${email ? 'block' : 'none'};">
+              Tài khoản: <strong style="color:#f87171;">${email ? (typeof escapeHtml === "function" ? escapeHtml(email) : email) : ''}</strong>
+            </div>
+            <div style="background:#090e17; border:1px solid #1e293b; border-radius:10px; padding:14px; text-align:left; font-size:0.88rem; color:#cbd5e1; margin-bottom:20px; display:flex; flex-direction:column; gap:10px;">
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="color:#94a3b8;"><i class="fa-solid fa-phone" style="color:#38bdf8; width:18px;"></i> Hotline / Zalo:</span>
+                <a href="${contact.zaloUrl}" target="_blank" style="color:#38bdf8; font-weight:700; text-decoration:none;">${contact.formattedPhone}</a>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="color:#94a3b8;"><i class="fa-brands fa-telegram" style="color:#0ea5e9; width:18px;"></i> Telegram:</span>
+                <a href="${contact.telegramUrl}" target="_blank" style="color:#38bdf8; font-weight:700; text-decoration:none;">${contact.telegramHandle}</a>
+              </div>
+              <div style="display:flex; align-items:center; justify-content:space-between;">
+                <span style="color:#94a3b8;"><i class="fa-solid fa-envelope" style="color:#f59e0b; width:18px;"></i> Email:</span>
+                <a href="mailto:${contact.email}" style="color:#fff; font-weight:600; text-decoration:none;">${contact.email}</a>
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; justify-content:center;">
+              <a href="${contact.zaloUrl}" target="_blank" style="flex:1; padding:12px 16px; background:#0284c7; color:#fff; border-radius:8px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px; font-size:0.9rem;">
+                <i class="fa-solid fa-comment-dots"></i> Liên Hệ Mở Khóa (Zalo)
+              </a>
+              <button type="button" onclick="closeAccountLockedModal()" style="padding:12px 20px; background:#1e293b; color:#94a3b8; border:1px solid #334155; border-radius:8px; font-weight:600; cursor:pointer; font-size:0.9rem;">
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      modal.style.display = "flex";
+
+      if (typeof showToast === "function") {
+        showToast("🚫 Tài khoản nghi ngờ gian lận, vui lòng liên hệ admin để mở khóa", "danger", 8000);
+      }
+    }
+    window.showAccountLockedModal = showAccountLockedModal;
+
+    function closeAccountLockedModal() {
+      const m = document.getElementById("accountLockedModal");
+      if (m) m.style.display = "none";
+    }
+    window.closeAccountLockedModal = closeAccountLockedModal;
+
+    function forceLogoutLockedUser(email) {
+      const cleanEmail = String(email || (currentUser && currentUser.email) || "").trim().toLowerCase();
+      currentUser = null;
+      try { localStorage.removeItem("mmo_user"); } catch(e) {}
+      try { sessionStorage.removeItem("mmo_user"); } catch(e) {}
+      try { localStorage.setItem("mmo_current_view", "viewStore"); } catch(e) {}
+
+      if (cleanEmail) {
+        try {
+          let lockedList = JSON.parse(localStorage.getItem("mmo_locked_emails") || "[]");
+          if (!Array.isArray(lockedList)) lockedList = [];
+          if (!lockedList.includes(cleanEmail)) lockedList.push(cleanEmail);
+          localStorage.setItem("mmo_locked_emails", JSON.stringify(lockedList));
+        } catch(e) {}
+      }
+
+      if (typeof updateUserUI === "function") updateUserUI();
+      if (typeof switchView === "function") switchView("viewStore");
+      showAccountLockedModal(cleanEmail);
+    }
+    window.forceLogoutLockedUser = forceLogoutLockedUser;
+    
+    function loadStoredUser() {
+      try {
+        const stored = safeStorageGet("mmo_user");
+        if (stored) {
+          currentUser = JSON.parse(stored);
+          if (currentUser) {
+            // Dọn dẹp phiên thử nghiệm ADMIN_ROOT nếu còn sót
+            if (currentUser.userId === "ADMIN_ROOT") {
+              localStorage.removeItem("mmo_user");
+              currentUser = null;
+              if (typeof updateUserUI === "function") updateUserUI();
+              return;
+            }
+
+            // Kiểm tra tài khoản có bị khóa từ Cloudflare Worker Turso Database (SSOT)
+            if (currentUser.email) {
+              checkUserLockedFromCloud(currentUser.email).then(isLocked => {
+                if (isLocked) {
+                  forceLogoutLockedUser(currentUser.email);
+                }
+              }).catch(() => {});
+            }
+          }
+          if (currentUser && currentUser.email) {
+            const users = getRegisteredUsers();
+            const found = users.find(u => (u.email || "").toLowerCase().trim() === currentUser.email.toLowerCase().trim());
+            if (found) {
+              if (found.isLocked) {
+                checkUserLockedFromCloud(currentUser.email).then(isLocked => {
+                  if (isLocked) forceLogoutLockedUser(currentUser.email);
+                }).catch(() => {});
+              }
+              // Đồng bộ số dư chuẩn từ session người dùng (cho phép trừ tiền khi thuê sim / mua hàng)
+              if (currentUser.balance !== undefined && currentUser.balance !== null && !isNaN(Number(currentUser.balance))) {
+                found.balance = Number(currentUser.balance);
+              } else if (found.balance !== undefined && found.balance !== null && !isNaN(Number(found.balance))) {
+                currentUser.balance = Number(found.balance);
+              } else {
+                currentUser.balance = 0;
+                found.balance = 0;
+              }
+              currentUser.role = found.role || currentUser.role;
+              currentUser.name = found.name || currentUser.name;
+              currentUser.avatar = found.avatar || currentUser.avatar;
+              safeStorageSet("mmo_user", JSON.stringify(currentUser));
+            } else {
+              if (currentUser.balance === undefined || currentUser.balance === null) {
+                currentUser.balance = 0;
+                safeStorageSet("mmo_user", JSON.stringify(currentUser));
+              }
+            }
+            // Đồng bộ lịch sử giao dịch và số dư thực tế từ Turso DB SSOT
+            if (typeof loadUserWalletFromCloud === "function") {
+              loadUserWalletFromCloud();
+            }
+          }
+          if (typeof updateUserUI === "function") updateUserUI();
+        } else {
+          currentUser = null;
+          if (typeof updateUserUI === "function") updateUserUI();
+        }
+      } catch(e) {
+        console.error("loadStoredUser error:", e);
+      }
+    }
+    window.loadStoredUser = loadStoredUser;
+
+    // =========================================================================
+    // ADMIN PRIVILEGES & ADMIN ROLES SYSTEM
+    // =========================================================================
+    // ROOT_ADMIN_EMAIL already declared above
+    var DEFAULT_ADMIN_EMAILS = [
+      "manhdongvtc@gmail.com"
+    ];
+
     function getAdminEmails() {
       try {
         const stored = localStorage.getItem("mmo_admin_emails");
