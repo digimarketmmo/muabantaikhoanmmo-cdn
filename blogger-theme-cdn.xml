@@ -191,18 +191,56 @@
       #recommendedGrid, .recommended-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 8px !important; width: 100% !important; }
     }
 
+    /* 2b. Khối Đề Xuất Cho Bạn trong chi tiết sản phẩm: Tự co giãn linh hoạt theo màn hình */
+    .dtl-related-5cols-grid, #dtlRelatedProductsGrid {
+      display: grid !important;
+      grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+      gap: 10px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    @media (max-width: 1200px) and (min-width: 850px) {
+      .dtl-related-5cols-grid, #dtlRelatedProductsGrid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+      }
+    }
+    @media (max-width: 849px) and (min-width: 550px) {
+      .dtl-related-5cols-grid, #dtlRelatedProductsGrid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+      }
+    }
+    @media (max-width: 549px) {
+      .dtl-related-5cols-grid, #dtlRelatedProductsGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+      }
+    }
+
     /* 3. Trang chi tiết sản phẩm chuẩn hóa Responsive và Anti-Flicker: Không bao giờ tràn ngang */
+    .variant-pills-list {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 8px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
     .variant-pill-option {
       display: flex !important;
       align-items: center !important;
       justify-content: space-between !important;
-      gap: 10px !important;
+      flex-wrap: nowrap !important;
+      gap: 8px !important;
       white-space: nowrap !important;
       overflow: hidden !important;
       min-width: 0 !important;
+      width: 100% !important;
       box-sizing: border-box !important;
+      padding: 10px 14px !important;
     }
-    .variant-pill-option span:first-child {
+    .variant-pill-option .var-name,
+    .variant-pill-option > span:first-child:not(.var-stock):not(.var-price) {
       flex: 1 1 auto !important;
       min-width: 0 !important;
       max-width: 100% !important;
@@ -211,17 +249,27 @@
       text-overflow: ellipsis !important;
       display: block !important;
     }
-    .variant-pill-option span:first-child small {
-      display: inline !important;
-      white-space: nowrap !important;
-    }
-    .variant-pill-option span:last-child {
+    .variant-pill-option .var-stock,
+    .variant-pill-option span:nth-child(2):not(:last-child),
+    .variant-pill-option small {
       flex: 0 0 auto !important;
       white-space: nowrap !important;
-      font-weight: 700 !important;
+      font-weight: 800 !important;
+      font-size: 0.8rem !important;
+      margin: 0 8px !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      display: inline-block !important;
+    }
+    .variant-pill-option .var-price,
+    .variant-pill-option > span:last-child {
+      flex: 0 0 auto !important;
+      white-space: nowrap !important;
+      font-weight: 800 !important;
       margin-left: auto !important;
       text-align: right !important;
       padding-left: 8px !important;
+      color: #38bdf8 !important;
     }
     html, body {
       overflow-x: hidden !important;
@@ -379,8 +427,8 @@
         box-sizing: border-box !important;
       }
       .variant-pills-list {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+        display: flex !important;
+        flex-direction: column !important;
         gap: 8px !important;
         width: 100% !important;
         box-sizing: border-box !important;
@@ -392,11 +440,78 @@
         gap: 10px !important;
         width: 100% !important;
       }
+      .detail-action-row .qty-counter {
+        flex: 0 0 auto !important;
+        height: 44px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        background: #090e17 !important;
+        border: 1px solid #1e293b !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+      }
+      .detail-action-row .coupon-box-wrap {
+        flex: 1 1 180px !important;
+        min-width: 160px !important;
+        height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        background: #090e17 !important;
+        border: 1px solid #1e293b !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+      }
+      .detail-action-row .coupon-box-wrap input,
+      #dtlCouponInput {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        width: auto !important;
+        height: 100% !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 8px 0 4px !important;
+        color: #ffffff !important;
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+      }
+      #dtlCouponInput:-webkit-autofill,
+      #dtlCouponInput:-webkit-autofill:hover, 
+      #dtlCouponInput:-webkit-autofill:focus {
+        -webkit-text-fill-color: #ffffff !important;
+        -webkit-box-shadow: 0 0 0px 1000px #090e17 inset !important;
+        transition: background-color 5000s ease-in-out 0s !important;
+      }
+      .detail-action-row .coupon-apply-btn {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        background: #1e293b !important;
+        border: none !important;
+        border-left: 1px solid #1e293b !important;
+        color: #94a3b8 !important;
+        padding: 0 14px !important;
+        height: 100% !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .detail-action-row .coupon-apply-btn:hover {
+        background: #334155 !important;
+        color: #ffffff !important;
+      }
       #btnDtlBuy {
         flex: 1 1 200px !important;
         min-width: 180px !important;
         height: 44px !important;
         margin: 0 !important;
+        white-space: nowrap !important;
       }
     }
 
@@ -408,8 +523,8 @@
     }
   </style>
   <link rel='preconnect' href='https://cdn.jsdelivr.net' crossorigin='anonymous'/>
-  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.11/bundle.min.js?v=6.9.9' as='script'/>
-  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.11/theme.min.css?v=6.9.9' as='style'/>
+  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.28/bundle.min.js?v=6.9.28' as='script'/>
+  <link rel='preload' href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.28/theme.min.css?v=6.9.28' as='style'/>
   <script>
     /* BẢO TỒN DỮ LIỆU KHO HÀNG ĐÃ XÓA (0MS) */
     try {
@@ -1587,7 +1702,7 @@
       }
     }
   </style>
-<link href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.11/theme.min.css?v=6.9.9' id='mmoCdnThemeCss' rel='stylesheet' onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/theme.min.css';"/>
+<link href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.28/theme.min.css?v=6.9.28' id='mmoCdnThemeCss' rel='stylesheet' onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/theme.min.css';"/>
 
   <!-- Google Identity Services -->
   <script src='https://accounts.google.com/gsi/client' async='' defer=''></script>
@@ -1613,8 +1728,8 @@
   <b:skin><![CDATA[
 /* ==========================================================================
    MUABANTAIKHOANMMO.COM - CDN THEME ENGINE
-   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.11/theme.min.css?v=6.9.9
-   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.11/bundle.min.js?v=6.9.9
+   CSS CDN: https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.28/theme.min.css?v=6.9.28
+   JS CDN:  https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.28/bundle.min.js?v=6.9.28
    ========================================================================== */
 body { margin: 0; padding: 0; background: #070a12; color: #cbd5e1; font-family: 'Plus Jakarta Sans', sans-serif; }
 
@@ -2095,8 +2210,8 @@ a, button, [onclick], .nav-link, .product-card, .blog-item, .category-card, .sid
   }
   /* DỒN BỚT CHỮ / BIẾN THỂ SANG BÊN PHẢI: Lưới 2 cột ngang */
   .variant-pills-list {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+    display: flex !important;
+    flex-direction: column !important;
     gap: 8px !important;
     width: 100% !important;
     box-sizing: border-box !important;
@@ -4729,8 +4844,8 @@ header.header {
         box-sizing: border-box !important;
       }
       .variant-pills-list {
-        display: grid !important;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)) !important;
+        display: flex !important;
+        flex-direction: column !important;
         gap: 8px !important;
         width: 100% !important;
         box-sizing: border-box !important;
@@ -4742,11 +4857,78 @@ header.header {
         gap: 10px !important;
         width: 100% !important;
       }
+      .detail-action-row .qty-counter {
+        flex: 0 0 auto !important;
+        height: 44px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        background: #090e17 !important;
+        border: 1px solid #1e293b !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+      }
+      .detail-action-row .coupon-box-wrap {
+        flex: 1 1 180px !important;
+        min-width: 160px !important;
+        height: 44px !important;
+        display: flex !important;
+        align-items: center !important;
+        background: #090e17 !important;
+        border: 1px solid #1e293b !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        box-sizing: border-box !important;
+      }
+      .detail-action-row .coupon-box-wrap input,
+      #dtlCouponInput {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        width: auto !important;
+        height: 100% !important;
+        background: transparent !important;
+        border: none !important;
+        padding: 0 8px 0 4px !important;
+        color: #ffffff !important;
+        font-size: 0.82rem !important;
+        font-weight: 600 !important;
+        outline: none !important;
+        box-sizing: border-box !important;
+      }
+      #dtlCouponInput:-webkit-autofill,
+      #dtlCouponInput:-webkit-autofill:hover, 
+      #dtlCouponInput:-webkit-autofill:focus {
+        -webkit-text-fill-color: #ffffff !important;
+        -webkit-box-shadow: 0 0 0px 1000px #090e17 inset !important;
+        transition: background-color 5000s ease-in-out 0s !important;
+      }
+      .detail-action-row .coupon-apply-btn {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        background: #1e293b !important;
+        border: none !important;
+        border-left: 1px solid #1e293b !important;
+        color: #94a3b8 !important;
+        padding: 0 14px !important;
+        height: 100% !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        letter-spacing: 0.5px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      .detail-action-row .coupon-apply-btn:hover {
+        background: #334155 !important;
+        color: #ffffff !important;
+      }
       #btnDtlBuy {
         flex: 1 1 200px !important;
         min-width: 180px !important;
         height: 44px !important;
         margin: 0 !important;
+        white-space: nowrap !important;
       }
     }
 
@@ -5022,6 +5204,20 @@ header.header {
     .dtl-article-list li {
       margin-bottom: 6px;
     }
+    /* Anti-Autofill shield for search inputs */
+    #searchInput:-webkit-autofill,
+    #searchInput:-webkit-autofill:hover,
+    #searchInput:-webkit-autofill:focus,
+    #searchInput:-webkit-autofill:active,
+    #allProdSearchInp:-webkit-autofill,
+    #allProdSearchInp:-webkit-autofill:hover,
+    #allProdSearchInp:-webkit-autofill:focus,
+    #allProdSearchInp:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px #090e17 inset !important;
+      -webkit-text-fill-color: #cbd5e1 !important;
+      caret-color: #cbd5e1 !important;
+      transition: background-color 5000s ease-in-out 0s !important;
+    }
   </style>
 </head>
 
@@ -5055,6 +5251,11 @@ header.header {
     //]]>
   </script>
 <body>
+  <!-- Browser Autofill Decoy Shield (Captures credential autofill so search inputs stay 100% clean) -->
+  <form autocomplete='off' style='position:absolute; width:1px; height:1px; opacity:0.001; pointer-events:none; overflow:hidden; left:-9999px; top:-9999px;' tabindex='-1' aria-hidden='true'>
+    <input type='text' name='username' tabindex='-1' autocomplete='username' />
+    <input type='password' name='password' tabindex='-1' autocomplete='current-password' />
+  </form>
 
   <!-- ==================== HEADER ==================== -->
   <header class='header'>
@@ -5204,7 +5405,7 @@ header.header {
         </p>
         <div class='hero-search-box'>
           <i class='fa-solid fa-magnifying-glass'></i>
-          <input autocomplete='off' id='searchInput' oninput='handleSearchInput(event)' onkeyup='handleSearchInput(event)' placeholder='Tìm kiếm dịch vụ, sản phẩm...' type='text'/>
+          <input autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' name='mmo_search_query' role='searchbox' data-lpignore='true' data-form-type='other' data-1p-ignore='true' id='searchInput' oninput='handleSearchInput(event)' onkeyup='handleSearchInput(event)' placeholder='Tìm kiếm dịch vụ, sản phẩm...' type='search'/>
           <button class='hero-search-btn' onclick='triggerSearch()' type='button'>Tìm kiếm</button>
           <div class='hero-search-dropdown' id='heroSearchDropdown'></div>
         </div>
@@ -5407,7 +5608,7 @@ header.header {
           <label style='font-size:0.75rem; font-weight:700; color:#94a3b8; text-transform:uppercase; display:block; margin-bottom:6px;'>Tìm kiếm</label>
           <div style='position:relative;'>
             <i class='fa-solid fa-magnifying-glass' style='position:absolute; left:10px; top:50%; transform:translateY(-50%); color:#64748b; font-size:0.8rem;'></i>
-            <input type='text' id='allProdSearchInp' placeholder='Tìm sản phẩm, game...' oninput='handleAllProdFilter()' style='width:100%; box-sizing:border-box; background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:8px 10px 8px 30px; color:#fff; font-size:0.82rem;' />
+            <input type='search' id='allProdSearchInp' name='mmo_all_prod_query' role='searchbox' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false' data-lpignore='true' data-form-type='other' data-1p-ignore='true' placeholder='Tìm sản phẩm, game...' oninput='handleAllProdFilter()' style='width:100%; box-sizing:border-box; background:#070a12; border:1px solid #1e293b; border-radius:8px; padding:8px 10px 8px 30px; color:#fff; font-size:0.82rem;' />
           </div>
         </div>
 
@@ -5743,8 +5944,8 @@ header.header {
                 <button class='qty-btn' onclick='changeDtlQty(1)'>+</button>
               </div>
               <div class='coupon-box-wrap'>
-                <input id='dtlCouponInput' placeholder='🎫 Mã giảm giá...' type='text'/>
-                <button class='coupon-apply-btn' onclick='applyCoupon()'>ÁP DỤNG</button>
+                <input autocomplete='one-time-code' autocapitalize='characters' autocorrect='off' data-1p-ignore='true' data-bwignore='true' data-form-type='other' data-lpignore='true' id='dtlCouponInput' name='mmo_discount_voucher' onfocus="if(this.value&amp;&amp;(this.value.includes('@')||this.value.includes('digimarketmmo'))){this.value='';}" placeholder='🎫 Mã giảm giá...' spellcheck='false' type='text'/>
+                <button class='coupon-apply-btn' onclick='applyCoupon()' type='button'>ÁP DỤNG</button>
               </div>
               <button class='btn-big-buy' id='btnDtlBuy' onclick='executeBuyCurrentProduct()'>
                 <i class='fa-solid fa-bolt' style='font-size:1.05rem;'></i> <span style='font-weight:700; letter-spacing:0.5px;'>MUA NGAY</span>
@@ -10493,9 +10694,14 @@ header.header {
             </button>
             <span style='font-size:0.75rem; color:#94a3b8;'>Kết nối thêm bất kỳ web API MMO nào theo nhu cầu của bạn</span>
           </div>
-          <button type='button' class='btn-auth' onclick='syncAllProductsStockFromSource(true)' style='background:linear-gradient(135deg,#0284c7,#10b981); border:none; padding:8px 20px; font-size:0.82rem; font-weight:800; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(2,132,199,0.3);'>
-            <i class='fa-solid fa-cloud-arrow-down'></i> 🔄 ĐỒNG BỘ TỒN KHO TẤT CẢ NGUỒN
-          </button>
+          <div style='display:flex; gap:10px; align-items:center;'>
+            <button type='button' class='btn-auth' onclick='fetchBothSourceBalances(true)' style='background:linear-gradient(135deg,#6366f1,#3b82f6); border:none; padding:8px 18px; font-size:0.82rem; font-weight:800; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(99,102,241,0.3); cursor:pointer;'>
+              <i class='fa-solid fa-rotate'></i> ⚡ ĐỒNG BỘ TẤT CẢ SỐ DƯ VÍ
+            </button>
+            <button type='button' class='btn-auth' onclick='syncAllProductsStockFromSource(true)' style='background:linear-gradient(135deg,#0284c7,#10b981); border:none; padding:8px 20px; font-size:0.82rem; font-weight:800; display:inline-flex; align-items:center; gap:8px; box-shadow:0 4px 12px rgba(2,132,199,0.3); cursor:pointer;'>
+              <i class='fa-solid fa-cloud-arrow-down'></i> 🔄 ĐỒNG BỘ TỒN KHO TẤT CẢ NGUỒN
+            </button>
+          </div>
         </div>
 
         <!-- KHU VỰC HIỂN THỊ CÁC NGUỒN API DO ADMIN TỰ THÊM BẰNG TAY -->
@@ -10679,7 +10885,7 @@ header.header {
             <button type='button' class='btn-auth' onclick='openAdminAddUserModal()' style='background:#10b981; border:none; padding:8px 16px; font-size:0.82rem; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; border-radius:6px; cursor:pointer;'>
               <i class='fa-solid fa-user-plus'></i> Thêm Thành Viên
             </button>
-            <button type='button' class='btn-action-copy' onclick='fetchCloudUsers(true)' style='font-size:0.82rem; padding:8px 14px; background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; border-radius:6px; cursor:pointer;' title='Đồng bộ dữ liệu thành viên từ Google Sheet &amp; Cloudflare Worker'>
+            <button type='button' id='btnAdmSyncSheet' class='btn-action-copy' onclick='fetchCloudUsers(true)' style='font-size:0.82rem; padding:8px 14px; background:rgba(56,189,248,0.15); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-weight:700; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; border-radius:6px; cursor:pointer;' title='Đồng bộ dữ liệu thành viên từ Google Sheet &amp; Cloudflare Worker'>
               <i class='fa-solid fa-rotate'></i> Đồng Bộ Sheet
             </button>
           </div>
@@ -14349,7 +14555,7 @@ print(res.json())</pre>
   <!-- ==========================================================================
        OFFLOADED CDN JAVASCRIPT BUNDLE (ALL FUNCTIONS AND MODULES)
        ========================================================================== -->
-  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.11/bundle.min.js?v=6.9.9' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
+  <script defer='defer' id='mmoCdnBundleJs' src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.28/bundle.min.js?v=6.9.28' onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@main/bundle.min.js';"></script>
   <script type='text/javascript'>
     //<![CDATA[
     (function() {
@@ -14378,8 +14584,148 @@ print(res.json())</pre>
       document.addEventListener("DOMContentLoaded", convertOutOfStockToPreOrder);
       window.addEventListener("load", convertOutOfStockToPreOrder);
 
+      // CANONICAL VARIANT PILL & AUTOFILL SHIELD HELPERS (INLINE EARLY SHIELD)
+      window.renderVariantPillOptionHtml = function(v, idx, isSelected, vStock) {
+        if (!v) return "";
+        var stockCount = (typeof vStock === "number") ? vStock : (Number(v.stock) || 0);
+        var stockText = stockCount > 0 ? (Number(stockCount).toLocaleString("vi-VN") + " acc") : "0 acc";
+        var stockColor = stockCount > 0 ? "#10b981" : "#ef4444";
+        var safeName = (typeof escapeHtml === "function") ? escapeHtml(v.name || ("Gói " + (idx + 1))) : (v.name || ("Gói " + (idx + 1)));
+        var safePrice = (typeof formatVND === "function") ? formatVND(v.price || 0) : ((v.price || 0) + " đ");
+
+        return '<div class="variant-pill-option' + (isSelected ? ' active' : '') + '" onclick="selectVariant(' + idx + ')" ' +
+          'data-variant-index="' + idx + '" ' +
+          'style="cursor:pointer; display:flex; align-items:center; justify-content:space-between; width:100%; box-sizing:border-box; padding:8px 12px; border-radius:8px; border:1px solid ' + (isSelected ? '#0284c7' : '#1e293b') + '; background:' + (isSelected ? 'rgba(2,132,199,0.12)' : '#070a12') + '; transition:all 0.15s ease;">' +
+          '<span class="var-name" style="flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:600; font-size:0.83rem; color:' + (isSelected ? '#38bdf8' : '#e2e8f0') + ';">' + safeName + '</span>' +
+          '<span class="var-stock" style="flex:0 0 auto; white-space:nowrap !important; font-weight:800; font-size:0.8rem; margin:0 8px; color:' + stockColor + ';">(' + stockText + ')</span>' +
+          '<span class="var-price" style="flex:0 0 auto; white-space:nowrap !important; font-weight:800; font-size:0.85rem; margin-left:auto; color:#38bdf8;">' + safePrice + '</span>' +
+        '</div>';
+      };
+
+      window.setupCouponInputAutofillShield = function() {
+        var cInp = document.getElementById("dtlCouponInput");
+        if (!cInp) return;
+        if (!cInp._autofillShieldSetup) {
+          cInp._autofillShieldSetup = true;
+          cInp.setAttribute("autocomplete", "one-time-code");
+          var wipeIfEmail = function() {
+            if (cInp.value && (cInp.value.indexOf("@") !== -1 || cInp.value.indexOf(".com") !== -1 || cInp.value.toLowerCase().indexOf("digimarketmmo") !== -1)) {
+              cInp.value = "";
+            }
+          };
+          cInp.addEventListener("input", wipeIfEmail);
+          cInp.addEventListener("change", wipeIfEmail);
+          cInp.addEventListener("focus", wipeIfEmail);
+          setInterval(wipeIfEmail, 150);
+        }
+      };
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", window.setupCouponInputAutofillShield);
+      } else {
+        window.setupCouponInputAutofillShield();
+      }
+
+      window.setupSearchInputAutofillShield = function() {
+        var isEmailLike = function(val) {
+          if (!val || typeof val !== "string") return false;
+          var s = val.trim().toLowerCase();
+          if (s.indexOf("@") !== -1 && (s.indexOf(".com") !== -1 || s.indexOf(".vn") !== -1 || s.indexOf(".net") !== -1 || s.indexOf(".org") !== -1 || s.indexOf("digimarketmmo") !== -1 || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s))) return true;
+          if (s.indexOf("digimarketmmo") !== -1) return true;
+          return false;
+        };
+
+        var wipeSearchEmail = function() {
+          var input = document.getElementById("searchInput");
+          if (input && isEmailLike(input.value)) {
+            input.value = "";
+            var dd = document.getElementById("heroSearchDropdown");
+            if (dd) { dd.style.display = "none"; dd.innerHTML = ""; }
+          }
+          var allInp = document.getElementById("allProdSearchInp");
+          if (allInp && isEmailLike(allInp.value)) {
+            allInp.value = "";
+          }
+        };
+
+        var sInp = document.getElementById("searchInput");
+        if (sInp) {
+          try {
+            sInp.setAttribute("type", "search");
+            sInp.setAttribute("name", "mmo_search_query");
+            sInp.setAttribute("role", "searchbox");
+            sInp.setAttribute("autocomplete", "off");
+            sInp.setAttribute("autocorrect", "off");
+            sInp.setAttribute("autocapitalize", "off");
+            sInp.setAttribute("spellcheck", "false");
+            sInp.setAttribute("data-lpignore", "true");
+            sInp.setAttribute("data-form-type", "other");
+            sInp.setAttribute("data-1p-ignore", "true");
+          } catch(e) {}
+
+          if (!sInp._searchAutofillShieldBound) {
+            sInp._searchAutofillShieldBound = true;
+            sInp.addEventListener("input", function() {
+              if (isEmailLike(sInp.value)) wipeSearchEmail();
+            });
+            sInp.addEventListener("change", wipeSearchEmail);
+            sInp.addEventListener("focus", wipeSearchEmail);
+            sInp.addEventListener("blur", wipeSearchEmail);
+            sInp.addEventListener("animationstart", function(e) {
+              if (e.animationName && e.animationName.toLowerCase().indexOf("autofill") !== -1) {
+                wipeSearchEmail();
+              }
+            });
+          }
+        }
+
+        var aInp = document.getElementById("allProdSearchInp");
+        if (aInp) {
+          try {
+            aInp.setAttribute("type", "search");
+            aInp.setAttribute("name", "mmo_all_prod_query");
+            aInp.setAttribute("role", "searchbox");
+            aInp.setAttribute("autocomplete", "off");
+            aInp.setAttribute("autocorrect", "off");
+            aInp.setAttribute("autocapitalize", "off");
+            aInp.setAttribute("spellcheck", "false");
+            aInp.setAttribute("data-lpignore", "true");
+            aInp.setAttribute("data-form-type", "other");
+            aInp.setAttribute("data-1p-ignore", "true");
+          } catch(e) {}
+
+          if (!aInp._searchAutofillShieldBound) {
+            aInp._searchAutofillShieldBound = true;
+            aInp.addEventListener("input", function() {
+              if (isEmailLike(aInp.value)) wipeSearchEmail();
+            });
+            aInp.addEventListener("change", wipeSearchEmail);
+            aInp.addEventListener("focus", wipeSearchEmail);
+          }
+        }
+
+        wipeSearchEmail();
+        if (!window._searchAutofillIntervalStarted) {
+          window._searchAutofillIntervalStarted = true;
+          var runs = 0;
+          var intId = setInterval(function() {
+            wipeSearchEmail();
+            runs++;
+            if (runs > 35) {
+              clearInterval(intId);
+              setInterval(wipeSearchEmail, 2000);
+            }
+          }, 200);
+        }
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", window.setupSearchInputAutofillShield);
+      } else {
+        window.setupSearchInputAutofillShield();
+      }
+
       // Tự Động Đồng Bộ va Cập Nhật Mạng Lưới Đa Blog Realtime (v5.3.4)
-      var CURRENT_THEME_CODE_VERSION = "6.3.1";
+      var CURRENT_THEME_CODE_VERSION = "6.9.28";
       function checkAndApplyNetworkUpdate() {
         try {
           if (window._mmoThemeHotReloadInProgress || (window._lastThemeHotReloadTime && Date.now() - window._lastThemeHotReloadTime < 300000)) return;
@@ -14407,7 +14753,7 @@ print(res.json())</pre>
 
               // Tự động cập nhật CSS
               var cssEl = document.getElementById("mmoCdnThemeCss");
-              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.11/theme.min.css?v=6.9.9");
+              var newCssUrl = (data.theme_url || "https://cdn.jsdelivr.net/gh/digimarketmmo/muabantaikhoanmmo-cdn@v6.9.28/theme.min.css?v=6.9.28");
               if (cssEl) cssEl.href = newCssUrl;
 
               // Mã nguồn chính thức đã được tải an toàn từ CDN v5.7.9

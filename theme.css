@@ -456,6 +456,21 @@
     .hero-search-box input::placeholder {
       color: #475569;
     }
+    /* Anti-Autofill shield for search inputs */
+    #searchInput:-webkit-autofill,
+    #searchInput:-webkit-autofill:hover,
+    #searchInput:-webkit-autofill:focus,
+    #searchInput:-webkit-autofill:active,
+    #allProdSearchInp:-webkit-autofill,
+    #allProdSearchInp:-webkit-autofill:hover,
+    #allProdSearchInp:-webkit-autofill:focus,
+    #allProdSearchInp:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px #090e17 inset !important;
+      -webkit-text-fill-color: #cbd5e1 !important;
+      caret-color: #cbd5e1 !important;
+      transition: background-color 5000s ease-in-out 0s !important;
+    }
+
     .hero-search-btn {
       background: #1e293b;
       color: #f8fafc;
