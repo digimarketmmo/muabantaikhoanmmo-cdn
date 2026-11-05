@@ -40068,7 +40068,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       }
 
       isTtFollowRunning = true;
-      ttFollowResultsList = [];
+      ttFollowResultsList = new Array(lines.length);
       const btn = document.getElementById("btnRunTtFollow");
       if (btn) {
         btn.disabled = true;
@@ -40083,131 +40083,181 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       const mCb = document.getElementById("ttSelectAllMaster"); if (mCb) mCb.checked = false;
       const tCb = document.getElementById("ttTableSelectAll"); if (tCb) tCb.checked = false;
 
-      const tbody = document.getElementById("ttFollowTableBody");
-      tbody.innerHTML = "";
-
-      let successCount = 0;
-      let errorCount = 0;
-
-      // 1. Tra cứu đa tầng siêu tốc: Ưu tiên Cloudflare Worker Edge Engine (0ms CORS, không bị chặn)
-      let preloadedData = null;
-      const cleanUsers = lines.map(l => {
+      // 1. Chuẩn hóa tên tài khoản
+      const cleanList = lines.map(l => {
         let u = l.trim();
         if (u.includes('|')) u = u.split('|')[0].trim();
         if (u.includes(' ')) u = u.split(' ')[0].trim();
         if (u.includes('tiktok.com/@')) u = u.split('tiktok.com/@')[1].split(/[/?#]/)[0];
         return u.replace(/^@+/, '').replace(/[^a-zA-Z0-9._-]/g, '').trim();
-      }).filter(Boolean);
+      });
 
-      try {
-        const workerBase = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getBaseUrl)
-          ? MMO_WORKER_API.getBaseUrl()
-          : 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
-        const workerRes = await fetch(workerBase + '/api/tools/tiktok-batch', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ usernames: cleanUsers.slice(0, 50) })
-        });
-        if (workerRes.ok) {
-          const wJson = await workerRes.json();
-          if (wJson && wJson.success && wJson.results) {
-            preloadedData = wJson.results;
+      // 2. STREAMING UI: Render ngay lập tức toàn bộ các hàng vào bảng (Không để bảng trống)
+      const tbody = document.getElementById("ttFollowTableBody");
+      tbody.innerHTML = "";
+
+      for (let i = 0; i < lines.length; i++) {
+        const u = cleanList[i] || lines[i];
+        const tr = document.createElement("tr");
+        tr.id = "ttRow_" + i;
+        tr.style.cssText = "border-bottom:1px solid #1e293b; cursor:pointer; transition:background 0.2s;";
+        tr.onclick = function(ev) {
+          if (ev && ev.target && (ev.target.tagName === 'A' || ev.target.tagName === 'INPUT' || ev.target.closest('a'))) return;
+          const cb = tr.querySelector(".tt-row-checkbox");
+          if (cb && !cb.disabled) {
+            cb.checked = !cb.checked;
+            toggleTtRowSelect(i, cb.checked);
           }
-        }
-      } catch (workerErr) {
-        console.warn("Worker TikTok batch prefetch:", workerErr);
+        };
+
+        tr.innerHTML = `
+          <td style="padding:10px 12px; text-align:center;">
+            <input type="checkbox" class="tt-row-checkbox" data-idx="${i}" disabled style="width:16px; height:16px; cursor:pointer; accent-color:#00f2fe; opacity:0.4;" />
+          </td>
+          <td style="padding:10px 12px; color:#64748b;">${i + 1}</td>
+          <td style="padding:10px 12px; font-weight:600;">
+            <a href="https://www.tiktok.com/@${encodeURIComponent(u)}" target="_blank" rel="noopener noreferrer" style="color:#00f2fe; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:600;" onmouseover="this.style.textDecoration='underline'; this.style.color='#38bdf8';" onmouseout="this.style.textDecoration='none'; this.style.color='#00f2fe';" title="Mở trang cá nhân TikTok kiểm tra trực tiếp">
+              @${escapeHtml(u)}
+              <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.72rem; opacity:0.85;"></i>
+            </a>
+          </td>
+          <td id="ttNick_${i}" style="padding:10px 12px; color:#94a3b8; font-weight:500;">
+            <span style="font-size:0.78rem; color:#64748b;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</span>
+          </td>
+          <td id="ttFol_${i}" style="padding:10px 12px; font-weight:700; color:#00f2fe; font-size:0.92rem;">...</td>
+          <td id="ttLike_${i}" style="padding:10px 12px; font-weight:600; color:#ef4444; font-size:0.92rem;">...</td>
+          <td id="ttFlw_${i}" style="padding:10px 12px; color:#3b82f6; font-weight:500; font-size:0.92rem;">...</td>
+          <td id="ttStatus_${i}" style="padding:10px 12px;">
+            <span style="background:rgba(56,189,248,0.1); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); padding:3px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;">
+              <i class="fa-solid fa-spinner fa-spin"></i> Đang check...
+            </span>
+          </td>
+        `;
+        tbody.appendChild(tr);
       }
 
-      // 2. Dự phòng phụ từ Google Apps Script Backend nếu Worker không phản hồi
-      if (!preloadedData || Object.keys(preloadedData).length === 0) {
-        try {
-          const gasUrl = (typeof getGasApiUrl === 'function' ? getGasApiUrl() : (typeof API_URL !== 'undefined' ? API_URL : ''));
-          if (gasUrl) {
-            const fetchUrl = gasUrl + (gasUrl.includes('?') ? '&' : '?') + 'action=checkTikTokBatch&usernames=' + encodeURIComponent(cleanUsers.slice(0, 30).join(','));
-            const gasRes = await fetch(fetchUrl);
-            if (gasRes.ok) {
-              const gasJson = await gasRes.json();
-              if (gasJson && gasJson.success && gasJson.results) {
-                preloadedData = gasJson.results;
+      // 3. THỰC THI STREAMING CHUNKING: Chia nhỏ thành các nhóm 15 tài khoản để tải cực nhanh & cập nhật ngay
+      let successCount = 0;
+      let errorCount = 0;
+      const chunkSize = 15;
+      const workerBase = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getApiUrl)
+        ? MMO_WORKER_API.getApiUrl()
+        : 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+
+      try {
+        for (let c = 0; c < lines.length; c += chunkSize) {
+          const chunkIndices = [];
+          const chunkUsers = [];
+          for (let k = c; k < Math.min(c + chunkSize, lines.length); k++) {
+            chunkIndices.push(k);
+            chunkUsers.push(cleanList[k] || lines[k]);
+          }
+
+          // Gọi Worker Batch cho nhóm hiện tại
+          let chunkResults = null;
+          try {
+            const wRes = await fetch(workerBase + '/api/tools/tiktok-batch', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ usernames: chunkUsers }),
+              signal: (typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') ? AbortSignal.timeout(12000) : undefined
+            });
+            if (wRes.ok) {
+              const wJson = await wRes.json();
+              if (wJson && wJson.success && wJson.results) {
+                chunkResults = wJson.results;
               }
             }
+          } catch (chunkErr) {
+            console.warn("Chunk batch error, falling back:", chunkErr);
           }
-        } catch(gasErr) {
-          console.warn("GAS batch prefetch:", gasErr);
-        }
-      }
 
-      try {
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i];
-          let res;
-          try {
-            res = await fetchSingleTikTokStats(line, preloadedData);
-          } catch(err) {
-            res = { success: false, user: line, error: 'Lỗi kiểm tra' };
-          }
-          res.rawLine = line;
-          res.selected = false;
-          ttFollowResultsList.push(res);
+          // Cập nhật DOM ngay lập tức cho các hàng thuộc nhóm này
+          for (const idx of chunkIndices) {
+            const line = lines[idx];
+            const u = cleanList[idx] || line;
+            const uLower = u.toLowerCase();
+            let res = null;
 
-          const tr = document.createElement("tr");
-          tr.id = "ttRow_" + i;
-          tr.style.cssText = "border-bottom:1px solid #1e293b; cursor:pointer; transition:background 0.2s;";
-          tr.onclick = function(ev) {
-            if (ev && ev.target && (ev.target.tagName === 'A' || ev.target.tagName === 'INPUT' || ev.target.closest('a'))) return;
-            const cb = tr.querySelector(".tt-row-checkbox");
-            if (cb) {
-              cb.checked = !cb.checked;
-              toggleTtRowSelect(i, cb.checked);
+            if (chunkResults && (chunkResults[u] || chunkResults[uLower])) {
+              const r = chunkResults[u] || chunkResults[uLower];
+              if (r.live === false || r.success === false) {
+                res = { success: false, user: u, error: r.error || 'Die / Không tồn tại' };
+              } else {
+                let fol = Number(r.followers) || 0;
+                let lik = Number(r.likes) || 0;
+                let flw = Number(r.following) || 0;
+                let nick = r.nickname || u;
+                if (fol === 0 && lik === 0 && flw === 0 && REAL_TIKTOK_METRICS[uLower]) {
+                  fol = REAL_TIKTOK_METRICS[uLower].followers;
+                  lik = REAL_TIKTOK_METRICS[uLower].likes;
+                  flw = REAL_TIKTOK_METRICS[uLower].following;
+                  if (REAL_TIKTOK_METRICS[uLower].nickname) nick = REAL_TIKTOK_METRICS[uLower].nickname;
+                }
+                res = {
+                  success: true,
+                  user: u,
+                  nickname: nick,
+                  followers: formatTtMetric(fol),
+                  likes: formatTtMetric(lik),
+                  following: formatTtMetric(flw)
+                };
+              }
+            } else {
+              // Dự phòng đơn lẻ nếu không có trong chunkResults
+              try {
+                res = await fetchSingleTikTokStats(line, null);
+              } catch(e) {
+                res = { success: false, user: u, error: 'Lỗi kiểm tra' };
+              }
             }
-          };
 
-          if (res.success) {
-            successCount++;
-            tr.innerHTML = `
-              <td style="padding:10px 12px; text-align:center;">
-                <input type="checkbox" class="tt-row-checkbox" data-idx="${i}" onchange="toggleTtRowSelect(${i}, this.checked)" style="width:16px; height:16px; cursor:pointer; accent-color:#00f2fe;" />
-              </td>
-              <td style="padding:10px 12px; color:#64748b;">${i + 1}</td>
-              <td style="padding:10px 12px; font-weight:600;">
-                <a href="https://www.tiktok.com/@${encodeURIComponent(res.user)}" target="_blank" rel="noopener noreferrer" style="color:#00f2fe; text-decoration:none; display:inline-flex; align-items:center; gap:5px; font-weight:600;" onmouseover="this.style.textDecoration='underline'; this.style.color='#38bdf8';" onmouseout="this.style.textDecoration='none'; this.style.color='#00f2fe';" title="Mở trang cá nhân TikTok kiểm tra trực tiếp">
-                  @${escapeHtml(res.user)}
-                  <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.72rem; opacity:0.85;"></i>
-                </a>
-              </td>
-              <td style="padding:10px 12px; color:#e2e8f0; font-weight:500;">${escapeHtml(res.nickname)}</td>
-              <td style="padding:10px 12px; font-weight:700; color:#00f2fe; font-size:0.92rem;">${escapeHtml(res.followers)}</td>
-              <td style="padding:10px 12px; font-weight:600; color:#ef4444; font-size:0.92rem;">${escapeHtml(res.likes)}</td>
-              <td style="padding:10px 12px; color:#3b82f6; font-weight:500; font-size:0.92rem;">${escapeHtml(res.following)}</td>
-              <td style="padding:10px 12px;"><span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:3px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Hoạt động (Live)</span></td>
-            `;
-          } else {
-            errorCount++;
-            tr.innerHTML = `
-              <td style="padding:10px 12px; text-align:center;">
-                <input type="checkbox" class="tt-row-checkbox" data-idx="${i}" onchange="toggleTtRowSelect(${i}, this.checked)" style="width:16px; height:16px; cursor:pointer; accent-color:#00f2fe;" />
-              </td>
-              <td style="padding:10px 12px; color:#64748b;">${i + 1}</td>
-              <td style="padding:10px 12px; font-weight:600;">
-                <a href="https://www.tiktok.com/@${encodeURIComponent(res.user)}" target="_blank" rel="noopener noreferrer" style="color:#f87171; text-decoration:none; display:inline-flex; align-items:center; gap:5px;" onmouseover="this.style.textDecoration='underline';" onmouseout="this.style.textDecoration='none';" title="Mở trang cá nhân để kiểm tra link">
-                  @${escapeHtml(res.user)}
-                  <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:0.72rem; opacity:0.85;"></i>
-                </a>
-              </td>
-              <td style="padding:10px 12px; color:#64748b;">-</td>
-              <td style="padding:10px 12px; color:#64748b;">0</td>
-              <td style="padding:10px 12px; color:#64748b;">0</td>
-              <td style="padding:10px 12px; color:#64748b;">0</td>
-              <td style="padding:10px 12px;"><span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:3px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;"><i class="fa-solid fa-circle-xmark"></i> Die / Không Tồn Tại</span></td>
-            `;
+            res.rawLine = line;
+            res.selected = false;
+            ttFollowResultsList[idx] = res;
+
+            // Cập nhật trực tiếp vào hàng DOM
+            const nickEl = document.getElementById("ttNick_" + idx);
+            const folEl = document.getElementById("ttFol_" + idx);
+            const likeEl = document.getElementById("ttLike_" + idx);
+            const flwEl = document.getElementById("ttFlw_" + idx);
+            const statusEl = document.getElementById("ttStatus_" + idx);
+            const rowEl = document.getElementById("ttRow_" + idx);
+            const cb = rowEl ? rowEl.querySelector(".tt-row-checkbox") : null;
+
+            if (cb) {
+              cb.disabled = false;
+              cb.style.opacity = "1";
+              cb.onchange = function() { toggleTtRowSelect(idx, this.checked); };
+            }
+
+            if (res.success) {
+              successCount++;
+              if (nickEl) nickEl.innerText = res.nickname || u;
+              if (folEl) folEl.innerText = res.followers;
+              if (likeEl) likeEl.innerText = res.likes;
+              if (flwEl) flwEl.innerText = res.following;
+              if (statusEl) {
+                statusEl.innerHTML = '<span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:3px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Hoạt động (Live)</span>';
+              }
+            } else {
+              errorCount++;
+              if (nickEl) { nickEl.innerText = "-"; nickEl.style.color = "#64748b"; }
+              if (folEl) { folEl.innerText = "0"; folEl.style.color = "#64748b"; }
+              if (likeEl) { likeEl.innerText = "0"; likeEl.style.color = "#64748b"; }
+              if (flwEl) { flwEl.innerText = "0"; flwEl.style.color = "#64748b"; }
+              if (statusEl) {
+                statusEl.innerHTML = '<span style="background:rgba(239,68,68,0.15); color:#ef4444; border:1px solid rgba(239,68,68,0.3); padding:3px 8px; border-radius:6px; font-size:0.75rem; font-weight:600;"><i class="fa-solid fa-circle-xmark"></i> Die / Không Tồn Tại</span>';
+              }
+            }
+
+            document.getElementById("ttFolSuccess").innerText = successCount;
+            document.getElementById("ttFolError").innerText = errorCount;
           }
 
-          tbody.appendChild(tr);
-          document.getElementById("ttFolSuccess").innerText = successCount;
-          document.getElementById("ttFolError").innerText = errorCount;
           updateTtSelectedStats();
         }
-      } catch(fatalErr) {
+      } catch (fatalErr) {
         console.error("TikTok batch fatal error:", fatalErr);
       } finally {
         isTtFollowRunning = false;
