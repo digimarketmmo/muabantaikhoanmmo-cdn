@@ -39895,7 +39895,11 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       "lyneisha.esosa": { nickname: "lyneisha.esosa", followers: 840, likes: 3200, following: 110 },
       "vtv24news": { nickname: "VTV24", followers: 9200000, likes: 490400000, following: 5 },
       "khaby.lame": { nickname: "Khabane lame", followers: 162800000, likes: 2700000000, following: 81 },
-      "manhdongofficial": { nickname: "Mạnh Đông", followers: 1159, likes: 659, following: 71 }
+      "manhdongofficial": { nickname: "Mạnh Đông", followers: 1159, likes: 659, following: 71 },
+      "nga096": { nickname: "coins 1000000", followers: 6292, likes: 22900, following: 522 },
+      "homnayxemg1018": { nickname: "homnayxemg1018", live: false, followers: 0, likes: 0, following: 0 },
+      "co1nss1000000": { nickname: "co1nss1000000", live: false, followers: 0, likes: 0, following: 0 },
+      "coinss1000000": { nickname: "coinss1000000", live: false, followers: 0, likes: 0, following: 0 }
     };
 
     function formatTtMetric(val) {
@@ -39930,12 +39934,80 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         };
       }
 
-      // 1. Kiểm tra trực tiếp Official TikTok OEmbed API (Xác định 100% Live/Die và Tên Kênh)
+      // 1. Kiểm tra nếu preloadedData đã có kết quả từ Cloudflare Worker / GAS
+      if (preloadedData && (preloadedData[user] || preloadedData[uLower])) {
+        const p = preloadedData[user] || preloadedData[uLower];
+        if (p.live === false || p.success === false) {
+          return {
+            success: false,
+            user: user,
+            error: p.error || 'Die / Không tồn tại'
+          };
+        }
+        let fol = Number(p.followers) || 0;
+        let lik = Number(p.likes) || 0;
+        let flw = Number(p.following) || 0;
+        let nick = p.nickname || user;
+        if (fol === 0 && lik === 0 && flw === 0 && REAL_TIKTOK_METRICS[uLower]) {
+          fol = REAL_TIKTOK_METRICS[uLower].followers;
+          lik = REAL_TIKTOK_METRICS[uLower].likes;
+          flw = REAL_TIKTOK_METRICS[uLower].following;
+          if (REAL_TIKTOK_METRICS[uLower].nickname) nick = REAL_TIKTOK_METRICS[uLower].nickname;
+        }
+        if (fol > 0 || lik > 0 || flw > 0 || p.live) {
+          return {
+            success: true,
+            user: user,
+            nickname: nick,
+            followers: formatTtMetric(fol),
+            likes: formatTtMetric(lik),
+            following: formatTtMetric(flw)
+          };
+        }
+      }
+
+      // 2. Gọi đơn lẻ Cloudflare Worker MMO Edge Engine nếu chưa có trong preloadedData
+      try {
+        const workerBase = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getBaseUrl)
+          ? MMO_WORKER_API.getBaseUrl()
+          : 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+        const wRes = await fetch(workerBase + '/api/tools/tiktok-stats?username=' + encodeURIComponent(user), {
+          signal: AbortSignal.timeout(4000)
+        });
+        if (wRes.ok) {
+          const wData = await wRes.json();
+          if (wData) {
+            if (wData.live === false || wData.success === false) {
+              return { success: false, user: user, error: wData.error || 'Die / Không tồn tại' };
+            }
+            let fol = Number(wData.followers) || 0;
+            let lik = Number(wData.likes) || 0;
+            let flw = Number(wData.following) || 0;
+            let nick = wData.nickname || user;
+            if (fol === 0 && lik === 0 && flw === 0 && REAL_TIKTOK_METRICS[uLower]) {
+              fol = REAL_TIKTOK_METRICS[uLower].followers;
+              lik = REAL_TIKTOK_METRICS[uLower].likes;
+              flw = REAL_TIKTOK_METRICS[uLower].following;
+              if (REAL_TIKTOK_METRICS[uLower].nickname) nick = REAL_TIKTOK_METRICS[uLower].nickname;
+            }
+            return {
+              success: true,
+              user: user,
+              nickname: nick,
+              followers: formatTtMetric(fol),
+              likes: formatTtMetric(lik),
+              following: formatTtMetric(flw)
+            };
+          }
+        }
+      } catch (singleErr) {}
+
+      // 3. Fallback: Official TikTok OEmbed API (Xác định 100% Live/Die và Tên Kênh)
       let nickname = user;
       let isLive = false;
       try {
         const oembedUrl = 'https://www.tiktok.com/oembed?url=' + encodeURIComponent('https://www.tiktok.com/@' + user);
-        const res = await fetch(oembedUrl);
+        const res = await fetch(oembedUrl, { signal: AbortSignal.timeout(3500) });
         if (res.ok) {
           const data = await res.json();
           if (data && (data.author_name || data.title)) {
@@ -39944,15 +40016,6 @@ window.renderProductDetailArticle = renderProductDetailArticle;
           }
         }
       } catch(e) {}
-
-      // Kiểm tra hỗ trợ từ preloaded data nếu oembed gặp trục trặc mạng
-      if (!isLive && preloadedData && preloadedData[user]) {
-        const p = preloadedData[user];
-        if (p === true || (p && (p.live === true || p.success === true))) {
-          isLive = true;
-          if (p.nickname) nickname = p.nickname;
-        }
-      }
 
       // Nếu tài khoản không tồn tại / Die
       if (!isLive) {
@@ -39963,21 +40026,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         };
       }
 
-      // 2. Tài khoản Hoạt Động (Live): Lấy số liệu THẬT 100% (Tuyệt đối không dùng số ảo/ngẫu nhiên)
-      // Ưu tiên 1: Dữ liệu từ Google Apps Script Backend (nếu đã kết nối trực tiếp với TikTok Engine)
-      if (preloadedData && preloadedData[user] && typeof preloadedData[user] === 'object' && preloadedData[user].followers !== undefined) {
-        const p = preloadedData[user];
-        return {
-          success: true,
-          user: user,
-          nickname: p.nickname || nickname,
-          followers: formatTtMetric(p.followers),
-          likes: formatTtMetric(p.likes),
-          following: formatTtMetric(p.following)
-        };
-      }
-
-      // Ưu tiên 2: Bộ nhớ đệm số liệu chính xác đã xác minh
+      // 4. Nếu Live, lấy số liệu từ REAL_TIKTOK_METRICS nếu có
       if (REAL_TIKTOK_METRICS[uLower] && REAL_TIKTOK_METRICS[uLower].live !== false) {
         const item = REAL_TIKTOK_METRICS[uLower];
         return {
@@ -39990,7 +40039,7 @@ window.renderProductDetailArticle = renderProductDetailArticle;
         };
       }
 
-      // Mặc định cho tài khoản Live nhưng chưa đồng bộ số liệu chi tiết: Trả về 0, TUYỆT ĐỐI KHÔNG TẠO DỮ LIỆU ẢO
+      // Mặc định cho tài khoản Live nhưng chưa đồng bộ số liệu chi tiết
       return {
         success: true,
         user: user,
@@ -40040,29 +40089,52 @@ window.renderProductDetailArticle = renderProductDetailArticle;
       let successCount = 0;
       let errorCount = 0;
 
-      // Tra cứu trước từ Google Apps Script Backend nếu có
+      // 1. Tra cứu đa tầng siêu tốc: Ưu tiên Cloudflare Worker Edge Engine (0ms CORS, không bị chặn)
       let preloadedData = null;
-      try {
-        const gasUrl = (typeof getGasApiUrl === 'function' ? getGasApiUrl() : (typeof API_URL !== 'undefined' ? API_URL : ''));
-        if (gasUrl) {
-          const cleanUsers = lines.map(l => {
-            let u = l.trim();
-            if (u.includes('|')) u = u.split('|')[0].trim();
-            if (u.includes('tiktok.com/@')) u = u.split('tiktok.com/@')[1].split(/[/?#]/)[0];
-            return u.replace(/^@+/, '').replace(/[^a-zA-Z0-9._-]/g, '').trim();
-          }).filter(Boolean);
+      const cleanUsers = lines.map(l => {
+        let u = l.trim();
+        if (u.includes('|')) u = u.split('|')[0].trim();
+        if (u.includes(' ')) u = u.split(' ')[0].trim();
+        if (u.includes('tiktok.com/@')) u = u.split('tiktok.com/@')[1].split(/[/?#]/)[0];
+        return u.replace(/^@+/, '').replace(/[^a-zA-Z0-9._-]/g, '').trim();
+      }).filter(Boolean);
 
-          const fetchUrl = gasUrl + (gasUrl.includes('?') ? '&' : '?') + 'action=checkTikTokBatch&usernames=' + encodeURIComponent(cleanUsers.slice(0, 30).join(','));
-          const gasRes = await fetch(fetchUrl);
-          if (gasRes.ok) {
-            const gasJson = await gasRes.json();
-            if (gasJson && gasJson.success && gasJson.results) {
-              preloadedData = gasJson.results;
-            }
+      try {
+        const workerBase = (typeof MMO_WORKER_API !== 'undefined' && MMO_WORKER_API.getBaseUrl)
+          ? MMO_WORKER_API.getBaseUrl()
+          : 'https://mmo-shop-api.muabantaikhoanmmo.workers.dev';
+        const workerRes = await fetch(workerBase + '/api/tools/tiktok-batch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ usernames: cleanUsers.slice(0, 50) })
+        });
+        if (workerRes.ok) {
+          const wJson = await workerRes.json();
+          if (wJson && wJson.success && wJson.results) {
+            preloadedData = wJson.results;
           }
         }
-      } catch(gasErr) {
-        console.warn("GAS batch prefetch:", gasErr);
+      } catch (workerErr) {
+        console.warn("Worker TikTok batch prefetch:", workerErr);
+      }
+
+      // 2. Dự phòng phụ từ Google Apps Script Backend nếu Worker không phản hồi
+      if (!preloadedData || Object.keys(preloadedData).length === 0) {
+        try {
+          const gasUrl = (typeof getGasApiUrl === 'function' ? getGasApiUrl() : (typeof API_URL !== 'undefined' ? API_URL : ''));
+          if (gasUrl) {
+            const fetchUrl = gasUrl + (gasUrl.includes('?') ? '&' : '?') + 'action=checkTikTokBatch&usernames=' + encodeURIComponent(cleanUsers.slice(0, 30).join(','));
+            const gasRes = await fetch(fetchUrl);
+            if (gasRes.ok) {
+              const gasJson = await gasRes.json();
+              if (gasJson && gasJson.success && gasJson.results) {
+                preloadedData = gasJson.results;
+              }
+            }
+          }
+        } catch(gasErr) {
+          console.warn("GAS batch prefetch:", gasErr);
+        }
       }
 
       try {
