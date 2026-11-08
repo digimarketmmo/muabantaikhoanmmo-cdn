@@ -503,7 +503,11 @@ try {
               }
             } catch(eArr) {}
           }
-          if (/khotaikhoanso/i.test(v)) return;
+          // [CRITICAL FIX]: KHÔNG chặn lưu danh sách thành viên hay thông tin người dùng
+            if (k === "mmo_registered_users" || k === "mmo_user" || k === "mmo_users" || k === "mmo_admin_users" || k === "mmo_current_user") {
+              return _origSet(k, v);
+            }
+            if (/khotaikhoanso/i.test(v)) return;
         }
         return _origSet(k, v);
       };
@@ -525,7 +529,8 @@ function healStorageQuota(forceEmergency) {
         const k = localStorage.key(i);
         if (!k) continue;
         const val = localStorage.getItem(k) || "";
-        if (/khotaikhoanso/i.test(k) || /khotaikhoanso/i.test(val) || /^kts_/i.test(k)) {
+        const isUserKey = (k === "mmo_registered_users" || k === "mmo_user" || k === "mmo_users" || k === "mmo_admin_users" || k === "mmo_current_user");
+        if (/khotaikhoanso/i.test(k) || (/khotaikhoanso/i.test(val) && !isUserKey) || /^kts_/i.test(k)) {
           if (k === "mmo_system_settings" || k === "mmo_general_settings" || k === "mmo_settings_permanent_backup") {
             try {
               const sObj = JSON.parse(val);
@@ -542,7 +547,7 @@ function healStorageQuota(forceEmergency) {
               localStorage.removeItem(k);
             }
           } else {
-            localStorage.removeItem(k);
+            if (!isUserKey) localStorage.removeItem(k);
           }
         }
       }
@@ -555,8 +560,9 @@ function healStorageQuota(forceEmergency) {
           const sk = sessionStorage.key(i);
           if (!sk) continue;
           const sval = sessionStorage.getItem(sk) || "";
-          if (/khotaikhoanso/i.test(sk) || /khotaikhoanso/i.test(sval)) {
-            sessionStorage.removeItem(sk);
+          const isUserKey = (sk === "mmo_registered_users" || sk === "mmo_user" || sk === "mmo_users" || sk === "mmo_admin_users" || sk === "mmo_current_user");
+          if (/khotaikhoanso/i.test(sk) || (/khotaikhoanso/i.test(sval) && !isUserKey)) {
+            if (!isUserKey) sessionStorage.removeItem(sk);
           }
         }
       }
@@ -5663,19 +5669,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     window.ROOT_ADMIN_EMAILS = ROOT_ADMIN_EMAILS;
     var DEFAULT_REGISTERED_USERS = [
   {
-    "userId": "USR_1792862559514",
-    "name": "koanh130103",
-    "email": "koanh130103@gmail.com",
-    "role": "USER",
-    "balance": 250000,
-    "created": "2026-10-24 17:22:39",
-    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=koanh130103%40gmail.com",
-    "isLocked": false
-  },
-  {
     "userId": "USR_791847",
-    "name": "muabantaikhoanmmo",
     "email": "muabantaikhoanmmo@gmail.com",
+    "name": "muabantaikhoanmmo",
     "role": "Quản Trị Viên",
     "balance": 233880,
     "created": "18/9/2026",
@@ -5684,8 +5680,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_1791739240939",
-    "name": "Mạnh Đồng Official",
     "email": "manhdongvtc@gmail.com",
+    "name": "Mạnh Đồng Official",
     "role": "Quản Trị Viên",
     "balance": 208269,
     "created": "2026-10-11 17:20:40",
@@ -5693,9 +5689,29 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "isLocked": false
   },
   {
+    "userId": "USR_1791242528175",
+    "email": "digimarketmmo@gmail.com",
+    "name": "digimarketmmo",
+    "role": "Quản Trị Viên",
+    "balance": 5674,
+    "created": "2026-10-05 23:22:08",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=digimarketmmo%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1792862559514",
+    "email": "koanh130103@gmail.com",
+    "name": "koanh130103",
+    "role": "USER",
+    "balance": 250000,
+    "created": "2026-10-24 17:22:39",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=koanh130103%40gmail.com",
+    "isLocked": false
+  },
+  {
     "userId": "USR_1791307755216",
-    "name": "hoangtuananh0968",
     "email": "hoangtuananh0968@gmail.com",
+    "name": "hoangtuananh0968",
     "role": "USER",
     "balance": 200200,
     "created": "2026-10-06 17:29:15",
@@ -5704,8 +5720,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "usr_1793702168574_nseq",
-    "name": "Tổng Long",
     "email": "longtonglaocai1102@gmail.com",
+    "name": "Tổng Long",
     "role": "USER",
     "balance": 30000,
     "created": "2026-11-03 10:36:08",
@@ -5714,8 +5730,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_457932",
-    "name": "Mạnh Đông Academy",
     "email": "manhdongacademy@gmail.com",
+    "name": "Mạnh Đông Academy",
     "role": "USER",
     "balance": 20000,
     "created": "21/9/2026",
@@ -5724,8 +5740,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "usr_1793702165438_w29f",
-    "name": "cường mạc",
     "email": "noithatsieuben@gmail.com",
+    "name": "cường mạc",
     "role": "USER",
     "balance": 10000,
     "created": "2026-11-03 10:36:05",
@@ -5733,19 +5749,9 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "isLocked": false
   },
   {
-    "userId": "USR_1791242528175",
-    "name": "digimarketmmo",
-    "email": "digimarketmmo@gmail.com",
-    "role": "Quản Trị Viên",
-    "balance": 8974,
-    "created": "2026-10-05 23:22:08",
-    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=digimarketmmo%40gmail.com",
-    "isLocked": false
-  },
-  {
     "userId": "USR_678694",
-    "name": "huyphamfo3",
     "email": "huyphamfo3@gmail.com",
+    "name": "huyphamfo3",
     "role": "USER",
     "balance": 8000,
     "created": "3/10/2026",
@@ -5754,8 +5760,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_436479",
-    "name": "Wu Kinn",
     "email": "kinnwu02@gmail.com",
+    "name": "Wu Kinn",
     "role": "USER",
     "balance": 0,
     "created": "8/10/2026",
@@ -5764,8 +5770,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_180829",
-    "name": "vien ku",
     "email": "nguyenvienx3@gmail.com",
+    "name": "vien ku",
     "role": "USER",
     "balance": 0,
     "created": "8/10/2026",
@@ -5774,8 +5780,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_926830",
-    "name": "hanggain17998",
     "email": "hanggain17998@gmail.com",
+    "name": "hanggain17998",
     "role": "USER",
     "balance": 0,
     "created": "5/10/2026",
@@ -5784,8 +5790,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_374243",
-    "name": "Ruotong Liu",
     "email": "lrt920306@gmail.com",
+    "name": "Ruotong Liu",
     "role": "USER",
     "balance": 0,
     "created": "31/10/2026",
@@ -5794,8 +5800,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_269623",
-    "name": "Minh Phước Vưu",
     "email": "vuuminhphuoc@gmail.com",
+    "name": "Minh Phước Vưu",
     "role": "USER",
     "balance": 0,
     "created": "30/9/2026",
@@ -5804,8 +5810,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_170407",
-    "name": "Phuong Minh",
     "email": "dautukiemtien.vn@gmail.com",
+    "name": "Phuong Minh",
     "role": "USER",
     "balance": 0,
     "created": "30/9/2026",
@@ -5814,8 +5820,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_297880",
-    "name": "Đông Mạnh",
     "email": "manhdong09d@gmail.com",
+    "name": "Đông Mạnh",
     "role": "USER",
     "balance": 0,
     "created": "30/9/2026",
@@ -5824,8 +5830,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_763032",
-    "name": "hamy2026",
     "email": "tnhamy2026@gmail.com",
+    "name": "hamy2026",
     "role": "USER",
     "balance": 0,
     "created": "30/9/2026",
@@ -5834,8 +5840,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_461520",
-    "name": "TimeKP TK",
     "email": "nguyenqhanduyhung@gmail.com",
+    "name": "TimeKP TK",
     "role": "USER",
     "balance": 0,
     "created": "3/10/2026",
@@ -5844,8 +5850,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_276771",
-    "name": "khánh nguyễn",
     "email": "khanhkenvidboy@gmail.com",
+    "name": "khánh nguyễn",
     "role": "USER",
     "balance": 0,
     "created": "25/9/2026",
@@ -5854,8 +5860,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_681215",
-    "name": "Vy Do",
     "email": "dogiavy82007@gmail.com",
+    "name": "Vy Do",
     "role": "USER",
     "balance": 0,
     "created": "25/10/2026",
@@ -5864,8 +5870,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_711824",
-    "name": "Công phúc Hoàng",
     "email": "hoangcongphuc14091997@gmail.com",
+    "name": "Công phúc Hoàng",
     "role": "USER",
     "balance": 0,
     "created": "24/9/2026",
@@ -5874,8 +5880,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_951445",
-    "name": "lamthanhhadx2",
     "email": "lamthanhhadx2@gmail.com",
+    "name": "lamthanhhadx2",
     "role": "USER",
     "balance": 0,
     "created": "24/10/2026",
@@ -5884,8 +5890,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_720629",
-    "name": "trnguyen2610",
     "email": "trnguyen2610@gmail.com",
+    "name": "trnguyen2610",
     "role": "USER",
     "balance": 0,
     "created": "24/10/2026",
@@ -5894,8 +5900,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_403177",
-    "name": "danh bui",
     "email": "ditmemi32@gmail.com",
+    "name": "danh bui",
     "role": "USER",
     "balance": 0,
     "created": "24/10/2026",
@@ -5904,8 +5910,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_980492",
-    "name": "dongphanvts",
     "email": "dongphanvts@gmail.com",
+    "name": "dongphanvts",
     "role": "USER",
     "balance": 0,
     "created": "23/9/2026",
@@ -5914,8 +5920,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_135501",
-    "name": "shanktricia262",
     "email": "shanktricia262@gmail.com",
+    "name": "shanktricia262",
     "role": "USER",
     "balance": 0,
     "created": "22/9/2026",
@@ -5924,8 +5930,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_173771",
-    "name": "nnam883566",
     "email": "nnam883566@gmail.com",
+    "name": "nnam883566",
     "role": "USER",
     "balance": 0,
     "created": "22/9/2026",
@@ -5934,8 +5940,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_886552",
-    "name": "Đầu tư Blog",
     "email": "blogdautu.me@gmail.com",
+    "name": "Đầu tư Blog",
     "role": "USER",
     "balance": 0,
     "created": "22/9/2026",
@@ -5944,8 +5950,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_726016",
-    "name": "nguyen van anh",
     "email": "manhdong22024@gmail.com",
+    "name": "nguyen van anh",
     "role": "USER",
     "balance": 0,
     "created": "22/9/2026",
@@ -5954,8 +5960,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_757535",
-    "name": "hiep17863",
     "email": "hiep17863@gmail.com",
+    "name": "hiep17863",
     "role": "USER",
     "balance": 0,
     "created": "22/10/2026",
@@ -5963,9 +5969,39 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "isLocked": false
   },
   {
+    "userId": "USR_1794159585995_zyko",
+    "email": "lethinguyetvtc@gmail.com",
+    "name": "Lê Nguyệt",
+    "role": "USER",
+    "balance": 0,
+    "created": "2026-11-08 17:39:46",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=lethinguyetvtc%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1794153238156_3pum",
+    "email": "cuong20410@gmail.com",
+    "name": "Cường",
+    "role": "USER",
+    "balance": 0,
+    "created": "2026-11-08 15:53:58",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=cuong20410%40gmail.com",
+    "isLocked": false
+  },
+  {
+    "userId": "USR_1794099653619_f3y1",
+    "email": "thienlon0203@gmail.com",
+    "name": "Thiện Đồng",
+    "role": "USER",
+    "balance": 0,
+    "created": "2026-11-08 01:00:53",
+    "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=thienlon0203%40gmail.com",
+    "isLocked": false
+  },
+  {
     "userId": "usr_1793794933022_y06i",
-    "name": "anh le",
     "email": "theoanh12345678@gmail.com",
+    "name": "anh le",
     "role": "USER",
     "balance": 0,
     "created": "2026-11-04 12:22:13",
@@ -5974,8 +6010,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "usr_1793786780957_ckcu",
-    "name": "cpfa8889",
     "email": "cpfa8889@gmail.com",
+    "name": "cpfa8889",
     "role": "USER",
     "balance": 0,
     "created": "2026-11-04 10:06:21",
@@ -5984,8 +6020,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_1792922170057",
-    "name": "hang giang",
     "email": "gianghangasd@gmail.com",
+    "name": "hang giang",
     "role": "USER",
     "balance": 0,
     "created": "2026-10-25 09:56:10",
@@ -5994,8 +6030,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_1791822983704",
-    "name": "manhdongofficial",
     "email": "manhdongofficial@gmail.com",
+    "name": "manhdongofficial",
     "role": "USER",
     "balance": 0,
     "created": "2026-10-12 16:36:23",
@@ -6004,8 +6040,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_1791534125632",
-    "name": "nguyenvinh09678",
     "email": "nguyenvinh09678@gmail.com",
+    "name": "nguyenvinh09678",
     "role": "USER",
     "balance": 0,
     "created": "2026-10-09 08:22:05",
@@ -6014,8 +6050,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_1791378968732",
-    "name": "kim long nguyen thi",
     "email": "nguyenthikimlong400@gmail.com",
+    "name": "kim long nguyen thi",
     "role": "USER",
     "balance": 0,
     "created": "2026-10-07 13:16:08",
@@ -6024,8 +6060,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_1791347421214",
-    "name": "khotaikhoanso.net",
     "email": "khotaikhoanso.net@gmail.com",
+    "name": "khotaikhoanso.net",
     "role": "USER",
     "balance": 0,
     "created": "2026-10-07 04:30:21",
@@ -6034,8 +6070,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_286081",
-    "name": "thanhmx333",
     "email": "thanhmx333@gmail.com",
+    "name": "thanhmx333",
     "role": "USER",
     "balance": 0,
     "created": "19/9/2026",
@@ -6044,8 +6080,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_325242",
-    "name": "IT Adam",
     "email": "adamit01012000@gmail.com",
+    "name": "IT Adam",
     "role": "USER",
     "balance": 0,
     "created": "19/10/2026",
@@ -6054,8 +6090,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_188896",
-    "name": "Oanh Nguyễn Duy",
     "email": "duyoanhbv@gmail.com",
+    "name": "Oanh Nguyễn Duy",
     "role": "USER",
     "balance": 0,
     "created": "19/10/2026",
@@ -6064,8 +6100,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_916091",
-    "name": "Mạnh Đông",
     "email": "manhdongvt2019@gmail.com",
+    "name": "Mạnh Đông",
     "role": "USER",
     "balance": 0,
     "created": "18/9/2026",
@@ -6074,8 +6110,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_830832",
-    "name": "Phước hữu",
     "email": "huu226111@gmail.com",
+    "name": "Phước hữu",
     "role": "USER",
     "balance": 0,
     "created": "16/10/2026",
@@ -6084,8 +6120,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_118416",
-    "name": "pii lùn",
     "email": "piihattieu698107@gmail.com",
+    "name": "pii lùn",
     "role": "USER",
     "balance": 0,
     "created": "14/10/2026",
@@ -6094,8 +6130,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_148939",
-    "name": "5D Khẩu Trang",
     "email": "nhuanfuni@gmail.com",
+    "name": "5D Khẩu Trang",
     "role": "USER",
     "balance": 0,
     "created": "14/10/2026",
@@ -6104,8 +6140,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_554268",
-    "name": "Cơ Thi",
     "email": "ngocthico123@gmail.com",
+    "name": "Cơ Thi",
     "role": "USER",
     "balance": 0,
     "created": "13/10/2026",
@@ -6114,8 +6150,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_738564",
-    "name": "Khanh Lê",
     "email": "lmk.suno1819@gmail.com",
+    "name": "Khanh Lê",
     "role": "USER",
     "balance": 0,
     "created": "1/11/2026",
@@ -6124,8 +6160,8 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "userId": "USR_443561",
-    "name": "Chí Điệp",
     "email": "chidiep003@gmail.com",
+    "name": "Chí Điệp",
     "role": "USER",
     "balance": 0,
     "created": "1/10/2026",
