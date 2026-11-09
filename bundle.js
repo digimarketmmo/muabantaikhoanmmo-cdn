@@ -1919,7 +1919,7 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
   },
   {
     "id": "PROD_MV5OYRDJCA",
-    "name": "Google Gemini AI Pro Veo3 - 18 Tháng Chính Chủ",
+    "name": "Google Gemini Pro Veo3 - 18 Tháng Chính Chủ",
     "slug": "prod-mv5oyrdjca",
     "category": "AI & Video",
     "description": "🔥 NÂNG CẤP GEMINI PRO CHÍNH CHỦ 18 THÁNG + GOOGLE ONE 5TB + VEO 3\n- Kèm nhiều AI cao cấp có cả Google VEO 3 tạo video đỉnh cao\n- Dùng riêng tài khoản chính chủ của bạn (Dán link ra trình duyệt là xong, không cần add family, không cần thẻ)\n- Bảo hành 7 Ngày uy tín.",
@@ -1930,44 +1930,20 @@ var API_URL = "https://script.google.com/macros/s/AKfycbylo1VU2SibsBmrxeCmWDCSm5
     "warranty": "Bảo Hành 7 Ngày",
     "variants": [
       {
-        "name": "Gemini AI Pro Veo3 - 18 tháng",
+        "name": "Gemini Pro Veo3 - 18 tháng",
         "price": 120000,
-        "stock": 187,
-        "apiMapping": {
-          "enabled": true,
-          "provider": "selltainguyenmmo",
-          "baseUrl": "https://selltainguyenmmo.com",
-          "apiKey": "",
-          "sourceProdId": "33270",
-          "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-          "sourcePrice": 87000,
-          "sourceStock": 187,
-          "isSourceDeleted": false,
-          "targetProdId": "PROD_MV5OYRDJCA",
-          "targetProdName": "Google Gemini AI Pro Veo3 - 18 Tháng Chính Chủ"
-        },
-        "available": true,
+        "stock": 0,
+        "available": false,
+        "apiMapping": {},
         "accounts": []
       }
     ],
-    "delivery_type": "api",
-    "apiMapping": {
-      "enabled": true,
-      "provider": "selltainguyenmmo",
-      "baseUrl": "https://selltainguyenmmo.com",
-      "apiKey": "",
-      "sourceProdId": "33270",
-      "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-      "sourcePrice": 87000,
-      "sourceStock": 187,
-      "isSourceDeleted": false,
-      "targetProdId": "PROD_MV5OYRDJCA",
-      "targetProdName": "Google Gemini AI Pro Veo3 - 18 Tháng Chính Chủ"
-    },
-    "stock": 187,
+    "delivery_type": "local",
+    "apiMapping": {},
+    "stock": 0,
     "buffSold": 1865,
     "sold": 1865,
-    "available": true
+    "available": false
   },
   {
     "id": "PROD_MUR4EA44RE",
@@ -18391,27 +18367,35 @@ const pillsContainer = document.getElementById("dtlVariantPills");
         }
       } catch(eClr) {}
 
-      // 1. Kiểm tra nếu sản phẩm là API On-demand (Ưu tiên số 1, độc lập với deliveryType cũ)
+      // [BẢO VỆ TUYỆT ĐỐI KHO NỘI BỘ]: Nếu sản phẩm được cấu hình kho nội bộ -> TUYỆT ĐỐI KHÔNG BIẾN THÀNH API
+      const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+      const canonId = (typeof getCanonicalProductId === "function" && prod.id) ? getCanonicalProductId(prod.id) : prod.id;
+      const isMapLocal = !!((prod.id && maps[prod.id] && (maps[prod.id].deliveryType === "local" || maps[prod.id].enabled === false)) ||
+                            (canonId && maps[canonId] && (maps[canonId].deliveryType === "local" || maps[canonId].enabled === false)));
+      const isExplicitLocal = isMapLocal || (prod.deliveryType === "local" || prod.delivery_type === "local" || prod.deliveryType === "manual" || prod.delivery_type === "manual");
+
       let apiMap = null;
-      if (typeof getApiProductMapping === "function") {
-        if (curVar && curVar.apiMapping && curVar.apiMapping.enabled && curVar.apiMapping.sourceProdId) {
-          apiMap = getApiProductMapping(curVar.apiMapping) || curVar.apiMapping;
-        }
-        if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
-          if (prod && prod.id) {
-            apiMap = getApiProductMapping(prod.id + "_" + varIdxNum);
+      if (!isExplicitLocal) {
+        if (typeof getApiProductMapping === "function") {
+          if (curVar && curVar.apiMapping && curVar.apiMapping.enabled && curVar.apiMapping.sourceProdId) {
+            apiMap = getApiProductMapping(curVar.apiMapping) || curVar.apiMapping;
           }
+          if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
+            if (prod && prod.id) {
+              apiMap = getApiProductMapping(prod.id + "_" + varIdxNum);
+            }
+          }
+          if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
+            apiMap = getApiProductMapping(prod) || (prod && prod.apiMapping);
+          }
+        } else if (curVar && curVar.apiMapping) {
+          apiMap = curVar.apiMapping;
+        } else if (prod && prod.apiMapping) {
+          apiMap = prod.apiMapping;
         }
-        if (!apiMap || !apiMap.enabled || !apiMap.sourceProdId) {
-          apiMap = getApiProductMapping(prod) || (prod && prod.apiMapping);
-        }
-      } else if (curVar && curVar.apiMapping) {
-        apiMap = curVar.apiMapping;
-      } else if (prod && prod.apiMapping) {
-        apiMap = prod.apiMapping;
       }
 
-      const isApi = !!(apiMap && apiMap.enabled && apiMap.sourceProdId) || (prod.deliveryType === "api" || prod.delivery_type === "api");
+      const isApi = !isExplicitLocal && (!!(apiMap && apiMap.enabled && apiMap.sourceProdId) || (prod.deliveryType === "api" || prod.delivery_type === "api"));
 
       if (isApi) {
         prod.deliveryType = "api";
@@ -18424,28 +18408,36 @@ const pillsContainer = document.getElementById("dtlVariantPills");
           const allProdsList = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
             ? window.cachedSourceProducts
             : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+          const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMap.provider) : false;
+
           if (!inSrc && allProdsList.length > 0) {
             inSrc = allProdsList.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId && (!apiMap.provider || s.provider === apiMap.provider || (typeof isSameProvider === "function" && isSameProvider(s.provider, apiMap.provider))))
                  || allProdsList.find(s => String(s.id).trim().replace(/^#/, "") === cleanSrcId);
           }
+
+          // TRƯỜNG HỢP 1: Đã tìm thấy sản phẩm nguồn trong danh mục nhà cung cấp
           if (inSrc && typeof inSrc.amount === "number") {
             const st = inSrc.amount;
             apiMap.sourceStock = st;
-            apiMap.isSourceDeleted = false;
+            apiMap.isSourceDeleted = (st <= 0 && DEAD_SOURCE_IDS.has(cleanSrcId));
             prod.stock = st;
             if (curVar) curVar.stock = st;
             if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v && !v.apiMapping) v.stock = st; });
             return Math.max(0, st);
           }
-          if (apiMap && typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0) {
-            const st = apiMap.sourceStock;
-            if (!DEAD_SOURCE_IDS.has(cleanSrcId)) apiMap.isSourceDeleted = false;
-            if (prod) prod.stock = st;
-            if (curVar) curVar.stock = st;
-            if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v && !v.apiMapping) v.stock = st; });
-            return st;
+
+          // TRƯỜNG HỢP 2: Nguồn đã nạp thành công nhưng KHÔNG TÌM THẤY mã nguồn -> ĐÃ BỊ XÓA HOẶC HẾT HÀNG TẬN GỐC
+          if (provLoaded && allProdsList.length > 0) {
+            apiMap.sourceStock = 0;
+            apiMap.isSourceDeleted = true;
+            if (prod) {
+              prod.stock = 0;
+              if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v) v.stock = 0; });
+            }
+            return 0;
           }
 
+          // TRƯỜNG HỢP 3: Mã nguồn đã nằm trong danh sách chết hoặc mã rỗng
           if (DEAD_SOURCE_IDS.has(cleanSrcId) || cleanSrcId === "0" || !cleanSrcId) {
             apiMap.sourceStock = 0;
             apiMap.isSourceDeleted = true;
@@ -18455,10 +18447,18 @@ const pillsContainer = document.getElementById("dtlVariantPills");
             }
             return 0;
           }
+
+          // TRƯỜNG HỢP 4: Chưa nạp xong API nguồn, fallback tạm thời sang sourceStock có sẵn
+          if (apiMap && typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0 && !apiMap.isSourceDeleted) {
+            const st = apiMap.sourceStock;
+            if (prod) prod.stock = st;
+            if (curVar) curVar.stock = st;
+            if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v && !v.apiMapping) v.stock = st; });
+            return st;
+          }
         }
 
-        if (apiMap && apiMap.isSourceDeleted && (cleanSrcId === "0" || !cleanSrcId || DEAD_SOURCE_IDS.has(cleanSrcId))) {
-          apiMap.sourceStock = 0;
+        if (apiMap && (apiMap.isSourceDeleted || apiMap.sourceStock === 0)) {
           if (prod) {
             prod.stock = 0;
             if (Array.isArray(prod.variants)) prod.variants.forEach(function(v) { if (v) v.stock = 0; });
@@ -18466,20 +18466,6 @@ const pillsContainer = document.getElementById("dtlVariantPills");
           return 0;
         }
 
-        if (apiMap && typeof apiMap.sourceStock === "number" && apiMap.sourceStock > 0) {
-          apiMap.isSourceDeleted = false;
-          if (prod) prod.stock = apiMap.sourceStock;
-          if (curVar) curVar.stock = apiMap.sourceStock;
-          return apiMap.sourceStock;
-        }
-
-        if (curVar && typeof curVar.stock === "number" && curVar.stock > 0) {
-          return curVar.stock;
-        }
-
-        if (prod && typeof prod.stock === "number" && prod.stock > 0) {
-          return prod.stock;
-        }
         return 0;
       }
 
@@ -18505,8 +18491,12 @@ const pillsContainer = document.getElementById("dtlVariantPills");
         return typeof prod.stock === "number" ? Math.max(0, prod.stock) : 0;
       }
 
+      // SẢN PHẨM KHO NỘI BỘ THÔNG THƯỜNG:
       if (!hasVars) {
         if (Array.isArray(prod.accounts) && prod.accounts.length > 0) return prod.accounts.length;
+        if (typeof MMO_WAREHOUSE !== "undefined" && typeof MMO_WAREHOUSE.getAvailableCount === "function") {
+          return MMO_WAREHOUSE.getAvailableCount(prod.id, 0);
+        }
         if (typeof prod.stock === "number") return Math.max(0, prod.stock);
         return 0;
       }
@@ -18521,6 +18511,7 @@ const pillsContainer = document.getElementById("dtlVariantPills");
           if (clm[prod.id + "__VAR__" + vi] || (typeof getVariantStockKey === "function" && clm[getVariantStockKey(prod.id, vi)])) return total;
           let s = 0;
           if (Array.isArray(v.accounts) && v.accounts.length > 0) s = v.accounts.length;
+          else if (typeof MMO_WAREHOUSE !== "undefined" && typeof MMO_WAREHOUSE.getAvailableCount === "function") s = MMO_WAREHOUSE.getAvailableCount(prod.id, vi);
           else if (typeof v.stock === "number") s = Math.max(0, v.stock);
           return total + s;
         }, 0);
@@ -18534,14 +18525,17 @@ const pillsContainer = document.getElementById("dtlVariantPills");
         if (clm[prod.id] || clm[prod.id + "__VAR__ALL"] || clm[prod.id + "__VAR__" + idxNum] || (typeof getVariantStockKey === "function" && clm[getVariantStockKey(prod.id, idxNum)])) isSpecificVarCleared = true;
       } catch(e) {}
       if (isSpecificVarCleared) return 0;
-      // [SSOT RULE]: Nếu biến thể có số tồn kho dạng số (từ Turso hoặc kho cập nhật), lấy chuẩn tuyệt đối
+
       if (Array.isArray(v.accounts) && v.accounts.length > 0) return v.accounts.length;
+      if (typeof MMO_WAREHOUSE !== "undefined" && typeof MMO_WAREHOUSE.getAvailableCount === "function") {
+        const wCount = MMO_WAREHOUSE.getAvailableCount(prod.id, idxNum);
+        if (wCount > 0) return wCount;
+      }
       if (typeof v.stock === "number") {
         return Math.max(0, v.stock);
       }
       return 0;
-    }
-    window.getShopVariantStock = getShopVariantStock;
+    }window.getShopVariantStock = getShopVariantStock;
 
     function getShopProductStock(prodOrId) {
       return getShopVariantStock(prodOrId, "ALL");
@@ -19528,14 +19522,12 @@ const pillsContainer = document.getElementById("dtlVariantPills");
                   } catch(e) { return false; }
                 })();
 
-                if (tp.stock !== undefined && Number(tp.stock) > 0) {
-                  updatedStock = Number(tp.stock);
+                if (tp.stock !== undefined) {
+                  updatedStock = Math.max(0, Number(tp.stock) || 0);
                 } else if (pfMaster && !manuallyCleared && pfMaster.stock > 0) {
                   updatedStock = pfMaster.stock;
-                } else if (!manuallyCleared && cur.stock > 0) {
-                  updatedStock = cur.stock;
                 } else {
-                  updatedStock = (tp.stock !== undefined) ? Number(tp.stock) : (cur.stock || 0);
+                  updatedStock = 0;
                 }
 
                 if (Array.isArray(variants)) {
@@ -19548,7 +19540,7 @@ const pillsContainer = document.getElementById("dtlVariantPills");
                       } else if (mv && !manuallyCleared && mv.stock > 0) {
                         v.stock = mv.stock;
                         v.available = true;
-                      } else if (cv && !manuallyCleared && cv.stock > 0) {
+                      } else if (cv && !manuallyCleared && cv.stock > 0 && isPhoneFarmOrRom) {
                         v.stock = cv.stock;
                         v.available = true;
                       } else {
@@ -23142,36 +23134,6 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     // LIÊN KẾT SẢN PHẨM ON-DEMAND API (MAPPING ENGINE v1.9.3)
     // ============================================================================
         var DEFAULT_API_PRODUCT_MAPPINGS = {
-  "PROD_MU5T3T47AE": {
-    "enabled": true,
-    "provider": "selltainguyenmmo",
-    "sourceProdId": "33270",
-    "sourcePrice": 68800,
-    "sourceStock": 259,
-    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-    "baseUrl": "https://selltainguyenmmo.com",
-    "isSourceDeleted": false
-  },
-  "PROD_MU2AB1XEGI": {
-    "enabled": true,
-    "provider": "selltainguyenmmo",
-    "sourceProdId": "33270",
-    "sourcePrice": 68800,
-    "sourceStock": 259,
-    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-    "baseUrl": "https://selltainguyenmmo.com",
-    "isSourceDeleted": false
-  },
-  "PROD_MUQIMRJYG0": {
-    "enabled": true,
-    "provider": "selltainguyenmmo",
-    "sourceProdId": "33270",
-    "sourcePrice": 68800,
-    "sourceStock": 259,
-    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-    "baseUrl": "https://selltainguyenmmo.com",
-    "isSourceDeleted": false
-  },
   "PROD_MUR4EA44RE": {
     "enabled": true,
     "provider": "ultrammo",
@@ -23209,46 +23171,6 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
     "sourcePrice": 90000,
     "sourceStock": 0,
     "sourceProdName": "ACC USA 2025- AVATAR - 2FA - VER HOTMAIL - REG IOS - ĐÃ KHÁNG 282 - IP USA | NÚT LÊN TÍCH XANH",
-    "baseUrl": "https://selltainguyenmmo.com",
-    "isSourceDeleted": false
-  },
-  "PROD_MV5QIZNFCZ": {
-    "enabled": true,
-    "provider": "selltainguyenmmo",
-    "sourceProdId": "33270",
-    "sourcePrice": 68800,
-    "sourceStock": 259,
-    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-    "baseUrl": "https://selltainguyenmmo.com",
-    "isSourceDeleted": false
-  },
-  "PROD_MV5OYRDJCA": {
-    "enabled": true,
-    "provider": "selltainguyenmmo",
-    "sourceProdId": "33270",
-    "sourcePrice": 68800,
-    "sourceStock": 259,
-    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-    "baseUrl": "https://selltainguyenmmo.com",
-    "isSourceDeleted": false
-  },
-  "PROD_MV5PA8KZDW": {
-    "enabled": true,
-    "provider": "selltainguyenmmo",
-    "sourceProdId": "33270",
-    "sourcePrice": 68800,
-    "sourceStock": 259,
-    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
-    "baseUrl": "https://selltainguyenmmo.com",
-    "isSourceDeleted": false
-  },
-  "PROD_MU6R34FZ4Z": {
-    "enabled": true,
-    "provider": "selltainguyenmmo",
-    "sourceProdId": "33270",
-    "sourcePrice": 68800,
-    "sourceStock": 259,
-    "sourceProdName": "NÂNG CẤP GEMINI PRO 18 THÁNG + GG 5TB , TẶNG KÈM NHIỀU AI CÓ CẢ VEO3 - DÙNG RIÊNG ( DÁN LINK RA TRÌNH DUYỆT LÀ XONG KHÔNG CẦN ADD FAMILY - THẺ )",
     "baseUrl": "https://selltainguyenmmo.com",
     "isSourceDeleted": false
   },
@@ -23902,9 +23824,11 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       const prod = (typeof productOrId === "object") ? productOrId : (typeof findShopProduct === "function" ? findShopProduct(productOrId) : null);
       if (prod && (prod.deliveryType === "local" || prod.delivery_type === "local" || prod.deliveryType === "manual" || prod.delivery_type === "manual")) return false;
       const pId = typeof productOrId === "string" ? productOrId.trim() : (prod ? (prod.id || "").trim() : "");
-      if (pId) {
+      const cId = (typeof getCanonicalProductId === "function" && pId) ? getCanonicalProductId(pId) : pId;
+      if (pId || cId) {
         const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
-        if (maps[pId] && (maps[pId].enabled === false || maps[pId].deliveryType === "local")) return false;
+        if (pId && maps[pId] && (maps[pId].enabled === false || maps[pId].deliveryType === "local")) return false;
+        if (cId && maps[cId] && (maps[cId].enabled === false || maps[cId].deliveryType === "local")) return false;
       }
       // [ƯU TIÊN TUYỆT ĐỐI 1]: Nếu sản phẩm có API mapping đang BẬT -> 100% là sản phẩm API
       if (prod && prod.apiMapping && prod.apiMapping.enabled && prod.apiMapping.sourceProdId) {
@@ -23924,8 +23848,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       }
       if (prod && (prod.deliveryType === "api" || prod.delivery_type === "api")) return true;
       return false;
-    }
-    window.isProductApi = isProductApi;
+    }window.isProductApi = isProductApi;
 
     function getApiProductMapping(productOrId) {
       if (!productOrId) return null;
@@ -23933,47 +23856,57 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       const isIdKey = /^(PROD_|SP_)/i.test(prodId);
       const prodObj = typeof productOrId === "object" ? productOrId : ((typeof findShopProduct === "function") ? findShopProduct(prodId) : null);
       const prodName = prodObj ? (prodObj.name || "") : (typeof productOrId === "string" ? productOrId.trim() : "");
+      const canonId = (typeof getCanonicalProductId === "function" && prodId) ? getCanonicalProductId(prodId) : prodId;
 
       const maps = getApiProductMappings();
+
+      // [BẢO VỆ TUYỆT ĐỐI KHO NỘI BỘ]: Nếu sản phẩm hoặc ID được đánh dấu là kho nội bộ hoặc bị tắt API -> TRẢ VỀ NULL NGAY LẬP TỨC 0MS
+      const isMapDisabled = (prodId && maps[prodId] && (maps[prodId].enabled === false || maps[prodId].deliveryType === "local")) ||
+                            (canonId && maps[canonId] && (maps[canonId].enabled === false || maps[canonId].deliveryType === "local")) ||
+                            (prodObj && prodObj.id && maps[prodObj.id] && (maps[prodObj.id].enabled === false || maps[prodObj.id].deliveryType === "local"));
+      const isExplicitLocal = isMapDisabled || (prodObj && (prodObj.deliveryType === "local" || prodObj.delivery_type === "local" || prodObj.deliveryType === "manual" || prodObj.delivery_type === "manual"));
+
+      if (isExplicitLocal) {
+        // Chỉ nhận khi có mapping API riêng gắn TRỰC TIẾP trên đối tượng VÀ chưa bị tắt trong maps
+        if (!isMapDisabled && prodObj && prodObj.apiMapping && prodObj.apiMapping.enabled && prodObj.apiMapping.sourceProdId) {
+          return enrichMapping(prodObj.apiMapping);
+        }
+        return null;
+      }
 
       function enrichMapping(m) {
         if (!m || !m.enabled || !m.sourceProdId) return null;
         const res = Object.assign({}, m);
         const cleanSrcId = String(res.sourceProdId || "").trim().replace(/^#/, "");
-        let stock = (res.sourceStock !== undefined && res.sourceStock !== null) ? Number(res.sourceStock) : 0;
+        let stock = 0;
         let inSrc = (typeof getFastSourceProduct === "function") ? getFastSourceProduct(res.provider, cleanSrcId) : null;
+        const allProdsList = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
+          ? window.cachedSourceProducts
+          : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+        const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(res.provider) : false;
+
         if (inSrc && typeof inSrc.amount === "number") {
           stock = inSrc.amount;
           res.sourceStock = stock;
-          res.isSourceDeleted = false;
+          res.isSourceDeleted = (stock <= 0 && isKnownDead);
           if (inSrc.price) res.sourcePrice = inSrc.price;
           if (inSrc.name) res.sourceProdName = inSrc.name;
         } else {
-          // [ZERO FALSE OUT-OF-STOCK]: Chỉ coi là đã xóa khi thuộc DEAD_SOURCE_IDS hoặc ID không hợp lệ
           const isKnownDead = typeof DEAD_SOURCE_IDS !== "undefined" && DEAD_SOURCE_IDS.includes(cleanSrcId);
-          const currentValidStock = (res.sourceStock !== undefined && res.sourceStock !== null) ? Number(res.sourceStock) : 0;
-
-          if (isKnownDead || (!cleanSrcId || cleanSrcId === "0")) {
+          // [ZERO GHOST STOCK]: Nếu nhà cung cấp đã nạp danh sách và mã nguồn không có trong danh sách -> Nguồn đã hết hàng hoặc bị xóa!
+          if (isKnownDead || (!cleanSrcId || cleanSrcId === "0") || (provLoaded && allProdsList.length > 0)) {
             stock = 0;
             res.sourceStock = 0;
             res.isSourceDeleted = true;
           } else {
-            res.isSourceDeleted = false;
+            // Khi chưa load xong API nguồn, fallback tạm thời sang sourceStock cũ
+            const currentValidStock = (res.sourceStock !== undefined && res.sourceStock !== null) ? Number(res.sourceStock) : 0;
             stock = Math.max(0, currentValidStock);
             res.sourceStock = stock;
           }
         }
         res.sourceStock = Math.max(0, stock);
         return res;
-      }
-
-      // [BẢO VỆ KHO NỘI BỘ]: Nếu sản phẩm là kho nội bộ và không có mapping API riêng
-      const isExplicitLocal = prodObj && (prodObj.deliveryType === "local" || prodObj.delivery_type === "local" || prodObj.deliveryType === "manual" || prodObj.delivery_type === "manual");
-      if (isExplicitLocal) {
-        if (prodObj.apiMapping && prodObj.apiMapping.enabled && prodObj.apiMapping.sourceProdId) {
-          return enrichMapping(prodObj.apiMapping);
-        }
-        return null;
       }
 
       // [BUILT-IN DEFAULT MAPPINGS FOR ON-DEMAND PRODUCTS]
@@ -23987,10 +23920,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       }
 
       // 1. Kiểm tra cấu hình explicitly bị tắt hoặc đánh dấu local
-      if (prodId && maps[prodId] && (maps[prodId].enabled === false || maps[prodId].deliveryType === "local")) {
-        return null;
-      }
-      if (prodObj && prodObj.id && maps[prodObj.id] && (maps[prodObj.id].enabled === false || maps[prodObj.id].deliveryType === "local")) {
+      if (isMapDisabled) {
         return null;
       }
 
@@ -24010,6 +23940,9 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       if (prodId && maps[prodId] && maps[prodId].enabled && maps[prodId].sourceProdId) {
         return enrichMapping(maps[prodId]);
       }
+      if (canonId && maps[canonId] && maps[canonId].enabled && maps[canonId].sourceProdId) {
+        return enrichMapping(maps[canonId]);
+      }
       if (prodObj && prodObj.id && maps[prodObj.id] && maps[prodObj.id].enabled && maps[prodObj.id].sourceProdId) {
         return enrichMapping(maps[prodObj.id]);
       }
@@ -24025,10 +23958,13 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         }
       } catch(e) {}
 
-      // 3. Fallback: nếu sản phẩm chưa có mapping hợp lệ trong maps/SSOT, dùng defaultMappings (CHỈ KHI không phải kho nội bộ)
-      if (!isExplicitLocal) {
+      // 3. Fallback: nếu sản phẩm chưa có mapping hợp lệ trong maps/SSOT, dùng defaultMappings (CHỈ KHI KHÔNG PHẢI KHO NỘI BỘ VÀ CHƯA BỊ TẮT)
+      if (!isExplicitLocal && !isMapDisabled) {
         if (prodId && defaultMappings[prodId] && (!maps[prodId] || (maps[prodId].enabled !== false && maps[prodId].deliveryType !== "local"))) {
           return enrichMapping(defaultMappings[prodId]);
+        }
+        if (canonId && defaultMappings[canonId] && (!maps[canonId] || (maps[canonId].enabled !== false && maps[canonId].deliveryType !== "local"))) {
+          return enrichMapping(defaultMappings[canonId]);
         }
         if (prodObj && prodObj.id && defaultMappings[prodObj.id] && (!maps[prodObj.id] || (maps[prodObj.id].enabled !== false && maps[prodObj.id].deliveryType !== "local"))) {
           return enrichMapping(defaultMappings[prodObj.id]);
@@ -24036,7 +23972,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       }
 
       // 4. Tra cứu theo tên sản phẩm (CHỈ khi không phải kho nội bộ và tham số truyền vào là chuỗi tên, TUYỆT ĐỐI không áp dụng khi là mã ID)
-      if (!isExplicitLocal && !isIdKey && prodName) {
+      if (!isExplicitLocal && !isMapDisabled && !isIdKey && prodName) {
         const lowerPN = prodName.toLowerCase().trim();
         const isGenericName = ["default", "gói 1", "gói 2", "gói 3", "gói 4", "hotmail live", "mail 24h", "mặc định"].includes(lowerPN);
         if (!isGenericName) {
@@ -24054,7 +23990,7 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
       }
 
       // 5. Nếu đối tượng có deliveryType === 'api', tra cứu alias hoặc key con
-      if (prodObj && (prodObj.deliveryType === 'api' || prodObj.delivery_type === 'api')) {
+      if (!isExplicitLocal && !isMapDisabled && prodObj && (prodObj.deliveryType === 'api' || prodObj.delivery_type === 'api')) {
         for (const k of Object.keys(maps)) {
           const m = maps[k];
           if (m && m.enabled && m.sourceProdId) {
@@ -24063,17 +23999,21 @@ function syncAllOpenViewsStock(changedProdId, totalStock, accounts, fromBroadcas
         }
       }
 
-      // 6. Tra cứu trong defaultMappings built-in nếu chưa được cấu hình thủ công
-      if (prodId && defaultMappings[prodId]) {
-        return enrichMapping(defaultMappings[prodId]);
-      }
-      if (prodObj && prodObj.id && defaultMappings[prodObj.id]) {
-        return enrichMapping(defaultMappings[prodObj.id]);
+      // 6. Tra cứu trong defaultMappings built-in (TUYỆT ĐỐI CHỈ KHI KHÔNG BỊ TẮT VÀ KHÔNG PHẢI KHO NỘI BỘ)
+      if (!isExplicitLocal && !isMapDisabled) {
+        if (prodId && defaultMappings[prodId]) {
+          return enrichMapping(defaultMappings[prodId]);
+        }
+        if (canonId && defaultMappings[canonId]) {
+          return enrichMapping(defaultMappings[canonId]);
+        }
+        if (prodObj && prodObj.id && defaultMappings[prodObj.id]) {
+          return enrichMapping(defaultMappings[prodObj.id]);
+        }
       }
 
       return null;
-    }
-    window.getApiProductMapping = getApiProductMapping;
+    }window.getApiProductMapping = getApiProductMapping;
 
     // BỘ NHỚ LƯU TỪ KHÓA TÌM KIẾM CHO TỪNG DÒNG SẢN PHẨM NGUỒN
     window._mapRowSearchKeywords = window._mapRowSearchKeywords || {};
@@ -34472,37 +34412,50 @@ function executeCompareSourcesSearch() {
       const dtlCategory = document.getElementById("dtlCategory");
       if (dtlCategory) dtlCategory.innerText = (p.category || "").replace(/&amp;/g, '&');
 
-      let apiMapInfo = (p && p.apiMapping && p.apiMapping.enabled && p.apiMapping.sourceProdId)
-        ? p.apiMapping
-        : null;
-      if (!apiMapInfo && p && Array.isArray(p.variants)) {
-        for (const v of p.variants) {
-          if (v && v.apiMapping && v.apiMapping.enabled && v.apiMapping.sourceProdId) {
-            apiMapInfo = v.apiMapping;
-            break;
+      // [BẢO VỆ TUYỆT ĐỐI KHO NỘI BỘ]: Kiểm tra trạng thái kho nội bộ ngay từ đầu
+      const maps = (typeof getApiProductMappings === "function") ? getApiProductMappings() : {};
+      const canonDtlId = (typeof getCanonicalProductId === "function" && cleanId) ? getCanonicalProductId(cleanId) : cleanId;
+      const isMapLocalDtl = !!((cleanId && maps[cleanId] && (maps[cleanId].deliveryType === "local" || maps[cleanId].enabled === false)) ||
+                               (canonDtlId && maps[canonDtlId] && (maps[canonDtlId].deliveryType === "local" || maps[canonDtlId].enabled === false)));
+      const isLocalDelivery = isMapLocalDtl || (p && (p.deliveryType === "local" || p.delivery_type === "local" || p.deliveryType === "manual" || p.delivery_type === "manual"));
+
+      let apiMapInfo = null;
+      if (!isLocalDelivery) {
+        apiMapInfo = (p && p.apiMapping && p.apiMapping.enabled && p.apiMapping.sourceProdId) ? p.apiMapping : null;
+        if (!apiMapInfo && p && Array.isArray(p.variants)) {
+          for (const v of p.variants) {
+            if (v && v.apiMapping && v.apiMapping.enabled && v.apiMapping.sourceProdId) {
+              apiMapInfo = v.apiMapping;
+              break;
+            }
+          }
+        }
+        if (!apiMapInfo && typeof getApiProductMapping === "function") {
+          apiMapInfo = getApiProductMapping(p);
+        }
+        if (p && apiMapInfo && (!p.apiMapping || !p.apiMapping.sourceProdId)) {
+          p.apiMapping = apiMapInfo;
+          p.deliveryType = "api";
+          p.delivery_type = "api";
+        }
+      } else {
+        // Ép sản phẩm là kho nội bộ thuần túy 100%, gỡ bỏ mọi dấu vết API
+        if (p) {
+          p.deliveryType = "local";
+          p.delivery_type = "local";
+          delete p.apiMapping;
+          if (Array.isArray(p.variants)) {
+            p.variants.forEach(v => { if (v) delete v.apiMapping; });
           }
         }
       }
-      if (!apiMapInfo && typeof getApiProductMapping === "function") {
-        apiMapInfo = getApiProductMapping(p);
-      }
-      if (p && apiMapInfo && (!p.apiMapping || !p.apiMapping.sourceProdId)) {
-        p.apiMapping = apiMapInfo;
-        p.deliveryType = "api";
-        p.delivery_type = "api";
-      }
 
-      const hasActiveApiMap = !!(apiMapInfo && apiMapInfo.enabled && apiMapInfo.sourceProdId);
-      const isLocalDelivery = !hasActiveApiMap && (p.deliveryType === "local" || p.delivery_type === "local" || p.deliveryType === "manual" || p.delivery_type === "manual");
-      const isProdApi = hasActiveApiMap || ((p.deliveryType === "api" || p.delivery_type === "api") || ((typeof isProductApi === "function") ? isProductApi(p) : false));
+      const hasActiveApiMap = !isLocalDelivery && !!(apiMapInfo && apiMapInfo.enabled && apiMapInfo.sourceProdId);
+      const isProdApi = hasActiveApiMap || (!isLocalDelivery && (p.deliveryType === "api" || p.delivery_type === "api"));
 
       const dtlDeliveryType = document.getElementById("dtlDeliveryType") || document.querySelector(".dtl-delivery-type");
       if (dtlDeliveryType) {
-        if (isLocalDelivery) {
-          dtlDeliveryType.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-bolt"></i> Tự động 24/7</span>';
-        } else {
-          dtlDeliveryType.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-bolt"></i> Tự động 24/7</span>';
-        }
+        dtlDeliveryType.innerHTML = '<span style="color:#10b981; font-weight:700;"><i class="fa-solid fa-bolt"></i> Tự động 24/7</span>';
       }
 
       const apiBadgeEl = document.getElementById("dtlApiSourceBadge");
@@ -34517,6 +34470,7 @@ function executeCompareSourcesSearch() {
           const prods = (typeof window.cachedSourceProducts !== "undefined" && Array.isArray(window.cachedSourceProducts))
             ? window.cachedSourceProducts
             : ((typeof cachedSourceProducts !== "undefined" && Array.isArray(cachedSourceProducts)) ? cachedSourceProducts : []);
+          const provLoaded = (typeof isFastSourceProviderLoaded === "function") ? isFastSourceProviderLoaded(apiMapInfo.provider) : false;
           const inSrc = (typeof getFastSourceProduct === "function")
             ? getFastSourceProduct(apiMapInfo.provider, cleanSrcId)
             : (prods.find(s => String(s.id) === cleanSrcId && (!apiMapInfo.provider || (typeof isSameProvider === "function" ? isSameProvider(s.provider, apiMapInfo.provider) : s.provider === apiMapInfo.provider)))
@@ -34529,17 +34483,16 @@ function executeCompareSourcesSearch() {
           } else if (inSrc && typeof inSrc.amount === "number") {
             liveMapStock = inSrc.amount;
             apiMapInfo.sourceStock = inSrc.amount;
-            apiMapInfo.isSourceDeleted = false;
-          } else if (typeof apiMapInfo.sourceStock === "number" && apiMapInfo.sourceStock > 0) {
-            // [BẢO VỆ TỒN KHO THỰC TẾ]: Tuyệt đối không xóa tồn kho nếu đã có sourceStock > 0
+            apiMapInfo.isSourceDeleted = (inSrc.amount <= 0 && isKnownDead);
+          } else if (provLoaded && prods.length > 0) {
+            // [ZERO GHOST STOCK]: Nhà cung cấp đã nạp danh sách nhưng không có mã này -> Đã hết hàng
+            liveMapStock = 0;
+            apiMapInfo.sourceStock = 0;
+            apiMapInfo.isSourceDeleted = true;
+          } else if (typeof apiMapInfo.sourceStock === "number" && apiMapInfo.sourceStock > 0 && !apiMapInfo.isSourceDeleted) {
             liveMapStock = apiMapInfo.sourceStock;
-            apiMapInfo.isSourceDeleted = false;
-          } else if (typeof p.stock === "number" && p.stock > 0) {
-            liveMapStock = p.stock;
-            apiMapInfo.isSourceDeleted = false;
           } else {
-            liveMapStock = Math.max(0, Number(apiMapInfo.sourceStock) || 0);
-            apiMapInfo.isSourceDeleted = false;
+            liveMapStock = 0;
           }
         }
         if (liveMapStock !== null) {
@@ -34549,10 +34502,12 @@ function executeCompareSourcesSearch() {
             p.variants.forEach(v => { if (v) v.stock = initialVariantStock; });
           }
         } else {
-          initialVariantStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(p, currentSelectedVariantIndex) : (p.stock || 0);
+          initialVariantStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(p, currentSelectedVariantIndex) : 0;
         }
       } else {
+        // Kho nội bộ: tính chuẩn theo số tài khoản trong kho
         initialVariantStock = (typeof getShopVariantStock === "function") ? getShopVariantStock(p, currentSelectedVariantIndex) : (p.stock || 0);
+        p.stock = initialVariantStock;
       }
       try {
         if (typeof syncDetailStockUI === "function") syncDetailStockUI(initialVariantStock);
